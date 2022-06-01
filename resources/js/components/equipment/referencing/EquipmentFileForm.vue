@@ -19,7 +19,12 @@
             <div v-if="this.addSucces==false ">
                 <!--If this file doesn't have a id the addEquipmentFile is called function else the updateEquipmentFile function is called -->
                 <div v-if="this.file_id==null ">
-                    <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :savedAs="file_validate"/>
+                    <div v-if="modifMod==true">
+                        <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :savedAs="file_validate" :AddinUpdate="true"/>
+                    </div>
+                    <div v-else>
+                        <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :savedAs="file_validate"/>
+                    </div>
                 </div>
                 <div v-else-if="this.file_id!==null">
                     <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="file_validate"/>
@@ -135,8 +140,7 @@ export default {
                     file_validate :savedAs,
                 })
                 .then(response =>{
-                    console.log("ajout dans la base")
-
+                    this.errors={};
                     /*If all the verif passed, a new post this time to add the file in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/file',{
@@ -183,7 +187,7 @@ export default {
                     file_validate :savedAs,
                 })
                 .then(response =>{
-                    console.log("update dans la base")
+                    this.errors={};
                     
                     /*If all the verif passed, a new post this time to add the file in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
@@ -208,8 +212,6 @@ export default {
         },
         //Function for deleting a file from the view and the database
         deleteComponent(){
-            //Emit to the parent component that we want to delete this component
-            this.$emit('deleteFile','')
             //If the user is in update mode and the file exist in the database
             if(this.modifMod==true && this.file_id!==null){
                 console.log("supression");
@@ -217,7 +219,10 @@ export default {
                 var consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id),{
                 })
-                .then(response =>{})
+                .then(response =>{
+                    //Emit to the parent component that we want to delete this component
+                    this.$emit('deleteFile','')
+                })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 

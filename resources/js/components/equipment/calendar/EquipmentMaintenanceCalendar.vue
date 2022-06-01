@@ -1,7 +1,7 @@
 <template>
     <div>
         <EventDetailsModal ref="event_details" @modalClosed="modalClosed" :prvMtnOps="prvMtnOp"/>
-        <div class='container'>
+        <div class='container calendar_container'>
             <div class='calendar'>
                 <FullCalendar  :options="calendarOptions" />
             </div>
@@ -22,6 +22,8 @@ import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import EventDetailsModal from './EventDetailsModal.vue'
+import listPlugin from '@fullcalendar/list';
+import momentPlugin from '@fullcalendar/moment';
 
 export default {
     components: {
@@ -32,16 +34,18 @@ export default {
         return {
             eventList:[],
             calendarOptions: {
-                plugins: [ dayGridPlugin,interactionPlugin  ],
+                plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin   ],
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: '',
+                    left: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
                     center: 'title',
-                    right :'prev today next'
+                    right :'prev today next',
+                    
                 },
                 eventClick:this.handleEventClick,
                 dateClick:this.handleDateClick,
                 events:[],
+                titleFormat: 'D MMM YYYY'
             },
             prvMtnOp:[]
             
@@ -50,14 +54,9 @@ export default {
     },
     methods: {
         handleEventClick(arg) {
-            this.$nextTick(() => {
-                this.prvMtnOp.push({eq_internalReference:arg.event.title, prvMtnOp_number:arg.event.extendedProps.number,
-                 prvMtnOp_description:arg.event.extendedProps.description,prvMtnOp_protocol:arg.event.extendedProps.protocol });
-                this.$refs.event_details.$bvModal.show('modal-event_details');
-            })
-
-            
-
+            this.prvMtnOp.push({eq_internalReference:arg.event.title, prvMtnOp_number:arg.event.extendedProps.number,
+                prvMtnOp_description:arg.event.extendedProps.description,prvMtnOp_protocol:arg.event.extendedProps.protocol });
+            this.$refs.event_details.$bvModal.show('modal-event_details');
         },
         modalClosed(){
             this.prvMtnOp=[]
@@ -79,6 +78,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
 </style>

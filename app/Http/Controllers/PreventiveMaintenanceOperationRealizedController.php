@@ -55,6 +55,29 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_prvMtnOpRlz(Request $request){        
+        $state=State::findOrFail($request->state_id) ; 
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
+
+        if ($request->prvMtnOpRlz_validate=="validated"){
+            if ($request->prvMtnOpRlz_startDate=='' || $request->prvMtnOpRlz_startDate===NULL){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOpRlz_startDate' => ["You have to entered the startDate of your preventive maintenance operation realized for validate it"]
+                    ]
+                ], 429);
+            }
+
+            if ($request->prvMtnOpRlz_endDate=='' || $request->prvMtnOpRlz_endDate===NULL){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOpRlz_endDate' => ["You have to entered the endDate of your preventive maintenance operation realized for validate it"]
+                    ]
+                ], 429);
+            }
+        }
+        
+        
+        
         $this->validate(
             $request,
             [
@@ -68,37 +91,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             
             ]
         );
-        $state=State::findOrFail($request->state_id) ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
-        
-        if ($request->reason=="add"){
-
-        }
-
-
-        if ($request->reason=="update"){
-            
-        }
-        if ($state->state_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=''){
-            if ($prvMtnOp->prvMtnOp_startDate>$state->state_startDate){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_startDate' => ["You can choose this preventive maintenance operation because the startDate of it is after the beginning of your state"]
-                    ]
-                ], 429);
-            }
-        }
-        if ($state->endDate!='' && $prvMtnOp->reformDate!=''){
-            if ($prvMtnOp->prvMtnOp_reformDate<$state->state_endDate){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_endDate' => ["You can choose this preventive maintenance operation because the reformDate of it is before the ending of your state"]
-                    ]
-                ], 429);
-            }
-        }
-
-
+    
         if ($request->reason=="update"){
             $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
             if ($prvMtnOpRlz->prvMtnOpRlz_validate=="VALIDATED"){
@@ -110,8 +103,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             }
         }
 
-
-        if ($state->state_startDate!='' && $request->prvMtnOpRlz_startDate!='' && $state->state_endDate!=''){
+        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_startDate!=NULL && $state->state_endDate!=NULL){
             if ($request->prvMtnOpRlz_startDate<$state->state_startDate || $request->prvMtnOpRlz_startDate>$state->state_endDate){
                 return response()->json([
                     'errors' => [
@@ -120,11 +112,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ], 429);
             }
         }
-        if ($state->state_startDate!='' && $request->prvMtnOpRlz_endDate!='' && $state->state_endDate!=''){
-            if ($prvMtnOp->prvMtnOp_reformDate<$state->state_endDate){
+        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_endDate!=NULL && $state->state_endDate!=NULL){
+            if ($request->prvMtnOpRlz_endDate<$state->state_startDate || $request->prvMtnOpRlz_endDate>$state->state_endDate){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOpRlz_endDate' => ["You can choose this preventive maintenance operation because the reformDate of it is before the ending of your state"]
+                        'prvMtnOpRlz_endDate' => ["You can't entered this endDate because it must be between the startDate and the endDate of the state"]
                     ]
                 ], 429);
             }

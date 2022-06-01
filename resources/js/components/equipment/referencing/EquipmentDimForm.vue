@@ -24,7 +24,12 @@
             <div v-if="this.addSucces==false ">
                 <!--If this dimension doesn't have a id the addEquipmentDim is called function else the updateEquipmentDim function is called -->
                 <div v-if="this.dim_id==null ">
-                    <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :savedAs="dim_validate"/>
+                    <div v-if="modifMod==true">
+                        <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :savedAs="dim_validate" :AddinUpdate="true"/>
+                    </div>
+                    <div v-else>
+                        <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :savedAs="dim_validate"/>
+                    </div>
                 </div>
                 <div v-else-if="this.dim_id!==null">
                     <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="dim_validate"/>
@@ -262,8 +267,6 @@ export default {
         },
         //Function for deleting a dimension from the view and the database
         deleteComponent(){
-            //Emit to the parent component that we want to delete this component
-            this.$emit('deleteDim','')
             //If the user is in update mode and the dimension exist in the database
             if(this.modifMod==true && this.dim_id!==null){
                 console.log("supression");
@@ -271,7 +274,10 @@ export default {
                 var consultUrl = (id) => `/equipment/delete/dim/${id}`;
                 axios.post(consultUrl(this.dim_id),{
                 })
-                .then(response =>{})
+                .then(response =>{
+                    //Emit to the parent component that we want to delete this component
+                    this.$emit('deleteDim','')
+                })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 

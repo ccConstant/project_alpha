@@ -82,13 +82,14 @@ Route::get('/equipment/life_event/reference/{id}/{state_id}', function () {
     return view('welcome');
 });
 
-Route::get('/equipment/life_event/update/{id}', function () {
+Route::get('/equipment/life_event/update/{id}/{state_id}', function () {
     return view('welcome');
 });
 
 Route::get('/equipment/maintenance/calendar', function () {
     return view('welcome');
 });
+
 
 /* Equipment ID Form Routes */ 
 

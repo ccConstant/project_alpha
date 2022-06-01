@@ -22,7 +22,12 @@
             <div v-if="this.addSucces==false ">
                 <!--If this special process doesn't have a id the addEquipmentSpProc is called function else the updateEquipmentSpProc function is called -->
                 <div v-if="this.spProc_id==null ">
-                    <SaveButtonForm @add="addEquipmentSpProc" @update="updateEquipmentSpProc" :consultMod="this.isInConsultedMod" :savedAs="spProc_validate"/>
+                    <div v-if="modifMod==true">
+                        <SaveButtonForm @add="addEquipmentSpProc" @update="updateEquipmentSpProc" :consultMod="this.isInConsultedMod" :savedAs="spProc_validate" :AddinUpdate="true"/>
+                    </div>
+                    <div v-else>
+                        <SaveButtonForm @add="addEquipmentSpProc" @update="updateEquipmentSpProc" :consultMod="this.isInConsultedMod" :savedAs="spProc_validate"/>
+                    </div>
                 </div>
                 <div v-else-if="this.spProc_id!==null">
                     <SaveButtonForm @add="addEquipmentSpProc" @update="updateEquipmentSpProc" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="spProc_validate"/>
@@ -148,7 +153,7 @@ export default {
                     spProc_validate :savedAs,
                 })
                 .then(response =>{
-                    console.log("ajout dans la base")
+                    this.errors={};
                     /*If all the verif passed, a new post this time to add the special process in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/spProc',{
@@ -194,8 +199,7 @@ export default {
                     spProc_validate :savedAs,
                 })
                 .then(response =>{
-                    console.log("update dans la base")
-                    
+                    this.errors={};
                     /*If all the verif passed, a new post this time to add the special process in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
                         In the post url the id correspond to the id of the special process who will be update*/
@@ -220,7 +224,7 @@ export default {
             delete this.errors[event.target.name];
         },
         clearRadioError(){
-            //delete this.errors[spProc_exist]
+            delete this.errors["spProc_exist"]
         }
     },
     

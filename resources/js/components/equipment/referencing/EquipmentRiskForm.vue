@@ -15,14 +15,19 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container"  @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputSelectForm  selectClassName="form-select w-50" :Errors="errors.risk_for" name="risk_for" label="Risk for :" :options="enum_risk_for" :isDisabled="!!isInConsultedMod" :selctedOption="this.risk_for" :selectedDivName="this.divClass" v-model="risk_for"/>
+            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.risk_for" name="risk_for" label="Risk for :" :options="enum_risk_for" :isDisabled="!!isInConsultedMod" :selctedOption="this.risk_for" :selectedDivName="this.divClass" v-model="risk_for"/>
             <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_remarks" name="risk_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="risk_remarks"/>
             <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_wayOfControl" name="risk_wayOfControl" label="Way of Control :" :isDisabled="!!isInConsultedMod" v-model="risk_wayOfControl"/>
             <!--If addSucces is equal to false, the buttons appear -->
             <div v-if="this.addSucces==false ">
                 <!--If this risk doesn't have a id the addEquipmentRisk is called function else the updateEquipmentRisk function is called -->
                 <div v-if="this.risk_id==null ">
-                    <SaveButtonForm  @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate"/>
+                    <div v-if="modifMod==true">
+                        <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate" :AddinUpdate="true"/>
+                    </div>
+                    <div v-else>
+                        <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate"/>
+                    </div>
                 </div>
                 <div v-else-if="this.risk_id!==null">
                     <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="risk_validate"/>
@@ -164,6 +169,7 @@ export default {
                     risk_validate :savedAs,
                 })
                 .then(response =>{
+                    this.errors={};
                     //Si ajoout equipement
                     if(this.riskForEq==true){
                         console.log("ajout dans la base equipement")
@@ -250,6 +256,7 @@ export default {
                     risk_validate :savedAs,
                 })
                 .then(response =>{
+                    this.errors={};
                     if(this.riskForEq==true){
                         console.log("update dans la base eq");
                         console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
@@ -302,8 +309,7 @@ export default {
         },
                 //Function for deleting a risk from the view and the database
         deleteComponent(){
-            //Emit to the parent component that we want to delete this component
-            this.$emit('deleteRisk','')
+
             //If the user is in update mode and the risk exist in the database
             if(this.modifMod==true && this.risk_id!==null){
                 console.log("supression");
@@ -311,13 +317,19 @@ export default {
                 var consultUrl = (id) => `/equipment/delete/risk/${id}`;
                 axios.post(consultUrl(this.risk_id),{
                 })
-                .then(response =>{})
+                .then(response =>{
+                    //Emit to the parent component that we want to delete this component
+                    this.$emit('deleteRisk','')
+                })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }
             
-        }
+        },
+        clearSelectError(value){
+            delete this.errors[value];
+        },
     }
 
 }

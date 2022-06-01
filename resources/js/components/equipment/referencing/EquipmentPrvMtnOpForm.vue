@@ -23,14 +23,19 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description"/>
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="0.01" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" />
-                    <InputSelectForm   name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity"/>
+                    <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity"/>
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol" name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_protocol"/>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOp is called function else the updateEquipmentPrvMtnOp function is called -->
-                    <div v-if="this.prvMtnOp_id==null ">
-                        <SaveButtonForm @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :savedAs="prvMtnOp_validate"/>
+                    <div v-if="this.prvMtnOp_id===null ">
+                        <div v-if="modifMod==true">
+                            <SaveButtonForm @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :savedAs="prvMtnOp_validate" :AddinUpdate="true"/>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :savedAs="prvMtnOp_validate"/>
+                        </div>
                     </div>
                     <div v-else-if="this.prvMtnOp_id!==null">
                         <SaveButtonForm  @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="prvMtnOp_validate"/>
@@ -196,7 +201,7 @@ export default {
                     prvMtnOp_validate :savedAs,
                 })
                 .then(response =>{
-                    console.log("ajout dans la base")
+                    this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/prvMtnOp',{
@@ -210,6 +215,7 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
+                        console.log(response)
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -248,7 +254,7 @@ export default {
                     prvMtnOp_validate :savedAs,
                 })
                 .then(response =>{
-                    console.log("update dans la base");
+                    this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
                         In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
@@ -276,22 +282,26 @@ export default {
         //Function for deleting a preventive maintenance operation from the view and the database
         deleteComponent(){
             //Emit to the parent component that we want to delete this component
-            this.$emit('deletePrvMtnOp','')
+            
             //If the user is in update mode and the preventive maintenance operation exist in the database
             if(this.modifMod==true && this.prvMtnOp_id!==null){
-                console.log("supression");
-                //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
                 var consultUrl = (id) => `/equipment/delete/prvMtnOp/${id}`;
                 axios.post(consultUrl(this.prvMtnOp_id),{
                     eq_id:this.equipment_id_update,
                 })
-                .then(response =>{})
+                .then(response =>{
+                    //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
+                    this.$emit('deletePrvMtnOp','')
+                })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }
             
-        }
+        },
+        clearSelectError(value){
+            delete this.errors[value];
+        },
     },
     created(){
         if(this.prvMtnOp_id!==null && this.addSucces==false){

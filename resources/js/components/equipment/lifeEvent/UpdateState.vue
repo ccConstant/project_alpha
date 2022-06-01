@@ -112,7 +112,6 @@ export default {
                     eq_id:this.eq_id
                 })
                 .then(response =>{
-                    console.log(response)
                         axios.post('/equipment/add/state',{
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,

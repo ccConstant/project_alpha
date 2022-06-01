@@ -11,6 +11,9 @@
           {{list.eq_internalReference}}
           <router-link :to="{name:'url_eq_consult',params:{id: list.id} }">Consult</router-link>
           <router-link :to="{name:'url_eq_update',params:{id: list.id} }">Update</router-link>
+          <a href="#" @click="technicalValidation(list.id)">Technical validation</a>
+          <a href="#" @click="qualityValidation(list.id)">Quality validation</a>
+
         </li>
       </ul>
       </div>
@@ -44,7 +47,17 @@ export default {
           this.loaded=true;
         })
         .catch(error => console.log(error));
+
+    
   },
+  methods:{
+    technicalValidation(id){
+      this.$router.replace({ name: "url_eq_consult", params: {id}, query: {method:"technical" } })
+    },
+    qualityValidation(id){
+      this.$router.replace({ name: "url_eq_consult", params: {id}, query: {method:"quality" } })
+    }
+  }
   
   
 

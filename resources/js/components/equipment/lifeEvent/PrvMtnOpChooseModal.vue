@@ -11,7 +11,7 @@
                 <b-button v-b-toggle.collapse-chooseOpe variant="primary" icon="chevron-bar-up" >Show details</b-button>
                 <div v-for="option in prvMtnOps" :key="option.id">
                     <input type="radio" name="radio-input" :value="option" :id="option.id" v-model="radio_value"/>
-                    {{ option.id }}
+                    {{ option.prvMtnOp_number }}
                     <div>
                         <b-collapse id="collapse-chooseOpe" class="mt-2">
                             <b-card>

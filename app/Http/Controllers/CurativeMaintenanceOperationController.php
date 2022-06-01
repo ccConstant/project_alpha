@@ -131,12 +131,12 @@ class CurativeMaintenanceOperationController extends Controller
      * Delete a curative maintenance operation thanks to the id given in parameter
      * The id parameter correspond to the id of the curative maintenance operation we want to delete
      * */
-    public function delete_prvMtnOpRlz($id){
+    public function delete_curMtnOp($id){
         $curMtnOp=CurativeMaintenanceOperation::findOrFail($id);
         if ($curMtnOp->curMtnOp_validate=='VALIDATED'){
             return response()->json([
                 'errors' => [
-                    'curMtnOp_delete' => ["You can delete a curative maintenance operation validated"]
+                    'curMtnOp_delete' => ["You can't delete a curative maintenance operation validated"]
                 ]
             ], 429);
         }else{

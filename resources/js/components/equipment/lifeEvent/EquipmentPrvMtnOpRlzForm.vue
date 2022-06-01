@@ -202,6 +202,7 @@ export default {
                 })
                 .then(response =>{
                     console.log("ajout dans la base")
+                    console.log(response.data) ;
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/state/prvMtnOpRlz',{
@@ -303,7 +304,6 @@ export default {
             
         },
         choosedOpe(value){
-            
             this.prvMtnOp_number=value.prvMtnOp_number;
             this.prvMtnOp_description=value.prvMtnOp_description;
             this.prvMtnOp_protocol=value.prvMtnOp_protocol,

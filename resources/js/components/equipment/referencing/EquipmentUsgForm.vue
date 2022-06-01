@@ -13,7 +13,12 @@
             <div v-if="this.addSucces==false ">
                 <!--If this usage doesn't have a id the addEquipmentUsg is called function else the updateEquipmentUsg function is called -->
                 <div v-if="this.usg_id==null ">
-                    <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
+                    <div v-if="modifMod==true">
+                        <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate" :AddinUpdate="true"/>
+                    </div>
+                    <div v-else>
+                        <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
+                    </div>
                 </div>
                 <div v-else-if="this.usg_id!==null">
                     <SaveButtonForm  @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
@@ -131,6 +136,7 @@ export default {
                     usg_validate :savedAs,
                 })
                 .then(response =>{
+                    this.errors={};
                     /*If all the verif passed, a new post this time to add the usage in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/usg',{
@@ -174,7 +180,7 @@ export default {
                     usg_validate :savedAs,
                 })
                 .then(response =>{
-                    console.log("update dans la base")
+                    this.errors={};
                     
                     /*If all the verif passed, a new post this time to add the usage in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
@@ -200,16 +206,17 @@ export default {
         },
         //Function for deleting a usage from the view and the database
         deleteComponent(){
-            //Emit to the parent component that we want to delete this component
-            this.$emit('deleteUsg','')
+
             //If the user is in update mode and the usage exist in the database
             if(this.modifMod==true && this.usg_id!==null){
-                console.log("supression");
                 //Send a post request with the id of the usage who will be deleted in the url
                 var consultUrl = (id) => `/equipment/delete/usg/${id}`;
                 axios.post(consultUrl(this.usg_id),{
                 })
-                .then(response =>{})
+                .then(response =>{
+                    //Emit to the parent component that we want to delete this component
+                    this.$emit('deleteUsg','')
+                })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
             }

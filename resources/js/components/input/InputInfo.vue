@@ -5,11 +5,10 @@
 
 <template>
     <div class="infoInput">
-        <img src="../../../assets/info_logo.png" alt="info_logo">
-
-        <div class="textInfo">
-            <p hidden>{{info}}</p>
-        </div>
+        <b-icon class="info_icon" :id="`popover-target-${_uid}`" icon="info-circle-fill" variant="primary"></b-icon>
+        <b-popover :target="`popover-target-${_uid}`" triggers="hover" placement="right">
+            {{info}}
+        </b-popover>
         
     </div>
     
@@ -18,14 +17,6 @@
 <script>
     
 export default {
-    methods: {
-        showInfo(){
-            console.log("Afficher info");
-            $('.myPopover').popover();
-        }
-        
-
-    },
     props:['info']
 
 }
@@ -35,13 +26,13 @@ export default {
     .infoInput {
         display:inline-block;
     }
-    img{
+    .info_icon{
         padding-left: 5px;
-        width : 15px;
-        height : 10px;
+        width : 20px;
+        height : 15px;
         transition:1ms ;
     }
-    img:hover{
+    .info_icon:hover{
         -ms-transform: scale(1.5); 
         -webkit-transform: scale(1.5); 
         transform: scale(1.5);
@@ -49,6 +40,7 @@ export default {
     .textInfo p{
         font-size: 12px;
     }
+    
 
     
 

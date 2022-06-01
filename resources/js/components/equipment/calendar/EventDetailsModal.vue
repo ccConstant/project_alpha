@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-modal id="modal-event_details" title="Details" hide-footer>
+        <b-modal id="modal-event_details" @hidden="resetModal" title="Details" hide-footer>
             <div>
                 <div v-for="option in prvMtnOps" :key="option.id">
                     <div>
@@ -29,9 +29,11 @@ export default {
     },
     methods:{
         closeAndClear(){
-            this.$bvModal.hide('modal-event_details'),
+            this.$bvModal.hide('modal-event_details')
+        },
+        resetModal() {
             this.$emit('modalClosed','')
-        }
+        },
     }
 
 }

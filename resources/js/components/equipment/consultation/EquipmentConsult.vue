@@ -16,6 +16,14 @@
             <ReferenceAFile v-if="eq_file.length>0" :importedFile="eq_file" consultMod/>
             <ReferenceAPrvMtnOp v-if="eq_prvMtnOp.length>0" :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
             <ReferenceARisk v-if="eq_risk.length>0" :importedRisk="eq_risk" :riskForEq="true" consultMod/>
+            <div v-if="validationMethod=='technical'">
+                <button type="button" class="btn btn-primary technical_validate_button">Technical Validate </button>
+            </div>
+            <div v-else-if="validationMethod=='quality'">
+                <button type="button" class="btn btn-primary quality_validate_button" >Quality Validate</button>
+            </div>
+
+            
 
 
         </div>
@@ -59,7 +67,8 @@ export default {
             eq_file:null,
             eq_prvMtnOp:null,
             eq_risk:null,
-            loaded:false
+            loaded:false,
+            validationMethod:this.$route.query.method
         }
     },
 
@@ -123,6 +132,17 @@ export default {
 
 </script>
 
-<style>
+<style lang="scss">
+    .technical_validate_button {
+        display: block;
+        margin : auto;
+        margin-bottom: 15px;
+        
+    };
 
+    .quality_validate_button{
+        display: block;
+        margin : auto;
+        margin-bottom: 15px;
+    }
 </style>

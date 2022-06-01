@@ -29,7 +29,12 @@
             <div v-if="this.addSucces==false ">
                 <!--If this power doesn't have a id the addEquipmentPow is called function else the updateEquipmentPow function is called -->
                 <div v-if="this.pow_id==null || this.addSucces==true">
-                    <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :savedAs="pow_validate"/>
+                    <div v-if="modifMod==true">
+                        <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :savedAs="pow_validate" :AddinUpdate="true"/>
+                    </div>
+                    <div v-else>
+                        <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :savedAs="pow_validate"/>
+                    </div>
                 </div>
                 <div v-else-if="this.pow_id!==null">
                     <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="pow_validate"/>
@@ -280,15 +285,17 @@ export default {
         },
         //Function for deleting a power from the view and the database
         deleteComponent(){
-            this.$emit('deletePow','');
-            //If the user is in update mode and the power exist in the database
+
             if(this.modifMod==true && this.pow_id!==null){
                 console.log("supression");
                 //Send a post request with the id of the power who will be deleted in the url
                 var consultUrl = (id) => `/equipment/delete/pow/${id}`;
                 axios.post(consultUrl(this.pow_id),{
                 })
-                .then(response =>{})
+                .then(response =>{
+                    this.$emit('deletePow','');
+                    //If the user is in update mode and the power exist in the database
+                })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
