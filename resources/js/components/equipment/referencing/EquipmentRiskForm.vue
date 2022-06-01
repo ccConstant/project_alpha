@@ -1,0 +1,340 @@
+<!--File name : EquipmentRiskForm.vue-->
+<!--Creation date : 10 May 2022-->
+<!--Update date : 17 May 2022-->
+<!--Vue Component of the Form of the equipment risk who call all the input component-->
+
+<!----------Props of other component who can be called:--------
+    See details in related Vue Component
+        InputTextForm : name, label, isRequired, value, info_text, isDisabled, inputClassName, Errors
+        InputSelectForm : name, label, isRequired, value, info_text,  isDisabled, options, selectClassName, selectedOption
+        SaveButtonForm : name, label, isRequired, value, info_text,  isDisabled, options, selectClassName, selectedOption
+-------------------------------------------------------------->
+
+<template>
+    <div :class="divClass">
+        <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
+        <form class="container"  @keydown="clearError">
+            <!--Call of the different component with their props-->
+            <InputSelectForm  selectClassName="form-select w-50" :Errors="errors.risk_for" name="risk_for" label="Risk for :" :options="enum_risk_for" :isDisabled="!!isInConsultedMod" :selctedOption="this.risk_for" :selectedDivName="this.divClass" v-model="risk_for"/>
+            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_remarks" name="risk_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="risk_remarks"/>
+            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_wayOfControl" name="risk_wayOfControl" label="Way of Control :" :isDisabled="!!isInConsultedMod" v-model="risk_wayOfControl"/>
+            <!--If addSucces is equal to false, the buttons appear -->
+            <div v-if="this.addSucces==false ">
+                <!--If this risk doesn't have a id the addEquipmentRisk is called function else the updateEquipmentRisk function is called -->
+                <div v-if="this.risk_id==null ">
+                    <SaveButtonForm  @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate"/>
+                </div>
+                <div v-else-if="this.risk_id!==null">
+                    <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="risk_validate"/>
+                </div>
+                <!-- If the user is not in the consultation mode, the delete button appear -->
+                <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+            </div>       
+        </form>
+    </div>
+</template>
+
+<script>
+/*Importation of the others Components who will be used here*/
+import InputSelectForm from '../../input/InputSelectForm.vue'
+import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
+import SaveButtonForm from '../../button/SaveButtonForm.vue'
+import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+
+export default {
+        /*--------Declartion of the others Components:--------*/
+    components : {
+        InputSelectForm,
+        InputTextAreaForm,
+        SaveButtonForm,
+        DeleteComponentButton
+
+
+    },
+    /*--------Declartion of the differents props:--------
+        for : 
+        remarks : 
+        wayOfControl : 
+        validate: Validation option of the risk
+        consultMod: If this props is present the form is in consult mode we disable all the field
+        modifMod: If this props is present the form is in modif mode we disable save button and show update button
+        divClass: Class name of this risk form
+        id: Id of an already created risk 
+        eq_id: Id of the equipment in which the risk will be added
+        RiskForEq:
+        
+    ---------------------------------------------------*/
+    props:{
+        for:{
+            type:String
+        },
+        remarks:{
+            type:String
+        },
+        wayOfControl:{
+            type:String
+        },
+        validate:{
+            type:String
+        },
+        consultMod:{
+            type:Boolean,
+            default:false
+        },
+        modifMod:{
+            type:Boolean,
+            default :false
+        },
+        divClass:{
+            type:String
+        },
+        id:{
+            type:Number,
+            default:null
+        },
+        eq_id:{
+            type:Number
+        },
+        prvMtnOp_id:{
+            type:Number
+        },
+        riskForEq:{
+            type:Boolean
+        }
+
+    },
+    /*--------Declartion of the differents returned data:--------
+        risk_for: 
+        risk_remarks: 
+        risk_wayOfControl: 
+        risk_validate: Validation option of the risk
+        risk_id: Id oh this risk
+        equipment_id_add: Id of the equipment in which the risk will be added
+        equipment_id_update: Id of the equipment in which the risk will be updated
+        enum_risk_for : Different types of risk gets from the database
+        errors: Object of errors in wich will be stores the different erreur occured when adding in database
+        addSucces: Boolean who tell if this risk has been added successfully
+        isInConsultedMod: data of the consultMod prop
+    -----------------------------------------------------------*/
+        data(){
+        return{
+            risk_for:this.for,
+            risk_remarks:this.remarks,
+            risk_wayOfControl:this.wayOfControl,
+            risk_validate:this.validate,
+            risk_id:this.id,
+            equipment_id_add:this.eq_id,
+            equipment_id_update:this.$route.params.id,
+            enum_risk_for : [],
+            errors:{},
+            addSucces:false,
+            isInConsultedMod:this.consultMod
+            
+        }
+        
+    },
+        /*All function inside the created option is called after the component has been mounted.*/
+    created(){
+        /*Ask for the controller different types of the risk  */
+        axios.get('/risk/enum/riskfor')
+            .then (response=> this.enum_risk_for=response.data) 
+            .catch(error => console.log(error)) ;
+    },
+    methods:{
+        /*Sending to the controller all the information about the equipment so that it can be added to the database
+        Params : 
+            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        addEquipmentRisk(savedAs){
+            if(!this.addSucces){
+                //Id of the equipment in which the risk will be added
+                var id;
+                //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
+                if(!this.modifMod){
+                        id=this.equipment_id_add
+                //else the user is in the update menu, we allocate to the id the value of the id get in the url
+                }else{
+                    id=this.equipment_id_update;
+                }
+                /*First post to verify if all the fields are filled correctly
+                Type, name, value, unit and validate option is sended to the controller*/
+                axios.post('/risk/verif',{
+                    risk_for:this.risk_for,
+                    risk_remarks:this.risk_remarks,
+                    risk_wayOfControl:this.risk_wayOfControl,
+                    risk_validate :savedAs,
+                })
+                .then(response =>{
+                    //Si ajoout equipement
+                    if(this.riskForEq==true){
+                        console.log("ajout dans la base equipement")
+                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
+                        "eq_id:",id,"\n","validate:",savedAs)
+
+                        /*If all the verif passed, a new post this time to add the risk in the data base
+                        Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
+                        axios.post('/equipment/add/risk',{
+                            risk_for:this.risk_for,
+                            risk_remarks:this.risk_remarks,
+                            risk_wayOfControl:this.risk_wayOfControl,
+                            risk_validate :savedAs,
+                            eq_id:id
+                    
+                        })
+                        //If the risk is added succesfuly
+                        .then(response =>{
+                            //If we the user is not in modifMod
+                            if(!this.modifMod){
+                                //The form pass in consulting mode and addSucces pass to True
+                                this.isInConsultedMod=true;
+                                this.addSucces=true
+                            }
+                            //the id of the risk take the value of the newlly created id
+                            this.risk_id=response.data;
+                            //The validate option of this risk take the value of savedAs(Params of the function)
+                            this.risk_validate=savedAs;
+                            
+                        })
+                        //If the controller sends errors we put it in the errors object 
+                        .catch(error => this.errors=error.response.data.errors) ;
+                    }else{
+                        console.log("ajout dans la base ope mtn prv");
+                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
+                        "eq_id:",id,"\n","validate:",savedAs,"\n","Ope id",this.prvMtnOp_id);
+                        /*If all the verif passed, a new post this time to add the risk in the data base
+                        Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
+                        
+                        axios.post("/equipment/add/prvMtnOp/risk",{
+                            risk_for:this.risk_for,
+                            risk_remarks:this.risk_remarks,
+                            risk_wayOfControl:this.risk_wayOfControl,
+                            risk_validate :savedAs,
+                            eq_id:id,
+                            prvMtnOp_id:this.prvMtnOp_id
+                    
+                        })
+                        //If the risk is added succesfuly
+                        .then(response =>{
+                            //If we the user is not in modifMod
+                            if(!this.modifMod){
+                                //The form pass in consulting mode and addSucces pass to True
+                                this.isInConsultedMod=true;
+                                this.addSucces=true
+                            }
+                            //the id of the risk take the value of the newlly created id
+                            this.risk_id=response.data;
+                            //The validate option of this risk take the value of savedAs(Params of the function)
+                            this.risk_validate=savedAs;
+                            
+                        })
+                        //If the controller sends errors we put it in the errors object 
+                        .catch(error => this.errors=error.response.data.errors) ;
+
+                    }
+
+                })
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+            }
+
+        },
+                /*Sending to the controller all the information about the equipment so that it can be updated in the database
+        Params : 
+            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        updateEquipmentRisk(savedAs){
+            /*First post to verify if all the fields are filled correctly
+                Type, name, value, unit and validate option is sended to the controller*/
+            axios.post('/risk/verif',{
+                    risk_for:this.risk_for,
+                    risk_remarks:this.risk_remarks,
+                    risk_wayOfControl:this.risk_wayOfControl,
+                    risk_validate :savedAs,
+                })
+                .then(response =>{
+                    if(this.riskForEq==true){
+                        console.log("update dans la base eq");
+                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
+                        "eq_id:",this.equipment_id_update,"\n","validate:",savedAs);
+                        
+                        /*If all the verif passed, a new post this time to add the risk in the data base
+                            Type, name, value, unit, validate option and id of the equipment is sended to the controller
+                            In the post url the id correspond to the id of the risk who will be update*/
+                        var consultUrl = (id) => `/equipment/update/risk/${id}`;
+                        axios.post(consultUrl(this.risk_id),{
+                            risk_for:this.risk_for,
+                            risk_remarks:this.risk_remarks,
+                            risk_wayOfControl:this.risk_wayOfControl,
+                            risk_validate :savedAs,
+                            eq_id:this.equipment_id_update,
+                        })
+                        .then(response =>{this.risk_validate=savedAs;})
+                        //If the controller sends errors we put it in the errors object 
+                        .catch(error => this.errors=error.response.data.errors) ;
+                    }else{
+                        console.log("update dans la base opé mtn ");
+                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
+                        "eq_id:",this.equipment_id_update,"\n","validate:",savedAs,"\n","Ope id",this.prvMtnOp_id);
+                        
+                        /*If all the verif passed, a new post this time to add the risk in the data base
+                            Type, name, value, unit, validate option and id of the equipment is sended to the controller
+                            In the post url the id correspond to the id of the risk who will be update*/
+                        var consultUrl = (id) => `/equipment/update/prvMtnOp/risk/${id}`;
+                        axios.post(consultUrl(this.risk_id),{
+                            risk_for:this.risk_for,
+                            risk_remarks:this.risk_remarks,
+                            risk_wayOfControl:this.risk_wayOfControl,
+                            risk_validate :savedAs,
+                            prvMtnOp_id:this.prvMtnOp_id,
+                            eq_id:this.equipment_id_update,
+                        })
+                        .then(response =>{this.risk_validate=savedAs;})
+                        //If the controller sends errors we put it in the errors object 
+                        .catch(error => this.errors=error.response.data.errors) ;
+
+                    }
+                })
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+        },
+
+        /*Clear all the error of the targeted field*/
+        clearError(event){
+            delete this.errors[event.target.name];
+        },
+                //Function for deleting a risk from the view and the database
+        deleteComponent(){
+            //Emit to the parent component that we want to delete this component
+            this.$emit('deleteRisk','')
+            //If the user is in update mode and the risk exist in the database
+            if(this.modifMod==true && this.risk_id!==null){
+                console.log("supression");
+                //Send a post request with the id of the risk who will be deleted in the url
+                var consultUrl = (id) => `/equipment/delete/risk/${id}`;
+                axios.post(consultUrl(this.risk_id),{
+                })
+                .then(response =>{})
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+
+            }
+            
+        }
+    }
+
+}
+</script>
+
+<style lang="scss">
+    .hr {
+        display: block;
+        flex: 1;
+        height: 3px;
+        background: #D4D4D4;
+    }
+    .titleForm{
+        padding-left: 10px;
+    }
+    form{
+        margin: 20px;
+        margin-bottom: 100px;
+    }
+</style>
