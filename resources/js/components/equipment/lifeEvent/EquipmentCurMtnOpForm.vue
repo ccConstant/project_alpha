@@ -234,6 +234,7 @@ export default {
                 })
                 .then(response =>{
                     console.log("update dans la base");
+                    console.log(response.data) ;
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
                         In the post url the id correspond to the id of the preventive maintenance operation who will be update*/

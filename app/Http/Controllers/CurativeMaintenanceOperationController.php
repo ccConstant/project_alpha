@@ -74,13 +74,13 @@ class CurativeMaintenanceOperationController extends Controller
                 ], 429);
             }
         }
-
         if ($request->reason=="add"){
+           // return response()->json($request->eq_id) ; 
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp_validate!="VALIDATED"){
+            if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
                 return response()->json([
                     'errors' => [
-                        'eqTemp_validate' => ["You can't add a curative maintenance operation while you have'nt finished to complete the Id card of the equipment"]
+                        'curMtnOp_validate' => ["You can't add a curative maintenance operation while you have'nt finished to complete the Id card of the equipment"]
                     ]
                 ], 429);
             }

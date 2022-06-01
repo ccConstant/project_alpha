@@ -69,11 +69,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         );
         $state=State::findOrFail($request->state_id) ; 
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
-        if ($state->startDate!='' && $prvMtnOp->prvMtnOp_startDate!=''){
+        /*if ($state->state_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=''){
             if ($prvMtnOp->prvMtnOp_startDate>$state->state_startDate){
                 return response()->json([
                     'errors' => [
-                        'operation_maintenance_preventive' => ["You can choose this preventive maintenance operation because the startDate of it it after the beginning of your state"]
+                        'prvMtnOpRlz_startDate' => ["You can choose this preventive maintenance operation because the startDate of it is after the beginning of your state"]
                     ]
                 ], 429);
             }
@@ -82,11 +82,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             if ($prvMtnOp->prvMtnOp_reformDate<$state->state_endDate){
                 return response()->json([
                     'errors' => [
-                        'operation_maintenance_preventive' => ["You can choose this preventive maintenance operation because the endDate of it it before the ending of your state"]
+                        'prvMtnOpRlz_endDate' => ["You can choose this preventive maintenance operation because the endDate of it is before the ending of your state"]
                     ]
                 ], 429);
             }
-        }
+        }*/
 
         if ($request->reason=="update"){
             $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
@@ -101,7 +101,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
 
         if ($request->reason=="add"){
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp_validate!="VALIDATED"){
+            if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
                 return response()->json([
                     'errors' => [
                         'eqTemp_validate' => ["You can't add a preventive maintenance operation realized while you have'nt finished to complete the Id card of the equipment"]
