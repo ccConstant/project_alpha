@@ -282,35 +282,64 @@ class PreventiveMaintenanceOperationController extends Controller
                     'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
                     'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
                     'prvMtnOp_startDate' => $prvMtnOpOld->prvMtnOp_startDate,
+                    'prvMtnOp_nextDate' => $prvMtnOpOld->prvMtnOp_nextDate,
                     'prvMtnOp_validate' => $request->prvMtnOp_validate,
                     'equipmentTemp_id' => $new_eqTemp->id,
                 ]) ;
+
+                if (($prvMtnOp->prvMtnOp_nextDate=='' || $prvMtnOp->prvMtnOp_nextDate==NULL) && $prvMtnOp->prvMtnOp_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=NULL){
                     
+                    $nextDate=NULL ; 
+                    $startDate=$prvMtnOp->prvMtnOp_startDate ; 
+                    if ($prvMtnOp->prvMtnOp_symbolPeriodicity!='' && $prvMtnOp->prvMtnOp_symbolPeriodicity!=NULL && $prvMtnOp->prvMtnOp_periodicity!='' && $prvMtnOp->prvMtnOp_periodicity!=NULL ){
+                        $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
+                        if ($request->prvMtnOp_symbolPeriodicity=='Y'){
+                            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+            
+                        if ($request->prvMtnOp_symbolPeriodicity=='M'){
+                            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+            
+                        if ($request->prvMtnOp_symbolPeriodicity=='D'){
+                            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+            
+                        if ($request->prvMtnOp_symbolPeriodicity=='H'){
+                            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+
+                        $prvMtnOp->update([
+                            'prvMtnOp_nextDate' => $nextDate,
+                        ]);
+                    }
+                }
+                
                 //Dédoubler les liens de eqTemps 
                 $DimController= new DimensionController() ; 
                 $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
 
                 $SpProcController= new SpecialProcessController() ; 
                 $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
             
+                $PowerController= new PowerController() ; 
+                $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
+
+                $FileController= new FileController() ; 
+                $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
+
+                $UsageController= new UsageController() ; 
+                $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
+
+                $StateController= new StateController() ; 
+                $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
+            
+                $RiskController= new RiskController() ; 
+                $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
+
+                $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
+                $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
+        
 
                 // In the other case, we can modify the informations without problems
             }else{
@@ -366,7 +395,7 @@ class PreventiveMaintenanceOperationController extends Controller
 
     public function send_prvMtnOp($id) {
         $container=array() ; 
-        $prvMtnOps=PreventiveMaintenanceOperation::where('id', '=', $id)->get() ; 
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
         $obj=([
             "id" => $prvMtnOp->id,
             "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <b-button v-b-modal.modal-1 @click="importFromDB">Import From</b-button>
-        <b-modal id="modal-1" title="Importation" hide-footer>
+        <b-button v-b-modal.modal-eq_add_import @click="importFromDB">Import From</b-button>
+        <b-modal id="modal-eq_add_import" title="Importation" hide-footer>
             <p class="my-4">Import from set : {{set}}</p>
             <div>
                 <div v-if="imported_eq_ref.length>0">
@@ -15,7 +15,7 @@
                     <p>Nothing to import From</p>
                 </div>
             </div>
-            <b-button class="mt-3" block @click="$bvModal.hide('modal-1')">Close</b-button>
+            <b-button class="mt-3" block @click="$bvModal.hide('modal-eq_add_import')">Close</b-button>
             <b-button class="mt-3" block @click="chooseEquipment">Choose</b-button>
         </b-modal>     
     </div>
@@ -47,7 +47,7 @@ export default {
             if(this.radio_value!=''){
                 this.$emit('choosedEq',this.radio_value)
             }
-            this.$bvModal.hide('modal-1')
+            this.$bvModal.hide('modal-eq_add_import')
             
         },
         importFromDB(){

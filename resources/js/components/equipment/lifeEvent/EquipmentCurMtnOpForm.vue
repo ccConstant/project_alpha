@@ -174,6 +174,7 @@ export default {
                     curMtnOp_startDate:this.selected_startDate,
                     curMtnOp_endDate:this.selected_endDate,
                     curMtnOp_validate :savedAs,
+                    reason:'add'
                 })
                 .then(response =>{
                     console.log("ajout dans la base")
@@ -225,6 +226,7 @@ export default {
                     curMtnOp_startDate:this.selected_startDate,
                     curMtnOp_endDate:this.selected_endDate,
                     curMtnOp_validate :savedAs,
+                    reason:'update'
                 })
                 .then(response =>{
                     console.log("update dans la base");

@@ -34,9 +34,15 @@ export default {
         var consultUrlPrvMtnOpRlz = (id) => `/state/prvMtnOpRlz/send/${id}`;
         axios.get(consultUrlPrvMtnOpRlz(this.state_id))
             .then (response=>{
-                console.log(response.data);
                 this.eq_prvMtnOpRlz=response.data
-
+                var consultUrlPrvMtnOp =(id) => `/prvMtnOp/send/${id}`;
+                axios.get(consultUrlPrvMtnOp(response.data[0].prvMtnOp_id))
+                .then (response=>{
+                    console.log(response.data);
+                    this.eq_prvMtnOpRlz[0].push(response.data);
+                    
+                })
+                .catch(error => console.log(error)) ;
                 
             })
             .catch(error => console.log(error)) ;
@@ -44,7 +50,6 @@ export default {
         var consultUrlCurMtnOp = (id) => `/state/curMtnOp/send/${id}`;
         axios.get(consultUrlCurMtnOp(this.state_id))
             .then (response=>{
-                console.log(response.data);
                 this.eq_curvMtnOp=response.data
                 this.loaded=true
             })

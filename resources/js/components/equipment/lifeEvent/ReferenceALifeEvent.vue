@@ -1,8 +1,9 @@
 <template>
     <div>
-        <RadioGroupForm label="What do you want to reference ?:" :options="referenceOption" :isDisabled="!!isInConsultMod" v-model="selected_reference"/> 
-        <ReferenceACurMtnOp v-if="selected_reference==false" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
-        <ReferenceAPrvMtnOpRlz v-if="selected_reference==true" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
+        <InputSelectForm selectClassName="form-select w-50" label="What do you want to reference ?:" :options="referenceOption" :isDisabled="!!isInConsultMod" v-model="selected_reference"/>
+        <!--<RadioGroupForm label="What do you want to reference ?:" :options="referenceOption" :isDisabled="!!isInConsultMod" v-model="selected_reference"/> -->
+        <ReferenceACurMtnOp v-if="selected_reference=='Curative Maintenance Operation'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
+        <ReferenceAPrvMtnOpRlz v-if="selected_reference=='Preventive Maintenance Operation'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
 
         <div v-if="isInConsultMod==true">
             <button type="button" @click="referenceAnother()">Reference another operation</button>
@@ -15,12 +16,14 @@
 import ReferenceACurMtnOp from './ReferenceACurMtnOp.vue'
 import ReferenceAPrvMtnOpRlz from './ReferenceAPrvMtnOpRlz.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
+import InputSelectForm from '../../input/InputSelectForm.vue'
 
 export default {
     components: {
         ReferenceACurMtnOp,
         ReferenceAPrvMtnOpRlz,
-        RadioGroupForm
+        RadioGroupForm,
+        InputSelectForm
         
     },
     data(){
@@ -30,8 +33,8 @@ export default {
             state_id:parseInt(this.$route.params.state_id),
             selected_reference:'',
             referenceOption :[
-                {id: 'Preventive Maintenance Operation', value:true},
-                {id : 'Curative Maintenance Operation', value:false}
+                {value:'Preventive Maintenance Operation'},
+                {value:'Curative Maintenance Operation'}
             ],
             isInConsultMod:false
         }

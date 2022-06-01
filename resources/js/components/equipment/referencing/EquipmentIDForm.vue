@@ -24,12 +24,12 @@
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference" name="eq_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod"  isRequired v-model="eq_internalReference"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference" name="eq_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  isRequired  v-model="eq_externalReference" />
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name" label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name" />
-            <InputSelectForm selectClassName="form-select w-50" :Errors="errors.eq_type"  name="eq_type" label="Type :" :options="enum_type" :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type"/>
+            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.eq_type"  name="eq_type" label="Type :" :options="enum_type" :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_serialNumber" name="eq_serialNumber" label="Equipment serial Number :" :isDisabled="!!isInConsultMod" v-model="eq_serialNumber" />
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_constructor" name="eq_constructor" label="Equipment constructor :" :isDisabled="!!isInConsultMod" v-model="eq_constructor" />
             <div class="input-group">
                 <InputNumberForm  inputClassName="form-control" :Errors="errors.eq_mass" name="eq_mass" label="Equipment mass :" :stepOfInput="0.01" v-model="eq_mass" :isDisabled="!!isInConsultMod" />
-                <InputSelectForm   name="eq_massUnit" :Errors="errors.eq_massUnit"  label="Unit :" :options="enum_massUnit" :selctedOption="eq_massUnit" :isDisabled="!!isInConsultMod" v-model="eq_massUnit"/>
+                <InputSelectForm @clearSelectError='clearSelectError' name="eq_massUnit" :Errors="errors.eq_massUnit"  label="Unit :" :options="enum_massUnit" :selctedOption="eq_massUnit" :isDisabled="!!isInConsultMod" v-model="eq_massUnit"/>
             </div>
             <RadioGroupForm label="Mobil?:" :options="eq_mobilityOption" :Errors="errors.eq_mobilityOption" :checkedOption="eq_mobility" :isDisabled="!!isInConsultMod" v-model="eq_mobility"/> 
             <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.eq_remarks" name="eq_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="eq_remarks"/>
@@ -224,6 +224,7 @@ export default {
                     reason:'add'
                 })
                 .then(response =>{
+                        this.errors={};
                         axios.post('/equipment/add',{
                             eq_internalReference : this.eq_internalReference, 
                             eq_externalReference : this.eq_externalReference,
@@ -269,7 +270,7 @@ export default {
                     reason:'update'
                 })
                 .then(response =>{
-                        console.log("update") ;
+                        this.errors={};
                         var consultUrl = (id) => `/equipment/update/${id}`;
                         axios.post(consultUrl(this.eq_id),{
                             eq_internalReference : this.eq_internalReference, 
@@ -285,7 +286,10 @@ export default {
                             eq_set : this.eq_set,
                             eq_validate : savedAs,
                         })
-                        .then(response => console.log(response.data))
+                        .then(response => {
+                            this.eq_validate=savedAs;
+
+                            })
                         .catch(error => this.errors=error.response.data.errors) ; 
                     })
                 .catch(error => this.errors=error.response.data.errors) ;
@@ -301,6 +305,13 @@ export default {
         importFrom(value){
             this.eq_importFrom=value.eq_internalReference;
             this.$emit('importFromEqID',value.id);
+        },
+        clearSelectError(value){
+            delete this.errors[value];
+        },
+        clearAllError(){
+            console.log("ERROR:",this.errors)
+            
         }
     }
 }

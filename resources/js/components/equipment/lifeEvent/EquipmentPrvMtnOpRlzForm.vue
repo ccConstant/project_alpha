@@ -181,7 +181,8 @@ export default {
                     prvMtnOpRlz_endDate:this.selected_endDate,
                     prvMtnOpRlz_validate :savedAs,
                     state_id:this.equipment_state_id,
-                    prvMtnOp_id:this.prvMtnOp_id
+                    prvMtnOp_id:this.prvMtnOp_id,
+                    reason:'add'
                 })
                 .then(response =>{
                     console.log("ajout dans la base")
@@ -233,7 +234,8 @@ export default {
                     prvMtnOpRlz_endDate:this.selected_endDate,
                     prvMtnOpRlz_validate :savedAs,
                     state_id:this.equipment_state_id,
-                    prvMtnOp_id:this.prvMtnOp_id
+                    prvMtnOp_id:this.prvMtnOp_id,
+                    reason:'update'
                 })
                 .then(response =>{
                     console.log("update dans la base");

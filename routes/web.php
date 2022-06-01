@@ -86,6 +86,10 @@ Route::get('/equipment/life_event/update/{id}', function () {
     return view('welcome');
 });
 
+Route::get('/equipment/maintenance/calendar', function () {
+    return view('welcome');
+});
+
 /* Equipment ID Form Routes */ 
 
 Route::get('/equipment/sets', [EquipmentController::class, 'send_sets'] ) ;

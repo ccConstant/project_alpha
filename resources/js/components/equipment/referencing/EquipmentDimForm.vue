@@ -14,11 +14,11 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container"  @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputSelectForm  selectClassName="form-select w-50" :Errors="errors.dim_type" name="dim_type" label="Dimension Type :" :options="enum_dim_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.dim_type" :selectedDivName="this.divClass" v-model="dim_type"/>
-            <InputSelectForm name="dim_name" label="Dimension name :" :Errors="errors.dim_name" :options="enum_dim_name" :selctedOption="this.dim_name" selectClassName="form-select w-50"   :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_name"/>
+            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.dim_type" name="dim_type" label="Dimension Type :" :options="enum_dim_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.dim_type" :selectedDivName="this.divClass" v-model="dim_type"/>
+            <InputSelectForm @clearSelectError='clearSelectError' name="dim_name" label="Dimension name :" :Errors="errors.dim_name" :options="enum_dim_name" :selctedOption="this.dim_name" selectClassName="form-select w-50"   :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_name"/>
             <div class="input-group">
                 <InputTextForm  inputClassName="form-control" :Errors="errors.dim_value" name="dim_value" label="Dimension value :" v-model="dim_value" :isDisabled="!!isInConsultedMod"/>
-                <InputSelectForm   name="dim_unit"  label="Unit :" :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_unit"/>
+                <InputSelectForm @clearSelectError='clearSelectError'  name="dim_unit"  label="Unit :" :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_unit"/>
             </div>
             <!--If addSucces is equal to false, the buttons appear -->
             <div v-if="this.addSucces==false ">
@@ -178,6 +178,7 @@ export default {
                     dim_validate :savedAs,
                 })
                 .then(response =>{
+                    this.errors={};
                     console.log("ajout dans la base")
                     console.log(this.dim_type,"\n",this.dim_name,"\n"
                     ,this.dim_value,"\n",this.dim_unit,"\n",savedAs,"\n ID:",id);
@@ -231,6 +232,7 @@ export default {
                     dim_validate :savedAs,
                 })
                 .then(response =>{
+                    this.errors={};
                     console.log("update dans la base")
                     console.log(this.dim_type,"\n",this.dim_name,"\n"
                     ,this.dim_value,"\n",this.dim_unit,"\n",savedAs,"\n",this.equipment_id_update,"\n",this.dim_id);
@@ -275,6 +277,9 @@ export default {
 
             }
             
+        },
+        clearSelectError(value){
+            delete this.errors[value];
         }
     },
     

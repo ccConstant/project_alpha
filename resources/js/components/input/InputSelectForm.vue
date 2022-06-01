@@ -18,7 +18,7 @@
         <!--Inputinfo component is called here, we send to him the help test initialized in a parent component if he is not equal to null-->
         <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
         <!--Initializing of the select with his props initialized in the parent compenant-->     
-        <select :class="[selectClassName, hasError(this.Errors)?'is-invalid':'']" :name="name" :disabled="!!isDisabled"
+        <select @change="clearError" :class="[selectClassName, hasError(this.Errors)?'is-invalid':'']" :name="name" :disabled="!!isDisabled"
          :required="!!isRequired" v-on:input="updateValue($event.target.value)">
             <option value="" selected>---Select---</option>
             <!--Options of the select, the for loop here is used to initialize them with an array of the differents value-->
@@ -144,7 +144,10 @@ export default {
         },
         hasError(errors){
             return(errors.length>0);
-        }
+        },
+        clearError(){
+            this.$emit('clearSelectError',this.name)
+        },
         
          
     }
