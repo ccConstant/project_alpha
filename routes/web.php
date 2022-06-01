@@ -108,6 +108,14 @@ Route::get('/equipment/{id}', [EquipmentController::class, 'send_equipment'] )->
 
 Route::get('/equipment/prvMtnOp/planning', [EquipmentController::class, 'send_eq_prvMtnOp_for_planning'] ) ;
 
+Route::get('/equipment/isAlreadyQualityValidated/{id}', [EquipmentController::class, 'isAlreadyQualityValidated'] ) ;
+
+Route::get('/equipment/isAlreadyTechnicalValidated/{id}', [EquipmentController::class, 'isAlreadyTechnicalValidated'] ) ;
+
+Route::post('/equipment/verifValidation/{id}', [EquipmentController::class, 'verif_validation'] ) ;
+
+Route::post('/equipment/validation/{id}', [EquipmentController::class, 'validation'] ) ;
+
 
 /* Dimension Form Routes */ 
 

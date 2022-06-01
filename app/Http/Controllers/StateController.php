@@ -414,25 +414,34 @@ class StateController extends Controller
 
 
     /**
-     * Function call by ?? with the route : /state/verif/beforeReferenceOp/{id} (post)
+     * Function call by ListOfEquipmentLifeEvent with the route : /state/verif/beforeReferenceOp/{id} (post)
      * Check if we can create a new state (the previous state is validated, it has a endDate...) 
      * The id parameter is the id of the actual state 
      * @return \Illuminate\Http\Response
      */
-    public function verif_before_reference_state($id){
+    public function verif_before_reference_op($id){
         $state=State::findOrFail($id) ; 
-        if ($state->state_validate!="Validated"){
+        $enumStateName=EnumStateName::findOrFail($state->enumStateName_id) ; 
+        if ($enumStateName->value=="LOST"){
             return response()->json([
                 'errors' => [
-                    'state_validate' => ["You must validate your state before add a new state"]
+                    'state_name' => ["You can't reference a maintenance operation during a lost state"]
                 ]
             ], 429);
+        }
 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_validate' => ["You can't add a maintenance operation while you have'nt finished to complete the Id card of the equipment"]
+                ]
+            ], 429);
         }
     }
 
     /**
-     * Function call by ????  with the route : /state/verif/beforeChangingState/{id} (post)
+     * Function call by ListOfEquipmentLifeEvent with the route : /state/verif/beforeChangingState/{id} (post)
      * Check if we can create a new state (the previous state is validated, it has a endDate...) 
      * The id parameter is the id of the actual state 
      * @return \Illuminate\Http\Response

@@ -62,16 +62,6 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             );
         }
-        $state=State::findOrFail($request->state_id) ; 
-        if ($request->reason=="add"){
-            if ($state->enumStateName_id->value=="LOST"){
-                return response()->json([
-                    'errors' => [
-                        'state_name' => ["You can't reference a preventive maintenance operation realized during a lost state"]
-                    ]
-                ], 429);
-            }
-        }
 
 
         if ($request->reason=="update"){
@@ -80,17 +70,6 @@ class CurativeMaintenanceOperationController extends Controller
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You can't update a curative maintenance operation already validated"]
-                    ]
-                ], 429);
-            }
-        }
-        if ($request->reason=="add"){
-           // return response()->json($request->eq_id) ; 
-            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You can't add a curative maintenance operation while you have'nt finished to complete the Id card of the equipment"]
                     ]
                 ], 429);
             }

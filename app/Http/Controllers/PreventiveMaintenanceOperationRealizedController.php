@@ -8,6 +8,7 @@ use App\Models\PreventiveMaintenanceOperationRealized ;
 use App\Models\EquipmentTemp ; 
 use App\Models\Equipment ; 
 use App\Models\State ; 
+use App\Models\EnumStateName ; 
 use App\Models\PreventiveMaintenanceOperation ; 
 use App\Http\Controllers\DimensionController ; 
 use App\Http\Controllers\PowerController ; 
@@ -88,15 +89,6 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             }
         }*/
 
-        if ($request->reason=="add"){
-            if ($state->enumStateName_id->value=="LOST"){
-                return response()->json([
-                    'errors' => [
-                        'state_name' => ["You can't reference a preventive maintenance operation realized during a lost state"]
-                    ]
-                ], 429);
-            }
-        }
 
         if ($request->reason=="update"){
             $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
@@ -104,17 +96,6 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 return response()->json([
                     'errors' => [
                         'prvMtnOpRlz_validate' => ["You can't update a preventive maintenance operation realized already validated"]
-                    ]
-                ], 429);
-            }
-        }
-
-        if ($request->reason=="add"){
-            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_validate' => ["You can't add a preventive maintenance operation realized while you have'nt finished to complete the Id card of the equipment"]
                     ]
                 ], 429);
             }

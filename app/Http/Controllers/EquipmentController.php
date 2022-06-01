@@ -208,6 +208,7 @@ class EquipmentController extends Controller{
     /**
      * Function call by EquipmentIDForm.vue when the form is submitted for check data with the route : /equipment/add (post)
      * Check the informations entered in the form and send the errors if it exists
+     * @return \Illuminate\Http\Response
      */
     public function verif_equipment(Request $request){
 
@@ -504,6 +505,11 @@ class EquipmentController extends Controller{
         }
     }
 
+     /**
+     * Function call by EquipmentMaintenanceCalendar.vue when the form is submitted with the route : /equipment/prvMtnOp/planning (post)
+     * Send all the equipments validated in the data base with the preventive maintenance operations linked
+     * @return \Illuminate\Http\Response
+     * */
     public function send_eq_prvMtnOp_for_planning(){
         $equipments=Equipment::all() ;
         $container=array() ; 
@@ -541,6 +547,143 @@ class EquipmentController extends Controller{
         }
         return response()->json($container) ;
     }
+
+       /**
+     * Function call by ListOfEquipment.vue when the form is submitted for update with the route : /equipment/isAlreadyQualityValidated/{id} (get)
+     * Tell if the equipment is already qualitatively validated or not
+     * The id parameter is the id of the equipment in which we want to know if it is validated or not
+     * @return \Illuminate\Http\Response
+     * */
+
+    public function isAlreadyQualityValidated($id){
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        return $mostRecentlyEqTmp->qualityVerifier_id!=NULL ; 
+    }
+
+
+
+       /**
+     * Function call by ListOfEquipment.vue  when the form is submitted for update with the route : /equipment/isAlreadyTechnicalValidated/{id} (get)
+     * Tell if the equipment is already technicaly validated or not
+     * The id parameter is the id of the equipment in which we want to know if it is validated of not
+     * @return \Illuminate\Http\Response
+     * */
+
+    public function isAlreadyTechnicalValidated($id){
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        return $mostRecentlyEqTmp->technicalVerifier_id!=NULL ; 
+    }
+
+    /**
+     * Function call by EquipmentConsult.vue when the form is submitted for update with the route : /equipment/verifValidation{id} (post)
+     * Tell if the equipment is ready to be validated
+     * The id parameter is the id of the equipment in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
+
+    public function verif_validation($id){
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment taht doesn't have a validated ID card"]
+                ]
+            ], 429);
+        }
+
+        if (count($mostRecentlyEqTmp->files)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment taht doesn't have at least one file"]
+                ]
+            ], 429);
+        }
+
+        if (count($mostRecentlyEqTmp->usages)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment taht doesn't have at least one usage"]
+                ]
+            ], 429);
+        }
+
+        if (count($mostRecentlyEqTmp->special_process)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment taht doesn't have one special process"]
+                ]
+            ], 429);
+        }
+
+        if (count($mostRecentlyEqTmp->risks)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment taht doesn't have at least one risk "]
+                ]
+            ], 429);
+        }
+
+        if (count($mostRecentlyEqTmp->preventive_maintenance_operations)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment taht doesn't have at least one preventive maintenance operations "]
+                ]
+            ], 429);
+        }
+
+        if (count($mostRecentlyEqTmp->states)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment taht doesn't have at least one state"]
+                ]
+            ], 429);
+        }
+    }
+
+    /**
+     * Function call by EquipmentConsult.vue when the form is submitted for update with the route : /equipment/validation (post)
+     * Tell if the equipment is ready to be validated
+     * The id parameter is the id of the equipment in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
+
+    public function validation(Request $request, $id){
+        $equipment=Equipment::findOrFail($id) ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        if ($request->reason=="technical"){
+            //RELIER LA PERSONNE 
+        }
+
+        if ($request->reason=="quality"){
+            //RELIER LA PERSONNE 
+        }
+
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier!=NULL){
+            $mostRecentlyEqTmp->lifeSheetCreated=true ; 
+
+            $state_id=NULL ;
+            $state= EnumStateName::where('value', '=', "WAITING_TO_BE_IN_USE")->first() ;
+            if ($state===NULL){
+                $state=EnumStateName::create([
+                    'value' => "WAITING_TO_BE_IN_USE", 
+                ]);
+            }
+            $state_id=$state->id ; 
+            
+            //Creation of a new state
+            $newState=State::create([
+                'state_remarks' => "This equipment has been validated",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_isOk' => true,
+                'state_validate' => "drafted",
+                'enumStateName_id' => $state_id
+            ]) ; 
+            
+        }
+    }
+
+
+
 }
 
 

@@ -497,18 +497,23 @@ class PreventiveMaintenanceOperationController extends Controller
     public function delete_prvMtnOp(Request $request, $id){
         $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $request->eq_id)->get() ; 
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
-        foreach($prvMtnOpsInEq as $prvMtnOpInEq){
-            if ($prvMtnOpInEq->prvMtnOp_number>$prvMtnOp->prvMtnOp_number){
-                $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ; 
-                $prvMtnOpInDB=PreventiveMaintenanceOperation::findOrFail($prvMtnOpInEq->id) ; 
-                $prvMtnOpInDB->update([
-                    'prvMtnOp_number' =>  $prvMtnOpInEq->prvMtnOp_number,
-                ]);
+        if (count($prvMtnOp->preventiveMaintenanceOperationRealizeds)==0){
+            foreach($prvMtnOpsInEq as $prvMtnOpInEq){
+                if ($prvMtnOpInEq->prvMtnOp_number>$prvMtnOp->prvMtnOp_number){
+                    $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ; 
+                    $prvMtnOpInDB=PreventiveMaintenanceOperation::findOrFail($prvMtnOpInEq->id) ; 
+                    $prvMtnOpInDB->update([
+                        'prvMtnOp_number' =>  $prvMtnOpInEq->prvMtnOp_number,
+                    ]);
+                }
+    
+    
             }
-
-
+            $prvMtnOp->delete() ; 
+        }else{
+            //AFFICHER ERREUR
+           // return response()->json($container) ;
         }
-        $prvMtnOp->delete() ; 
     }
 
 }
