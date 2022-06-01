@@ -419,7 +419,7 @@ class StateController extends Controller
      * The id parameter is the id of the actual state 
      * @return \Illuminate\Http\Response
      */
-    public function verif_before_reference_op($id){
+    public function verif_before_reference_op(Request $request, $id){
         $state=State::findOrFail($id) ; 
         $enumStateName=EnumStateName::findOrFail($state->enumStateName_id) ; 
         if ($enumStateName->value=="LOST"){
