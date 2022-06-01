@@ -384,8 +384,6 @@ class PreventiveMaintenanceOperationController extends Controller
         return response()->json($container) ;
     }
 
-    
-
 
     /**
      * Function call by ???  with the route : /prvMtnOp/send/validated/{id} (get)
@@ -393,10 +391,33 @@ class PreventiveMaintenanceOperationController extends Controller
      * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations VALIDATED
      * @return \Illuminate\Http\Response
      */
-    public function send_prvMtnOp_validated($id) {
+    public function send_prvMtnOp_from_eq_validated($id) {
         $container=array() ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "VALIDATED")->get() ; 
+
+       foreach ($prvMtnOps as $prvMtnOp) {
+           if ($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL){
+                $obj=([
+                    "id" => $prvMtnOp->id,
+                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                ]);
+                array_push($container,$obj);
+           }
+       }
+        return response()->json($container) ;
+    }
+
+    /**
+     * Function call by ???  with the route : /prvMtnOp/send/validated/ (get)
+     * Get all the preventive maintenance operations validated present in the data base 
+     * @return \Illuminate\Http\Response
+     */
+    public function send_all_prvMtnOp_validated() {
+        $container=array() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('prvMtnOp_validate', '=', "VALIDATED")->get() ; 
        foreach ($prvMtnOps as $prvMtnOp) {
            if ($prvMtnOp->prvMtnOp_reformDate!='' && $prvMtnOp->prvMtnOp_reformDate!=NULL){
                 $obj=([

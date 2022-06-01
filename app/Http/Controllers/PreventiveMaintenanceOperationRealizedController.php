@@ -139,11 +139,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             foreach ($prvMtnOpRlzs as $prvMtnOpRlz) {
                 $obj=([
                     "id" => $prvMtnOpRlz->id,
-                    "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOp_reportNumber,
-                    "prvMtnOpRlz_startDate" => $prvMtnOpRlz->prvMtnOp_startDate,
-                    "prvMtnOpRlz_endDate" => $prvMtnOpRlz->prvMtnOp_endDate,
-                    "prvMtnOpRlz_entryDate" => $prvMtnOpRlz->prvMtnOp_entryDate,
-                    "prvMtnOpRlz_validate" => $prvMtnOpRlz->prvMtnOp_validate,
+                    "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
+                    "prvMtnOpRlz_startDate" => $prvMtnOpRlz->prvMtnOpRlz_startDate,
+                    "prvMtnOpRlz_endDate" => $prvMtnOpRlz->prvMtnOpRlz_endDate,
+                    "prvMtnOpRlz_entryDate" => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
+                    "prvMtnOpRlz_validate" => $prvMtnOpRlz->prvMtnOpRlz_validate,
                     "prvMtnOp_id" => $prvMtnOpRlz->prvMtnOp_id,
                 ]);
                 array_push($container,$obj);

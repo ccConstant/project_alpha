@@ -34,8 +34,8 @@ return new class extends Migration
             $table->timestamp('prvMtnOp_nextDate') ->nullable(); 
             $table->timestamp('prvMtnOp_reformDate') ->nullable() ; 
             $table->enum('prvMtnOp_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']);  
-            $table->unsignedBigInteger('equipmentTemp_id') ->nullable();
-            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') ;
+            $table->unsignedBigInteger('equipmentTemp_id') ->nullable() ;
+            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') ->onDelete('cascade')  ;
             $table->timestamps();
         });
     }
