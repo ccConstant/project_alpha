@@ -425,7 +425,7 @@ class StateController extends Controller
         if ($enumStateName->value=="LOST"){
             return response()->json([
                 'errors' => [
-                    'state_name' => ["You can't reference a maintenance operation during a lost state"]
+                    'verif_reference' => ["You can't reference a maintenance operation during a lost state"]
                 ]
             ], 429);
         }
@@ -434,7 +434,7 @@ class StateController extends Controller
         if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
             return response()->json([
                 'errors' => [
-                    'curMtnOp_validate' => ["You can't add a maintenance operation while you have'nt finished to complete the Id card of the equipment"]
+                    'verif_reference' => ["You can't add a maintenance operation while you have'nt finished to complete the Id card of the equipment"]
                 ]
             ], 429);
         }

@@ -37,16 +37,16 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::create([
             'prvMtnOpRlz_reportNumber' => $request->prvMtnOpRlz_reportNumber,
             'prvMtnOpRlz_validate' => $request->prvMtnOpRlz_validate,
-            'prvMtnOpRlz_startDate' => $state->state_startDate,
-            'prvMtnOpRlz_endDate' => $state->state_endDate,
+            'prvMtnOpRlz_startDate' => $request->state_startDate,
+            'prvMtnOpRlz_endDate' => $request->state_endDate,
             'prvMtnOpRlz_entryDate' => Carbon::now('Europe/Paris'),
             'state_id' => $request->state_id,
             'prvMtnOp_id' => $request->prvMtnOp_id,
 
-        ]) ; /*
+        ]) ; 
 
         $prvMtnOpRlz_id=$prvMtnOpRlz->id;
-        return response()->json($prvMtnOpRlz_id) ;*/
+        return response()->json($prvMtnOpRlz_id) ;
     }
 
 
@@ -70,7 +70,16 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         );
         $state=State::findOrFail($request->state_id) ; 
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
-        /*if ($state->state_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=''){
+        
+        if ($request->reason=="add"){
+
+        }
+
+
+        if ($request->reason=="update"){
+            
+        }
+        if ($state->state_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=''){
             if ($prvMtnOp->prvMtnOp_startDate>$state->state_startDate){
                 return response()->json([
                     'errors' => [
@@ -83,11 +92,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             if ($prvMtnOp->prvMtnOp_reformDate<$state->state_endDate){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOpRlz_endDate' => ["You can choose this preventive maintenance operation because the endDate of it is before the ending of your state"]
+                        'prvMtnOpRlz_endDate' => ["You can choose this preventive maintenance operation because the reformDate of it is before the ending of your state"]
                     ]
                 ], 429);
             }
-        }*/
+        }
 
 
         if ($request->reason=="update"){
@@ -96,6 +105,26 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 return response()->json([
                     'errors' => [
                         'prvMtnOpRlz_validate' => ["You can't update a preventive maintenance operation realized already validated"]
+                    ]
+                ], 429);
+            }
+        }
+
+
+        if ($state->state_startDate!='' && $request->prvMtnOpRlz_startDate!='' && $state->state_endDate!=''){
+            if ($request->prvMtnOpRlz_startDate<$state->state_startDate || $request->prvMtnOpRlz_startDate>$state->state_endDate){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOpRlz_startDate' => ["You can't entered this startDate because it must be between the startDate and the endDate of the state"]
+                    ]
+                ], 429);
+            }
+        }
+        if ($state->state_startDate!='' && $request->prvMtnOpRlz_endDate!='' && $state->state_endDate!=''){
+            if ($prvMtnOp->prvMtnOp_reformDate<$state->state_endDate){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOpRlz_endDate' => ["You can choose this preventive maintenance operation because the reformDate of it is before the ending of your state"]
                     ]
                 ], 429);
             }
@@ -123,7 +152,15 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * */
     public function delete_prvMtnOpRlz($id){
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id);
-        $prvMtnOpRlz->delete() ; 
+        if ($prvMtnOpRlz->prvMtnOpRlz_validate=='VALIDATED'){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOpRlz_delete' => ["You can delete a preventive maintenance operation realized validated"]
+                ]
+            ], 429);
+        }else{
+            $prvMtnOpRlz->delete() ; 
+        }
     }
 
     /**

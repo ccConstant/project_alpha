@@ -133,8 +133,17 @@ class CurativeMaintenanceOperationController extends Controller
      * */
     public function delete_prvMtnOpRlz($id){
         $curMtnOp=CurativeMaintenanceOperation::findOrFail($id);
-        $curMtnOp->delete() ; 
+        if ($curMtnOp->curMtnOp_validate=='VALIDATED'){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_delete' => ["You can delete a curative maintenance operation validated"]
+                ]
+            ], 429);
+        }else{
+            $curMtnOp->delete() ; 
+        }
     }
+
 
      /**
      * Function call by ReferenceACurMtnOp.vue with the route : /state/curMtnOp/send/{id}(get)
