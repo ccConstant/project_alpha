@@ -62,6 +62,16 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             );
         }
+        $state=State::findOrFail($request->state_id) ; 
+        if ($request->reason=="add"){
+            if ($state->enumStateName_id->value=="LOST"){
+                return response()->json([
+                    'errors' => [
+                        'state_name' => ["You can't reference a preventive maintenance operation realized during a lost state"]
+                    ]
+                ], 429);
+            }
+        }
 
 
         if ($request->reason=="update"){

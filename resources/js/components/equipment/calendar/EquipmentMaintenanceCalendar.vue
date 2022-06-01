@@ -41,7 +41,7 @@ export default {
                 },
                 eventClick:this.handleEventClick,
                 dateClick:this.handleDateClick,
-                events:[]
+                events:[],
             },
             prvMtnOp:[]
             
@@ -50,9 +50,12 @@ export default {
     },
     methods: {
         handleEventClick(arg) {
-            this.prvMtnOp.push({eq_internalReference:arg.event.title, prvMtnOp_number:arg.event.extendedProps.number,
+            this.$nextTick(() => {
+                this.prvMtnOp.push({eq_internalReference:arg.event.title, prvMtnOp_number:arg.event.extendedProps.number,
                  prvMtnOp_description:arg.event.extendedProps.description,prvMtnOp_protocol:arg.event.extendedProps.protocol });
-            this.$refs.event_details.$bvModal.show('modal-event_details');
+                this.$refs.event_details.$bvModal.show('modal-event_details');
+            })
+
             
 
         },
@@ -61,14 +64,14 @@ export default {
         }
     },
     created(){
-        var consultUrlPrvMtnOp = (id) => `/prvMtnOps/send/${id}`;
-        axios.get(consultUrlPrvMtnOp(1))
+        axios.get('/equipment/prvMtnOp/planning')
             .then (response=>{
                 for (const data of response.data) {
-                    this.calendarOptions.events.push({title:'Equipement 1',date:data.prvMtnOp_nextDate,number:data.prvMtnOp_number,id:data.id,
-                        description:data.description,protocol:data.prvMtnOp_protocol})
+                    for(const operation of data.preventive_maintenance_operations){
+                        this.calendarOptions.events.push({title:data.internalReference,date:operation.prvMtnOp_nextDate,number:operation.prvMtnOp_number,id:operation.id,
+                            description:operation.prvMtnOp_description,protocol:operation.prvMtnOp_protocol})
+                    }
                 }
-
             })
             .catch(error => console.log(error)) ;
     }

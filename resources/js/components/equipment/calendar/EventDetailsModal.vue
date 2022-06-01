@@ -7,7 +7,7 @@
                         <b-card>
                             <h3>{{option.eq_internalReference}}</h3>
                             <p class="card-text">
-                                Number: {{option.prvMtnOp_description}}<br>
+                                Number: {{option.prvMtnOp_number}}<br>
                                 Description : {{option.prvMtnOp_description}}<br>
                                 Protocol : {{option.prvMtnOp_protocol}}
                             </p>

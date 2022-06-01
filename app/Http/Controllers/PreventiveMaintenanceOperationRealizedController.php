@@ -88,6 +88,16 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             }
         }*/
 
+        if ($request->reason=="add"){
+            if ($state->enumStateName_id->value=="LOST"){
+                return response()->json([
+                    'errors' => [
+                        'state_name' => ["You can't reference a preventive maintenance operation realized during a lost state"]
+                    ]
+                ], 429);
+            }
+        }
+
         if ($request->reason=="update"){
             $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
             if ($prvMtnOpRlz->prvMtnOpRlz_validate=="VALIDATED"){
@@ -104,7 +114,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
                 return response()->json([
                     'errors' => [
-                        'eqTemp_validate' => ["You can't add a preventive maintenance operation realized while you have'nt finished to complete the Id card of the equipment"]
+                        'prvMtnOpRlz_validate' => ["You can't add a preventive maintenance operation realized while you have'nt finished to complete the Id card of the equipment"]
                     ]
                 ], 429);
             }

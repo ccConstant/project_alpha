@@ -4,7 +4,7 @@
             <b-button v-b-modal.modal-1>Choose a preventive maintenance operation to realize</b-button>
         </div>
         <div v-else>
-            <b-button v-b-modal.modal-1 disabled>Please inform preventive maintenance operation before realizing one</b-button>
+            <b-button v-b-modal.modal-1 disabled>Please inform or validate preventive maintenance operation before realizing one </b-button>
         </div>
         <b-modal id="modal-1" title="Importation" hide-footer>
             <div>

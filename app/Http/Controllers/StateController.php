@@ -71,49 +71,6 @@ class StateController extends Controller
                     ]
                 ], 429);
             }
-            if ($request->state_startDate!='' && $request->state_endDate!=''){
-                if ($request->state_endDate < $request->state_startDate){
-                    return response()->json([
-                        'errors' => [
-                            'state_endDate' => ["You must entered a startDate that is before endDate"]
-                        ]
-                    ], 429);
-    
-                }
-            }
-
-            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-            $states=$mostRecentlyEqTmp->states;
-            if ($states!=NULL){
-                $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
-                foreach($states as $state){
-                    $date=$state->created_at ; 
-                    $date2=$mostRecentlyState->created_at;
-                   if ($date>=$date2){
-                         $mostRecentlyState=$state ; 
-                    }
-                }
-                if ($request->state_startDate<$mostRecentlyState->state_startDate){
-                    return response()->json([
-                        'errors' => [
-                            'state_startDate' => ["You must entered a startDate that is after the previous state"]
-                        ]
-                    ], 429);
-                }
-    
-                if ($request->state_endDate<$mostRecentlyState->state_endDate){
-                    return response()->json([
-                        'errors' => [
-                            'state_startDate' => ["You must entered a endDate that is after the previous state"]
-                        ]
-                    ], 429);
-                }
-    
-    
-    
-    
-    
-            }
         }
         $this->validate(
             $request,
@@ -138,10 +95,45 @@ class StateController extends Controller
             ], 429);
         }
 
+        /*if ($request->state_startDate!='' && $request->state_endDate!=''){
+            if ($request->state_endDate < $request->state_startDate){
+                return response()->json([
+                    'errors' => [
+                        'state_endDate' => ["You must entered a startDate that is before endDate"]
+                    ]
+                ], 429);
 
+            }
+        }*/
 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        $states=$mostRecentlyEqTmp->states;
+        if ($states!=NULL){
+            $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ; 
+                $date2=$mostRecentlyState->created_at;
+               if ($date>=$date2){
+                     $mostRecentlyState=$state ; 
+                }
+            }
 
-        
+           /* if ($request->state_startDate!='' && $request->state_startDate<$mostRecentlyState->state_startDate && $request->state_id){
+                return response()->json([
+                    'errors' => [
+                        'state_startDate' => ["You must entered a startDate that is after the previous state"]
+                    ]
+                ], 429);
+            }
+    
+            if ($request->state_endDate!='' && $request->state_endDate<$mostRecentlyState->state_endDate){
+                return response()->json([
+                    'errors' => [
+                        'state_startDate' => ["You must entered a endDate that is after the previous state"]
+                    ]
+                ], 429);
+            }*/
+        }
     }
 
     /**

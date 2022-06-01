@@ -13,7 +13,7 @@
             <label v-for="(option,index) in options " :key="index">
                 <!--Initializing of the radio type input with his props initialized in the parent compenant-->
                 <input type="radio" name="radio-input" :value="option.value" :id="option.id" 
-                 :required="!!isRequired" :disabled="!!isDisabled" @change="$emit('input', option.value)" />
+                 :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)" />
                 {{ option.id }}
             </label>
         </div>
@@ -69,7 +69,11 @@ export default {
     methods: {
         hasError(errors){
             return(errors.length>0);
-        } 
+        },
+        emitAndClear(value){
+            this.$emit('input',value);
+            this.$emit('clearRadioError','');
+        }
     }
 
 }

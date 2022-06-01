@@ -14,7 +14,7 @@
     <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container"  @keydown="clearError">
             <!--Call of the different component with their props-->
-            <RadioGroupForm label="Exist?:" :options="existOption" :Errors="errors.spProc_exist"  :checkedOption="spProc_exist" :isDisabled="!!isInConsultedMod" v-model="spProc_exist"/>
+            <RadioGroupForm @clearRadioError="clearRadioError" label="Exist?:" :options="existOption" :Errors="errors.spProc_exist"  :checkedOption="spProc_exist" :isDisabled="!!isInConsultedMod" v-model="spProc_exist"/>
             <InputTextForm v-if="this.spProc_exist==true" inputClassName="form-control w-50" :Errors="errors.spProc_name" name="spProc_name" label="Precaution name :" v-model="spProc_name" :isDisabled="!!isInConsultedMod"/>
             <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.spProc_remarksOrPrecaution" name="spProc_remarksOrPrecaution" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="spProc_remarksOrPrecaution"/>
             
@@ -218,6 +218,9 @@ export default {
         /*Clear all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
+        },
+        clearRadioError(){
+            //delete this.errors[spProc_exist]
         }
     },
     
