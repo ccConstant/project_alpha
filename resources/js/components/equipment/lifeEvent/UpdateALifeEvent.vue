@@ -4,8 +4,9 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true">
-            <ReferenceACurMtnOp  :importedCurMtnOp="eq_curvMtnOp" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
-            <ReferenceAPrvMtnOpRlz  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
+            <ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
+            <ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curvMtnOp" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
+
             
         </div>
     </div>
@@ -35,15 +36,6 @@ export default {
         axios.get(consultUrlPrvMtnOpRlz(this.state_id))
             .then (response=>{
                 this.eq_prvMtnOpRlz=response.data
-                var consultUrlPrvMtnOp =(id) => `/prvMtnOp/send/${id}`;
-                axios.get(consultUrlPrvMtnOp(response.data[0].prvMtnOp_id))
-                .then (response=>{
-                    console.log(response.data);
-                    this.eq_prvMtnOpRlz[0].push(response.data);
-                    
-                })
-                .catch(error => console.log(error)) ;
-                
             })
             .catch(error => console.log(error)) ;
 

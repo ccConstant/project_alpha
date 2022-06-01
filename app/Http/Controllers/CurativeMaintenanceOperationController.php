@@ -63,12 +63,24 @@ class CurativeMaintenanceOperationController extends Controller
             );
         }
 
+
         if ($request->reason=="update"){
             $curMtnOp=CurativeMaintenanceOperation::FindOrFail($request->curMtnOp_id ) ;
             if ($curMtnOp->curMtnOp_validate=="VALIDATED"){
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You can't update a curative maintenance operation already validated"]
+                    ]
+                ], 429);
+            }
+        }
+
+        if ($request->reason=="add"){
+            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+            if ($mostRecentlyEqTmp_validate!="VALIDATED"){
+                return response()->json([
+                    'errors' => [
+                        'eqTemp_validate' => ["You can't add a curative maintenance operation while you have'nt finished to complete the Id card of the equipment"]
                     ]
                 ], 429);
             }

@@ -5,7 +5,9 @@
         </div>
         <div v-if="loaded==true">
             <UpdateState :consultMod="true"/>
-            <ReferenceACurMtnOp :importedCurMtnOp="eq_curMtnOp" consultMod/>
+            <ReferenceAPrvMtnOpRlz v-if="eq_prvMtnOpRlz.length>0" :importedPrvMtnOpRlz="eq_prvMtnOpRlz" consultMod/>
+            <ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curMtnOp" consultMod/>
+
         </div>
 
   </div>
@@ -14,21 +16,31 @@
 <script>
 import UpdateState from './UpdateState.vue'
 import ReferenceACurMtnOp from './ReferenceACurMtnOp.vue'
+import ReferenceAPrvMtnOpRlz from './ReferenceAPrvMtnOpRlz.vue'
 
 export default {
     components:{
         UpdateState,
-        ReferenceACurMtnOp
+        ReferenceACurMtnOp,
+        ReferenceAPrvMtnOpRlz
 
     },
     data(){
         return{
             state_id:this.$route.params.state_id,
             eq_curMtnOp:null,
+            eq_prvMtnOpRlz:null,
             loaded:false
         }
     },
     created(){
+        var consultUrlPrvMtnOpRlz = (id) => `/state/prvMtnOpRlz/send/${id}`;
+        axios.get(consultUrlPrvMtnOpRlz(this.state_id))
+            .then (response=>{
+                this.eq_prvMtnOpRlz=response.data
+            })
+            .catch(error => console.log(error)) ;
+
         var consultUrlCurMtnOp = (id) => `/state/curMtnOp/send/${id}`;
         axios.get(consultUrlCurMtnOp(this.state_id))
             .then (response=>{

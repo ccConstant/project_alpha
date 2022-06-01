@@ -239,6 +239,7 @@ export default {
         updateEquipmentPrvMtnOp(savedAs){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
+            console.log("update dans la base");
             axios.post('/prvMtnOp/verif',{
                     prvMtnOp_description:this.prvMtnOp_description,
                     prvMtnOp_periodicity:this.prvMtnOp_periodicity,

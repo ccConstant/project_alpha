@@ -98,6 +98,17 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ], 429);
             }
         }
+
+        if ($request->reason=="add"){
+            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+            if ($mostRecentlyEqTmp_validate!="VALIDATED"){
+                return response()->json([
+                    'errors' => [
+                        'eqTemp_validate' => ["You can't add a preventive maintenance operation realized while you have'nt finished to complete the Id card of the equipment"]
+                    ]
+                ], 429);
+            }
+        }
     }
 
     /**
@@ -137,6 +148,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         if (count($state->preventive_maintenance_operation_realizeds)>0){
             $prvMtnOpRlzs=$state->preventive_maintenance_operation_realizeds ; 
             foreach ($prvMtnOpRlzs as $prvMtnOpRlz) {
+                $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
                 $obj=([
                     "id" => $prvMtnOpRlz->id,
                     "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
@@ -145,7 +157,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                     "prvMtnOpRlz_entryDate" => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
                     "prvMtnOpRlz_validate" => $prvMtnOpRlz->prvMtnOpRlz_validate,
                     "prvMtnOp_id" => $prvMtnOpRlz->prvMtnOp_id,
+                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number, 
+                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description, 
+                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol, 
                 ]);
+
                 array_push($container,$obj);
             }
         }

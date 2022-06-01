@@ -31,8 +31,13 @@
                 <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
                 <div v-if="saveAll!==true">
                     <p >Actually saved as : {{savedAs}}</p>
+                            <div v-if="hasError(this.Errors)" class="error_savebutton">
+                                <p>{{this.Errors[0]}}</p>
+                            </div>
                 </div>
+               
         </div>
+
     </div>
 </template>
 
@@ -50,6 +55,10 @@ export default {
         },
         saveAll:{
             type:Boolean
+        },
+        Errors:{
+            type:Array,
+            default: () => ([])
         }
     },
     methods:{
@@ -64,6 +73,9 @@ export default {
         },
         update(e){
             this.$emit('update',e.target.value)
+        },
+        hasError(errors){
+            return(errors.length>0);
         }
     }
 
@@ -73,6 +85,12 @@ export default {
 <style lang="scss">
     .save_button{
         padding-top: 10px;
+    };
+    .error_savebutton{
+        p{
+            color:red
+        }
     }
+
 
 </style>

@@ -290,22 +290,22 @@ class PreventiveMaintenanceOperationController extends Controller
                 if (($prvMtnOp->prvMtnOp_nextDate=='' || $prvMtnOp->prvMtnOp_nextDate==NULL) && $prvMtnOp->prvMtnOp_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=NULL){
                     
                     $nextDate=NULL ; 
-                    $startDate=$prvMtnOp->prvMtnOp_startDate ; 
+                    $startDate=Carbon::now('Europe/Paris');
                     if ($prvMtnOp->prvMtnOp_symbolPeriodicity!='' && $prvMtnOp->prvMtnOp_symbolPeriodicity!=NULL && $prvMtnOp->prvMtnOp_periodicity!='' && $prvMtnOp->prvMtnOp_periodicity!=NULL ){
                         $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
-                        if ($request->prvMtnOp_symbolPeriodicity=='Y'){
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
                             $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
                         }
             
-                        if ($request->prvMtnOp_symbolPeriodicity=='M'){
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
                             $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
                         }
-            
-                        if ($request->prvMtnOp_symbolPeriodicity=='D'){
+                        
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
                             $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
                         }
             
-                        if ($request->prvMtnOp_symbolPeriodicity=='H'){
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
                             $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
                         }
 
@@ -352,6 +352,34 @@ class PreventiveMaintenanceOperationController extends Controller
                     'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
                     'prvMtnOp_validate' => $request->prvMtnOp_validate,
                 ]) ;
+
+                if (($prvMtnOp->prvMtnOp_nextDate=='' || $prvMtnOp->prvMtnOp_nextDate==NULL) && $prvMtnOp->prvMtnOp_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=NULL){
+                    
+                    $nextDate=NULL ; 
+                    $startDate=Carbon::now('Europe/Paris');
+                    if ($prvMtnOp->prvMtnOp_symbolPeriodicity!='' && $prvMtnOp->prvMtnOp_symbolPeriodicity!=NULL && $prvMtnOp->prvMtnOp_periodicity!='' && $prvMtnOp->prvMtnOp_periodicity!=NULL ){
+                        $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
+                            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+            
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
+                            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+                        
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
+                            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+            
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
+                            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+
+                        $prvMtnOp->update([
+                            'prvMtnOp_nextDate' => $nextDate,
+                        ]);
+                    }
+                }
             }
         }
     }
@@ -444,11 +472,11 @@ class PreventiveMaintenanceOperationController extends Controller
      * Get all the preventive maintenance operations validated present in the data base 
      * @return \Illuminate\Http\Response
      */
-    public function send_all_prvMtnOp_validated() {
+   /* public function send_all_prvMtnOp_validated() {
         $container=array() ; 
         $prvMtnOps=PreventiveMaintenanceOperation::where('prvMtnOp_validate', '=', "VALIDATED")->get() ; 
        foreach ($prvMtnOps as $prvMtnOp) {
-           if ($prvMtnOp->prvMtnOp_reformDate!='' && $prvMtnOp->prvMtnOp_reformDate!=NULL){
+           if ($prvMtnOp->prvMtnOp_reformDate=='' && $prvMtnOp->prvMtnOp_reformDate==NULL){
                 $obj=([
                     "id" => $prvMtnOp->id,
                     "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -459,7 +487,7 @@ class PreventiveMaintenanceOperationController extends Controller
            }
        }
         return response()->json($container) ;
-    }
+    }*/
 
     /**
      * Function call by EquipmentPrvMtnOpForm.vue when we want to delete a dimension with the route : /equipment/delete/prvMtnOp/{id}(post)

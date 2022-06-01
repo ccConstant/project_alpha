@@ -8,7 +8,8 @@
         <EquipmentPrvMtnOpRlzForm ref="ask_prvMtnOpRlz_data" v-for="(component, key) in components" :key="component.key"
             :is="component.comp" :number="component.number"
             :reportNumber="component.reportNumber" :startDate="component.startDate" :endDate="component.endDate"
-            :divClass="component.className" :id="component.id" :state_id="data_state_id"
+            :divClass="component.className" :id="component.id" :state_id="data_state_id" :prvMtnOp_id_prop="component.prvMtnOp_id"
+            :prvMtnOp_description_prop="component.prvMtnOp_description" :prvMtnOp_number_prop="component.prvMtnOp_number" :prvMtnOp_protocol_prop="component.prvMtnOp_protocol"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"
             @deletePrvMtnOpRlz="getContent(key)" @addSucces="addSucces()" />
     
@@ -67,7 +68,9 @@ export default {
             });
         },
 
-        addImportedComponent(prvMtnOpRlz_number,prvMtnOpRlz_reportNumber,prvMtnOpRlz_startDate,prvMtnOpRlz_endDate,prvMtnOpRlz_validate,prvMtnOpRlz_className,id) {
+        addImportedComponent(prvMtnOpRlz_number,prvMtnOpRlz_reportNumber,prvMtnOpRlz_startDate,
+        prvMtnOpRlz_endDate,prvMtnOpRlz_validate,prvMtnOpRlz_className,id,
+        prvMtnOp_id,prvMtnOp_description,prvMtnOp_number,prvMtnOp_protocol) {
             this.components.push({
                 comp:'EquipmentPrvMtnOpRlzForm',
                 key : this.uniqueKey++,
@@ -77,7 +80,11 @@ export default {
                 endDate:prvMtnOpRlz_endDate,
                 className:prvMtnOpRlz_className,
                 validate:prvMtnOpRlz_validate,
-                id:id
+                id:id,
+                prvMtnOp_id:prvMtnOp_id,
+                prvMtnOp_description:prvMtnOp_description,
+                prvMtnOp_number:prvMtnOp_number,
+                prvMtnOp_protocol:prvMtnOp_protocol
             });
         },
         //Suppresion of a preventive maintenance operation component from the vue
@@ -89,7 +96,8 @@ export default {
             for (const prvMtnOpRlz of this.prvMtnOpsRlz) {
                 var className="importedPrvMtnOpRlz"+prvMtnOpRlz.id
                 this.addImportedComponent(prvMtnOpRlz.prvMtnOpRlz_number,prvMtnOpRlz.prvMtnOpRlz_reportNumber,prvMtnOpRlz.prvMtnOpRlz_startDate,
-                    prvMtnOpRlz.prvMtnOpRlz_endDate,prvMtnOpRlz.prvMtnOpRlz_validate,className,prvMtnOpRlz.id);
+                    prvMtnOpRlz.prvMtnOpRlz_endDate,prvMtnOpRlz.prvMtnOpRlz_validate,className,prvMtnOpRlz.id,
+                    prvMtnOpRlz.prvMtnOp_id,prvMtnOpRlz.prvMtnOp_description,prvMtnOpRlz.prvMtnOp_number,prvMtnOpRlz.prvMtnOp_protocol);
             }
             this.prvMtnOpsRlz=null
         },

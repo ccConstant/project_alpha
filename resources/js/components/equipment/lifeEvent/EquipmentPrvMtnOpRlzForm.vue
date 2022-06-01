@@ -6,8 +6,8 @@
         <div v-if="loaded==true">
             <form class="container prvMtnOpRlz-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <PrvMtnOpChooseModal :prvMtnOps="prvMtnOps" @choosedOpe="choosedOpe"/>
-                <div v-if="prvMtnOp_number!==null">
+                <PrvMtnOpChooseModal v-if="isInModifMod==false && isInConsultMod==false" :prvMtnOps="prvMtnOps" @choosedOpe="choosedOpe"/>
+                <div v-if="prvMtnOp_number!==null  ">
                     <InputTextForm inputClassName="form-control w-50"  name="prvMtnOp_number" label="Number :" isDisabled  isRequired v-model="prvMtnOp_number"/>
                     <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_description" label="Description :" isDisabled  isRequired v-model="prvMtnOp_description"/>
                     <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_protocol" label="Protocol :" isDisabled  isRequired v-model="prvMtnOp_protocol"/>
@@ -28,10 +28,10 @@
                     <div v-if="this.addSucces==false">
                         <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOpRlzMtnOp is called function else the updateEquipmentPrvMtnOpRlz function is called -->
                         <div v-if="this.prvMtnOpRlz_id==null ">
-                            <SaveButtonForm @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :savedAs="prvMtnOpRlz_validate"/>
+                            <SaveButtonForm :Errors="errors.prvMtnOpRlz_validate" @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :savedAs="prvMtnOpRlz_validate"/>
                         </div>
                         <div v-else-if="this.prvMtnOpRlz_id!==null">
-                            <SaveButtonForm  @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="prvMtnOpRlz_validate"/>
+                            <SaveButtonForm :Errors="errors.prvMtnOpRlz_validate"  @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="prvMtnOpRlz_validate"/>
                         </div>
                         <!-- If the user is not in the consultation mode, the delete button appear -->
                         <div v-if="isInModifMod==true">
@@ -112,12 +112,27 @@ export default {
         },
         state_id:{
             type:Number
+        },
+        prvMtnOp_number_prop:{
+            type:String,
+            default:null
+        },
+        prvMtnOp_description_prop:{
+            type:String,
+            default:null
+        },
+        prvMtnOp_protocol_prop:{
+            type:String,
+            default:null
+        },
+        prvMtnOp_id_prop:{
+            type:Number,
+            default:null
         }
 
     },
     data(){
         return{
-            prvMtnOpRlz_number:this.number,
             prvMtnOpRlz_reportNumber:this.reportNumber,
             selected_startDate:this.startDate,
             selected_endDate:this.endDate,
@@ -134,10 +149,10 @@ export default {
             isInConsultMod:this.consultMod,
             isInModifMod:this.modifMod,
             loaded:false,
-            prvMtnOp_number:null,
-            prvMtnOp_description:null,
-            prvMtnOp_protocol:null,
-            prvMtnOp_id:null
+            prvMtnOp_number:this.prvMtnOp_number_prop,
+            prvMtnOp_description:this.prvMtnOp_description_prop,
+            prvMtnOp_protocol:this.prvMtnOp_protocol_prop,
+            prvMtnOp_id:this.prvMtnOp_id_prop
 
         }
     },
@@ -182,6 +197,7 @@ export default {
                     prvMtnOpRlz_validate :savedAs,
                     state_id:this.equipment_state_id,
                     prvMtnOp_id:this.prvMtnOp_id,
+                    eq_id:id,
                     reason:'add'
                 })
                 .then(response =>{
@@ -235,6 +251,8 @@ export default {
                     prvMtnOpRlz_validate :savedAs,
                     state_id:this.equipment_state_id,
                     prvMtnOp_id:this.prvMtnOp_id,
+                    prvMtnOpRlz_id:this.prvMtnOpRlz_id,
+                    eq_id:this.equipment_id_update,
                     reason:'update'
                 })
                 .then(response =>{
@@ -294,13 +312,17 @@ export default {
         }
     },
     created(){
-        var consultUrl = (id) => `/prvMtnOp/send/validated/${id}`;
-        axios.get(consultUrl(this.eq_id))
-            .then (response =>{
-                this.prvMtnOps=response.data;
-                this.loaded=true;
-                })
-            .catch(error => console.log(error));
+        if(this.isInConsultMod==false && this.isInModifMod==false){
+            var consultUrl = (id) => `/prvMtnOp/send/validated/${id}`;
+            axios.get(consultUrl(this.eq_id))
+                .then (response =>{
+                    this.prvMtnOps=response.data;
+                    this.loaded=true;
+                    })
+                .catch(error => console.log(error));
+        }else{
+            this.loaded=true;
+        }
 
     }
 

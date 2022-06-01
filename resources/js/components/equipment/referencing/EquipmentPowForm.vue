@@ -15,7 +15,7 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" >
             <!--Call of the different component with their props-->
-            <InputSelectForm  selectClassName="form-select w-50" :Errors="errors.pow_type" name="pow_type" label="Power Type :" :options="enum_pow_type" :isDisabled="!!isInConsultedMod" :selctedOption="pow_type" :selectedDivName="divClass" v-model="pow_type"/>
+            <InputSelectForm  @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.pow_type" name="pow_type" label="Power Type :" :options="enum_pow_type" :isDisabled="!!isInConsultedMod" :selctedOption="pow_type" :selectedDivName="divClass" v-model="pow_type"/>
             <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.pow_name" name="pow_name" label="Power Name " :options="pow_names" v-model="pow_name" :isDisabled="!!isInConsultedMod"/>
             <div class="input-group">
                 <InputNumberForm  inputClassName="form-control" :Errors="errors.pow_value" name="pow_value" label="Power value :" :stepOfInput="0.01" v-model="pow_value" :isDisabled="!!isInConsultedMod"/>
@@ -199,6 +199,7 @@ export default {
                     pow_validate :savedAs,
                 })
                 .then(response =>{
+                    this.errors={};
                     console.log("ajout dans la base")
                     console.log(this.pow_type,"\n",this.pow_name,"\n"
                     ,this.pow_value,"\n",this.pow_unit,"\n",savedAs,"\n ID:",id);
@@ -253,6 +254,7 @@ export default {
                     pow_validate :savedAs,
                 })
                 .then(response =>{
+                    this.errors={};
                     console.log("update dans la base")
                     /*If all the verif passed, a new post this time to add the power in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
@@ -294,6 +296,9 @@ export default {
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }
+        },
+        clearSelectError(value){
+            delete this.errors[value];
         }
     }
 

@@ -106,6 +106,8 @@ Route::get('/equipments/same_set/{set}', [EquipmentController::class, 'send_equi
 
 Route::get('/equipment/{id}', [EquipmentController::class, 'send_equipment'] )->whereNumber('id') ;
 
+Route::get('/equipment/prvMtnOp/planning', [EquipmentController::class, 'send_eq_prvMtnOp_for_planning'] ) ;
+
 
 /* Dimension Form Routes */ 
 

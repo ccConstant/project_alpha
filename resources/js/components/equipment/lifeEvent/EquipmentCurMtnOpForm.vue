@@ -22,10 +22,10 @@
                 <div v-if="this.addSucces==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addEquipmentCurMtnOp is called function else the updateEquipmentCurMtnOp function is called -->
                     <div v-if="this.curMtnOp_id==null ">
-                        <SaveButtonForm @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
+                        <SaveButtonForm :Errors="errors.curMtnOp_validate" @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
                     </div>
                     <div v-else-if="this.curMtnOp_id!==null">
-                        <SaveButtonForm  @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="curMtnOp_validate"/>
+                        <SaveButtonForm :Errors="errors.curMtnOp_validate"  @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="curMtnOp_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <div v-if="isInModifMod==true">
@@ -174,6 +174,8 @@ export default {
                     curMtnOp_startDate:this.selected_startDate,
                     curMtnOp_endDate:this.selected_endDate,
                     curMtnOp_validate :savedAs,
+                    curMtnOp_id:this.curMtnOp_id,
+                    eq_id:id,
                     reason:'add'
                 })
                 .then(response =>{
@@ -226,6 +228,8 @@ export default {
                     curMtnOp_startDate:this.selected_startDate,
                     curMtnOp_endDate:this.selected_endDate,
                     curMtnOp_validate :savedAs,
+                    curMtnOp_id:this.curMtnOp_id,
+                    eq_id:this.equipment_id_update,
                     reason:'update'
                 })
                 .then(response =>{

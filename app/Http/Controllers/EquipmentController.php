@@ -14,6 +14,7 @@ use Illuminate\Http\Request ;
 use Illuminate\Support\Facades\DB ; 
 use App\Models\Equipment;
 use App\Models\EquipmentTemp;
+use App\Models\PreventiveMaintenanceOperation;
 use App\Models\State;
 use App\Models\EnumEquipmentMassUnit ;
 use App\Models\EnumEquipmentType ;
@@ -501,7 +502,44 @@ class EquipmentController extends Controller{
                 'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,*/
             ]);
         }
-        //return response()->json($request) ; 
+    }
+
+    public function send_eq_prvMtnOp_for_planning(){
+        $equipments=Equipment::all() ;
+        $container=array() ; 
+        $containerOp=array() ;
+        foreach($equipments as $equipment){
+            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
+            if ($mostRecentlyEqTmp->eqTemp_validate!=="VALIDATED"){
+                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', "=", $mostRecentlyEqTmp->id)->get() ;
+                foreach( $prvMtnOps as $prvMtnOp){
+                    $opMtn=([
+                        "id" => $prvMtnOp->id,
+                        "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                        "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                        "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
+                        "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
+                        "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                        "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
+                        "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                        "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
+                        "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
+                        
+                    ]);
+                    array_push($containerOp,$opMtn);
+                }
+                
+                $eq = ([
+                    "internalReference" => $equipment->eq_internalReference,
+                    "preventive_maintenance_operations" => $containerOp,
+                ]) ; 
+
+                array_push($container,$eq);
+
+
+            }
+        }
+        return response()->json($container) ;
     }
 }
 
