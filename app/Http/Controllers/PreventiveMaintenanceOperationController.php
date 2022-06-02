@@ -511,8 +511,11 @@ class PreventiveMaintenanceOperationController extends Controller
             }
             $prvMtnOp->delete() ; 
         }else{
-            //AFFICHER ERREUR
-           // return response()->json($container) ;
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_delete' => ["You can't delete a preventive maintenance operation that is already realized"]
+                ]
+            ], 429);
         }
     }
 

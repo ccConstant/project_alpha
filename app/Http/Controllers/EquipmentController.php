@@ -51,11 +51,24 @@ class EquipmentController extends Controller{
                      $mostRecentlyState=$state ; 
                 }
             }
+            $isAlreadyQualityValidated=false ; 
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL){
+                $isAlreadyQualityValidated=true ; 
+            }
+
+            $isAlreadyTechnicalValidated=false ; 
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=NULL){
+                $isAlreadyTechnicalValidated=true ; 
+            }
+        
             $obj=([
                 'id' => $equipment->id,
                 'eq_internalReference' => $equipment->eq_internalReference,
                 'eq_state' =>  $mostRecentlyState->enumStateName->value,
                 'state_id' => $mostRecentlyState->id,
+                'eqTemp_lifeSheetCreated' => $mostRecentlyEqTmp->eqTemp_lifeSheetCreated,
+                'alreadyValidatedQuality' =>$isAlreadyQualityValidated,
+                'alreadyValidatedTechnical' =>$isAlreadyTechnicalValidated,
             ]);
             array_push($container,$obj);
         }
@@ -548,31 +561,6 @@ class EquipmentController extends Controller{
         return response()->json($container) ;
     }
 
-       /**
-     * Function call by ListOfEquipment.vue when the form is submitted for update with the route : /equipment/isAlreadyQualityValidated/{id} (get)
-     * Tell if the equipment is already qualitatively validated or not
-     * The id parameter is the id of the equipment in which we want to know if it is validated or not
-     * @return \Illuminate\Http\Response
-     * */
-
-    public function isAlreadyQualityValidated($id){
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        return $mostRecentlyEqTmp->qualityVerifier_id!=NULL ; 
-    }
-
-
-
-       /**
-     * Function call by ListOfEquipment.vue  when the form is submitted for update with the route : /equipment/isAlreadyTechnicalValidated/{id} (get)
-     * Tell if the equipment is already technicaly validated or not
-     * The id parameter is the id of the equipment in which we want to know if it is validated of not
-     * @return \Illuminate\Http\Response
-     * */
-
-    public function isAlreadyTechnicalValidated($id){
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        return $mostRecentlyEqTmp->technicalVerifier_id!=NULL ; 
-    }
 
     /**
      * Function call by EquipmentConsult.vue when the form is submitted for update with the route : /equipment/verifValidation{id} (post)
@@ -659,7 +647,7 @@ class EquipmentController extends Controller{
         }
 
         if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier!=NULL){
-            $mostRecentlyEqTmp->lifeSheetCreated=true ; 
+            $mostRecentlyEqTmp->eqTemp_lifeSheetCreated=true ;
 
             $state_id=NULL ;
             $state= EnumStateName::where('value', '=', "WAITING_TO_BE_IN_USE")->first() ;
