@@ -75,6 +75,11 @@ const router = new VueRouter({
         component:require('./components/equipment/calendar/EquipmentMaintenanceCalendar.vue').default
 
     },{
+        path:'/equipment/lifesheet_pdf/:id(\\d+)',
+        name: 'url_lifesheet_pdf',
+        component:require('./components/equipment/consultation/LifeSheetPDF.vue').default
+
+    },{
         path:'*',
     }]
 

@@ -37,8 +37,8 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::create([
             'prvMtnOpRlz_reportNumber' => $request->prvMtnOpRlz_reportNumber,
             'prvMtnOpRlz_validate' => $request->prvMtnOpRlz_validate,
-            'prvMtnOpRlz_startDate' => $request->state_startDate,
-            'prvMtnOpRlz_endDate' => $request->state_endDate,
+            'prvMtnOpRlz_startDate' => $request->prvMtnOpRlz_startDate,
+            'prvMtnOpRlz_endDate' => $request->prvMtnOpRlz_endDate,
             'prvMtnOpRlz_entryDate' => Carbon::now('Europe/Paris'),
             'state_id' => $request->state_id,
             'prvMtnOp_id' => $request->prvMtnOp_id,
@@ -133,6 +133,8 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         $prvMtnOpRlz->update([
             'prvMtnOpRlz_reportNumber' => $request->prvMtnOpRlz_reportNumber,
             'prvMtnOpRlz_validate' => $request->prvMtnOpRlz_validate,
+            'prvMtnOpRlz_startDate' => $request->prvMtnOpRlz_startDate,
+            'prvMtnOpRlz_endDate' => $request->prvMtnOpRlz_endDate,
         ]);
     }
 

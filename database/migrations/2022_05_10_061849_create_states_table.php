@@ -24,8 +24,8 @@ return new class extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('state_remarks') ;
-            $table->timestamp('state_startDate') ->nullable; 
-            $table->timestamp('state_endDate') ->nullable() ; 
+            $table->date('state_startDate') ->nullable; 
+            $table->date('state_endDate') ->nullable() ; 
             $table->boolean('state_isOk') ->nullable(); 
             $table->enum('state_validate', ['Drafted', 'to_be_validated', 'Validated']) ;  
             $table->unsignedBigInteger('reformedBy_id')  -> nullable() ; 

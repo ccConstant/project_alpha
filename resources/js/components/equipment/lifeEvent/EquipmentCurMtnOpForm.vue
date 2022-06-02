@@ -29,7 +29,7 @@
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <div v-if="isInModifMod==true">
-                        <DeleteComponentButton :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
+                        <DeleteComponentButton :Errors="errors.curMtnOp_delete"  :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
                     </div>
                 </div>  
             </form>
@@ -264,17 +264,19 @@ export default {
         },
         //Function for deleting a preventive maintenance operation from the view and the database
         deleteComponent(){
-            //Emit to the parent component that we want to delete this component
-            this.$emit('deleteCurMtnOp','')
+
             //If the user is in update mode and the preventive maintenance operation exist in the database
             if(this.modifMod==true && this.curMtnOp_id!==null){
                 console.log("supression");
                 //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
-                var consultUrl = (id) => `/equipment/delete/curMtnOp/${id}`;
+                var consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
                 axios.post(consultUrl(this.curMtnOp_id),{
                     eq_id:this.equipment_id_update,
                 })
-                .then(response =>{})
+                .then(response =>{
+                    //Emit to the parent component that we want to delete this component
+                    this.$emit('deleteCurMtnOp','')
+                })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 

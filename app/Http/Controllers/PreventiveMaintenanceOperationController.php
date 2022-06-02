@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
 use App\Models\EquipmentTemp ; 
 use App\Models\PreventiveMaintenanceOperation ; 
+use App\Models\PreventiveMaintenanceOperationRealized ; 
 use App\Models\Equipment ; 
 use App\Http\Controllers\PowerController ; 
 use App\Http\Controllers\FileController ; 
@@ -51,7 +52,7 @@ class PreventiveMaintenanceOperationController extends Controller
                     'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
                     'prvMtnOp_periodicity.required' => 'You must enter a periodicity for your preventive maintenance operation',
                     'prvMtnOp_periodicity.min' => 'You must enter at least one character ',
-                    'prvMtnOp_periodicity.max' => 'You must enter a maximum of 50 characters',
+                    'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
                     'prvMtnOp_protocol.required' => 'You must enter a protocol for your preventive maintenance operation',
                     'prvMtnOp_protocol.min' => 'You must enter at least three characters ',
                     'prvMtnOp_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your preventive maintenance operation',
@@ -67,11 +68,13 @@ class PreventiveMaintenanceOperationController extends Controller
                 $request,
                 [
                     'prvMtnOp_description' => 'required|min:3|max:255',
+                    'prvMtnOp_periodicity' => 'required|max:4',
                 ],
                 [
                     'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
                     'prvMtnOp_description.min' => 'You must enter at least three characters ',
                     'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
+                    'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
 
                 
                 ]
@@ -102,9 +105,11 @@ class PreventiveMaintenanceOperationController extends Controller
             $max_number=$max_number+1 ;
         }
         $nextDate=NULL ; 
+       
         $startDate=Carbon::now('Europe/Paris');
         if ($request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL && $request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL ){
             $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
+           
             if ($request->prvMtnOp_symbolPeriodicity=='Y'){
                 $nextDate->addYears($request->prvMtnOp_periodicity) ; 
             }
@@ -136,6 +141,7 @@ class PreventiveMaintenanceOperationController extends Controller
         ]) ; 
             
         $prvMtnOp_id=$prvMtnOp->id;
+        return response()->json($prvMtnOp_id) ; 
         if ($mostRecentlyEqTmp!=NULL){
              //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add preventive maintenance operation
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
@@ -496,8 +502,9 @@ class PreventiveMaintenanceOperationController extends Controller
      * */
     public function delete_prvMtnOp(Request $request, $id){
         $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $request->eq_id)->get() ; 
+        $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('prvMtnOp_id', '=', $id)->get() ; 
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
-        if (count($prvMtnOp->preventiveMaintenanceOperationRealizeds)==0){
+        if (count($prvMtnOpRlzs)==0){
             foreach($prvMtnOpsInEq as $prvMtnOpInEq){
                 if ($prvMtnOpInEq->prvMtnOp_number>$prvMtnOp->prvMtnOp_number){
                     $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ; 
@@ -506,8 +513,6 @@ class PreventiveMaintenanceOperationController extends Controller
                         'prvMtnOp_number' =>  $prvMtnOpInEq->prvMtnOp_number,
                     ]);
                 }
-    
-    
             }
             $prvMtnOp->delete() ; 
         }else{

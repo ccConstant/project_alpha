@@ -6,6 +6,9 @@
                 if the information is imported it can no longer be re-imported
             </p>
         </b-modal>
+        <div v-if="hasError(this.Errors)" class="error_deleteButton">
+            <p>{{this.Errors[0]}}</p>
+        </div>
     </div>
     
 </template>
@@ -15,17 +18,28 @@ export default {
     props:{
         consultMod:{
             type:Boolean
+        },
+        Errors:{
+            type:Array,
+            default: () => ([])
         }
     },
     methods:{
         deleteConfirmation(){
             this.$emit('deleteOk',"")
+        },
+        hasError(errors){
+            return(errors.length>0);
         }
     }
 
 }
 </script>
 
-<style>
-
+<style lang="scss">
+    .error_deleteButton{
+        p{
+            color:red
+        }
+    }
 </style>

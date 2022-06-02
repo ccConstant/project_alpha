@@ -27,8 +27,8 @@ return new class extends Migration
             $table->unsignedTinyInteger('curMtnOp_number') ; 
             $table->string('curMtnOp_reportNumber') ->nullable() ; 
             $table->mediumText('curMtnOp_description') -> nullable(); 
-            $table->string('curMtnOp_startDate') ; 
-            $table->string('curMtnOp_endDate') ->nullable(); 
+            $table->date('curMtnOp_startDate') ; 
+            $table->date('curMtnOp_endDate') ->nullable(); 
             $table->enum('curMtnOp_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ;  
             $table->unsignedBigInteger('state_id') ;
             $table->foreign('state_id')->references('id')->on('states') ->onDelete('cascade')  ; 

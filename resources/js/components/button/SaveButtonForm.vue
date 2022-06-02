@@ -32,7 +32,6 @@
                 <div v-if="saveAll!==true">
                     <p >Actually saved as : {{savedAs}}</p>
                     <div v-if="hasError(this.Errors)" class="error_savebutton">
-                        coco
                         <p>{{this.Errors[0]}}</p>
                     </div>
                 </div>

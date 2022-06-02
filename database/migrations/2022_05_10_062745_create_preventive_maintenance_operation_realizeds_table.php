@@ -26,9 +26,9 @@ return new class extends Migration
         Schema::create('preventive_maintenance_operation_realizeds', function (Blueprint $table) {
             $table->id();
             $table->string('prvMtnOpRlz_reportNumber') ;
-            $table->timestamp('prvMtnOpRlz_startDate') ;
+            $table->date('prvMtnOpRlz_startDate') ;
             $table->date('prvMtnOpRlz_endDate') -> nullable(); 
-            $table->timestamp('prvMtnOpRlz_entryDate') ->nullable();
+            $table->date('prvMtnOpRlz_entryDate') ->nullable();
             $table->enum('prvMtnOpRlz_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ; 
             $table->unsignedBigInteger('enteredBy_id') -> nullable() ; 
             $table->foreign('enteredBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->unsignedBigInteger('state_id') ;
             $table->foreign('state_id')->references('id')->on('states') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('prvMtnOp_id') ;
-            $table->foreign('prvMtnOp_id')->references('id')->on('preventive_maintenance_operations') ->onDelete('restrict')  ; 
+            $table->foreign('prvMtnOp_id')->references('id')->on('preventive_maintenance_operations') ->onDelete('cascade')  ; 
             $table->timestamps();
 
 

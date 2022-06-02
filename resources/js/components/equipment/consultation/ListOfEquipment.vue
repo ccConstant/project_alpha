@@ -13,6 +13,8 @@
           <router-link :to="{name:'url_eq_update',params:{id: list.id} }">Update</router-link>
           <a href="#" @click="technicalValidation(list.id)">Technical validation</a>
           <a href="#" @click="qualityValidation(list.id)">Quality validation</a>
+          <router-link :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
+          
 
         </li>
       </ul>
@@ -43,6 +45,7 @@ export default {
   created(){
     axios.get('/equipment/equipments')
         .then (response=>{
+          console.log(response.data)
           this.equipments=response.data;
           this.loaded=true;
         })
