@@ -121,6 +121,17 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ], 429);
             }
         }
+
+        if ($request->prvMtnOpRlz_startDate!=NULL && $request->prvMtnOpRlz_endDate!=NULL){
+            if ($request->prvMtnOpRlz_endDate < $request->prvMtnOpRlz_startDate){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOpRlz_endDate' => ["You must entered a startDate that is before endDate"]
+                    ]
+                ], 429);
+
+            }
+        }
     }
 
     /**

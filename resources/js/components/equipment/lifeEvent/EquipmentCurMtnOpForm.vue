@@ -175,6 +175,8 @@ export default {
                     curMtnOp_endDate:this.selected_endDate,
                     curMtnOp_validate :savedAs,
                     curMtnOp_id:this.curMtnOp_id,
+                    state_id:this.equipment_state_id,
+
                     eq_id:id,
                     reason:'add'
                 })
@@ -190,7 +192,6 @@ export default {
                         curMtnOp_validate :savedAs,
                         eq_id:id,
                         state_id:this.equipment_state_id,
-                        state_id:this.equipment_state_id
                 
                     })
                     //If the preventive maintenance operation is added succesfuly

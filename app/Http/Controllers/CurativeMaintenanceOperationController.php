@@ -33,6 +33,7 @@ class CurativeMaintenanceOperationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_curMtnOp(Request $request){
+        $state=State::findOrFail($request->state_id) ; 
         if ($request->curMtnOp_validate=='validated'){
             $this->validate(
                 $request,
@@ -48,7 +49,25 @@ class CurativeMaintenanceOperationController extends Controller
                     'curMtnOp_description.min' => 'You must enter at least three characters ',
                 ]
             );
-             //-----CASE curMtnOp->validate=drafted or curMtnOp->validate=to be validate----//
+
+    
+            if ($request->curMtnOp_startDate=='' || $request->curMtnOp_startDate===NULL){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_startDate' => ["You have to entered the startDate of your curative maintenance operation for validate it"]
+                    ]
+                ], 429);
+            }
+
+            if ($request->curMtnOp_endDate=='' || $request->curMtnOp_endDate===NULL){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_endDate' => ["You have to entered the endDate of your curative maintenance operation for validate it"]
+                    ]
+                ], 429);
+            }
+
+        //-----CASE curMtnOp->validate=drafted or curMtnOp->validate=to be validate----//
         //if the user has choosen "drafted" or "to be validated" he have no obligations 
         }else{
             $this->validate(
@@ -72,6 +91,36 @@ class CurativeMaintenanceOperationController extends Controller
                         'curMtnOp_validate' => ["You can't update a curative maintenance operation already validated"]
                     ]
                 ], 429);
+            }
+        }
+
+        if ($state->state_startDate!=NULL && $request->curMtnOp_startDate!=NULL && $state->state_endDate!=NULL){
+            if ($request->curMtnOp_startDate<$state->state_startDate || $request->curMtnOp_startDate>$state->state_endDate){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_startDate' => ["You can't entered this startDate because it must be between the startDate and the endDate of the state"]
+                    ]
+                ], 429);
+            }
+        }
+        if ($state->state_startDate!=NULL && $request->curMtnOp_endDate!=NULL && $state->state_endDate!=NULL){
+            if ($request->curMtnOp_endDate<$state->state_startDate || $request->curMtnOp_endDate>$state->state_endDate){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_endDate' => ["You can't entered this endDate because it must be between the startDate and the endDate of the state"]
+                    ]
+                ], 429);
+            }
+        }
+
+        if ($request->curMtnOp_startDate!=NULL && $request->curMtnOp_endDate!=NULL){
+            if ($request->curMtnOp_endDate < $request->curMtnOp_startDate){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_endDate' => ["You must entered a startDate that is before endDate"]
+                    ]
+                ], 429);
+
             }
         }
     }
@@ -101,8 +150,8 @@ class CurativeMaintenanceOperationController extends Controller
             'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
             'curMtnOp_validate' => $request->curMtnOp_validate,
             'curMtnOp_description' => $request->curMtnOp_description,
-            'curMtnOp_startDate' => $state->state_startDate,
-            'curMtnOp_endDate' => $state->state_endDate,
+            'curMtnOp_startDate' => $request->curMtnOp_startDate,
+            'curMtnOp_endDate' => $request->curMtnOp_endDate,
             'state_id' => $request->state_id,   
             'curMtnOp_number' => $max_number, 
 
@@ -123,6 +172,8 @@ class CurativeMaintenanceOperationController extends Controller
             'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
             'curMtnOp_validate' => $request->curMtnOp_validate,
             'curMtnOp_description' => $request->curMtnOp_description,
+            'curMtnOp_startDate' => $request->curMtnOp_startDate,
+            'curMtnOp_endDate' => $request->curMtnOp_endDate,
         ]);
     }
 
