@@ -175,9 +175,8 @@ export default {
                     curMtnOp_endDate:this.selected_endDate,
                     curMtnOp_validate :savedAs,
                     curMtnOp_id:this.curMtnOp_id,
-                    state_id:this.equipment_state_id,
-
                     eq_id:id,
+                    state_id:this.equipment_state_id,
                     reason:'add'
                 })
                 .then(response =>{
@@ -192,6 +191,7 @@ export default {
                         curMtnOp_validate :savedAs,
                         eq_id:id,
                         state_id:this.equipment_state_id,
+
                 
                     })
                     //If the preventive maintenance operation is added succesfuly
@@ -265,10 +265,8 @@ export default {
         },
         //Function for deleting a preventive maintenance operation from the view and the database
         deleteComponent(){
-
             //If the user is in update mode and the preventive maintenance operation exist in the database
             if(this.modifMod==true && this.curMtnOp_id!==null){
-                console.log("supression");
                 //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
                 var consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
                 axios.post(consultUrl(this.curMtnOp_id),{

@@ -95,7 +95,7 @@ class StateController extends Controller
             ], 429);
         }
 
-        /*if ($request->state_startDate!='' && $request->state_endDate!=''){
+        if ($request->state_startDate!='' && $request->state_endDate!=''){
             if ($request->state_endDate < $request->state_startDate){
                 return response()->json([
                     'errors' => [
@@ -104,7 +104,7 @@ class StateController extends Controller
                 ], 429);
 
             }
-        }*/
+        }
 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         $states=$mostRecentlyEqTmp->states;
@@ -118,7 +118,7 @@ class StateController extends Controller
                 }
             }
 
-           /* if ($request->state_startDate!='' && $request->state_startDate<$mostRecentlyState->state_startDate && $request->state_id){
+           if ($request->state_startDate!=NULL && $request->state_startDate<$mostRecentlyState->state_endDate){
                 return response()->json([
                     'errors' => [
                         'state_startDate' => ["You must entered a startDate that is after the previous state"]
@@ -126,13 +126,13 @@ class StateController extends Controller
                 ], 429);
             }
     
-            if ($request->state_endDate!='' && $request->state_endDate<$mostRecentlyState->state_endDate){
+            if ($request->state_endDate!=NULL && $request->state_endDate<$mostRecentlyState->state_endDate){
                 return response()->json([
                     'errors' => [
-                        'state_startDate' => ["You must entered a endDate that is after the previous state"]
+                        'state_endDate' => ["You must entered a endDate that is after the previous state"]
                     ]
                 ], 429);
-            }*/
+            }
         }
     }
 
@@ -450,7 +450,7 @@ class StateController extends Controller
         $state=State::findOrFail($id) ; 
         $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $id)->get() ; 
         foreach ($prvMtnOpRlzs as $prvMtnOpRlz){
-            if ($prvMtnOpRlz->prvMtnOpRlz!="Validated"){
+            if ($prvMtnOpRlz->prvMtnOpRlz_validate!="VALIDATED"){
                 return response()->json([
                     'errors' => [
                         'state_verif' => ["You must validate all your preventive maintenance operation realized before add a new state"]
@@ -461,7 +461,7 @@ class StateController extends Controller
         }
         $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $id)->get() ; 
         foreach ($curMtnOps as $curMtnOp){
-            if ($curMtnOp->curMtnOp!="Validated"){
+            if ($curMtnOp->curMtnOp_validate!="VALIDATED"){
                 return response()->json([
                     'errors' => [
                         'state_verif' => ["You must validate all your curative maintenance operation before add a new state"]

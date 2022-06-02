@@ -30,7 +30,7 @@ return new class extends Migration
             $table->unsignedMediumInteger('prvMtnOp_periodicity') ->nullable(); 
             $table->enum('prvMtnOp_symbolPeriodicity', ['Y', 'M', 'D', 'H']) ->nullable();  
             $table->mediumText('prvMtnOp_protocol') ->nullable(); 
-            $table->date('prvMtnOp_startDate') ; 
+            $table->timestamp('prvMtnOp_startDate') ; 
             $table->timestamp('prvMtnOp_nextDate') ->nullable(); 
             $table->date('prvMtnOp_reformDate') ->nullable() ; 
             $table->enum('prvMtnOp_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']);  

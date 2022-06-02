@@ -28,18 +28,18 @@ export default {
         }
     },
     created(){
-        var UrlState = (id) => `/states/send/${id}`;
+        var UrlState = (id)=> `/states/send/${id}`;
         axios.get(UrlState(this.eq_id))
             .then (response=>{
+                console.log(response.data)
                 this.states=response.data
                 for (var i=0;i<this.states.length;i++) {
                     this.states[i].state_startDate=moment(this.states[i].state_startDate).format('D MMM YYYY');
-                    var invalid="Invalid date"
-                    if(invalid.localeCompare(this.states[i].state_endDate)){
+                    if(this.states[i].state_endDate===null){
                         this.states[i].state_endDate="Not decided yet"
                     }else{
                         this.states[i].state_endDate=moment(this.states[i].state_endDate).format('D MMM YYYY'); 
-                    } 
+                    }
                     
                 }
                 this.loaded=true;

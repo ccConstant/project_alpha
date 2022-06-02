@@ -16,6 +16,9 @@ use App\Models\Equipment;
 use App\Models\EquipmentTemp;
 use App\Models\PreventiveMaintenanceOperation;
 use App\Models\State;
+use App\Models\File;
+use App\Models\Risk;
+use App\Models\Usage;
 use App\Models\EnumEquipmentMassUnit ;
 use App\Models\EnumEquipmentType ;
 use App\Models\EnumStateName ;
@@ -304,6 +307,12 @@ class EquipmentController extends Controller{
                 [
                     'eq_internalReference' => 'required|min:3|max:16',
                     'eq_externalReference' => 'required|min:3|max:100',
+                    'eq_name'  => 'max:100', 
+                    'eq_serialNumber'  => 'max:50',
+                    'eq_constructor'  => 'max:30',
+                    'eq_mass'  => 'max:8',
+                    'eq_remarks'  => 'max:400',
+                    'eq_set'  => 'max:20',
                 ],
                 [
                     
@@ -314,6 +323,13 @@ class EquipmentController extends Controller{
                     'eq_externalReference.required' => 'You must enter an external reference',
                     'eq_externalReference.min' => 'You must enter at least 3 characters ',
                     'eq_externalReference.max' => 'You must enter a maximum of 100 characters',
+
+                    'eq_name.max' => 'You must enter a maximum of 100 characters',
+                    'eq_serialNumber.max'  =>  'You must enter a maximum of 50 characters',
+                    'eq_constructor.max'  =>  'You must enter a maximum of 30 characters',
+                    'eq_mass.max'  => 'You must enter a maximum of 8 characters',
+                    'eq_remarks.max'  => 'You must enter a maximum of 400 characters',
+                    'eq_set.max'  => 'You must enter a maximum of 20 characters',
                 ]
             );
         }
@@ -574,47 +590,54 @@ class EquipmentController extends Controller{
         if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
             return response()->json([
                 'errors' => [
-                    'validation' => ["You can't validate an equipment taht doesn't have a validated ID card"]
+                    'validation' => ["You can't validate an equipment that doesn't have a validated ID card"]
                 ]
             ], 429);
         }
 
-        if (count($mostRecentlyEqTmp->files)<1){
+        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('file_validate', '=', 'VALIDATED')->get() ; 
+        if (count($files)<1){
             return response()->json([
                 'errors' => [
-                    'validation' => ["You can't validate an equipment taht doesn't have at least one file"]
+                    'validation' => ["You can't validate an equipment that doesn't have at least one file"]
+                ]
+            ], 429);
+        }
+        
+        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('usage_validate', '=', 'VALIDATED')->get() ; 
+        if (count($usages)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment that doesn't have at least one usage"]
+                ]
+            ], 429);
+        }
+        
+        if ($mostRecentlyEqTmp->specialProcess_id==NULL){
+            $spProc=SpecialProcess::findOrFail($mostRecentlyEqTmp->specialProcess_id) ; 
+            if ($spProc->spProc_validate!="VALIDATED"){
+                return response()->json([
+                    'errors' => [
+                        'validation' => ["You can't validate an equipment that doesn't have one special process"]
+                    ]
+                ], 429);
+            }
+        }
+
+        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('risk_validate', '=', 'VALIDATED')->get() ; 
+        if (count($risks)<1){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You can't validate an equipment that doesn't have at least one risk "]
                 ]
             ], 429);
         }
 
-        if (count($mostRecentlyEqTmp->usages)<1){
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp->validate', '=', 'VALIDATED')->get() ; 
+        if (count($prvMtnOps)<1){
             return response()->json([
                 'errors' => [
-                    'validation' => ["You can't validate an equipment taht doesn't have at least one usage"]
-                ]
-            ], 429);
-        }
-
-        if (count($mostRecentlyEqTmp->special_process)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment taht doesn't have one special process"]
-                ]
-            ], 429);
-        }
-
-        if (count($mostRecentlyEqTmp->risks)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment taht doesn't have at least one risk "]
-                ]
-            ], 429);
-        }
-
-        if (count($mostRecentlyEqTmp->preventive_maintenance_operations)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment taht doesn't have at least one preventive maintenance operations "]
+                    'validation' => ["You can't validate an equipment that doesn't have at least one preventive maintenance operations "]
                 ]
             ], 429);
         }
@@ -622,7 +645,7 @@ class EquipmentController extends Controller{
         if (count($mostRecentlyEqTmp->states)<1){
             return response()->json([
                 'errors' => [
-                    'validation' => ["You can't validate an equipment taht doesn't have at least one state"]
+                    'validation' => ["You can't validate an equipment that doesn't have at least one state"]
                 ]
             ], 429);
         }

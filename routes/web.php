@@ -90,6 +90,10 @@ Route::get('/equipment/maintenance/calendar', function () {
     return view('welcome');
 });
 
+Route::get('/equipment/lifesheet_pdf/{id}', function () {
+    return view('welcome');
+});
+
 
 /* Equipment ID Form Routes */ 
 

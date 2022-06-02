@@ -88,11 +88,13 @@ class FileController extends Controller
                 $request,
                 [
                     'file_name' => 'required|min:3|max:50',
+                    'file_location' => 'max:255',
                 ],
                 [
                     'file_name.required' => 'You must enter a name for your file ',
                     'file_name.min' => 'You must enter at least three characters ',
                     'file_name.max' => 'You must enter a maximum of 50 characters',
+                    'file_location.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }

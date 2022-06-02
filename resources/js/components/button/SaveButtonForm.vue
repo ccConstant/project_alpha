@@ -34,10 +34,8 @@
                     <div v-if="hasError(this.Errors)" class="error_savebutton">
                         <p>{{this.Errors[0]}}</p>
                     </div>
-                </div>
-               
+                </div>    
         </div>
-
     </div>
 </template>
 
@@ -62,6 +60,11 @@ export default {
         Errors:{
             type:Array,
             default: () => ([])
+        },
+    },
+    data(){
+        return{
+            sucess:false
         }
     },
     methods:{

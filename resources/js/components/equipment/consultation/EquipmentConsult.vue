@@ -16,13 +16,8 @@
             <ReferenceAFile v-if="eq_file.length>0" :importedFile="eq_file" consultMod/>
             <ReferenceAPrvMtnOp v-if="eq_prvMtnOp.length>0" :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
             <ReferenceARisk v-if="eq_risk.length>0" :importedRisk="eq_risk" :riskForEq="true" consultMod/>
-            <div v-if="validationMethod=='technical'">
-                <button type="button" class="btn btn-primary technical_validate_button">Technical Validate </button>
-            </div>
-            <div v-else-if="validationMethod=='quality'">
-                <button type="button" class="btn btn-primary quality_validate_button" >Quality Validate</button>
-            </div>
-
+            <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors.validation"/>
+            
             
 
 
@@ -39,7 +34,7 @@ import ReferenceAUsage from '../referencing/ReferenceAUsage.vue'
 import ReferenceAFile from '../referencing/ReferenceAFile.vue'
 import ReferenceAPrvMtnOp from '../referencing/ReferenceAPrvMtnOp.vue'
 import ReferenceARisk from '../referencing/ReferenceARisk.vue'
-
+import ValidationButton from '../../button/ValidationButton.vue'
 
 
 
@@ -54,11 +49,12 @@ export default {
         ReferenceAUsage,
         ReferenceAFile,
         ReferenceAPrvMtnOp,
-        ReferenceARisk
+        ReferenceARisk,
+        ValidationButton
     },
     data(){
         return{
-            eq_id:this.$route.params.id,
+            eq_id:this.$route.params.id.toString(),
             eq_idCard:null,
             eq_dimensions:null,
             eq_powers:null,
@@ -68,7 +64,8 @@ export default {
             eq_prvMtnOp:null,
             eq_risk:null,
             loaded:false,
-            validationMethod:this.$route.query.method
+            validationMethod:this.$route.query.method,
+            errors:{}
         }
     },
 
@@ -124,6 +121,33 @@ export default {
             })
             .catch(error => console.log(error)) ;
         
+    },
+    methods:{
+        Validate(){
+            var validVerifUrl = (id) => `/equipment/verifValidation/${id}`;
+            axios.post(validVerifUrl(this.eq_id),{
+                })
+                .then(response =>{
+                    console.log("Toto")
+                    /*If all the verif passed, a new post this time to add the dimension in the data base
+                    Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
+                    var techVeriftUrl = (id) => `/equipment/validation/${id}`;
+                    axios.post(techVeriftUrl(this.eq_id),{
+                        reason:this.validationMethod
+                    })
+                    //If the dimension is added succesfuly
+                    .then(response =>{
+                        
+                        
+                    })
+                    //If the controller sends errors we put it in the errors object 
+                    .catch(error => this.errors=error.response.data.errors) ;
+                ;})
+                //If the controller sends errors we put it in the errors object 
+                .catch(error =>{
+                    this.errors=error.response.data.errors
+            }) ;
+        }
     }
         
         
@@ -145,4 +169,6 @@ export default {
         margin : auto;
         margin-bottom: 15px;
     }
+
+
 </style>

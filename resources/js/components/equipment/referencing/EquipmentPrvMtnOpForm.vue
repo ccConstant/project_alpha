@@ -41,7 +41,7 @@
                         <SaveButtonForm  @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="prvMtnOp_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <DeleteComponentButton :Errors="errors.prvMtnOp_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
 
                 </div>       
             </form>
@@ -193,6 +193,7 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
+                console.log(this.prvMtnOp_periodicity)
                 axios.post('/prvMtnOp/verif',{
                     prvMtnOp_description:this.prvMtnOp_description,
                     prvMtnOp_periodicity:this.prvMtnOp_periodicity,
@@ -215,7 +216,7 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
-                        console.log(response.data)
+                        console.log(response)
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True

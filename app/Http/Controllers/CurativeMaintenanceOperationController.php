@@ -74,10 +74,12 @@ class CurativeMaintenanceOperationController extends Controller
                 $request,
                 [
                     'curMtnOp_description' => 'required|min:1|max:50',
+                    'curMtnOp_reportNumber' => 'max:255',
                 ],
                 [
                     'curMtnOp_description.required' => 'You must enter a description for the curative maintenance operation ',
                     'curMtnOp_description.min' => 'You must enter at least three characters ',
+                    'curMtnOp_reportNumber.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }

@@ -21,10 +21,10 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference" name="eq_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod"  isRequired v-model="eq_internalReference" info_text="test"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference" name="eq_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  isRequired  v-model="eq_externalReference" info_text="test2"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name" label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name" />
-            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.eq_type"  name="eq_type" label="Type :" :options="enum_type" :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference" name="eq_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod"  isRequired v-model="eq_internalReference" info_text="Internal Reference of the equipment"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference" name="eq_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  isRequired  v-model="eq_externalReference" info_text="External Reference of the equipment"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name" label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name"  info_text="Name of the equipment" />
+            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.eq_type"  name="eq_type" label="Type :" :options="enum_type" :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type" info_text="Type of the equipment"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_serialNumber" name="eq_serialNumber" label="Equipment serial Number :" :isDisabled="!!isInConsultMod" v-model="eq_serialNumber" />
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_constructor" name="eq_constructor" label="Equipment constructor :" :isDisabled="!!isInConsultMod" v-model="eq_constructor" />
             <div class="input-group">
@@ -35,12 +35,14 @@
             <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.eq_remarks" name="eq_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="eq_remarks"/>
             <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.eq_set" name="eq_set" label="Equipment Set" :isDisabled="!!isInConsultMod" :options="enum_sets" v-model="eq_set"/>
             <InputTextForm v-if="this.eq_importFrom!== undefined " inputClassName="form-control w-50" name="eq_importFrom" label="Import From :" isDisabled v-model="eq_importFrom"/>
-            <SaveButtonForm v-if="this.addSucces==false" @add="addEquipment" @update="updateEquipment" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
+            <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addEquipment" @update="updateEquipment" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
             <div v-if="this.modifMod!=true">
                 <div v-if="this.isInConsultMod!=true">
                     <ImportationModal :set="this.eq_set" @choosedEq="importFrom"/>
                 </div>
             </div>
+            <SucessAlert ref="sucessAlert"/>
+
             
             
 
@@ -58,6 +60,8 @@ import InputTextWithOptionForm from '../../input/InputTextWithOptionForm.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import ImportationModal from './ImportationModal.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
+
 
 
 
@@ -71,7 +75,8 @@ export default {
         InputTextAreaForm,
         RadioGroupForm,
         SaveButtonForm,
-        ImportationModal
+        ImportationModal,
+        SucessAlert
     },
     /*--------Declartion of the differents props:--------
         internalReference : Internal reference given by the data base we will put this data in the corresponding field as default value
@@ -240,11 +245,11 @@ export default {
                             eq_validate : savedAs,
                         })
                         .then(response =>{
+                                this.$refs.sucessAlert.showAlert();
                                 this.addSucces=true;
                                 this.isInConsultMod=true;
                                 this.eq_id=response.data;
                                 this.$emit('EqID',this.eq_id);
-                                
                             })
                         .catch(error => this.errors=error.response.data.errors) ; 
                     })

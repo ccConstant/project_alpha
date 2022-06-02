@@ -68,7 +68,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 $request,
                 [
                     'prvMtnOp_description' => 'required|min:3|max:255',
-                    'prvMtnOp_periodicity' => 'required|max:4',
+                    'prvMtnOp_periodicity' => 'max:4',
                 ],
                 [
                     'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
@@ -141,7 +141,6 @@ class PreventiveMaintenanceOperationController extends Controller
         ]) ; 
             
         $prvMtnOp_id=$prvMtnOp->id;
-        return response()->json($prvMtnOp_id) ; 
         if ($mostRecentlyEqTmp!=NULL){
              //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add preventive maintenance operation
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
@@ -245,6 +244,7 @@ class PreventiveMaintenanceOperationController extends Controller
      * */
     public function update_prvMtnOp(Request $request, $id){
         $equipment=Equipment::findOrfail($request->eq_id) ; 
+        $oldPrvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
@@ -293,33 +293,31 @@ class PreventiveMaintenanceOperationController extends Controller
                     'equipmentTemp_id' => $new_eqTemp->id,
                 ]) ;
 
-                if (($prvMtnOp->prvMtnOp_nextDate=='' || $prvMtnOp->prvMtnOp_nextDate==NULL) && $prvMtnOp->prvMtnOp_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=NULL){
+                /*if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity ||  $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
                     
                     $nextDate=NULL ; 
-                    $startDate=Carbon::now('Europe/Paris');
-                    if ($prvMtnOp->prvMtnOp_symbolPeriodicity!='' && $prvMtnOp->prvMtnOp_symbolPeriodicity!=NULL && $prvMtnOp->prvMtnOp_periodicity!='' && $prvMtnOp->prvMtnOp_periodicity!=NULL ){
-                        $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
-                            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-            
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
-                            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-                        
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
-                            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-            
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
-                            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-
-                        $prvMtnOp->update([
-                            'prvMtnOp_nextDate' => $nextDate,
-                        ]);
+    
+                    $nextDate=Carbon::create($oldPrvMtnOp->prvMtnOp_startDate->year, $oldPrvMtnOp->prvMtnOp_startDate->month, $oldPrvMtnOp->prvMtnOp_startDate->day, $oldPrvMtnOp->prvMtnOp_startDate->hour, $oldPrvMtnOp->prvMtnOp_startDate->minute, $oldPrvMtnOp->prvMtnOp_startDate->second);
+                    if ($request->prvMtnOp_symbolPeriodicity=='Y'){
+                        $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
                     }
-                }
+        
+                    if ($request->prvMtnOp_symbolPeriodicity=='M'){
+                        $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
+                    }
+                    
+                    if ($request->prvMtnOp_symbolPeriodicity=='D'){
+                        $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
+                    }
+        
+                    if ($request->prvMtnOp_symbolPeriodicity=='H'){
+                        $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+                    }
+
+                    $prvMtnOp->update([
+                        'prvMtnOp_nextDate' => $nextDate,
+                    ]);
+                }*/
                 
                 //Dédoubler les liens de eqTemps 
                 $DimController= new DimensionController() ; 
@@ -349,43 +347,38 @@ class PreventiveMaintenanceOperationController extends Controller
 
                 // In the other case, we can modify the informations without problems
             }else{
+               
+               /*if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
+                    $nextDate=Carbon::create($oldPrvMtnOp->prvMtnOp_startDate->year, $oldPrvMtnOp->prvMtnOp_startDate->month, $oldPrvMtnOp->prvMtnOp_startDate->day, $oldPrvMtnOp->prvMtnOp_startDate->hour, $oldPrvMtnOp->prvMtnOp_startDate->minute, $oldPrvMtnOp->prvMtnOp_startDate->second);
+                    return response()->json($nextDate) ;
 
-                $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
-                $prvMtnOp->update([
+                    if ($request->prvMtnOp_symbolPeriodicity=='Y'){
+                        $nextDate->addYears($request->prvMtnOp_periodicity) ; 
+                    }
+        
+                    if ($request->prvMtnOp_symbolPeriodicity=='M'){
+                        $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
+                    }
+                    
+                    if ($request->prvMtnOp_symbolPeriodicity=='D'){
+                        $nextDate->addDays($request->prvMtnOp_periodicity) ; 
+                        return response()->json($nextDate) ;
+                    }
+                   /* if ($request->prvMtnOp_symbolPeriodicity=='H'){
+                        $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+                    }
+                   /* $oldPrvMtnOp->update([
+                        'prvMtnOp_nextDate' => $nextDate,
+                    ]);
+                }
+                */
+                $oldPrvMtnOp->update([
                     'prvMtnOp_description' => $request->prvMtnOp_description,
                     'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
                     'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
                     'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
                     'prvMtnOp_validate' => $request->prvMtnOp_validate,
                 ]) ;
-
-                if (($prvMtnOp->prvMtnOp_nextDate=='' || $prvMtnOp->prvMtnOp_nextDate==NULL) && $prvMtnOp->prvMtnOp_startDate!='' && $prvMtnOp->prvMtnOp_startDate!=NULL){
-                    
-                    $nextDate=NULL ; 
-                    $startDate=Carbon::now('Europe/Paris');
-                    if ($prvMtnOp->prvMtnOp_symbolPeriodicity!='' && $prvMtnOp->prvMtnOp_symbolPeriodicity!=NULL && $prvMtnOp->prvMtnOp_periodicity!='' && $prvMtnOp->prvMtnOp_periodicity!=NULL ){
-                        $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
-                            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-            
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
-                            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-                        
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
-                            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-            
-                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
-                            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
-                        }
-
-                        $prvMtnOp->update([
-                            'prvMtnOp_nextDate' => $nextDate,
-                        ]);
-                    }
-                }
             }
         }
     }
