@@ -93,7 +93,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
     
         if ($request->reason=="update"){
             $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
-            if ($prvMtnOpRlz->prvMtnOpRlz_validate=="VALIDATED"){
+            if ($prvMtnOpRlz->prvMtnOpRlz_validate=="validated"){
                 return response()->json([
                     'errors' => [
                         'prvMtnOpRlz_validate' => ["You can't update a preventive maintenance operation realized already validated"]
@@ -156,7 +156,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * */
     public function delete_prvMtnOpRlz($id){
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id);
-        if ($prvMtnOpRlz->prvMtnOpRlz_validate=='VALIDATED'){
+        if ($prvMtnOpRlz->prvMtnOpRlz_validate=='validated'){
             return response()->json([
                 'errors' => [
                     'prvMtnOpRlz_delete' => ["You can delete a preventive maintenance operation realized validated"]

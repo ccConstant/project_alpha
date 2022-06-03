@@ -16,14 +16,7 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\EquipmentTemp ; 
 use App\Models\EnumPowerType ; 
 use App\Models\Power ; 
-use App\Models\Equipment ; 
-use App\Http\Controllers\DimensionController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\SpecialProcessController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
+use App\Models\Equipment ;  
 use Carbon\Carbon;
 
 
@@ -150,64 +143,23 @@ class PowerController extends Controller
         $power_id=$power->id;
         $id_eq=intval($request->eq_id) ; 
         if ($mostRecentlyEqTmp!=NULL){
-             //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add power
-            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add power
+            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
-               //We need to increase the number of equipment temp linked to the equipment
-               $version_eq=$equipment->eq_nbrVersion+1 ; 
-               //Update of equipment
-               $equipment->update([
-                   'eq_nbrVersion' =>$version_eq,
-               ]);
-               
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-               //Creation of a new equipment temp
-               $new_eqTemp=EquipmentTemp::create([
-                'equipment_id'=> $request->eq_id,
-                'eqTemp_version' => $version,
-                'eqTemp_date' => Carbon::now('Europe/Paris'),
-                'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-               ]);
-
-               $power->update([
-                'equipmentTemp_id' => $new_eqTemp->id,
-               ]) ;
-               
-               //We copy the links of the actual Equipment temp to the new equipment temp 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $PowerController= new PowerController() ; 
-                $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, $power_id) ; 
- 
-                $FileController= new FileController() ; 
-                $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $UsageController= new UsageController() ; 
-                $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $StateController= new StateController() ; 
-                $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-            
-                $RiskController= new RiskController() ; 
-                $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-                $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-             // In the other case, we can add informations without problems
+                //We need to increase the number of equipment temp linked to the equipment
+                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                //Update of equipment
+                $equipment->update([
+                    'eq_nbrVersion' =>$version_eq,
+                ]);
+                
+                //We need to increase the version of the equipment temp (because we create a new equipment temp)
+                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+                //update of equipment temp
+                $mostRecentlyEqTmp->update([
+                 'eqTemp_version' => $version,
+                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                ]);
             }
             return response()->json($power_id) ; 
         }
@@ -235,8 +187,8 @@ class PowerController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+           //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update power
+            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -244,77 +196,27 @@ class PowerController extends Controller
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
                 
-                //Creation of a new power
-                $power=Power::create([
-                    'pow_name' => $request->pow_name,
-                    'pow_value' => $request->pow_value,
-                    'pow_unit' => $request->pow_unit,
-                    'pow_consumptionValue' => $request->pow_consumptionValue,
-                    'pow_consumptionUnit' => $request->pow_consumptionUnit,
-                    'pow_validate' => $request->pow_validate,
-                    'enumPowerType_id' => $type_id,
-                    'equipmentTemp_id' => $new_eqTemp,
-                ]) ; 
-                    
-                //Dédoubler les liens de eqTemps 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk_eqTemp($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
                 // In the other case, we can modify the informations without problems
-            }else{
-
-                $power=Power::findOrFail($id) ; 
-                $power->update([
-                    'pow_name' => $request->pow_name,
-                    'pow_value' => $request->pow_value,
-                    'pow_unit' => $request->pow_unit,
-                    'pow_consumptionValue' => $request->pow_consumptionValue,
-                    'pow_consumptionUnit' => $request->pow_consumptionUnit,
-                    'pow_validate' => $request->pow_validate,
-                    'enumPowerType_id' => $type_id,
-                ]) ; 
             }
+            $power=Power::findOrFail($id) ; 
+            $power->update([
+                'pow_name' => $request->pow_name,
+                'pow_value' => $request->pow_value,
+                'pow_unit' => $request->pow_unit,
+                'pow_consumptionValue' => $request->pow_consumptionValue,
+                'pow_consumptionUnit' => $request->pow_consumptionUnit,
+                'pow_validate' => $request->pow_validate,
+                'enumPowerType_id' => $type_id,
+            ]) ; 
         }
     }
 
@@ -350,44 +252,33 @@ class PowerController extends Controller
     }
 
 
-
-
-
-     /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and power
-     * Copy the links between a equipment temp and a power to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the powers
-     * The newId parameter correspond of the id of the equipment where we want to copy the powers
-     * The idNotCopy parameter correspond of the id of the power we don't have to copy 
-     * */
-    public function copy_power($actualId, $newId, $idNotCopy){
-        $actualEqTemp= EquipmentTemp::findOrFail($actualId) ; 
-        $newEqTemp= EquipmentTemp::findOrFail($newId) ; 
-        $powers=Power::where('equipmentTemp_id', '=', $actualId)->get() ;
-        foreach($powers as $power){
-            if ($power->id!=$idNotCopy){
-                //Creation of a new power
-                $newPower=Power::create([
-                    'pow_name' => $power->pow_name,
-                    'pow_value' => $power->pow_value,
-                    'pow_unit' => $power->pow_unit,
-                    'pow_consumptionValue' => $power->pow_consumptionValue,
-                    'pow_consumptionUnit' => $power->pow_consumptionUnit,
-                    'pow_validate' => $power->pow_validate,
-                    'enumPowerType_id' => $power->enumPowerType_id,
-                    'equipmentTemp_id' => $newId,
-                ]) ; 
-            }
-        }
-    }
-
-
      /**
      * Function call by EquipmentPowForm.vue when we want to delete a power with the route : /equipment/delete/pow{id} (post)
      * Delete a power thanks to the id given in parameter
      * The id parameter correspond to the id of the power we want to delete
      * */
-    public function delete_power($id){
+    public function delete_power(Request $request, $id){
+        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        //We search the most recently equipment temp of the equipment 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            //update of equipment temp
+            $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
+        }
         $power=Power::findOrFail($id);
         $power->delete() ; 
     }

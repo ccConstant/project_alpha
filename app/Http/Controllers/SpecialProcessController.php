@@ -15,13 +15,6 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\SpecialProcess ; 
 use App\Models\EquipmentTemp ; 
 use App\Models\Equipment ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\DimensionController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
 use Carbon\Carbon;
 
 class SpecialProcessController extends Controller
@@ -87,70 +80,27 @@ class SpecialProcessController extends Controller
         $equipment=Equipment::findOrfail($id_eq) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp!=NULL){
-             //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add specialProcess
-            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
-                
-               //We need to increase the number of equipment temp linked to the equipment
-               $version_eq=$equipment->eq_nbrVersion+1 ; 
-               //Update of equipment
-               $equipment->update([
-                   'eq_nbrVersion' =>$version_eq,
-               ]);
-               
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-               //Creation of a new equipment temp
-               $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                    'eqTemp_version' => $version,
-                    'eqTemp_date' => Carbon::now('Europe/Paris'),
-                    'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                    'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                    'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                    'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                    'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                    'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                    'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                    'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                    'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                    'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-               ]);
-                   
-               //We copy the links of the actual Equipment temp to the new equipment temp 
-               $DimController= new DimensionController() ; 
-               $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $SpProcController= new SpecialProcessController() ; 
-               $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, $spProc_id) ; 
-
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             // In the other case, we can add informations without problems
-            }else{
-
-                //Update of equipment temp
-                $mostRecentlyEqTmp->update([
-                    'specialProcess_id' => $spProc_id,
-                ]);
-            }
-            return response()->json($spProc_id) ; 
-        }
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add special process
+            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
+              
+              //We need to increase the number of equipment temp linked to the equipment
+              $version_eq=$equipment->eq_nbrVersion+1 ; 
+              //Update of equipment
+              $equipment->update([
+                  'eq_nbrVersion' =>$version_eq,
+              ]);
+              
+              //We need to increase the version of the equipment temp (because we create a new equipment temp)
+              $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+              //update of equipment temp
+              $mostRecentlyEqTmp->update([
+               'eqTemp_version' => $version,
+               'eqTemp_date' => Carbon::now('Europe/Paris'),
+               'specialProcess_id' => $spProc->id,
+              ]);
+          } 
+      }
+      return response()->json($spProc_id) ;
     }
 
 
@@ -166,8 +116,8 @@ class SpecialProcessController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update special process
+            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -175,73 +125,24 @@ class SpecialProcessController extends Controller
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-
-                //Creation of a new specialProcess
-                $spProc=SpecialProcess::create([
-                    'spProc_exist' => $request->spProc_exist,
-                    'spProc_remarksOrPrecaution' => $request->spProc_remarksOrPrecaution,
-                    'spProc_name' => $request->spProc_name,
-                    'spProc_validate' => $request->spProc_validate,
-                ]) ; 
-
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
                 
-
-                //We copy the links of the actual Equipment temp to the new equipment temp 
-               $DimController= new DimensionController() ; 
-               $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $SpProcController= new SpecialProcessController() ; 
-               $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
-
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-
                 // In the other case, we can modify the informations without problems
-            }else{
-                
-                $spProc=SpecialProcess::findOrFail($id) ; 
-                $spProc->update([
-                    'spProc_exist' => $request->spProc_exist,
-                    'spProc_remarksOrPrecaution' => $request->spProc_remarksOrPrecaution,
-                    'spProc_name' => $request->spProc_name,
-                    'spProc_validate' => $request->spProc_validate,
-                ]);
-            }
+            } 
+            $spProc=SpecialProcess::findOrFail($id) ; 
+            $spProc->update([
+                'spProc_exist' => $request->spProc_exist,
+                'spProc_remarksOrPrecaution' => $request->spProc_remarksOrPrecaution,
+                'spProc_name' => $request->spProc_name,
+                'spProc_validate' => $request->spProc_validate,
+            ]);
         }
     }
 
@@ -267,33 +168,6 @@ class SpecialProcessController extends Controller
             ]);
             array_push($container,$obj);
         return response()->json($container) ;
-        }
-    }
-
-
-      /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and special process
-     * Copy the links between a equipment temp and a special process to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the states
-     * The newId parameter correspond of the id of the equipment where we want to copy the special processes
-     * The idNotCopy parameter correspond of the id of the special process we don't have to copy 
-     * */
-    public function copy_specialProcess($actualId, $newId, $idNotCopy){ 
-        $actualEqTemp= EquipmentTemp::findOrFail($actualId) ; 
-        $newEqTemp= EquipmentTemp::findOrFail($newId) ; 
-        $specialProcess=SpecialProcess::findOFail($actualEqTemp->specialProcess_id) ; 
-        if ($specialProcess->id!=$idNotCopy){
-            ///Creation of a new specialProcess
-            $spProc=SpecialProcess::create([
-                'spProc_exist' => $specialProcess->spProc_exist,
-                'spProc_remarksOrPrecaution' => $specialProcess->spProc_remarksOrPrecaution,
-                'spProc_name' => $specialProcess->spProc_name,
-                'spProc_validate' => $specialProcess->spProc_validate,
-            ]) ; 
-
-            $new_eqTemp->update([
-                'specialProcess_id' => $spProc->id,
-            ]) ; 
         }
     }
 }

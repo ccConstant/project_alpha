@@ -18,13 +18,6 @@ use App\Models\Equipment ;
 use App\Models\EnumDimensionName ; 
 use App\Models\EnumDimensionType ; 
 use App\Models\EnumDimensionUnit ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\SpecialProcessController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
 use Carbon\Carbon;
 
 
@@ -81,8 +74,8 @@ class DimensionController extends Controller
         $dim_id=$dimension->id;
         $id_eq=intval($request->eq_id) ; 
         if ($mostRecentlyEqTmp!=NULL){
-             //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add dimension
-            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
+             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add dimension
+            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
                //We need to increase the number of equipment temp linked to the equipment
                $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -93,53 +86,11 @@ class DimensionController extends Controller
                
                //We need to increase the version of the equipment temp (because we create a new equipment temp)
                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-               //Creation of a new equipment temp
-               $new_eqTemp=EquipmentTemp::create([
-                   'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
+               //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
                ]);
-
-               $dimension->update([
-                'equipmentTemp_id' => $new_eqTemp->id,
-               ]);
-
-                   
-               //We copy the links of the actual Equipment temp to the new equipment temp 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, $dim_id) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk_eqTemp($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ;
-
             }
             return response()->json($dim_id) ; 
         }
@@ -289,8 +240,8 @@ class DimensionController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -298,109 +249,57 @@ class DimensionController extends Controller
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
+
+                //We need to increase the version of the equipment temp (because we create a new equipment temp)
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
                 
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                    'eqTemp_version' => $version,
-                    'eqTemp_date' => Carbon::now('Europe/Paris'),
-                    'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                    'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                    'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                    'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                    'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                    'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                    'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                    'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                    'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                ]);
-                
-                //Creation of a new dimension
-                $dimension=Dimension::create([
-                    'dim_value' => $request->dim_value,
-                    'dim_validate' => $request->dim_validate,
-                    'enumDimensionType_id' => $type_id,
-                    'enumDimensionName_id' => $name_id,
-                    'enumDimensionUnit_id' => $unit_id,
-                    'equipmentTemp_id' => $new_eqTemp->id,
-                ]) ; 
-                    
-                //Dédoubler les liens de eqTemps 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk_eqTemp($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ;
-            
-
                 // In the other case, we can modify the informations without problems
-            }else{
-
-                $dimension=Dimension::findOrFail($id) ; 
-                $dimension->update([
-                    'dim_value' => $request->dim_value,
-                    'dim_validate' => $request->dim_validate,
-                    'enumDimensionType_id' => $type_id,
-                    'enumDimensionName_id' => $name_id,
-                    'enumDimensionUnit_id' => $unit_id,
-                ]);
             }
+            $dimension=Dimension::findOrFail($id) ; 
+            $dimension->update([
+                'dim_value' => $request->dim_value,
+                'dim_validate' => $request->dim_validate,
+                'enumDimensionType_id' => $type_id,
+                'enumDimensionName_id' => $name_id,
+                'enumDimensionUnit_id' => $unit_id,
+            ]);
         }
     }
     
-
-        /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and dimension 
-     * Copy the links between a equipment temp and a dimension to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the dimensions
-     * The newId parameter correspond of the id of the equipment where we want to copy the dimensions
-     * The idNotCopy parameter correspond of the id of the dimension we don't have to copy 
-     * */
-    public function copy_dimension($actualId, $newId, $idNotCopy){
-        $actualEqTemp= EquipmentTemp::findOrFail($actualId) ; 
-        $newEqTemp= EquipmentTemp::findOrFail($newId) ; 
-        $dimensions=Dimension::where('equipmentTemp_id', '=', $actualId)->get();
-        foreach($dimensions as $dimension){
-            if ($dimension->id!=$idNotCopy){
-                //Creation of a new dimension
-                $newDimension=Dimension::create([
-                    'dim_value' => $dimension->dim_value,
-                    'dim_validate' => $dimension->dim_validate,
-                    'enumDimensionType_id' => $dimension->enumDimensionType_id,
-                    'enumDimensionName_id' => $dimension->enumDimensionName_id,
-                    'enumDimensionUnit_id' => $dimension->enumDimensionUnit_id,
-                    'equipmentTemp_id' => $newId,
-                ]) ; 
-            }
-        }
-    }
 
     /**
      * Function call by EquipmentDimForm.vue when we want to delete a dimension with the route : /equipment/delete/usg{id}(post)
      * Delete a dimension thanks to the id given in parameter
      * The id parameter correspond to the id of the dimension we want to delete
      * */
-    public function delete_dimension($id){
+    public function delete_dimension(Request $request, $id){
+        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        //We search the most recently equipment temp of the equipment 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            //update of equipment temp
+            $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
+        }
+        
         $dimension=Dimension::findOrFail($id);
         $dimension->delete() ; 
     }

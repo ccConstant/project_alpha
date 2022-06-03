@@ -16,43 +16,12 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\EquipmentTemp ; 
 use App\Models\Equipment ; 
 use App\Models\File ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\SpecialProcessController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
 use Carbon\Carbon;
 
 
 class FileController extends Controller
 {
-    /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and file
-     * Copy the links between a equipment temp and a file to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the files
-     * The newId parameter correspond of the id of the equipment where we want to copy the files
-     * The idNotCopy parameter correspond of the id of the file we don't have to copy 
-     * */
-    public function copy_file($actualId, $newId, $idNotCopy){
-        $actualEqTemp= EquipmentTemp::findOrFail($actualId) ; 
-        $newEqTemp= EquipmentTemp::findOrFail($newId) ; 
-        $files = File::where('equipmentTemp_id', '=', $actualId)->get();
-        foreach($files as $file){
-            if($file->id!=$idNotCopy){
-                //Creation of a new file
-                $newFile=File::create([
-                    'file_name' => $file->file_name,
-                    'file_location' => $file->file_location,
-                    'file_validate' => $file->file_validate,
-                    'equipmentTemp_id' => $newId,
-                ]) ; 
-            }
-        }
-    }
-
-
+    
     /**
      * Function call by EquipmentFileForm.vue when the form is submitted for check data with the route : /file/verif''(post)
      * Check the informations entered in the form and send errors if it exists
@@ -111,80 +80,36 @@ class FileController extends Controller
         $id_eq=intval($request->eq_id) ; 
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-
-        //Creation of a new file
-        $file=File::create([
-            'file_name' => $request->file_name,
-            'file_location' => $request->file_location,
-            'file_validate' => $request->file_validate,
-            'file_validate' => $request->file_validate,
-            'equipmentTemp_id' => $mostRecentlyEqTmp->id,
-        ]) ; 
-
-        $file_id=$file->id;
-
-
         if ($mostRecentlyEqTmp!=NULL){
-             //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add file
-            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
+
+            //Creation of a new file
+            $file=File::create([
+                'file_name' => $request->file_name,
+                'file_location' => $request->file_location,
+                'file_validate' => $request->file_validate,
+                'file_validate' => $request->file_validate,
+                'equipmentTemp_id' => $mostRecentlyEqTmp->id,
+            ]) ; 
+
+            $file_id=$file->id;
+            
+             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add file
+            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
-               //We need to increase the number of equipment temp linked to the equipment
-               $version_eq=$equipment->eq_nbrVersion+1 ; 
-               //Update of equipment
-               $equipment->update([
-                   'eq_nbrVersion' =>$version_eq,
-               ]);
-               
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-               //Creation of a new equipment temp
-               $new_eqTemp=EquipmentTemp::create([
-                   'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-               ]);
-
-               $file->update([
-                    'equipmentTemp_id' => $new_eqTemp->id,
-               ]);
-                   
-               //We copy the links of the actual Equipment temp to the new equipment temp 
-               $DimController= new DimensionController() ; 
-               $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $SpProcController= new SpecialProcessController() ; 
-               $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, $file_id) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             // In the other case, we can add informations without problems
-
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+            
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+                //update of equipment temp
+            $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
             }
             return response()->json($file_id) ; 
         }
@@ -203,8 +128,8 @@ class FileController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update file 
+            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -215,70 +140,19 @@ class FileController extends Controller
                 
                //We need to increase the version of the equipment temp (because we create a new equipment temp)
                 $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                    'eqTemp_version' => $version,
-                    'eqTemp_date' => Carbon::now('Europe/Paris'),
-                    'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                    'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                    'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                    'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                    'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                    'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                    'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                    'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                    'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                    'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
-                
-                
-                //Creation of a new file
-                $file=File::create([
-                    'file_name' => $request->file_name,
-                    'file_location' => $request->file_location,
-                    'file_validate' => $request->file_validate,
-                    'equipmentTemp_id' => $new_eqTemp->id,
-                ]) ; 
-                    
-                //We copy the links of the actual Equipment temp to the new equipment temp 
-               $DimController= new DimensionController() ; 
-               $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $SpProcController= new SpecialProcessController() ; 
-               $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-            
-            
-
-                // In the other case, we can modify the informations without problems
-            }else{
-
-                $file=File::findOrFail($id) ; 
-                $file->update([
-                    'file_name' => $request->file_name,
-                    'file_location' => $request->file_location,
-                    'file_validate' => $request->file_validate,
-                ]);
+                 //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
             }
+
+            $file=File::findOrFail($id) ; 
+            $file->update([
+                'file_name' => $request->file_name,
+                'file_location' => $request->file_location,
+                'file_validate' => $request->file_validate,
+            ]);
         }
     }
 
@@ -310,7 +184,28 @@ class FileController extends Controller
      * Delete a file thanks to the id given in parameter
      * The id parameter correspond to the id of the file we want to delete
      * */
-    public function delete_file($id){
+    public function delete_file(Request $request, $id){
+        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        //We search the most recently equipment temp of the equipment 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            //update of equipment temp
+            $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
+        }
         $file=File::findOrFail($id);
         $file->delete() ; 
     }

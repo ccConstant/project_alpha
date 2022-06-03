@@ -300,6 +300,9 @@ export default {
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
+            }else{
+                this.$emit('deletePrvMtnOp','')
+
             }
             
         },

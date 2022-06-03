@@ -17,13 +17,6 @@ use App\Models\EquipmentTemp ;
 use App\Models\PreventiveMaintenanceOperation ; 
 use App\Models\PreventiveMaintenanceOperationRealized ; 
 use App\Models\Equipment ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\DimensionController;
-use App\Http\Controllers\SpecialProcessController ; 
 use Carbon\Carbon;
 
 class PreventiveMaintenanceOperationController extends Controller
@@ -168,68 +161,26 @@ class PreventiveMaintenanceOperationController extends Controller
             
         $prvMtnOp_id=$prvMtnOp->id;
         if ($mostRecentlyEqTmp!=NULL){
-             //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add preventive maintenance operation
-            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
+             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add prvMtnOp
+            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
-               //We need to increase the number of equipment temp linked to the equipment
-               $version_eq=$equipment->eq_nbrVersion+1 ; 
-               //Update of equipment
-               $equipment->update([
-                   'eq_nbrVersion' =>$version_eq,
-               ]);
-               
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-               //Creation of a new equipment temp
-               $new_eqTemp=EquipmentTemp::create([
-                   'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-               ]);
-
-               $prvMtnOp->update([
-                    'equipmentTemp_id' => $new_eqTemp->id,
-               ]);
-                   
-               //We copy the links of the actual Equipment temp to the new equipment temp 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risEqTemp($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, $prvMtnOp_id) ; 
-
-             // In the other case, we can add informations without problems
+                //We need to increase the number of equipment temp linked to the equipment
+                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                //Update of equipment
+                $equipment->update([
+                    'eq_nbrVersion' =>$version_eq,
+                ]);
+                
+                //We need to increase the version of the equipment temp (because we create a new equipment temp)
+                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+                //update of equipment temp
+                $mostRecentlyEqTmp->update([
+                 'eqTemp_version' => $version,
+                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                ]);
             }
-            return response()->json($prvMtnOp_id) ; 
         }
+        return response()->json($prvMtnOp_id) ; 
     }
 
 
@@ -275,8 +226,8 @@ class PreventiveMaintenanceOperationController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+           //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update prvMtnOp
+            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -284,128 +235,48 @@ class PreventiveMaintenanceOperationController extends Controller
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                    'eqTemp_version' => $version,
-                    'eqTemp_date' => Carbon::now('Europe/Paris'),
-                    'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                    'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                    'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                    'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                    'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                    'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                    'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                    'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                    'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                    'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
-                
-                $prvMtnOpOld=PreventiveMaintenanceOperation::findOrFail($id) ; 
-        
-                //Creation of a new preventive maintenance operation
-                $prvMtnOp=PreventiveMaintenanceOperation::create([
-                    'prvMtnOp_number' => $prvMtnOpOld->prvMtnOp_number,
-                    'prvMtnOp_description' => $request->prvMtnOp_description,
-                    'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
-                    'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
-                    'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
-                    'prvMtnOp_startDate' => $prvMtnOpOld->prvMtnOp_startDate,
-                    'prvMtnOp_nextDate' => $prvMtnOpOld->prvMtnOp_nextDate,
-                    'prvMtnOp_validate' => $request->prvMtnOp_validate,
-                    'equipmentTemp_id' => $new_eqTemp->id,
-                ]) ;
 
-                /*if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity ||  $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
-                    
-                    $nextDate=NULL ; 
-    
-                    $nextDate=Carbon::create($oldPrvMtnOp->prvMtnOp_startDate->year, $oldPrvMtnOp->prvMtnOp_startDate->month, $oldPrvMtnOp->prvMtnOp_startDate->day, $oldPrvMtnOp->prvMtnOp_startDate->hour, $oldPrvMtnOp->prvMtnOp_startDate->minute, $oldPrvMtnOp->prvMtnOp_startDate->second);
-                    if ($request->prvMtnOp_symbolPeriodicity=='Y'){
-                        $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
-                    }
-        
-                    if ($request->prvMtnOp_symbolPeriodicity=='M'){
-                        $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
-                    }
-                    
-                    if ($request->prvMtnOp_symbolPeriodicity=='D'){
-                        $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
-                    }
-        
-                    if ($request->prvMtnOp_symbolPeriodicity=='H'){
-                        $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
-                    }
-
-                    $prvMtnOp->update([
-                        'prvMtnOp_nextDate' => $nextDate,
-                    ]);
-                }*/
-                
-                //Dédoubler les liens de eqTemps 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-            
-                $PowerController= new PowerController() ; 
-                $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $FileController= new FileController() ; 
-                $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $UsageController= new UsageController() ; 
-                $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $StateController= new StateController() ; 
-                $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-            
-                $RiskController= new RiskController() ; 
-                $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-                $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
-        
-
-                // In the other case, we can modify the informations without problems
-            }else{
-               
-               /*if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
-                    $nextDate=Carbon::create($oldPrvMtnOp->prvMtnOp_startDate->year, $oldPrvMtnOp->prvMtnOp_startDate->month, $oldPrvMtnOp->prvMtnOp_startDate->day, $oldPrvMtnOp->prvMtnOp_startDate->hour, $oldPrvMtnOp->prvMtnOp_startDate->minute, $oldPrvMtnOp->prvMtnOp_startDate->second);
-                    return response()->json($nextDate) ;
-
-                    if ($request->prvMtnOp_symbolPeriodicity=='Y'){
-                        $nextDate->addYears($request->prvMtnOp_periodicity) ; 
-                    }
-        
-                    if ($request->prvMtnOp_symbolPeriodicity=='M'){
-                        $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
-                    }
-                    
-                    if ($request->prvMtnOp_symbolPeriodicity=='D'){
-                        $nextDate->addDays($request->prvMtnOp_periodicity) ; 
-                        return response()->json($nextDate) ;
-                    }
-                   /* if ($request->prvMtnOp_symbolPeriodicity=='H'){
-                        $nextDate->addHours($request->prvMtnOp_periodicity) ; 
-                    }
-                   /* $oldPrvMtnOp->update([
-                        'prvMtnOp_nextDate' => $nextDate,
-                    ]);
-                }
-                */
-                $oldPrvMtnOp->update([
-                    'prvMtnOp_description' => $request->prvMtnOp_description,
-                    'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
-                    'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
-                    'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
-                    'prvMtnOp_validate' => $request->prvMtnOp_validate,
-                ]) ;
+                //We need to increase the version of the equipment temp (because we create a new equipment temp)
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
             }
+
+            /*if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
+                $nextDate=Carbon::create($oldPrvMtnOp->prvMtnOp_startDate->year, $oldPrvMtnOp->prvMtnOp_startDate->month, $oldPrvMtnOp->prvMtnOp_startDate->day, $oldPrvMtnOp->prvMtnOp_startDate->hour, $oldPrvMtnOp->prvMtnOp_startDate->minute, $oldPrvMtnOp->prvMtnOp_startDate->second);
+                return response()->json($nextDate) ;
+
+                if ($request->prvMtnOp_symbolPeriodicity=='Y'){
+                    $nextDate->addYears($request->prvMtnOp_periodicity) ; 
+                }
+    
+                if ($request->prvMtnOp_symbolPeriodicity=='M'){
+                    $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
+                }
+                
+                if ($request->prvMtnOp_symbolPeriodicity=='D'){
+                    $nextDate->addDays($request->prvMtnOp_periodicity) ; 
+                    return response()->json($nextDate) ;
+                }
+                /* if ($request->prvMtnOp_symbolPeriodicity=='H'){
+                    $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+                }
+                /* $oldPrvMtnOp->update([
+                    'prvMtnOp_nextDate' => $nextDate,
+                ]);
+            }
+            */
+            $oldPrvMtnOp->update([
+                'prvMtnOp_description' => $request->prvMtnOp_description,
+                'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
+                'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
+                'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
+                'prvMtnOp_validate' => $request->prvMtnOp_validate,
+            ]) ;
+
         }
     }
 
@@ -470,13 +341,13 @@ class PreventiveMaintenanceOperationController extends Controller
     /**
      * Function call by ???  with the route : /prvMtnOp/send/validated/{id} (get)
      * Get the preventive maintenance operations validated of the equipment whose id is passed in parameter
-     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations VALIDATED
+     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations validated
      * @return \Illuminate\Http\Response
      */
     public function send_prvMtnOp_from_eq_validated($id) {
         $container=array() ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "VALIDATED")->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
 
        foreach ($prvMtnOps as $prvMtnOp) {
            if ($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL){
@@ -499,7 +370,7 @@ class PreventiveMaintenanceOperationController extends Controller
      */
    /* public function send_all_prvMtnOp_validated() {
         $container=array() ; 
-        $prvMtnOps=PreventiveMaintenanceOperation::where('prvMtnOp_validate', '=', "VALIDATED")->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('prvMtnOp_validate', '=', "validated")->get() ; 
        foreach ($prvMtnOps as $prvMtnOp) {
            if ($prvMtnOp->prvMtnOp_reformDate=='' && $prvMtnOp->prvMtnOp_reformDate==NULL){
                 $obj=([
@@ -520,6 +391,28 @@ class PreventiveMaintenanceOperationController extends Controller
      * The id parameter correspond to the id of the preventive maintenance operation we want to delete
      * */
     public function delete_prvMtnOp(Request $request, $id){
+        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        //We search the most recently equipment temp of the equipment 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            //update of equipment temp
+            $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
+        }
+        
         $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $request->eq_id)->get() ; 
         $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('prvMtnOp_id', '=', $id)->get() ; 
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 

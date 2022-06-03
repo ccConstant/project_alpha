@@ -21,13 +21,8 @@ use App\Models\Risk;
 use App\Models\Usage;
 use App\Models\EnumEquipmentMassUnit ;
 use App\Models\EnumEquipmentType ;
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
 use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
 use App\Http\Controllers\SpecialProcessController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
 use Carbon\Carbon;
 
 class EquipmentController extends Controller{
@@ -205,7 +200,7 @@ class EquipmentController extends Controller{
             'state_startDate' =>  Carbon::now('Europe/Paris'),
             'state_isOk' => true,
             'state_validate' => "drafted",
-            'state_name' => "WAITING_FOR_REFERENCING"
+            'state_name' => "Waiting_for_referencing"
         ]) ; 
         
         $newState->equipment_temps()->attach($new_eqTemp);
@@ -442,7 +437,7 @@ class EquipmentController extends Controller{
 
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-        if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated===true && ($type_id != $mostRecentlyEqTmp->enumType_id || $request->eq_mass != $mostRecentlyEqTmp->eqTemp_mass || $massUnit_id != $mostRecentlyEqTmp->enumMassUnit_id || $request->eq_remarks!=$mostRecentlyEqTmp->eqTemp_remarks || $request->eq_mobility!=$mostRecentlyEqTmp->eqTemp_mobility)){
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated===true && ($type_id != $mostRecentlyEqTmp->enumType_id || $request->eq_mass != $mostRecentlyEqTmp->eqTemp_mass || $massUnit_id != $mostRecentlyEqTmp->enumMassUnit_id || $request->eq_remarks!=$mostRecentlyEqTmp->eqTemp_remarks || $request->eq_mobility!=$mostRecentlyEqTmp->eqTemp_mobility)){
             //We need to increase the number of equipment temp linked to the equipment
             $version_eq=$equipment->eq_nbrVersion+1 ; 
             //Update of equipment
@@ -453,47 +448,21 @@ class EquipmentController extends Controller{
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
             $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
             //Creation of a new equipment temp
-            $new_eqTemp=EquipmentTemp::create([
-                'equipment_id'=> $id,
+            $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_validate' => $request->eq_validate,
                 'enumMassUnit_id' => $massUnit_id,
                 'eqTemp_mass' => $request->eq_mass,
                 'eqTemp_remarks' => $request->eq_remarks,
-                // NEED TO UPDATE
-                'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
+                'eq_mobility' => $request->eq_mobility,
+                'enumType_id' => $type_id,
+                 // NEED TO UPDATE
+               /* 'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
                 'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
                 'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                'eqTemp_mobility' => $request->eq_mobility,
-                'enumType_id' => $type_id,
-                'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
+                'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,*/
             ]);
-
-             //We copy the links of the actual Equipment temp to the new equipment temp 
-             $DimController= new DimensionController() ; 
-             $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             $SpProcController= new SpecialProcessController() ; 
-             $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             $PowerController= new PowerController() ; 
-             $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             $FileController= new FileController() ; 
-             $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             $UsageController= new UsageController() ; 
-             $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             $StateController= new StateController() ; 
-             $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-         
-             $RiskController= new RiskController() ; 
-             $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-             $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
 
             // In the other case, we can modify the informations without problems
         }else{
@@ -536,7 +505,7 @@ class EquipmentController extends Controller{
         $containerOp=array() ;
         foreach($equipments as $equipment){
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp->eqTemp_validate==="VALIDATED"){
+            if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', "=", $mostRecentlyEqTmp->id)->get() ;
                 foreach( $prvMtnOps as $prvMtnOp){
                     $opMtn=([
@@ -578,7 +547,7 @@ class EquipmentController extends Controller{
 
     public function verif_validation($id){
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
+        if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){
             return response()->json([
                 'errors' => [
                     'validation' => ["You can't validate an equipment that doesn't have a validated ID card"]
@@ -586,7 +555,7 @@ class EquipmentController extends Controller{
             ], 429);
         }
 
-        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('file_validate', '=', 'VALIDATED')->get() ; 
+        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('file_validate', '=', 'validated')->get() ; 
         if (count($files)<1){
             return response()->json([
                 'errors' => [
@@ -595,7 +564,7 @@ class EquipmentController extends Controller{
             ], 429);
         }
         
-        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('usage_validate', '=', 'VALIDATED')->get() ; 
+        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('usage_validate', '=', 'validated')->get() ; 
         if (count($usages)<1){
             return response()->json([
                 'errors' => [
@@ -606,7 +575,7 @@ class EquipmentController extends Controller{
         
         if ($mostRecentlyEqTmp->specialProcess_id==NULL){
             $spProc=SpecialProcess::findOrFail($mostRecentlyEqTmp->specialProcess_id) ; 
-            if ($spProc->spProc_validate!="VALIDATED"){
+            if ($spProc->spProc_validate!="validated"){
                 return response()->json([
                     'errors' => [
                         'validation' => ["You can't validate an equipment that doesn't have one special process"]
@@ -615,7 +584,7 @@ class EquipmentController extends Controller{
             }
         }
 
-        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('risk_validate', '=', 'VALIDATED')->get() ; 
+        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('risk_validate', '=', 'validated')->get() ; 
         if (count($risks)<1){
             return response()->json([
                 'errors' => [
@@ -624,7 +593,7 @@ class EquipmentController extends Controller{
             ], 429);
         }
 
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp->validate', '=', 'VALIDATED')->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp->validate', '=', 'validated')->get() ; 
         if (count($prvMtnOps)<1){
             return response()->json([
                 'errors' => [

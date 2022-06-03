@@ -291,6 +291,7 @@ export default {
                 //Send a post request with the id of the power who will be deleted in the url
                 var consultUrl = (id) => `/equipment/delete/pow/${id}`;
                 axios.post(consultUrl(this.pow_id),{
+                    eq_id:this.equipment_id_update
                 })
                 .then(response =>{
                     this.$emit('deletePow','');
@@ -299,6 +300,8 @@ export default {
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
+            }else{
+                this.$emit('deletePow','');
             }
         },
         clearSelectError(value){

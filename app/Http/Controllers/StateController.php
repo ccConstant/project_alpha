@@ -18,38 +18,13 @@ use App\Models\State ;
 use App\Models\Equipment ; 
 use App\Models\PreventiveMaintenanceOperationRealized;
 use App\Models\CurativeMaintenanceOperation;
-use App\Http\Controllers\DimensionController ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\SpecialProcessController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
+
 
 use Carbon\Carbon;
 
 
 class StateController extends Controller
 {
-
-      /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and state
-     * Copy the links between a equipment temp and a state to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the states
-     * The newId parameter correspond of the id of the equipment where we want to copy the states
-     * The idNotCopy parameter correspond of the id of the state we don't have to copy 
-     * */
-    public function copy_state($actualId, $newId, $idNotCopy){ 
-        $actualEqTemp= EquipmentTemp::findOrFail($actualId) ; 
-        $newEqTemp= EquipmentTemp::findOrFail($newId) ; 
-        $states=$actualEqTemp->states ; 
-        foreach($states as $state){
-            if ($state->id!=$idNotCopy){
-                $state->equipment_temps()->attach($newEqTemp);
-            }
-        }
-    }
 
 
     /**
@@ -61,16 +36,6 @@ class StateController extends Controller
         //-----CASE state->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his state, so he must enter all the attributes
        
-        if ($request->state_validate=='validated'){
-            //verification about state_isOk, if no one value is selected we need to alert the user
-            if ($request->state_isOk==='' || $request->state_isOk===NULL ){
-                return response()->json([
-                    'errors' => [
-                        'state_isOk' => ["You must said if all the verifications in the state went well"]
-                    ]
-                ], 429);
-            }
-        }
         $this->validate(
             $request,
             [
@@ -201,71 +166,9 @@ class StateController extends Controller
         $id_eq=intval($request->eq_id) ; 
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-        if ($mostRecentlyEqTmp!=NULL){
-             //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add state
-            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
-                
-               //We need to increase the number of equipment temp linked to the equipment
-               $version_eq=$equipment->eq_nbrVersion+1 ; 
-               //Update of equipment
-               $equipment->update([
-                   'eq_nbrVersion' =>$version_eq,
-               ]);
-               
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-               //Creation of a new equipment temp
-               $new_eqTemp=EquipmentTemp::create([
-                   'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-               ]);
+        $state->equipment_temps()->attach($mostRecentlyEqTmp) ;
 
-               $state->equipment_temps()->attach($new_eqTemp);
-                   
-               //We copy the links of the actual Equipment temp to the new equipment temp 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, $state_id) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-             // In the other case, we can add informations without problems
-            }else{
-
-                $state->equipment_temps()->attach($mostRecentlyEqTmp) ;
-
-            }
-            return response()->json($state_id) ; 
-        }
+        return response()->json($state_id) ; 
     }
 
 
@@ -282,92 +185,14 @@ class StateController extends Controller
             $date=$request->state_startDate ; 
         }
         
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
-        if ($mostRecentlyEqTmp!=NULL){
-            //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
-                //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
-                //Update of equipment
-                $equipment->update([
-                    'eq_nbrVersion' =>$version_eq,
-                ]);
-                
-               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                    'eqTemp_version' => $version,
-                    'eqTemp_date' => Carbon::now('Europe/Paris'),
-                    'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                    'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                    'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                    'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                    'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                    'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                    'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                    'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                    'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                    'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
-                
-                //Creation of a new state
-                $state=State::create([
-                    'state_remarks' => $request->state_remarks,
-                    'state_validate' => $request->state_validate,
-                    'state_isOk' => $request->state_isOk,
-                    'state_startDate' => $date,
-                    'state_name' => $request->state_name,
-                ]) ; 
-
-                $state->equipment_temps()->attach($new_eqTemp);
-                    
-                //Dédoubler les liens de eqTemps 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk_eqTemp($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-            
-
-                // In the other case, we can modify the informations without problems
-            }else{
-
-                $state=State::findOrFail($id) ; 
-                $state->update([
-                    'state_remarks' => $request->state_remarks,
-                   'state_validate' => $request->state_validate,
-                    'state_isOk' => $request->state_isOk,
-                    'state_startDate' => $date,
-                    'state_endDate' => $request->state_endDate,
-                    'state_name' => $request->state_name,
-                ]) ; 
-                return response()->json($request->state_validate) ; 
-            }
-        }
+        $state=State::findOrFail($id) ; 
+        $state->update([
+            'state_remarks' => $request->state_remarks,
+            'state_validate' => $request->state_validate,
+            'state_isOk' => $request->state_isOk,
+            'state_startDate' => $date,
+            'state_name' => $request->state_name,
+        ]) ;
     }
 
     /**
@@ -441,7 +266,7 @@ class StateController extends Controller
         }
 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-        if ($mostRecentlyEqTmp->eqTemp_validate!="VALIDATED"){
+        if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){
             return response()->json([
                 'errors' => [
                     'verif_reference' => ["You can't add a maintenance operation while you have'nt finished to complete the Id card of the equipment"]

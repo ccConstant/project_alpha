@@ -87,7 +87,7 @@ class CurativeMaintenanceOperationController extends Controller
 
         if ($request->reason=="update"){
             $curMtnOp=CurativeMaintenanceOperation::FindOrFail($request->curMtnOp_id ) ;
-            if ($curMtnOp->curMtnOp_validate=="VALIDATED"){
+            if ($curMtnOp->curMtnOp_validate=="validated"){
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You can't update a curative maintenance operation already validated"]
@@ -186,7 +186,7 @@ class CurativeMaintenanceOperationController extends Controller
      * */
     public function delete_curMtnOp($id){
         $curMtnOp=CurativeMaintenanceOperation::findOrFail($id);
-        if ($curMtnOp->curMtnOp_validate=='VALIDATED'){
+        if ($curMtnOp->curMtnOp_validate=='validated'){
             return response()->json([
                 'errors' => [
                     'curMtnOp_delete' => ["You can't delete a curative maintenance operation validated"]

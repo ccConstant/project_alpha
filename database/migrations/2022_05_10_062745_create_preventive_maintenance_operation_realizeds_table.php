@@ -29,7 +29,7 @@ return new class extends Migration
             $table->date('prvMtnOpRlz_startDate') ;
             $table->date('prvMtnOpRlz_endDate') -> nullable(); 
             $table->date('prvMtnOpRlz_entryDate') ->nullable();
-            $table->enum('prvMtnOpRlz_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ; 
+            $table->enum('prvMtnOpRlz_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enteredBy_id') -> nullable() ; 
             $table->foreign('enteredBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('realizedBy_id')  -> nullable() ; 

@@ -18,13 +18,6 @@ use App\Models\Risk ;
 use App\Models\Equipment ; 
 use App\Models\EnumRiskFor; 
 use App\Models\PreventiveMaintenanceOperation ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\DimensionController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
-use App\Http\Controllers\SpecialProcessController ; 
 use Carbon\Carbon;
 
 
@@ -34,30 +27,6 @@ class RiskController extends Controller
     /*************************************************** TREATMENTS FOR AN EQUIPMENT ***************************************************\
      
 
-     /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and a risk
-     * Copy the links between a equipment temp and a risk to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the risk
-     * The newId parameter correspond of the id of the equipment where we want to copy the risk
-     * The idNotCopy parameter correspond of the id of the risk we don't have to copy 
-     * */
-    public function copy_risk_eqTemp($actualId, $newId, $idNotCopy){   
-        $risks = Risk::where('equipmentTemp_id', '=', $actualId)->get();
-        foreach($risks as $risk){
-            if ($risk->id!=$idNotCopy){
-                //Creation of a new risk
-                $newRisk=Risk::create([
-                    'risk_remarks' => $risk->risk_remarks,
-                    'risk_wayOfControl' => $risk->risk_wayOfControl,
-                    'risk_validate' => $risk->risk_validate,
-                    'enumRiskFor_id'=> $risk-> enumRiskFor_id,
-                    'equipmentTemp_id' =>$newId,
-                ]) ; 
-                
-            }
-        }
-    }
-
     /**
      * Function call by EquipmentRiskForm.vue when the form is submitted for insert with the route : /equipment/add/risk/ (post)
      * Add a new enregistrement of risk in the data base with the informations entered in the form 
@@ -65,6 +34,8 @@ class RiskController extends Controller
      */
     public function add_risk_eqTemp(Request $request){
 
+        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         //A risk is linked to its target. So we need to find the id of the type choosen by the user and write it in the attribute of the risk.
          //But if no one type is choosen by the user we define this id to NULL
          // And if the type choosen is find in the data base the NULL value will be replace by the id value
@@ -80,16 +51,15 @@ class RiskController extends Controller
             'risk_wayOfControl' => $request->risk_wayOfControl,
             'risk_validate' => $request->risk_validate,
             'enumRiskFor_id'=> $target_id,
+            'equipmentTemp_id' => $mostRecentlyEqTmp->id,
         ]) ;
             
          $risk_id=$risk->id;
          $id_eq=intval($request->eq_id) ; 
-         $equipment=Equipment::findOrfail($request->eq_id) ; 
-         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
          if ($mostRecentlyEqTmp!=NULL){
-              //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add risk
-             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
-                 
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add risk
+            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
+                
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
                 //Update of equipment
@@ -99,61 +69,14 @@ class RiskController extends Controller
                 
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
                 $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                 'equipment_id'=> $request->eq_id,
-                 'eqTemp_version' => $version,
-                 'eqTemp_date' => Carbon::now('Europe/Paris'),
-                 'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                 'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                 'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                 'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                 'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                 'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                 'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                 'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                 'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                 'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
+                //update of equipment temp
+                $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
                 ]);
- 
-                $risk->update([
-                    'equipmentTemp_id' => $new_eqTemp->id,
-                ]);
-                
-                //We copy the links of the actual Equipment temp to the new equipment temp 
-                 $DimController= new DimensionController() ; 
-                 $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                 $SpProcController= new SpecialProcessController() ; 
-                 $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $PowerController= new PowerController() ; 
-                 $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $FileController= new FileController() ; 
-                 $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $UsageController= new UsageController() ; 
-                 $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $StateController= new StateController() ; 
-                 $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-             
-                 $RiskController= new RiskController() ; 
-                 $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, $risk_id) ; 
-  
-                 $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-                 $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-              // In the other case, we can add informations without problems
-             }else{
- 
-                $risk->update([
-                    'equipmentTemp_id' => $mostRecentlyEqTmp->id,
-                ]);
- 
-             }
-             return response()->json($risk_id) ; 
+            }
          }
+         return response()->json($risk_id) ; 
     }
 
      /**
@@ -177,8 +100,8 @@ class RiskController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update risk
+            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -186,69 +109,24 @@ class RiskController extends Controller
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
                 
-                //Creation of a new risk
-                $risk=Risk::create([
-                    'risk_remarks' => $request->risk_remarks,
-                    'risk_wayOfControl' => $request->risk_wayOfControl,
-                    'risk_validate' => $request->risk_validate,
-                    'enumRiskFor_id'=> $target_id,
-                    'equipmentTemp_id'=>$new_eqTemp->id,
-                ]) ; 
-
-
-                //Dédoubler les liens de eqTemps 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-        
-               $PowerController= new PowerController() ; 
-               $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $FileController= new FileController() ; 
-               $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $UsageController= new UsageController() ; 
-               $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-               $StateController= new StateController() ; 
-               $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-           
-               $RiskController= new RiskController() ; 
-               $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
-
-               $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-               $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
                 // In the other case, we can modify the informations without problems
-            }else{
-
-                $risk=Risk::findOrFail($id) ; 
-                $risk->update([
-                    'risk_remarks' => $request->risk_remarks,
-                    'risk_wayOfControl' => $request->risk_wayOfControl,
-                    'risk_validate' => $request->risk_validate,
-                    'enumRiskFor_id'=> $target_id,
-                ]) ; 
             }
+            $risk=Risk::findOrFail($id) ; 
+            $risk->update([
+                'risk_remarks' => $request->risk_remarks,
+                'risk_wayOfControl' => $request->risk_wayOfControl,
+                'risk_validate' => $request->risk_validate,
+                'enumRiskFor_id'=> $target_id,
+            ]); 
         }
     }
 
@@ -285,28 +163,6 @@ class RiskController extends Controller
 
     /*************************************************** TREATMENTS FOR AN PREVENTIVE MAINTENANCE OPERATION  ***************************************************\
     
-    /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and a risk
-     * Copy the links between a preventive maintenance operation and a risk to the preventive maintenance operation
-     *  The id parameter corresponds to the id of the preventive maintenance operation from which we want the risks
-     * */
-    public function copy_risk_linked_prvMtnOp($actualId, $newId, $idNotCopy){   
-        $actualPrvMtnOp= PreventiveMaintenanceOperation::findOrFail($actualId) ; 
-        $newPrvMtnOp= PreventiveMaintenanceOperation::findOrFail($newId) ; 
-        $risks=$actualPrvMtnOp->risks ; 
-        foreach($risks as $risk){
-            if ($risk->id!=$idNotCopy){
-                //Creation of a new risk
-                $newRisk=Risk::create([
-                    'risk_remarks' => $request->risk_remarks,
-                    'risk_wayOfControl' => $request->risk_wayOfControl,
-                    'risk_validate' => $request->risk_validate,
-                    'enumRiskFor_id'=> $request-> $target_id,
-                    'equipmentTemp_id' => $new_eqTemp->id,
-                ]) ; 
-            }
-        }
-    }
 
     /**
      * Function call by EquipmentRiskForm.vue when the form is submitted for insert with the route : /equipment/add/prvMtnOp/risk/ (post)
@@ -330,6 +186,7 @@ class RiskController extends Controller
              'risk_wayOfControl' => $request->risk_wayOfControl,
              'risk_validate' => $request->risk_validate,
              'enumRiskFor_id'=> $target_id,
+             'preventiveMaintenanceOperation_id' => $request->prvMtnOp_id,
          ]) ; 
 
  
@@ -339,92 +196,25 @@ class RiskController extends Controller
          $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ;
          $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
          if ($mostRecentlyEqTmp!=NULL){
-              //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version) for add risk
-             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="VALIDATED"){
-                 
-                //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
-                //Update of equipment
-                $equipment->update([
-                    'eq_nbrVersion' =>$version_eq,
-                ]);
-                
-                //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                 'equipment_id'=> $request->eq_id,
-                 'eqTemp_version' => $version,
-                 'eqTemp_date' => Carbon::now('Europe/Paris'),
-                 'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                 'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                 'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                 'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                 'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                 'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                 'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                 'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                 'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                 'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
-
-                
-                //We copy the links of the actual Equipment temp to the new equipment temp 
-                 $DimController= new DimensionController() ; 
-                 $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $PowerController= new PowerController() ; 
-                 $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $FileController= new FileController() ; 
-                 $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $UsageController= new UsageController() ; 
-                 $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-  
-                 $StateController= new StateController() ; 
-                 $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-             
-                 $RiskController= new RiskController() ; 
-                 $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, $risk_id) ; 
-  
-                 $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-                 $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-
-                 //Creation of a new preventive maintenance operation
-                $newPrvMtnOp=PreventiveMaintenanceOperation::create([
-                    'prvMtnOp_number' => $prvMtnOp->prvMtnOp_number,
-                    'prvMtnOp_description' => $prvMtnOp->prvMtnOp_description,
-                    'prvMtnOp_periodicity' => $prvMtnOp->prvMtnOp_periodicity,
-                    'prvMtnOp_symbolPeriodicity' => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-                    'prvMtnOp_protocol' => $prvMtnOp->prvMtnOp_protocol,
-                    'prvMtnOp_startDate' => $prvMtnOp->prvMtnOp_startDate,
-                    'prvMtnOp_validate' => $prvMtnOp->prvMtnOp_validate,
-                ]) ; 
-
-
-                $newPrvMtnOp->equipment_temps()->attach($new_eqTemp);
-
-                $risk->update([
-                    'preventiveMaintenanceOperation_id' => $newPrvMtnOp->id,
-                ]);
-
-                //tout rattacher à op prev mtn :  op mtn prev realized
-                $RiskController= new RiskController() ; 
-                $RiskController->copy_risk_linked_prvMtnOp($prvMtnOp->id, $newPrvMtnOp->id, $risk_id) ; 
-
-
-              // In the other case, we can add informations without problems
-             }else{
- 
-                $risk->update([
-                    'preventiveMaintenanceOperation_id' => $prvMtnOp->id,
-                ]);
-                
- 
-             }
-             return response()->json($risk_id) ; 
+           //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add risk
+           if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
+               
+              //We need to increase the number of equipment temp linked to the equipment
+              $version_eq=$equipment->eq_nbrVersion+1 ; 
+              //Update of equipment
+              $equipment->update([
+                  'eq_nbrVersion' =>$version_eq,
+              ]);
+              
+              //We need to increase the version of the equipment temp (because we create a new equipment temp)
+              $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+              //update of equipment temp
+              $mostRecentlyEqTmp->update([
+               'eqTemp_version' => $version,
+               'eqTemp_date' => Carbon::now('Europe/Paris'),
+              ]);
+           }
+            return response()->json($risk_id) ; 
          }
     }
 
@@ -450,103 +240,33 @@ class RiskController extends Controller
          $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
-            if ($mostRecentlyEqTmp->eqTemp_validate=="VALIDATED" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update risk
+            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
-                //Creation of a new risk
-                $risk=Risk::create([
-                    'risk_remarks' => $request->risk_remarks,
-                    'risk_wayOfControl' => $request->risk_wayOfControl,
-                    'risk_validate' => $request->risk_validate,
-                    'enumRiskFor_id'=> $target_id,
-                ]) ; 
-
                 //We need to increase the number of equipment temp linked to the equipment
                 $version_eq=$equipment->eq_nbrVersion+1 ; 
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //Creation of a new equipment temp
-                $new_eqTemp=EquipmentTemp::create([
-                    'equipment_id'=> $request->eq_id,
-                   'eqTemp_version' => $version,
-                   'eqTemp_date' => Carbon::now('Europe/Paris'),
-                   'eqTemp_validate' => $mostRecentlyEqTmp->eqTemp_validate,
-                   'enumMassUnit_id' => $mostRecentlyEqTmp->enumMassUnit_id,
-                   'eqTemp_mass' => $mostRecentlyEqTmp->eqTemp_mass,
-                   'eqTemp_remarks' => $mostRecentlyEqTmp->eqTemp_remarks,
-                   'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                   'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                   'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                   'eqTemp_mobility' => $mostRecentlyEqTmp->eqTemp_mobility,
-                   'enumType_id' => $mostRecentlyEqTmp->enumType_id,
-                   'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,
-                ]);
-
-
-                //We copy the links of the actual Equipment temp to the new equipment temp 
-                $DimController= new DimensionController() ; 
-                $DimController->copy_dimension($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ;
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               //update of equipment temp
+               $mostRecentlyEqTmp->update([
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
                 
-                $SpProcController= new SpecialProcessController() ; 
-                $SpProcController->copy_specialProcess($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $PowerController= new PowerController() ; 
-                $PowerController->copy_power($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $FileController= new FileController() ; 
-                $FileController->copy_file($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $UsageController= new UsageController() ; 
-                $UsageController->copy_usage($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
- 
-                $StateController= new StateController() ; 
-                $StateController->copy_state($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-            
-                $RiskController= new RiskController() ; 
-                $RiskController->copy_risk($mostRecentlyEqTmp->id, $new_eqTemp->id, $id) ; 
- 
-                $PreventiveMaintenanceOperationController= new PreventiveMaintenanceOperationController() ; 
-                $PreventiveMaintenanceOperationController->copy_preventiveMaintenanceOperation($mostRecentlyEqTmp->id, $new_eqTemp->id, -1) ; 
-
-                 //Creation of a new preventive maintenance operation
-                 $newPrvMtnOp=PreventiveMaintenanceOperation::create([
-                    'prvMtnOp_number' => $prvMtnOp->prvMtnOp_number,
-                    'prvMtnOp_description' => $prvMtnOp->prvMtnOp_description,
-                    'prvMtnOp_periodicity' => $prvMtnOp->prvMtnOp_periodicity,
-                    'prvMtnOp_symbolPeriodicity' => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-                    'prvMtnOp_protocol' => $prvMtnOp->prvMtnOp_protocol,
-                    'prvMtnOp_startDate' => $prvMtnOp->prvMtnOp_startDate,
-                    'prvMtnOp_validate' => $prvMtnOp->prvMtnOp_validate,
-                ]) ; 
-
-
-                $newPrvMtnOp->equipment_temps()->attach($new_eqTemp);
-                $risk->update([
-                    'preventiveMaintenanceOperation_id' => $newPrvMtnOp->id,
-                ]);
-
-
-                //tout rattacher à op prev mtn :  op mtn prev realized
-                $RiskController= new RiskController() ; 
-                $RiskController->copy_risk_linked_prvMtnOp($prvMtnOp->id, $newPrvMtnOp->id, $risk_id) ; 
-                
-
                 // In the other case, we can modify the informations without problems
-            }else{
-
-                $risk=Risk::findOrFail($id) ; 
-                $risk->update([
-                    'risk_remarks' => $request->risk_remarks,
-                    'risk_wayOfControl' => $request->risk_wayOfControl,
-                    'risk_validate' => $request->risk_validate,
-                    'enumRiskFor_id'=> $target_id,
-                ]) ; 
             }
+            $risk=Risk::findOrFail($id) ; 
+            $risk->update([
+                'risk_remarks' => $request->risk_remarks,
+                'risk_wayOfControl' => $request->risk_wayOfControl,
+                'risk_validate' => $request->risk_validate,
+                'enumRiskFor_id'=> $target_id,
+            ]) ; 
         }
     }
 
@@ -638,7 +358,29 @@ class RiskController extends Controller
      * Delete a risk thanks to the id given in parameter
      * The id parameter correspond to the id of the risk we want to delete
      * */
-    public function delete_risk($id){
+    public function delete_risk(Request $request, $id){
+        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        //We search the most recently equipment temp of the equipment 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            //update of equipment temp
+            $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
+        }
+        
         $risk=Risk::findOrFail($id);
         $risk->delete() ; 
     }

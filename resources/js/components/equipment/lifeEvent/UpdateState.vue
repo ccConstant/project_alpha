@@ -14,8 +14,8 @@
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="state_remarks"/>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="state_startDate"/>
-                    <InputDateForm inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="state_startDate"/>
+                    <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
                 </div>
                 <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk"/> 
                 <SaveButtonForm v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
@@ -112,7 +112,7 @@ export default {
                     reason:'add'
                 })
                 .then(response =>{
-                    //console.log(response.data)
+                        this.errors={}
                         axios.post('/equipment/add/state',{
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,
@@ -150,6 +150,7 @@ export default {
 
                 })
                 .then(response =>{
+                        this.errors={}
                         var consultUrl = (id) => `/equipment/update/state/${id}`;
                         axios.post(consultUrl(this.state_id),{
                             state_name:this.state_name,
@@ -169,6 +170,9 @@ export default {
         /*Clear all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
+        },
+        clearDateError(){
+            delete this.errors['state_startDate'];
         },
     },
     created(){
@@ -190,6 +194,9 @@ export default {
                     this.loaded=true;
                 })
                 .catch(error => console.log(error)) ;
+        }else{
+            this.loaded=true;
+
         }
 
 

@@ -20,7 +20,7 @@
         <div>
             <b-button  @click="$bvModal.show(`modal-addEnum-${_uid}`)" variant="primary">Add a new enum</b-button>
 
-            <b-modal :id="`modal-addEnum-${_uid}`"  ref="modal" title="Submit Your Enum" @show="resetModal" @hidden="resetModal" @ok="handleOkAdd">
+            <b-modal :id="`modal-addEnum-${_uid}`"  ref="modal" :title="`Submit Your ${title} Enum`" @show="resetModal" @hidden="resetModal" @ok="handleOkAdd">
                 <form ref="form" @submit.stop.prevent="handleSubmitAdd">
                     <b-form-group label="Enum" label-for="enum-input" invalid-feedback="Enum is required" :state="enumState">
                         <b-form-input id="enum-input" v-model="returnedEnum" :state="enumState" required ></b-form-input>
@@ -28,16 +28,16 @@
                 </form>
             </b-modal>
 
-            <b-modal :id="`modal-updateEnum-${_uid}`"  ref="modal" title="Submit Your Enum" @show="resetModal" @hidden="resetModal" @ok="handleOkUpdate">
+            <b-modal :id="`modal-updateEnum-${_uid}`"  ref="modal" :title="`Update Your ${title} Enum`" @show="resetModal" @hidden="resetModal" @ok="handleOkUpdate">
                 <form ref="form" @submit.stop.prevent="handleSubmitUpdate">
                     <b-form-group label="Enum" label-for="enum-input" invalid-feedback="Enum is required" :state="enumState">
-                        <b-form-input id="enum-input" v-model="returnedEnum" :state="enumState" required :placeholder="this.sendedEnumValue"></b-form-input>
+                        <b-form-input id="enum-input" v-model="returnedEnum" :state="enumState" required></b-form-input>
                     </b-form-group>
                 </form>
             </b-modal>
 
         <b-modal :id="`modal-deleteEnum-${_uid}`"  @ok="deleteConfirmation">
-            <p class="my-4">Are you sure you want to delete this enum ?</p>
+            <p class="my-4">Are you sure you want to delete {{returnedEnum}} from {{this.title}} enum ?</p>
         </b-modal>
 
 
@@ -65,6 +65,9 @@ export default {
         },
         error_name:{
             type:String
+        },
+        enum_value:{
+            type:String
         }
     },
     data(){
@@ -87,7 +90,6 @@ export default {
             return valid
         },
         resetModal() {
-            this.returnedEnum = ''
             this.enumState = null
 
         },
@@ -141,7 +143,6 @@ export default {
             
             this.$nextTick(() => {
                 this.$bvModal.hide(`modal-updateEnum-${this.compId}`);
-                this.sendedEnumValue='';
                 this.sendedEnumId=null;
             })
         },
@@ -151,13 +152,12 @@ export default {
             .then(response =>{ window.location.reload();})
             .catch(error =>{this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name])}) ;
             this.$nextTick(() => {
-                this.sendedEnumValue='';
                 this.sendedEnumId=null;
             })
 
         },
         sendEnumInfo(element){
-            this.sendedEnumValue=element.value;
+            this.returnedEnum=element.value;
             this.sendedEnumId=element.id;
         },
         countDownChanged(dismissCountDown) {

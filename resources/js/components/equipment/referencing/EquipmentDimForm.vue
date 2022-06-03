@@ -273,6 +273,7 @@ export default {
                 //Send a post request with the id of the dimension who will be deleted in the url
                 var consultUrl = (id) => `/equipment/delete/dim/${id}`;
                 axios.post(consultUrl(this.dim_id),{
+                    eq_id:this.equipment_id_update
                 })
                 .then(response =>{
                     //Emit to the parent component that we want to delete this component
@@ -281,6 +282,8 @@ export default {
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
+            }else{
+                this.$emit('deleteDim','')
             }
             
         },
