@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\EquipmentTemp ; 
 use App\Models\State ; 
 use App\Models\Equipment ; 
-use App\Models\EnumStateName;
 use App\Models\PreventiveMaintenanceOperationRealized;
 use App\Models\CurativeMaintenanceOperation;
 use App\Http\Controllers\DimensionController ; 
@@ -143,15 +142,6 @@ class StateController extends Controller
      */
     public function add_state(Request $request){
 
-        //A state is linked to its name. So we need to find the id of the name choosen by the user and write it in the attribute of the state
-        //But if no one name is choosen by the user we define this id to NULL
-        // And if the name choosen is find in the data base the NULL value will be replace by the id value
-        $name_id=NULL ;
-        if ($request->state_name!='' && $request->state_name!=NULL){
-            $name= EnumStateName::where('value', '=', $request->state_name)->first() ;
-            $name_id=$name->id ; 
-        }
-
         //If the user has not entered a date we take the date of the current day
         $date=Carbon::now('Europe/Paris');
         if ($request->state_startDate!='' && $request->state_startDate!=NULL){
@@ -165,7 +155,7 @@ class StateController extends Controller
             'state_isOk' => $request->state_isOk,
             'state_startDate' => $date,
             'state_endDate' => $request->state_endDate,
-            'enumStateName_id' => $name_id,
+            'state_name' => $request->state_name,
         ]) ; 
         
         $state_id=$state->id;
@@ -246,15 +236,6 @@ class StateController extends Controller
      * The id parameter correspond to the id of the state we want to update
      * */
     public function update_state(Request $request, $id){
-       
-        //A state is linked to its name. So we need to find the id of the name choosen by the user and write it in the attribute of the state
-        //But if no one name is choosen by the user we define this id to NULL
-        // And if the name choosen is find in the data base the NULL value will be replace by the id value
-        $name_id=NULL ;
-        if ($request->state_name!='' && $request->state_name!=NULL){
-            $name= EnumStateName::where('value', '=', $request->state_name)->first() ;
-            $name_id=$name->id ; 
-        }
 
         //If the user has not entered a date we take the date of the current day
         $date=Carbon::now('Europe/Paris');
@@ -303,7 +284,7 @@ class StateController extends Controller
                     'state_isOk' => $request->state_isOk,
                     'state_startDate' => $date,
                     'state_endDate' => $request->state_endDate,
-                    'enumStateName_id' => $name_id,
+                    'state_name' => $request->state_name,
                 ]) ; 
 
                 $state->equipment_temps()->attach($new_eqTemp);
@@ -344,7 +325,7 @@ class StateController extends Controller
                     'state_isOk' => $request->state_isOk,
                     'state_startDate' => $date,
                     'state_endDate' => $request->state_endDate,
-                    'enumStateName_id' => $name_id,
+                    'state_name' => $request->state_name,
                 ]) ; 
                 return response()->json($request->state_validate) ; 
             }
@@ -364,10 +345,6 @@ class StateController extends Controller
         if (count($mostRecentlyEqTmp->states)>0){
             $states=$mostRecentlyEqTmp->states ; 
             foreach ($states as $state) {
-                $name = NULL ; 
-                if ($state->enumStateName_id!=NULL){
-                    $name = $state->enumStateName->value ;
-                }
 
                 $obj=([
                     "id" => $state->id,
@@ -376,7 +353,7 @@ class StateController extends Controller
                     'state_isOk' => (boolean)$state->state_isOk,
                     'state_startDate' => $state->state_startDate,
                     'state_endDate' => $state->state_endDate,
-                    'state_name' => $name,
+                    'state_name' => $state->state_name,
                 ]);
                 array_push($container,$obj);
             }
@@ -394,10 +371,6 @@ class StateController extends Controller
     public function send_state($id) {
         $state=State::findOrFail($id) ;
         $container=array() ; 
-        $name = NULL ; 
-        if ($state->enumStateName_id!=NULL){
-            $name = $state->enumStateName->value ;
-        }
 
         $obj=([
             "id" => $state->id,
@@ -406,7 +379,7 @@ class StateController extends Controller
             'state_isOk' => (boolean)$state->state_isOk,
             'state_startDate' => $state->state_startDate,
             'state_endDate' => $state->state_endDate,
-            'state_name' => $name,
+            'state_name' => $state_state_name,
         ]);
         array_push($container,$obj);
         return response()->json($container) ;
@@ -421,8 +394,7 @@ class StateController extends Controller
      */
     public function verif_before_reference_op(Request $request, $id){
         $state=State::findOrFail($id) ; 
-        $enumStateName=EnumStateName::findOrFail($state->enumStateName_id) ; 
-        if ($enumStateName->value=="LOST"){
+        if ($state->state_name=="Lost"){
             return response()->json([
                 'errors' => [
                     'verif_reference' => ["You can't reference a maintenance operation during a lost state"]

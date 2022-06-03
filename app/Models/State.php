@@ -52,10 +52,6 @@ class State extends Model
         return $this->belongsToMany(EquipmentTemp::class, 'pivot_equipment_temp_state', 'state_id', 'equipmentTemp_id') ; 
     }
 
-    public function enumStateName(){
-        return $this->belongsTo(EnumStateName::class, 'enumStateName_id') ; 
-    }
-
 
 }
 

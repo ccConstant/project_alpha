@@ -8,7 +8,6 @@ use App\Models\PreventiveMaintenanceOperationRealized ;
 use App\Models\EquipmentTemp ; 
 use App\Models\Equipment ; 
 use App\Models\State ; 
-use App\Models\EnumStateName ; 
 use App\Models\PreventiveMaintenanceOperation ; 
 use App\Http\Controllers\DimensionController ; 
 use App\Http\Controllers\PowerController ; 

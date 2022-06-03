@@ -27,7 +27,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyText('dim_value') ; 
-            $table->enum('dim_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ;  
+            $table->enum('dim_validate', ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enumDimensionType_id') ->nullable();
             $table->foreign('enumDimensionType_id')->references('id')->on('enum_dimension_types') -> onDelete('restrict') ;
             $table->unsignedBigInteger('enumDimensionName_id') ->nullable();

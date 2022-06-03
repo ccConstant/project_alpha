@@ -29,7 +29,7 @@ return new class extends Migration
             $table->mediumText('curMtnOp_description') -> nullable(); 
             $table->date('curMtnOp_startDate') ; 
             $table->date('curMtnOp_endDate') ->nullable(); 
-            $table->enum('curMtnOp_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ;  
+            $table->enum('curMtnOp_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('state_id') ;
             $table->foreign('state_id')->references('id')->on('states') ->onDelete('cascade')  ; 
             $table->unsignedBigInteger('qualityVerifier_id') -> nullable() ; 

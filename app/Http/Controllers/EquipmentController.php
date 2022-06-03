@@ -21,7 +21,6 @@ use App\Models\Risk;
 use App\Models\Usage;
 use App\Models\EnumEquipmentMassUnit ;
 use App\Models\EnumEquipmentType ;
-use App\Models\EnumStateName ;
 use App\Http\Controllers\PowerController ; 
 use App\Http\Controllers\FileController ; 
 use App\Http\Controllers\UsageController ; 
@@ -67,7 +66,7 @@ class EquipmentController extends Controller{
             $obj=([
                 'id' => $equipment->id,
                 'eq_internalReference' => $equipment->eq_internalReference,
-                'eq_state' =>  $mostRecentlyState->enumStateName->value,
+                'eq_state' =>  $mostRecentlyState->state_name,
                 'state_id' => $mostRecentlyState->id,
                 'eqTemp_lifeSheetCreated' => $mostRecentlyEqTmp->eqTemp_lifeSheetCreated,
                 'alreadyValidatedQuality' =>$isAlreadyQualityValidated,
@@ -154,14 +153,6 @@ class EquipmentController extends Controller{
      */
     public function add_equipment(Request $request){
 
-        $state_id=NULL ;
-        $state= EnumStateName::where('value', '=', "WAITING_FOR_REFERENCING")->first() ;
-        if ($state===NULL){
-            $state=EnumStateName::create([
-                'value' => "WAITING_FOR_REFERENCING", 
-            ]);
-        }
-        $state_id=$state->id ; 
 
         
         //An equipment is linked to its mass unit. So we need to find the id of the massUnit choosen by the user and write it in the attribute of the equipment.
@@ -214,7 +205,7 @@ class EquipmentController extends Controller{
             'state_startDate' =>  Carbon::now('Europe/Paris'),
             'state_isOk' => true,
             'state_validate' => "drafted",
-            'enumStateName_id' => $state_id
+            'state_name' => "WAITING_FOR_REFERENCING"
         ]) ; 
         
         $newState->equipment_temps()->attach($new_eqTemp);
@@ -545,7 +536,7 @@ class EquipmentController extends Controller{
         $containerOp=array() ;
         foreach($equipments as $equipment){
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp->eqTemp_validate!=="VALIDATED"){
+            if ($mostRecentlyEqTmp->eqTemp_validate==="VALIDATED"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', "=", $mostRecentlyEqTmp->id)->get() ;
                 foreach( $prvMtnOps as $prvMtnOp){
                     $opMtn=([
@@ -672,13 +663,6 @@ class EquipmentController extends Controller{
         if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier!=NULL){
             $mostRecentlyEqTmp->eqTemp_lifeSheetCreated=true ;
 
-            $state_id=NULL ;
-            $state= EnumStateName::where('value', '=', "WAITING_TO_BE_IN_USE")->first() ;
-            if ($state===NULL){
-                $state=EnumStateName::create([
-                    'value' => "WAITING_TO_BE_IN_USE", 
-                ]);
-            }
             $state_id=$state->id ; 
             
             //Creation of a new state
@@ -687,7 +671,7 @@ class EquipmentController extends Controller{
                 'state_startDate' =>  Carbon::now('Europe/Paris'),
                 'state_isOk' => true,
                 'state_validate' => "drafted",
-                'enumStateName_id' => $state_id
+                'state_name' => "Waiting_to_be_in_use"
             ]) ; 
             
         }

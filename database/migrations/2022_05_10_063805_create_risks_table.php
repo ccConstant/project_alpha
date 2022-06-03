@@ -26,7 +26,7 @@ return new class extends Migration
             $table->id();
             $table->mediumText('risk_remarks') -> nullable(); 
             $table->mediumText('risk_wayOfControl') ->nullable(); 
-            $table->enum('risk_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) -> nullable(); 
+            $table->enum('risk_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enumRiskFor_id') ->nullable();
             $table->foreign('enumRiskFor_id')->references('id')->on('enum_risk_fors') -> onDelete('restrict') ; 
             $table->unsignedBigInteger('equipmentTemp_id') ->nullable();

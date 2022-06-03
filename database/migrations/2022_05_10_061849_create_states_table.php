@@ -25,13 +25,12 @@ return new class extends Migration
             $table->id();
             $table->string('state_remarks') ;
             $table->date('state_startDate') ->nullable; 
+            $table->enum('state_name', ['Waiting_to_be_in_use', 'In_use', 'Broken_down', 'Broken', 'Under_maintenance', 'Downgraded', 'Reform', 'Lost', 'Return_to_service_use', 'Waiting_to_be_referencing']) ;  
             $table->date('state_endDate') ->nullable() ; 
             $table->boolean('state_isOk') ->nullable(); 
-            $table->enum('state_validate', ['Drafted', 'to_be_validated', 'Validated']) ;  
+            $table->enum('state_validate', ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('reformedBy_id')  -> nullable() ; 
             $table->foreign('reformedBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
-            $table->unsignedBigInteger('enumStateName_id') ->nullable();
-            $table->foreign('enumStateName_id')->references('id')->on('enum_state_names') -> onDelete('restrict') ;
             $table->timestamps();
         });
     }

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('spProc_exist') ; 
             $table->MediumText('spProc_remarksOrPrecaution') ->nullable() ; 
-            $table->enum('spProc_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ;  
+            $table->enum('spProc_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->string('spProc_name') ->nullable(); 
             $table->timestamps();
         });

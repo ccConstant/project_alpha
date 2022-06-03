@@ -25,7 +25,7 @@ return new class extends Migration
             $table->id();
             $table->string('file_name') ; 
             $table->string('file_location') -> nullable(); 
-            $table->enum('file_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ;  
+            $table->enum('file_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('equipmentTemp_id') ->nullable();
             $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') -> onDelete('cascade') ; 
             $table->timestamps();

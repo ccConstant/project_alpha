@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('people_lastName') ; 
             $table->string('people_initials') ; 
             $table->string('people_signaturePath') -> nullable() ; 
-            $table->enum('people_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ;  
+            $table->enum('people_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedTinyInteger('people_rightLevel') -> nullable() ; 
             $table->string('people_userName') -> nullable() ; 
             $table->string('people_password')-> nullable() ; 

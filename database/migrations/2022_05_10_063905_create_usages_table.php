@@ -28,7 +28,7 @@ return new class extends Migration
             $table->MediumText('usg_precaution') ->nullable(); 
             $table->date('usg_startDate') ; 
             $table->date('usg_reformDate') -> nullable(); 
-            $table->enum('usg_validate', ['DRAFTED', 'TO_BE_VALIDATED', 'VALIDATED']) ;  
+            $table->enum('usg_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('equipmentTemp_id') ->nullable();
             $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') -> onDelete('cascade') ; 
             $table->timestamps();
