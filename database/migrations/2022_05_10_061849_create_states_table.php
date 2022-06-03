@@ -24,7 +24,7 @@ return new class extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('state_remarks') ;
-            $table->date('state_startDate') ->nullable; 
+            $table->date('state_startDate') ->nullable(); 
             $table->enum('state_name', ['Waiting_to_be_in_use', 'In_use', 'Broken_down', 'Broken', 'Under_maintenance', 'Downgraded', 'Reform', 'Lost', 'Return_to_service_use', 'Waiting_to_be_referencing']) ;  
             $table->date('state_endDate') ->nullable() ; 
             $table->boolean('state_isOk') ->nullable(); 

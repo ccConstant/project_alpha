@@ -17,11 +17,6 @@
                     <InputTextForm inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="state_startDate"/>
                     <InputDateForm inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
                 </div>
-                <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.state_endDate" name="state_endDate" label="End date :" :isDisabled="true"  isRequired v-model="state_endDate"/>
-                    <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  isRequired v-model="selected_endDate"/>
-                </div>
-
                 <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk"/> 
                 <SaveButtonForm v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
@@ -68,12 +63,20 @@ export default {
             state_name:'',
             state_remarks: '',
             selected_startDate:null,
-            selected_endDate:null,
             state_startDate :'',
-            state_endDate:'',
             state_validate:'',
             state_isOk:null,
-            enum_state_name :[],
+            enum_state_name :[
+                {value:"Waiting_to_be_in_use"},
+                {value:"In_use"},
+                {value:"Broken_down"},
+                {value:"Broken"},
+                {value:"Downgraded"},
+                {value:"Reform"},
+                {value:"Lost"},
+                {value:"Return_to_service_use"},
+                {value:"Waiting_for_referencing"},
+            ],
             isOkOptions :[
                 {id: 'Yes', value:true},
                 {id : 'No', value:false}
@@ -93,30 +96,27 @@ export default {
         if(this.selected_startDate!==null){
             this.state_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
         };
-        if(this.selected_endDate!==null){
-            this.state_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
-        }
     },
     methods:{
         addEquipmentState(savedAs){
             if(!this.addSucces){
                 console.log("ADD nom:", this.state_name,"\n","remark:", this.state_remarks,"\n","startDate:", this.selected_startDate
-                ,"\n","endDate:", this.selected_endDate,"\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n",)
+                ,"\n","\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n",)
                 axios.post('/state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
                     state_startDate:this.selected_startDate,
-                    state_endDate:this.selected_endDate,
                     state_isOk:this.state_isOk,
                     state_validate:savedAs,
-                    eq_id:this.eq_id
+                    eq_id:this.eq_id,
+                    reason:'add'
                 })
                 .then(response =>{
+                    //console.log(response.data)
                         axios.post('/equipment/add/state',{
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,
                             state_startDate:this.selected_startDate,
-                            state_endDate:this.selected_endDate,
                             state_isOk:this.state_isOk,
                             state_validate:savedAs,
                             eq_id:this.eq_id
@@ -136,15 +136,16 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be updated to the database */ 
         updateEquipmentState(savedAs){
             console.log("UPDATE nom:", this.state_name,"\n","remark:", this.state_remarks,"\n","startDate:", this.selected_startDate
-                ,"\n","endDate:", this.selected_endDate,"\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n","state id",this.state_id,"eq id:",this.eq_id)
+                ,"\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n","state id",this.state_id,"eq id:",this.eq_id)
                 axios.post('/state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
                     state_startDate:this.selected_startDate,
-                    state_endDate:this.selected_endDate,
                     state_isOk:this.state_isOk,
                     state_validate:savedAs,
-                    eq_id:this.eq_id
+                    state_id:this.state_id,
+                    eq_id:this.eq_id,
+                    reason:'update'
                     
 
                 })
@@ -154,7 +155,6 @@ export default {
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,
                             state_startDate:this.selected_startDate,
-                            state_endDate:this.selected_endDate,
                             state_isOk:this.state_isOk,
                             state_validate:savedAs,
                             eq_id:this.eq_id
@@ -172,15 +172,6 @@ export default {
         },
     },
     created(){
-        axios.get('/state/enum/name')
-            .then (response=>{
-                this.enum_state_name=response.data;
-                if(this.state_id==undefined){
-                    this.loaded=true;
-                }
-            }) 
-            .catch(error => console.log(error)) ; 
-
         /*Ask for the controller other equipments sets */
         if(this.state_id!=undefined){
             if(this.isInConsultedMod==false){
@@ -190,10 +181,10 @@ export default {
             var UrlState = (id) => `/state/send/${id}`;
             axios.get(UrlState(this.state_id))
                 .then (response=>{
+                    console.log(response.data)
                     this.state_name=response.data[0].state_name;
                     this.state_remarks=response.data[0].state_remarks;
                     this.selected_startDate=response.data[0].state_startDate;
-                    this.selected_endDate=response.data[0].state_endDate;
                     this.state_isOk=response.data[0].state_isOk;
                     this.state_validate=response.data[0].state_validate;
                     this.loaded=true;

@@ -32,12 +32,11 @@ export default {
     },
     data() {
         return {
-            eventList:[],
             calendarOptions: {
                 plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin   ],
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek',
+                    left: 'dayGridMonth,dayGridWeek,dayGridDay,listMonth,listWeek',
                     center: 'title',
                     right :'prev today next',
                     
@@ -65,12 +64,15 @@ export default {
     created(){
         axios.get('/equipment/prvMtnOp/planning')
             .then (response=>{
+                console.log(response.data)
                 for (const data of response.data) {
                     for(const operation of data.preventive_maintenance_operations){
                         this.calendarOptions.events.push({title:data.internalReference,date:operation.prvMtnOp_nextDate,number:operation.prvMtnOp_number,id:operation.id,
                             description:operation.prvMtnOp_description,protocol:operation.prvMtnOp_protocol})
                     }
                 }
+                console.log(this.calendarOptions.events)
+
             })
             .catch(error => console.log(error)) ;
     }

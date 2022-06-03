@@ -105,3 +105,21 @@ export default {
     }
 }
 </script>
+<style lang="scss">
+    input{
+        /* Firefox */
+        -moz-appearance: textfield;
+    
+        /* Chrome */
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin:0;
+        }
+    
+        /* Opéra*/
+        &::-o-inner-spin-button {
+            -o-appearance: none;
+            margin: 0; 
+        }
+    }
+</style>

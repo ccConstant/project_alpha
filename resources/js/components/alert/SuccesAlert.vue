@@ -1,39 +1,24 @@
 <template>
-  <div>
-    <b-alert
-      :show="dismissCountDown"
-      dismissible
-      variant="success"
-      @dismissed="dismissCountDown=0"
-      @dismiss-count-down="countDownChanged"
-    >
-      <p>Success </p>
+<div>
+    <vue-snotify></vue-snotify>
+  
+</div>
 
-    </b-alert>
-
-  </div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        dismissSecs: 3,
-        dismissCountDown: 0,
-        showDismissibleAlert: false,
-      }
-    },
+export default {
     methods: {
-      countDownChanged(dismissCountDown) {
-        this.dismissCountDown = dismissCountDown
-      },
-      showAlert() {
-        this.dismissCountDown = this.dismissSecs
-      }
+        showAlert() {
+            this.$snotify.success('Ajouter avec succes');
+        }
     }
-  }
+
+
+
+}
 </script>
 
-<style lang="scss">
+<style>
 
 </style>

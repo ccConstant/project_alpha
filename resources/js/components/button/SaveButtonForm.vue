@@ -26,9 +26,18 @@
         </div>
     <!--Else if the form is in a modif mode we call this div with update option-->
         <div v-else-if="modifMod">
-            <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+            <div v-if="savedAs=='validated' ">
+                <button class="save btn btn-primary" disabled type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                <button class="save btn btn-primary" disabled type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+            </div>
+            <div v-else>
+                <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
                 <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
                 <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+            </div>
+           
+
                 <div v-if="saveAll!==true">
                     <p >Actually saved as : {{savedAs}}</p>
                     <div v-if="hasError(this.Errors)" class="error_savebutton">

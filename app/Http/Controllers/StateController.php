@@ -94,43 +94,59 @@ class StateController extends Controller
             ], 429);
         }
 
-        if ($request->state_startDate!='' && $request->state_endDate!=''){
-            if ($request->state_endDate < $request->state_startDate){
-                return response()->json([
-                    'errors' => [
-                        'state_endDate' => ["You must entered a startDate that is before endDate"]
-                    ]
-                ], 429);
-
-            }
-        }
-
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         $states=$mostRecentlyEqTmp->states;
-        if ($states!=NULL){
-            $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
-            foreach($states as $state){
-                $date=$state->created_at ; 
-                $date2=$mostRecentlyState->created_at;
-               if ($date>=$date2){
-                     $mostRecentlyState=$state ; 
+        if ($states!==NULL){
+            if ($request->reason=='update'){
+                $mostRecentlyState=NULL ;
+                $first=true ; 
+                foreach($states as $state){
+                    if ($state->id !=$request->state_id){
+                        if ($first){
+                            $mostRecentlyState=$state ; 
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ; 
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ; 
+                            }
+                        }
+                    }
                 }
-            }
-
-           if ($request->state_startDate!=NULL && $request->state_startDate<$mostRecentlyState->state_endDate){
-                return response()->json([
-                    'errors' => [
-                        'state_startDate' => ["You must entered a startDate that is after the previous state"]
-                    ]
-                ], 429);
-            }
-    
-            if ($request->state_endDate!=NULL && $request->state_endDate<$mostRecentlyState->state_endDate){
-                return response()->json([
-                    'errors' => [
-                        'state_endDate' => ["You must entered a endDate that is after the previous state"]
-                    ]
-                ], 429);
+                if ($mostRecentlyState!=NULL ){
+                    if ($request->state_startDate!=NULL && $request->state_startDate<$mostRecentlyState->state_endDate){
+                        return response()->json([
+                            'errors' => [
+                                'state_startDate' => ["You must entered a startDate that is after the previous state"]
+                            ]
+                        ], 429);
+                    }
+                }
+            }else{
+                $mostRecentlyState=NULL ;
+                $first=true ; 
+                foreach($states as $state){
+                    if ($first){
+                        $mostRecentlyState=$state ; 
+                        $first=false;
+                    }else{
+                        $date=$state->created_at ; 
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ; 
+                        }
+                    }
+                }
+                if ($mostRecentlyState!=NULL ){
+                    if ($request->state_startDate!=NULL && $request->state_startDate<$mostRecentlyState->state_endDate){
+                        return response()->json([
+                            'errors' => [
+                                'state_startDate' => ["You must entered a startDate that is after the previous state"]
+                            ]
+                        ], 429);
+                    }
+                }
             }
         }
     }
@@ -147,6 +163,30 @@ class StateController extends Controller
         if ($request->state_startDate!='' && $request->state_startDate!=NULL){
             $date=$request->state_startDate ; 
         }
+
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        $states=$mostRecentlyEqTmp->states;
+        if ($states!==NULL){
+            $mostRecentlyState=NULL ;
+            $first=true ; 
+            foreach($states as $state){
+                if ($first){
+                    $mostRecentlyState=$state ; 
+                    $first=false;
+                }else{
+                    $date=$state->created_at ; 
+                    $date2=$mostRecentlyState->created_at;
+                    if ($date>=$date2){
+                        $mostRecentlyState=$state ; 
+                    }
+                }
+            }
+            if ($mostRecentlyState!=NULL){
+                $mostRecentlyState->update([
+                    'state_endDate' => $date,
+                ]);
+            }
+        }
         
         //Creation of a new state
         $state=State::create([
@@ -154,7 +194,6 @@ class StateController extends Controller
             'state_validate' => $request->state_validate,
             'state_isOk' => $request->state_isOk,
             'state_startDate' => $date,
-            'state_endDate' => $request->state_endDate,
             'state_name' => $request->state_name,
         ]) ; 
         
@@ -283,7 +322,6 @@ class StateController extends Controller
                     'state_validate' => $request->state_validate,
                     'state_isOk' => $request->state_isOk,
                     'state_startDate' => $date,
-                    'state_endDate' => $request->state_endDate,
                     'state_name' => $request->state_name,
                 ]) ; 
 
@@ -379,7 +417,7 @@ class StateController extends Controller
             'state_isOk' => (boolean)$state->state_isOk,
             'state_startDate' => $state->state_startDate,
             'state_endDate' => $state->state_endDate,
-            'state_name' => $state_state_name,
+            'state_name' => $state->state_name,
         ]);
         array_push($container,$obj);
         return response()->json($container) ;
@@ -422,7 +460,7 @@ class StateController extends Controller
         $state=State::findOrFail($id) ; 
         $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $id)->get() ; 
         foreach ($prvMtnOpRlzs as $prvMtnOpRlz){
-            if ($prvMtnOpRlz->prvMtnOpRlz_validate!="VALIDATED"){
+            if ($prvMtnOpRlz->prvMtnOpRlz_validate!="validated"){
                 return response()->json([
                     'errors' => [
                         'state_verif' => ["You must validate all your preventive maintenance operation realized before add a new state"]
@@ -433,7 +471,7 @@ class StateController extends Controller
         }
         $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $id)->get() ; 
         foreach ($curMtnOps as $curMtnOp){
-            if ($curMtnOp->curMtnOp_validate!="VALIDATED"){
+            if ($curMtnOp->curMtnOp_validate!="validated"){
                 return response()->json([
                     'errors' => [
                         'state_verif' => ["You must validate all your curative maintenance operation before add a new state"]
@@ -442,15 +480,8 @@ class StateController extends Controller
 
             }
         }
-        if ($state->state_endDate=='' || $state->state_endDate==NULL){
-            return response()->json([
-                'errors' => [
-                    'state_verif' => ["You don\'t have entered a endDate for your state"]
-                ]
-            ], 429);    
-        }
 
-        if ($state->state_validate!="Validated"){
+        if ($state->state_validate!="validated"){
             return response()->json([
                 'errors' => [
                     'state_verif' => ["You must validate your state before add a new state"]

@@ -245,7 +245,7 @@ export default {
                     /*If all the verif passed, a new post this time to add the dimension in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
                         In the post url the id correspond to the id of the dimension who will be update*/
-                    var consultUrl = (id) => `'/equipment/verifValidation/${id}`;
+                    var consultUrl = (id) => `/equipment/update/dim/${id}`;
                     axios.post(consultUrl(this.dim_id),{
                         dim_type : this.dim_type,
                         dim_name : this.dim_name,

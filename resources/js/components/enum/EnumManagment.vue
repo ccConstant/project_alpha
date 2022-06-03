@@ -12,7 +12,6 @@
             <EnumElement error_name='enum_dim_unit'  :enumList="enum_dim_unit" title="Equipment Dimension Unit" url="/dimension/enum/unit/" />
             <EnumElement error_name='enum_pow_type'  :enumList="enum_pow_type" title="Equipment Power Type" url="/power/enum/type/" />
             <EnumElement error_name='enum_risk_for'  :enumList="enum_risk_for" title="Equipment Risk For" url="/risk/enum/riskfor/" />
-            <EnumElement error_name='enum_state_name'  :enumList="enum_state_name" title="Equipment State Name" url="/state/enum/name/" />
         </div>
         
 
@@ -36,7 +35,6 @@ export default {
             enum_dim_unit : [],
             enum_pow_type : [],
             enum_risk_for : [],
-            enum_state_name:[],
             loaded:false
 
         }
@@ -67,15 +65,11 @@ export default {
             .then (response=> this.enum_pow_type=response.data) 
             .catch(error => console.log(error)) ;
         axios.get('/risk/enum/riskfor')
-            .then (response=> this.enum_risk_for=response.data) 
-            .catch(error => console.log(error)) ;
-        axios.get('/state/enum/name')
-            .then (response=> {
-                this.enum_state_name=response.data
+            .then (response=>{
+                this.enum_risk_for=response.data
                 this.loaded=true
             }) 
             .catch(error => console.log(error)) ;
-
     }
 
 }

@@ -22,7 +22,7 @@
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description"/>
                 <div class="input-group">
-                    <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="0.01" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" />
+                    <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" />
                     <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity"/>
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol" name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_protocol"/>
@@ -45,8 +45,11 @@
 
                 </div>       
             </form>
-            <div v-if="this.prvMtnOp_id!==null && modifMod==false && consultMod==false && import_id==null " >
+            <div v-if="this.prvMtnOp_id!==null && modifMod==false & consultMod==false && import_id==null " >
                 <ReferenceARisk :eq_id="this.eq_id" :prvMtnOp_id="this.prvMtnOp_id" :riskForEq="false"/>
+            </div>
+            <div v-else-if="this.prvMtnOp_id!==null && modifMod==true">
+                <ReferenceARisk v-if="this.prvMtnOp_id!=null" :importedRisk="importedOpRisk" :eq_id="this.eq_id" :prvMtnOp_id="this.prvMtnOp_id" :riskForEq="false" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
             </div>
             <div v-else-if="loaded==true">
                 <ReferenceARisk v-if="this.prvMtnOp_id!=null" :importedRisk="importedOpRisk" :eq_id="this.eq_id" :prvMtnOp_id="this.prvMtnOp_id" :riskForEq="false" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>

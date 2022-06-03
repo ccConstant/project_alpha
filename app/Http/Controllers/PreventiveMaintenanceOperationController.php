@@ -80,6 +80,32 @@ class PreventiveMaintenanceOperationController extends Controller
                 ]
             );
         }
+
+        if ($request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL){
+            if ($request->prvMtnOp_symbolPeriodicity=='Y' && $request->prvMtnOp_periodicity>15){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOp_periodicity' => ["You can't enter a periodicity higher than 15 years"]
+                    ]
+                ], 429);
+            }
+
+            if ($request->prvMtnOp_symbolPeriodicity=='M' && $request->prvMtnOp_periodicity>180){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOp_periodicity' => ["You can't enter a periodicity higher than 180 months"]
+                    ]
+                ], 429);
+            }
+
+            if ($request->prvMtnOp_symbolPeriodicity=='D' && $request->prvMtnOp_periodicity>5475){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOp_periodicity' => ["You can't enter a periodicity higher than 5475 days"]
+                    ]
+                ], 429);
+            }
+        }
     }
 
 

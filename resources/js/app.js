@@ -6,15 +6,17 @@ window.Vue = require('vue').default;
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
-
-
-
-
+import Snotify,{ SnotifyPosition} from 'vue-snotify';
+const Snotifyoptions={
+    toast :{
+        position :SnotifyPosition.rightBottom
+    }
+}
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
-
+Vue.use(Snotify , Snotifyoptions)
 
 const router = new VueRouter({
     mode: 'history',
