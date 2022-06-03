@@ -104,7 +104,7 @@ class StateController extends Controller
                     }
                 }
                 if ($mostRecentlyState!=NULL ){
-                    if ($request->state_startDate!=NULL && $request->state_startDate<$mostRecentlyState->state_endDate){
+                    if ($request->state_startDate!=NULL && $request->state_startDate<$mostRecentlyState->state_startDate){
                         return response()->json([
                             'errors' => [
                                 'state_startDate' => ["You must entered a startDate that is after the previous state"]

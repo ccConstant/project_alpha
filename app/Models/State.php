@@ -25,7 +25,7 @@ class State extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['state_remarks', 'state_startDate', 'state_endDate', 'state_isOk', 'state_validate', 'reformedBy_id', 'enumStateName_id'] ; 
+    protected $fillable = ['state_remarks', 'state_startDate', 'state_endDate', 'state_isOk', 'state_validate', 'reformedBy_id', 'state_name'] ; 
     
     //Define the relation between equipment and state : only one equipment can be created during a state
     public function equipment(){
