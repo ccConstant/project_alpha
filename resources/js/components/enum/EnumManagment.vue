@@ -5,7 +5,7 @@
         </div>
         <div class="enumManagment" v-if="loaded==true">
             <h1>ENUM MANAGMENT</h1>
-            <EnumElement error_name='enum_eq_type' :enumList="enum_eq_type" title="Equipment Type" url="/equipment/enum/type/" />
+            <EnumElement error_name='enum_eq_type' :enumList="enum_eq_type" title="Equipment Type" url="/equipment/enum/type/" info_text="testttt"/>
             <EnumElement error_name='enum_eq_massUnit' :enumList="enum_eq_massUnit" title="Equipment Mass Unit" url="/equipment/enum/massUnit/" />
             <EnumElement error_name='enum_dim_type' :enumList="enum_dim_type" title="Equipment Dimension Type" url="/dimension/enum/type/" />
             <EnumElement error_name='enum_dim_name' :enumList="enum_dim_name" title="Equipment Dimension Name" url="/dimension/enum/name/" />

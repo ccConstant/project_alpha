@@ -10,18 +10,18 @@
                     <h2>Update the state</h2>
                 </div>
                 <div v-else>
+                    <h2>Change the State</h2>
                     <div v-if="isInConsultMod==false">
-                        <h2>Change the State</h2>
                         <InputTextForm  inputClassName="form-control w-50" name="current_state" label="Current state :" :isDisabled="true"   v-model="current_state"/>
                     </div>
                 </div>
-                <div v-if="state_id!==undefined || isInConsultedMod==true">
+                <div v-if="state_id!==undefined || isInConsultMod==true">
                     <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name"/>
                 </div>
                 <div v-else>
                     <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name"  :selctedOption="state_name" v-model="state_name"/>
                 </div>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="state_remarks"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="state_remarks"/>
                 <div class="input-group">
                     <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate"/>
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate"/>
@@ -29,6 +29,23 @@
                 <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk"/> 
                 <SaveButtonForm v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
+            <div v-if="state_name=='Downgraded'">
+                <div v-if="state_validate=='validated'">
+                    <div v-if="!isEmpty(eq_idCard)">
+                        <EquipmentIDForm :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
+                        :name="eq_idCard.eq_name" :type="eq_idCard.eq_type" :serialNumber="eq_idCard.eq_serialNumber"
+                        :construct="eq_idCard.eq_constructor" :mass="eq_idCard.eq_mass"  :massUnit="eq_idCard.eq_massUnit"
+                        :mobility="eq_idCard.eq_mobility" :remarks="eq_idCard.eq_remarks" :set="eq_idCard.eq_set" :validate="eq_idCard.eq_validate"
+                        consultMod/>
+                    </div>
+                    <div v-else>
+                        <RadioGroupForm label="Do you want to reference a new equipment ?:" :options="radioOption" v-model="new_eq"/>
+                        <EquipmentIDForm :disableImport="true" v-if="new_eq==true"/>
+                    </div>
+
+                </div>
+                 
+            </div>
 
         </div>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
@@ -44,6 +61,7 @@ import InputDateForm from '../../input/InputDateForm.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import moment from 'moment'
+import EquipmentIDForm from '../referencing/EquipmentIDForm.vue'
 
 export default {
     components : {
@@ -52,7 +70,8 @@ export default {
         InputDateForm,
         RadioGroupForm,
         InputTextForm,
-        SaveButtonForm
+        SaveButtonForm,
+        EquipmentIDForm
     },
     props:{
         consultMod:{
@@ -90,7 +109,7 @@ export default {
                 {id: 'Yes', value:true},
                 {id : 'No', value:false}
             ],
-            isInConsultedMod:this.consultMod,
+            isInConsultMod:this.consultMod,
             eq_id:this.$route.params.id,
             state_id:this.$route.params.state_id,
             isInConsultMod:this.consultMod,
@@ -98,7 +117,14 @@ export default {
             errors:{},
             addSucces:false,
             loaded:false,
-            current_state:''
+            current_state:'',
+            radioOption :[
+                {id: 'Yes', value:true},
+                {id : 'No', value:false}
+            ],
+            new_eq:null,
+            eq_idCard:[]
+            
 
         }
     },
@@ -122,6 +148,7 @@ export default {
                     reason:'add'
                 })
                 .then(response =>{
+                    
                         this.errors={}
                         axios.post('/equipment/add/state',{
                             state_name:this.state_name,
@@ -130,6 +157,7 @@ export default {
                             state_isOk:this.state_isOk,
                             state_validate:savedAs,
                             eq_id:this.eq_id
+                            
 
                         })
                         .then(response =>{
@@ -184,11 +212,17 @@ export default {
         clearDateError(){
             delete this.errors['state_startDate'];
         },
+        isEmpty(object) {
+            for (const property in object) {
+                return false;
+            }
+            return true;
+        }
     },
     created(){
         /*Ask for the controller other equipments sets */
         if(this.state_id!=undefined){
-            if(this.isInConsultedMod==false){
+            if(this.isInConsultMod==false){
                 this.isInModifMod=true;
             }
             
@@ -202,8 +236,17 @@ export default {
                     this.state_isOk=response.data[0].state_isOk;
                     this.state_validate=response.data[0].state_validate;
                     this.loaded=true;
+                    
+                    if(this.state_name=="Downgraded"){
+                        var consultUrl = (state_id) => `/state/equipment/${state_id}`;
+                        axios.get(consultUrl(this.state_id))
+                            .then (response => this.eq_idCard=response.data)
+                            .catch(error => console.log(error));
+                    }
+
                 })
                 .catch(error => console.log(error)) ;
+            
         }else{
             var UrlState = (id) => `/state/send/${id}`;
             axios.get(UrlState(this.$route.query.currentState))
@@ -215,8 +258,7 @@ export default {
                 .catch(error => console.log(error)) ;
 
         }
-
-
+        
 
     }
 }

@@ -21,8 +21,8 @@
                     </div>
                 </div>
                 <div v-else-if="this.usg_id!==null && reformMod==false">
-                    <div v-if="refromDate!=null" >
-                        <p>Refrom by {{reformBy}} at {{reformDate}}</p>
+                    <div v-if="usg_refromDate!=null" >
+                        <p>Refrom by {{usg_refromBy}} at {{usg_refromDate}}</p>
                     </div>
                     <div v-else>
                         <SaveButtonForm  @add="addEquipmentUsg" @update="updateEquipmentUsg" :reformMod="this.isInReformMod" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
@@ -30,8 +30,8 @@
                 </div>
                 <!-- If the user is not in the consultation mode, the delete button appear -->
                 <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-                <div v-if="reformMod!==false && reformDate===null">
-                    <ReformComponentButton v-if="reformDate===null" :reformBy="reformBy" :reformDate="reformDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
+                <div v-if="reformMod!==false && usg_refromDate===null">
+                    <ReformComponentButton :reformBy="usg_refromBy" :reformDate="usg_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
                 </div>
                 
 
@@ -133,6 +133,8 @@ export default {
             usg_type:this.type,
             usg_precaution:this.precuation,
             usg_validate:this.validate,
+            usg_refromDate:this.reformDate,
+            usg_refromBy:this.reformBy,
             usg_id:this.id,
             equipment_id_add:this.eq_id,
             equipment_id_update:this.$route.params.id,
@@ -256,12 +258,13 @@ export default {
             }
             
         },
-        reformComponent(){
+        reformComponent(endDate){
             //If the user is in update mode and the usage exist in the database
                 //Send a post request with the id of the usage who will be deleted in the url
             var consultUrl = (id) => `/equipment/reform/usg/${id}`;
             axios.post(consultUrl(this.usg_id),{
-                eq_id:this.equipment_id_update
+                eq_id:this.equipment_id_update,
+                usg_reformDate:endDate 
             })
             .then(response =>{
                 //Emit to the parent component that we want to delete this component

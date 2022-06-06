@@ -1,6 +1,7 @@
 <template>
     <div v-if="enums">
         <h2>{{this.title}}</h2>
+        <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
         <!--<div v-if="hasErrors==true">
             <b-alert show variant="danger">{{errors.enum_type[0]}}</b-alert>
             <b-alert :show="dismissCountDown" dismissible variant="warning" @dismissed="dismissCountDown=0" @dismiss-count-down="countDownChanged">
@@ -49,9 +50,11 @@
 
 <script>
 import ErrorAlert from '../alert/ErrorAlert.vue'
+import InputInfo from '../input/InputInfo.vue'
 export default {
     components:{
-        ErrorAlert
+        ErrorAlert,
+        InputInfo
     },
     props:{
         enumList:{
@@ -68,6 +71,10 @@ export default {
         },
         enum_value:{
             type:String
+        },
+        info_text:{
+            type:String,
+            default : null
         }
     },
     data(){
@@ -80,7 +87,8 @@ export default {
             enums:this.enumList,
             dismissSecs: 5,
             dismissCountDown: 0,
-            showDismissibleAlert: false
+            showDismissibleAlert: false,
+            returnedText_info:this.info_text
         }
     },
     methods: {

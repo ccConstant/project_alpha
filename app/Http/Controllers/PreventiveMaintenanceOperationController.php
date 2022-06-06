@@ -436,6 +436,30 @@ class PreventiveMaintenanceOperationController extends Controller
         }
     }
 
+        /**
+     * Function call by ReferenceAPrvMtnOp.vue when we want to reform a prvMtnOp with the route : '/equipment/reform/prvMtnOp/{id} (post)
+     * Reform a prvMtnOp thanks to the id given in parameter
+     * The id parameter correspond to the id of the prvMtnOp we want to reform
+     * 
+     * */
+
+    public function reform_prvMtnOp(Request $request, $id){
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
+        if ($request->prvMtnOp_reformDate<$prvMtnOp->prvMtnOp_startDate){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_reformDate' => ["You must entered a reformDate that is after the startDate"] 
+                ]
+            ], 429);
+
+        }
+        
+        $prvMtnOp->update([
+            'prvMtnOp_reformDate' => $request->prvMtnOp_reformDate,
+            //REVENIR ICI POUR REFORMED BY 
+        ]) ;
+    }
+
 }
 
 

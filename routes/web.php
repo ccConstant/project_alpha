@@ -94,6 +94,9 @@ Route::get('/equipment/lifesheet_pdf/{id}', function () {
     return view('welcome');
 });
 
+Route::get('/equipment/reform/{id}', function () {
+    return view('welcome');
+});
 
 /* Equipment ID Form Routes */ 
 
@@ -117,6 +120,7 @@ Route::post('/equipment/verifValidation/{id}', [EquipmentController::class, 'ver
 
 Route::post('/equipment/validation/{id}', [EquipmentController::class, 'validation'] ) ;
 
+Route::post('/equipment/delete/{id}', [EquipmentController::class, 'delete_equipment'] ) ;
 
 /* Dimension Form Routes */ 
 
@@ -168,6 +172,8 @@ Route::get('/usage/send/{id}', [UsageController::class, 'send_usages'])  ;
 
 Route::post('/equipment/delete/usg/{id}', [UsageController::class, 'delete_usage'])  ;
 
+Route::post('/equipment/reform/usg/{id}', [UsageController::class, 'reform_usage'])  ;
+
 /* File Form Routes */ 
 
 Route::post('/file/verif', [FileController::class, 'verif_file'])  ;
@@ -197,6 +203,9 @@ Route::get('/prvMtnOp/send/validated/{id}', [PreventiveMaintenanceOperationContr
 Route::get('/prvMtnOp/send/validated/', [PreventiveMaintenanceOperationController::class, 'send_all_prvMtnOp_validated'])  ;
 
 Route::post('/equipment/delete/prvMtnOp/{id}', [PreventiveMaintenanceOperationController::class, 'delete_prvMtnOp'])  ;
+
+Route::post('/equipment/reform/prvMtnOp/{id}', [PreventiveMaintenanceOperationController::class, 'reform_prvMtnOp'])  ;
+
 
 /* Risk Form Routes */ 
 
@@ -327,4 +336,3 @@ Route::post('/state/enum/name/delete/{id}', [EnumStateNameController::class, 'de
 Route::post('/state/enum/name/add', [EnumStateNameController::class, 'add_enum_name'] ) ;
 
 Route::post('/state/enum/name/update/{id}', [EnumStateNameController::class, 'update_enum_name'] ) ;
-

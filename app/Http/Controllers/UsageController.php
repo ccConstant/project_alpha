@@ -262,6 +262,32 @@ class UsageController extends Controller
         $usage->delete() ; 
     }
 
+
+        /**
+     * Function call by EquipmentUsgForm.vue when we want to reform a usage with the route : /equipment/reform/usg/{id} (post)
+     * Reform a usage thanks to the id given in parameter
+     * The id parameter correspond to the id of the usage we want to reform
+     * 
+     * */
+
+    public function reform_usage(Request $request, $id){
+        $usg=Usage::findOrFail($id) ; 
+        if ($request->usg_reformDate<$usg->usg_startDate){
+            return response()->json([
+                'errors' => [
+                    'usg_reformDate' => ["You must entered a reformDate that is after the startDate"] 
+                ]
+            ], 429);
+
+        }
+        
+        $usg->update([
+            'usg_reformDate' => $request->usg_reformDate,
+            //REVENIR ICI POUR REFORMED BY 
+        ]) ;
+    }
+    
+
 }
 
 

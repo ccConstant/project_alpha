@@ -38,7 +38,7 @@
             <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addEquipment" @update="updateEquipment" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
             <div v-if="this.modifMod!=true">
                 <div v-if="this.isInConsultMod!=true">
-                    <ImportationModal :set="this.eq_set" @choosedEq="importFrom"/>
+                    <ImportationModal v-if="disableImport==false" :set="this.eq_set" @choosedEq="importFrom"/>
                 </div>
             </div>
             <SucessAlert ref="sucessAlert"/>
@@ -138,6 +138,10 @@ export default {
         modifMod:{
             type:Boolean,
             default :false
+        },
+        disableImport:{
+            type:Boolean,
+            default:false
         }
     },
     data(){

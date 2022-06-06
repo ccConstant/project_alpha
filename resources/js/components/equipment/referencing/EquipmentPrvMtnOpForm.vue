@@ -38,8 +38,8 @@
                         </div>
                     </div>
                     <div v-else-if="this.prvMtnOp_id!==null && reformMod==false ">
-                        <div v-if="refromDate!=null" >
-                            <p>Refrom by {{reformBy}} at {{reformDate}}</p>
+                        <div v-if="prvMtnOp_refromDate!=null" >
+                            <p>Refrom by {{prvMtnOp_refromBy}} at {{prvMtnOp_refromDate}}</p>
                         </div>
                         <div v-else>
                             <SaveButtonForm  @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="prvMtnOp_validate"/>
@@ -47,8 +47,8 @@
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :Errors="errors.prvMtnOp_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-                    <div v-if="reformMod!==false && reformDate===null">
-                        <ReformComponentButton :reformBy="reformBy" :reformDate="reformDate" v-if="reformDate===null" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
+                    <div v-if="reformMod!==false && prvMtnOp_refromDate===null">
+                        <ReformComponentButton :reformBy="prvMtnOp_refromBy" :reformDate="prvMtnOp_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
                     </div>
 
 
@@ -188,6 +188,8 @@ export default {
             prvMtnOp_symbolPeriodicity:this.symbolPeriodicity,
             prvMtnOp_protocol:this.protocol,
             prvMtnOp_validate:this.validate,
+            prvMtnOp_refromDate:this.reformDate,
+            prvMtnOp_refromBy:this.reformBy,
             prvMtnOp_id:this.id,
             equipment_id_add:this.eq_id,
             equipment_id_update:this.$route.params.id,
@@ -333,12 +335,13 @@ export default {
             }
             
         },
-        reformComponent(){
+        reformComponent(endDate){
             //If the user is in update mode and the usage exist in the database
                 //Send a post request with the id of the usage who will be deleted in the url
             var consultUrl = (id) => `/equipment/reform/prvMtnOp/${id}`;
             axios.post(consultUrl(this.prvMtnOp_id),{
-                eq_id:this.equipment_id_update
+                eq_id:this.equipment_id_update,
+                prvMtnOp_reformDate:endDate
             })
             .then(response =>{
                 //Emit to the parent component that we want to delete this component

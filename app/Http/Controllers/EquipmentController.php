@@ -100,6 +100,26 @@ class EquipmentController extends Controller{
         $massUnit=NULL;
         $type = NULL ; 
         if ($mostRecentlyEqTmp!=NULL){
+
+            $states=$mostRecentlyEqTmp->states;
+            $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ; 
+                $date2=$mostRecentlyState->created_at;
+               if ($date>=$date2){
+                     $mostRecentlyState=$state ; 
+                }
+            }
+            if ($mostRecentlyState->state_name=="REFORM"){
+                return response()->json([
+                    'eq_internalReference' => $equipment->eq_internalReference,
+                    'eq_externalReference' => $equipment->eq_externalReference,
+                    'eq_name' => $equipment->eq_name,
+                    'eq_serialNumber' => $equipment->eq_serialNumber,
+                    'eq_constructor'  => $equipment->eq_constructor,
+                    'eq_set'  => $equipment->eq_set,
+                ]);
+            }
             $validate=$mostRecentlyEqTmp->eqTemp_validate ; 
             $mass=$mostRecentlyEqTmp->eqTemp_mass ;
             $remarks=$mostRecentlyEqTmp->eqTemp_remarks ;
@@ -709,7 +729,17 @@ class EquipmentController extends Controller{
     }
 
 
+     /**
+     * Function call by ?? when we delete an equipment in the reform state : /equipment/validation (post)
+     * Delete an equipment and its attributes
+     * The id parameter is the id of the equipment in which we want to reform/delete
+     * */
 
+    public function delete_equipment($id){
+        $equipment=Equipment::findOrFail($id) ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $mostRecentlyEqTmp->delete() ; 
+    }
 }
 
 

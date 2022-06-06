@@ -17,7 +17,7 @@
           <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Reference a maintenance operation</a>
           <!--<router-link :to="{name:'url_life_event_reference',params:{id: list.id,state_id:list.state_id} }">Reference a maintenance operation</router-link>-->
           <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance operation</router-link>
-
+         
 
 
 

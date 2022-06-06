@@ -15,7 +15,8 @@
             <a v-if="list.alreadyValidatedTechnical===false" href="#" @click="technicalValidation(list.id)">Technical validation</a>
             <a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
             <a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Validated</a>
-            <a @click="reform(list.id)" href="#">Reform</a>
+            <a @click="reformEquipment(list.id)" href="#">Reform</a>
+            <a href="#" @click="warningDelete(list.id,list.eq_internalReference)">Delete</a>
             <router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
           </li>
         </ul>
@@ -23,6 +24,10 @@
       <b-modal :id="`modal-updateWarning-${_uid}`"  @ok="warningUpdate(eq_id,technical,quality,true)">
           <p class="my-4">Your equipment has a validated life sheet, If you update your equipment you will have to 
             revalidate </p>
+      </b-modal>
+
+      <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment(modal_eq_id)"  @hidden="resetModal" >
+          <p class="my-4">Are you sur you want to delete {{modal_eq_internalReference}} </p>
       </b-modal>
   </div>
 
@@ -37,7 +42,11 @@ export default {
       loaded:false,
       eq_id:null,
       technical:null,
-      quality:null
+      quality:null,
+
+      modal_eq_internalReference:'',
+      modal_eq_id:null
+
     }
   },
   computed: {
@@ -67,7 +76,7 @@ export default {
     qualityValidation(id){
       this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"quality" } })
     },
-    reform(id){
+    reformEquipment(id){
       this.$router.replace({ name: "url_eq_reform", params: {id:id}})
     },
     warningUpdate(id,technical,quality,redirect){
@@ -83,6 +92,24 @@ export default {
         this.$router.replace({ name: "url_eq_update", params: {id}})
       } 
     },
+    warningDelete(id,refernece){
+      this.modal_eq_id=id;
+      this.modal_eq_internalReference=refernece;
+      this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
+    },
+    deleteEquipment(eq_id_to_send){
+        console.log(eq_id_to_send);
+        var consultUrl = (id) => `/equipment/delete/${id}`;
+        axios.post(consultUrl(eq_id_to_send),{
+        })
+        .then(response =>{console.log("deleted")})
+        //If the controller sends errors we put it in the errors object 
+        .catch(error => {});
+    },
+    resetModal(){
+      this.modal_eq_internalReference='';
+      this.modal_eq_id=null
+    }
 
   }
   
