@@ -20,11 +20,23 @@
                         <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
                     </div>
                 </div>
-                <div v-else-if="this.usg_id!==null">
-                    <SaveButtonForm  @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
+                <div v-else-if="this.usg_id!==null && reformMod==false">
+                    <div v-if="refromDate!=null" >
+                        <p>Refrom by {{reformBy}} at {{reformDate}}</p>
+                    </div>
+                    <div v-else>
+                        <SaveButtonForm  @add="addEquipmentUsg" @update="updateEquipmentUsg" :reformMod="this.isInReformMod" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
+                    </div>
                 </div>
                 <!-- If the user is not in the consultation mode, the delete button appear -->
                 <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                <div v-if="reformMod!==false && reformDate===null">
+                    <ReformComponentButton v-if="reformDate===null" :reformBy="reformBy" :reformDate="reformDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
+                </div>
+                
+
+
+
             
             </div>  
         </form>
@@ -35,12 +47,16 @@
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import ReformComponentButton from '../../button/ReformComponentButton.vue'
+
 
 export default {
     components:{
         InputTextAreaForm,
         SaveButtonForm,
-        DeleteComponentButton
+        DeleteComponentButton,
+        ReformComponentButton
+
     },
     /*--------Declartion of the differents props:--------
         type : 
@@ -84,8 +100,20 @@ export default {
             type:Number,
             default:null
         },
+        reformDate:{
+            type:String,
+            default:null
+        },
+        reformBy:{
+            type:String,
+            dfault:null
+        },
         eq_id:{
             type:Number
+        },
+        reformMod:{
+            type:Boolean,
+            default:false
         }
 
     },
@@ -110,7 +138,9 @@ export default {
             equipment_id_update:this.$route.params.id,
             errors:{},
             addSucces:false,
-            isInConsultedMod:this.consultMod
+            isInConsultedMod:this.consultMod,
+            isInReformMod:this.reformMod
+
         }
     },
     methods:{
@@ -221,9 +251,25 @@ export default {
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
             }else{
-                this.$emit('deleteRisk','')
+                this.$emit('deleteUsg','')
 
             }
+            
+        },
+        reformComponent(){
+            //If the user is in update mode and the usage exist in the database
+                //Send a post request with the id of the usage who will be deleted in the url
+            var consultUrl = (id) => `/equipment/reform/usg/${id}`;
+            axios.post(consultUrl(this.usg_id),{
+                eq_id:this.equipment_id_update
+            })
+            .then(response =>{
+                //Emit to the parent component that we want to delete this component
+                this.$emit('deleteUsg','')
+            })
+            //If the controller sends errors we put it in the errors object 
+            .catch(error => this.errors=error.response.data.errors) ;
+        
             
         }
         

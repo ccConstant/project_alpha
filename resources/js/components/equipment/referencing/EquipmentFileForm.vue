@@ -218,7 +218,6 @@ export default {
                 //Send a post request with the id of the file who will be deleted in the url
                 var consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id),{
-                    eq_id:this.equipment_id_update
                 })
                 .then(response =>{
                     //Emit to the parent component that we want to delete this component
@@ -227,8 +226,6 @@ export default {
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
-            }else{
-                this.$emit('deleteFile','')
             }
             
         }

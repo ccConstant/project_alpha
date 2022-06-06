@@ -17,9 +17,10 @@
         <!--The emitted deletePrvMtnOp is catched here and call the function getContent -->
         <EquipmentPrvMtnOpForm ref="ask_prvMtnOp_data" v-for="(component, key) in components" :key="component.key"
             :is="component.comp" :number="component.number" :description="component.description"
-            :periodicity="component.periodicity" :symbolPeriodicity="component.symbolPeriodicity"
+            :periodicity="component.periodicity" :symbolPeriodicity="component.symbolPeriodicity" :reformMod="isInReformMod"
             :protocol="component.protocol" :divClass="component.className" :id="component.id" :import_id="component.import"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"
+            :reformDate="component.reformDate" :reformBy="component.reformBy"  
             @deletePrvMtnOp="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -79,6 +80,10 @@ export default {
         import_id:{
             type:Number,
             default:null
+        },
+        reformMod:{
+            type:Boolean,
+            default:false
         }
     },
     /*--------Declartion of the differents returned data:--------
@@ -97,6 +102,7 @@ export default {
         count:0,
         isInConsultMod:this.consultMod,
         isInModifMod:this.modifMod,
+        isInReformMod:this.reformMod,
         data_eq_id:this.eq_id
       };
     },
@@ -109,7 +115,8 @@ export default {
             });
         },
         //Function for adding imported preventive maintenance operation form with his data
-        addImportedComponent(prvMtnOp_number,prvMtnOp_description,prvMtnOp_periodicity,prvMtnOp_symbolPeriodicity,prvMtnOp_protocol,prvMtnOp_validate,prvMtnOp_className,id) {
+        addImportedComponent(prvMtnOp_number,prvMtnOp_description,prvMtnOp_periodicity,prvMtnOp_symbolPeriodicity,prvMtnOp_protocol,
+        prvMtnOp_validate,prvMtnOp_className,id,prvMtnOp_reformDate,prvMtnOp_reformBy) {
             this.components.push({
                 comp:'EquipmentPrvMtnOpForm',
                 key : this.uniqueKey++,
@@ -121,7 +128,9 @@ export default {
                 className:prvMtnOp_className,
                 validate:prvMtnOp_validate,
                 import:this.import_id,
-                id:id
+                id:id,
+                reformDate:prvMtnOp_reformDate,
+                reformBy:prvMtnOp_reformBy
             });
         },
         //Suppresion of a preventive maintenance operation component from the vue
@@ -136,7 +145,7 @@ export default {
                 for (const prvMtnOp of this.prvMtnOps) {
                     var className="importedPrvMtnOp"+prvMtnOp.id
                     this.addImportedComponent(prvMtnOp.prvMtnOp_number,prvMtnOp.prvMtnOp_description,prvMtnOp.prvMtnOp_periodicity,prvMtnOp.prvMtnOp_symbolPeriodicity,
-                        prvMtnOp.prvMtnOp_protocol,prvMtnOp.prvMtnOp_validate,className,prvMtnOp.id);
+                        prvMtnOp.prvMtnOp_protocol,prvMtnOp.prvMtnOp_validate,className,prvMtnOp.id,prvMtnOp.prvMtnOp_reformDate,prvMtnOp.prvMtnOp_reformBy);
                 }
             }
             this.prvMtnOps=null

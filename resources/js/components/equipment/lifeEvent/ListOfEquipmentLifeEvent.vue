@@ -51,7 +51,7 @@ export default {
         axios.post(consultUrl(state_id),{
         })
         .then(response =>{
-            window.location.href = `/equipment/life_event/state/${eq_id}`
+            this.$router.replace({ name: "url_life_event_change_state", params: {id:eq_id}, query: {currentState: state_id } })
         ;})
         //If the controller sends errors we put it in the errors object 
         .catch(error => {
@@ -67,7 +67,7 @@ export default {
           eq_id:eq_id_to_send
         })
         .then(response =>{
-            window.location.href = `/equipment/life_event/reference/${eq_id_to_send}/${state_id}`
+            this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }})
         ;})
         //If the controller sends errors we put it in the errors object 
         .catch(error => {

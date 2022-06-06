@@ -82,6 +82,11 @@ const router = new VueRouter({
         component:require('./components/equipment/consultation/LifeSheetPDF.vue').default
 
     },{
+        path:'/equipment/reform/:id(\\d+)',
+        name: 'url_eq_reform',
+        component:require('./components/equipment/consultation/EquipmentReform.vue').default
+
+    },{
         path:'*',
     }]
 

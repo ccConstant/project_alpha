@@ -38,6 +38,7 @@
                 <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
             </div>       
         </form>
+        <SucessAlert ref="sucessAlert"/>
     </div>
 </template>
 
@@ -47,6 +48,8 @@ import InputSelectForm from '../../input/InputSelectForm.vue'
 import InputTextForm from '../../input/InputTextForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
+
 
 
 
@@ -56,7 +59,9 @@ export default {
         InputSelectForm,
         InputTextForm,
         SaveButtonForm,
-        DeleteComponentButton
+        DeleteComponentButton,
+        SucessAlert
+
 
     },
     /*--------Declartion of the differents props:--------
@@ -200,6 +205,7 @@ export default {
                     })
                     //If the dimension is added succesfuly
                     .then(response =>{
+                        this.$refs.sucessAlert.showAlert(`Equipment dimension saved as ${savedAs} successfully`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -254,7 +260,10 @@ export default {
                         eq_id:this.equipment_id_update,
                         dim_validate : savedAs
                     })
-                    .then(response =>{this.dim_validate=savedAs;})
+                    .then(response =>{
+                        this.$refs.sucessAlert.showAlert(`Equipment dimension updated as ${savedAs} successfully`);
+                        this.dim_validate=savedAs;
+                    })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })

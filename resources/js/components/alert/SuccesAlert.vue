@@ -9,8 +9,8 @@
 <script>
 export default {
     methods: {
-        showAlert() {
-            this.$snotify.success('Ajouter avec succes');
+        showAlert(message) {
+            this.$snotify.success(message);
         }
     }
 

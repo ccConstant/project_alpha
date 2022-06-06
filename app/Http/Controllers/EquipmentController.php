@@ -18,6 +18,7 @@ use App\Models\PreventiveMaintenanceOperation;
 use App\Models\State;
 use App\Models\File;
 use App\Models\Risk;
+use App\Models\SpecialProcess;
 use App\Models\Usage;
 use App\Models\EnumEquipmentMassUnit ;
 use App\Models\EnumEquipmentType ;
@@ -270,39 +271,39 @@ class EquipmentController extends Controller{
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp!=NULL){
                 //we checked if a life sheet is already created. If it's the case we can't update the internalReference
-                if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){                
+                if ($mostRecentlyEqTmp->eqTemp_validate=="validated"){                
                     if($equipment->eq_internalReference!=$request->eq_internalReference){
                         return response()->json([
                             'errors' => [
-                                'eq_internalReference' => ["You can't modify the internal reference because a life sheet has already been created"]
+                                'eq_internalReference' => ["You can't modify the internal reference because you have already validated the id card "]
                             ]
                         ], 429);
                     }
                     if($equipment->eq_externalReference!=$request->eq_externalReference){
                         return response()->json([
                             'errors' => [
-                                'eq_externalReference' => ["You can't modify the external reference because a life sheet has already been created"]
+                                'eq_externalReference' => ["You can't modify the external reference because you have already validated the id card"]
                             ]
                         ], 429);
                     }
                     if($equipment->eq_name!=$request->eq_name){
                         return response()->json([
                             'errors' => [
-                                'eq_name' => ["You can't modify the name because a life sheet has already been created"]
+                                'eq_name' => ["You can't modify the name because you have already validated the id card"]
                             ]
                         ], 429);
                     }
                     if($equipment->eq_serialNumber!=$request->eq_serialNumber){
                         return response()->json([
                             'errors' => [
-                                'eq_serialNumber' => ["You can't modify the serial number because a life sheet has already been created"]
+                                'eq_serialNumber' => ["You can't modify the serial number because you have already validated the id card"]
                             ]
                         ], 429);
                     }
                     if($equipment->eq_constructor!=$request->eq_constructor){
                         return response()->json([
                             'errors' => [
-                                'eq_constructor' => ["You can't modify the constructor because a life sheet has already been created"]
+                                'eq_constructor' => ["You can't modify the constructor because you have already validated the id card"]
                             ]
                         ], 429);
                     }
@@ -318,7 +319,7 @@ class EquipmentController extends Controller{
                     if($equipment->eq_mobility!=$request->eq_mobility){
                         return response()->json([
                             'errors' => [
-                                'eq_mobility' => ["You can't modify the set because a life sheet has already been created"]
+                                'eq_mobility' => ["You can't modify the set because you have already validated the id card"]
                             ]
                         ], 429);
                     }
@@ -547,69 +548,127 @@ class EquipmentController extends Controller{
      * */
 
     public function verif_validation($id){
+        $container=array() ; 
+        $container2=array() ; 
+        
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment that doesn't have a validated ID card"]
-                ]
-            ], 429);
+            $obj=([
+                'validation' => ["You can't validate an equipment that doesn't have a validated ID card"],
+            ]);
+            array_push($container2,$obj);
         }
 
-        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('file_validate', '=', 'validated')->get() ; 
+        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         if (count($files)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment that doesn't have at least one file"]
-                ]
-            ], 429);
+            $obj2=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one file"]
+            ]);
+            array_push($container2,$obj2);
+            
+        }else{
+            foreach($files as $file){
+                if ($file->file_validate != "validated"){
+                    $obj3=([
+                        'validation' => ["You can't validate an equipment that have at least one file in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj3);
+                }
+            }
         }
         
-        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('usage_validate', '=', 'validated')->get() ; 
+        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         if (count($usages)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment that doesn't have at least one usage"]
-                ]
-            ], 429);
-        }
-        
-        if ($mostRecentlyEqTmp->specialProcess_id==NULL){
-            $spProc=SpecialProcess::findOrFail($mostRecentlyEqTmp->specialProcess_id) ; 
-            if ($spProc->spProc_validate!="validated"){
-                return response()->json([
-                    'errors' => [
-                        'validation' => ["You can't validate an equipment that doesn't have one special process"]
-                    ]
-                ], 429);
+            $obj4=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one usage"]
+            ]);
+            array_push($container2,$obj4);
+        }else{
+            foreach($usages as $usage){
+                if ($usage->usg_validate != "validated"){
+                    
+                    $obj5=([
+                        'validation' => ["You can't validate an equipment that have at least one usage in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj5);
+                }
             }
         }
 
-        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('risk_validate', '=', 'validated')->get() ; 
+        
+        if ($mostRecentlyEqTmp->special_process==NULL){
+            $obj6=([
+                'validation' => ["You can't validate an equipment that doesn't have one special process"]
+            ]);
+            array_push($container2,$obj6);
+
+        }else{
+            $spProc=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ; 
+            if ($spProc->spProc_validate!="validated"){
+                $obj7=([
+                    'validation' => ["You can't validate an equipment with a special process in drafted or in to be validated"]
+                ]);
+                array_push($container2,$obj7);
+            }
+        }
+
+        
+        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         if (count($risks)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment that doesn't have at least one risk "]
-                ]
-            ], 429);
+            $obj8=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one risk"]
+            ]);
+            array_push($container2,$obj8);
+        }else{
+            foreach($risks as $risk){
+                if ($risk->risk_validate != "validated"){
+                    $obj9=([
+                        'validation' => ["You can't validate an equipment that have at least one risk in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj9);
+                }
+            }
         }
 
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp->validate', '=', 'validated')->get() ; 
+        
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         if (count($prvMtnOps)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment that doesn't have at least one preventive maintenance operations "]
-                ]
-            ], 429);
+            $obj9=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one preventive maintenance operations "]
+            ]);
+            array_push($container2,$obj9);
+        }else{
+            foreach($prvMtnOps as $prvMtnOp){
+                if ($prvMtnOp->prvMtnOp_validate != "validated"){
+                    $obj10=([
+                        'validation' => ["You can't validate an equipment that have at least one prvMtnOp in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj10);
+                }
+            }
         }
-
+        
         if (count($mostRecentlyEqTmp->states)<1){
-            return response()->json([
-                'errors' => [
-                    'validation' => ["You can't validate an equipment that doesn't have at least one state"]
-                ]
-            ], 429);
+            $obj11=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one state"]
+            ]);
+            array_push($container2,$obj11);
+        }else{
+            foreach($mostRecentlyEqTmp->states as $state){
+                if ($state->state_validate != "validated"){
+                    $obj12=([
+                        'validation' => ["You can't validate an equipment that have at least one state in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj12);
+                }
+            }
         }
+         
+        $errors=([
+            'errors' => $container2
+        ]);
+        array_push($container,$errors);
+        return response()->json($container) ;
     }
 
     /**

@@ -95,7 +95,8 @@ export default {
         count:0,
         isInConsultMod:this.consultMod,
         isInModifMod:this.modifMod,
-        data_eq_id:this.eq_id
+        data_eq_id:this.eq_id,
+        all_dim_validate:[]
       };
     },
     methods: {
@@ -151,7 +152,10 @@ export default {
                     //Else if the dimension have an id and addSucces is equal to true 
                     if(component.dim_id!=null || component.addSucces==true){
                         //updateEquipmentDim is used
-                        component.updateEquipmentDim(savedAs);
+                        if(component.dim_validate!=="validated"){
+                            component.updateEquipmentDim(savedAs);
+                        }
+
                     }
                 }else{
                     //Else If the user is not in modification mode
@@ -168,7 +172,6 @@ export default {
         if(this.import_id!==null){
             //Make a get request to ask to the controller the dimension corresponding to the id of the equipment with which data will be imported
             var consultUrl = (id) => `/dimension/send/${id}`;
-   
             axios.get(consultUrl(this.import_id))
                 .then (response=>this.dimensions=response.data)
                 .catch(error => console.log(error)) ;
@@ -179,7 +182,6 @@ export default {
     /*All function inside the created option is called after the component has been mounted.*/
     mounted(){
         //If the user is in consultation or modification mode dimensions will be added to the vue automatically
-
         if(this.consultMod || this.modifMod ){
             this.importDim();
         }

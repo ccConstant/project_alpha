@@ -14,8 +14,9 @@
             <a href="#" @click="warningUpdate(list.id,list.alreadyValidatedTechnical,list.alreadyValidatedQuality)">Update</a>
             <a v-if="list.alreadyValidatedTechnical===false" href="#" @click="technicalValidation(list.id)">Technical validation</a>
             <a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
-            <a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===false">Statut : Validated</a>
-            <router-link :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
+            <a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Validated</a>
+            <a @click="reform(list.id)" href="#">Reform</a>
+            <router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
           </li>
         </ul>
       </div>
@@ -61,10 +62,13 @@ export default {
   },
   methods:{
     technicalValidation(id){
-      this.$router.replace({ name: "url_eq_consult", params: {id}, query: {method:"technical" } })
+      this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"technical" } })
     },
     qualityValidation(id){
-      this.$router.replace({ name: "url_eq_consult", params: {id}, query: {method:"quality" } })
+      this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"quality" } })
+    },
+    reform(id){
+      this.$router.replace({ name: "url_eq_reform", params: {id:id}})
     },
     warningUpdate(id,technical,quality,redirect){
       this.eq_id=id;

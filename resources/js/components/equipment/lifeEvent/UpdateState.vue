@@ -6,6 +6,15 @@
         <div v-if="loaded==true">
             <form class="container state-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
+                <div v-if="isInModifMod">
+                    <h2>Update the state</h2>
+                </div>
+                <div v-else>
+                    <div v-if="isInConsultMod==false">
+                        <h2>Change the State</h2>
+                        <InputTextForm  inputClassName="form-control w-50" name="current_state" label="Current state :" :isDisabled="true"   v-model="current_state"/>
+                    </div>
+                </div>
                 <div v-if="state_id!==undefined || isInConsultedMod==true">
                     <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name"/>
                 </div>
@@ -14,8 +23,8 @@
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="state_remarks"/>
                 <div class="input-group">
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="state_startDate"/>
-                    <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate"/>
+                    <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate"/>
                 </div>
                 <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk"/> 
                 <SaveButtonForm v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
@@ -88,7 +97,8 @@ export default {
             isInModifMod:this.modifMod,
             errors:{},
             addSucces:false,
-            loaded:false
+            loaded:false,
+            current_state:''
 
         }
     },
@@ -195,7 +205,14 @@ export default {
                 })
                 .catch(error => console.log(error)) ;
         }else{
-            this.loaded=true;
+            var UrlState = (id) => `/state/send/${id}`;
+            axios.get(UrlState(this.$route.query.currentState))
+                .then (response=>{
+                    console.log(response.data)
+                    this.current_state=response.data[0].state_name;
+                    this.loaded=true;
+                })
+                .catch(error => console.log(error)) ;
 
         }
 

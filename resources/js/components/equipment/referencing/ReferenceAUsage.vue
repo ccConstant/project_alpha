@@ -15,9 +15,10 @@
         <!--Adding to the vue EquipmentUsgForm by going through the components array with the v-for-->
         <!--ref="ask_usg_data" is used to call the child elements in this component-->
         <!--The emitted deleteUsg is catched here and call the function getContent -->
-        <EquipmentUsgForm ref="ask_usg_data" v-for="(component, key) in components" :key="component.key"
+        <EquipmentUsgForm ref="ask_usg_data" v-for="(component, key) in components" :key="component.key" 
             :is="component.comp"  :type="component.type" :precuation="component.precaution"  :divClass="component.className" :id="component.id"
-            :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"
+            :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id" 
+            :reformMod="isInReformMod" :reformDate="component.reformDate" :reformBy="component.reformBy" 
             @deleteUsg="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -76,6 +77,10 @@ export default {
         import_id:{
             type:Number,
             default:null
+        },
+        reformMod:{
+            type:Boolean,
+            default:false
         }
     },
         /*--------Declartion of the differents returned data:--------
@@ -94,6 +99,7 @@ export default {
         count:0,
         isInConsultMod:this.consultMod,
         isInModifMod:this.modifMod,
+        isInReformMod:this.reformMod,
         data_eq_id:this.eq_id
       };
     },
@@ -106,7 +112,7 @@ export default {
             });
         },
         //Function for adding imported usage form with his data
-        addImportedComponent(usg_type,usg_precuation,usg_validate,usg_className,id) {
+        addImportedComponent(usg_type,usg_precuation,usg_validate,usg_className,id,usg_reformDate,usg_reformBy) {
             this.components.push({
                 comp:'EquipmentUsgForm',
                 key : this.uniqueKey++,
@@ -114,7 +120,9 @@ export default {
                 precaution:usg_precuation,
                 className:usg_className,
                 validate:usg_validate,
-                id:id
+                id:id,
+                reformDate:usg_reformDate,
+                reformBy:usg_reformBy
             });
         },
         //Suppresion of a usages component from the vue
@@ -130,7 +138,7 @@ export default {
                 for (const usage of this.usages) {
                     console.log(usage)
                     var className="importedUsg"+usage.id
-                    this.addImportedComponent(usage.usg_type,usage.usg_precaution,usage.usg_validate,className,usage.id);
+                    this.addImportedComponent(usage.usg_type,usage.usg_precaution,usage.usg_validate,className,usage.id,usage.usg_reformDate,usage.usg_reformBy);
                 }
             }
             this.usages=null

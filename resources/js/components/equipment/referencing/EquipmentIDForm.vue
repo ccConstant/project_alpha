@@ -245,8 +245,8 @@ export default {
                             eq_validate : savedAs,
                         })
                         .then(response =>{
-                                this.$refs.sucessAlert.showAlert();
-                                this.addSucces=true;
+                                this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
+                                this.addSucces=true; 
                                 this.isInConsultMod=true;
                                 this.eq_id=response.data;
                                 this.$emit('EqID',this.eq_id);
@@ -292,6 +292,7 @@ export default {
                             eq_validate : savedAs,
                         })
                         .then(response => {
+                            this.$refs.sucessAlert.showAlert(`ID card updated as ${savedAs} successfully`);
                             this.eq_validate=savedAs;
 
                             })

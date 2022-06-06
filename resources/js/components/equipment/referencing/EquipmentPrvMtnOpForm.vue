@@ -37,11 +37,20 @@
                             <SaveButtonForm @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :savedAs="prvMtnOp_validate"/>
                         </div>
                     </div>
-                    <div v-else-if="this.prvMtnOp_id!==null">
-                        <SaveButtonForm  @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="prvMtnOp_validate"/>
+                    <div v-else-if="this.prvMtnOp_id!==null && reformMod==false ">
+                        <div v-if="refromDate!=null" >
+                            <p>Refrom by {{reformBy}} at {{reformDate}}</p>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm  @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="prvMtnOp_validate"/>
+                        </div>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :Errors="errors.prvMtnOp_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <div v-if="reformMod!==false && reformDate===null">
+                        <ReformComponentButton :reformBy="reformBy" :reformDate="reformDate" v-if="reformDate===null" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
+                    </div>
+
 
                 </div>       
             </form>
@@ -67,6 +76,8 @@ import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import InputNumberForm from '../../input/InputNumberForm.vue'
 import ReferenceARisk from './ReferenceARisk.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import ReformComponentButton from '../../button/ReformComponentButton.vue'
+
 
 
 export default {
@@ -78,7 +89,9 @@ export default {
         InputTextAreaForm,
         InputNumberForm,
         ReferenceARisk,
-        DeleteComponentButton
+        DeleteComponentButton,
+        ReformComponentButton
+
 
     },
     /*--------Declartion of the differents props:--------
@@ -133,9 +146,21 @@ export default {
         eq_id:{
             type:Number
         },
+        reformDate:{
+            type:String,
+            default:null
+        },
+        reformBy:{
+            type:String,
+            dfault:null
+        },
         import_id:{
             type: Number,
             default :null
+        },
+        reformMod:{
+            type:Boolean,
+            default:false
         }
 
     },
@@ -176,7 +201,9 @@ export default {
             errors:{},
             addSucces:false,
             isInConsultedMod:this.consultMod,
-            loaded:false
+            loaded:false,
+            isInReformMod:this.reformMod
+
         }
     },
     methods:{
@@ -304,6 +331,22 @@ export default {
                 this.$emit('deletePrvMtnOp','')
 
             }
+            
+        },
+        reformComponent(){
+            //If the user is in update mode and the usage exist in the database
+                //Send a post request with the id of the usage who will be deleted in the url
+            var consultUrl = (id) => `/equipment/reform/prvMtnOp/${id}`;
+            axios.post(consultUrl(this.prvMtnOp_id),{
+                eq_id:this.equipment_id_update
+            })
+            .then(response =>{
+                //Emit to the parent component that we want to delete this component
+                this.$emit('deletePrvMtnOp','')
+            })
+            //If the controller sends errors we put it in the errors object 
+            .catch(error => this.errors=error.response.data.errors) ;
+        
             
         },
         clearSelectError(value){
