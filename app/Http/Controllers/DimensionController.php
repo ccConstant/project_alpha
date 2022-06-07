@@ -203,6 +203,56 @@ class DimensionController extends Controller
     }
 
     /**
+     * Function call by LifeSheetPDF.vue with the route : /dimension/send/ByType/{$id} (get)
+     * Get the dimensions by type of the equipment whose id is passed in parameter
+     * The id parameter corresponds to the id of the equipment from which we want the dimensions
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_dimensions_by_type($id) {
+        $enums_dimType=EnumDimensionType::all() ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
+        $dimensions = Dimension::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
+        $containerGlobal=array() ; 
+        foreach ($enums_dimType as $enum_dimType){
+            $container=array() ; 
+            foreach($dimensions as $dimension){
+                if ($enum_dimType->id==$dimension->enumDimensionType_id){
+                    $type = NULL ; 
+                    if ($dimension->enumDimensionType_id!=NULL){
+                        $type = $dimension->enumDimensionType->value ;
+                    }
+                    $name = NULL ; 
+                    if ($dimension->enumDimensionName_id!=NULL){
+                        $name = $dimension->enumDimensionName->value ;
+                    }
+        
+                    $unit = NULL ; 
+                    if ($dimension->enumDimensionUnit_id!=NULL){
+                        $unit = $dimension->enumDimensionUnit->value ;
+                    }
+                    $obj=([
+                        "id" => $dimension->id,
+                        "dim_value" => $dimension->dim_value,
+                        "dim_name" => $name,
+                        "dim_type" => $type,
+                        "dim_unit"=> $unit,
+                        "dim_validate" => $dimension->dim_validate,
+                    ]);
+                    array_push($container,$obj);
+                }
+            }
+            $obj2=([
+                "type" => $enum_dimType->value,
+                "dimensions" => $container,
+            ]);
+            array_push($containerGlobal,$obj2);
+        }
+       
+        return response()->json($containerGlobal) ;
+    }
+
+    /**
      * Function call by EquipmentDimForm.vue when the form is submitted for update with the route :/equipment/update/dim/{id} (post)
      * Update an enregistrement of dimension in the data base with the informations entered in the form 
      * The id parameter correspond to the id of the dimension we want to update

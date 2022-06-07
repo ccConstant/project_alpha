@@ -101,6 +101,7 @@ class EquipmentController extends Controller{
         $validate=NULL ; 
         $massUnit=NULL;
         $type = NULL ; 
+        $mobility=NULL ; 
         if ($mostRecentlyEqTmp!=NULL){
 
             $states=$mostRecentlyEqTmp->states;
@@ -776,13 +777,13 @@ class EquipmentController extends Controller{
     }
 
     /**
-     * Function call by UpdateState.vue when the form is submitted for insert with the route : /state/equipment/${state_id}  (post)
+     * Function call by EquipmentIDForm.vue when the form is submitted for insert with the route : /state/equipment/${id}   (post)
      * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form 
      * @return \Illuminate\Http\Response : id of the new equipment
      */
     public function add_equipment_from_state(Request $request, $id){
 
-        /*
+        
         //An equipment is linked to its mass unit. So we need to find the id of the massUnit choosen by the user and write it in the attribute of the equipment.
         //But if no one mass unit is choosen by the user we define this id to NULL
         // And if the massUnit choosen is find in the data base the NULL value will be replace by the id value
@@ -838,7 +839,57 @@ class EquipmentController extends Controller{
         ]) ; 
         
         $newState->equipment_temps()->attach($new_eqTemp);
-        return response()->json($equipment_id) ; */
+        return response()->json($equipment_id) ; 
+    }
+
+    /**
+     * Function call by UpdateState.vue when the form is submitted for insert with the route : /send/state/equipment/${state_id} (post)
+     * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form 
+     * @return \Illuminate\Http\Response : id of the new equipment
+     */
+    public function send_equipment_from_state($state_id){
+        $equipments=Equipment::where('state_id', '=', $state_id)->get() ; 
+        $container=array() ; 
+        foreach ($equipments as $equipment) {
+            $validate=NULL ; 
+            $massUnit=NULL;
+            $type = NULL ; 
+            $mobility=NULL;
+            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
+            if ($mostRecentlyEqTmp!=NULL){
+                $validate=$mostRecentlyEqTmp->eqTemp_validate ; 
+                $mass=$mostRecentlyEqTmp->eqTemp_mass ;
+                $remarks=$mostRecentlyEqTmp->eqTemp_remarks ;
+                $mobility=$mostRecentlyEqTmp->eqTemp_mobility;
+    
+                if ($mostRecentlyEqTmp->enumMassUnit_id!=NULL){
+                    $massUnit = $mostRecentlyEqTmp->enumEquipmentMassUnit->value ;
+                }
+    
+                if ($mostRecentlyEqTmp->enumType_id!=NULL){
+                    $type = $mostRecentlyEqTmp->enumEquipmentType->value ;
+                }
+            }
+            $obj=([
+                'eq_internalReference' => $equipment->eq_internalReference,
+                'eq_externalReference' => $equipment->eq_externalReference,
+                'eq_name' => $equipment->eq_name,
+                'eq_type'=> $type,
+                'eq_serialNumber' => $equipment->eq_serialNumber,
+                'eq_constructor'  => $equipment->eq_constructor,
+                'eq_mass'  => (string)$mass,
+                'eq_remarks'  => $remarks,
+                'eq_set'  => $equipment->eq_set,
+                'eq_massUnit'=> $massUnit,
+                'eq_mobility'=> (boolean)$mobility,
+                'eq_validate' => $validate,
+            ]);
+           
+            array_push($container,$obj);
+        }
+        return response()->json($container) ;
+
+        
     }
 
 }

@@ -140,15 +140,40 @@
 
             <div class="eq_risk_infos_pdf">
                 <div class="title_risk_pdf">
-                    <p>RISK</p>
+                    <p>RISK RELATED TO THE EQUIPMENT</p>
                 </div>
-                <div class="eq_risk_pdf" >
+                <div v-for="(risk,index) in eq_risk " :key="index" class="eq_risk_pdf" >
+                    
+                    <div class="eq_risk_for_pdf">
+                        Risk for{{risk.risk_for}}
+                    </div>
+                    <div class="eq_risk_wayOfControl_pdf">
+                        <p>
+                            Way of control
+                        </p>
+                        <p>
+                            {{risk.risk_wayOfControl}}
+                        </p>
+                    </div>
+                    <div class="eq_risk_remarks_pdf">
+                        <p>
+                            Remarks
+                        </p>
+                        <p>
+                            {{risk.risk_remarks}}
+                        </p>
+                    </div>                    
+                </div> 
+            </div>
+
+            <div class="eq_specProc_infos_pdf">
+                <div class="eq_specProc_title_pdf">
+                    Special process ?
+                </div>
+                <div class="eq_specProc_pdf" v-for="(spProc,index) in eq_spProc " :key="index">
                     <p>
-                        Risk related to the equipment :
-                    </p>
-                    <p  v-for="(risk,index) in eq_risk " :key="index">
-                        risk
-                    </p>
+                        oui
+                    </p>              
                 </div> 
             </div>
         </div>
@@ -234,6 +259,7 @@ export default {
                 }else{
                     this.eq_spProc=response.data;
                 }
+                console.log(response.data)
             })
             .catch(error => console.log(error)) ;
         
@@ -491,19 +517,59 @@ export default {
                 position: relative;
                 .title_risk_pdf{
                     margin-left: 100px;
-                    width: 200px;
+                    width: 400px;
                     font-size : 20px;
                     font-weight: bold;
                 }
                 .eq_risk_pdf{
+                    
+                    position: relative;
+                    height: auto;
+                    width: 1042px;   
+                    margin-bottom: 30px;
+                }
+                .eq_risk_for_pdf{
                     border: solid 1px black;
                     position: relative;
-                    margin-bottom: 20px;
                     height: auto;
                     width: 1042px;   
                     margin-left: 100px;
                 }
+                .eq_risk_remarks_pdf{
+                    border: solid 1px black;
+                    position: relative;
+                    height: auto;
+                    width: 521px;   
+                    margin-left: 100px;
+                    
+                }
+                .eq_risk_wayOfControl_pdf{
+                    border: solid 1px black;
+                    position: relative;
+                    height: auto;
+                    width: 521px;   
+                    margin-right: -100px;
+                    float: right;
+                }
 
+            }
+            .eq_specProc_infos_pdf{
+                position: relative;
+                .eq_specProc_title_pdf{
+                    border: solid 1px black;
+                    position: relative;
+                    height: auto;
+                    width: 1042px;   
+                    margin-left: 100px;
+                    
+                }
+                .eq_specProc_pdf{
+                    border: solid 1px black;
+                    position: relative;
+                    height: auto;
+                    width: 1042px;   
+                    margin-left: 100px;
+                }
             }
         }
 

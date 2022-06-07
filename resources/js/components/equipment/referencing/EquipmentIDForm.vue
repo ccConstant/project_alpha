@@ -142,6 +142,10 @@ export default {
         disableImport:{
             type:Boolean,
             default:false
+        },
+        state_id:{
+            type:String,
+            default:null
         }
     },
     data(){
@@ -234,28 +238,56 @@ export default {
                 })
                 .then(response =>{
                         this.errors={};
-                        axios.post('/equipment/add',{
-                            eq_internalReference : this.eq_internalReference, 
-                            eq_externalReference : this.eq_externalReference,
-                            eq_name : this.eq_name,
-                            eq_type : this.eq_type, 
-                            eq_serialNumber : this.eq_serialNumber,
-                            eq_constructor : this.eq_constructor,
-                            eq_mass : this.eq_mass,
-                            eq_massUnit : this.eq_massUnit,
-                            eq_mobility : this.eq_mobility,
-                            eq_remarks : this.eq_remarks,
-                            eq_set : this.eq_set,
-                            eq_validate : savedAs,
-                        })
-                        .then(response =>{
-                                this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
-                                this.addSucces=true; 
-                                this.isInConsultMod=true;
-                                this.eq_id=response.data;
-                                this.$emit('EqID',this.eq_id);
+                        if(this.state_id!==null){
+                            var consultUrl = (id) => `/state/equipment/${id}`;
+                            axios.post(consultUrl(this.state_id),{
+                                eq_internalReference : this.eq_internalReference, 
+                                eq_externalReference : this.eq_externalReference,
+                                eq_name : this.eq_name,
+                                eq_type : this.eq_type, 
+                                eq_serialNumber : this.eq_serialNumber,
+                                eq_constructor : this.eq_constructor,
+                                eq_mass : this.eq_mass,
+                                eq_massUnit : this.eq_massUnit,
+                                eq_mobility : this.eq_mobility,
+                                eq_remarks : this.eq_remarks,
+                                eq_set : this.eq_set,
+                                eq_validate : savedAs,
                             })
-                        .catch(error => this.errors=error.response.data.errors) ; 
+                            .then(response =>{
+                                    this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
+                                    this.addSucces=true; 
+                                    this.isInConsultMod=true;
+                                    this.eq_id=response.data;
+                                    this.$emit('EqID',this.eq_id);
+                                })
+                            .catch(error => this.errors=error.response.data.errors) ; 
+
+                        }else{
+                            
+                            axios.post('/equipment/add',{
+                                eq_internalReference : this.eq_internalReference, 
+                                eq_externalReference : this.eq_externalReference,
+                                eq_name : this.eq_name,
+                                eq_type : this.eq_type, 
+                                eq_serialNumber : this.eq_serialNumber,
+                                eq_constructor : this.eq_constructor,
+                                eq_mass : this.eq_mass,
+                                eq_massUnit : this.eq_massUnit,
+                                eq_mobility : this.eq_mobility,
+                                eq_remarks : this.eq_remarks,
+                                eq_set : this.eq_set,
+                                eq_validate : savedAs,
+                            })
+                            .then(response =>{
+                                    this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
+                                    this.addSucces=true; 
+                                    this.isInConsultMod=true;
+                                    this.eq_id=response.data;
+                                    this.$emit('EqID',this.eq_id);
+                                })
+                            .catch(error => this.errors=error.response.data.errors) ; 
+                        }
                     })
                 .catch(error => this.errors=error.response.data.errors) ; 
             }

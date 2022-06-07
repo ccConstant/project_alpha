@@ -122,7 +122,11 @@ Route::post('/equipment/validation/{id}', [EquipmentController::class, 'validati
 
 Route::post('/equipment/delete/{id}', [EquipmentController::class, 'delete_equipment'] ) ;
 
-Route::post('/state/equipment/{id}', [EquipmentController::class, 'add_equipment_from_state'] ) ;
+Route::post('/state/equipment/{id} ', [EquipmentController::class, 'add_equipment_from_state'] ) ;
+
+Route::get('/send/state/equipment/{state_id} ', [EquipmentController::class, 'send_equipment_from_state'] ) ;
+
+
 
 
 /* Dimension Form Routes */ 
@@ -137,6 +141,8 @@ Route::post('/dimension/verif', [DimensionController::class, 'verif_dimension'])
 
 Route::post('/equipment/delete/dim/{id}', [DimensionController::class, 'delete_dimension'])  ;
 
+Route::post('/dimension/send/ByType/{$id}', [DimensionController::class, 'send_dimensions_by_type'])  ;
+
 /* Power Form Routes */ 
 
 Route::get('/power/names', [PowerController::class, 'send_names'])  ;
@@ -150,6 +156,8 @@ Route::post('/equipment/update/pow/{id}', [PowerController::class, 'update_power
 Route::get('/power/send/{id}', [PowerController::class, 'send_powers'])  ;
 
 Route::post('/equipment/delete/pow/{id}', [PowerController::class, 'delete_power'])  ;
+
+Route::post('/power/send/ByType/{$id}', [PowerController::class, 'send_powers_by_type'])  ;
 
 /* Special Process Form Routes */ 
 

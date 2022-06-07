@@ -283,5 +283,46 @@ class PowerController extends Controller
         $power->delete() ; 
     }
 
+    /**
+     * Function call by LifeSheetPDF.vue with the route : /power/send/ByType/{$id}(get)
+     * Get the powers by type of the equipment whose id is passed in parameter
+     * The id parameter corresponds to the id of the equipment from which we want the powers
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_powers_by_type($id) {
+        $enums_powerType=EnumPowerType::all() ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
+        $powers = Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
+        $containerGlobal=array() ; 
+        foreach ($enums_powerType as $enum_powerType){
+            $container=array() ; 
+            foreach ($powers as $power) {
+                $type = NULL ; 
+                if ($power->enumPowerType_id!=NULL){
+                    $type = $power->enumPowerType->value ;
+                }
+                $obj=([
+                    'id' => $power->id,
+                    'pow_name' => $power->pow_name,
+                    'pow_value' => (string)$power->pow_value,
+                    'pow_unit' => $power->pow_unit,
+                    'pow_consumptionValue' => (string)$power->pow_consumptionValue,
+                    'pow_consumptionUnit' => $power->pow_consumptionUnit,
+                    'pow_validate' => $power->pow_validate,
+                    'pow_type' => $type,
+                ]);
+                array_push($container,$obj);
+            }
+            $obj2=([
+                "type" => $enum_powerType->value,
+                "powers" => $container,
+            ]);
+            array_push($containerGlobal,$obj2);
+        }
+       
+        return response()->json($containerGlobal) ;
+    }
+
 
 }
