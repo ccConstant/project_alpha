@@ -32,6 +32,7 @@
         "@fullcalendar/vue": "^5.11.0",
         "bootstrap-vue": "^2.22.0",
         "jspdf": "^2.5.1",
+        "jspdf-html2canvas": "^1.4.9",
         "moment": "^2.29.3",
         "vue-router": "^3.5.3",
         "vue-snotify": "^3.2.1"
