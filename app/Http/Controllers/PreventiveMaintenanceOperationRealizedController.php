@@ -43,9 +43,9 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             'prvMtnOp_id' => $request->prvMtnOp_id,
 
         ]) ; 
-
+        
         $prvMtnOpRlz_id=$prvMtnOpRlz->id;
-        return response()->json($prvMtnOpRlz_id) ;
+        //return response()->json($prvMtnOpRlz_id) ;*/
     }
 
 

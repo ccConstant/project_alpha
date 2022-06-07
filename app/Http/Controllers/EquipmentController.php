@@ -17,6 +17,8 @@ use App\Models\EquipmentTemp;
 use App\Models\PreventiveMaintenanceOperation;
 use App\Models\State;
 use App\Models\File;
+use App\Models\Power;
+use App\Models\Dimension;
 use App\Models\Risk;
 use App\Models\SpecialProcess;
 use App\Models\Usage;
@@ -730,7 +732,7 @@ class EquipmentController extends Controller{
 
 
      /**
-     * Function call by ?? when we delete an equipment in the reform state : /equipment/validation (post)
+     * Function call by ?? when we delete an equipment in the reform state : ?? (post)
      * Delete an equipment and its attributes
      * The id parameter is the id of the equipment in which we want to reform/delete
      * */
@@ -738,7 +740,44 @@ class EquipmentController extends Controller{
     public function delete_equipment($id){
         $equipment=Equipment::findOrFail($id) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $mostRecentlyEqTmp->delete() ; 
+        
+        $powers=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        foreach ($powers as $power){
+            $power->delete() ;
+        }
+
+        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        foreach ($files as $file){
+            $file->delete() ;
+        }
+
+        $dimensions=Dimension::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        foreach ($dimensions as $dimension){
+            $dimension->delete() ;
+        }
+
+        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        foreach ($risks as $risk){
+            $risk->delete() ;
+        }
+
+        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        foreach ($usages as $usage){
+            $usage->delete() ;
+        }
+
+        if ($mostRecentlyEqTmp->special_process!=NULL){
+            $specialProcess=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ; 
+            $mostRecentlyEqTmp->update([
+                'specialProcess_id' => NULL,
+            ]) ;
+            $specialProcess->delete() ;
+        }
+
+        //$mostRecentlyEqTmp->delete() ; 
+
+     
+        //SPECIAL PROCESS
     }
 }
 

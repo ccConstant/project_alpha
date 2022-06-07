@@ -102,7 +102,7 @@ export default {
         var consultUrl = (id) => `/equipment/delete/${id}`;
         axios.post(consultUrl(eq_id_to_send),{
         })
-        .then(response =>{console.log("deleted")})
+        .then(response =>{console.log(response.data)})
         //If the controller sends errors we put it in the errors object 
         .catch(error => {});
     },

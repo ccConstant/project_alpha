@@ -45,12 +45,13 @@ class UsageController extends Controller
             $this->validate(
                 $request,
                 [
-                    'usg_type' => 'required|min:3',
+                    'usg_type' => 'required|min:3|max:255',
                     'usg_precaution' => 'required|min:3',
                 ],
                 [
                     'usg_type.required' => 'You must enter a type for your usage ',
                     'usg_type.min' => 'You must enter at least three characters ',
+                    'usg_type.max' => 'You must enter a maximum of 255 characters',
                     'usg_precaution.required' => 'You must enter a precaution for your usage ',
                     'usg_precaution.min' => 'You must enter at least three characters ',
 
@@ -63,11 +64,12 @@ class UsageController extends Controller
             $this->validate(
                 $request,
                 [
-                    'usg_type' => 'required|min:3',
+                    'usg_type' => 'required|min:3|max:255',
                 ],
                 [
                     'usg_type.required' => 'You must enter a type for your usage ',
                     'usg_type.min' => 'You must enter at least three characters ',
+                    'usg_type.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }

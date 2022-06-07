@@ -100,6 +100,9 @@ class SpecialProcessController extends Controller
               ]);
           } 
       }
+      $mostRecentlyEqTmp->update([
+        'specialProcess_id' => $spProc->id,
+       ]);
       return response()->json($spProc_id) ;
     }
 

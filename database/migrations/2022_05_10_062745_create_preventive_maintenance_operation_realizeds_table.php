@@ -26,7 +26,7 @@ return new class extends Migration
         Schema::create('preventive_maintenance_operation_realizeds', function (Blueprint $table) {
             $table->id();
             $table->string('prvMtnOpRlz_reportNumber') ;
-            $table->date('prvMtnOpRlz_startDate') ;
+            $table->date('prvMtnOpRlz_startDate') ->nullable();
             $table->date('prvMtnOpRlz_endDate') -> nullable(); 
             $table->date('prvMtnOpRlz_entryDate') ->nullable();
             $table->enum('prvMtnOpRlz_validate',  ['drafted', 'to_be_validated', 'validated']) ;  

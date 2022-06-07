@@ -46,7 +46,7 @@ Class CreateEquipmentTempsTable extends Migration{
             $table->unsignedBigInteger('createdBy_id') -> nullable() ; 
             $table->foreign('createdBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('specialProcess_id') -> nullable() ; 
-            $table->foreign('specialProcess_id')->references('id')->on('special_processes') ->onDelete('restrict')  ; 
+            $table->foreign('specialProcess_id')->references('id')->on('special_processes') ;
             
         });
     }
