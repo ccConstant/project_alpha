@@ -1,5 +1,14 @@
 <?php
 
+/*
+* Filename : MmeState.php
+* Creation date : 7 Jun 2022
+* Update date : 7 Jun 2022
+* This file define the model State. We can see more details about this model (like his attributes) in the 
+* migration file named "2022_06_07_1400027_create_mme_states_table.php".
+* 
+*/ 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,4 +17,27 @@ use Illuminate\Database\Eloquent\Model;
 class MmeState extends Model
 {
     use HasFactory;
+
+    //Data which can be added, updated or deleted by us in the data base.
+    protected $fillable = ['state_remarks', 'state_startDate', 'state_endDate', 'state_isOk', 'state_validate', 'state_name'] ; 
+    
+    //Define the relation between equipment and state : only one equipment can be created during a state
+    public function mme(){
+        return $this->hasOne(Mme::class) ; 
+    }
+
+    /*//Define the relation between a state and the curative_maintenance_operations that can take place during the state
+    public function verifications_realizeds(){
+        return $this->hasMany(VerificationRealized::class) ; 
+    }
+
+    //Define the relation between a state and the person who reformed the equipment during the state 
+    public function reformedBy(){
+        return $this->hasOne(People::class, 'reformedBy_id') ; 
+    }
+
+    //Define the relation between an equipment_temp and its state : a state can correspond to many equipment temps
+    public function mme_temps(){
+        return $this->belongsToMany(MmeTemp::class, 'pivot_equipment_temp_state', 'state_id', 'equipmentTemp_id') ; 
+    }*/
 }

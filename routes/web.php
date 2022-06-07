@@ -141,7 +141,7 @@ Route::post('/dimension/verif', [DimensionController::class, 'verif_dimension'])
 
 Route::post('/equipment/delete/dim/{id}', [DimensionController::class, 'delete_dimension'])  ;
 
-Route::post('/dimension/send/ByType/{$id}', [DimensionController::class, 'send_dimensions_by_type'])  ;
+Route::get('/dimension/send/ByType/{id}', [DimensionController::class, 'send_dimensions_by_type'])  ;
 
 /* Power Form Routes */ 
 
@@ -157,7 +157,7 @@ Route::get('/power/send/{id}', [PowerController::class, 'send_powers'])  ;
 
 Route::post('/equipment/delete/pow/{id}', [PowerController::class, 'delete_power'])  ;
 
-Route::post('/power/send/ByType/{$id}', [PowerController::class, 'send_powers_by_type'])  ;
+Route::get('/power/send/ByType/{id}', [PowerController::class, 'send_powers_by_type'])  ;
 
 /* Special Process Form Routes */ 
 

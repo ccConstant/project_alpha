@@ -298,21 +298,23 @@ class PowerController extends Controller
         foreach ($enums_powerType as $enum_powerType){
             $container=array() ; 
             foreach ($powers as $power) {
-                $type = NULL ; 
-                if ($power->enumPowerType_id!=NULL){
-                    $type = $power->enumPowerType->value ;
+                if ($enum_powerType->id==$power->enumPowerType_id){
+                    $type = NULL ; 
+                    if ($power->enumPowerType_id!=NULL){
+                        $type = $power->enumPowerType->value ;
+                    }
+                    $obj=([
+                        'id' => $power->id,
+                        'pow_name' => $power->pow_name,
+                        'pow_value' => (string)$power->pow_value,
+                        'pow_unit' => $power->pow_unit,
+                        'pow_consumptionValue' => (string)$power->pow_consumptionValue,
+                        'pow_consumptionUnit' => $power->pow_consumptionUnit,
+                        'pow_validate' => $power->pow_validate,
+                        'pow_type' => $type,
+                    ]);
+                    array_push($container,$obj);
                 }
-                $obj=([
-                    'id' => $power->id,
-                    'pow_name' => $power->pow_name,
-                    'pow_value' => (string)$power->pow_value,
-                    'pow_unit' => $power->pow_unit,
-                    'pow_consumptionValue' => (string)$power->pow_consumptionValue,
-                    'pow_consumptionUnit' => $power->pow_consumptionUnit,
-                    'pow_validate' => $power->pow_validate,
-                    'pow_type' => $type,
-                ]);
-                array_push($container,$obj);
             }
             $obj2=([
                 "type" => $enum_powerType->value,
