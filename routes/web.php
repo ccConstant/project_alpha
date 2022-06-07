@@ -122,6 +122,9 @@ Route::post('/equipment/validation/{id}', [EquipmentController::class, 'validati
 
 Route::post('/equipment/delete/{id}', [EquipmentController::class, 'delete_equipment'] ) ;
 
+Route::post('/state/equipment/{id}', [EquipmentController::class, 'add_equipment_from_state'] ) ;
+
+
 /* Dimension Form Routes */ 
 
 Route::post('/equipment/add/dim', [DimensionController::class, 'add_dimension'])  ;

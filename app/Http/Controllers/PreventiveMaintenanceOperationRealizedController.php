@@ -43,9 +43,42 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             'prvMtnOp_id' => $request->prvMtnOp_id,
 
         ]) ; 
+
+        // On update la nextDate dans prvMtnOp 
+
+        $ymd=explode('-', $request->prvMtnOpRlz_startDate) ; 
+        $year=$ymd[0] ; 
+        $month=$ymd[1] ;
+        $day=$ymd[2] ;
+        
+        $nextDate=Carbon::create($year, $month, $day, 0, 0, 0);
+
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
+            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
+            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+        
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
+            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
+            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+
+         $prvMtnOp->update([
+            'prvMtnOp_nextDate' => $nextDate,
+        ]);
+    
         
         $prvMtnOpRlz_id=$prvMtnOpRlz->id;
-        //return response()->json($prvMtnOpRlz_id) ;*/
+        return response()->json($prvMtnOpRlz_id) ;
+
+
+
+
     }
 
 
@@ -90,6 +123,13 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             
             ]
         );
+        if ($request->prvMtnOpRlz_startDate=='' || $request->prvMtnOpRlz_startDate===NULL){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOpRlz_startDate' => ["You have to entered the startDate of your preventive maintenance operation realized"]
+                ]
+            ], 429);
+        }
     
         if ($request->reason=="update"){
             $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
@@ -146,6 +186,38 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             'prvMtnOpRlz_startDate' => $request->prvMtnOpRlz_startDate,
             'prvMtnOpRlz_endDate' => $request->prvMtnOpRlz_endDate,
         ]);
+
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
+
+
+        // On update la nextDate dans prvMtnOp 
+
+        $ymd=explode('-', $request->prvMtnOpRlz_startDate) ; 
+        $year=$ymd[0] ; 
+        $month=$ymd[1] ;
+        $day=$ymd[2] ;
+        
+        $nextDate=Carbon::create($year, $month, $day, 0, 0, 0);
+
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
+            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
+            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+        
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
+            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
+            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+        }
+
+         $prvMtnOp->update([
+            'prvMtnOp_nextDate' => $nextDate,
+        ]);
+    
     }
 
 

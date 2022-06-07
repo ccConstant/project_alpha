@@ -13,6 +13,8 @@
                     <h2>Change the State</h2>
                     <div v-if="isInConsultMod==false">
                         <InputTextForm  inputClassName="form-control w-50" name="current_state" label="Current state :" :isDisabled="true"   v-model="current_state"/>
+                        <InputTextForm  inputClassName="form-control w-50" name="current_startDate" label="Current state start Date :" :isDisabled="true"   v-model="current_startDate"/>
+
                     </div>
                 </div>
                 <div v-if="state_id!==undefined || isInConsultMod==true">
@@ -118,6 +120,7 @@ export default {
             addSucces:false,
             loaded:false,
             current_state:'',
+            current_startDate:'',
             radioOption :[
                 {id: 'Yes', value:true},
                 {id : 'No', value:false}
@@ -238,7 +241,7 @@ export default {
                     this.loaded=true;
                     
                     if(this.state_name=="Downgraded"){
-                        var consultUrl = (state_id) => `/state/equipment/${state_id}`;
+                        var consultUrl = (id) => `/state/equipment/${id}`;
                         axios.get(consultUrl(this.state_id))
                             .then (response => this.eq_idCard=response.data)
                             .catch(error => console.log(error));
@@ -253,6 +256,7 @@ export default {
                 .then (response=>{
                     console.log(response.data)
                     this.current_state=response.data[0].state_name;
+                    this.current_startDate=moment(response.data[0].state_startDate).format('D MMM YYYY');
                     this.loaded=true;
                 })
                 .catch(error => console.log(error)) ;

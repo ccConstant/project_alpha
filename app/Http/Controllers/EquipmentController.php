@@ -773,12 +773,74 @@ class EquipmentController extends Controller{
             ]) ;
             $specialProcess->delete() ;
         }
-
-        //$mostRecentlyEqTmp->delete() ; 
-
-     
-        //SPECIAL PROCESS
     }
+
+    /**
+     * Function call by UpdateState.vue when the form is submitted for insert with the route : /state/equipment/${state_id}  (post)
+     * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form 
+     * @return \Illuminate\Http\Response : id of the new equipment
+     */
+    public function add_equipment_from_state(Request $request, $id){
+
+        /*
+        //An equipment is linked to its mass unit. So we need to find the id of the massUnit choosen by the user and write it in the attribute of the equipment.
+        //But if no one mass unit is choosen by the user we define this id to NULL
+        // And if the massUnit choosen is find in the data base the NULL value will be replace by the id value
+        $massUnit_id=NULL ;
+        if ($request->eq_massUnit!=''){
+            $massUnit= EnumEquipmentMassUnit::where('value', '=', $request->eq_massUnit)->first() ;
+            $massUnit_id=$massUnit->id ; 
+        }
+
+        //An equipment is linked to its type. So we need to find the id of the type choosen by the user and write it in the attribute of the equipment.
+        //But if no one type is choosen by the user we define this id to NULL
+        // And if the type choosen is find in the data base the NULL value will be replace by the id value
+        $type_id=NULL ; 
+        if ($request->eq_type!=''){
+            $type= EnumEquipmentType::where('value', '=', $request->eq_type)->first() ;
+            $type_id=$type->id ; 
+        }
+        
+        //Creation of a new equipment
+        $equipment=Equipment::create([
+            'eq_internalReference' => $request->eq_internalReference,
+            'eq_externalReference' => $request->eq_externalReference, 
+            'eq_name' => $request->eq_name,
+            'eq_serialNumber' => $request->eq_serialNumber,
+            'eq_constructor' => $request->eq_constructor,
+            'eq_set' => $request->eq_set,
+            'state_id' => $id,
+        ]) ; 
+
+        $equipment_id=$equipment->id ; 
+
+        
+        //Creation of a new equipment temp
+        $new_eqTemp=EquipmentTemp::create([
+            'equipment_id'=> $equipment_id,
+            'eqTemp_version' => '1',
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_validate' => $request->eq_validate,
+            'enumMassUnit_id' => $massUnit_id,
+            'eqTemp_mass' => $request->eq_mass,
+            'eqTemp_remarks' => $request->eq_remarks,
+            'eqTemp_mobility' => $request->eq_mobility,
+            'enumType_id' => $type_id,
+        ]);
+
+        //Creation of a new state
+        $newState=State::create([
+            'state_remarks' => "State by default",
+            'state_startDate' =>  Carbon::now('Europe/Paris'),
+            'state_isOk' => true,
+            'state_validate' => "drafted",
+            'state_name' => "Waiting_for_referencing"
+        ]) ; 
+        
+        $newState->equipment_temps()->attach($new_eqTemp);
+        return response()->json($equipment_id) ; */
+    }
+
 }
 
 

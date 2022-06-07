@@ -1,29 +1,164 @@
 <template>
-    <div>
-        <div ref="content">
-            <div class=" equipement_pdf_logo ">
-            LOGO<br>
-            LOGO<br>
-            LOGO<br>
-            LOGO<br>
-            LOGO<br>
-            </div>
-            <div class="equipement_pdf_titre">
-            <h2 id="equipement_fiche_de_vie_titre">FICHE DE VIE</h2>
-            <h2>DESCRIPTION DE L'EQUIPEMENT</h2>
-            </div>
-            <div class="equipement_pdf_version">
-            <h2>ENR QA-25</h2>
+    <div v-if="loaded==true">
+        <div id="page">
+            <div class="top_infos">
+                <div class=" equipement_pdf_logo ">
+                    LOGO<br>
+                    LOGO<br>
+                    LOGO<br>
+                    LOGO<br>
+                    LOGO<br>
+                </div>
+
+                <div class="equipement_pdf_titre">
+                    <h2 id="equipement_fiche_de_vie_titre">FICHE DE VIE</h2>
+                    <h2>DESCRIPTION DE L'EQUIPEMENT</h2>
+                </div>
+
+                <div class="equipement_pdf_version">
+                    <h2>ENR QA-25</h2>
+                </div>
+
+                <div class="equipment_revued_by">
+                    <p>Revue par (date & visa)</p>
+                </div>
+
+                <div class="equipment_approuved_by">
+                    <p>Approuvé par (date & visa)</p>
+                </div>
+
+                <div class="eq_internalReference_pdf">
+                    <p>Réf interne EQ:</p>
+                    <h2>TRAC 01</h2>
+                </div>
+                
+
             </div>
 
-        </div>
+            <div class="eq_identification_infos_pdf">
+                <div class="eq_indentification_pdf">
+                    <div class="title_identification_pdf">
+                        <p>IDENTIFICATION</p>
+                    </div>
+                    <div class="Ecme_assoc_pdf">
+                        <p>
+                            Fiche ECME associé
+                        </p>
+                        <div class="content_Ecme_assoc_pdf" >
+                            <p v-for="(ecme,index) in eq_ecme " :key="index">
+                                {{ecme.name}} : {{ecme.description}}<br>
         
-            <button @click="generateReport" class="btn btn-primary">Generate</button>
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="Ecme_designation_type_pdf">
+                        <p>
+                            Désignation et type : {{eq_idCard.eq_name}} {{eq_idCard.eq_type}}
+                        </p>
+                    </div>
+                    <div class="eq_externalReference_pdf">
+                        <p>
+                            External Reference : {{eq_idCard.eq_externalReference}}
+                        </p>
+                    </div>
+                    <div class="eq_constructor_pdf">
+                        <p>Constructor: {{eq_idCard.eq_constructor}}</p>
+                    </div>
+                    <div class="eq_serialNumber_pdf">
+                        <p>Serial Number : 12345678910111213141516</p>
+                    </div>
+                </div>  
+            </div>
+
+
+            <div class="eq_usage_infos_pdf">
+                <div class="title_usage_pdf">
+                    <p>USAGE</p>
+                </div>
+                <div class="usg_type_and_precaution_pdf" v-for="(usg,index) in eq_usg " :key="index">
+                    <div class="eq_usage_type_pdf">
+                        <p>
+                            Type of the operation realized by/with the equipment :
+                        </p>
+                        <br>
+                        <p>
+                            {{usg.usg_type}}
+                        </p>
+                    </div>
+                    <div class="eq_usage_precaution_pdf">
+                        <p>
+                            Precaution :
+                        </p>
+                        <br>
+                        <p>
+                            {{usg.usg_precaution}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="eq_file_infos_pdf">
+                <div class="title_file_pdf">
+                    <p>ASSOCIETED FILE</p>
+                </div>
+                <div class="eq_file_assoc_pdf" >
+                    <p>
+                        Name of the file : Location
+                    </p>
+                    <p v-for="(file,index) in eq_file " :key="index">
+                        {{file.file_name}} : {{file.file_location}}<br>
+
+                    </p>
+                </div>   
+            </div>
+
+            <div class="eq_carac_infos_pdf">
+                <div class="title_carac_pdf">
+                    <p>CARACTERITIQUES</p>
+                </div>
+                <div class="power_title_pdf">
+                    Power supply :
+                        <div>
+                            <div class="eq_power_type_pdf" v-for="(power,index) in eq_powers " :key="index">
+                                <p>{{power.pow_type}}</p>
+                            </div>
+                        </div>
+                </div>
+                <div class="eq_mass_pdf">
+                    <p >Masse : {{eq_idCard.eq_mass}} {{eq_idCard.eq_massUnit}}</p>
+                </div>
+                <div class="eq_remark_pdf" >
+                    <p>
+                        Remarques
+                    </p>
+                    <p>
+                        {{eq_idCard.eq_remarks}}
+                    </p>
+                </div>   
+            </div>
+
+            <div class="eq_risk_infos_pdf">
+                <div class="title_risk_pdf">
+                    <p>RISK</p>
+                </div>
+                <div class="eq_risk_pdf" >
+                    <p>
+                        Risk related to the equipment :
+                    </p>
+                    <p  v-for="(risk,index) in eq_risk " :key="index">
+                        risk
+                    </p>
+                </div> 
+            </div>
+        </div>
+        <!--<button @click="generateReport" class="btn btn-primary">Generate</button>-->
     </div>  
+
 </template>
 
 <script>
-import jsPDF from 'jspdf'
+import html2PDF from 'jspdf-html2canvas';
 export default { 
     data(){
         return{
@@ -32,10 +167,15 @@ export default {
             eq_dimensions:null,
             eq_powers:null,
             eq_spProc:null,
-            eq_usg:null,
+            eq_usg:[],
             eq_file:null,
             eq_prvMtnOp:null,
             eq_risk:null,
+            eq_ecme:[
+                {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'},
+                {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'},
+                {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'}
+            ],
             loaded:false,
         }
     },
@@ -45,13 +185,34 @@ export default {
     },
     methods: { 
         generateReport () {
-            
+            let page = document.getElementById('page');
+            html2PDF(page, {
+                jsPDF: {
+                    unit: 'px',
+                    format: 'a4',
+                    width : 100
+                },
+                html2canvas: {
+                    imageTimeout: 15000,
+                    logging: true,
+                    useCORS: false,
+                },
+                  imageType: 'image/jpeg',
+                imageQuality: 1,
+                margin: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                },
+                output: 'jspdf-generate.pdf', 
+            });
         }
     },
     created(){
         var consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
-            .then (response => this.eq_idCard=response.data)
+            .then (response => {this.eq_idCard=response.data; console.log(this.eq_idCard)})
             .catch(error => console.log(error));
 
 
@@ -62,7 +223,7 @@ export default {
         
         var consultUrlPow = (id) => `/power/send/${id}`;
         axios.get(consultUrlPow(this.eq_id))
-            .then (response=> this.eq_powers=response.data)
+            .then (response=> {this.eq_powers=response.data;console.log(this.eq_powers) })
             .catch(error => console.log(error)) ;
 
         var consultUrlSpProc = (id) => `/spProc/send/${id}`;
@@ -77,6 +238,7 @@ export default {
             .catch(error => console.log(error)) ;
         
         var consultUrlUsg = (id) => `/usage/send/${id}`;
+        console.log(this.eq_id)
         axios.get(consultUrlUsg(this.eq_id))
             .then (response=>this.eq_usg=response.data)
             .catch(error => console.log(error)) ;
@@ -103,32 +265,250 @@ export default {
 </script>
 
 <style lang="scss">
-        .equipement_pdf_logo{
-            border: solid 1px black;
-            margin: auto;
-            position: absolute;
-            width: 100px;
-            left: 100px;
+        #page{
+            width:1329px;
             
-        }
-        .equipement_pdf_titre{
-            border: solid 1px black;
-            margin: auto;
-            position: absolute;
-            width: 500px;
-            left: 200px;
-            
-        }
-        .equipement_fiche_de_vie_titre{
-            text-align: center;
-        }
-        .equipement_pdf_version{
-            border: solid 1px black;
-            margin: auto;;
-            width: 200px;
+            .top_infos{
+                margin-bottom: 20px;
+                position: relative;
+                .equipement_pdf_logo{
+                    border: solid 1px black;
+                    margin: auto;
+                    position: relative;
+                    width: 200px;
+                    height: 170px;
+                    margin-left:100px ;
+                    margin-top: 100px;
+                    
+                    
+                }
+                .equipement_pdf_titre{
+                    border: solid 1px black;
+                    margin: auto;
+                    position: relative;
+                    width: 642px;
+                    margin-left:100px ;
+                    
+                    
+                }
+                .equipement_fiche_de_vie_titre{
+                    text-align: center;
+                    position: relative;
+                    
 
+                }
+                .equipement_pdf_version{
+                    border: solid 1px black;
+                    margin: auto;
+                    position: relative;
+                    margin-left:100px ;
+
+                    /*left: 942px;
+                    top: 100px;*/
+                    height: 87px;
+                    width: 200px;
+                }
+                .equipment_revued_by{
+                    border: solid 1px black;
+                    margin: auto;
+                    position: relative;
+                    margin-left:100px ;
+                    /*left :300px;
+                    top: 186px;*/
+                    height: 84px;
+                    width: 400px;
+
+                }
+                .equipment_approuved_by{
+                    border: solid 1px black;
+                    margin: auto;
+                    position: relative;
+                    margin-left:100px ;
+
+                    /*left :700px;
+                    top: 186px;*/
+                    height: 84px;
+                    width: 242px;
+                }
+                .eq_internalReference_pdf{
+                    border: solid 1px black;
+                    margin: auto;
+                    position: relative;
+                    /*left :942px;
+                    top: 186px;*/
+                    height: 84px;
+                    width: 200px;
+                    margin-left:100px ;
+                }
+
+            }
+            .eq_identification_infos_pdf{
+                position: relative;
+                margin-bottom: 60px;
+                .title_identification_pdf{
+                    margin-left: 100px;
+                    width: 200px;
+                    font-size : 20px;
+                    font-weight: bold;
+                }
             
+                .Ecme_assoc_pdf{
+                    border: solid 1px black;
+                    margin-left: 100px;
+                    position: relative;
+                    margin-bottom: 20px;
+                    height: auto;
+                    width: 1042px;
+                }
+                .Ecme_designation_type_pdf{
+                    border: solid 1px black;
+                    margin-left: 100px;
+                    position: relative;
+                    width: 500px;
+                    height: 30px;
+                    margin-bottom: 20px;
+                    float: left;
+                    
+                }
+                .eq_externalReference_pdf{
+                    border: solid 1px black;
+                    margin-left: 42px;
+                    position: relative;
+                    width: 500px;
+                    height: 30px;
+                    margin-bottom: 20px;
+                    float: left;
+                }
+                .eq_constructor_pdf{
+                    border: solid 1px black;
+                    margin-left: 100px;
+                    width: 500px;
+                    height: 30px;
+                    float: left;
+                }
+                .eq_serialNumber_pdf{
+                    border: solid 1px black;
+                    margin-left: 42px;
+                    width: 500px;
+                    height: 30px;
+                    float: left; 
+                }
+
+            }
+            .eq_usage_infos_pdf{
+                position: relative;
+                .title_usage_pdf{
+                    margin-left: 100px;
+                    width: 200px;
+                    font-size : 20px;
+                    font-weight: bold;
+                }
+                .usg_type_and_precaution_pdf{
+                    position: relative;
+                    .eq_usage_type_pdf{
+                        border: solid 1px black;
+                        margin-left: 100px;
+                        float: left;
+                        margin-bottom: 20px;
+                        height: 170px;
+                        width: 521px;
+                    }
+                    .eq_usage_precaution_pdf{
+                        border: solid 1px black;
+                        margin-bottom: 20px;
+                        height: 170px;
+                        width: 521px;
+                        float: left; 
+                    }
+                }
+            }
+            .eq_file_infos_pdf{
+                position: relative;
+                .title_file_pdf{
+                    margin-left: 100px;
+                    width: 200px;
+                    font-size : 20px;
+                    font-weight: bold;
+                }
+                .eq_file_assoc_pdf{
+                    border: solid 1px black;
+                    margin-left: 100px;
+                    position: relative;
+                    margin-bottom: 20px;
+                    height: auto;
+                    width: 1042px;
+                }
+
+            }
+
+            .eq_carac_infos_pdf{
+                position: relative;
+                .title_carac_pdf{
+                    margin-left: 100px;
+                    width: 200px;
+                    font-size : 20px;
+                    font-weight: bold;
+                }
+                .power_title_pdf{
+                    position: relative;
+                    margin-left: 100px;
+                    margin-top: -10px;
+
+                }
+                .eq_power_type_pdf{
+                    border: solid 1px black;
+                    position: relative;
+                    margin-bottom: 20px;
+                    height: auto;
+                    width: 1042px;
+                }
+                .eq_mass_pdf{
+                    border: solid 1px black;
+                    position: relative;
+                    margin-bottom: 20px;
+                    height: 40px;
+                    margin-left: 100px;
+                    width: 250px;
+                    
+
+                    p{
+                        font-size: 20px;
+                        margin-top: 3px;
+                        margin-left: 10px;
+                    }
+
+                }
+                .eq_remark_pdf{
+                    border: solid 1px black;
+                    margin-left: 100px;
+                    position: relative;
+                    margin-bottom: 20px;
+                    height: auto;
+                    width: 1042px;
+                }
+            }
+            .eq_risk_infos_pdf{
+                position: relative;
+                .title_risk_pdf{
+                    margin-left: 100px;
+                    width: 200px;
+                    font-size : 20px;
+                    font-weight: bold;
+                }
+                .eq_risk_pdf{
+                    border: solid 1px black;
+                    position: relative;
+                    margin-bottom: 20px;
+                    height: auto;
+                    width: 1042px;   
+                    margin-left: 100px;
+                }
+
+            }
         }
+
+        
+        
 
     
 

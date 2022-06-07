@@ -74,6 +74,15 @@ class PreventiveMaintenanceOperationController extends Controller
             );
         }
 
+        if ($request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL && !is_int($request->prvMtnOp_periodicity)){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_periodicity' => ["You can't enter a periodicity that isn't an integer"]
+                ]
+            ], 429);
+        }
+
+
         if ($request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL){
             if ($request->prvMtnOp_symbolPeriodicity=='Y' && $request->prvMtnOp_periodicity>15){
                 return response()->json([
@@ -245,9 +254,20 @@ class PreventiveMaintenanceOperationController extends Controller
                ]);
             }
 
-            /*if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
-                $nextDate=Carbon::create($oldPrvMtnOp->prvMtnOp_startDate->year, $oldPrvMtnOp->prvMtnOp_startDate->month, $oldPrvMtnOp->prvMtnOp_startDate->day, $oldPrvMtnOp->prvMtnOp_startDate->hour, $oldPrvMtnOp->prvMtnOp_startDate->minute, $oldPrvMtnOp->prvMtnOp_startDate->second);
-                return response()->json($nextDate) ;
+            if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
+                
+                $dates=explode(' ', $oldPrvMtnOp->prvMtnOp_startDate) ; 
+                $ymd=explode('-', $dates[0]);
+                $year=$ymd[0] ; 
+                $month=$ymd[1] ;
+                $day=$ymd[2] ;
+
+                $time=explode(':', $dates[1]); 
+                $hour=$time[0] ;
+                $min=$time[1] ; 
+                $sec=$time[2] ;
+                
+                $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
 
                 if ($request->prvMtnOp_symbolPeriodicity=='Y'){
                     $nextDate->addYears($request->prvMtnOp_periodicity) ; 
@@ -261,14 +281,16 @@ class PreventiveMaintenanceOperationController extends Controller
                     $nextDate->addDays($request->prvMtnOp_periodicity) ; 
                     return response()->json($nextDate) ;
                 }
-                /* if ($request->prvMtnOp_symbolPeriodicity=='H'){
+                 if ($request->prvMtnOp_symbolPeriodicity=='H'){
                     $nextDate->addHours($request->prvMtnOp_periodicity) ; 
                 }
-                /* $oldPrvMtnOp->update([
+
+                //return response()->json($nextDate) ;
+                 $oldPrvMtnOp->update([
                     'prvMtnOp_nextDate' => $nextDate,
                 ]);
             }
-            */
+            
             $oldPrvMtnOp->update([
                 'prvMtnOp_description' => $request->prvMtnOp_description,
                 'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,

@@ -1,6 +1,6 @@
 <template>
     <div v-if="enums">
-        <h2>{{this.title}}</h2>
+        <h2 class="enumTitle">{{this.title}}</h2>
         <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
         <!--<div v-if="hasErrors==true">
             <b-alert show variant="danger">{{errors.enum_type[0]}}</b-alert>
@@ -182,6 +182,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+    .enumTitle{
+        display: inline-block;
+    }
 </style>
