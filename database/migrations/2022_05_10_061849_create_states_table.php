@@ -3,8 +3,8 @@
 /*
 * Filename : 2022_05_10_061849_create_states_table.php
 * Creation date : 10 May 2022
-* Update date : 10 May 2022
-* Role : This file is used to create the table "states" in the data base. In this file, we can see the different
+* Update date : 7 Jun 2022
+* Role : This file is used to create the table "eq_states" in the data base. In this file, we can see the different
 * attribute of this table (name, remarks, startDate...) and how they are defined (string, boolean, unique or not)
 */ 
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('states', function (Blueprint $table) {
+        Schema::create('eq_states', function (Blueprint $table) {
             $table->id();
             $table->string('state_remarks') ;
             $table->date('state_startDate') ->nullable(); 
@@ -37,12 +37,12 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     * Delete the table states if it already exist
+     * Delete the table eq_states if it already exist
      * @return void
      */
     public function down()
     {
-        Schema::dropIfExists('states');
+        Schema::dropIfExists('eq_states');
     }
 };
 

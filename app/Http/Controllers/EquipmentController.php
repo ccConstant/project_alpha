@@ -848,46 +848,41 @@ class EquipmentController extends Controller{
      * @return \Illuminate\Http\Response : id of the new equipment
      */
     public function send_equipment_from_state($state_id){
-        $equipments=Equipment::where('state_id', '=', $state_id)->get() ; 
-        $container=array() ; 
-        foreach ($equipments as $equipment) {
-            $validate=NULL ; 
-            $massUnit=NULL;
-            $type = NULL ; 
-            $mobility=NULL;
-            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp!=NULL){
-                $validate=$mostRecentlyEqTmp->eqTemp_validate ; 
-                $mass=$mostRecentlyEqTmp->eqTemp_mass ;
-                $remarks=$mostRecentlyEqTmp->eqTemp_remarks ;
-                $mobility=$mostRecentlyEqTmp->eqTemp_mobility;
-    
-                if ($mostRecentlyEqTmp->enumMassUnit_id!=NULL){
-                    $massUnit = $mostRecentlyEqTmp->enumEquipmentMassUnit->value ;
-                }
-    
-                if ($mostRecentlyEqTmp->enumType_id!=NULL){
-                    $type = $mostRecentlyEqTmp->enumEquipmentType->value ;
-                }
+        $equipment=Equipment::where('state_id', '=', $state_id)->first() ; 
+        $validate=NULL ; 
+        $massUnit=NULL;
+        $type = NULL ; 
+        $mobility=NULL;
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyEqTmp!=NULL){
+            $validate=$mostRecentlyEqTmp->eqTemp_validate ; 
+            $mass=$mostRecentlyEqTmp->eqTemp_mass ;
+            $remarks=$mostRecentlyEqTmp->eqTemp_remarks ;
+            $mobility=$mostRecentlyEqTmp->eqTemp_mobility;
+
+            if ($mostRecentlyEqTmp->enumMassUnit_id!=NULL){
+                $massUnit = $mostRecentlyEqTmp->enumEquipmentMassUnit->value ;
             }
-            $obj=([
-                'eq_internalReference' => $equipment->eq_internalReference,
-                'eq_externalReference' => $equipment->eq_externalReference,
-                'eq_name' => $equipment->eq_name,
-                'eq_type'=> $type,
-                'eq_serialNumber' => $equipment->eq_serialNumber,
-                'eq_constructor'  => $equipment->eq_constructor,
-                'eq_mass'  => (string)$mass,
-                'eq_remarks'  => $remarks,
-                'eq_set'  => $equipment->eq_set,
-                'eq_massUnit'=> $massUnit,
-                'eq_mobility'=> (boolean)$mobility,
-                'eq_validate' => $validate,
-            ]);
-           
-            array_push($container,$obj);
+
+            if ($mostRecentlyEqTmp->enumType_id!=NULL){
+                $type = $mostRecentlyEqTmp->enumEquipmentType->value ;
+            }
         }
-        return response()->json($container) ;
+        $obj=([
+            'eq_internalReference' => $equipment->eq_internalReference,
+            'eq_externalReference' => $equipment->eq_externalReference,
+            'eq_name' => $equipment->eq_name,
+            'eq_type'=> $type,
+            'eq_serialNumber' => $equipment->eq_serialNumber,
+            'eq_constructor'  => $equipment->eq_constructor,
+            'eq_mass'  => (string)$mass,
+            'eq_remarks'  => $remarks,
+            'eq_set'  => $equipment->eq_set,
+            'eq_massUnit'=> $massUnit,
+            'eq_mobility'=> (boolean)$mobility,
+            'eq_validate' => $validate,
+        ]);
+        return response()->json($obj) ;
 
         
     }
