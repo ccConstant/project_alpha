@@ -19,14 +19,14 @@ class MmeState extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['state_remarks', 'state_startDate', 'state_endDate', 'state_isOk', 'state_validate', 'state_name'] ; 
+    protected $fillable = ['state_remarks', 'state_startDate', 'state_endDate', 'state_isOk', 'state_validate', 'state_name', 'reformedBy_id'] ; 
     
-    //Define the relation between equipment and state : only one equipment can be created during a state
+    //Define the relation between mme and state : only one equipment can be created during a state
     public function mme(){
         return $this->hasOne(Mme::class) ; 
     }
 
-    /*//Define the relation between a state and the curative_maintenance_operations that can take place during the state
+    //Define the relation between a state and the verifications_realizeds that can take place during the state
     public function verifications_realizeds(){
         return $this->hasMany(VerificationRealized::class) ; 
     }
@@ -36,8 +36,8 @@ class MmeState extends Model
         return $this->hasOne(People::class, 'reformedBy_id') ; 
     }
 
-    //Define the relation between an equipment_temp and its state : a state can correspond to many equipment temps
+    //Define the relation between an mme_temp and its state : a state can correspond to many equipment temps
     public function mme_temps(){
-        return $this->belongsToMany(MmeTemp::class, 'pivot_equipment_temp_state', 'state_id', 'equipmentTemp_id') ; 
-    }*/
+        return $this->belongsToMany(MmeTemp::class, 'pivot_mme_temp_state', 'state_id', 'mmeTemp_id') ; 
+    }
 }

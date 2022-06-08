@@ -239,7 +239,7 @@ export default {
                 .then(response =>{
                         this.errors={};
                         if(this.state_id!==null){
-                            var consultUrl = (id) => `/state/equipment/${id}`;
+                            var consultUrl = (state_id) => `/state/equipment/${state_id}`;
                             axios.post(consultUrl(this.state_id),{
                                 eq_internalReference : this.eq_internalReference, 
                                 eq_externalReference : this.eq_externalReference,

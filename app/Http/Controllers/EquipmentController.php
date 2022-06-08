@@ -403,7 +403,7 @@ class EquipmentController extends Controller{
         ]) ; 
 
         $equipment_id=$equipment->id ; 
-
+            
         
         //Creation of a new equipment temp
         $new_eqTemp=EquipmentTemp::create([
@@ -417,7 +417,7 @@ class EquipmentController extends Controller{
             'eqTemp_mobility' => $request->eq_mobility,
             'enumType_id' => $type_id,
         ]);
-
+        
         //Creation of a new state
         $newState=State::create([
             'state_remarks' => "State by default",
@@ -741,38 +741,57 @@ class EquipmentController extends Controller{
     public function delete_equipment($id){
         $equipment=Equipment::findOrFail($id) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        
-        $powers=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-        foreach ($powers as $power){
-            $power->delete() ;
+
+        $states=$mostRecentlyEqTmp->states;
+        $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+        foreach($states as $state){
+            $date=$state->created_at ; 
+            $date2=$mostRecentlyState->created_at;
+            if ($date>=$date2){
+                    $mostRecentlyState=$state ; 
+            }
         }
 
-        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-        foreach ($files as $file){
-            $file->delete() ;
-        }
+        if ($mostRecentlyState->state_name=="Reform"){
+            $powers=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            foreach ($powers as $power){
+                $power->delete() ;
+            }
 
-        $dimensions=Dimension::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-        foreach ($dimensions as $dimension){
-            $dimension->delete() ;
-        }
+            $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            foreach ($files as $file){
+                $file->delete() ;
+            }
 
-        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-        foreach ($risks as $risk){
-            $risk->delete() ;
-        }
+            $dimensions=Dimension::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            foreach ($dimensions as $dimension){
+                $dimension->delete() ;
+            }
 
-        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-        foreach ($usages as $usage){
-            $usage->delete() ;
-        }
+            $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            foreach ($risks as $risk){
+                $risk->delete() ;
+            }
 
-        if ($mostRecentlyEqTmp->special_process!=NULL){
-            $specialProcess=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ; 
-            $mostRecentlyEqTmp->update([
-                'specialProcess_id' => NULL,
-            ]) ;
-            $specialProcess->delete() ;
+            $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            foreach ($usages as $usage){
+                $usage->delete() ;
+            }
+
+            if ($mostRecentlyEqTmp->special_process!=NULL){
+                $specialProcess=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ; 
+                $mostRecentlyEqTmp->update([
+                    'specialProcess_id' => NULL,
+                ]) ;
+                $specialProcess->delete() ;
+            }
+        }else{
+            return response()->json([
+                'errors' => [
+                    'delete' => ["You can't delete an equipment that isn't in reform state"]
+                ]
+            ], 429);
+
         }
     }
 

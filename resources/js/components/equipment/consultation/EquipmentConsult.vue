@@ -73,7 +73,7 @@ export default {
 
         var consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
-            .then (response => this.eq_idCard=response.data)
+            .then (response => {this.eq_idCard=response.data;console.log(response.data)})
             .catch(error => console.log(error));
 
 

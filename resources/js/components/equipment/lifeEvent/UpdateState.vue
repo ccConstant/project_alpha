@@ -42,7 +42,11 @@
                     </div>
                     <div v-else>
                         <RadioGroupForm label="Do you want to reference a new equipment ?:" :options="radioOption" v-model="new_eq"/>
-                        <EquipmentIDForm :disableImport="true" v-if="new_eq==true" :state_id="state_id"/>
+                        <EquipmentIDForm :disableImport="true" v-if="new_eq==true" :state_id="state_id"
+                        :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
+                        :name="eq_idCard.eq_name" :type="eq_idCard.eq_type" :serialNumber="eq_idCard.eq_serialNumber"
+                        :construct="eq_idCard.eq_constructor" :mass="eq_idCard.eq_mass"  :massUnit="eq_idCard.eq_massUnit"
+                        :mobility="eq_idCard.eq_mobility" :remarks="eq_idCard.eq_remarks" :set="eq_idCard.eq_set" :validate="eq_idCard.eq_validate"/>
                     </div>
 
                 </div>
@@ -243,7 +247,7 @@ export default {
                     if(this.state_name=="Downgraded"){
                         var consultUrl = (state_id) => `/send/state/equipment/${state_id}`;
                         axios.get(consultUrl(this.state_id))
-                            .then (response => this.eq_idCard=response.data)
+                            .then (response => {this.eq_idCard=response.data;console.log(response.data)})
                             .catch(error => console.log(error));
                     }
 

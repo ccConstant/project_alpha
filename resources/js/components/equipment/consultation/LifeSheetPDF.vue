@@ -46,7 +46,7 @@
                         </p>
                         <div class="content_Ecme_assoc_pdf" >
                             <p v-for="(ecme,index) in eq_ecme " :key="index">
-                                {{ecme.name}} : {{ecme.description}}<br>
+                                {{ecme.name}} : {{ecme.description}} <br>
         
                             </p>
 
@@ -118,10 +118,22 @@
                     <p>CARACTERITIQUES</p>
                 </div>
                 <div class="power_title_pdf">
-                    Power supply :
+                    <p>Power supply :</p>
                         <div>
-                            <div class="eq_power_type_pdf" v-for="(power,index) in eq_powers " :key="index">
-                                <p>{{power.pow_type}}</p>
+                            <div class="eq_power_pdf"  v-for="(power,index) in eq_powers " :key="index">
+                                <div class="eq_power_type_pdf" v-if="power.powers.length>0">
+                                    <p>{{power.type}}</p>
+                                    <div class ="eq_power_content_pdf" v-for="(power_elemnt,index) in power.powers " :key="index">
+                                        <div class="eq_power_name_pdf">
+                                            <p>Power name{{power_elemnt.pow_name}}</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div>
+                                    
+                                </div>
+                                
                             </div>
                         </div>
                 </div>
@@ -167,13 +179,24 @@
             </div>
 
             <div class="eq_specProc_infos_pdf">
-                <div class="eq_specProc_title_pdf">
+                <div class="title_spProc_pdf">
                     Special process ?
                 </div>
                 <div class="eq_specProc_pdf" v-for="(spProc,index) in eq_spProc " :key="index">
-                    <p>
-                        oui
-                    </p>              
+                    <div v-if="spProc.spProc_exist==true">
+                        <p>
+                            Yes <br>
+                            {{spProc.spProc_name}}<br>
+                            {{spProc.spProc_remarksOrPrecaution}}
+
+
+                        </p>
+                    </div>
+                    <div v-if="spProc.spProc_exist==false">
+                        <p>
+                            No
+                        </p>
+                    </div>
                 </div> 
             </div>
         </div>
@@ -241,12 +264,12 @@ export default {
             .catch(error => console.log(error));
 
 
-        var consultUrlDim = (id) => `/dimension/send/${id}`;
+        var consultUrlDim = (id) => `/dimension/send/ByType/${id}`;
         axios.get(consultUrlDim(this.eq_id))
-            .then (response=> this.eq_dimensions=response.data)
+            .then (response=> {this.eq_dimensions=response.data;console.log(response.data)})
             .catch(error => console.log(error)) ;
         
-        var consultUrlPow = (id) => `/power/send/${id}`;
+        var consultUrlPow = (id) => `/power/send/ByType/${id}`;
         axios.get(consultUrlPow(this.eq_id))
             .then (response=> {this.eq_powers=response.data;console.log(this.eq_powers) })
             .catch(error => console.log(error)) ;
@@ -295,12 +318,13 @@ export default {
             width:1329px;
             
             .top_infos{
-                margin-bottom: 20px;
-                position: relative;
+               
+                position: absolute;
+                top: 0px;
                 .equipement_pdf_logo{
                     border: solid 1px black;
                     margin: auto;
-                    position: relative;
+                    position: absolute;
                     width: 200px;
                     height: 170px;
                     margin-left:100px ;
@@ -311,9 +335,10 @@ export default {
                 .equipement_pdf_titre{
                     border: solid 1px black;
                     margin: auto;
-                    position: relative;
+                    position: absolute;
                     width: 642px;
-                    margin-left:100px ;
+                    top: 100px;
+                    left:300px;
                     
                     
                 }
@@ -326,21 +351,20 @@ export default {
                 .equipement_pdf_version{
                     border: solid 1px black;
                     margin: auto;
-                    position: relative;
-                    margin-left:100px ;
+                    position: absolute;
 
-                    /*left: 942px;
-                    top: 100px;*/
+                    left: 942px;
+                    top: 100px;
                     height: 87px;
                     width: 200px;
                 }
                 .equipment_revued_by{
                     border: solid 1px black;
                     margin: auto;
-                    position: relative;
-                    margin-left:100px ;
-                    /*left :300px;
-                    top: 186px;*/
+                    position: absolute;
+
+                    left :300px;
+                    top: 186px;
                     height: 84px;
                     width: 400px;
 
@@ -348,28 +372,28 @@ export default {
                 .equipment_approuved_by{
                     border: solid 1px black;
                     margin: auto;
-                    position: relative;
-                    margin-left:100px ;
+                    position: absolute;
 
-                    /*left :700px;
-                    top: 186px;*/
+
+                    left :700px;
+                    top: 186px;
                     height: 84px;
                     width: 242px;
                 }
                 .eq_internalReference_pdf{
                     border: solid 1px black;
                     margin: auto;
-                    position: relative;
-                    /*left :942px;
-                    top: 186px;*/
-                    height: 84px;
+                    position: absolute;
+                    left :942px;
+                    top: 186px;
                     width: 200px;
-                    margin-left:100px ;
+                    height: 84px;
                 }
 
             }
             .eq_identification_infos_pdf{
                 position: relative;
+                margin-top: 240px;
                 margin-bottom: 60px;
                 .title_identification_pdf{
                     margin-left: 100px;
@@ -479,14 +503,41 @@ export default {
                     position: relative;
                     margin-left: 100px;
                     margin-top: -10px;
+                    p{
+                        font-size : 18px;
+                        font-weight: bold;
+                    }
 
                 }
-                .eq_power_type_pdf{
-                    border: solid 1px black;
+                .eq_power_pdf{
                     position: relative;
-                    margin-bottom: 20px;
                     height: auto;
-                    width: 1042px;
+                    width: 1042px;   
+                    margin-bottom: 30px;
+                    .eq_power_type_pdf{
+                        p{
+                            font-size : 15px;
+                            font-weight: bold;
+                        }
+                        position: relative;
+                        height: auto;
+                        .eq_power_content_pdf{
+                            position: relative;
+                            height: auto;
+                            margin-bottom: 10px;
+                            p{
+                                font-size: 13px;
+                                font-weight: normal;
+                            }
+                            .eq_power_name_pdf{
+                                border: solid 1px black;
+                                position: relative;
+                                height: 20px;
+                                width: 1042px;   
+                                
+                            }
+                        }   
+                    }
                 }
                 .eq_mass_pdf{
                     border: solid 1px black;
@@ -555,13 +606,11 @@ export default {
             }
             .eq_specProc_infos_pdf{
                 position: relative;
-                .eq_specProc_title_pdf{
-                    border: solid 1px black;
-                    position: relative;
-                    height: auto;
-                    width: 1042px;   
+                .title_spProc_pdf{
                     margin-left: 100px;
-                    
+                    width: 400px;
+                    font-size : 20px;
+                    font-weight: bold;
                 }
                 .eq_specProc_pdf{
                     border: solid 1px black;
