@@ -33,10 +33,10 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin   ],
+                plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin],
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: 'dayGridMonth,dayGridWeek,dayGridDay,listMonth,listWeek',
+                    left: 'dayGridMonth,listMonth,listWeek',
                     center: 'title',
                     right :'prev today next',
                     

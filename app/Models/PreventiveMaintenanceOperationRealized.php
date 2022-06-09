@@ -24,7 +24,7 @@ class PreventiveMaintenanceOperationRealized extends Model
     use HasFactory;
 
      //Data which can be added, updated or deleted by us in the data base.
-     protected $fillable = ['prvMtnOpRlz_reportNumber', 'prvMtnOpRlz_startDate', 'prvMtnOpRlz_endDate', 'prvMtnOpRlz_entryDate', 'prvMtnOpRlz_validate', 'enteredBy_id', 'realizedBy_id', 'state_id', 'prvMtnOp_id'];
+     protected $fillable = ['prvMtnOpRlz_reportNumber', 'prvMtnOpRlz_startDate', 'prvMtnOpRlz_endDate', 'prvMtnOpRlz_entryDate', 'prvMtnOpRlz_validate', 'enteredBy_id', 'approvedBy_id', 'realizedBy_id', 'state_id', 'prvMtnOp_id'];
     //Define the relation between an preventive_maintenance_operation_realized and the state during wich she is realized
     public function state(){
         return $this->belongsTo(State::class, 'state_id') ; 
@@ -38,6 +38,11 @@ class PreventiveMaintenanceOperationRealized extends Model
     //Define the relation between a preventive maintenance operation realized and the person entering it 
     public function enteredBy(){
         return $this->belongsTo(People::class, 'enteredBy_id') ; 
+    }
+
+    //Define the relation between a preventive maintenance operation realized and the person approving it 
+    public function approvedBy(){
+        return $this->belongsTo(People::class, 'approvedBy_id') ; 
     }
 
     //Define the relation between a preventive maintenance operation realized and the preventive maintenance operation which she is corresponding

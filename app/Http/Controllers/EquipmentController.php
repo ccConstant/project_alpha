@@ -69,6 +69,7 @@ class EquipmentController extends Controller{
                 'eqTemp_lifeSheetCreated' => $mostRecentlyEqTmp->eqTemp_lifeSheetCreated,
                 'alreadyValidatedQuality' =>$isAlreadyQualityValidated,
                 'alreadyValidatedTechnical' =>$isAlreadyTechnicalValidated,
+                'eq_version' => $mostRecentlyEqTmp->eqTemp_version,
             ]);
             array_push($container,$obj);
         }

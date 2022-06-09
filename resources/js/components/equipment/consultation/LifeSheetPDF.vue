@@ -1,6 +1,7 @@
 <template>
     <div v-if="loaded==true">
         <div id="page">
+            <p>a</p>
             <div class="top_infos">
                 <div class=" equipement_pdf_logo ">
                     LOGO<br>
@@ -29,7 +30,7 @@
 
                 <div class="eq_internalReference_pdf">
                     <p>Réf interne EQ:</p>
-                    <h2>TRAC 01</h2>
+                    <h5>{{eq_idCard.eq_internalReference}}</h5>
                 </div>
                 
 
@@ -115,7 +116,7 @@
 
             <div class="eq_carac_infos_pdf">
                 <div class="title_carac_pdf">
-                    <p>CARACTERITIQUES</p>
+                    <p>CARACTERISTIQUES</p>
                 </div>
                 <div class="power_title_pdf">
                     <p>Power supply :</p>
@@ -127,7 +128,15 @@
                                         <div class="eq_power_name_pdf">
                                             <p>Power name{{power_elemnt.pow_name}}</p>
                                         </div>
-
+                                        <div class="eq_power_consumption_pdf">
+                                            <p>Power consumption</p>
+                                            <p>{{power_elemnt.pow_consumptionValue}}  {{power_elemnt.pow_consumptionUnit}} </p>
+                                        </div>
+                                        <div class="eq_power_value_pdf">
+                                            <p>Power value</p>
+                                            <p>{{power_elemnt.pow_value}}  {{power_elemnt.pow_unit}} </p>
+                                        </div>
+    
                                     </div>
                                 </div>
                                 <div>
@@ -136,10 +145,44 @@
                                 
                             </div>
                         </div>
+                    </div>
+
+                    <div class="dimension_title_pdf">
+                    <p>Dimension :</p>
+                        <div>
+                            <div class="eq_dimension_pdf"  v-for="(dimension,index) in eq_dimensions " :key="index">
+                                <div class="eq_dimension_type_pdf" v-if="dimension.dimensions.length>0">
+                                    <p>{{dimension.type}}</p>
+                                    <div class ="eq_dimension_content_pdf" v-for="(dim_elemnt,index) in dimension.dimensions " :key="index">
+                                        <div class="eq_dimension_name_value_pdf">
+                                            <p>{{dim_elemnt.dim_name}}  {{dim_elemnt.dim_value}}  {{dim_elemnt.dim_unit}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                <div class="eq_mass_set_mobility_pdf">
+                    <div class="eq_mass_pdf">
+                        <p >Masse : {{eq_idCard.eq_mass}} {{eq_idCard.eq_massUnit}}</p>
+                    </div>
+                    <div class="eq_mobility_pdf">
+                        <div v-if="eq_idCard.eq_mobility==true">
+                            <p>Mobil? : Yes</p>
+                        </div>
+                        <div v-else-if="eq_idCard.eq_mobility==false">
+                            <p>Mobil? : No</p>
+                        </div>
+                    </div>
+                    <div class="eq_set_pdf">
+                        <p >Set : {{eq_idCard.eq_set}}</p>
+                    </div>
                 </div>
-                <div class="eq_mass_pdf">
-                    <p >Masse : {{eq_idCard.eq_mass}} {{eq_idCard.eq_massUnit}}</p>
-                </div>
+
                 <div class="eq_remark_pdf" >
                     <p>
                         Remarques
@@ -200,7 +243,7 @@
                 </div> 
             </div>
         </div>
-        <!--<button @click="generateReport" class="btn btn-primary">Generate</button>-->
+        <button @click="generateReport" class="btn btn-primary">Generate</button>
     </div>  
 
 </template>
@@ -388,6 +431,10 @@ export default {
                     top: 186px;
                     width: 200px;
                     height: 84px;
+                    h5{
+                        margin: 0 auto;
+                        width: auto;
+                    }
                 }
 
             }
@@ -536,25 +583,101 @@ export default {
                                 width: 1042px;   
                                 
                             }
+                            .eq_power_value_pdf{
+                                border: solid 1px black;
+                                position: relative;
+                                height: auto;
+                                width: 521px;   
+                            }
+                            .eq_power_consumption_pdf{
+                                border: solid 1px black;
+                                position: relative;
+                                height: auto;
+                                width: 521px;   
+                                float: right;
+                            }
                         }   
                     }
                 }
-                .eq_mass_pdf{
-                    border: solid 1px black;
+                .dimension_title_pdf{
                     position: relative;
-                    margin-bottom: 20px;
-                    height: 40px;
                     margin-left: 100px;
-                    width: 250px;
-                    
+                    margin-top: -10px;
+                    p{
+                        font-size : 18px;
+                        font-weight: bold;
+                    }
 
+                }
+                .eq_dimension_pdf{
+                    position: relative;
+                    height: auto;
+                    width: 1042px;   
+                    margin-bottom: 30px;
+                    .eq_dimension_type_pdf{
+                        p{
+                            font-size : 15px;
+                            font-weight: bold;
+                        }
+                        position: relative;
+                        height: auto;
+                        .eq_dimension_content_pdf{
+                            position: relative;
+                            height: auto;
+                            display: inline-block;
+                            margin-bottom: 10px;
+                            p{
+                                font-size: 20px;
+                                font-weight: normal;
+                                margin-left: 150px;
+                                margin-top: 5px;
+                            }
+                            .eq_dimension_name_value_pdf{
+                                border: solid 1px black;
+                                position: relative;
+                                height: 40px;
+                                width: 510px;
+                                margin-right: 11px;   
+                                
+                            }
+                            
+                        }   
+                    }
+                }
+                .eq_mass_set_mobility_pdf{
+                    position: relative;
                     p{
                         font-size: 20px;
                         margin-top: 3px;
                         margin-left: 10px;
+                        
                     }
-
+                    .eq_mass_pdf{
+                        border: solid 1px black;
+                        display: inline-block;
+                        margin-bottom: 20px;
+                        height: 40px;
+                        margin-left: 100px;
+                        width: 250px;
+                    }
+                    .eq_mobility_pdf{
+                        border: solid 1px black;
+                        display: inline-block;
+                        margin-bottom: 20px;
+                        height: 40px;
+                        margin-left: 100px;
+                        width: 250px;
+                    }
+                    .eq_set_pdf{
+                        display: inline-block;
+                        border: solid 1px black;
+                        margin-bottom: 20px;
+                        height: 40px;
+                        margin-left: 100px;
+                        width: 250px;
+                    }
                 }
+
                 .eq_remark_pdf{
                     border: solid 1px black;
                     margin-left: 100px;

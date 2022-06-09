@@ -7,18 +7,25 @@
         <h2>Liste des equipment</h2>
         <input v-model="searchTerm" type="text">
         <ul>
-          <li class="list-group-item" v-for="(list,index) in filterByTerm " :key="index" >
-            {{list.eq_internalReference}}
-            <router-link :to="{name:'url_eq_consult',params:{id: list.id} }">Consult</router-link>
+          <div class="one_element_list" v-for="(list,index) in filterByTerm " :key="index">
+            <li class="list-group-item" :class="'element'+index%2"  >
+                <div class="eq_list_internalReference">
+                  <b>{{list.eq_internalReference}}</b>
+                </div>
+                <div class="eq_list_option">
+                  <router-link :to="{name:'url_eq_consult',params:{id: list.id} }">Consult</router-link>
+                  <a href="#" @click="warningUpdate(list.id,list.alreadyValidatedTechnical,list.alreadyValidatedQuality)">Update</a>
+                  <a v-if="list.alreadyValidatedTechnical===false" href="#" @click="technicalValidation(list.id)">Technical validation</a>
+                  <a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
+                  <a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Validated</a>
+                  <a @click="reformEquipment(list.id)" href="#">Reform</a>
+                  <router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
+                </div>
+            </li>
 
-            <a href="#" @click="warningUpdate(list.id,list.alreadyValidatedTechnical,list.alreadyValidatedQuality)">Update</a>
-            <a v-if="list.alreadyValidatedTechnical===false" href="#" @click="technicalValidation(list.id)">Technical validation</a>
-            <a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
-            <a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Validated</a>
-            <a @click="reformEquipment(list.id)" href="#">Reform</a>
-            <a href="#" @click="warningDelete(list.id,list.eq_internalReference)">Delete</a>
-            <router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
-          </li>
+        </div>
+        
+
         </ul>
       </div>
       <b-modal :id="`modal-updateWarning-${_uid}`"  @ok="warningUpdate(eq_id,technical,quality,true)">
@@ -26,9 +33,6 @@
             revalidate </p>
       </b-modal>
 
-      <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment(modal_eq_id)"  @hidden="resetModal" >
-          <p class="my-4">Are you sur you want to delete {{modal_eq_internalReference}} </p>
-      </b-modal>
   </div>
 
 </template>
@@ -92,20 +96,6 @@ export default {
         this.$router.replace({ name: "url_eq_update", params: {id}})
       } 
     },
-    warningDelete(id,refernece){
-      this.modal_eq_id=id;
-      this.modal_eq_internalReference=refernece;
-      this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
-    },
-    deleteEquipment(eq_id_to_send){
-        console.log(eq_id_to_send);
-        var consultUrl = (id) => `/equipment/delete/${id}`;
-        axios.post(consultUrl(eq_id_to_send),{
-        })
-        .then(response =>{console.log("deleted")})
-        //If the controller sends errors we put it in the errors object 
-        .catch(error => {});
-    },
     resetModal(){
       this.modal_eq_internalReference='';
       this.modal_eq_id=null
@@ -119,6 +109,20 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  .listOfEquipment{
+    .element0{
+      background-color: #ccc;
+    }
+  }
+  .eq_list_internalReference{
+    display: inline-block;
+    
+  }
+  .eq_list_option{
+    display: block;
+    margin-left: 200px;
+    margin-top: -20px;
+  }
 
 </style>

@@ -228,7 +228,7 @@ export default {
                 console.log(this.prvMtnOp_periodicity)
                 axios.post('/prvMtnOp/verif',{
                     prvMtnOp_description:this.prvMtnOp_description,
-                    prvMtnOp_periodicity:this.prvMtnOp_periodicity,
+                    prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),
                     prvMtnOp_symbolPeriodicity:this.prvMtnOp_symbolPeriodicity,
                     prvMtnOp_protocol:this.prvMtnOp_protocol,
                     prvMtnOp_validate :savedAs,
@@ -239,7 +239,7 @@ export default {
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/prvMtnOp',{
                         prvMtnOp_description:this.prvMtnOp_description,
-                        prvMtnOp_periodicity:this.prvMtnOp_periodicity,
+                        prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),
                         prvMtnOp_symbolPeriodicity:this.prvMtnOp_symbolPeriodicity,
                         prvMtnOp_protocol:this.prvMtnOp_protocol,
                         prvMtnOp_validate :savedAs,
@@ -281,7 +281,7 @@ export default {
             console.log("update dans la base");
             axios.post('/prvMtnOp/verif',{
                     prvMtnOp_description:this.prvMtnOp_description,
-                    prvMtnOp_periodicity:this.prvMtnOp_periodicity,
+                    prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),
                     prvMtnOp_symbolPeriodicity:this.prvMtnOp_symbolPeriodicity,
                     prvMtnOp_protocol:this.prvMtnOp_protocol,
                     prvMtnOp_validate :savedAs,
@@ -295,7 +295,7 @@ export default {
                     axios.post(consultUrl(this.prvMtnOp_id),{
                         //prvMtnOp_number:this.prvMtnOp_number,
                         prvMtnOp_description:this.prvMtnOp_description,
-                        prvMtnOp_periodicity:this.prvMtnOp_periodicity,
+                        prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),
                         prvMtnOp_symbolPeriodicity:this.prvMtnOp_symbolPeriodicity,
                         prvMtnOp_protocol:this.prvMtnOp_protocol,
                         eq_id:this.equipment_id_update,

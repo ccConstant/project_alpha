@@ -4,27 +4,24 @@
             <b-spinner variant="primary"></b-spinner>
       </div>
       <div v-if="loaded==true" >
-        <h2>Liste des equipment</h2>
+        <h2>Equipment List</h2>
       <input v-model="searchTerm" type="text">
       <ErrorAlert ref="errorAlert"/>
       <ul>
         <li class="list-group-item" v-for="(list,index) in filterByTerm " :key="index" >
           {{list.eq_internalReference}} Current state : {{list.eq_state}}
           <router-link :to="{name:'url_life_event_update_state',params:{id: list.id,state_id:list.state_id} }">Update the state</router-link>
-          <!--<router-link :to="{name:'url_life_event_change_state',params:{id: list.id} }">Change the state</router-link>-->
           <a href="#" @click="verifBeforeAddState(list.id,list.state_id)">Change the state</a>
           <router-link :to="{name:'url_life_event_all',params:{id: list.id} }">All Event</router-link>
           <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Reference a maintenance operation</a>
-          <!--<router-link :to="{name:'url_life_event_reference',params:{id: list.id,state_id:list.state_id} }">Reference a maintenance operation</router-link>-->
           <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance operation</router-link>
-         
-
-
-
+          <a href="#" @click="warningDelete(list.id,list.eq_internalReference)">Delete</a>
         </li>
-        
       </ul>
       </div>
+      <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment(modal_eq_id)"  @hidden="resetModal" >
+              <p class="my-4">Are you sur you want to delete {{modal_eq_internalReference}} </p>
+      </b-modal>
 
   </div>
 
@@ -42,7 +39,9 @@ export default {
       equipments:[],
       searchTerm: "",
       loaded:false,
-      currentState:'' 
+      currentState:'',
+      modal_eq_internalReference:'',
+      modal_eq_id:null 
     }
   },
   methods:{
@@ -73,6 +72,24 @@ export default {
         .catch(error => {
           this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
         });
+    },
+    warningDelete(id,refernece){
+      this.modal_eq_id=id;
+      this.modal_eq_internalReference=refernece;
+      this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
+    },
+    deleteEquipment(eq_id_to_send){
+        console.log(eq_id_to_send);
+        var consultUrl = (id) => `/equipment/delete/${id}`;
+        axios.post(consultUrl(eq_id_to_send),{
+        })
+        .then(response =>{console.log("deleted")})
+        //If the controller sends errors we put it in the errors object 
+        .catch(error => {});
+    },
+    resetModal(){
+      this.modal_eq_internalReference='';
+      this.modal_eq_id=null
     }
 
 

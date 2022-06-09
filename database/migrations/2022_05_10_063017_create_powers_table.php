@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('pow_name') ; 
             $table->double('pow_value') -> nullable(); 
             $table->string('pow_unit') ->nullable(); 
-            $table->double('pow_consumptionValue') ->nullable(); 
+            $table->string('pow_consumptionValue') ->nullable(); 
             $table->string('pow_consumptionUnit') ->nullable(); 
             $table->enum('pow_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enumPowerType_id') ->nullable();
