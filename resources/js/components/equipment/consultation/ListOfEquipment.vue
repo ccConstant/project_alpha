@@ -4,10 +4,10 @@
             <b-spinner variant="primary"></b-spinner>
       </div>
       <div v-if="loaded==true" >
-        <h2>Liste des equipment</h2>
+        <h2>Equipment List</h2>
         <input v-model="searchTerm" type="text">
         <ul>
-          <div class="one_element_list" v-for="(list,index) in filterByTerm " :key="index">
+          <div class="one_element_list" v-for="(list,index) in pageOfItems " :key="index">
             <li class="list-group-item" :class="'element'+index%2"  >
                 <div class="eq_list_internalReference">
                   <b>{{list.eq_internalReference}}</b>
@@ -22,9 +22,8 @@
                   <router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
                 </div>
             </li>
-
-        </div>
-        
+          </div>
+          <jw-pagination :pageSize=10 :items="filterByTerm" @changePage="onChangePage"></jw-pagination>
 
         </ul>
       </div>
@@ -47,7 +46,7 @@ export default {
       eq_id:null,
       technical:null,
       quality:null,
-
+      pageOfItems: [],
       modal_eq_internalReference:'',
       modal_eq_id:null
 
@@ -99,6 +98,11 @@ export default {
     resetModal(){
       this.modal_eq_internalReference='';
       this.modal_eq_id=null
+    },
+    onChangePage(pageOfItems) {
+            console.log(pageOfItems)
+            // update page of items
+            this.pageOfItems = pageOfItems;
     }
 
   }

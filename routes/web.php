@@ -20,6 +20,16 @@ use App\Http\Controllers\EnumRiskForController ;
 use App\Http\Controllers\EnumDimensionTypeController ; 
 use App\Http\Controllers\EnumDimensionNameController ; 
 use App\Http\Controllers\EnumDimensionUnitController ; 
+use App\Http\Controllers\InformationController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+
 
 
 
@@ -34,11 +44,16 @@ use App\Http\Controllers\EnumDimensionUnitController ;
 |
 */
 
-
-
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/dashboard', function () {
+    return view('welcome');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
+
 
 Route::get('/equipment/add', function () {
     return view('welcome');
@@ -96,6 +111,60 @@ Route::get('/equipment/lifesheet_pdf/{id}', function () {
 
 Route::get('/equipment/reform/{id}', function () {
     return view('welcome');
+});
+
+Route::get('/infos', function () {
+    return view('welcome');
+});
+
+Route::get('/sign_up', function () {
+    return view('auth.register');
+});
+
+
+Route::middleware('guest')->group(function () {
+    Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
+
+    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+                ->name('login');
+
+    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+                ->name('password.request');
+
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+                ->name('password.email');
+
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+                ->name('password.reset');
+
+    Route::post('reset-password', [NewPasswordController::class, 'store'])
+                ->name('password.update');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('verify-email', [EmailVerificationPromptController::class, '__invoke'])
+                ->name('verification.notice');
+
+    Route::get('verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+                ->middleware(['signed', 'throttle:6,1'])
+                ->name('verification.verify');
+
+    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+                ->middleware('throttle:6,1')
+                ->name('verification.send');
+
+    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+                ->name('password.confirm');
+
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+                ->name('logout');
 });
 
 /* Equipment ID Form Routes */ 
@@ -347,3 +416,37 @@ Route::post('/state/enum/name/delete/{id}', [EnumStateNameController::class, 'de
 Route::post('/state/enum/name/add', [EnumStateNameController::class, 'add_enum_name'] ) ;
 
 Route::post('/state/enum/name/update/{id}', [EnumStateNameController::class, 'update_enum_name'] ) ;
+
+
+/* Information Form Routes */ 
+
+Route::get('/info/send/all', [InformationController::class, 'send_informations_all'])  ;
+
+Route::get('/info/send/eqIdCard', [InformationController::class, 'send_informations_eqIdCard'])  ;
+
+Route::get('/info/send/dimension', [InformationController::class, 'send_informations_dimension'])  ;
+
+Route::get('/info/send/power', [InformationController::class, 'send_informations_power'])  ;
+
+Route::get('/info/send/specialProcess', [InformationController::class, 'send_informations_specialProcess'])  ;
+
+Route::get('/info/send/usage', [InformationController::class, 'send_informations_usage'])  ;
+
+Route::get('/info/send/file', [InformationController::class, 'send_informations_file']);
+
+Route::get(' /info/send/preventiveMaintenanceOperation', [InformationController::class, 'send_informations_preventiveMaintenanceOperation']);
+
+Route::get(' /info/send/risk', [InformationController::class, 'send_informations_risk']);
+
+Route::get(' /info/send/state', [InformationController::class, 'send_informations_state']);
+
+Route::get(' /info/send/state', [InformationController::class, 'send_informations_state']);
+
+Route::get(' /info/send/preventiveMaintenanceOperationRealized', [InformationController::class, 'send_informations_preventiveMaintenanceOperationRealized']);
+
+Route::get(' /info/send/curativeMaintenanceOperation', [InformationController::class, 'send_informations_curativeMaintenanceOperation']);
+
+Route::get(' /info/send/enum', [InformationController::class, 'send_informations_enum']);
+
+Route::post('/info/update/{id}', [InformationController::class, 'update_information'])  ;
+

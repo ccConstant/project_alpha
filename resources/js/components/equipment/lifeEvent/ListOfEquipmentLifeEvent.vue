@@ -1,38 +1,46 @@
 <template>
-  <div class="listOfEquipment">
+  <div class="listOfEquipmentLifeEvent">
       <div v-if="loaded==false" >
             <b-spinner variant="primary"></b-spinner>
       </div>
       <div v-if="loaded==true" >
-        <h2>Equipment List</h2>
-      <input v-model="searchTerm" type="text">
-      <ErrorAlert ref="errorAlert"/>
-      <ul>
-        <li class="list-group-item" v-for="(list,index) in filterByTerm " :key="index" >
-          {{list.eq_internalReference}} Current state : {{list.eq_state}}
-          <router-link :to="{name:'url_life_event_update_state',params:{id: list.id,state_id:list.state_id} }">Update the state</router-link>
-          <a href="#" @click="verifBeforeAddState(list.id,list.state_id)">Change the state</a>
-          <router-link :to="{name:'url_life_event_all',params:{id: list.id} }">All Event</router-link>
-          <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Reference a maintenance operation</a>
-          <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance operation</router-link>
-          <a href="#" @click="warningDelete(list.id,list.eq_internalReference)">Delete</a>
-        </li>
-      </ul>
+        <h1>Equipment List</h1>
+        <input placeholder="Search an equipment by his Alpha Reference" v-model="searchTerm" class="form-control w-50 search_bar" type="text">
+        <ErrorAlert ref="errorAlert"/>
+        <ul>
+          <div class="one_element_list" v-for="(list,index) in pageOfItems " :key="index">
+            <li class="list-group-item" :class="'element'+index%2">
+              <div class="eq_list_internalReference_state">
+                  <b>{{list.eq_internalReference}}</b>
+              </div>
+              <div class="eq_list_current_state">
+                Current state : {{list.eq_state}}
+              </div>
+              <div class="eq_list_option_state">
+                <router-link :to="{name:'url_life_event_update_state',params:{id: list.id,state_id:list.state_id} }">Update the state</router-link>
+                <a href="#" @click="verifBeforeAddState(list.id,list.state_id)">Change the state</a>
+                <router-link :to="{name:'url_life_event_all',params:{id: list.id} }">All Event</router-link>
+                <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Reference a maintenance operation</a>
+                <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance operation</router-link>
+
+              </div>
+            </li>
+          </div>
+        </ul>
+        <jw-pagination :pageSize=10 :items="filterByTerm" @changePage="onChangePage"></jw-pagination>
       </div>
-      <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment(modal_eq_id)"  @hidden="resetModal" >
-              <p class="my-4">Are you sur you want to delete {{modal_eq_internalReference}} </p>
-      </b-modal>
+
 
   </div>
 
 </template>
 
 <script>
+import InputTextForm from '../../input/InputTextForm.vue'
 import ErrorAlert from '../../alert/ErrorAlert.vue'
 export default {
   components:{
-        ErrorAlert
-
+        ErrorAlert,
   },
   data(){
     return{
@@ -40,8 +48,7 @@ export default {
       searchTerm: "",
       loaded:false,
       currentState:'',
-      modal_eq_internalReference:'',
-      modal_eq_id:null 
+      pageOfItems: []
     }
   },
   methods:{
@@ -73,26 +80,11 @@ export default {
           this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
         });
     },
-    warningDelete(id,refernece){
-      this.modal_eq_id=id;
-      this.modal_eq_internalReference=refernece;
-      this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
-    },
-    deleteEquipment(eq_id_to_send){
-        console.log(eq_id_to_send);
-        var consultUrl = (id) => `/equipment/delete/${id}`;
-        axios.post(consultUrl(eq_id_to_send),{
-        })
-        .then(response =>{console.log("deleted")})
-        //If the controller sends errors we put it in the errors object 
-        .catch(error => {});
-    },
-    resetModal(){
-      this.modal_eq_internalReference='';
-      this.modal_eq_id=null
+    onChangePage(pageOfItems) {
+            console.log(pageOfItems)
+            // update page of items
+            this.pageOfItems = pageOfItems;
     }
-
-
   },
   computed: {
       filterByTerm() {
@@ -119,6 +111,31 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  .listOfEquipmentLifeEvent{
+    .element0{
+      background-color: #ccc;
+    }
+    h1{
+        text-align:center;
+    }
+    .search_bar{
+      margin-left:30px;
+      margin-bottom: 20px;
+    }
+  }
+  .eq_list_internalReference_state{
+    display: inline-block;
+  }
+  .eq_list_current_state{
+    display: block;
+    margin-left: 200px;
+    margin-top: -20px;
+  }
+  .eq_list_option_state{
+      display: block;
+      margin-left: 600px;
+      margin-top: -20px;
+  }
 
 </style>

@@ -4,20 +4,110 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" class="equipment_consultation">
-            <EquipmentIDForm :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
-                :name="eq_idCard.eq_name" :type="eq_idCard.eq_type" :serialNumber="eq_idCard.eq_serialNumber"
-                :construct="eq_idCard.eq_constructor" :mass="eq_idCard.eq_mass"  :massUnit="eq_idCard.eq_massUnit"
-                :mobility="eq_idCard.eq_mobility" :remarks="eq_idCard.eq_remarks" :set="eq_idCard.eq_set" :validate="eq_idCard.eq_validate"
-                consultMod/>
-            <ReferenceADim v-if="eq_dimensions.length>0" :importedDim="eq_dimensions" consultMod/>
-            <ReferenceAPow v-if="eq_powers.length>0" :importedPow="eq_powers" consultMod/>
-            <ReferenceASpecProc v-if="eq_spProc.length>0" :importedSpProc="eq_spProc" consultMod/>
-            <ReferenceAUsage v-if="eq_usg.length>0" :importedUsg="eq_usg" consultMod/>
-            <ReferenceAFile v-if="eq_file.length>0" :importedFile="eq_file" consultMod/>
-            <ReferenceAPrvMtnOp v-if="eq_prvMtnOp.length>0" :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
-            <ReferenceARisk v-if="eq_risk.length>0" :importedRisk="eq_risk" :riskForEq="true" consultMod/>
+            <h1>Equipment Consultation</h1>
             <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors.validation"/>
-            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Equipment Id Card
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                        <EquipmentIDForm :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
+                            :name="eq_idCard.eq_name" :type="eq_idCard.eq_type" :serialNumber="eq_idCard.eq_serialNumber"
+                            :construct="eq_idCard.eq_constructor" :mass="eq_idCard.eq_mass"  :massUnit="eq_idCard.eq_massUnit"
+                            :mobility="eq_idCard.eq_mobility" :remarks="eq_idCard.eq_remarks" :set="eq_idCard.eq_set" :validate="eq_idCard.eq_validate"
+                            consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item"  v-if="eq_dimensions.length>0">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Equipment Dimension
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            <ReferenceADim :importedDim="eq_dimensions" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" v-if="eq_powers.length>0">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Equipment Power
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                        <div class="accordion-body">
+                            <ReferenceAPow :importedPow="eq_powers" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" v-if="eq_spProc.length>0">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        Equipment Special Process
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                        <div class="accordion-body">
+                            <ReferenceASpecProc  :importedSpProc="eq_spProc" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" v-if="eq_usg.length>0">
+                    <h2 class="accordion-header" id="headingFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            Equipment Usage
+                        </button>
+                    </h2>
+                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive">
+                        <div class="accordion-body">
+                            <ReferenceAUsage  :importedUsg="eq_usg" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" v-if="eq_file.length>0">
+                    <h2 class="accordion-header" id="headingSix">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                        Equipment File
+                        </button>
+                    </h2>
+                    <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix">
+                        <div class="accordion-body">
+                            <ReferenceAFile :importedFile="eq_file" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" v-if="eq_prvMtnOp.length>0">
+                    <h2 class="accordion-header" id="headingEight">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                        Equipment Preventive maintenace Operation
+                        </button>
+                    </h2>
+                    <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingEight">
+                        <div class="accordion-body">
+                            <ReferenceAPrvMtnOp  :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" v-if="eq_risk.length>0">
+                    <h2 class="accordion-header" id="headingNine">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                        Equipment Preventive maintenace Operation
+                        </button>
+                    </h2>
+                    <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
+                        <div class="accordion-body">
+                            <ReferenceARisk  :importedRisk="eq_risk" :riskForEq="true" consultMod/>
+                        </div>
+                    </div>
+                </div>
+             </div>
             
 
 
@@ -169,6 +259,13 @@ export default {
         margin : auto;
         margin-bottom: 15px;
     }
+
+    .equipment_consultation{
+        h1{
+            text-align: center;
+        }
+    }
+
 
 
 </style>

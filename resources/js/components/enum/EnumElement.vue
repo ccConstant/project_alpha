@@ -2,13 +2,6 @@
     <div v-if="enums">
         <h2 class="enumTitle">{{this.title}}</h2>
         <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
-        <!--<div v-if="hasErrors==true">
-            <b-alert show variant="danger">{{errors.enum_type[0]}}</b-alert>
-            <b-alert :show="dismissCountDown" dismissible variant="warning" @dismissed="dismissCountDown=0" @dismiss-count-down="countDownChanged">
-                <p>Nothing to import </p>
-                <b-progress variant="warning" :max="dismissSecs" :value="dismissCountDown"  height="4px"></b-progress>
-            </b-alert>
-        </div>-->
             <ErrorAlert ref="errorAlert"/>
         <ul>
             <li class="list-group-item" v-for="(element,index) in enums" :key="index" >
@@ -174,6 +167,7 @@ export default {
         showAlert() {
             this.dismissCountDown = this.dismissSecs
         }
+
         
 
     }

@@ -11,7 +11,6 @@
 <template>
     <div class="equipmentPrvMtnOp" >
         <h2 class="titleForm">Equipment Preventive Maintenance Operation</h2>
-        <span class="hr"></span>
         <!--Adding to the vue EquipmentPrvMtnOpForm by going through the components array with the v-for-->
         <!--ref="ask_prvMtnOp_data" is used to call the child elements in this component-->
         <!--The emitted deletePrvMtnOp is catched here and call the function getContent -->

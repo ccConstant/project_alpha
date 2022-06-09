@@ -12,7 +12,6 @@
 <template>
     <div class="equipmentFile" >
         <h2 class="titleForm">Equipment File</h2>
-        <span class="hr"></span>
         <!--Adding to the vue EquipmentFileForm by going through the components array with the v-for-->
         <!--ref="ask_file_data" is used to call the child elements in this component-->
         <!--The emitted deleteFile is catched here and call the function getContent -->

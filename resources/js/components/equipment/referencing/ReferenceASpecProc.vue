@@ -1,7 +1,6 @@
 <template>
     <div class="equipmentSpProc" >
         <h2 class="titleForm">Equipment Special Process</h2>
-        <span class="hr"></span>
         <!--Adding to the vue EquipmentSpecProcForm by going through the components array with the v-for-->
         <!--ref="ask_spProc_data" is used to call the child elements in this component-->
         <!--The emitted deleteSpPRoc is catched here and call the function getContent -->

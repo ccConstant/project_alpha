@@ -11,7 +11,6 @@
 <template>
 <div class="equipmentUsg" >
         <h2 class="titleForm">Equipment Usage</h2>
-        <span class="hr"></span>
         <!--Adding to the vue EquipmentUsgForm by going through the components array with the v-for-->
         <!--ref="ask_usg_data" is used to call the child elements in this component-->
         <!--The emitted deleteUsg is catched here and call the function getContent -->

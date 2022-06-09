@@ -48,9 +48,13 @@
                         :construct="eq_idCard.eq_constructor" :mass="eq_idCard.eq_mass"  :massUnit="eq_idCard.eq_massUnit"
                         :mobility="eq_idCard.eq_mobility" :remarks="eq_idCard.eq_remarks" :set="eq_idCard.eq_set" :validate="eq_idCard.eq_validate"/>
                     </div>
-
                 </div>
-                 
+            </div>
+            <div v-if="state_name=='Reform' && isInModifMod==true && isInConsultMod==false">
+                <button type="button" class="btn btn-danger" @click="warningDelete()">Delete the equipment</button>
+                    <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment()"  >
+                        <p class="my-4">Are you sur you want to delete </p>
+                    </b-modal>
             </div>
 
         </div>
@@ -130,7 +134,7 @@ export default {
                 {id : 'No', value:false}
             ],
             new_eq:null,
-            eq_idCard:[]
+            eq_idCard:[],
             
 
         }
@@ -224,7 +228,18 @@ export default {
                 return false;
             }
             return true;
-        }
+        },
+        warningDelete(id,refernece){
+            this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
+        },
+        deleteEquipment(){
+            var consultUrl = (id) => `/equipment/delete/${id}`;
+            axios.post(consultUrl(this.eq_id),{
+            })
+            .then(response =>{console.log("deleted")})
+            //If the controller sends errors we put it in the errors object 
+            .catch(error => {});
+        },
     },
     created(){
         /*Ask for the controller other equipments sets */

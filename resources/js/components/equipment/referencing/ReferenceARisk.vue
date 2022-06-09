@@ -14,7 +14,6 @@
         <div v-if="this.riskForEq==true">
             <div class="equipmentRisk" >
                 <h2 class="titleForm">Equipment Risk</h2>
-                <span class="hr"></span>
                 <!--Adding to the vue EquipmentRiskForm by going through the components array with the v-for-->
                 <!--ref="ask_risk_data" is used to call the child elements in this component-->
                 <!--The emitted deleteRisk is catched here and call the function getContent -->

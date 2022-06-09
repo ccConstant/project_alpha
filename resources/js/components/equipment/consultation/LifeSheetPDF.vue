@@ -55,19 +55,22 @@
                     </div>
                     <div class="Ecme_designation_type_pdf">
                         <p>
-                            Désignation et type : {{eq_idCard.eq_name}} {{eq_idCard.eq_type}}
+                            Désignation et type : <b>{{eq_idCard.eq_name}} {{eq_idCard.eq_type}}</b>
+                        </p>
+                        <p>
+                            
                         </p>
                     </div>
                     <div class="eq_externalReference_pdf">
                         <p>
-                            External Reference : {{eq_idCard.eq_externalReference}}
+                            External Reference : <b>{{eq_idCard.eq_externalReference}}</b>
                         </p>
                     </div>
                     <div class="eq_constructor_pdf">
-                        <p>Constructor: {{eq_idCard.eq_constructor}}</p>
+                        <p>Constructor: <b>{{eq_idCard.eq_constructor}}</b></p>
                     </div>
                     <div class="eq_serialNumber_pdf">
-                        <p>Serial Number : 12345678910111213141516</p>
+                        <p>Serial Number : <b>{{eq_idCard.eq_serialNumber}}</b></p>
                     </div>
                 </div>  
             </div>
@@ -237,10 +240,29 @@
                     </div>
                     <div v-if="spProc.spProc_exist==false">
                         <p>
-                            No
+                            No<br>
+                            {{spProc.spProc_remarksOrPrecaution}}
                         </p>
                     </div>
                 </div> 
+            </div>
+            <div class="eq_prvMtnOp_infos_pdf">
+                <div class="title_prvMtnOp_pdf">
+                    Preventive Maintenance Operation
+                </div>
+                <!--<div class="table-header table-row">
+                    <div class="table-col">N°</div>
+                    <div class="table-col"> Type od operation to realize</div>
+                    <div class="table-col"> Peridicity</div>
+                    <div class="table-col">Negative influence?</div>
+                </div>
+                <div class="member table-row" v-for="(prvMtnOp,index) in eq_prvMtnOp " :key="index">
+                    <div class="table-col prvMtnOp_number">ez </div>
+                    <div class="table-col prvMtnOp_type"> zee</div>
+                    <div class="table-col prvMtnOp_periodicity"> ezfsd</div>
+                    <div class="table-col prvMtnOp_risk"> dsdfs</div>
+                </div>-->
+                <b-table :items="eq_prvMtnOp"></b-table>
             </div>
         </div>
         <button @click="generateReport" class="btn btn-primary">Generate</button>
@@ -741,6 +763,16 @@ export default {
                     height: auto;
                     width: 1042px;   
                     margin-left: 100px;
+                }
+            }
+            .eq_prvMtnOp_infos_pdf{
+                position: relative;
+                margin-top:10px ;
+                .title_prvMtnOp_pdf{
+                    margin-left: 100px;
+                    width: 400px;
+                    font-size : 20px;
+                    font-weight: bold;
                 }
             }
         }

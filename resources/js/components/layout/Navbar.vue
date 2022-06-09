@@ -10,15 +10,16 @@
           <b-dropdown-item href="/equipment/list">List of all equipment</b-dropdown-item>
           <b-dropdown-item href="/equipment/life_event">Life Event</b-dropdown-item>
           <b-dropdown-item href="/equipment/maintenance/calendar">Maintenance</b-dropdown-item>
-
-
         </b-nav-item-dropdown>
-
         <b-nav-item-dropdown text="ECME" right>
 
         </b-nav-item-dropdown>
 
         <b-nav-item href="/enum">Enum Managment</b-nav-item>
+        <b-nav-item href="/infos">Info Managment</b-nav-item>
+        <b-nav-item-dropdown text="User" right>
+          <b-dropdown-item href="/sign_up">Sign up</b-dropdown-item>
+        </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
   </div>

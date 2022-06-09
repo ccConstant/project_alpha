@@ -9,7 +9,7 @@
         info
 -------------------------------------------------------------->
 <template>
-    <div>
+    <div :class="divClassName">
         <!--Label of the input-->
         <label class="form-label" :for="name">
             {{label}}
@@ -67,6 +67,9 @@ export default {
             default : null
         },
         inputClassName:{
+            type:String
+        },
+        divClassName:{
             type:String
         },
         isDisabled:{

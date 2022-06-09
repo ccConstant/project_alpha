@@ -10,7 +10,7 @@
         SaveButtonForm : name, label, isRequired, value, info_text,  isDisabled, options, selectClassName, selectedOption
 -------------------------------------------------------------->
 <template>
-    <div :class="divClass">
+    <div :class="divClass" >
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container"  @keydown="clearError">
             <!--Call of the different component with their props-->
@@ -162,6 +162,8 @@ export default {
             .then (response=> this.enum_dim_unit=response.data) 
             .catch(error => console.log(error)) ;
         
+       
+        
     },
     methods:{
         /*Sending to the controller all the information about the equipment so that it can be added to the database
@@ -306,12 +308,6 @@ export default {
 </script>
 
 <style lang="scss">
-    .hr {
-        display: block;
-        flex: 1;
-        height: 3px;
-        background: #D4D4D4;
-    }
     .titleForm{
         padding-left: 10px;
     }

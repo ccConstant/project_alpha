@@ -282,12 +282,6 @@ export default {
 </script>
 
 <style lang="scss">
-    .hr {
-        display: block;
-        flex: 1;
-        height: 3px;
-        background: #D4D4D4;
-    }
     .titleForm{
         padding-left: 10px;
     }

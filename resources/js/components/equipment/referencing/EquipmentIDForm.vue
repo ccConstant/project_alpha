@@ -15,9 +15,8 @@
         ImportationModal
 -------------------------------------------------------------->
 <template>
-    <div class="equipmentID ">
+        <div class="equipmentID">
         <h2 class="titleForm">Equipment ID</h2>
-        <span class="hr"></span>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
@@ -356,16 +355,11 @@ export default {
             
         }
     }
+
 }
 </script>
 
 <style lang="scss">
-    .hr {
-        display: block;
-        flex: 1;
-        height: 3px;
-        background: #D4D4D4;
-    }
     .titleForm{
         padding-left: 10px;
     }
@@ -373,4 +367,5 @@ export default {
         margin: 20px;
         margin-bottom: 100px;
     }
+
 </style>
