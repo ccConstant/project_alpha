@@ -42,7 +42,7 @@ export default {
             console.log(this.user_password);
             axios.post('register',{
                 name : "dupont",
-                email : "test8@gmail.fr",
+                email : "test9@gmail.fr",
                 password : "abcde1234"
             })
             //If the dimension is added succesfuly
