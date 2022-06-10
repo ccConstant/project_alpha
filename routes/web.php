@@ -44,6 +44,8 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 |
 */
 
+require __DIR__.'/auth.php';
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -52,7 +54,6 @@ Route::get('/dashboard', function () {
     return view('welcome');
 })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
 
 
 Route::get('/equipment/add', function () {
@@ -118,7 +119,7 @@ Route::get('/infos', function () {
 });
 
 Route::get('/sign_up', function () {
-    return view('auth.register');
+    return view('welcome');
 });
 
 

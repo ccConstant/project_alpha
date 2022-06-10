@@ -40,10 +40,13 @@ export default {
             console.log(this.user_initial);
             console.log(this.user_pseudo);
             console.log(this.user_password);
-            axios.post('/login',{
+            axios.post('register',{
+                name : "dupont",
+                email : "test8@gmail.fr",
+                password : "abcde1234"
             })
             //If the dimension is added succesfuly
-            .then(response =>{console.log("compte cree")})
+            .then(response =>{console.log(response.data)})
             .catch(error => this.errors=error.response.data.errors) ;
         }
     }

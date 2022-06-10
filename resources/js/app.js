@@ -93,12 +93,12 @@ const router = new VueRouter({
         name: 'url_infos',
         component:require('./components/infos/InfosManagment.vue').default
 
-    }/*,{
+    },{
         path:'/sign_up',
         name: 'url_sign_up',
         component:require('./components/account/SignUp.vue').default
 
-    }*/,{
+    },{
         path:'*',
     }]
 

@@ -18,10 +18,10 @@ class RegisteredUserController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    /*public function create()
     {
         return view('auth.register');
-    }
+    }*/
 
     /**
      * Handle an incoming registration request.
@@ -33,22 +33,24 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+       /* $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+            'password' => ['required', Rules\Password::defaults()], //rajouter confirmed
+        ]);*/
 
+        //verifié email
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
+        
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        //REDIRIGER VERS UNE PAGE "vous êtes connecté" 
+        return view('welcome');
     }
 }

@@ -146,7 +146,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_enum(){
-       $informations=Information::where('info_name', '=', 'enum')->get() ; 
+       //$informations=Information::where('info_name', '=', 'enum')->get() ; 
+       $informations=DB::select(DB::raw("SELECT id, info_name, info_value FROM information WHERE info_name LIKE 'enum%'"));
         return response()->json($informations) ; 
     }
 
