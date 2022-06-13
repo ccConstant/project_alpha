@@ -213,6 +213,7 @@ class CurativeMaintenanceOperationController extends Controller
             foreach ($curMtnOps as $curMtnOp) {
                 $obj=([
                    "id" => $curMtnOp->id,
+                   "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
                     "curMtnOp_reportNumber" => $curMtnOp->curMtnOp_reportNumber,
                     "curMtnOp_description" => $curMtnOp->curMtnOp_description,
                     "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,

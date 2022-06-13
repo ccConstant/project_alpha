@@ -453,3 +453,18 @@ Route::get(' /info/send/enum', [InformationController::class, 'send_informations
 
 Route::post('/info/update/{id}', [InformationController::class, 'update_information'])  ;
 
+Route::get(' /info/send/person', [InformationController::class, 'send_informations_person']);
+
+Route::get(' /info/send/mme', [InformationController::class, 'send_informations_mme']);
+
+Route::get(' /info/send/mme_state', [InformationController::class, 'send_informations_mme_state']);
+
+Route::get(' /info/send/verif', [InformationController::class, 'send_informations_verif']);
+
+Route::get(' /info/send/verifRlz', [InformationController::class, 'send_informations_verifRlz']);
+
+Route::get(' /info/send/mme_usage', [InformationController::class, 'send_informations_mme_usage']);
+
+Route::get(' /info/send/mme_precaution', [InformationController::class, 'send_informations_mme_usage']);
+
+

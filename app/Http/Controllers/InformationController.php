@@ -25,13 +25,13 @@ class InformationController extends Controller
      * Get all the informations (=the dictionnary) in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
-    public function send_informations_all(){
+    /*public function send_informations_all(){
         $informations=Information::all() ; 
         return response()->json($informations) ; 
-    }
+    }*/
 
      /**
-     * Function call by ?? with the route : /info/send/eqIdCard (get)
+     * Function call by InfoManagement.vue with the route : /info/send/eqIdCard (get)
      * Get all the informations (=the dictionnary) about an equipment id card in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -41,7 +41,7 @@ class InformationController extends Controller
     }
 
      /**
-     * Function call by ?? with the route : /info/send/dimension (get)
+     * Function call by InfoManagement.vue with the route : /info/send/dimension (get)
      * Get all the informations (=the dictionnary) about a dimension in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -51,7 +51,7 @@ class InformationController extends Controller
     }
 
     /**
-     * Function call by ?? with the route : /info/send/power (get)
+     * Function call by InfoManagement.vue with the route : /info/send/power (get)
      * Get all the informations (=the dictionnary) about a power in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -61,7 +61,7 @@ class InformationController extends Controller
     }
 
      /**
-     * Function call by ?? with the route : /info/send/specialProcess (get)
+     * Function call by InfoManagement.vue with the route : /info/send/specialProcess (get)
      * Get all the informations (=the dictionnary) about a special process in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -71,7 +71,7 @@ class InformationController extends Controller
     }
 
     /**
-     * Function call by ?? with the route : /info/send/usage (get)
+     * Function call by InfoManagement.vue with the route : /info/send/usage (get)
      * Get all the informations (=the dictionnary) about a usage in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -81,7 +81,7 @@ class InformationController extends Controller
     }
 
     /**
-     * Function call by ?? with the route : /info/send/file (get)
+     * Function call by InfoManagement.vue with the route : /info/send/file (get)
      * Get all the informations (=the dictionnary) about a file in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -91,7 +91,7 @@ class InformationController extends Controller
     }
 
     /**
-     * Function call by ?? with the route : /info/send/preventiveMaintenanceOperation (get)
+     * Function call by InfoManagement.vue with the route : /info/send/preventiveMaintenanceOperation (get)
      * Get all the informations (=the dictionnary) about a preventiveMaintenanceOperation in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -101,7 +101,7 @@ class InformationController extends Controller
     }
 
         /**
-     * Function call by ?? with the route : /info/send/risk (get)
+     * Function call by InfoManagement.vue with the route : /info/send/risk (get)
      * Get all the informations (=the dictionnary) about a risk in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -111,7 +111,7 @@ class InformationController extends Controller
     }
 
     /**
-     * Function call by ?? with the route : /info/send/state (get)
+     * Function call by InfoManagement.vue with the route : /info/send/state (get)
      * Get all the informations (=the dictionnary) about a state in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -121,7 +121,7 @@ class InformationController extends Controller
     }
 
     /**
-     * Function call by ?? with the route : /info/send/preventiveMaintenanceOperationRealized (get)
+     * Function call by InfoManagement.vue with the route : /info/send/preventiveMaintenanceOperationRealized (get)
      * Get all the informations (=the dictionnary) about a preventiveMaintenanceOperationRealized in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -131,7 +131,7 @@ class InformationController extends Controller
     }
 
     /**
-     * Function call by ?? with the route : /info/send/curativeMaintenanceOperation (get)
+     * Function call by InfoManagement.vue with the route : /info/send/curativeMaintenanceOperation (get)
      * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
@@ -140,8 +140,79 @@ class InformationController extends Controller
         return response()->json($informations) ; 
     }
 
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/person (get)
+     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_person(){
+        $informations=Information::where('info_set', '=', 'person')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+    /**
+     * Function call by InfoManagement.vue with the route : /info/send/mme (get)
+     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_mme(){
+        $informations=Information::where('info_set', '=', 'mme')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/mme_state (get)
+     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_mme_state(){
+        $informations=Information::where('info_set', '=', 'mme_state')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/verif (get)
+     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_verif(){
+        $informations=Information::where('info_set', '=', 'verif')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/verifRlz (get)
+     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_verifRlz(){
+        $informations=Information::where('info_set', '=', 'verifRlz')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+      /**
+     * Function call by InfoManagement.vue with the route : /info/send/mme_usage(get)
+     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_mme_usage(){
+        $informations=Information::where('info_set', '=', 'mme_usage')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+      /**
+     * Function call by InfoManagement.vue with the route : /info/send/mme_precaution (get)
+     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_mme_precaution(){
+        $informations=Information::where('info_set', '=', 'mme_precaution')->get() ; 
+        return response()->json($informations) ; 
+    }
+
         /**
-     * Function call by ?? with the route : /info/send/enum (get)
+     * Function call by InfoManagement.vue with the route : /info/send/enum (get)
      * Get all the informations (=the dictionnary) about the enum in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */

@@ -14,16 +14,6 @@ use Illuminate\Validation\Rules;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
-     *
-     * @return \Illuminate\View\View
-     */
-    /*public function create()
-    {
-        return view('auth.register');
-    }*/
-
-    /**
      * Handle an incoming registration request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -37,8 +27,6 @@ class RegisteredUserController extends Controller
             'user_firstName' => ['required', 'string', 'max:255'],
             'user_lastName' => ['required', 'string', 'max:255'],
             'user_pseudo' => ['required', 'string', 'max:255'],
-           // 'user_signaturePath' => ['required', 'string', 'max:255'],
-           // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],  //'unique:users'
            'user_password' => ['required', Rules\Password::defaults()], //rajouter confirmed
         ],[
             'user_firstName.required' => 'You must enter your firstname ',
@@ -51,11 +39,7 @@ class RegisteredUserController extends Controller
 
             'user_pseudo.required' => 'You must enter a pseudo ',
             'user_pseudo.string' => 'Your pseudo must be of type string',
-            'user_pseudo.max' => 'You must enter a maximum of 255 characters',/*
-
-            'user_signaturePath.required' => 'You must enter your signaturePath',
-            'user_signaturePath.string' => 'Your signaturePath must be of type string',
-            'user_signaturePath.max' => 'You must enter a maximum of 255 characters',*/
+            'user_pseudo.max' => 'You must enter a maximum of 255 characters',
 
             'user_password.required' => 'You must enter a password',
             'user_password.string' => 'Your password must be of type string',
@@ -67,7 +51,6 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'user_firstName' => $request->user_firstName,
             'user_lastName' => $request->user_lastName,
-         //   'user_signaturePath' => $request->user_signaturePath,
             'user_pseudo' => $request->user_pseudo,
             'user_password' => Hash::make($request->user_password),
         ]);
