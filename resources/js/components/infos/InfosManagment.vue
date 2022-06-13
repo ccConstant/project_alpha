@@ -4,8 +4,22 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <InfoElement title="internal Reference" :info_prop="{info_eq_internalReference:`${infos_idCard[0].info_value}`,id:infos_idCard[0].id}"/>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Equipment ID card information
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                            <InfoElement title="internal Reference" :info_content="infos_idCard[0].info_value" :info_id="infos_idCard[0].id"/>
+                          
 
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -24,25 +38,25 @@ export default {
         }
     },
     created(){
-            axios.get('/info/send/all')
+            /*axios.get('/info/send/all')
             .then (response=> {
                 this.infos=response.data;
                 console.log("ALL :")
                 console.log(this.infos)
                 }) 
-            .catch(error => console.log(error)) ;
+            .catch(error => console.log(error)) ;*/
 
             axios.get('/info/send/eqIdCard')
             .then (response=> {
                 this.infos_idCard=response.data;
                 console.log("\n Infos ID CARD");
                 console.log(this.infos_idCard);
-                this.info_eq_internalReference=this.infos_idCard[0].info_value;
+                this.loaded=true;
                 
                 }) 
             .catch(error => console.log(error)) ;
 
-            axios.get('/info/send/dimension')
+            /*axios.get('/info/send/dimension')
             .then (response=> {
                 console.log("\n Infos dimension")
                 console.log(response.data)
@@ -119,7 +133,7 @@ export default {
                 console.log(response.data)
                 this.loaded=true;
                 }) 
-            .catch(error => console.log(error)) ;
+            .catch(error => console.log(error)) ;*/
     }
 }
 </script>

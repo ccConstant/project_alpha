@@ -152,14 +152,15 @@ class InformationController extends Controller
     }
 
      /**
-     * Function call by ?? with the route : /info/update/{id} (post)
+     * Function call by InfoElement.vue with the route : /info/update/{id} (post)
      * Update an information in the data base thinks to the id in parameter
      * The id in parameter correspond to the id of the information we want to update
      */
     public function update_information(Request $request, $id){
-        $informations=Information::findOrFail($id) ; 
-        $informations->update([
-            'info_value' -> $request->info_value,
+        $information=Information::findOrFail($id) ; 
+        //return response()->json($request->info_value) ;
+        $information->update([
+            'info_value' => $request->info_value,
         ]);
     }
 }

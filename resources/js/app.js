@@ -97,6 +97,11 @@ const router = new VueRouter({
         component:require('./components/infos/InfosManagment.vue').default
 
     },{
+        path:'/accounts',
+        name: 'url_accounts',
+        component:require('./components/account/AccountsManagment.vue').default
+
+    },{
         path:'/sign_up',
         name: 'url_sign_up',
         component:require('./components/account/SignUp.vue').default

@@ -32,7 +32,7 @@
             </div>
             <RadioGroupForm label="Mobil?:" :options="eq_mobilityOption" :Errors="errors.eq_mobilityOption" :checkedOption="eq_mobility" :isDisabled="!!isInConsultMod" v-model="eq_mobility" :info_text="infos_idCard[8].info_value"/> 
             <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.eq_remarks" name="eq_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="eq_remarks" :info_text="infos_idCard[9].info_value"/>
-            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.eq_set" name="eq_set" label="Equipment Set" :isDisabled="!!isInConsultMod" :options="enum_sets" v-model="eq_set" />
+            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.eq_set" name="eq_set" label="Equipment Set" :isDisabled="!!isInConsultMod" :options="enum_sets" v-model="eq_set" :info_text="infos_idCard[10].info_value" />
             <InputTextForm v-if="this.eq_importFrom!== undefined " inputClassName="form-control w-50" name="eq_importFrom" label="Import From :" isDisabled v-model="eq_importFrom"/>
             <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addEquipment" @update="updateEquipment" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
             <div v-if="this.modifMod!=true">
@@ -214,8 +214,8 @@ export default {
             .then (response=> {
                 this.infos_idCard=response.data;
                 console.log("\n Infos ID CARD");
-                console.log(this.infos_idCard[0].info_value);
-                this.info_eq_internalReference=this.infos_idCard[0].info_value;
+                console.log(this.infos_idCard);
+                
                 this.loaded=true;
                 }) 
             .catch(error => console.log(error)) ;

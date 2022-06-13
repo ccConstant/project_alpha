@@ -8,6 +8,7 @@
         <label class="form-label" for="radio-button-group">
             {{label}}
         </label>
+        <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
         <div class="radio-button-group" :class="[hasError(this.Errors)?'is-invalid':'']">
             <!--Label of options, the for loop here is used to initialize them with an array of the differents value-->
             <label v-for="(option,index) in options " :key="index">
@@ -24,7 +25,11 @@
 </template>
 
 <script>
+import InputInfo from './InputInfo.vue'
 export default {
+    components : {
+        InputInfo
+    },
        /*--------Declartion of the differents props:--------
         options: Array of option values
         label : Label of this select who will appear on it
@@ -54,6 +59,15 @@ export default {
         Errors:{
             type:Array,
             default: () => ([])
+        },
+        info_text:{
+            type:String,
+            default:null
+        }
+    },
+    data(){
+        return{
+            returnedText_info:this.info_text
         }
     },
     /*All function inside the mounted option is called after the component has been mounted.*/

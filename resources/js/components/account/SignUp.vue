@@ -46,7 +46,7 @@ export default {
 
             })
             //If the dimension is added succesfuly
-            .then(response =>console.log(response.data))
+            .then(response =>{this.$router.replace({ name: "home"})})
             .catch(error => this.errors=error.response.data.errors) ;
         },
         clearError(event){

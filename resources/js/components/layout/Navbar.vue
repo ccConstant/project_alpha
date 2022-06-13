@@ -17,6 +17,7 @@
 
         <b-nav-item href="/enum">Enum Managment</b-nav-item>
         <b-nav-item href="/infos">Info Managment</b-nav-item>
+        <b-nav-item href="/accounts">Accounts Managment</b-nav-item>
         <b-nav-item-dropdown text="User" right>
           <b-dropdown-item href="/sign_up">Sign up</b-dropdown-item>
           <b-dropdown-item v-if="this.$userId==''" href="#" @click="disconnect()" >Disconnect</b-dropdown-item>

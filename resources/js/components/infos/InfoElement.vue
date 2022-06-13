@@ -1,11 +1,9 @@
 <template>
     <div class="info_element">
-        <ul>
             <li class="list-group-item" >
-                {{infos[Object.keys(infos)[0]]}}
-                <a href=# v-b-modal="`modal-updateInfo-${_uid}`" @click="sendInfo(infos)">Update</a>
+                {{info_content_data}}
+                <a href=# v-b-modal="`modal-updateInfo-${_uid}`">Update</a>
             </li>
-        </ul>
         <div>
             <b-modal :id="`modal-updateInfo-${_uid}`"  ref="modal" :title="`Update Your ${title} Info`" @show="resetModal" @hidden="resetModal" @ok="handleOkUpdate">
                 <form ref="form" @submit.stop.prevent="handleSubmitUpdate">
@@ -24,15 +22,18 @@ export default {
         title:{
             type:String
         },
-        info_prop:{
-            type:Object
+        info_id:{
+            type:Number
+        },
+        info_content:{
+            type:String
         }
     },
     data(){
         return{
-            infos:this.info_prop,
+            info_content_data:this.info_content,
             infoState:null,
-            returnedInfo:''
+            returnedInfo:this.info_content
         }
     },
     methods:{
@@ -56,12 +57,15 @@ export default {
             if (!this.checkFormValidity()) {
                 return
             }
-            var postUrlAdd = (url,id) => `info/update/${id}`;
-            axios.post(postUrlAdd(this.url,this.sendedInfoId),{
-                    value:this.returnedInfo
+            console.log(this.returnedInfo)
+             console.log(this.info_id)
+            var postUrlAdd = (id) => `info/update/${id}`;
+            axios.post(postUrlAdd(this.info_id),{
+                    info_value:this.returnedInfo
                 })
                 .then(response =>{ 
-                    this.infos[`${Object.keys(this.infos)[0]}`]=this.returnedInfo
+                    console.log(response.data)
+                    this.info_content_data=this.returnedInfo
                 })
                 .catch(error =>{});
             // Hide the modal manually
@@ -70,10 +74,6 @@ export default {
                 this.$bvModal.hide(`modal-updateInfo-${this.compId}`);
                 this.sendedInfoId=null;
             })
-        },
-        sendInfo(element){
-            this.returnedInfo=element.value;
-            this.sendedInfoId=element.id;
         },
     }
 
