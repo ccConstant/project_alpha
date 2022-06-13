@@ -20,10 +20,13 @@ Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(Snotify , Snotifyoptions)
 
+Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
+
 const router = new VueRouter({
     mode: 'history',
     routes: [{
         path:'/',
+        name: 'home',
         component:require('./components/HomePage.vue').default
     }, {
         path:'/equipment/add',

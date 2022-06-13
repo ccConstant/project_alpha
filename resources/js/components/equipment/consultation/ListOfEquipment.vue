@@ -4,8 +4,8 @@
             <b-spinner variant="primary"></b-spinner>
       </div>
       <div v-if="loaded==true" >
-        <h2>Equipment List</h2>
-        <input v-model="searchTerm" type="text">
+        <h1>Equipment List</h1>
+         <input placeholder="Search an equipment by his Alpha Reference" v-model="searchTerm" class="form-control w-50 search_bar" type="text">
         <ul>
           <div class="one_element_list" v-for="(list,index) in pageOfItems " :key="index">
             <li class="list-group-item" :class="'element'+index%2"  >
@@ -23,9 +23,8 @@
                 </div>
             </li>
           </div>
-          <jw-pagination :pageSize=10 :items="filterByTerm" @changePage="onChangePage"></jw-pagination>
-
         </ul>
+        <jw-pagination class="eq_list_pagination" :pageSize=10 :items="filterByTerm" @changePage="onChangePage"></jw-pagination>
       </div>
       <b-modal :id="`modal-updateWarning-${_uid}`"  @ok="warningUpdate(eq_id,technical,quality,true)">
           <p class="my-4">Your equipment has a validated life sheet, If you update your equipment you will have to 
@@ -117,6 +116,13 @@ export default {
   .listOfEquipment{
     .element0{
       background-color: #ccc;
+    }
+    h1{
+        text-align:center;
+    }
+    .search_bar{
+      margin-left:30px;
+      margin-bottom: 20px;
     }
   }
   .eq_list_internalReference{

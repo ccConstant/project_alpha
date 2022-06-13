@@ -134,8 +134,8 @@ export default {
   }
   .eq_list_option_state{
       display: block;
-      margin-left: 600px;
-      margin-top: -20px;
+      margin-left: 460px;
+      margin-top: -22.5px;
   }
 
 </style>

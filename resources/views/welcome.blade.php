@@ -3,6 +3,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <script crossorigin="anonymous"></script>
     <head>
+        <meta name="user-id" content="{{Auth::user()}}">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Alpha</title>

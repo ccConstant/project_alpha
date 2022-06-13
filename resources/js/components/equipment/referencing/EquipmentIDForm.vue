@@ -15,24 +15,24 @@
         ImportationModal
 -------------------------------------------------------------->
 <template>
-        <div class="equipmentID">
+    <div class="equipmentID" v-if="loaded==true">
         <h2 class="titleForm">Equipment ID</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference" name="eq_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod"  isRequired v-model="eq_internalReference" info_text="Internal Reference of the equipment"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference" name="eq_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  isRequired  v-model="eq_externalReference" info_text="External Reference of the equipment"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name" label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name"  info_text="Name of the equipment" />
-            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.eq_type"  name="eq_type" label="Type :" :options="enum_type" :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type" info_text="Type of the equipment"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_serialNumber" name="eq_serialNumber" label="Equipment serial Number :" :isDisabled="!!isInConsultMod" v-model="eq_serialNumber" />
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_constructor" name="eq_constructor" label="Equipment constructor :" :isDisabled="!!isInConsultMod" v-model="eq_constructor" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference" name="eq_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod"  isRequired v-model="eq_internalReference" :info_text="infos_idCard[0].info_value"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference" name="eq_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  isRequired  v-model="eq_externalReference" :info_text="infos_idCard[1].info_value"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name" label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name"  :info_text="infos_idCard[2].info_value" />
+            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.eq_type"  name="eq_type" label="Type :" :options="enum_type" :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type" :info_text="infos_idCard[3].info_value"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_serialNumber" name="eq_serialNumber" label="Equipment serial Number :" :isDisabled="!!isInConsultMod" v-model="eq_serialNumber" :info_text="infos_idCard[4].info_value"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_constructor" name="eq_constructor" label="Equipment constructor :" :isDisabled="!!isInConsultMod" v-model="eq_constructor" :info_text="infos_idCard[5].info_value"/>
             <div class="input-group">
-                <InputNumberForm  inputClassName="form-control" :Errors="errors.eq_mass" name="eq_mass" label="Equipment mass :" :stepOfInput="0.01" v-model="eq_mass" :isDisabled="!!isInConsultMod" />
-                <InputSelectForm @clearSelectError='clearSelectError' name="eq_massUnit" :Errors="errors.eq_massUnit"  label="Unit :" :options="enum_massUnit" :selctedOption="eq_massUnit" :isDisabled="!!isInConsultMod" v-model="eq_massUnit"/>
+                <InputNumberForm  inputClassName="form-control" :Errors="errors.eq_mass" name="eq_mass" label="Equipment mass :" :stepOfInput="0.01" v-model="eq_mass" :isDisabled="!!isInConsultMod" :info_text="infos_idCard[6].info_value"  />
+                <InputSelectForm @clearSelectError='clearSelectError' name="eq_massUnit" :Errors="errors.eq_massUnit"  label="Unit :" :options="enum_massUnit" :selctedOption="eq_massUnit" :isDisabled="!!isInConsultMod" v-model="eq_massUnit" :info_text="infos_idCard[7].info_value"/>
             </div>
-            <RadioGroupForm label="Mobil?:" :options="eq_mobilityOption" :Errors="errors.eq_mobilityOption" :checkedOption="eq_mobility" :isDisabled="!!isInConsultMod" v-model="eq_mobility"/> 
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.eq_remarks" name="eq_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="eq_remarks"/>
-            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.eq_set" name="eq_set" label="Equipment Set" :isDisabled="!!isInConsultMod" :options="enum_sets" v-model="eq_set"/>
+            <RadioGroupForm label="Mobil?:" :options="eq_mobilityOption" :Errors="errors.eq_mobilityOption" :checkedOption="eq_mobility" :isDisabled="!!isInConsultMod" v-model="eq_mobility" :info_text="infos_idCard[8].info_value"/> 
+            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.eq_remarks" name="eq_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="eq_remarks" :info_text="infos_idCard[9].info_value"/>
+            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.eq_set" name="eq_set" label="Equipment Set" :isDisabled="!!isInConsultMod" :options="enum_sets" v-model="eq_set" />
             <InputTextForm v-if="this.eq_importFrom!== undefined " inputClassName="form-control w-50" name="eq_importFrom" label="Import From :" isDisabled v-model="eq_importFrom"/>
             <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addEquipment" @update="updateEquipment" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
             <div v-if="this.modifMod!=true">
@@ -189,7 +189,10 @@ export default {
             enum_sets:[],
             eq_id:this.$route.params.id,
             errors:{},
-            addSucces:false
+            addSucces:false,
+            infos_idCard:[],
+            info_eq_internalReference:'',
+            loaded:false
         }
     },
     /*All function inside the created option is called after the component has been created.*/
@@ -206,6 +209,16 @@ export default {
         axios.get('/equipment/sets')
             .then (response=> this.enum_sets=response.data) 
             .catch(error => console.log(error)) ; 
+
+        axios.get('/info/send/eqIdCard')
+            .then (response=> {
+                this.infos_idCard=response.data;
+                console.log("\n Infos ID CARD");
+                console.log(this.infos_idCard[0].info_value);
+                this.info_eq_internalReference=this.infos_idCard[0].info_value;
+                this.loaded=true;
+                }) 
+            .catch(error => console.log(error)) ;
     },
 
     /*--------Declartion of the differents methods:--------*/

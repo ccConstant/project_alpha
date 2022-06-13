@@ -4,7 +4,8 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <InfoElement :info_prop="{eq_internalReference:'zozoz',id:1}"/>
+            <InfoElement title="internal Reference" :info_prop="{info_eq_internalReference:`${infos_idCard[0].info_value}`,id:infos_idCard[0].id}"/>
+
         </div>
     </div>
 </template>
@@ -19,7 +20,7 @@ export default {
         return{
             infos:[],
             infos_idCard:[],
-            loaded:true
+            loaded:false
         }
     },
     created(){
@@ -27,15 +28,17 @@ export default {
             .then (response=> {
                 this.infos=response.data;
                 console.log("ALL :")
-                console.log(response.data)
+                console.log(this.infos)
                 }) 
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/eqIdCard')
             .then (response=> {
                 this.infos_idCard=response.data;
-                console.log("\n Infos ID CARD")
-                console.log(response.data)
+                console.log("\n Infos ID CARD");
+                console.log(this.infos_idCard);
+                this.info_eq_internalReference=this.infos_idCard[0].info_value;
+                
                 }) 
             .catch(error => console.log(error)) ;
 
@@ -62,14 +65,14 @@ export default {
 
             axios.get('/info/send/usage')
             .then (response=> {
-                console.log("\n Infos usage")
+                console.log("\n Infos dimension")
                 console.log(response.data)
                 }) 
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/file')
             .then (response=> {
-                console.log("\n Infos file")
+                console.log("\n Infos dimension")
                 console.log(response.data)
                 }) 
             .catch(error => console.log(error)) ;
@@ -114,6 +117,7 @@ export default {
             .then (response=> {
                 console.log("\n Infos enum")
                 console.log(response.data)
+                this.loaded=true;
                 }) 
             .catch(error => console.log(error)) ;
     }

@@ -2,14 +2,14 @@
   <div>
       <div class="container register">
           <h2>Create a new account</h2>
-          <form class="register_form">
+          <form class="register_form" @keydown="clearError">
               <InputTextForm :Errors="errors.user_firstName " v-model="user_firstName" name="user_firstName" label="First name :" inputClassName="form-control " divClassName="user_text_field"/>
               <InputTextForm :Errors="errors.user_lastName " v-model="user_lastName" name="user_lastName" label="Last name :" inputClassName="form-control " divClassName="user_text_field"/>
-              <InputTextForm :Errors="errors.user_initial " v-model="user_initial" name="user_initial" label="Initial :" inputClassName="form-control " divClassName="user_text_field"/>
-              <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="User name :" inputClassName="form-control " divClassName="user_text_field"/>
+              <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control " divClassName="user_text_field"/>
               <InputPasswordForm :Errors="errors.user_password" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control " divClassName="password"/>
           </form>
           <button type="button" @click="create_account()" class="save btn btn-primary register_button ">Register</button>
+
       </div>
   </div>
 </template>
@@ -29,7 +29,6 @@ export default {
             user_password:'',
             user_lastName:'',
             user_firstName:'',
-            user_initial:'',
             errors:[]
         }
     },
@@ -37,18 +36,22 @@ export default {
         create_account(){
             console.log(this.user_firstName);
             console.log(this.user_lastName);
-            console.log(this.user_initial);
             console.log(this.user_pseudo);
             console.log(this.user_password);
             axios.post('register',{
-                name : "dupont",
-                email : "test9@gmail.fr",
-                password : "abcde1234"
+                user_firstName:this.user_firstName,
+                user_lastName:this.user_lastName,
+                user_pseudo:this.user_pseudo,
+                user_password:this.user_password
+
             })
             //If the dimension is added succesfuly
-            .then(response =>{console.log(response.data)})
+            .then(response =>console.log(response.data))
             .catch(error => this.errors=error.response.data.errors) ;
-        }
+        },
+        clearError(event){
+            delete this.errors[event.target.name];
+        },
     }
 
 }
