@@ -295,6 +295,39 @@ class PreventiveMaintenanceOperationController extends Controller
     }
 
     /**
+     * Function call by ConsultationLifeSheetPdf.vue with the route : /prvMtnOps/send/lifesheet/{id} (get)
+     * Get the preventive maintenance operations of the equipment whose id is passed in parameter for the lifesheet 
+     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations 
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_prvMtnOps_lifesheet($id) {
+        $container=array() ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+       foreach ($prvMtnOps as $prvMtnOp) {
+            $riskExist=false ; 
+            $risks=Risk::where('preventiveMaintenanceOperation_id', '=', $prvMtnOp->id)->get() ; 
+            if (count($risks)>0){
+                $riskExist=true ; 
+            }
+            $obj=([
+                "id" => $prvMtnOp->id,
+                "Number" => (string)$prvMtnOp->prvMtnOp_number,
+                "Description" => $prvMtnOp->prvMtnOp_description,
+                "Periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
+                "Symbol" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
+                "Protocol" => $prvMtnOp->prvMtnOp_protocol,
+                "Risk" => $riskExist,
+                
+            ]);
+            array_push($container,$obj);
+       }
+        return response()->json($container) ;
+    }
+
+
+    /**
      * Function call by ReferenceAPrvMtnOp.vue with the route : /prvMtnOps/send/{id} (get)
      * Get the preventive maintenance operations of the equipment whose id is passed in parameter
      * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations 

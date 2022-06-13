@@ -277,6 +277,8 @@ Route::post('/equipment/update/prvMtnOp/{id}', [PreventiveMaintenanceOperationCo
 
 Route::get('/prvMtnOps/send/{id}', [PreventiveMaintenanceOperationController::class, 'send_prvMtnOps'])  ;
 
+Route::get('/prvMtnOps/send/lifesheet/{id}', [PreventiveMaintenanceOperationController::class, 'send_prvMtnOps_lifesheet'])  ;
+
 Route::get('/prvMtnOp/send/{id}', [PreventiveMaintenanceOperationController::class, 'send_prvMtnOp'])  ;
 
 Route::get('/prvMtnOp/send/validated/{id}', [PreventiveMaintenanceOperationController::class, 'send_prvMtnOp_from_eq_validated'])  ;
