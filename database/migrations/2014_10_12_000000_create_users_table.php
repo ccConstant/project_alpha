@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('user_initials') ->nullable();
             $table->string('user_signaturePath') ->nullable();
             $table->string('user_pseudo') ;
-            $table->string('user_password') ;
+            $table->string('password') ;
              //rightLevel 
             $table->boolean('user_menuUserAcessRight') ->default(false);
             $table->boolean('user_resetUserPasswordRight') ->default(false);

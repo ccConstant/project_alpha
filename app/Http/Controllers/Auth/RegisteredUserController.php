@@ -51,27 +51,44 @@ class RegisteredUserController extends Controller
             'user_confirmationPassword.max' => 'You must enter a maximum of 255 characters',
         ]);
 
-        /*if ($request->user_confirmationPassword!=$request->user_password){
+        if ($request->user_confirmationPassword!=$request->user_password){
             return response()->json([
                 'errors' => [
                     'user_confirmationPassword' => ["These passwords are differents"]
                 ]
             ], 429);
-        }*/
+        }
+
+        //tester si username déjà utilisé
+
+        $users=User::where('user_pseudo', '=', $request->user_pseudo)->get() ; 
+        if (count($users)>0){
+            return response()->json([
+                'errors' => [
+                    'user_pseudo' => ["This username is already use"]
+                ]
+            ], 429);
+        }
+        if ($request->user_pseudo!=$request->user_password){
+            return response()->json([
+                'errors' => [
+                    'user_confirmationPassword' => ["These passwords are differents"]
+                ]
+            ], 429);
+        }
+
     
 
         //verifié email
         $user = User::create([
-            'user_firstName' => $request->user_firstName,
+           'user_firstName' => $request->user_firstName,
             'user_lastName' => $request->user_lastName,
             'user_pseudo' => $request->user_pseudo,
-            'user_password' => Hash::make($request->user_password),
+            'password' => Hash::make($request->user_password),
         ]);
         
         event(new Registered($user));
 
         Auth::login($user);
-
-        //REDIRIGER VERS UNE PAGE "vous êtes connecté" 
     }
 }

@@ -44,14 +44,14 @@ class LoginRequest extends FormRequest
     public function authenticate()
     {
        //$this->ensureIsNotRateLimited();
+        // This is assuming that you're getting all the info from the form
+        // You can create your own array and set the information how you want.
+        $credentials = $request->only('user_pseudo', 'user_password');
 
-       /*if( Auth::attempt([
-            'pseudo'=> $request->pseudo,
-            'password' => $request->password
-       ])){
-        return response()->json("coucou");
-       }*/
-    
+        if (Auth::attempt($credentials)) {
+            return response()->json("coucou");
+        }
+            
        //else
          //   return response()->json("Connection utilisateur refusée.");
 
