@@ -10,35 +10,41 @@
         SaveButtonForm : name, label, isRequired, value, info_text,  isDisabled, options, selectClassName, selectedOption
 -------------------------------------------------------------->
 <template>
-    <div :class="divClass" >
-        <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-        <form class="container"  @keydown="clearError">
-            <!--Call of the different component with their props-->
-            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.dim_type" name="dim_type" label="Dimension Type :" :options="enum_dim_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.dim_type" :selectedDivName="this.divClass" v-model="dim_type"/>
-            <InputSelectForm @clearSelectError='clearSelectError' name="dim_name" label="Dimension name :" :Errors="errors.dim_name" :options="enum_dim_name" :selctedOption="this.dim_name" selectClassName="form-select w-50"   :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_name"/>
-            <div class="input-group">
-                <InputTextForm  inputClassName="form-control" :Errors="errors.dim_value" name="dim_value" label="Dimension value :" v-model="dim_value" :isDisabled="!!isInConsultedMod"/>
-                <InputSelectForm @clearSelectError='clearSelectError'  name="dim_unit"  label="Unit :" :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_unit"/>
-            </div>
-            <!--If addSucces is equal to false, the buttons appear -->
-            <div v-if="this.addSucces==false ">
-                <!--If this dimension doesn't have a id the addEquipmentDim is called function else the updateEquipmentDim function is called -->
-                <div v-if="this.dim_id==null ">
-                    <div v-if="modifMod==true">
-                        <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :savedAs="dim_validate" :AddinUpdate="true"/>
-                    </div>
-                    <div v-else>
-                        <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :savedAs="dim_validate"/>
-                    </div>
+    <div :class="divClass">
+        <div v-if="loaded==false" >
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-else>
+            <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
+            <form class="container"  @keydown="clearError">
+                <!--Call of the different component with their props-->
+                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.dim_type" name="dim_type" label="Dimension Type :" :options="enum_dim_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.dim_type" :selectedDivName="this.divClass" v-model="dim_type" :info_text="infos_dimension[0].info_value"/>
+                <InputSelectForm @clearSelectError='clearSelectError' name="dim_name" label="Dimension name :" :Errors="errors.dim_name" :options="enum_dim_name" :selctedOption="this.dim_name" selectClassName="form-select w-50"   :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_name" :info_text="infos_dimension[1].info_value"/>
+                <div class="input-group">
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.dim_value" name="dim_value" label="Dimension value :" v-model="dim_value" :isDisabled="!!isInConsultedMod" :info_text="infos_dimension[2].info_value"/>
+                    <InputSelectForm @clearSelectError='clearSelectError'  name="dim_unit"  label="Unit :" :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_unit" :info_text="infos_dimension[3].info_value"/>
                 </div>
-                <div v-else-if="this.dim_id!==null">
-                    <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="dim_validate"/>
-                </div>
-                <!-- If the user is not in the consultation mode, the delete button appear -->
-                <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-            </div>       
-        </form>
-        <SucessAlert ref="sucessAlert"/>
+                <!--If addSucces is equal to false, the buttons appear -->
+                <div v-if="this.addSucces==false ">
+                    <!--If this dimension doesn't have a id the addEquipmentDim is called function else the updateEquipmentDim function is called -->
+                    <div v-if="this.dim_id==null ">
+                        <div v-if="modifMod==true">
+                            <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :savedAs="dim_validate" :AddinUpdate="true"/>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :savedAs="dim_validate"/>
+                        </div>
+                    </div>
+                    <div v-else-if="this.dim_id!==null">
+                        <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="dim_validate"/>
+                    </div>
+                    <!-- If the user is not in the consultation mode, the delete button appear -->
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                </div>       
+            </form>
+            <SucessAlert ref="sucessAlert"/>
+        </div>
+
     </div>
 </template>
 
@@ -144,7 +150,9 @@ export default {
             enum_dim_unit : [],
             errors:{},
             addSucces:false,
-            isInConsultedMod:this.consultMod
+            isInConsultedMod:this.consultMod,
+            infos_dimension:[],
+            loaded:false
         }
     },
     /*All function inside the created option is called after the component has been mounted.*/
@@ -160,6 +168,13 @@ export default {
          /*Ask for the controller different unites of the dimension  */
         axios.get('/dimension/enum/unit')
             .then (response=> this.enum_dim_unit=response.data) 
+            .catch(error => console.log(error)) ;
+
+        axios.get('/info/send/dimension')
+            .then (response=> {
+                this.infos_dimension=response.data;
+                this.loaded=true;
+                }) 
             .catch(error => console.log(error)) ;
         
        

@@ -10,30 +10,36 @@
 -------------------------------------------------------------->
 <template>
     <div :class="divClass">
-        <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-        <form class="container"  @keydown="clearError">
-            <!--Call of the different component with their props-->
-            <InputTextForm  inputClassName="form-control" :Errors="errors.file_name" name="file_name" label="File name :" v-model="file_name" :isDisabled="!!isInConsultedMod"/>
-            <InputTextForm  inputClassName="form-control" :Errors="errors.file_location" name="file_location" label="File location :" v-model="file_location" :isDisabled="!!isInConsultedMod"/>
-            <!--If addSucces is equal to false, the buttons appear -->
-            <div v-if="this.addSucces==false ">
-                <!--If this file doesn't have a id the addEquipmentFile is called function else the updateEquipmentFile function is called -->
-                <div v-if="this.file_id==null ">
-                    <div v-if="modifMod==true">
-                        <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :savedAs="file_validate" :AddinUpdate="true"/>
+        <div v-if="loaded==false" >
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-else>
+            <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
+            <form class="container"  @keydown="clearError">
+                <!--Call of the different component with their props-->
+                <InputTextForm  inputClassName="form-control" :Errors="errors.file_name" name="file_name" label="File name :" v-model="file_name" :isDisabled="!!isInConsultedMod" :info_text="infos_file[0].info_value"/>
+                <InputTextForm  inputClassName="form-control" :Errors="errors.file_location" name="file_location" label="File location :" v-model="file_location" :isDisabled="!!isInConsultedMod" :info_text="infos_file[0].info_value"/>
+                <!--If addSucces is equal to false, the buttons appear -->
+                <div v-if="this.addSucces==false ">
+                    <!--If this file doesn't have a id the addEquipmentFile is called function else the updateEquipmentFile function is called -->
+                    <div v-if="this.file_id==null ">
+                        <div v-if="modifMod==true">
+                            <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :savedAs="file_validate" :AddinUpdate="true"/>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :savedAs="file_validate"/>
+                        </div>
                     </div>
-                    <div v-else>
-                        <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :savedAs="file_validate"/>
+                    <div v-else-if="this.file_id!==null">
+                        <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="file_validate"/>
                     </div>
-                </div>
-                <div v-else-if="this.file_id!==null">
-                    <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="file_validate"/>
-                </div>
-                <!-- If the user is not in the consultation mode, the delete button appear -->
-                <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <!-- If the user is not in the consultation mode, the delete button appear -->
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
 
-            </div>       
-        </form>
+                </div>       
+            </form>
+        </div>
+        
     </div>
   
 </template>
@@ -114,7 +120,9 @@ export default {
             equipment_id_update:this.$route.params.id,
             errors:{},
             addSucces:false,
-            isInConsultedMod:this.consultMod
+            isInConsultedMod:this.consultMod,
+            loaded:false,
+            infos_file:[]
         }
     },
     methods:{
@@ -230,6 +238,14 @@ export default {
             }
             
         }
+    },
+    created(){
+        axios.get('/info/send/file')
+        .then (response=> {
+            this.infos_file=response.data;
+            this.loaded=true;
+        }) 
+        .catch(error => console.log(error)) ;
     }
 }
 </script>

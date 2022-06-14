@@ -29,8 +29,8 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'user_pseudo' => ['required', 'string'],
+            'user_password' => ['required', 'string'],
         ];
     }
 
@@ -43,17 +43,30 @@ class LoginRequest extends FormRequest
      */
     public function authenticate()
     {
-        $this->ensureIsNotRateLimited();
+       //$this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+       /*if( Auth::attempt([
+            'pseudo'=> $request->pseudo,
+            'password' => $request->password
+       ])){
+        return response()->json("coucou");
+       }*/
+    
+       //else
+         //   return response()->json("Connection utilisateur refusée.");
+
+           // 
+
+
+       /*if (! Auth::attempt($request->only('user_pseudo', 'user_password'))) {
             RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+            /*throw ValidationException::withMessages([
+                'user_pseudo' => trans('auth.failed'),
             ]);
-        }
+        }*/
 
-        RateLimiter::clear($this->throttleKey());
+        //RateLimiter::clear($this->throttleKey());
     }
 
     /**
@@ -74,7 +87,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'user_pseudo' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -88,6 +101,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey()
     {
-        return Str::lower($this->input('email')).'|'.$this->ip();
+        return Str::lower($this->input('user_pseudo')).'|'.$this->ip();
     }
 }

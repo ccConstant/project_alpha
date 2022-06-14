@@ -6,7 +6,7 @@
                 <b-modal :id="`modal-reform_component-${_uid}`"  @ok="reformConfirmation" :ok-disabled="true">
                     <p class="my-4">Are you sure you want to reform</p>
                         <div class="input-group">
-                            <InputTextForm inputClassName="form-control" label="Reform date :" :isDisabled="true" v-model="endDate" isRequired />
+                            <InputTextForm inputClassName="form-control" label="Reform date :" :isDisabled="true" v-model="endDate" isRequired :info_text="info" />
                             <InputDateForm inputClassName="form-control date-selector" name="selected_endDate" v-model="selected_endDate"/>
                         </div>
                 </b-modal>
@@ -57,6 +57,9 @@ export default {
         },
         reformBy:{
             type: String
+        },
+        info:{
+            type:String
         }
     },
     data(){

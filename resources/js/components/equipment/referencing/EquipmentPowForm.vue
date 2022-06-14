@@ -12,38 +12,43 @@
 -------------------------------------------------------------->
 <template>
     <div :class="divClass">
-        <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-        <form class="container" @keydown="clearError" >
-            <!--Call of the different component with their props-->
-            <InputSelectForm  @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.pow_type" name="pow_type" label="Power Type :" :options="enum_pow_type" :isDisabled="!!isInConsultedMod" :selctedOption="pow_type" :selectedDivName="divClass" v-model="pow_type"/>
-            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.pow_name" name="pow_name" label="Power Name " :options="pow_names" v-model="pow_name" :isDisabled="!!isInConsultedMod"/>
-            <div class="input-group">
-                <InputNumberForm  inputClassName="form-control" :Errors="errors.pow_value" name="pow_value" label="Power value :" :stepOfInput="0.01" v-model="pow_value" :isDisabled="!!isInConsultedMod"/>
-                <InputTextForm inputClassName="form-control" name="pow_unit"  label="Unit :" :Errors="errors.pow_unit" :isDisabled="!!isInConsultedMod" v-model="pow_unit"/>
-            </div>
-            <div class="input-group">
-                <InputNumberForm  inputClassName="form-control" :Errors="errors.pow_consumptionValue" name="pow_consumptionValue" label="Consumption value :" :stepOfInput="0.01" v-model="pow_consumptionValue" :isDisabled="!!isInConsultedMod"/>
-                <InputTextForm   inputClassName="form-control" name="pow_consumptionUnit"  label="Unit :" :Errors="errors.pow_consumptionUnit" :isDisabled="!!isInConsultedMod" v-model="pow_consumptionUnit"/>
-            </div>
-            <!--If addSucces is equal to false, the buttons appear -->
-            <div v-if="this.addSucces==false ">
-                <!--If this power doesn't have a id the addEquipmentPow is called function else the updateEquipmentPow function is called -->
-                <div v-if="this.pow_id==null || this.addSucces==true">
-                    <div v-if="modifMod==true">
-                        <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :savedAs="pow_validate" :AddinUpdate="true"/>
-                    </div>
-                    <div v-else>
-                        <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :savedAs="pow_validate"/>
-                    </div>
+        <div v-if="loaded==false" >
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-else>
+            <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
+            <form class="container" @keydown="clearError" >
+                <!--Call of the different component with their props-->
+                <InputSelectForm  @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.pow_type" name="pow_type" label="Power Type :" :options="enum_pow_type" :isDisabled="!!isInConsultedMod" :selctedOption="pow_type" :selectedDivName="divClass" v-model="pow_type" :info_text="infos_power[0].info_value"/>
+                <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.pow_name" name="pow_name" label="Power Name " :options="pow_names" v-model="pow_name" :isDisabled="!!isInConsultedMod" :info_text="infos_power[1].info_value" />
+                <div class="input-group">
+                    <InputNumberForm  inputClassName="form-control" :Errors="errors.pow_value" name="pow_value" label="Power value :" :stepOfInput="0.01" v-model="pow_value" :isDisabled="!!isInConsultedMod" :info_text="infos_power[2].info_value"/>
+                    <InputTextForm inputClassName="form-control" name="pow_unit"  label="Unit :" :Errors="errors.pow_unit" :isDisabled="!!isInConsultedMod" v-model="pow_unit" :info_text="infos_power[3].info_value"/>
                 </div>
-                <div v-else-if="this.pow_id!==null">
-                    <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="pow_validate"/>
+                <div class="input-group">
+                    <InputNumberForm  inputClassName="form-control" :Errors="errors.pow_consumptionValue" name="pow_consumptionValue" label="Consumption value :" :stepOfInput="0.01" v-model="pow_consumptionValue" :isDisabled="!!isInConsultedMod" :info_text="infos_power[4].info_value"/>
+                    <InputTextForm   inputClassName="form-control" name="pow_consumptionUnit"  label="Unit :" :Errors="errors.pow_consumptionUnit" :isDisabled="!!isInConsultedMod" v-model="pow_consumptionUnit" :info_text="infos_power[5].info_value"/>
                 </div>
-                <!-- If the user is not in the consultation mode, the delete button appear -->
-                <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-                
-            </div>
-        </form>
+                <!--If addSucces is equal to false, the buttons appear -->
+                <div v-if="this.addSucces==false ">
+                    <!--If this power doesn't have a id the addEquipmentPow is called function else the updateEquipmentPow function is called -->
+                    <div v-if="this.pow_id==null || this.addSucces==true">
+                        <div v-if="modifMod==true">
+                            <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :savedAs="pow_validate" :AddinUpdate="true"/>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :savedAs="pow_validate"/>
+                        </div>
+                    </div>
+                    <div v-else-if="this.pow_id!==null">
+                        <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="pow_validate"/>
+                    </div>
+                    <!-- If the user is not in the consultation mode, the delete button appear -->
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    
+                </div>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -163,7 +168,9 @@ export default {
             enum_pow_consumptionUnit:[],
             errors:{},
             addSucces:false,
-            isInConsultedMod:this.consultMod
+            isInConsultedMod:this.consultMod,
+            infos_power:[],
+            loaded:false
         }
     },
     /*All function inside the created option is called after the component has been mounted.*/
@@ -175,6 +182,14 @@ export default {
         /*Ask for the controller different names of the power  */
         axios.get('/power/names')
             .then (response=> this.pow_names=response.data) 
+            .catch(error => console.log(error)) ;
+        axios.get('/info/send/power')
+            .then (response=> {
+                console.log("\n Infos power")
+                this.infos_power=response.data;
+                console.log(response.data)
+                this.loaded=true;
+            }) 
             .catch(error => console.log(error)) ;   
     },
     methods:{

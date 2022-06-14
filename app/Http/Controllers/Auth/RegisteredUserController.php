@@ -27,7 +27,8 @@ class RegisteredUserController extends Controller
             'user_firstName' => ['required', 'string', 'max:255'],
             'user_lastName' => ['required', 'string', 'max:255'],
             'user_pseudo' => ['required', 'string', 'max:255'],
-           'user_password' => ['required', Rules\Password::defaults()], //rajouter confirmed
+           'user_password' => ['required', Rules\Password::defaults()], 
+           'user_confirmation_password' => ['required', Rules\Password::defaults()], 
         ],[
             'user_firstName.required' => 'You must enter your firstname ',
             'user_firstname.string' => 'Your firstName must be of type string',
@@ -44,7 +45,19 @@ class RegisteredUserController extends Controller
             'user_password.required' => 'You must enter a password',
             'user_password.string' => 'Your password must be of type string',
             'user_password.max' => 'You must enter a maximum of 255 characters',
+
+            'user_confirmationPassword.required' => 'You must confirm your password',
+            'user_confirmationPassword.string' => 'Your password must be of type string',
+            'user_confirmationPassword.max' => 'You must enter a maximum of 255 characters',
         ]);
+
+        /*if ($request->user_confirmationPassword!=$request->user_password){
+            return response()->json([
+                'errors' => [
+                    'user_confirmationPassword' => ["These passwords are differents"]
+                ]
+            ], 429);
+        }*/
     
 
         //verifié email

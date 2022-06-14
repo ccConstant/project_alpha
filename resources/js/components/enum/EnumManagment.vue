@@ -14,7 +14,7 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-                            <EnumElement error_name='enum_eq_type' :enumList="enum_eq_type" title="Equipment Type" url="/equipment/enum/type/" info_text="testttt"/>
+                            <EnumElement error_name='enum_eq_type' :enumList="enum_eq_type" title="Equipment Type" url="/equipment/enum/type/" info_text=" info of enum type"/>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 <template>
     <div class="info_element">
             <li class="list-group-item" >
-                {{info_content_data}}
+                <b>{{title}} : </b>{{info_content_data}}
                 <a href=# v-b-modal="`modal-updateInfo-${_uid}`">Update</a>
             </li>
         <div>
@@ -33,7 +33,8 @@ export default {
         return{
             info_content_data:this.info_content,
             infoState:null,
-            returnedInfo:this.info_content
+            returnedInfo:this.info_content,
+            compId:this._uid
         }
     },
     methods:{
@@ -52,28 +53,23 @@ export default {
             // Trigger submit handler
             this.handleSubmitUpdate()
         },
-                handleSubmitUpdate() {
+        handleSubmitUpdate() {
             // Exit when the form isn't valid
             if (!this.checkFormValidity()) {
                 return
             }
             console.log(this.returnedInfo)
-             console.log(this.info_id)
             var postUrlAdd = (id) => `info/update/${id}`;
             axios.post(postUrlAdd(this.info_id),{
                     info_value:this.returnedInfo
                 })
                 .then(response =>{ 
-                    console.log(response.data)
                     this.info_content_data=this.returnedInfo
+                    this.$bvModal.hide(`modal-updateInfo-${this.compId}`);
                 })
                 .catch(error =>{});
             // Hide the modal manually
-            
-            this.$nextTick(() => {
-                this.$bvModal.hide(`modal-updateInfo-${this.compId}`);
-                this.sendedInfoId=null;
-            })
+
         },
     }
 

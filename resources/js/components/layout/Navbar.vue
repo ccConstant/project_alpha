@@ -19,13 +19,10 @@
         <b-nav-item href="/infos">Info Managment</b-nav-item>
         <b-nav-item href="/accounts">Accounts Managment</b-nav-item>
         <b-nav-item-dropdown text="User" right>
-          <b-dropdown-item href="/sign_up">Sign up</b-dropdown-item>
-          <b-dropdown-item v-if="this.$userId==''" href="#" @click="disconnect()" >Disconnect</b-dropdown-item>
+          <b-dropdown-item v-if="this.$userId==''" href="/sign_up">Sign up</b-dropdown-item>
+          <b-dropdown-item v-if="this.$userId==''" href="/sign_in">Sign in</b-dropdown-item>
+          <b-dropdown-item v-if="this.$userId!=''" href="#" @click="disconnect()" >Disconnect</b-dropdown-item>
         </b-nav-item-dropdown>
-
-
-
-
       </b-navbar-nav>
     </b-navbar>
   </div>
@@ -38,15 +35,10 @@ export default {
         axios.post('logout',{
         })
         //If the dimension is added succesfuly
-        .then(response =>{console.log("disconected")})
+        .then(response =>{window.location.href = "/"})
         .catch(error => this.errors=error.response.data.errors) ;
     }
   },
-  data(){
-    return{
-      pop:this.$userId
-    }
-  }
   
 
 }

@@ -4,42 +4,44 @@
 <!--Vue Component of the Form of the usage  who call all the input component-->
 <template>
     <div :class="divClass" @keydown="clearError">
-        <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-        <form class="container" >
-            <!--Call of the different component with their props-->
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_type" name="usg_type" label="Type :" :isDisabled="!!isInConsultedMod" v-model="usg_type"/>
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precaution" name="usg_precaution" label="Precaution :" :isDisabled="!!isInConsultedMod" v-model="usg_precaution"/>
-            <!--If addSucces is equal to false, the buttons appear -->
-            <div v-if="this.addSucces==false ">
-                <!--If this usage doesn't have a id the addEquipmentUsg is called function else the updateEquipmentUsg function is called -->
-                <div v-if="this.usg_id==null ">
-                    <div v-if="modifMod==true">
-                        <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate" :AddinUpdate="true"/>
+        <div v-if="loaded==false" >
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-else>
+            <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
+            <form class="container" >
+                <!--Call of the different component with their props-->
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_type" name="usg_type" label="Type :" :isDisabled="!!isInConsultedMod" v-model="usg_type" :info_text="infos_usage[0].info_value"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precaution" name="usg_precaution" label="Precaution :" :isDisabled="!!isInConsultedMod" v-model="usg_precaution" :info_text="infos_usage[1].info_value"/>
+                <!--If addSucces is equal to false, the buttons appear -->
+                <div v-if="this.addSucces==false ">
+                    <!--If this usage doesn't have a id the addEquipmentUsg is called function else the updateEquipmentUsg function is called -->
+                    <div v-if="this.usg_id==null ">
+                        <div v-if="modifMod==true">
+                            <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate" :AddinUpdate="true"/>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
+                        </div>
                     </div>
-                    <div v-else>
-                        <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg" :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
+                    <div v-else-if="this.usg_id!==null && reformMod==false">
+                        <div v-if="usg_refromDate!=null" >
+                            <p>Refrom by {{usg_refromBy}} at {{usg_refromDate}}</p>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm  @add="addEquipmentUsg" @update="updateEquipmentUsg" :reformMod="this.isInReformMod" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
+                        </div>
                     </div>
-                </div>
-                <div v-else-if="this.usg_id!==null && reformMod==false">
-                    <div v-if="usg_refromDate!=null" >
-                        <p>Refrom by {{usg_refromBy}} at {{usg_refromDate}}</p>
+                    <!-- If the user is not in the consultation mode, the delete button appear -->
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <div v-if="reformMod!==false && usg_refromDate===null">
+                        <ReformComponentButton :reformBy="usg_refromBy" :reformDate="usg_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_usage[2].info_value"/>
                     </div>
-                    <div v-else>
-                        <SaveButtonForm  @add="addEquipmentUsg" @update="updateEquipmentUsg" :reformMod="this.isInReformMod" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
-                    </div>
-                </div>
-                <!-- If the user is not in the consultation mode, the delete button appear -->
-                <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-                <div v-if="reformMod!==false && usg_refromDate===null">
-                    <ReformComponentButton :reformBy="usg_refromBy" :reformDate="usg_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
-                </div>
-                
+                </div>  
+            </form>
 
-
-
-            
-            </div>  
-        </form>
+        </div>
+       
     </div>
 </template>
 
@@ -141,7 +143,9 @@ export default {
             errors:{},
             addSucces:false,
             isInConsultedMod:this.consultMod,
-            isInReformMod:this.reformMod
+            isInReformMod:this.reformMod,
+            infos_usage:[],
+            loaded:false
 
         }
     },
@@ -276,6 +280,15 @@ export default {
             
         }
         
+    },
+    created(){
+        axios.get('/info/send/usage')
+        .then (response=> {
+            this.infos_usage=response.data;
+            this.loaded=true;
+            }) 
+        .catch(error => console.log(error)) ;
+
     }
 
 }

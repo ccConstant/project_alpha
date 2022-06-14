@@ -122,6 +122,10 @@ Route::get('/sign_up', function () {
     return view('welcome');
 });
 
+Route::get('/sign_in', function () {
+    return view('welcome');
+});
+
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])

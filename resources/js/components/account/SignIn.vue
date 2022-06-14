@@ -4,16 +4,13 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <div class="container register">
-                <h2>Create a new account</h2>
-                <form class="register_form" @keydown="clearError">
-                    <InputTextForm :Errors="errors.user_firstName " v-model="user_firstName" name="user_firstName" label="First name :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[0].info_value"/>
-                    <InputTextForm :Errors="errors.user_lastName " v-model="user_lastName" name="user_lastName" label="Last name :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[1].info_value"/>
+            <div class="container login">
+                <h2>Login</h2>
+                <form class="login_form" @keydown="clearError">
                     <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[4].info_value"/>
                     <InputPasswordForm :Errors="errors.user_password" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control " divClassName="password" :info_text="infos_person[5].info_value"/>
-                    <InputPasswordForm :Errors="errors.user_confirmation_password" v-model="user_confirmation_password" name="user_confirmation_password" label="Confirm password :" inputClassName="form-control " divClassName="password" />
                 </form>
-                <button type="button" @click="create_account()" class="save btn btn-primary register_button ">Register</button>
+                <button type="button" @click="create_account()" class="save btn btn-primary login_button ">Login</button>
 
             </div>
         </div>
@@ -34,9 +31,6 @@ export default {
         return{
             user_pseudo:'',
             user_password:'',
-            user_lastName:'',
-            user_firstName:'',
-            user_confirmation_password:'',
             errors:[],
             infos_person:[],
             loaded:false
@@ -44,22 +38,16 @@ export default {
     },
     methods:{
         create_account(){
-            console.log(this.user_firstName);
-            console.log(this.user_lastName);
             console.log(this.user_pseudo);
             console.log(this.user_password);
-            console.log(this.user_confirmation_password);
-            axios.post('register',{
-                user_firstName:this.user_firstName,
-                user_lastName:this.user_lastName,
-                user_pseudo:this.user_pseudo,
-                user_password:this.user_password,
-                user_confirmation_password:this.user_confirmation_password
+            axios.post('login',{
+                pseudo:this.user_pseudo,
+                password:this.user_password
 
             })
             //If the dimension is added succesfuly
-            .then(response =>{window.location.href = "/"})
-            .catch(error => this.errors=error.response.data.errors) ;
+            .then(response =>{console.log("coucou")})
+            .catch(error => console.log(error.response.data.errors));
         },
         clearError(event){
             delete this.errors[event.target.name];
@@ -78,24 +66,24 @@ export default {
 </script>
 
 <style lang="scss">
-    .register{
+    .login{
         border: solid 1px grey;
         display: block;
         margin: 100px auto;
         width: 60%;
         display: grid;
-        height: 600px;
+        height: 400px;
         border-radius: 30px;
         h2{
             margin: 10px  auto -80px;
         }
-        .register_button{
+        .login_button{
                 height: 50px;
                 position: relative;
                 width:80%;
                 margin: -110px  auto 0px;
         }
-        .register_form{
+        .login_form{
 
             .user_text_field{
             margin: auto;

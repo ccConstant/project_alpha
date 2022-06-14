@@ -20,7 +20,15 @@ Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(Snotify , Snotifyoptions)
 
-Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
+
+var user_info=document.querySelector("meta[name='user-id']").getAttribute('content');
+
+if(user_info!=""){
+    Vue.prototype.$userId = JSON.parse(user_info);
+}else{
+    Vue.prototype.$userId=(user_info)
+}
+
 
 const router = new VueRouter({
     mode: 'history',
@@ -105,6 +113,11 @@ const router = new VueRouter({
         path:'/sign_up',
         name: 'url_sign_up',
         component:require('./components/account/SignUp.vue').default
+
+    },{
+        path:'/sign_in',
+        name: 'url_sign_in',
+        component:require('./components/account/SignIn.vue').default
 
     },{
         path:'*',

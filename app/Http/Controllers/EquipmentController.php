@@ -688,11 +688,10 @@ class EquipmentController extends Controller{
             }
         }
          
-        $errors=([
-            'errors' => $container2
-        ]);
-        array_push($container,$errors);
-        return response()->json($container) ;
+        return response()->json([
+                'errors' => $container2
+        ], 429);
+
     }
 
     /**

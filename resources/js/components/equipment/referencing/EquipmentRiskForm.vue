@@ -15,9 +15,9 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container"  @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.risk_for" name="risk_for" label="Risk for :" :options="enum_risk_for" :isDisabled="!!isInConsultedMod" :selctedOption="this.risk_for" :selectedDivName="this.divClass" v-model="risk_for"/>
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_remarks" name="risk_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="risk_remarks"/>
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_wayOfControl" name="risk_wayOfControl" label="Way of Control :" :isDisabled="!!isInConsultedMod" v-model="risk_wayOfControl"/>
+            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.risk_for" name="risk_for" label="Risk for :" :options="enum_risk_for" :isDisabled="!!isInConsultedMod" :selctedOption="this.risk_for" :selectedDivName="this.divClass" v-model="risk_for" :info_text="infos_risk[0].info_value"/>
+            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_remarks" name="risk_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="risk_remarks" :info_text="infos_risk[1].info_value"/>
+            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_wayOfControl" name="risk_wayOfControl" label="Way of Control :" :isDisabled="!!isInConsultedMod" v-model="risk_wayOfControl" :info_text="infos_risk[2].info_value"/>
             <!--If addSucces is equal to false, the buttons appear -->
             <div v-if="this.addSucces==false ">
                 <!--If this risk doesn't have a id the addEquipmentRisk is called function else the updateEquipmentRisk function is called -->
@@ -133,7 +133,9 @@ export default {
             enum_risk_for : [],
             errors:{},
             addSucces:false,
-            isInConsultedMod:this.consultMod
+            isInConsultedMod:this.consultMod,
+            loaded:false,
+            infos_risk:[]
             
         }
         
@@ -143,6 +145,13 @@ export default {
         /*Ask for the controller different types of the risk  */
         axios.get('/risk/enum/riskfor')
             .then (response=> this.enum_risk_for=response.data) 
+            .catch(error => console.log(error)) ;
+
+        axios.get('/info/send/risk')
+            .then (response=> {
+                this.infos_risk=response.data;
+                this.loaded=true;
+            }) 
             .catch(error => console.log(error)) ;
     },
     methods:{

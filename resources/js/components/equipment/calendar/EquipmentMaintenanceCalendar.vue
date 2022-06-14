@@ -19,6 +19,7 @@
 
 import '@fullcalendar/core/vdom' // solves problem with Vite
 import FullCalendar from '@fullcalendar/vue'
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import EventDetailsModal from './EventDetailsModal.vue'
@@ -33,10 +34,10 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin],
+                plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin,resourceTimelinePlugin],
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: 'dayGridMonth,listMonth,listWeek',
+                    left: 'dayGridMonth,listMonth,listWeek,resourceTimelineMonth',
                     center: 'title',
                     right :'prev today next',
                     
@@ -44,7 +45,8 @@ export default {
                 eventClick:this.handleEventClick,
                 dateClick:this.handleDateClick,
                 events:[],
-                titleFormat: 'D MMM YYYY'
+                titleFormat: 'D MMM YYYY',
+                schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives'
             },
             prvMtnOp:[]
             

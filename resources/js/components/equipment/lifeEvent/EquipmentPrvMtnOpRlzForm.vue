@@ -8,20 +8,20 @@
                 <!--Call of the different component with their props-->
                 <PrvMtnOpChooseModal v-if="isInModifMod==false && isInConsultMod==false" :prvMtnOps="prvMtnOps" @choosedOpe="choosedOpe"/>
                 <div v-if="prvMtnOp_number!==null  ">
-                    <InputTextForm inputClassName="form-control w-50"  name="prvMtnOp_number" label="Number :" isDisabled  isRequired v-model="prvMtnOp_number"/>
-                    <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_description" label="Description :" isDisabled  isRequired v-model="prvMtnOp_description"/>
-                    <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_protocol" label="Protocol :" isDisabled  isRequired v-model="prvMtnOp_protocol"/>
+                    <InputTextForm inputClassName="form-control w-50"  name="prvMtnOp_number" label="Number :" isDisabled  isRequired v-model="prvMtnOp_number" :info_text="infos_prvMtnOp[3].info_value"/>
+                    <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_description" label="Description :" isDisabled  isRequired v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
+                    <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_protocol" label="Protocol :" isDisabled  isRequired v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
 
 
                 
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.prvMtnOpRlz_reportNumber" name="prvMtnOpRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="prvMtnOpRlz_reportNumber"/>
+                <InputTextForm inputClassName="form-control w-50" :Errors="errors.prvMtnOpRlz_reportNumber" name="prvMtnOpRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="prvMtnOpRlz_reportNumber" :info_text="infos_prvMtnOpRlz[0].info_value"/>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate"/>
+                    <InputTextForm inputClassName="form-control" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
                     <InputDateForm inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
                 </div>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.prvMtnOpRlz_endDate" name="prvMtnOpRlz_endDate" label="End date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_endDate"/>
+                    <InputTextForm inputClassName="form-control" :Errors="errors.prvMtnOpRlz_endDate" name="prvMtnOpRlz_endDate" label="End date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_endDate" :info_text="infos_prvMtnOpRlz[2].info_value"/>
                     <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  isRequired v-model="selected_endDate"/>
                 </div>
                 <div v-if="this.prvMtnOp_id!==null">
@@ -152,8 +152,9 @@ export default {
             prvMtnOp_number:this.prvMtnOp_number_prop,
             prvMtnOp_description:this.prvMtnOp_description_prop,
             prvMtnOp_protocol:this.prvMtnOp_protocol_prop,
-            prvMtnOp_id:this.prvMtnOp_id_prop
-
+            prvMtnOp_id:this.prvMtnOp_id_prop,
+            infos_prvMtnOp:[],
+            infos_prvMtnOpRlz:[],
         }
     },
     mounted() {
@@ -318,12 +319,21 @@ export default {
             axios.get(consultUrl(this.eq_id))
                 .then (response =>{
                     this.prvMtnOps=response.data;
-                    this.loaded=true;
                     })
                 .catch(error => console.log(error));
-        }else{
-            this.loaded=true;
         }
+        axios.get('/info/send/preventiveMaintenanceOperation')
+        .then (response=> {
+            this.infos_prvMtnOp=response.data;
+        }) 
+        .catch(error => console.log(error)) ;
+
+        axios.get('/info/send/preventiveMaintenanceOperationRealized')
+            .then (response=> {
+                this.infos_prvMtnOpRlz=response.data;
+                this.loaded=true;
+                }) 
+            .catch(error => console.log(error)) ;
 
     }
 

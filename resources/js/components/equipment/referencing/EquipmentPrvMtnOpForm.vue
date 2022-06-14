@@ -13,19 +13,23 @@
 -------------------------------------------------------------->
 
 <template>
-        <div :class="divClass">
+    <div :class="divClass">
+        <div v-if="loaded==false" >
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <div v-if="isInConsultedMod==true && this.prvMtnOp_number!==null || this.modifMod==true && this.prvMtnOp_number!==null">
-                    <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.prvMtnOp_number" name="prvMtnOp_number" label="Number :" :stepOfInput="1" v-model="prvMtnOp_number" isDisabled />
+                    <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.prvMtnOp_number" name="prvMtnOp_number" label="Number :" :stepOfInput="1" v-model="prvMtnOp_number" isDisabled :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
                 <div class="input-group">
-                    <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" />
-                    <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity"/>
+                    <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" :info_text="infos_prvMtnOp[1].info_value"/>
+                    <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
                 </div>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol" name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_protocol"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol" name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOp is called function else the updateEquipmentPrvMtnOp function is called -->
@@ -48,7 +52,7 @@
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :Errors="errors.prvMtnOp_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
                     <div v-if="reformMod!==false && prvMtnOp_refromDate===null">
-                        <ReformComponentButton :reformBy="prvMtnOp_refromBy" :reformDate="prvMtnOp_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
+                        <ReformComponentButton :reformBy="prvMtnOp_refromBy" :reformDate="prvMtnOp_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_prvMtnOp[5].info_value"/>
                     </div>
 
 
@@ -63,8 +67,9 @@
             <div v-else-if="loaded==true">
                 <ReferenceARisk v-if="this.prvMtnOp_id!=null" :importedRisk="importedOpRisk" :eq_id="this.eq_id" :prvMtnOp_id="this.prvMtnOp_id" :riskForEq="false" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
             </div>
-
         </div>
+
+    </div>
 </template>
 
 <script>
@@ -204,7 +209,9 @@ export default {
             addSucces:false,
             isInConsultedMod:this.consultMod,
             loaded:false,
-            isInReformMod:this.reformMod
+            isInReformMod:this.reformMod,
+            infos_prvMtnOp:[],
+            loaded:false
 
         }
     },
@@ -364,12 +371,17 @@ export default {
                 .then (response=> {
                     this.importedOpRisk=response.data;
                     console.log( this.prvMtnOp_id)
-                    this.loaded=true;
                     })
                 .catch(error => console.log(error)) ;
                 
                 
         }
+        axios.get('/info/send/preventiveMaintenanceOperation')
+        .then (response=> {
+            this.infos_prvMtnOp=response.data;
+            this.loaded=true;
+        }) 
+        .catch(error => console.log(error)) ;
     }
 
 }

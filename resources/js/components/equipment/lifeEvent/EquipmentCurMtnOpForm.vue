@@ -1,22 +1,22 @@
 <template>
     <div :class="divClass">
-        <!--<div v-if="loaded==false">
+        <div v-if="loaded==false">
             <b-spinner variant="primary"></b-spinner>
-        </div>-->
-        <div>
+        </div>
+        <div v-else>
             <form class="container curMtnOp-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <div v-if="isInConsultMod==true && this.curMtnOp_number!==null || this.modifMod==true && this.curMtnOp_number!==null">
-                    <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.curMtnOp_number" name="curMtnOp_number" label="Number :" :stepOfInput="1" v-model="curMtnOp_number" isDisabled />
+                    <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.curMtnOp_number" name="curMtnOp_number" label="Number :" :stepOfInput="1" v-model="curMtnOp_number" isDisabled :info_text="infos_curMtnOp[0].info_value"/>
                 </div>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.curMtnOp_reportNumber" name="curMtnOp_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="curMtnOp_reportNumber"/>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.curMtnOp_description" name="curMtnOp_description" label="Description :" :isDisabled="!!isInConsultMod" v-model="curMtnOp_description"/>
+                <InputTextForm inputClassName="form-control w-50" :Errors="errors.curMtnOp_reportNumber" name="curMtnOp_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="curMtnOp_reportNumber" :info_text="infos_curMtnOp[1].info_value"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.curMtnOp_description" name="curMtnOp_description" label="Description :" :isDisabled="!!isInConsultMod" v-model="curMtnOp_description" :info_text="infos_curMtnOp[2].info_value"/>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.curMtnOp_startDate" name="curMtnOp_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="curMtnOp_startDate"/>
+                    <InputTextForm inputClassName="form-control" :Errors="errors.curMtnOp_startDate" name="curMtnOp_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="curMtnOp_startDate" :info_text="infos_curMtnOp[3].info_value"/>
                     <InputDateForm inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
                 </div>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.curMtnOp_endDate" name="curMtnOp_endDate" label="End date :" :isDisabled="true"  isRequired v-model="curMtnOp_endDate"/>
+                    <InputTextForm inputClassName="form-control" :Errors="errors.curMtnOp_endDate" name="curMtnOp_endDate" label="End date :" :isDisabled="true"  isRequired v-model="curMtnOp_endDate" :info_text="infos_curMtnOp[4].info_value"/>
                     <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  isRequired v-model="selected_endDate"/>
                 </div>
                 <div v-if="this.addSucces==false ">
@@ -132,7 +132,8 @@ export default {
             addSucces:false,
             isInConsultMod:this.consultMod,
             isInModifMod:this.modifMod,
-            loaded:false
+            loaded:false,
+            infos_curMtnOp:[]
         }
     },
     mounted() {
@@ -150,6 +151,14 @@ export default {
         if(this.selected_endDate!==null){
             this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
         }
+    },
+    created(){
+        axios.get('/info/send/curativeMaintenanceOperation')
+        .then (response=> {
+            this.infos_curMtnOp=response.data;
+            this.loaded=true;
+            }) 
+        .catch(error => console.log(error)) ;
     },
     methods:{
         /*Sending to the controller all the information about the equipment so that it can be added to the database
