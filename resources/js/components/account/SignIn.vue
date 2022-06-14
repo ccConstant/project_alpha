@@ -46,7 +46,7 @@ export default {
 
             })
             //If the dimension is added succesfuly
-            .then(response =>console.log(response.data))
+            .then(response =>{window.location.href = "/"})
             .catch(error => console.log(error.response.data.errors));
         },
         clearError(event){

@@ -4,6 +4,7 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" class="equipment_consultation">
+            <ErrorAlert ref="errorAlert"/>
             <h1>Equipment Consultation</h1>
             <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>
             <div class="accordion">
@@ -114,6 +115,7 @@
 </template>
 
 <script>
+import ErrorAlert from '../../alert/ErrorAlert.vue'
 import EquipmentIDForm from '../referencing/EquipmentIDForm.vue'
 import ReferenceADim from '../referencing/ReferenceADim.vue'
 import ReferenceAPow from '../referencing/ReferenceAPow.vue'
@@ -138,7 +140,8 @@ export default {
         ReferenceAFile,
         ReferenceAPrvMtnOp,
         ReferenceARisk,
-        ValidationButton
+        ValidationButton,
+        ErrorAlert
     },
     data(){
         return{
@@ -212,27 +215,34 @@ export default {
     },
     methods:{
         Validate(){
-            var validVerifUrl = (id) => `/equipment/verifValidation/${id}`;
-            axios.post(validVerifUrl(this.eq_id),{
-                })
-                .then(response =>{
-                    var techVeriftUrl = (id) => `/equipment/validation/${id}`;
-                    axios.post(techVeriftUrl(this.eq_id),{
-                        reason:this.validationMethod
+            if(this.validationMethod=='technical' && this.$userId.user_makeTechnicalValidationRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            }else if(this.validationMethod=='quality' && this.$userId.user_makeQualityValidationRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            }else{
+                var validVerifUrl = (id) => `/equipment/verifValidation/${id}`;
+                axios.post(validVerifUrl(this.eq_id),{
                     })
                     .then(response =>{
-                        console.log("added succesfuly")
-                        
-                        
-                    })
+                        var techVeriftUrl = (id) => `/equipment/validation/${id}`;
+                        axios.post(techVeriftUrl(this.eq_id),{
+                            reason:this.validationMethod
+                        })
+                        .then(response =>{
+                            console.log("added succesfuly")
+                            
+                            
+                        })
+                        //If the controller sends errors we put it in the errors object 
+                        .catch(error => this.errors=error.response.data.errors) ;
+                    ;})
                     //If the controller sends errors we put it in the errors object 
-                    .catch(error => this.errors=error.response.data.errors) ;
-                ;})
-                //If the controller sends errors we put it in the errors object 
-            .catch(error =>{
-                console.log(error.response.data.errors)
-                this.errors=error.response.data.errors
-            });
+                .catch(error =>{
+                    console.log(error.response.data.errors)
+                    this.errors=error.response.data.errors
+                });
+            }
+
         }
     }
         

@@ -5,14 +5,36 @@
             <ErrorAlert ref="errorAlert"/>
         <ul>
             <li class="list-group-item" v-for="(element,index) in enums" :key="index" >
-                {{element.value}}
-                <a href=# v-b-modal="`modal-updateEnum-${_uid}`" @click="sendEnumInfo(element)">Update</a>
-                <a href=# v-b-modal="`modal-deleteEnum-${_uid}`" @click="sendEnumInfo(element)">Delete</a>
+                <div class="enum_name">
+                    {{element.value}}
+                </div>
+
+                <div class="enum_update" v-if="update_enum_right==true">
+                     <a  href=# v-b-modal="`modal-updateEnum-${_uid}`" @click="sendEnumInfo(element)">Update</a>
+                </div>
+                <div class="enum_update" v-else>
+                    <a  @click="showRightAlert" >Update</a>
+                </div>
+
+
+                <div class="enum_delete" v-if="delete_enum_right==true">
+                    <a  href=# v-b-modal="`modal-deleteEnum-${_uid}`" @click="sendEnumInfo(element)">Delete</a>
+                </div>
+                <div class="enum_delete" v-else>
+                    <a @click="showRightAlert" >Delete</a>
+                </div>
 
             </li>
         </ul>
         <div>
-            <b-button  @click="$bvModal.show(`modal-addEnum-${_uid}`)" variant="primary">Add a new enum</b-button>
+            <div v-if="add_enum_right==true">
+                <b-button  @click="$bvModal.show(`modal-addEnum-${_uid}`)" variant="primary">Add a new enum</b-button>
+            </div>
+            <div v-else>
+                <b-button disabled variant="primary">Add a new enum</b-button> 
+                <p class="enum_add_right_red"> You dont have the right to add a new enum.</p>
+            </div>
+            
 
             <b-modal :id="`modal-addEnum-${_uid}`"  ref="modal" :title="`Submit Your ${title} Enum`" @show="resetModal" @hidden="resetModal" @ok="handleOkAdd">
                 <form ref="form" @submit.stop.prevent="handleSubmitAdd">
@@ -81,7 +103,12 @@ export default {
             dismissSecs: 5,
             dismissCountDown: 0,
             showDismissibleAlert: false,
-            returnedText_info:this.info_text
+            returnedText_info:this.info_text,
+            delete_enum_right:this.$userId.user_deleteEnumRight,
+            add_enum_right:this.$userId.user_addEnumRight, 
+            update_enum_right:this.$userId.user_updateEnumRight 
+
+
         }
     },
     methods: {
@@ -107,7 +134,7 @@ export default {
             }
             var postUrlAdd = (url) => `${url}add`;
             axios.post(postUrlAdd(this.url),{
-                    value:this.returnedEnum
+                    value:this.returnedEnum,
                 })
                 .then(response =>{ window.location.reload();})
                 .catch(error =>{
@@ -132,7 +159,7 @@ export default {
             }
             var postUrlAdd = (url,id) => `${url}update/${id}`;
             axios.post(postUrlAdd(this.url,this.sendedEnumId),{
-                    value:this.returnedEnum
+                    value:this.returnedEnum,
                 })
                 .then(response =>{ 
                     window.location.reload();
@@ -149,7 +176,8 @@ export default {
         },
         deleteConfirmation(){
             var postUrlAdd = (url,id) => `${url}delete/${id}`;
-            axios.post(postUrlAdd(this.url,this.sendedEnumId))
+            axios.post(postUrlAdd(this.url,this.sendedEnumId),{
+            })
             .then(response =>{ window.location.reload();})
             .catch(error =>{this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name])}) ;
             this.$nextTick(() => {
@@ -166,6 +194,9 @@ export default {
         },
         showAlert() {
             this.dismissCountDown = this.dismissSecs
+        },
+        showRightAlert(){
+            this.$refs.errorAlert.showAlert("You don't have the right")
         }
 
         
@@ -179,5 +210,19 @@ export default {
 <style lang="scss">
     .enumTitle{
         display: inline-block;
+    }
+    .list-group-item{
+        .enum_name{
+            display: inline-block;
+        }
+        .enum_update{
+            display: inline-block;
+        }
+        .enum_delete{
+            display: inline-block;
+        }
+    }
+    .enum_add_right_red{
+        color: red;
     }
 </style>

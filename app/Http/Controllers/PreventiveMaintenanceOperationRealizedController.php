@@ -90,14 +90,6 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
 
         if ($request->prvMtnOpRlz_validate=="validated"){
-            if ($request->prvMtnOpRlz_startDate=='' || $request->prvMtnOpRlz_startDate===NULL){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_startDate' => ["You have to entered the startDate of your preventive maintenance operation realized for validate it"]
-                    ]
-                ], 429);
-            }
-
             if ($request->prvMtnOpRlz_endDate=='' || $request->prvMtnOpRlz_endDate===NULL){
                 return response()->json([
                     'errors' => [
@@ -139,6 +131,23 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                     ]
                 ], 429);
             }
+        }
+
+        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        if ($request->prvMtnOpRlz_startDate!=NULL && $request->prvMtnOpRlz_startDate<$oneMonthAgo){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOpRlz_startDate' => ["You can't enter a date that is older than one month"]
+                ]
+            ], 429);
+        }
+
+        if ($request->prvMtnOpRlz_endDate!=NULL && $request->prvMtnOpRlz_endDate<$oneMonthAgo){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOpRlz_endDate' => ["You can't enter a date that is older than one month"]
+                ]
+            ], 429);
         }
 
         if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_startDate!=NULL && $state->state_endDate!=NULL){

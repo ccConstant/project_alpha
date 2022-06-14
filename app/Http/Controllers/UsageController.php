@@ -282,6 +282,15 @@ class UsageController extends Controller
             ], 429);
 
         }
+
+        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        if ($request->usg_reformDate!=NULL && $request->usg_reformDate<$oneMonthAgo){
+            return response()->json([
+                'errors' => [
+                    'usg_reformDate' => ["You can't enter a date that is older than one month"]
+                ]
+            ], 429);
+        }
         
         $usg->update([
             'usg_reformDate' => $request->usg_reformDate,

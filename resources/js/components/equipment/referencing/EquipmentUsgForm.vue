@@ -33,19 +33,21 @@
                         </div>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <DeleteComponentButton :validationMode="usg_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
                     <div v-if="reformMod!==false && usg_refromDate===null">
                         <ReformComponentButton :reformBy="usg_refromBy" :reformDate="usg_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_usage[2].info_value"/>
                     </div>
                 </div>  
             </form>
-
+            <ErrorAlert ref="errorAlert"/>
+            
         </div>
        
     </div>
 </template>
 
 <script>
+import ErrorAlert from '../../alert/ErrorAlert.vue'
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
@@ -57,7 +59,9 @@ export default {
         InputTextAreaForm,
         SaveButtonForm,
         DeleteComponentButton,
-        ReformComponentButton
+        ReformComponentButton,
+        ErrorAlert
+
 
     },
     /*--------Declartion of the differents props:--------
@@ -275,7 +279,7 @@ export default {
                 this.$emit('deleteUsg','')
             })
             //If the controller sends errors we put it in the errors object 
-            .catch(error => this.errors=error.response.data.errors) ;
+            .catch(error => {this.$refs.errorAlert.showAlert(error.response.data.errors['usg_reformDate'])}) ;
         
             
         }

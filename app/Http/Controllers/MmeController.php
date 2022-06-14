@@ -16,7 +16,6 @@ use App\Models\Mme;
 use App\Models\MmeTemp;
 use App\Models\MmeState;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB ; 
 
 class MmeController extends Controller{
 

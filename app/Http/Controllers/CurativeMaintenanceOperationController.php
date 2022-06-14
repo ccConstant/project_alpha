@@ -96,6 +96,23 @@ class CurativeMaintenanceOperationController extends Controller
             }
         }
 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        if ($request->curMtnOp_startDate!=NULL && $request->curMtnOp_startDate<$oneMonthAgo){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_startDate' => ["You can't enter a date that is older than one month"]
+                ]
+            ], 429);
+        }
+
+        if ($request->curMtnOp_endDate!=NULL && $request->curMtnOp_endDate<$oneMonthAgo){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_endDate' => ["You can't enter a date that is older than one month"]
+                ]
+            ], 429);
+        }
+
         if ($state->state_startDate!=NULL && $request->curMtnOp_startDate!=NULL && $state->state_endDate!=NULL){
             if ($request->curMtnOp_startDate<$state->state_startDate || $request->curMtnOp_startDate>$state->state_endDate){
                 return response()->json([

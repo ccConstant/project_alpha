@@ -162,7 +162,9 @@ export default {
                     //Else if the preventive maintenance operation have an id and addSucces is equal to true 
                     if(component.prvMtnOp_id!=null || component.addSucces==true){
                         //updateEquipmentPrvMtnOp is used
-                        component.updateEquipmentPrvMtnOp(savedAs);
+                        if(component.prvMtnOp_validate!=="validated"){
+                            component.updateEquipmentPrvMtnOp(savedAs);
+                        }
                     }
                 }else{
                     //Else If the user is not in modification mode

@@ -58,6 +58,14 @@ class StateController extends Controller
                 ]
             ], 429);
         }
+        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        if ($request->state_startDate!=NULL && $request->state_startDate<$oneMonthAgo){
+            return response()->json([
+                'errors' => [
+                    'state_startDate' => ["You can't enter a date that is older than one month"]
+                ]
+            ], 429);
+        }
 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         $states=$mostRecentlyEqTmp->states;

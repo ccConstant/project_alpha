@@ -230,14 +230,9 @@ export default {
         }
     },
     created(){
-            /*axios.get('/info/send/all')
-            .then (response=> {
-                this.infos=response.data;
-                console.log("ALL :")
-                console.log(this.infos)
-                }) 
-            .catch(error => console.log(error)) ;*/
-
+            if(this.$userId.user_updateInformationRight!=true){
+                this.$router.replace({ name: "home" })
+            }
             axios.get('/info/send/eqIdCard')
             .then (response=> {
                 this.infos_idCard=response.data;

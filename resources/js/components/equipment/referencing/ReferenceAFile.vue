@@ -146,7 +146,9 @@ export default {
                     //Else if the file have an id and addSucces is equal to true 
                     if(component.file_id!=null || component.addSucces==true){
                         //updateEquipmentFile is used
-                        component.updateEquipmentFile(savedAs);
+                        if(component.file_validate!=="validated"){
+                            component.updateEquipmentFile(savedAs);
+                        }
                     }
                 }else{
                     //Else If the user is not in modification mode

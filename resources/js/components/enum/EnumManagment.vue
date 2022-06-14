@@ -86,19 +86,13 @@
                     </h2>
                     <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven">
                         <div class="accordion-body">
-                            <EnumElement error_name='enum_risk_for'  :enumList="enum_risk_for" title="Equipment Risk For" url="/risk/enum/riskfor/" />
+                            <EnumElement error_name='enum_riskfor' :enumList="enum_risk_for" title="Equipment Risk For" url="/risk/enum/riskfor/" />
                         </div>
                     </div>
                 </div>
-                
-
             </div>
         </div>
-        
-
     </div>
-
-  
 </template>
 
 <script>
@@ -121,6 +115,11 @@ export default {
         }
     },
     created(){
+        if(this.$userId.user_addEnumRight!=true &&
+            this.$userId.user_deleteEnumRight!=true &&
+            this.$userId.user_updateEnumRight!=true ){
+                this.$router.replace({ name: "home" })
+        }
         /*Ask for the controller different equipment type option */
         axios.get('/equipment/enum/type')
             .then (response=> this.enum_eq_type=response.data) 

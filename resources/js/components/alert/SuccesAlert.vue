@@ -1,8 +1,7 @@
 <template>
-<div>
-    <vue-snotify></vue-snotify>
-  
-</div>
+    <div>
+        <vue-snotify></vue-snotify>
+    </div>
 
 </template>
 

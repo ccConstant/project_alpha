@@ -39,7 +39,7 @@
                         <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="dim_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <DeleteComponentButton :validationMode="dim_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
                 </div>       
             </form>
             <SucessAlert ref="sucessAlert"/>

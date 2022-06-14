@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :Errors="errors.prvMtnOp_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <DeleteComponentButton :validationMode="prvMtnOp_validate" :Errors="errors.prvMtnOp_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
                     <div v-if="reformMod!==false && prvMtnOp_refromDate===null">
                         <ReformComponentButton :reformBy="prvMtnOp_refromBy" :reformDate="prvMtnOp_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_prvMtnOp[5].info_value"/>
                     </div>
@@ -67,6 +67,7 @@
             <div v-else-if="loaded==true">
                 <ReferenceARisk v-if="this.prvMtnOp_id!=null" :importedRisk="importedOpRisk" :eq_id="this.eq_id" :prvMtnOp_id="this.prvMtnOp_id" :riskForEq="false" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
             </div>
+            <ErrorAlert ref="errorAlert"/>
         </div>
 
     </div>
@@ -74,6 +75,7 @@
 
 <script>
 /*Importation of the others Components who will be used here*/
+import ErrorAlert from '../../alert/ErrorAlert.vue'
 import InputSelectForm from '../../input/InputSelectForm.vue'
 import InputTextForm from '../../input/InputTextForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
@@ -95,7 +97,8 @@ export default {
         InputNumberForm,
         ReferenceARisk,
         DeleteComponentButton,
-        ReformComponentButton
+        ReformComponentButton,
+        ErrorAlert
 
 
     },
@@ -355,7 +358,7 @@ export default {
                 this.$emit('deletePrvMtnOp','')
             })
             //If the controller sends errors we put it in the errors object 
-            .catch(error => this.errors=error.response.data.errors) ;
+            .catch(error => {this.$refs.errorAlert.showAlert(error.response.data.errors['prvMtnOp_reformDate'])}) ;
         
             
         },

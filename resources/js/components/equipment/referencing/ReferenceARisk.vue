@@ -193,7 +193,9 @@ export default {
                     //Else if the risk have an id and addSucces is equal to true 
                     if(component.risk_id!=null || component.addSucces==true){
                         //updateEquipmentRisk is used
-                        component.updateEquipmentRisk(savedAs);
+                        if(component.risk_validate!=="validated"){
+                            component.updateEquipmentRisk(savedAs);
+                        }
                     }
                 }else{
                     //Else If the user is not in modification mode

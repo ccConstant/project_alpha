@@ -51,10 +51,17 @@
                 </div>
             </div>
             <div v-if="state_name=='Reform' && isInModifMod==true && isInConsultMod==false">
-                <button type="button" class="btn btn-danger" @click="warningDelete()">Delete the equipment</button>
-                    <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment()"  >
-                        <p class="my-4">Are you sur you want to delete </p>
-                    </b-modal>
+
+                <div v-if="deleteEqOrMmeRight==true">
+                    <button type="button" class="btn btn-danger" @click="warningDelete()">Delete the equipment</button>
+                </div>
+                <div v-else>
+                    <b-button disabled variant="primary">Delete the equipment</b-button> 
+                    <p class="enum_add_right_red"> You dont have the right to delete the equipment.</p>
+                </div>
+                <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment()"  >
+                    <p class="my-4">Are you sur you want to delete </p>
+                </b-modal>
             </div>
 
         </div>
@@ -135,7 +142,8 @@ export default {
             ],
             new_eq:null,
             eq_idCard:[],
-            infos_state:[]
+            infos_state:[],
+            deleteEqOrMmeRight:this.$userId.user_deleteEqOrMmeRight
             
 
         }
@@ -236,10 +244,11 @@ export default {
         deleteEquipment(){
             var consultUrl = (id) => `/equipment/delete/${id}`;
             axios.post(consultUrl(this.eq_id),{
+                user_deleteEqOrMmeRight:this.deleteEqOrMmeRight
             })
             .then(response =>{console.log("deleted")})
             //If the controller sends errors we put it in the errors object 
-            .catch(error => {});
+            .catch(error => {console.log(error.response.data.errors)});
         },
     },
     created(){

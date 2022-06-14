@@ -151,7 +151,10 @@ export default {
                     //Else if the dimension have an id and addSucces is equal to true 
                     if(component.pow_id!=null || component.addSucces==true){
                         //updateEquipmentpow is used
-                        component.updateEquipmentPow(savedAs);
+                        if(component.pow_validate!=="validated"){
+                            component.updateEquipmentPow(savedAs);
+                        }
+                        
                     }
                 }else{
                     //Else If the user is not in modification mode

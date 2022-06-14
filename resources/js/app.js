@@ -10,7 +10,8 @@ import Snotify,{ SnotifyPosition} from 'vue-snotify';
 import JwPagination from 'jw-vue-pagination';
 const Snotifyoptions={
     toast :{
-        position :SnotifyPosition.rightBottom
+        position :SnotifyPosition.centerTop,
+        timeout: 5000
     }
 }
 

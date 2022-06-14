@@ -498,7 +498,15 @@ class PreventiveMaintenanceOperationController extends Controller
                     'prvMtnOp_reformDate' => ["You must entered a reformDate that is after the startDate"] 
                 ]
             ], 429);
+        }
 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        if ($request->prvMtnOp_reformDate!=NULL && $request->prvMtnOp_reformDate<$oneMonthAgo){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_reformDate' => ["You can't enter a date that is older than one month"]
+                ]
+            ], 429);
         }
         
         $prvMtnOp->update([

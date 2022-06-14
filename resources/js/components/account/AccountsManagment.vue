@@ -1,11 +1,16 @@
 <template>
-  <div>
-    coco
-  </div>
+	<div>
+		coco
+	</div>
 </template>
 
 <script>
 export default {
+	created(){
+		if(this.$userId.user_menuUserAcessRight!=true){
+            this.$router.replace({ name: "home" })
+        }
+	}
 
 }
 </script>

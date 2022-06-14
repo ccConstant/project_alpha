@@ -34,7 +34,7 @@
                         <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="file_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                    <DeleteComponentButton :validationMode="file_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
 
                 </div>       
             </form>
@@ -235,6 +235,8 @@ export default {
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
+            }else{
+                this.$emit('deleteFile','')
             }
             
         }

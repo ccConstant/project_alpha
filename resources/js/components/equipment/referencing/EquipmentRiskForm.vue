@@ -13,29 +13,34 @@
 <template>
     <div :class="divClass">
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-        <form class="container"  @keydown="clearError">
-            <!--Call of the different component with their props-->
-            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.risk_for" name="risk_for" label="Risk for :" :options="enum_risk_for" :isDisabled="!!isInConsultedMod" :selctedOption="this.risk_for" :selectedDivName="this.divClass" v-model="risk_for" :info_text="infos_risk[0].info_value"/>
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_remarks" name="risk_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="risk_remarks" :info_text="infos_risk[1].info_value"/>
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_wayOfControl" name="risk_wayOfControl" label="Way of Control :" :isDisabled="!!isInConsultedMod" v-model="risk_wayOfControl" :info_text="infos_risk[2].info_value"/>
-            <!--If addSucces is equal to false, the buttons appear -->
-            <div v-if="this.addSucces==false ">
-                <!--If this risk doesn't have a id the addEquipmentRisk is called function else the updateEquipmentRisk function is called -->
-                <div v-if="this.risk_id==null ">
-                    <div v-if="modifMod==true">
-                        <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate" :AddinUpdate="true"/>
+        <div v-if="loaded==false" >
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-else>
+            <form class="container"  @keydown="clearError">
+                <!--Call of the different component with their props-->
+                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.risk_for" name="risk_for" label="Risk for :" :options="enum_risk_for" :isDisabled="!!isInConsultedMod" :selctedOption="this.risk_for" :selectedDivName="this.divClass" v-model="risk_for" :info_text="infos_risk[0].info_value"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_remarks" name="risk_remarks" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="risk_remarks" :info_text="infos_risk[1].info_value"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.risk_wayOfControl" name="risk_wayOfControl" label="Way of Control :" :isDisabled="!!isInConsultedMod" v-model="risk_wayOfControl" :info_text="infos_risk[2].info_value"/>
+                <!--If addSucces is equal to false, the buttons appear -->
+                <div v-if="this.addSucces==false ">
+                    <!--If this risk doesn't have a id the addEquipmentRisk is called function else the updateEquipmentRisk function is called -->
+                    <div v-if="this.risk_id==null ">
+                        <div v-if="modifMod==true">
+                            <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate" :AddinUpdate="true"/>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate"/>
+                        </div>
                     </div>
-                    <div v-else>
-                        <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :savedAs="risk_validate"/>
+                    <div v-else-if="this.risk_id!==null">
+                        <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="risk_validate"/>
                     </div>
-                </div>
-                <div v-else-if="this.risk_id!==null">
-                    <SaveButtonForm @add="addEquipmentRisk" @update="updateEquipmentRisk" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="risk_validate"/>
-                </div>
-                <!-- If the user is not in the consultation mode, the delete button appear -->
-                <DeleteComponentButton :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-            </div>       
-        </form>
+                    <!-- If the user is not in the consultation mode, the delete button appear -->
+                    <DeleteComponentButton :validationMode="risk_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
+                </div>       
+            </form>
+        </div>
     </div>
 </template>
 

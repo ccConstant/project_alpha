@@ -1,45 +1,74 @@
 
 <template>
-  <div>
-    <b-navbar type="dark" variant="dark">
-      <b-navbar-nav>
+	<div>
+		<b-navbar type="dark" variant="dark">
+			<b-navbar-nav>
+				<!-- Navbar dropdowns -->
+				<b-nav-item-dropdown text="Equipment" right>
+					<b-dropdown-item href="/equipment/add">Add a new equipment</b-dropdown-item>
+					<b-dropdown-item href="/equipment/list">List of all equipment</b-dropdown-item>
+					<b-dropdown-item href="/equipment/life_event">Life Event</b-dropdown-item>
+					<b-dropdown-item href="/equipment/maintenance/calendar">Maintenance</b-dropdown-item>
+				</b-nav-item-dropdown>
 
-        <!-- Navbar dropdowns -->
-        <b-nav-item-dropdown text="Equipment" right>
-          <b-dropdown-item href="/equipment/add">Add a new equipment</b-dropdown-item>
-          <b-dropdown-item href="/equipment/list">List of all equipment</b-dropdown-item>
-          <b-dropdown-item href="/equipment/life_event">Life Event</b-dropdown-item>
-          <b-dropdown-item href="/equipment/maintenance/calendar">Maintenance</b-dropdown-item>
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown text="ECME" right>
+				<b-nav-item-dropdown text="ECME" right>
 
-        </b-nav-item-dropdown>
+				</b-nav-item-dropdown>
 
-        <b-nav-item href="/enum">Enum Managment</b-nav-item>
-        <b-nav-item href="/infos">Info Managment</b-nav-item>
-        <b-nav-item href="/accounts">Accounts Managment</b-nav-item>
-        <b-nav-item-dropdown text="User" right>
-          <b-dropdown-item v-if="this.$userId==''" href="/sign_up">Sign up</b-dropdown-item>
-          <b-dropdown-item v-if="this.$userId==''" href="/sign_in">Sign in</b-dropdown-item>
-          <b-dropdown-item v-if="this.$userId!=''" href="#" @click="disconnect()" >Disconnect</b-dropdown-item>
-        </b-nav-item-dropdown>
-      </b-navbar-nav>
-    </b-navbar>
-  </div>
+					<b-nav-item @click="enum_acces">Enum Managment</b-nav-item>
+					<b-nav-item  @click="info_acces">Info Managment</b-nav-item>
+					<b-nav-item @click="account_managment_acces">Accounts Managment</b-nav-item>
+					<b-nav-item-dropdown text="User" right>
+					<b-dropdown-item v-if="this.$userId==''" href="/sign_up">Sign up</b-dropdown-item>
+					<b-dropdown-item v-if="this.$userId==''" href="/sign_in">Sign in</b-dropdown-item>
+					<b-dropdown-item v-if="this.$userId!=''" href="#" @click="disconnect()" >Disconnect</b-dropdown-item>
+				</b-nav-item-dropdown>
+			</b-navbar-nav>
+		</b-navbar>
+		<ErrorAlert ref="errorAlert"/>
+	</div>
 </template>
 
 <script>
+import ErrorAlert from '../alert/ErrorAlert.vue'
+
 export default {
-  methods:{
-    disconnect(){
-        axios.post('logout',{
-        })
-        //If the dimension is added succesfuly
-        .then(response =>{window.location.href = "/"})
-        .catch(error => this.errors=error.response.data.errors) ;
-    }
-  },
-  
+	components:{
+		ErrorAlert
+	},
+	methods:{
+		disconnect(){
+			axios.post('logout',{
+			})
+			//If the dimension is added succesfuly
+			.then(response =>{window.location.href = "/"})
+			.catch(error => this.errors=error.response.data.errors) ;
+		},
+		enum_acces(){
+			if(this.$userId.user_addEnumRight==true ||
+			this.$userId.user_deleteEnumRight==true ||
+			this.$userId.user_updateEnumRight==true){
+				this.$router.replace({ name: "url_enum" })
+			}else{
+				this.$refs.errorAlert.showAlert("You don't have the right");
+			}
+		},
+		account_managment_acces(){
+			if(this.$userId.user_menuUserAcessRight==true){
+				this.$router.replace({ name: "url_enum" })
+			}else{
+				this.$refs.errorAlert.showAlert("You don't have the right");
+			}
+		},
+		info_acces(){
+			if(this.$userId.user_updateInformationRight==true){
+				this.$router.replace({ name: "url_infos" })
+			}else{
+				this.$refs.errorAlert.showAlert("You don't have the right");
+			}
+		}
+	},
+
 
 }
 </script>
