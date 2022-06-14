@@ -155,14 +155,6 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', [EmailVerificationPromptController::class, '__invoke'])
                 ->name('verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-                ->middleware(['signed', 'throttle:6,1'])
-                ->name('verification.verify');
-
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-                ->middleware('throttle:6,1')
-                ->name('verification.send');
-
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
                 ->name('password.confirm');
 
@@ -173,6 +165,8 @@ Route::middleware('auth')->group(function () {
 });
 
 /* Equipment ID Form Routes */ 
+
+
 
 Route::get('/equipment/sets', [EquipmentController::class, 'send_sets'] ) ;
 
@@ -471,4 +465,8 @@ Route::get(' /info/send/mme_usage', [InformationController::class, 'send_informa
 
 Route::get(' /info/send/mme_precaution', [InformationController::class, 'send_informations_mme_usage']);
 
+
+/* User Form Routes */ 
+
+Route::get(' /users/send', [UserController::class, 'send_users']);
 

@@ -19,7 +19,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        //return response()->json($request->user_pseudo);
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [

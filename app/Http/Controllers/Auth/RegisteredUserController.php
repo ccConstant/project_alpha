@@ -45,10 +45,12 @@ class RegisteredUserController extends Controller
             'user_password.required' => 'You must enter a password',
             'user_password.string' => 'Your password must be of type string',
             'user_password.max' => 'You must enter a maximum of 255 characters',
+            'user_password.min' => 'You must enter at least 8 characters',
 
-            'user_confirmationPassword.required' => 'You must confirm your password',
-            'user_confirmationPassword.string' => 'Your password must be of type string',
-            'user_confirmationPassword.max' => 'You must enter a maximum of 255 characters',
+            'user_confirmation_password.required' => 'You must confirm your password',
+            'user_confirmation_password.string' => 'Your password must be of type string',
+            'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
+            'user_confirmation_password.min' => 'You must enter at least 8 characters',
         ]);
 
         if ($request->user_confirmationPassword!=$request->user_password){
