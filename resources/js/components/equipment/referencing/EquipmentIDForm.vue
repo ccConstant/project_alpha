@@ -213,9 +213,6 @@ export default {
         axios.get('/info/send/eqIdCard')
             .then (response=> {
                 this.infos_idCard=response.data;
-                console.log("\n Infos ID CARD");
-                console.log(this.infos_idCard);
-                
                 this.loaded=true;
                 }) 
             .catch(error => console.log(error)) ;

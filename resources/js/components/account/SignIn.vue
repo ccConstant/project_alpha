@@ -41,12 +41,12 @@ export default {
             console.log(this.user_pseudo);
             console.log(this.user_password);
             axios.post('login',{
-                pseudo:this.user_pseudo,
-                password:this.user_password
+                user_pseudo:this.user_pseudo,
+                user_password:this.user_password
 
             })
             //If the dimension is added succesfuly
-            .then(response =>{console.log("coucou")})
+            .then(response =>{window.location.href = "/"})
             .catch(error => console.log(error.response.data.errors));
         },
         clearError(event){

@@ -9,7 +9,8 @@
                             <p class="card-text">
                                 Number: {{option.prvMtnOp_number}}<br>
                                 Description : {{option.prvMtnOp_description}}<br>
-                                Protocol : {{option.prvMtnOp_protocol}}
+                                Protocol : {{option.prvMtnOp_protocol}}<br>
+                                Operation date : {{option.prvMtnOp_nextDate}}
                             </p>
                         </b-card>
                     </div>
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+
 export default {
     props:{
         prvMtnOps:{

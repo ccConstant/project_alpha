@@ -5,7 +5,7 @@
         </div>
         <div v-if="loaded==true" class="equipment_consultation">
             <h1>Equipment Consultation</h1>
-            <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors.validation"/>
+            <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>
             <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
@@ -108,10 +108,8 @@
                     </div>
                 </div>
              </div>
-            
-
-
         </div>
+
     </div>
 </template>
 
@@ -155,7 +153,7 @@ export default {
             eq_risk:null,
             loaded:false,
             validationMethod:this.$route.query.method,
-            errors:{}
+            errors:[]
         }
     },
 
@@ -218,15 +216,12 @@ export default {
             axios.post(validVerifUrl(this.eq_id),{
                 })
                 .then(response =>{
-                    console.log("Toto")
-                    /*If all the verif passed, a new post this time to add the dimension in the data base
-                    Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     var techVeriftUrl = (id) => `/equipment/validation/${id}`;
                     axios.post(techVeriftUrl(this.eq_id),{
                         reason:this.validationMethod
                     })
-                    //If the dimension is added succesfuly
                     .then(response =>{
+                        console.log("added succesfuly")
                         
                         
                     })
@@ -234,9 +229,10 @@ export default {
                     .catch(error => this.errors=error.response.data.errors) ;
                 ;})
                 //If the controller sends errors we put it in the errors object 
-                .catch(error =>{
-                    this.errors=error.response.data.errors
-            }) ;
+            .catch(error =>{
+                console.log(error.response.data.errors)
+                this.errors=error.response.data.errors
+            });
         }
     }
         

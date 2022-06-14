@@ -3,9 +3,10 @@
         <EventDetailsModal ref="event_details" @modalClosed="modalClosed" :prvMtnOps="prvMtnOp"/>
         <div class='container calendar_container'>
             <div class='calendar'>
-                <FullCalendar  :options="calendarOptions" />
+                <FullCalendar  :options="calendarOptions"/>
             </div>
         </div>
+
         
 
     </div>
@@ -25,7 +26,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import EventDetailsModal from './EventDetailsModal.vue'
 import listPlugin from '@fullcalendar/list';
 import momentPlugin from '@fullcalendar/moment';
-
+import moment from 'moment'
 export default {
     components: {
         FullCalendar, // make the <FullCalendar> tag available
@@ -35,20 +36,22 @@ export default {
         return {
             calendarOptions: {
                 plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin,resourceTimelinePlugin],
-                initialView: 'dayGridMonth',
+                initialView: 'listMonth',
                 headerToolbar: {
-                    left: 'dayGridMonth,listMonth,listWeek,resourceTimelineMonth',
+                    left: 'listMonth,listWeek,resourceTimelineMonth',
                     center: 'title',
                     right :'prev today next',
-                    
                 },
                 eventClick:this.handleEventClick,
                 dateClick:this.handleDateClick,
                 events:[],
+                displayEventTime : false,
+                resources: [
+                ],
                 titleFormat: 'D MMM YYYY',
                 schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives'
             },
-            prvMtnOp:[]
+            prvMtnOp:[],
             
            
         }
@@ -56,7 +59,9 @@ export default {
     methods: {
         handleEventClick(arg) {
             this.prvMtnOp.push({eq_internalReference:arg.event.title, prvMtnOp_number:arg.event.extendedProps.number,
-                prvMtnOp_description:arg.event.extendedProps.description,prvMtnOp_protocol:arg.event.extendedProps.protocol });
+                prvMtnOp_description:arg.event.extendedProps.description,prvMtnOp_protocol:arg.event.extendedProps.protocol,
+                prvMtnOp_nextDate:arg.event.extendedProps.operation_date });
+            console.log(arg)
             this.$refs.event_details.$bvModal.show('modal-event_details');
         },
         modalClosed(){
@@ -68,20 +73,21 @@ export default {
             .then (response=>{
                 console.log(response.data)
                 for (const data of response.data) {
+                    this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
                     for(const operation of data.preventive_maintenance_operations){
-                        this.calendarOptions.events.push({title:data.internalReference,date:operation.prvMtnOp_nextDate,number:operation.prvMtnOp_number,id:operation.id,
-                            description:operation.prvMtnOp_description,protocol:operation.prvMtnOp_protocol})
+                        this.calendarOptions.events.push({title:data.internalReference,date:operation.prvMtnOp_nextDate,
+                         number:operation.prvMtnOp_number,id:operation.id,
+                         description:operation.prvMtnOp_description,
+                         operation_date:moment(operation.prvMtnOp_nextDate).format('D MMM YYYY hh:mm a'),
+                         protocol:operation.prvMtnOp_protocol,
+                         resourceId:data.internalReference});
                     }
                 }
-                console.log(this.calendarOptions.events)
-
             })
-            .catch(error => console.log(error)) ;
     }
 
 }
 </script>
 
 <style lang="scss">
-
 </style>
