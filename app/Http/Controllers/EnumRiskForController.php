@@ -57,6 +57,14 @@ class EnumRiskForController extends Controller
      */
 
     public function update_enum_riskFor (Request $request, $id){
+        $enum_riskFor=EnumRiskFor::findOrFail($id) ; 
+        if ($enum_riskFor->value=="Production Environnement" || $enum_riskFor->value=="User Safety" || $enum_riskFor->value=="Product Quality"){
+            return response()->json([
+                'errors' => [
+                    'enum_riskfor' => ["You can't modify this enum because it belongs of the principals risk target"]
+                ]
+            ], 429);
+        }
         $enum_already_exist=EnumRiskFor::where('value', '=', $request->value)->where('id','<>', $id)->get();
         if (count($enum_already_exist)!=0 ){
             return response()->json([
@@ -66,7 +74,6 @@ class EnumRiskForController extends Controller
             ], 429);
         }
         
-        $enum_riskFor=EnumRiskFor::findOrFail($id) ; 
         $enum_riskFor->update([
             'value' => $request->value, 
         ]); 
@@ -80,6 +87,13 @@ class EnumRiskForController extends Controller
 
     public function delete_enum_riskFor ($id){
         $enum_riskFor=EnumRiskFor::findOrFail($id) ; 
+        if ($enum_riskFor->value=="Production Environnement" || $enum_riskFor->value=="User Safety" || $enum_riskFor->value=="Product Quality"){
+            return response()->json([
+                'errors' => [
+                    'enum_riskfor' => ["You can't delete this enum because it belongs of the principals risk target"]
+                ]
+            ], 429);
+        }
         $riskLinked=Risk::where('enumRiskFor_id', '=', $id)->get() ; 
         if (count($riskLinked)!=0){
             return response()->json([
