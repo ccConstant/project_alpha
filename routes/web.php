@@ -520,8 +520,7 @@ Route::post(' /user/update_right/makeReformRight/{id}', [UserController::class, 
 
 Route::post(' /user/update_right/declareNewStateRight/{id}', [UserController::class, 'update_declareNewStateRight']);
 
-
-
+Route::post(' /user/update/infos/{id} ', [UserController::class, 'update_info']);
 
 /* Mme ID Form Routes */ 
 

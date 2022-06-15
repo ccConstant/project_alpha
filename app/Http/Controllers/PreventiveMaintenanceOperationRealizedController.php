@@ -151,20 +151,20 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             ], 429);
         }
 
-        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_startDate!=NULL && $state->state_endDate!=NULL){
-            if ($request->prvMtnOpRlz_startDate<$state->state_startDate || $request->prvMtnOpRlz_startDate>$state->state_endDate){
+        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_startDate!=NULL){
+            if ($request->prvMtnOpRlz_startDate<$state->state_startDate){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOpRlz_startDate' => ["You can't entered this startDate because it must be between the startDate and the endDate of the state"]
+                        'prvMtnOpRlz_startDate' => ["You can't entered this startDate because it must be after the startDate of the state"]
                     ]
                 ], 429);
             }
         }
-        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_endDate!=NULL && $state->state_endDate!=NULL){
-            if ($request->prvMtnOpRlz_endDate<$state->state_startDate || $request->prvMtnOpRlz_endDate>$state->state_endDate){
+        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_endDate!=NULL){
+            if ($request->prvMtnOpRlz_endDate<$state->state_startDate){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOpRlz_endDate' => ["You can't entered this endDate because it must be between the startDate and the endDate of the state"]
+                        'prvMtnOpRlz_endDate' => ["You can't entered this endDate because it must be after the startDate of the state"]
                     ]
                 ], 429);
             }

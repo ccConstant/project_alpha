@@ -113,20 +113,21 @@ class CurativeMaintenanceOperationController extends Controller
             ], 429);
         }
 
-        if ($state->state_startDate!=NULL && $request->curMtnOp_startDate!=NULL && $state->state_endDate!=NULL){
-            if ($request->curMtnOp_startDate<$state->state_startDate || $request->curMtnOp_startDate>$state->state_endDate){
+
+        if ($state->state_startDate!=NULL && $request->curMtnOp_startDate!=NULL){
+            if ($request->curMtnOp_startDate<$state->state_startDate ){
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_startDate' => ["You can't entered this startDate because it must be between the startDate and the endDate of the state"]
+                        'curMtnOp_startDate' => ["You can't entered this startDate because it must be after the startDate of the state"]
                     ]
                 ], 429);
             }
         }
-        if ($state->state_startDate!=NULL && $request->curMtnOp_endDate!=NULL && $state->state_endDate!=NULL){
-            if ($request->curMtnOp_endDate<$state->state_startDate || $request->curMtnOp_endDate>$state->state_endDate){
+        if ($state->state_startDate!=NULL && $request->curMtnOp_endDate!=NULL){
+            if ($request->curMtnOp_endDate<$state->state_startDate){
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_endDate' => ["You can't entered this endDate because it must be between the startDate and the endDate of the state"]
+                        'curMtnOp_endDate' => ["You can't entered this endDate because it must be after the startDate of the state"]
                     ]
                 ], 429);
             }

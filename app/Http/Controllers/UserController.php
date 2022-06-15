@@ -342,4 +342,18 @@ class UserController extends Controller{
         ]);
     }
 
+     /**
+     * Function call by AccountManagementElement.vue with the route : /user/update/infos/{id} (post)
+     * Update the personnal informations of the user like his password, his username or his initials
+     * The id parameter correspond to the id of the user we want to change the informations
+     */
+    public function update_info($id, Request $request){
+        $user=User::findOrFail($id) ; 
+        $user->update([
+            'password' => $request->user_password,
+            'user_pseudo' => $request->user_pseudo,
+            'user_initials' => $request->user_initials,
+        ]);
+    }
+
 }
