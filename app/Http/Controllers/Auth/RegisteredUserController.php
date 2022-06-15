@@ -24,23 +24,26 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
        $request->validate([
-            'user_firstName' => ['required', 'string', 'max:255'],
-            'user_lastName' => ['required', 'string', 'max:255'],
-            'user_pseudo' => ['required', 'string', 'max:255'],
+            'user_firstName' => ['required', 'string', 'min:2', 'max:50'],
+            'user_lastName' => ['required', 'string', 'min:2', 'max:50'],
+            'user_pseudo' => ['required', 'string', 'max:50', 'min:2'],
            'user_password' => ['required', Rules\Password::defaults()], 
            'user_confirmation_password' => ['required', Rules\Password::defaults()], 
         ],[
             'user_firstName.required' => 'You must enter your firstname ',
-            'user_firstname.string' => 'Your firstName must be of type string',
-            'user_firstname.max' => 'You must enter a maximum of 255 characters',
+            'user_firstName.string' => 'Your firstName must be of type string',
+            'user_firstName.max' => 'You must enter a maximum of 50 characters',
+            'user_firstName.min' => 'You must enter a at least 2 characters',
 
             'user_lastName.required' => 'You must enter your lastName ',
-            'user_lastname.string' => 'Your lastName must be of type string',
-            'user_lastname.max' => 'You must enter a maximum of 255 characters',
+            'user_lastName.string' => 'Your lastName must be of type string',
+            'user_lastName.max' => 'You must enter a maximum of 50 characters',
+            'user_lastName.min' => 'You must enter a at least 2 characters',
 
             'user_pseudo.required' => 'You must enter a pseudo ',
             'user_pseudo.string' => 'Your pseudo must be of type string',
             'user_pseudo.max' => 'You must enter a maximum of 255 characters',
+            'user_pseudo.min' => 'You must enter at least 2 characters',
 
             'user_password.required' => 'You must enter a password',
             'user_password.string' => 'Your password must be of type string',

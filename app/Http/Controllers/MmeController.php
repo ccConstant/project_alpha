@@ -595,96 +595,56 @@ class MmeController extends Controller{
             }
         }
 
-        //ICI
         if ($mostRecentlyState->state_name=="Reform"){
             $files=File::where('mmeTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
             foreach ($files as $file){
                 $file->delete() ;
             }
 
-            $dimensions=Dimension::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-            foreach ($dimensions as $dimension){
-                $dimension->delete() ;
-            }
-
-            $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-            foreach ($risks as $risk){
-                $risk->delete() ;
-            }
-
-            $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
             foreach ($usages as $usage){
                 $usage->delete() ;
             }
 
-            if ($mostRecentlyEqTmp->special_process!=NULL){
-                $specialProcess=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ; 
-                $mostRecentlyEqTmp->update([
-                    'specialProcess_id' => NULL,
-                ]) ;
-                $specialProcess->delete() ;
-            }
         }else{
             return response()->json([
                 'errors' => [
-                    'delete' => ["You can't delete an equipment that isn't in reform state"]
+                    'delete' => ["You can't delete a mme that isn't in reform state"]
                 ]
             ], 429);
 
         }
-    }*/
+    }
 
     /**
-     * Function call by EquipmentIDForm.vue when the form is submitted for insert with the route : /state/equipment/${id}   (post)
-     * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form 
-     * @return \Illuminate\Http\Response : id of the new equipment
+     * Function call by MmeIDForm.vue when the form is submitted for insert with the route : /state/mme/${id}   (post)
+     * Add a new enregistrement of mme and mme_temp in the data base with the informations entered in the form 
+     * @return \Illuminate\Http\Response : id of the new mme
      */
-    /*public function add_equipment_from_state(Request $request, $id){
+    public function add_mme_from_state(Request $request, $id){
 
         
-        //An equipment is linked to its mass unit. So we need to find the id of the massUnit choosen by the user and write it in the attribute of the equipment.
-        //But if no one mass unit is choosen by the user we define this id to NULL
-        // And if the massUnit choosen is find in the data base the NULL value will be replace by the id value
-        $massUnit_id=NULL ;
-        if ($request->eq_massUnit!=''){
-            $massUnit= EnumEquipmentMassUnit::where('value', '=', $request->eq_massUnit)->first() ;
-            $massUnit_id=$massUnit->id ; 
-        }
-
-        //An equipment is linked to its type. So we need to find the id of the type choosen by the user and write it in the attribute of the equipment.
-        //But if no one type is choosen by the user we define this id to NULL
-        // And if the type choosen is find in the data base the NULL value will be replace by the id value
-        $type_id=NULL ; 
-        if ($request->eq_type!=''){
-            $type= EnumEquipmentType::where('value', '=', $request->eq_type)->first() ;
-            $type_id=$type->id ; 
-        }
-        
-        //Creation of a new equipment
-        $equipment=Equipment::create([
-            'eq_internalReference' => $request->eq_internalReference,
-            'eq_externalReference' => $request->eq_externalReference, 
-            'eq_name' => $request->eq_name,
-            'eq_serialNumber' => $request->eq_serialNumber,
-            'eq_constructor' => $request->eq_constructor,
-            'eq_set' => $request->eq_set,
+        //Creation of a new mme
+        $mme=Mme::create([
+            'mme_internalReference' => $request->mme_internalReference,
+            'mme_externalReference' => $request->mme_externalReference, 
+            'mme_name' => $request->mme_name,
+            'mme_serialNumber' => $request->mme_serialNumber,
+            'mme_constructor' => $request->mme_constructor,
+            'mme_set' => $request->mme_set,
             'state_id' => $id,
         ]) ; 
 
-        $equipment_id=$equipment->id ; 
+        $mme_id=$mme->id ; 
 
         
-        //Creation of a new equipment temp
-        $new_eqTemp=EquipmentTemp::create([
-            'equipment_id'=> $equipment_id,
-            'eqTemp_version' => '1',
-            'eqTemp_date' => Carbon::now('Europe/Paris'),
-            'eqTemp_validate' => $request->eq_validate,
-            'enumMassUnit_id' => $massUnit_id,
-            'eqTemp_mass' => $request->eq_mass,
-            'eqTemp_remarks' => $request->eq_remarks,
-            'eqTemp_mobility' => $request->eq_mobility,
-            'enumType_id' => $type_id,
+        //Creation of a new mme temp
+        $new_mmeTemp=MmeTemp::create([
+            'mme_id'=> $mme_id,
+            'mmeTemp_version' => '1',
+            'mmeTemp_date' => Carbon::now('Europe/Paris'),
+            'mmeTemp_validate' => $request->mme_validate,
+            'mmeTemp_remarks' => $request->mme_remarks,
         ]);
 
         //Creation of a new state
@@ -696,17 +656,19 @@ class MmeController extends Controller{
             'state_name' => "Waiting_for_referencing"
         ]) ; 
         
-        $newState->equipment_temps()->attach($new_eqTemp);
-        return response()->json($equipment_id) ; 
-    }*/
+        $newState->mme_temps()->attach($new_mmeTemp);
+        return response()->json($mme_id) ; 
+    }
 
     /**
-     * Function call by UpdateState.vue when the form is submitted for insert with the route : /send/state/equipment/${state_id} (post)
-     * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form 
-     * @return \Illuminate\Http\Response : id of the new equipment
+     * Function call by UpdateState.vue when the form is submitted for insert with the route : /send/state/mme/${state_id} (post)
+     * Send the mme created during the state in which the id is passed in parameter
+     * The id paramter correspond to the id of the state in which we want the informations of the mme created during
+     * @return \Illuminate\Http\Response : informations of the mme created during the state
      */
-    /*public function send_equipment_from_state($state_id){
-        $equipment=Equipment::where('state_id', '=', $state_id)->first() ; 
+    //COMMENTAIRE A CHANGER
+    public function send_mme_from_state($state_id){
+        $mme=Mme::where('state_id', '=', $state_id)->first() ; 
         $validate=NULL ; 
         $massUnit=NULL;
         $type = NULL ; 

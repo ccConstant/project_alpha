@@ -504,7 +504,7 @@ Route::post(' /user/update_right/deleteDataNotValidatedLinkedToEqOrMmeRight/{id}
 
 Route::post(' /user/update_right/deleteDataValidatedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataValidatedLinkedToEqOrMmeRight']);
 
-Route::post(' /user/update_right/deleteDataSignedLinkedToEqOrEcmeRight/{id}', [UserController::class, 'update_deleteDataSignedLinkedToEqOrEcmeRight']);
+Route::post(' /user/update_right/deleteDataSignedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataSignedLinkedToEqOrMmeRight']);
 
 Route::post(' /user/update_right/deleteEqOrMmeRight/{id}', [UserController::class, 'update_deleteEqOrMmeRight']);
 
@@ -513,6 +513,12 @@ Route::post(' /user/update_right/updateInformationRight/{id}', [UserController::
 Route::post(' /user/update_right/personTrainedToGeneralPrinciplesOfEqManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfEqManagementRight']);
 
 Route::post(' /user/update_right/personTrainedToGeneralPrinciplesOfMMEManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfMMEManagementRight']);
+
+Route::post(' /user/update_right/makeEqRespValidationRight/{id}', [UserController::class, 'update_makeEqRespValidationRight']);
+
+Route::post(' /user/update_right/makeReformRight/{id}', [UserController::class, 'update_makeReformRight']);
+
+Route::post(' /user/update_right/declareNewStateRight/{id}', [UserController::class, 'update_declareNewStateRight']);
 
 
 

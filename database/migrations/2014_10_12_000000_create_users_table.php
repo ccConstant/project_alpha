@@ -44,6 +44,9 @@ class CreateUsersTable extends Migration
             $table->boolean('user_formationEqDate') ->default(true);
             $table->boolean('user_personTrainedToGeneralPrinciplesOfMMEManagementRight') ->default(true);
             $table->boolean('user_formationMmeDate') ->default(true);
+            $table->boolean('user_makeEqRespValidationRight') ->default(true);
+            $table->boolean('user_makeReformRight') ->default(true);
+            $table->boolean('user_declareNewStateRight') ->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

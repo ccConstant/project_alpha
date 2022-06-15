@@ -50,20 +50,23 @@ class UserController extends Controller{
                 "user_addEnumRight" => $user->user_addEnumRight,
                 "user_deleteDataNotValidatedLinkedToEqOrMmeRight" => $user->user_deleteDataNotValidatedLinkedToEqOrMmeRight,
                 "user_deleteDataValidatedLinkedToEqOrMmeRight" => $user->user_deleteDataValidatedLinkedToEqOrMmeRight,
-                "user_deleteDataSignedLinkedToEqOrEcmeRight" => $user->user_deleteDataSignedLinkedToEqOrEcmeRight,
+                "user_deleteDataSignedLinkedToEqOrMmeRight" => $user->user_deleteDataSignedLinkedToEqOrMmeRight,
                 "user_deleteEqOrMmeRight" => $user->user_deleteEqOrMmeRight,
                 "user_updateInformationRight" => $user->user_updateInformationRight,
                 "user_personTrainedToGeneralPrinciplesOfEqManagementRight" => $user->user_personTrainedToGeneralPrinciplesOfEqManagementRight,
                 "user_formationEqDate" => $user->user_formationEqDate,
                 "user_personTrainedToGeneralPrinciplesOfMMEManagementRight" => $user->user_personTrainedToGeneralPrinciplesOfMMEManagementRight,
                 "user_formationMmeDate" => $user->user_formationMmeDate,
+                "user_makeEqRespValidationRight" => $user->user_makeEqRespValidationRight,
+                "user_makeReformRight" => $user->user_makeReformRight,
+                "user_declareNewStateRight" => $user->user_declareNewStateRight,
             ]);
             array_push($container_userInfo,$infoUser);
         }
         return response()->json($container_userInfo) ;
     }
 
-     /**
+    /**
      * Function call by AccountManagementElement.vue with the route : /user/update_right/menuUserAcessRight/{id} (post)
      * Update the right menuUserAccess of the user which the id is passed in parameter
      * The id parameter correspond to the id of the user we want to change the menuUserAcessRight
@@ -244,14 +247,14 @@ class UserController extends Controller{
     }
 
      /**
-     * Function call by AccountManagementElement.vue with the route : /user/update_right/deleteDataSignedLinkedToEqOrEcmeRight/{id}' (post)
-     * Update the right deleteDataSignedLinkedToEqOrEcme of the user which the id is passed in parameter
-     * The id parameter correspond to the id of the user we want to change the deleteDataSignedLinkedToEqOrEcmeRight
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/deleteDataSignedLinkedToEqOrMmeRight/{id}' (post)
+     * Update the right deleteDataSignedLinkedToEqOrMme of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the deleteDataSignedLinkedToEqOrMmeRight
      */
-    public function update_deleteDataSignedLinkedToEqOrEcmeRight($id, Request $request){
+    public function update_deleteDataSignedLinkedToEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_deleteDataSignedLinkedToEqOrEcmeRight' => $request->user_deleteDataSignedLinkedToEqOrEcmeRight,
+            'user_deleteDataSignedLinkedToEqOrMmeRight' => $request->user_deleteDataSignedLinkedToEqOrEcmeRight,
         ]);
     }
 
@@ -300,6 +303,42 @@ class UserController extends Controller{
         $user=User::findOrFail($id) ; 
         $user->update([
             'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => $request->user_personTrainedToGeneralPrinciplesOfMMEManagementRight,
+        ]);
+    }
+
+     /**
+     * Function call by AccountManagementElement.vue with the route :  /user/update_right/makeEqRespValidationRight/{id}
+     * Update the right makeEqRespValidation, of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the makeEqRespValidationRight
+     */
+    public function update_makeEqRespValidationRight($id, Request $request){
+        $user=User::findOrFail($id) ; 
+        $user->update([
+            'user_makeEqRespValidationRight' => $request->user_makeEqRespValidationRight,
+        ]);
+    }
+
+     /**
+     * Function call by AccountManagementElement.vue with the route :/user/update_right/makeReformRight/{id} (post)
+     * Update the right makeReformRight of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the makeReformRight
+     */
+    public function update_makeReformRight($id, Request $request){
+        $user=User::findOrFail($id) ; 
+        $user->update([
+            'user_makeReformRight' => $request->user_makeReformRight,
+        ]);
+    }
+
+     /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/declareNewStateRight/{id} (post)
+     * Update the right declareNewStateRight of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the declareNewStateRight
+     */
+    public function update_declareNewStateRight($id, Request $request){
+        $user=User::findOrFail($id) ; 
+        $user->update([
+            'user_declareNewStateRight' => $request->user_declareNewStateRight,
         ]);
     }
 
