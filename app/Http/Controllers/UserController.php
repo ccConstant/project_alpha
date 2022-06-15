@@ -344,14 +344,35 @@ class UserController extends Controller{
 
      /**
      * Function call by AccountManagementElement.vue with the route : /user/update/infos/{id} (post)
-     * Update the personnal informations of the user like his password, his username or his initials
+     * Update the personnal informations of the user like his password or his initials
      * The id parameter correspond to the id of the user we want to change the informations
      */
     public function update_info($id, Request $request){
         $user=User::findOrFail($id) ; 
+
+        $request->validate([
+            'user_initials' => ['required', 'string', 'max:4', 'min:2'],
+           'user_password' => ['required', Rules\Password::defaults()], 
+           'user_confirmation_password' => ['required', Rules\Password::defaults()], 
+        ],[
+            'user_initials.required' => 'You must enter the initials ',
+            'user_initials.string' => 'Your firstName must be of type string',
+            'user_initials.max' => 'You must enter a maximum of 4 characters',
+            'user_initials.min' => 'You must enter a at least 2 characters',
+
+            'user_password.required' => 'You must enter a password',
+            'user_password.string' => 'Your password must be of type string',
+            'user_password.max' => 'You must enter a maximum of 255 characters',
+            'user_password.min' => 'You must enter at least 8 characters',
+
+            'user_confirmation_password.required' => 'You must confirm your password',
+            'user_confirmation_password.string' => 'Your password must be of type string',
+            'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
+            'user_confirmation_password.min' => 'You must enter at least 8 characters',
+        ]);
+
         $user->update([
-            'password' => $request->user_password,
-            'user_pseudo' => $request->user_pseudo,
+            'password' => Hash::make($request->user_password),
             'user_initials' => $request->user_initials,
         ]);
     }

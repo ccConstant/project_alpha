@@ -790,7 +790,7 @@ class EquipmentController extends Controller{
 
 
      /**
-     * Function call by ?? when we delete an equipment in the reform state : ?? (post)
+     * Function call by UpdateState when we delete an equipment in the reform state : /equipment/delete/{id} (post)
      * Delete an equipment and its attributes
      * The id parameter is the id of the equipment in which we want to reform/delete
      * */

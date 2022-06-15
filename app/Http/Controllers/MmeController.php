@@ -576,9 +576,9 @@ class MmeController extends Controller{
 
     
      /**
-     * Function call by ?? when we delete an equipment in the reform state : ?? (post)
-     * Delete an equipment and its attributes
-     * The id parameter is the id of the equipment in which we want to reform/delete
+     * Function call by UpdateState when we delete an mme in the reform state : /mme/delete/{id} (post)
+     * Delete a mme and its attributes
+     * The id parameter is the id of the mme in which we want to reform/delete
      * */
 
     public function delete_mme($id){
@@ -596,7 +596,7 @@ class MmeController extends Controller{
         }
 
         if ($mostRecentlyState->state_name=="Reform"){
-            $files=File::where('mmeTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
             foreach ($files as $file){
                 $file->delete() ;
             }
@@ -673,34 +673,20 @@ class MmeController extends Controller{
         $massUnit=NULL;
         $type = NULL ; 
         $mobility=NULL;
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
-        if ($mostRecentlyEqTmp!=NULL){
-            $validate=$mostRecentlyEqTmp->eqTemp_validate ; 
-            $mass=$mostRecentlyEqTmp->eqTemp_mass ;
-            $remarks=$mostRecentlyEqTmp->eqTemp_remarks ;
-            $mobility=$mostRecentlyEqTmp->eqTemp_mobility;
-
-            if ($mostRecentlyEqTmp->enumMassUnit_id!=NULL){
-                $massUnit = $mostRecentlyEqTmp->enumEquipmentMassUnit->value ;
-            }
-
-            if ($mostRecentlyEqTmp->enumType_id!=NULL){
-                $type = $mostRecentlyEqTmp->enumEquipmentType->value ;
-            }
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyMmeTmp!=NULL){
+            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ; 
+            $remarks=$mostRecentlyMmeTmp->mmeTemp_remarks ;
         }
         $obj=([
-            'eq_internalReference' => $equipment->eq_internalReference,
-            'eq_externalReference' => $equipment->eq_externalReference,
-            'eq_name' => $equipment->eq_name,
-            'eq_type'=> $type,
-            'eq_serialNumber' => $equipment->eq_serialNumber,
-            'eq_constructor'  => $equipment->eq_constructor,
-            'eq_mass'  => (string)$mass,
-            'eq_remarks'  => $remarks,
-            'eq_set'  => $equipment->eq_set,
-            'eq_massUnit'=> $massUnit,
-            'eq_mobility'=> (boolean)$mobility,
-            'eq_validate' => $validate,
+            'mme_internalReference' => $mme->mme_internalReference,
+            'mme_externalReference' => $mme->mme_externalReference,
+            'mme_name' => $mme->$mme_name,
+            'mme_serialNumber' => $mme->mme_serialNumber,
+            'mme_constructor'  => $mme->mme_constructor,
+            'mme_remarks'  => $remarks,
+            'mme_set'  => $mme->mme_set,
+            'mme_validate' => $validate,
         ]);
         return response()->json($obj) ;
 
