@@ -1,9 +1,7 @@
 <template>
     <div>
-        <InputSelectForm selectClassName="form-select w-50" label="What do you want to reference ?:" :options="referenceOption" :isDisabled="!!isInConsultMod" v-model="selected_reference"/>
-        <!--<RadioGroupForm label="What do you want to reference ?:" :options="referenceOption" :isDisabled="!!isInConsultMod" v-model="selected_reference"/> -->
-        <ReferenceACurMtnOp v-if="selected_reference=='Curative Maintenance Operation'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
-        <ReferenceAPrvMtnOpRlz v-if="selected_reference=='Preventive Maintenance Operation'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
+        <ReferenceACurMtnOp v-if="operation_type=='curative'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
+        <ReferenceAPrvMtnOpRlz v-if="operation_type=='preventive'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
 
         <div v-if="isInConsultMod==true">
             <button type="button" @click="referenceAnother()">Reference another operation</button>
@@ -36,7 +34,8 @@ export default {
                 {value:'Preventive Maintenance Operation'},
                 {value:'Curative Maintenance Operation'}
             ],
-            isInConsultMod:false
+            isInConsultMod:false,
+            operation_type:this.$route.query.type
         }
     },
     methods:{

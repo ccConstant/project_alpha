@@ -4,7 +4,7 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" >
-            <h2>Liste des evenement de vie</h2>
+            <h2>Life event List</h2>
             <ul>
                 <li class="list-group-item" v-for="(list,index) in states " :key="index" >
                     Start date : {{list.state_startDate}}
@@ -45,6 +45,8 @@ export default {
                 this.loaded=true;
             })
             .catch(error => console.log(error)) ;
+
+        
     }
 
 }

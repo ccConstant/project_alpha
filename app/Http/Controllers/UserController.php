@@ -14,6 +14,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User ; 
+use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller{
 
@@ -347,7 +349,7 @@ class UserController extends Controller{
      * Update the personnal informations of the user like his password or his initials
      * The id parameter correspond to the id of the user we want to change the informations
      */
-    public function update_info($id, Request $request){
+    public function update_info(Request $request, $id){
         $user=User::findOrFail($id) ; 
 
         $request->validate([

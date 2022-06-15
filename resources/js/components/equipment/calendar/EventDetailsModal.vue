@@ -7,11 +7,12 @@
                         <b-card>
                             <h3>{{option.eq_internalReference}}</h3>
                             <p class="card-text">
-                                Number: {{option.prvMtnOp_number}}<br>
+                                Operation number: {{option.prvMtnOp_number}}<br>
                                 Description : {{option.prvMtnOp_description}}<br>
                                 Protocol : {{option.prvMtnOp_protocol}}<br>
                                 Operation date : {{option.prvMtnOp_nextDate}}
                             </p>
+                            <b-button variant="primary" @click="redirect_to_preventive">Record it</b-button>
                         </b-card>
                     </div>
                 </div>
@@ -36,6 +37,9 @@ export default {
         resetModal() {
             this.$emit('modalClosed','')
         },
+        redirect_to_preventive(){
+            this.$router.replace({ name: "url_life_event_reference", params: {id:5,state_id:2 }, query: {type:"preventive"}})
+        }
     }
 
 }

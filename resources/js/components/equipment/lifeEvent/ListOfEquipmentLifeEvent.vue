@@ -4,7 +4,7 @@
             <b-spinner variant="primary"></b-spinner>
       </div>
       <div v-if="loaded==true" >
-        <h1>Equipment List</h1>
+        <h1>Equipment Life Record</h1>
         <input placeholder="Search an equipment by his Alpha Reference" v-model="searchTerm" class="form-control w-50 search_bar" type="text">
         <ErrorAlert ref="errorAlert"/>
         <ul>
@@ -20,8 +20,8 @@
                 <router-link :to="{name:'url_life_event_update_state',params:{id: list.id,state_id:list.state_id} }">Update the state</router-link>
                 <a href="#" @click="verifBeforeAddState(list.id,list.state_id)">Change the state</a>
                 <router-link :to="{name:'url_life_event_all',params:{id: list.id} }">All Event</router-link>
-                <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Reference a maintenance operation</a>
-                <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance operation</router-link>
+                <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Record a maintenance operation</a>
+                <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance record</router-link>
 
               </div>
             </li>
@@ -73,7 +73,7 @@ export default {
           eq_id:eq_id_to_send
         })
         .then(response =>{
-            this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }})
+            this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }, query: {type:"curative"}})
         ;})
         //If the controller sends errors we put it in the errors object 
         .catch(error => {

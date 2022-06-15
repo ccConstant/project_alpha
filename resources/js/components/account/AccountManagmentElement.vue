@@ -1,9 +1,9 @@
 <template>
-    <div class="row">
-        <div class="w-100"></div>
-        <b-col>{{right_title}}</b-col>
-        <b-col v-for="(user) in users" :key="key_letter+user.id">
-            <input type="checkbox" :id="right_name+user.id" :class="right_name" :name="right_name" :value="user.id" @click="send_right_change($event,user.id,right_name)">
+    <div class="row row_right">
+        <div class="w-100 row_right_tab"></div>
+        <b-col class="col_right_tab_title" >{{right_title}}</b-col>
+        <b-col class="col_right_tab" v-for="(user) in users" :key="key_letter+user.id">
+            <input type="checkbox" :id="right_name+user.id" :class="[right_name, 'right_checkbox']" :name="right_name" :value="user.id" @click="send_right_change($event,user.id,right_name)">
         </b-col>
     </div>
 
@@ -37,6 +37,22 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.row_right{
+    .row_right_tab{
+        border: solid 1px lightgrey;
+    }
+    .col_right_tab{
+        border-right: solid 1px lightgrey;
+        border-left: solid 1px lightgrey;
+    }
+    .col_right_tab_title{
+        border-left: solid 1px lightgrey;
+    }
+    .right_checkbox{
+        display: block;
+        margin: auto;
+    }
+}
 
 </style>

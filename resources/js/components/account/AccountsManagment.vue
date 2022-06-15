@@ -6,9 +6,9 @@
         <div v-else>
 			<b-container class="user_table_container" fluid="xl">
 				<b-row>
-					<b-col>Right</b-col>
-					<b-col v-for="(user, index) in pageOfItems" :key="index">
-						{{user.user_lastName}} {{user.user_firstName}}
+					<b-col class="right_title">Right</b-col>
+					<b-col class="right_name" v-for="(user, index) in pageOfItems" :key="index">
+						<a href="#" @click="openUserUpdateModal(user.user_pseudo,user.user_firstName,user.user_lastName,user.user_initials,user.id)">{{user.user_lastName}} {{user.user_firstName}}</a>
 					</b-col>
 
 					<AccountManagmentElement right_title="Make equipment opération validation" key_letter="A" :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
@@ -30,26 +30,53 @@
 					<AccountManagmentElement right_title="Make a technical Validation" key_letter="Q" :users="pageOfItems" right_name="user_makeTechnicalValidationRight"/>
 					<AccountManagmentElement right_title="Acces to user managment" key_letter="R" :users="pageOfItems" right_name="user_menuUserAcessRight"/>
 					<AccountManagmentElement right_title="Update information" key_letter="S" :users="pageOfItems" right_name="user_updateInformationRight"/>
-					<AccountManagmentElement right_title="Reform Data" key_letter="T" :users="pageOfItems" right_name="user_deleteDataSignedLinkedToEqOrEcmeRight"/>
-
+					<AccountManagmentElement right_title="Delete signed data" key_letter="T" :users="pageOfItems" right_name="user_deleteDataSignedLinkedToEqOrEcmeRight"/>
+					<div class="w-100 row_right_tab"></div>
 				</b-row>
 			</b-container>
+			<b-modal :id="`modal-updateUser-${_uid}`" @show="resetModal" @hidden="resetModal" @ok="handleOkUpdate" title="User info">
+				<div>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_userName" name="user_userName" label="Username :" v-model="modal_userName" :isDisabled="true"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_firstName" name="user_firstName" label="First :" v-model="modal_firstName" :isDisabled="true"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_lastName" name="user_lastName" label="Last :" v-model="modal_lastName" :isDisabled="true"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_initials" name="user_initials" label="Initial :" v-model="modal_initials"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_passwordName" name="user_password" label="Change the current password :" v-model="modal_password"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Change the current password :" v-model="modal_confirmation_password"/>
+
+
+
+				</div>
+			</b-modal>
+
 			<jw-pagination class="eq_list_pagination" :pageSize=5 :items="users" @changePage="onChangePage"></jw-pagination>
 		</div>
 	</div>
 </template>
 
 <script>
+import InputTextForm from '../input/InputTextForm.vue'
 import AccountManagmentElement from './AccountManagmentElement.vue'
 export default {
 	components:{
-		AccountManagmentElement
+		AccountManagmentElement,
+		InputTextForm
 	},
 	data(){
 		return{
 			loaded:false,
 			users:[],
 			pageOfItems: [],
+			compId:this._uid,
+			modal_id:'',
+			modal_userName:'',
+			modal_firstName:'',
+			modal_lastName:'',
+			modal_initials:'',
+			modal_password:'',
+			modal_confirmation_password:'',
+			errors:[],
+			userState:null										
+
 		}
 	},
 	created(){
@@ -71,12 +98,50 @@ export default {
 			// update page of items
 			this.pageOfItems = pageOfItems;
 
+		},
+		openUserUpdateModal(user,first,last,initials,id){
+			this.modal_userName=user;
+			this.modal_firstName=first;
+			this.modal_lastName=last;
+			this.modal_initials=initials;
+			this.modal_id=id
+			this.$bvModal.show(`modal-updateUser-${this.compId}`)
+		},
+		handleOkUpdate(bvModalEvent) {
+            // Prevent modal from closing
+            bvModalEvent.preventDefault()
+            // Trigger submit handler
+            this.handleSubmitUpdate()
+        },
+		handleSubmitUpdate() {
+			var postUrlUpdate = (id) => `/user/update/infos/${id}`;
+			axios.post(postUrlUpdate(this.modal_id),{
+					user_initials:this.modal_initials,
+                    user_password:this.modal_password,
+					user_confirmation_password:this.modal_confirmation_password,
+                })
+				.then(response =>{           
+					// Hide the modal manually
+					this.$nextTick(() => {
+						this.$bvModal.hide(`modal-addEnum-${this.compId}`)
+					})      
+				})
+                .catch(error =>{
+                    console.log(error.response.data.errors);
+                });
+  
+        },
+		resetState(){
+			this.enumState = null
+		},
+		resetModal(){
+			this.enumState = null
 		}
+
 	},
 
 	updated(){
-		for(const user of this.users){
-			console.log(user)
+		for(const user of this.pageOfItems){
 			if(user.user_makeEqOpValidationRight==true){
 				document.getElementById('user_makeEqOpValidationRight'+user.id).setAttribute("checked", true)
 			}
@@ -137,8 +202,6 @@ export default {
 			if(user.user_deleteDataSignedLinkedToEqOrEcmeRight==true){
 				document.getElementById('user_deleteDataSignedLinkedToEqOrEcmeRight'+user.id).setAttribute("checked", true)
 			}
-
-
 		}
 	}
 
@@ -148,8 +211,23 @@ export default {
 <style lang="scss">
 	.user_table_container{
 		min-width: 950px;
+		margin-top: 50px;
+
+		.right_name{
+			border-top: solid 1px lightgray;
+			border-left: solid 1px lightgray;
+			
+			margin-left:-24px ;
+		}
+		.right_title{
+			border-top: solid 1px lightgray;
+			border-left: solid 1px lightgray;
+			
+		}
+		.row_right_tab{
+			border: solid 1px lightgray;
+		
+		}
 	}
-	.toto{
-		display: flexbox;
-	}
+
 </style>

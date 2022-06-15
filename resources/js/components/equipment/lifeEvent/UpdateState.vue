@@ -7,7 +7,7 @@
             <form class="container state-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <div v-if="isInModifMod">
-                    <h2>Update the state</h2>
+                    <h2 >Update the state</h2>
                 </div>
                 <div v-else>
                     <h2>Change the State</h2>

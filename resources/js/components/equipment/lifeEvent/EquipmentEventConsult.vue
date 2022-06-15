@@ -5,6 +5,16 @@
         </div>
         <div v-if="loaded==true">
             <UpdateState :consultMod="true"/>
+            <div v-if="eq_prvMtnOpRlz.length>0">
+                <div>
+                    <li class="list-group-item" v-for="(list,index) in states " :key="index" >
+                        Start date : {{list.state_startDate}}
+                        End date : {{list.state_endDate}}
+                        State : {{list.state_name}}
+                        <router-link :to="{name:'url_life_event_all_consult',params:{id: eq_id,state_id:list.id} }">Consult</router-link>
+                    </li>
+                </div>
+            </div>
             <ReferenceAPrvMtnOpRlz v-if="eq_prvMtnOpRlz.length>0" :importedPrvMtnOpRlz="eq_prvMtnOpRlz" consultMod/>
             <ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curMtnOp" consultMod/>
 

@@ -29,73 +29,100 @@ class VerificationController extends Controller
     public function verif_verif(Request $request){
 
         //-----CASE verif->validate=validated----//
-        //if the user has choosen "validated" value that's mean he wants to validate his preventive maintenance operation, so he must enter all the attributes
-        if ($request->prvMtnOp_validate=='validated'){
+        //if the user has choosen "validated" value that's mean he wants to validate his verification, so he must enter all the attributes
+        if ($request->verif_validate=='validated'){
             $this->validate(
                 $request,
                 [
-                    'prvMtnOp_description' => 'required|min:3|max:255',
-                    'prvMtnOp_periodicity' => 'required|min:1|max:4',
-                    'prvMtnOp_protocol' => 'required|min:3',
-                    'prvMtnOp_symbolPeriodicity' => 'required',
+                    'verif_name' => 'required|min:3|max:100',
+                    'verif_description' => 'required|min:3|max:255',
+                    'verif_periodicity' => 'required|min:1|max:4',
+                    'verif_expectedResult' => 'required|min:3|max:100',
+                    'verif_nonComplianceLimit' => 'required|min:3|max:50',
+                    'verif_protocol' => 'required|min:3|max:255',
+                    'verif_symbolPeriodicity' => 'required',
                 ],
                 [
-                    'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
-                    'prvMtnOp_description.min' => 'You must enter at least three characters ',
-                    'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
-                    'prvMtnOp_periodicity.required' => 'You must enter a periodicity for your preventive maintenance operation',
-                    'prvMtnOp_periodicity.min' => 'You must enter at least one character ',
-                    'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
-                    'prvMtnOp_protocol.required' => 'You must enter a protocol for your preventive maintenance operation',
-                    'prvMtnOp_protocol.min' => 'You must enter at least three characters ',
-                    'prvMtnOp_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your preventive maintenance operation',
+                    'verif_name.required' => 'You must enter a name for your verification',
+                    'verif_name.min' => 'You must enter at least three characters ',
+                    'verif_name.max' => 'You must enter a maximum of 100 characters',
 
-                
+                    'verif_description.required' => 'You must enter a description for verification',
+                    'verif_description.min' => 'You must enter at least three characters ',
+                    'verif_description.max' => 'You must enter a maximum of 255 characters',
+
+                    'verif_periodicity.required' => 'You must enter a periodicity for your verification',
+                    'verif_periodicity.min' => 'You must enter at least one character ',
+                    'verif_periodicity.max' => 'You must enter a maximum of 4 characters',
+
+                    'verif_expectedResult.required' => 'You must enter an expectedResult for your verification',
+                    'verif_expectedResult.min' => 'You must enter at least three character ',
+                    'verif_expectedResult.max' => 'You must enter a maximum of 100 characters',
+
+                    'verif_nonComplianceLimit.required' => 'You must enter a nonComplianceLimit for your verification',
+                    'verif_nonComplianceLimit.min' => 'You must enter at least three character ',
+                    'verif_nonComplianceLimit.max' => 'You must enter a maximum of 50 characters',
+
+                    'verif_protocol.required' => 'You must enter a protocol for your verification',
+                    'verif_protocol.min' => 'You must enter at least three characters ',
+                    'verif_protocol.max' => 'You must enter a maximum of 255 characters ',
+
+                    'verif_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your verification',
                 ]
             );
 
         }else{
-             //-----CASE prvMtnOp->validate=drafted or prvMtnOp->validate=to be validate----//
+             //-----CASE verif->validate=drafted or verif->validate=to be validate----//
             //if the user has choosen "drafted" or "to be validated" he have no obligations 
             $this->validate(
                 $request,
                 [
-                    'prvMtnOp_description' => 'required|min:3|max:255',
-                    'prvMtnOp_periodicity' => 'max:4',
+                    'verif_name' => 'required|min:3|max:100',
+                    'verif_description' => 'required|min:3|max:255',
+                    'verif_periodicity' => 'max:4',
+                    'verif_expectedResult' => 'max:100',
+                    'verif_nonComplianceLimit' => 'max:50',
+                    'verif_protocol' => 'max:255',
                 ],
                 [
-                    'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
-                    'prvMtnOp_description.min' => 'You must enter at least three characters ',
-                    'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
-                    'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
+                    'verif_name.required' => 'You must enter a name for your verification',
+                    'verif_name.min' => 'You must enter at least three characters ',
+                    'verif_name.max' => 'You must enter a maximum of 100 characters',
 
-                
+                    'verif_description.required' => 'You must enter a description for verification',
+                    'verif_description.min' => 'You must enter at least three characters ',
+                    'verif_description.max' => 'You must enter a maximum of 255 characters',
+
+                    'verif_periodicity.max' => 'You must enter a maximum of 4 characters',
+                    'verif_expectedResult.max' => 'You must enter a maximum of 100 characters',
+                    'verif_nonComplianceLimit.max' => 'You must enter a maximum of 50 characters',
+                    'verif_protocol.max' => 'You must enter a maximum of 255 characters ',
                 ]
             );
         }
 
 
-        if ($request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL){
-            if ($request->prvMtnOp_symbolPeriodicity=='Y' && $request->prvMtnOp_periodicity>15){
+        if ($request->verif_periodicity!='' && $request->verif_periodicity!=NULL && $request->verif_symbolPeriodicity!='' && $request->verif_symbolPeriodicity!=NULL){
+            if ($request->verif_symbolPeriodicity=='Y' && $request->verif_periodicity>15){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOp_periodicity' => ["You can't enter a periodicity higher than 15 years"]
+                        'verif_periodicity' => ["You can't enter a periodicity higher than 15 years"]
                     ]
                 ], 429);
             }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='M' && $request->prvMtnOp_periodicity>180){
+            if ($request->verif_symbolPeriodicity=='M' && $request->verif_periodicity>180){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOp_periodicity' => ["You can't enter a periodicity higher than 180 months"]
+                        'verif_periodicity' => ["You can't enter a periodicity higher than 180 months"]
                     ]
                 ], 429);
             }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='D' && $request->prvMtnOp_periodicity>5475){
+            if ($request->verif_symbolPeriodicity=='D' && $request->verif_periodicity>5475){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOp_periodicity' => ["You can't enter a periodicity higher than 5475 days"]
+                        'verif_periodicity' => ["You can't enter a periodicity higher than 5475 days"]
                     ]
                 ], 429);
             }
@@ -104,19 +131,19 @@ class VerificationController extends Controller
 
 
     /**
-     * Function call by EquipmenPrvMtnOpForm.vue when the form is submitted for insert with the route : /equipment/add/prvMtnOp(post)
-     * Add a new enregistrement of preventive maintenance operation in the data base with the informations entered in the form 
-     * @return \Illuminate\Http\Response : the id of the new prvMtnOp
+     * Function call by MmeVerifForm.vue when the form is submitted for insert with the route : /mme/add/verif(post)
+     * Add a new enregistrement of verification in the data base with the informations entered in the form 
+     * @return \Illuminate\Http\Response : the id of the new verification
      */
-    public function add_prvMtnOp(Request $request){
+    public function add_verif(Request $request){
         
-        $id_eq=intval($request->eq_id) ; 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
+        $id_mme=intval($request->mme_id) ; 
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
+        $verifInMmes=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get();
         $max_number=1 ; 
-        if (count($prvMtnOpsInEq)!=0){
-            foreach ($prvMtnOpsInEq as $prvMtnOpInEq){
+        if (count($mmeMtnOpsInMme)!=0){
+            foreach ($verifInMmes as $verifInMme){
                 $number=intval($prvMtnOpInEq->prvMtnOp_number) ; 
                 if ($number>$max_number){
                     $max_number=$prvMtnOpInEq->prvMtnOp_number ; 
