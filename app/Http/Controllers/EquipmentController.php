@@ -514,7 +514,7 @@ class EquipmentController extends Controller{
         }
     }
 
-     /**
+      /**
      * Function call by EquipmentMaintenanceCalendar.vue when the form is submitted with the route : /equipment/prvMtnOp/planning (post)
      * Send all the equipments validated in the data base with the preventive maintenance operations linked
      * @return \Illuminate\Http\Response
@@ -543,10 +543,22 @@ class EquipmentController extends Controller{
                     ]);
                     array_push($containerOp,$opMtn);
                 }
-                
+
+                $states=$mostRecentlyEqTmp->states;
+                $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+                foreach($states as $state){
+                    $date=$state->created_at ; 
+                    $date2=$mostRecentlyState->created_at;
+                    if ($date>=$date2){
+                        $mostRecentlyState=$state ; 
+                    }
+                }
+
                 $eq = ([
+                    "id" => $equipment->id,
                     "internalReference" => $equipment->eq_internalReference,
                     "preventive_maintenance_operations" => $containerOp,
+                    "state_id" => $mostRecentlyState->id,
                 ]) ; 
 
                 array_push($container,$eq);

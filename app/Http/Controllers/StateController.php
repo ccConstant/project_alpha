@@ -210,7 +210,7 @@ class StateController extends Controller
     }
 
     /**
-     * Function call by ReferenceAState.vue with the route : /state/send/{$id} (get)
+     * Function call by ReferenceAState.vue with the route : /states/send/{$id} (get)
      * Get the states of the equipment whose id is passed in parameter
      * The id parameter corresponds to the id of the equipment from which we want the states
      * @return \Illuminate\Http\Response
@@ -223,6 +223,37 @@ class StateController extends Controller
             $states=$mostRecentlyEqTmp->states ; 
             foreach ($states as $state) {
 
+                $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $state->id)->get() ; 
+                $container_prvMtnOpRlz=array() ; 
+                foreach($prvMtnOpRlzs as $prvMtnOpRlz){
+                    $obj=([
+                        "id" => $prvMtnOpRlz->id,
+                        "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
+                        "prvMtnOpRlz_startDate" => $prvMtnOpRlz->prvMtnOpRlz_startDate,
+                        "prvMtnOpRlz_endDate" => $prvMtnOpRlz->prvMtnOpRlz_endDate,
+                        "prvMtnOpRlz_entryDate" => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
+                        "prvMtnOpRlz_validate" => $prvMtnOpRlz->prvMtnOpRlz_validate,
+                        "prvMtnOp_id" => $prvMtnOpRlz->prvMtnOp_id,
+                    ]);
+                    array_push($container_prvMtnOpRlz, $obj); 
+                }
+                
+                $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $state->id)->get() ; 
+                $container_curMtnOp=array() ; 
+                foreach($curMtnOps as $curMtnOp){
+                    $obj=([
+                        "id" => $curMtnOp->id,
+                        "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
+                         "curMtnOp_reportNumber" => $curMtnOp->curMtnOp_reportNumber,
+                         "curMtnOp_description" => $curMtnOp->curMtnOp_description,
+                         "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,
+                         "curMtnOp_endDate" => $curMtnOp->curMtnOp_endDate,
+                         "curMtnOp_validate" => $curMtnOp->curMtnOp_validate,
+                     ]);
+                    array_push($container_curMtnOp, $obj); 
+                }
+
+                
                 $obj=([
                     "id" => $state->id,
                     'state_remarks' => $state->state_remarks,
@@ -231,6 +262,8 @@ class StateController extends Controller
                     'state_startDate' => $state->state_startDate,
                     'state_endDate' => $state->state_endDate,
                     'state_name' => $state->state_name,
+                    'prvMtnOpRlz' => $container_prvMtnOpRlz,
+                    'curMtnOp' => $container_curMtnOp,
                 ]);
                 array_push($container,$obj);
             }
