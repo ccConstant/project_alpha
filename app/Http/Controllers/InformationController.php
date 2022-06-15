@@ -142,7 +142,7 @@ class InformationController extends Controller
 
      /**
      * Function call by InfoManagement.vue with the route : /info/send/person (get)
-     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * Get all the informations (=the dictionnary) about a person in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
     public function send_informations_person(){
@@ -152,7 +152,7 @@ class InformationController extends Controller
 
     /**
      * Function call by InfoManagement.vue with the route : /info/send/mme (get)
-     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * Get all the informations (=the dictionnary) about a mme in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme(){
@@ -162,7 +162,7 @@ class InformationController extends Controller
 
      /**
      * Function call by InfoManagement.vue with the route : /info/send/mme_state (get)
-     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * Get all the informations (=the dictionnary) about a mme state in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme_state(){
@@ -172,7 +172,7 @@ class InformationController extends Controller
 
      /**
      * Function call by InfoManagement.vue with the route : /info/send/verif (get)
-     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * Get all the informations (=the dictionnary) about a verification in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
     public function send_informations_verif(){
@@ -183,7 +183,7 @@ class InformationController extends Controller
 
      /**
      * Function call by InfoManagement.vue with the route : /info/send/verifRlz (get)
-     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * Get all the informations (=the dictionnary) about a verification realized in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
     public function send_informations_verifRlz(){
@@ -193,7 +193,7 @@ class InformationController extends Controller
 
       /**
      * Function call by InfoManagement.vue with the route : /info/send/mme_usage(get)
-     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * Get all the informations (=the dictionnary) about a mme usage in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme_usage(){
@@ -203,7 +203,7 @@ class InformationController extends Controller
 
       /**
      * Function call by InfoManagement.vue with the route : /info/send/mme_precaution (get)
-     * Get all the informations (=the dictionnary) about a curativeMaintenanceOperation in the data base and send them to the vue
+     * Get all the informations (=the dictionnary) about a mme precaution in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme_precaution(){

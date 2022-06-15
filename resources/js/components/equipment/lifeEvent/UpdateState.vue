@@ -157,7 +157,7 @@ export default {
         addEquipmentState(savedAs){
             if(!this.addSucces){
                 console.log("ADD nom:", this.state_name,"\n","remark:", this.state_remarks,"\n","startDate:", this.selected_startDate
-                ,"\n","\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n",)
+                ,"\n","\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n",this.$userId.id)
                 axios.post('/state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
@@ -176,8 +176,8 @@ export default {
                             state_startDate:this.selected_startDate,
                             state_isOk:this.state_isOk,
                             state_validate:savedAs,
-                            eq_id:this.eq_id
-                            
+                            eq_id:this.eq_id,
+                            enteredBy_id:this.$userId.id
 
                         })
                         .then(response =>{

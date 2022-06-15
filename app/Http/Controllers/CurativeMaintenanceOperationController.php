@@ -164,6 +164,7 @@ class CurativeMaintenanceOperationController extends Controller
             $max_number=$max_number+1 ;
         }
         
+        
         //Creation of a new curative maintenance operation
         $curMtnOp=CurativeMaintenanceOperation::create([
             'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
@@ -172,7 +173,8 @@ class CurativeMaintenanceOperationController extends Controller
             'curMtnOp_startDate' => $request->curMtnOp_startDate,
             'curMtnOp_endDate' => $request->curMtnOp_endDate,
             'state_id' => $request->state_id,   
-            'curMtnOp_number' => $max_number, 
+            'curMtnOp_number' => $max_number,
+            'enteredBy_id' => $request->enteredBy_id,
 
         ]) ; 
         

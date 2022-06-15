@@ -29,6 +29,8 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\UserController ; 
+use App\Http\Controllers\MmeController ; 
 
 
 
@@ -123,6 +125,10 @@ Route::get('/sign_up', function () {
 });
 
 Route::get('/sign_in', function () {
+    return view('welcome');
+});
+
+Route::get('/accounts', function () {
     return view('welcome');
 });
 
@@ -441,8 +447,6 @@ Route::get(' /info/send/risk', [InformationController::class, 'send_informations
 
 Route::get(' /info/send/state', [InformationController::class, 'send_informations_state']);
 
-Route::get(' /info/send/state', [InformationController::class, 'send_informations_state']);
-
 Route::get(' /info/send/preventiveMaintenanceOperationRealized', [InformationController::class, 'send_informations_preventiveMaintenanceOperationRealized']);
 
 Route::get(' /info/send/curativeMaintenanceOperation', [InformationController::class, 'send_informations_curativeMaintenanceOperation']);
@@ -463,10 +467,82 @@ Route::get(' /info/send/verifRlz', [InformationController::class, 'send_informat
 
 Route::get(' /info/send/mme_usage', [InformationController::class, 'send_informations_mme_usage']);
 
-Route::get(' /info/send/mme_precaution', [InformationController::class, 'send_informations_mme_usage']);
+Route::get(' /info/send/mme_precaution', [InformationController::class, 'send_informations_mme_precaution']);
 
 
 /* User Form Routes */ 
 
 Route::get(' /users/send', [UserController::class, 'send_users']);
+
+Route::post(' /user/update_right/menuUserAcessRight/{id}', [UserController::class, 'update_menuUserAcessRight']);
+
+Route::post(' /user/update_right/resetUserPasswordRight/{id}', [UserController::class, 'update_resetUserPasswordRight']);
+
+Route::post(' /user/update_right/updateDataInDraftRight/{id}', [UserController::class, 'update_updateDataInDraftRight']);
+
+Route::post(' /user/update_right/validateDescriptiveLifeSheetDataRight/{id}', [UserController::class, 'update_validateDescriptiveLifeSheetDataRight']);
+
+Route::post(' /user/update_right/validateOtherDataRight/{id}', [UserController::class, 'update_validateOtherDataRight']);
+
+Route::post(' /user/update_right/updateDataValidatedButNotSignedRight/{id}', [UserController::class, 'update_updateDataValidatedButNotSignedRight']);
+
+Route::post(' /user/update_right/updateDescriptiveLifeSheetDataSignedRight/{id}', [UserController::class, 'update_updateDescriptiveLifeSheetDataSignedRight']);
+
+Route::post(' /user/update_right/makeQualityValidationRight/{id}', [UserController::class, 'update_makeQualityValidationRight']);
+
+Route::post(' /user/update_right/makeTechnicalValidationRight/{id}', [UserController::class, 'update_makeTechnicalValidationRight']);
+
+Route::post(' /user/update_right/makeEqOpValidationRight/{id}', [UserController::class, 'update_makeEqOpValidationRight']);
+
+Route::post(' /user/update_right/updateEnumRight/{id}', [UserController::class, 'update_updateEnumRight']);
+
+Route::post(' /user/update_right/deleteEnumRight/{id}', [UserController::class, 'update_deleteEnumRight']);
+
+Route::post(' /user/update_right/addEnumRight/{id}', [UserController::class, 'update_addEnumRight']);
+
+Route::post(' /user/update_right/deleteDataNotValidatedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataNotValidatedLinkedToEqOrMmeRight']);
+
+Route::post(' /user/update_right/deleteDataValidatedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataValidatedLinkedToEqOrMmeRight']);
+
+Route::post(' /user/update_right/deleteDataSignedLinkedToEqOrEcmeRight/{id}', [UserController::class, 'update_deleteDataSignedLinkedToEqOrEcmeRight']);
+
+Route::post(' /user/update_right/deleteEqOrMmeRight/{id}', [UserController::class, 'update_deleteEqOrMmeRight']);
+
+Route::post(' /user/update_right/updateInformationRight/{id}', [UserController::class, 'update_updateInformationRight']);
+
+Route::post(' /user/update_right/personTrainedToGeneralPrinciplesOfEqManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfEqManagementRight']);
+
+Route::post(' /user/update_right/personTrainedToGeneralPrinciplesOfMMEManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfMMEManagementRight']);
+
+
+
+
+/* Mme ID Form Routes */ 
+
+Route::get('/mme/sets', [MmeController::class, 'send_sets'] ) ;
+
+Route::post('/mme/add', [MmeController::class, 'add_mme']) ;
+
+Route::post('/mme/verif', [MmeController::class, 'verif_mme'])  ;
+
+Route::post('/mme/update/{id}', [MmeController::class, 'update_mme'])  ;
+
+Route::get('/mme/mmes', [MmeController::class, 'send_internalReferences_ids'] ) ;
+
+Route::get('/mmes/same_set/{set}', [MmeController::class, 'send_mmes_same_set'])  ;
+
+Route::get('/mme/{id}', [MmeController::class, 'send_mme'] )->whereNumber('id') ;
+
+Route::get('/mme/prvMtnOp/planning', [MmeController::class, 'send_mme_verif_for_planning'] ) ;
+
+Route::post('/mme/verifValidation/{id}', [MmeController::class, 'verif_validation'] ) ;
+
+Route::post('/mme/validation/{id}', [MmeController::class, 'validation'] ) ;
+
+Route::post('/mme/delete/{id}', [MmeController::class, 'delete_mme'] ) ;
+
+Route::post('/state/mme/{id} ', [MmeController::class, 'add_mme_from_state'] ) ;
+
+Route::get('/send/state/mme/{state_id} ', [MmeController::class, 'send_mme_from_state'] ) ;
+
 

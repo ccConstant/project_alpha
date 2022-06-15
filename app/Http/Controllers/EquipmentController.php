@@ -410,6 +410,7 @@ class EquipmentController extends Controller{
             'eqTemp_remarks' => $request->eq_remarks,
             'eqTemp_mobility' => $request->eq_mobility,
             'enumType_id' => $type_id,
+            'createdBy_id' => $request->createdBy_id,
         ]);
         
         //Creation of a new state
@@ -567,6 +568,8 @@ class EquipmentController extends Controller{
     public function verif_validation($id){
         $container=array() ; 
         $container2=array() ; 
+
+        //MANQUE DIM ET POWER
         
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){
@@ -576,73 +579,80 @@ class EquipmentController extends Controller{
             array_push($container2,$obj);
         }
 
-        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-        if (count($files)<1){
+        if ($mostRecentlyEqTmp->createdBy_id==NULL){
             $obj2=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one file"]
+                'validation' => ["You can't validate an equipment that doesn't have a creator, please reference one"],
             ]);
             array_push($container2,$obj2);
+        }
+
+        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        if (count($files)<1){
+            $obj3=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one file"]
+            ]);
+            array_push($container2,$obj3);
             
         }else{
             foreach($files as $file){
                 if ($file->file_validate != "validated"){
-                    $obj3=([
+                    $obj4=([
                         'validation' => ["You can't validate an equipment that have at least one file in draft or in to be validated, you have to validated it"]
                     ]);
-                    array_push($container2,$obj3);
+                    array_push($container2,$obj4);
                 }
             }
         }
         
         $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         if (count($usages)<1){
-            $obj4=([
+            $obj5=([
                 'validation' => ["You can't validate an equipment that doesn't have at least one usage"]
             ]);
-            array_push($container2,$obj4);
+            array_push($container2,$obj5);
         }else{
             foreach($usages as $usage){
                 if ($usage->usg_validate != "validated"){
                     
-                    $obj5=([
+                    $obj6=([
                         'validation' => ["You can't validate an equipment that have at least one usage in draft or in to be validated, you have to validated it"]
                     ]);
-                    array_push($container2,$obj5);
+                    array_push($container2,$obj6);
                 }
             }
         }
 
         
         if ($mostRecentlyEqTmp->special_process==NULL){
-            $obj6=([
+            $obj7=([
                 'validation' => ["You can't validate an equipment that doesn't have one special process"]
             ]);
-            array_push($container2,$obj6);
+            array_push($container2,$obj7);
 
         }else{
             $spProc=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ; 
             if ($spProc->spProc_validate!="validated"){
-                $obj7=([
+                $obj8=([
                     'validation' => ["You can't validate an equipment with a special process in drafted or in to be validated"]
                 ]);
-                array_push($container2,$obj7);
+                array_push($container2,$obj8);
             }
         }
 
         
         $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         if (count($risks)<1){
-            $obj8=([
+            $obj9=([
                 'validation' => ["You can't validate an equipment that doesn't have at least one risk"]
             ]);
-            array_push($container2,$obj8);
+            array_push($container2,$obj9);
         }else{
             foreach($risks as $risk){
                 if ($risk->risk_validate != "validated"){
-                    $obj9=([
+                    $obj10=([
                         'validation' => ["You can't validate an equipment that have at least one risk in draft or in to be validated, you have to validated it"]
                     ]);
-                    array_push($container2,$obj9);
+                    array_push($container2,$obj10);
                 }
             }
         }
@@ -650,40 +660,77 @@ class EquipmentController extends Controller{
         
         $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         if (count($prvMtnOps)<1){
-            $obj9=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one preventive maintenance operations "]
-            ]);
-            array_push($container2,$obj9);
-        }else{
-            foreach($prvMtnOps as $prvMtnOp){
-                if ($prvMtnOp->prvMtnOp_validate != "validated"){
-                    $obj10=([
-                        'validation' => ["You can't validate an equipment that have at least one prvMtnOp in draft or in to be validated, you have to validated it"]
-                    ]);
-                    array_push($container2,$obj10);
-                }
-            }
-        }
-        
-        if (count($mostRecentlyEqTmp->states)<1){
             $obj11=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one state"]
+                'validation' => ["You can't validate an equipment that doesn't have at least one preventive maintenance operation "]
             ]);
             array_push($container2,$obj11);
         }else{
-            foreach($mostRecentlyEqTmp->states as $state){
-                if ($state->state_validate != "validated"){
+            foreach($prvMtnOps as $prvMtnOp){
+                if ($prvMtnOp->prvMtnOp_validate != "validated"){
                     $obj12=([
-                        'validation' => ["You can't validate an equipment that have at least one state in draft or in to be validated, you have to validated it"]
+                        'validation' => ["You can't validate an equipment that have at least one prvMtnOp in draft or in to be validated, you have to validated it"]
                     ]);
                     array_push($container2,$obj12);
                 }
             }
         }
-         
-        return response()->json([
-                'errors' => $container2
-        ], 429);
+        
+        if (count($mostRecentlyEqTmp->states)<1){
+            $obj13=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one state"]
+            ]);
+            array_push($container2,$obj13);
+        }else{
+            foreach($mostRecentlyEqTmp->states as $state){
+                if ($state->state_validate != "validated"){
+                    $obj14=([
+                        'validation' => ["You can't validate an equipment that have at least one state in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj14);
+                }
+            }
+        }
+
+        $dims=Dimension::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        if (count($dims)<1){
+            $obj15=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one dimension"]
+            ]);
+            array_push($container2,$obj15);
+            
+        }else{
+            foreach($dims as $dim){
+                if ($dim->dim_validate != "validated"){
+                    $obj16=([
+                        'validation' => ["You can't validate an equipment that have at least one dimension in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj16);
+                }
+            }
+        }
+
+        $pows=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        if (count($pows)<1){
+            $obj17=([
+                'validation' => ["You can't validate an equipment that doesn't have at least one power"]
+            ]);
+            array_push($container2,$obj17);
+            
+        }else{
+            foreach($pows as $pow){
+                if ($pow->pow_validate != "validated"){
+                    $obj18=([
+                        'validation' => ["You can't validate an equipment that have at least one power in draft or in to be validated, you have to validated it"]
+                    ]);
+                    array_push($container2,$obj18);
+                }
+            }
+        }
+        if (count($container2)>0){
+            return response()->json([
+                    'errors' => $container2
+            ], 429);
+        }
 
     }
 
@@ -697,30 +744,35 @@ class EquipmentController extends Controller{
     public function validation(Request $request, $id){
         $equipment=Equipment::findOrFail($id) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        
         if ($request->reason=="technical"){
-            //RELIER LA PERSONNE 
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => $request->enteredBy_id,
+            ]);
         }
 
         if ($request->reason=="quality"){
-            //RELIER LA PERSONNE 
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id'=> $request->enteredBy_id,
+            ]);
         }
 
-        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier!=NULL){
-            $mostRecentlyEqTmp->eqTemp_lifeSheetCreated=true ;
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier_id!=NULL){
+            $mostRecentlyEqTmp->update([
+                 'eqTemp_lifeSheetCreated' => true,
+            ]);
 
-            $state_id=$state->id ; 
             
             //Creation of a new state
-            /*$newState=State::create([
+            $newState=State::create([
                 'state_remarks' => "This equipment has been validated",
                 'state_startDate' =>  Carbon::now('Europe/Paris'),
                 'state_isOk' => true,
                 'state_validate' => "drafted",
                 'state_name' => "Waiting_to_be_in_use"
-            ]) ; */
+            ]) ; 
 
-            //relier 
-            
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
     }
 

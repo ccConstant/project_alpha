@@ -200,6 +200,7 @@ export default {
                         curMtnOp_validate :savedAs,
                         eq_id:id,
                         state_id:this.equipment_state_id,
+                        enteredBy_id:this.$userId.id
 
                 
                     })

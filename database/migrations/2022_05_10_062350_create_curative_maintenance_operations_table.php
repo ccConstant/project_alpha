@@ -33,13 +33,13 @@ return new class extends Migration
             $table->unsignedBigInteger('state_id') ;
             $table->foreign('state_id')->references('id')->on('states') ->onDelete('cascade')  ; 
             $table->unsignedBigInteger('qualityVerifier_id') -> nullable() ; 
-            $table->foreign('qualityVerifier_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('qualityVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('technicalVerifier_id')  -> nullable() ; 
-            $table->foreign('technicalVerifier_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('technicalVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('realizedBy_id') -> nullable() ; 
-            $table->foreign('realizedBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ;
+            $table->foreign('realizedBy_id')->references('id')->on('users') ->onDelete('restrict')  ;
             $table->unsignedBigInteger('enteredBy_id') -> nullable() ; 
-            $table->foreign('enteredBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ;  
+            $table->foreign('enteredBy_id')->references('id')->on('users') ->onDelete('restrict')  ;  
 
             $table->timestamps();
         });

@@ -226,7 +226,8 @@ export default {
                     .then(response =>{
                         var techVeriftUrl = (id) => `/equipment/validation/${id}`;
                         axios.post(techVeriftUrl(this.eq_id),{
-                            reason:this.validationMethod
+                            reason:this.validationMethod,
+                            enteredBy_id:this.$userId.id
                         })
                         .then(response =>{
                             console.log("added succesfuly")

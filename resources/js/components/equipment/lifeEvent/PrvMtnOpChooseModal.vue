@@ -6,7 +6,7 @@
         <div v-else>
             <b-button v-b-modal.modal-1 disabled>Please inform or validate preventive maintenance operation before realizing one </b-button>
         </div>
-        <b-modal id="modal-1" title="Importation" hide-footer>
+        <b-modal id="modal-1" title="Choose a preventive maintenance operation to realize" hide-footer>
             <div>
                 <b-button v-b-toggle.collapse-chooseOpe variant="primary" icon="chevron-bar-up" >Show details</b-button>
                 <div v-for="option in prvMtnOps" :key="option.id">

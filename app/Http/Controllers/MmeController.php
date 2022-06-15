@@ -263,10 +263,10 @@ class MmeController extends Controller{
                                 ]
                             ], 429);
                         }
-                        if($equipment->eq_constructor!=$request->eq_constructor){
+                        if($mme->mme_constructor!=$request->mme_constructor){
                             return response()->json([
                                 'errors' => [
-                                    'eq_constructor' => ["You can't modify the constructor because a life sheet has already been created"]
+                                    'mme_constructor' => ["You can't modify the constructor because a life sheet has already been created"]
                                 ]
                             ], 429);
                         }
@@ -278,17 +278,8 @@ class MmeController extends Controller{
                                 ]
                             ], 429);
                         }
-
-                        if($mme->mme_mobility!=$request->mme_mobility){
-                            return response()->json([
-                                'errors' => [
-                                    'mme_mobility' => ["You can't modify the mobility because a life sheet has already been created"]
-                                ]
-                            ], 429);
-                        }
                     }
-                }
-                
+                } 
             }
         }else{
             if ($request->reason=="add"){
@@ -313,7 +304,7 @@ class MmeController extends Controller{
      */
     public function add_mme(Request $request){
 
-        //Creation of a new equipment
+        //Creation of a new mme
         $mme=Mme::create([
             'mme_internalReference' => $request->mme_internalReference,
             'mme_externalReference' => $request->mme_externalReference, 
@@ -326,7 +317,7 @@ class MmeController extends Controller{
         $mme_id=$mme->id ; 
             
         
-        //Creation of a new equipment temp
+        //Creation of a new mme temp
         $new_mmeTemp=MmeTemp::create([
             'mme_id'=> $mme_id,
             'mmeTemp_version' => '1',
@@ -363,97 +354,79 @@ class MmeController extends Controller{
         //If the mme temp is validated and a life sheet has been already created, we need to update the number of version
         if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated===true && $request->mme_remarks!=$mostRecentlyMmeTmp->mmeTemp_remarks){
             //We need to increase the number of mme temp linked to the mme
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
-            //Update of equipment
-            $equipment->update([
-                'eq_nbrVersion' =>$version_eq,
+            $version_mme=$mme->mme_nbrVersion+1 ; 
+            //Update of mme
+            $mme->update([
+                'mme_nbrVersion' =>$version_mme,
             ]);
             
-            //We need to increase the version of the equipment temp (because we create a new equipment temp)
-            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-            //Creation of a new equipment temp
-            $mostRecentlyEqTmp->update([
-                'eqTemp_version' => $version,
-                'eqTemp_date' => Carbon::now('Europe/Paris'),
-                'eqTemp_validate' => $request->eq_validate,
-                'enumMassUnit_id' => $massUnit_id,
-                'eqTemp_mass' => $request->eq_mass,
-                'eqTemp_remarks' => $request->eq_remarks,
-                'eq_mobility' => $request->eq_mobility,
-                'enumType_id' => $type_id,
-                 // NEED TO UPDATE
-               /* 'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,*/
+            //We need to increase the version of the mme temp (because we create a new mme temp)
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            //Creation of a new mme temp
+            $mostRecentlyMmeTmp->update([
+                'mmeTemp_version' => $version,
+                'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                'mmeTemp_validate' => $request->mme_validate,
+                'mmeTemp_remarks' => $request->mme_remarks,
             ]);
 
             // In the other case, we can modify the informations without problems
         }else{
 
-            //Update of equipment
-            $equipment->update([
-                'eq_internalReference' => $request->eq_internalReference,
-                'eq_externalReference' => $request->eq_externalReference, 
-                'eq_name' => $request->eq_name,
-                'eq_serialNumber' => $request->eq_serialNumber,
-                'eq_constructor' => $request->eq_constructor,
-                'eq_set' => $request->eq_set,
+            //Update of mme
+            $mme->update([
+                'mme_internalReference' => $request->mme_internalReference,
+                'mme_externalReference' => $request->mme_externalReference, 
+                'mme_name' => $request->mme_name,
+                'mme_serialNumber' => $request->mme_serialNumber,
+                'mme_constructor' => $request->mme_constructor,
+                'mme_set' => $request->mme_set,
             ]);
 
-            //Update of equipment temp
-            $mostRecentlyEqTmp->update([
-                'eqTemp_validate' => $request->eq_validate,
-                'enumMassUnit_id' => $massUnit_id,
-                'eqTemp_mass' => $request->eq_mass,
-                'eqTemp_remarks' => $request->eq_remarks,
-                'eq_mobility' => $request->eq_mobility,
-                'enumType_id' => $type_id,
-                // NEED TO UPDATE
-               /* 'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,*/
+            //Update of mme temp
+            $mostRecentlyMmeTmp->update([
+                'mmeTemp_validate' => $request->mme_validate,
+                'mmeTemp_remarks' => $request->mme_remarks,
             ]);
         }
     }
 
      /**
-     * Function call by EquipmentMaintenanceCalendar.vue when the form is submitted with the route : /equipment/prvMtnOp/planning (post)
-     * Send all the equipments validated in the data base with the preventive maintenance operations linked
+     * Function call by MmeMaintenanceCalendar.vue when the form is submitted with the route : /mme/verif/planning (post)
+     * Send all the mmes validated in the data base with the verifications linked
      * @return \Illuminate\Http\Response
      * */
-    public function send_eq_prvMtnOp_for_planning(){
-        $equipments=Equipment::all() ;
+    public function send_mme_verif_for_planning(){
+        $mmes=Mme::all() ;
         $container=array() ; 
-        $containerOp=array() ;
-        foreach($equipments as $equipment){
-            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
-                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', "=", $mostRecentlyEqTmp->id)->get() ;
-                foreach( $prvMtnOps as $prvMtnOp){
-                    $opMtn=([
-                        "id" => $prvMtnOp->id,
-                        "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                        "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                        "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
-                        "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-                        "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                        "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
-                        "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
-                        "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
-                        "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
+        $containerVerif=array() ;
+        foreach($mmes as $mme){
+            $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
+            if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
+                $verifs=Verification::where('mmeTemp_id', "=", $mostRecentlyMmeTmp->id)->get() ;
+                foreach( $verifs as $verif){
+                    $verif=([
+                        "id" => $verif->id,
+                        "verif_number" => (string)$verif->verif_number,
+                        "verif_description" => $prvMtnOp->verif_description,
+                        "verif_periodicity" => (string)$prvMtnOp->verif_periodicity,
+                        "verif_symbolPeriodicity" => $prvMtnOp->verif_symbolPeriodicity,
+                        "verif_protocol" => $prvMtnOp->verif_protocol,
+                        "verif_startDate" => $prvMtnOp->verif_startDate,
+                        "verif_nextDate" => $prvMtnOp->verif_nextDate,
+                        "verif_reformDate" => $prvMtnOp->verif_reformDate,
+                        "verif_validate" => $prvMtnOp->verif_validate,
                         
                     ]);
-                    array_push($containerOp,$opMtn);
+                    array_push($containerVerif,$verif);
                 }
                 
-                $eq = ([
-                    "internalReference" => $equipment->eq_internalReference,
-                    "preventive_maintenance_operations" => $containerOp,
+                $mme = ([
+                    "internalReference" => $mme->mme_internalReference,
+                    "verifications" => $containerVerif,
                 ]) ; 
 
-                array_push($container,$eq);
+                array_push($container,$mme);
 
 
             }
@@ -461,30 +434,29 @@ class MmeController extends Controller{
         return response()->json($container) ;
     }
 
-
+    
     /**
-     * Function call by EquipmentConsult.vue when the form is submitted for update with the route : /equipment/verifValidation{id} (post)
-     * Tell if the equipment is ready to be validated
-     * The id parameter is the id of the equipment in which we want to validate
+     * Function call by MmeConsult.vue when the form is submitted for update with the route : /mme/verifValidation{id} (post)
+     * Tell if the mme is ready to be validated
+     * The id parameter is the id of the mme in which we want to validate
      * @return \Illuminate\Http\Response
      * */
-
     public function verif_validation($id){
         $container=array() ; 
         $container2=array() ; 
         
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyMmeTmp->mmeTemp_validate!="validated"){
             $obj=([
-                'validation' => ["You can't validate an equipment that doesn't have a validated ID card"],
+                'validation' => ["You can't validate an mme that doesn't have a validated ID card"],
             ]);
             array_push($container2,$obj);
         }
 
-        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
         if (count($files)<1){
             $obj2=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one file"]
+                'validation' => ["You can't validate an mme that doesn't have at least one file"]
             ]);
             array_push($container2,$obj2);
             
@@ -492,17 +464,17 @@ class MmeController extends Controller{
             foreach($files as $file){
                 if ($file->file_validate != "validated"){
                     $obj3=([
-                        'validation' => ["You can't validate an equipment that have at least one file in draft or in to be validated, you have to validated it"]
+                        'validation' => ["You can't validate an mme that have at least one file in draft or in to be validated, you have to validated it"]
                     ]);
                     array_push($container2,$obj3);
                 }
             }
         }
         
-        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
         if (count($usages)<1){
             $obj4=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one usage"]
+                'validation' => ["You can't validate an mme that doesn't have at least one usage"]
             ]);
             array_push($container2,$obj4);
         }else{
@@ -510,76 +482,43 @@ class MmeController extends Controller{
                 if ($usage->usg_validate != "validated"){
                     
                     $obj5=([
-                        'validation' => ["You can't validate an equipment that have at least one usage in draft or in to be validated, you have to validated it"]
+                        'validation' => ["You can't validate an mme that have at least one usage in draft or in to be validated, you have to validated it"]
                     ]);
                     array_push($container2,$obj5);
                 }
             }
         }
 
-        
-        if ($mostRecentlyEqTmp->special_process==NULL){
-            $obj6=([
-                'validation' => ["You can't validate an equipment that doesn't have one special process"]
-            ]);
-            array_push($container2,$obj6);
-
-        }else{
-            $spProc=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ; 
-            if ($spProc->spProc_validate!="validated"){
-                $obj7=([
-                    'validation' => ["You can't validate an equipment with a special process in drafted or in to be validated"]
-                ]);
-                array_push($container2,$obj7);
-            }
-        }
+    
 
         
-        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-        if (count($risks)<1){
-            $obj8=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one risk"]
-            ]);
-            array_push($container2,$obj8);
-        }else{
-            foreach($risks as $risk){
-                if ($risk->risk_validate != "validated"){
-                    $obj9=([
-                        'validation' => ["You can't validate an equipment that have at least one risk in draft or in to be validated, you have to validated it"]
-                    ]);
-                    array_push($container2,$obj9);
-                }
-            }
-        }
-
-        
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
         if (count($prvMtnOps)<1){
             $obj9=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one preventive maintenance operations "]
+                'validation' => ["You can't validate an mme that doesn't have at least one verification "]
             ]);
             array_push($container2,$obj9);
         }else{
-            foreach($prvMtnOps as $prvMtnOp){
-                if ($prvMtnOp->prvMtnOp_validate != "validated"){
+            foreach($verifs as $verif){
+                if ($verif->verif_validate != "validated"){
                     $obj10=([
-                        'validation' => ["You can't validate an equipment that have at least one prvMtnOp in draft or in to be validated, you have to validated it"]
+                        'validation' => ["You can't validate an mme that have at least one verification in draft or in to be validated, you have to validated it"]
                     ]);
                     array_push($container2,$obj10);
                 }
             }
         }
         
-        if (count($mostRecentlyEqTmp->states)<1){
+        if (count($mostRecentlyMmeTmp->states)<1){
             $obj11=([
-                'validation' => ["You can't validate an equipment that doesn't have at least one state"]
+                'validation' => ["You can't validate an mme that doesn't have at least one state"]
             ]);
             array_push($container2,$obj11);
         }else{
-            foreach($mostRecentlyEqTmp->states as $state){
+            foreach($mostRecentlyMmeTmp->states as $state){
                 if ($state->state_validate != "validated"){
                     $obj12=([
-                        'validation' => ["You can't validate an equipment that have at least one state in draft or in to be validated, you have to validated it"]
+                        'validation' => ["You can't validate an mme that have at least one state in draft or in to be validated, you have to validated it"]
                     ]);
                     array_push($container2,$obj12);
                 }
@@ -593,54 +532,60 @@ class MmeController extends Controller{
     }
 
     /**
-     * Function call by EquipmentConsult.vue when the form is submitted for update with the route : /equipment/validation (post)
-     * Tell if the equipment is ready to be validated
-     * The id parameter is the id of the equipment in which we want to validate
+     * Function call by MmeConsult.vue when the form is submitted for update with the route : /mme/validation (post)
+     * Tell if the mme is ready to be validated
+     * The id parameter is the id of the mme in which we want to validate
      * @return \Illuminate\Http\Response
      * */
-
+    
     public function validation(Request $request, $id){
-        $equipment=Equipment::findOrFail($id) ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $mme=Mme::findOrFail($id) ; 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        
         if ($request->reason=="technical"){
-            //RELIER LA PERSONNE 
+            $mostRecentlyMmeTmp->update([
+                'technicalVerifier_id' => $request->enteredBy_id,
+            ]);
         }
 
         if ($request->reason=="quality"){
-            //RELIER LA PERSONNE 
+            $mostRecentlyMmeTmp->update([
+                'qualityVerifier_id'=> $request->enteredBy_id,
+            ]);
         }
 
-        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier!=NULL){
-            $mostRecentlyEqTmp->eqTemp_lifeSheetCreated=true ;
+        if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL && $mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
+            $mostRecentlyMmeTmp->update([
+                 'mmeTemp_lifeSheetCreated' => true,
+            ]);
 
-            $state_id=$state->id ; 
             
             //Creation of a new state
-            /*$newState=State::create([
-                'state_remarks' => "This equipment has been validated",
+            $newState=MmeState::create([
+                'state_remarks' => "This mme has been validated",
                 'state_startDate' =>  Carbon::now('Europe/Paris'),
                 'state_isOk' => true,
                 'state_validate' => "drafted",
                 'state_name' => "Waiting_to_be_in_use"
-            ]) ; */
+            ]) ; 
 
-            //relier 
-            
+            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
     }
 
 
+    
      /**
      * Function call by ?? when we delete an equipment in the reform state : ?? (post)
      * Delete an equipment and its attributes
      * The id parameter is the id of the equipment in which we want to reform/delete
      * */
 
-    public function delete_equipment($id){
-        $equipment=Equipment::findOrFail($id) ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+    public function delete_mme($id){
+        $mme=Mme::findOrFail($id) ; 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
 
-        $states=$mostRecentlyEqTmp->states;
+        $states=$mostRecentlyMmeTmp->states;
         $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
         foreach($states as $state){
             $date=$state->created_at ; 
@@ -650,13 +595,9 @@ class MmeController extends Controller{
             }
         }
 
+        //ICI
         if ($mostRecentlyState->state_name=="Reform"){
-            $powers=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-            foreach ($powers as $power){
-                $power->delete() ;
-            }
-
-            $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+            $files=File::where('mmeTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
             foreach ($files as $file){
                 $file->delete() ;
             }
@@ -691,14 +632,14 @@ class MmeController extends Controller{
             ], 429);
 
         }
-    }
+    }*/
 
     /**
      * Function call by EquipmentIDForm.vue when the form is submitted for insert with the route : /state/equipment/${id}   (post)
      * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form 
      * @return \Illuminate\Http\Response : id of the new equipment
      */
-    public function add_equipment_from_state(Request $request, $id){
+    /*public function add_equipment_from_state(Request $request, $id){
 
         
         //An equipment is linked to its mass unit. So we need to find the id of the massUnit choosen by the user and write it in the attribute of the equipment.
@@ -757,14 +698,14 @@ class MmeController extends Controller{
         
         $newState->equipment_temps()->attach($new_eqTemp);
         return response()->json($equipment_id) ; 
-    }
+    }*/
 
     /**
      * Function call by UpdateState.vue when the form is submitted for insert with the route : /send/state/equipment/${state_id} (post)
      * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form 
      * @return \Illuminate\Http\Response : id of the new equipment
      */
-    public function send_equipment_from_state($state_id){
+    /*public function send_equipment_from_state($state_id){
         $equipment=Equipment::where('state_id', '=', $state_id)->first() ; 
         $validate=NULL ; 
         $massUnit=NULL;
@@ -802,7 +743,7 @@ class MmeController extends Controller{
         return response()->json($obj) ;
 
         
-    }
+    }*/
 
 }
 

@@ -8,7 +8,7 @@
                 <h2>Login</h2>
                 <form class="login_form" @keydown="clearError">
                     <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[4].info_value"/>
-                    <InputPasswordForm :Errors="errors.user_password" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control " divClassName="password" :info_text="infos_person[5].info_value"/>
+                    <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control " divClassName="password" :info_text="infos_person[5].info_value"/>
                 </form>
                 <button type="button" @click="create_account()" class="save btn btn-primary login_button ">Login</button>
 
@@ -47,7 +47,7 @@ export default {
             })
             //If the dimension is added succesfuly
             .then(response =>{window.location.href = "/"})
-            .catch(error => console.log(error.response.data.errors));
+            .catch(error =>this.errors=error.response.data.errors);
         },
         clearError(event){
             delete this.errors[event.target.name];

@@ -36,7 +36,7 @@ export default {
                 for (var i=0;i<this.states.length;i++) {
                     this.states[i].state_startDate=moment(this.states[i].state_startDate).format('D MMM YYYY');
                     if(this.states[i].state_endDate===null){
-                        this.states[i].state_endDate="Not decided yet"
+                        this.states[i].state_endDate="-"
                     }else{
                         this.states[i].state_endDate=moment(this.states[i].state_endDate).format('D MMM YYYY'); 
                     }

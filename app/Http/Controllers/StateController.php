@@ -169,6 +169,12 @@ class StateController extends Controller
             'state_startDate' => $date,
             'state_name' => $request->state_name,
         ]) ; 
+
+        if ($request->state_name=="Reform"){
+            $state->update([
+                'reformedBy_id' => $request->enteredBy_id,
+            ]);
+        }
         
         $state_id=$state->id;
         $id_eq=intval($request->eq_id) ; 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+    <div>
         <div v-if="loaded==false" >
             <b-spinner variant="primary"></b-spinner>
         </div>

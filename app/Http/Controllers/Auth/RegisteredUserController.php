@@ -53,10 +53,10 @@ class RegisteredUserController extends Controller
             'user_confirmation_password.min' => 'You must enter at least 8 characters',
         ]);
 
-        if ($request->user_confirmationPassword!=$request->user_password){
+        if ($request->user_confirmation_password!==$request->user_password){
             return response()->json([
                 'errors' => [
-                    'user_confirmationPassword' => ["These passwords are differents"]
+                    'user_confirmation_password' => ["These passwords are differents"]
                 ]
             ], 429);
         }
@@ -68,13 +68,6 @@ class RegisteredUserController extends Controller
             return response()->json([
                 'errors' => [
                     'user_pseudo' => ["This username is already use"]
-                ]
-            ], 429);
-        }
-        if ($request->user_pseudo!=$request->user_password){
-            return response()->json([
-                'errors' => [
-                    'user_confirmationPassword' => ["These passwords are differents"]
                 ]
             ], 429);
         }

@@ -40,11 +40,11 @@ Class CreateEquipmentTempsTable extends Migration{
             $table->unsignedBigInteger('equipment_id') ;
             $table->foreign('equipment_id')->references('id')->on('equipment') ->onDelete('cascade')  ; 
             $table->unsignedBigInteger('qualityVerifier_id') -> nullable() ; 
-            $table->foreign('qualityVerifier_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('qualityVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('technicalVerifier_id')  -> nullable() ; 
-            $table->foreign('technicalVerifier_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('technicalVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('createdBy_id') -> nullable() ; 
-            $table->foreign('createdBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('createdBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('specialProcess_id') -> nullable() ; 
             $table->foreign('specialProcess_id')->references('id')->on('special_processes') ;
             

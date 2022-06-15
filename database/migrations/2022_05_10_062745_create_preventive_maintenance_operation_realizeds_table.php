@@ -31,12 +31,12 @@ return new class extends Migration
             $table->date('prvMtnOpRlz_entryDate') ->nullable();
             $table->enum('prvMtnOpRlz_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enteredBy_id') -> nullable() ; 
-            $table->foreign('enteredBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('enteredBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('realizedBy_id')  -> nullable() ; 
-            $table->foreign('realizedBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('realizedBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('state_id') ;
             $table->unsignedBigInteger('approvedBy_id')  -> nullable() ; 
-            $table->foreign('approvedBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('approvedBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->foreign('state_id')->references('id')->on('states') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('prvMtnOp_id') ;
             $table->foreign('prvMtnOp_id')->references('id')->on('preventive_maintenance_operations') ->onDelete('cascade')  ; 

@@ -30,7 +30,7 @@ return new class extends Migration
             $table->boolean('state_isOk') ->nullable(); 
             $table->enum('state_validate', ['drafted', 'to_be_validated', 'validated']) ;
             $table->unsignedBigInteger('reformedBy_id')  -> nullable() ; 
-            $table->foreign('reformedBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('reformedBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->timestamps();
         });
     }

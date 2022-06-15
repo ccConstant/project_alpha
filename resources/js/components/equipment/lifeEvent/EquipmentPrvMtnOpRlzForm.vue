@@ -212,7 +212,8 @@ export default {
                         prvMtnOpRlz_validate :savedAs,
                         eq_id:id,
                         state_id:this.equipment_state_id,
-                        prvMtnOp_id:this.prvMtnOp_id
+                        prvMtnOp_id:this.prvMtnOp_id,
+                        enteredBy_id:this.$userId.id
                 
                     })
                     //If the preventive maintenance operation is added succesfuly

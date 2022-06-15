@@ -55,7 +55,7 @@ export default {
 		},
 		account_managment_acces(){
 			if(this.$userId.user_menuUserAcessRight==true){
-				this.$router.replace({ name: "url_enum" })
+				this.$router.replace({ name: "url_accounts" })
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}

@@ -41,6 +41,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             'prvMtnOpRlz_entryDate' => Carbon::now('Europe/Paris'),
             'state_id' => $request->state_id,
             'prvMtnOp_id' => $request->prvMtnOp_id,
+            'enteredBy_id' => $request->enteredBy_id,
 
         ]) ; 
 

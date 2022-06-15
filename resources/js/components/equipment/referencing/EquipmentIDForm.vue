@@ -287,6 +287,7 @@ export default {
                                 eq_remarks : this.eq_remarks,
                                 eq_set : this.eq_set,
                                 eq_validate : savedAs,
+                                createdBy_id:this.$userId.id
                             })
                             .then(response =>{
                                     this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
@@ -317,6 +318,7 @@ export default {
                     eq_set : this.eq_set,
                     eq_validate : savedAs,
                     eq_id:this.eq_id,
+
                     reason:'update'
                 })
                 .then(response =>{

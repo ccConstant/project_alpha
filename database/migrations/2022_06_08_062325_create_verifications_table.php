@@ -23,6 +23,7 @@ class CreateVerificationsTable extends Migration
     {
         Schema::create('verifications', function (Blueprint $table) {
             $table->id();
+            $table->unsignedTinyInteger('verif_number')  ; 
             $table->string('verif_name')  ; 
             $table->string('verif_expectedResult') ->nullable(); 
             $table->string('verif_nonComplianceLimit') ->nullable(); 
