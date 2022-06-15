@@ -371,6 +371,14 @@ class UserController extends Controller{
             'user_confirmation_password.min' => 'You must enter at least 8 characters',
         ]);
 
+        if ($request->user_confirmation_password!==$request->user_password){
+            return response()->json([
+                'errors' => [
+                    'user_confirmation_password' => ["These passwords are differents"]
+                ]
+            ], 429);
+        }
+
         $user->update([
             'password' => Hash::make($request->user_password),
             'user_initials' => $request->user_initials,
