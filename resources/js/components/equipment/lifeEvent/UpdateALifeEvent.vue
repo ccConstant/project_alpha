@@ -4,10 +4,32 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true">
-            <ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
-            <ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curMtnOp" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
-
-            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Preventive maintenance operation record
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                            <ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Curative maintenance operation record
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            <ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curMtnOp" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>

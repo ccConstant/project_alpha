@@ -59,6 +59,7 @@ export default {
     methods: {
         handleEventClick(arg) {
             this.prvMtnOp.push({eq_internalReference:arg.event.title, prvMtnOp_number:arg.event.extendedProps.number,
+                eq_id:arg.event.extendedProps.eq_id,state_id:arg.event.extendedProps.state_id,
                 prvMtnOp_description:arg.event.extendedProps.description,prvMtnOp_protocol:arg.event.extendedProps.protocol,
                 prvMtnOp_nextDate:arg.event.extendedProps.operation_date });
             console.log(arg)
@@ -76,6 +77,7 @@ export default {
                     this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
                     for(const operation of data.preventive_maintenance_operations){
                         this.calendarOptions.events.push({title:data.internalReference,date:operation.prvMtnOp_nextDate,
+                            eq_id:data.id,state_id:data.state_id,
                          number:operation.prvMtnOp_number,id:operation.id,
                          description:operation.prvMtnOp_description,
                          operation_date:moment(operation.prvMtnOp_nextDate).format('D MMM YYYY hh:mm a'),

@@ -8,7 +8,6 @@
 * For example : add a preventiveMaintenanceOperation for an equipment in the data base, update it, delete it...
 */ 
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -403,6 +402,7 @@ class PreventiveMaintenanceOperationController extends Controller
                     "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
                     "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
                     "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                    "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
                 ]);
                 array_push($container,$obj);
            }

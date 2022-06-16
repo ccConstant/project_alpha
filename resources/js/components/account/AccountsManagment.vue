@@ -34,14 +34,14 @@
 					<div class="w-100 row_right_tab"></div>
 				</b-row>
 			</b-container>
-			<b-modal :id="`modal-updateUser-${_uid}`" @show="resetModal" @hidden="resetModal" @ok="handleOkUpdate" title="User info">
+			<b-modal :id="`modal-updateUser-${_uid}`" @hidden="resetModal" @ok="handleOkUpdate" title="User info">
 				<div>
                     <InputTextForm  inputClassName="form-control" :Errors="errors.user_userName" name="user_userName" label="Username :" v-model="modal_userName" :isDisabled="true"/>
                     <InputTextForm  inputClassName="form-control" :Errors="errors.user_firstName" name="user_firstName" label="First :" v-model="modal_firstName" :isDisabled="true"/>
                     <InputTextForm  inputClassName="form-control" :Errors="errors.user_lastName" name="user_lastName" label="Last :" v-model="modal_lastName" :isDisabled="true"/>
                     <InputTextForm  inputClassName="form-control" :Errors="errors.user_initials" name="user_initials" label="Initial :" v-model="modal_initials"/>
                     <InputTextForm  inputClassName="form-control" :Errors="errors.user_passwordName" name="user_password" label="Change the current password :" v-model="modal_password"/>
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Change the current password :" v-model="modal_confirmation_password"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Confirm the password :" v-model="modal_confirmation_password"/>
 
 
 
@@ -74,8 +74,7 @@ export default {
 			modal_initials:'',
 			modal_password:'',
 			modal_confirmation_password:'',
-			errors:[],
-			userState:null										
+			errors:[],									
 
 		}
 	},
@@ -131,11 +130,14 @@ export default {
                 });
   
         },
-		resetState(){
-			this.enumState = null
-		},
 		resetModal(){
-			this.enumState = null
+			this.modal_userName='';
+			this.modal_firstName='';
+			this.modal_lastName='';
+			this.modal_initials='';
+			this.modal_password='';
+			this.modal_confirmation_password='';
+			this.modal_id='';
 		}
 
 	},

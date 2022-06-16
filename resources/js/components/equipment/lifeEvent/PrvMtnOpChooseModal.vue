@@ -9,7 +9,7 @@
         <b-modal id="modal-1" title="Choose a preventive maintenance operation to realize" hide-footer>
             <div>
                 <b-button v-b-toggle.collapse-chooseOpe variant="primary" icon="chevron-bar-up" >Show details</b-button>
-                <div v-for="option in prvMtnOps" :key="option.id">
+                <div v-for="option in prvMtnOps_data" :key="option.id">
                     <input type="radio" name="radio-input" :value="option" :id="option.id" v-model="radio_value"/>
                     {{ option.prvMtnOp_number }}
                     <div>
@@ -17,7 +17,9 @@
                             <b-card>
                             <p class="card-text">
                                 Description : {{option.prvMtnOp_description}}<br>
-                                Protocol : {{option.prvMtnOp_protocol}}
+                                Protocol : {{option.prvMtnOp_protocol}}<br>
+                                Next Date : {{option.prvMtnOp_nextDate}}
+
                             </p>
                             </b-card>
                         </b-collapse>
@@ -31,6 +33,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
     props:{
         prvMtnOps:{
@@ -39,7 +42,8 @@ export default {
     },
     data(){
         return{
-            radio_value:''
+            radio_value:'',
+            prvMtnOps_data:this.prvMtnOps
         }
     },
     methods: {
@@ -50,7 +54,12 @@ export default {
             }
             this.$bvModal.hide('modal-1')
         }
-    }
+    },
+    created(){
+        for (var i=0;i<this.prvMtnOps_data.length;i++) {
+            this.prvMtnOps_data[i].prvMtnOp_nextDate=moment(this.prvMtnOps_data[i].prvMtnOp_nextDate).format('D MMM YYYY ');
+        }
+    }    
 
 }
 </script>

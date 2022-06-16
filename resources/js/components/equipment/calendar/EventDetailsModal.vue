@@ -12,7 +12,7 @@
                                 Protocol : {{option.prvMtnOp_protocol}}<br>
                                 Operation date : {{option.prvMtnOp_nextDate}}
                             </p>
-                            <b-button variant="primary" @click="redirect_to_preventive">Record it</b-button>
+                            <b-button variant="primary" @click="redirect_to_preventive(option.eq_id,option.state_id)">Record it</b-button>
                         </b-card>
                     </div>
                 </div>
@@ -37,8 +37,8 @@ export default {
         resetModal() {
             this.$emit('modalClosed','')
         },
-        redirect_to_preventive(){
-            this.$router.replace({ name: "url_life_event_reference", params: {id:5,state_id:2 }, query: {type:"preventive"}})
+        redirect_to_preventive(eq_id,state_id){
+            this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id,state_id:state_id }, query: {type:"preventive"}})
         }
     }
 

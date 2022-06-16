@@ -19,7 +19,7 @@
         <!--Initializing of the number type input with his props initialized in the parent compenant-->
         <input :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"  
          :name="name" type="text" :required="!!isRequired" :disabled="!!isDisabled" 
-          :value="value" v-on:input="updateValue($event.target.value)" >
+          :value="value" :placeholder="placeholer" v-on:input="updateValue($event.target.value)" >
         <!--If this field has an error this div appear with the error described inside -->   
         <div v-if="hasError(this.Errors)" class="invalid-feedback">
             {{this.Errors[0]}}
@@ -61,6 +61,9 @@ export default {
         },
         value:{
             type :String,
+        },
+        placeholer:{
+            type:String
         },
         info_text:{
             type:String,

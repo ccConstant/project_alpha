@@ -17,7 +17,7 @@
                 
                 <InputTextForm inputClassName="form-control w-50" :Errors="errors.prvMtnOpRlz_reportNumber" name="prvMtnOpRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="prvMtnOpRlz_reportNumber" :info_text="infos_prvMtnOpRlz[0].info_value"/>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
+                    <InputTextForm inputClassName="form-control" :placeholer="prvMtnOp_startDate_placeholer" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
                     <InputDateForm inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
                 </div>
                 <div class="input-group">
@@ -155,6 +155,7 @@ export default {
             prvMtnOp_id:this.prvMtnOp_id_prop,
             infos_prvMtnOp:[],
             infos_prvMtnOpRlz:[],
+            prvMtnOp_startDate_placeholer:''
         }
     },
     mounted() {
@@ -202,7 +203,7 @@ export default {
                     reason:'add'
                 })
                 .then(response =>{
-                    console.log("ajout dans la base")
+                    this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/state/prvMtnOpRlz',{
@@ -309,9 +310,9 @@ export default {
         choosedOpe(value){
             this.prvMtnOp_number=value.prvMtnOp_number;
             this.prvMtnOp_description=value.prvMtnOp_description;
-            this.prvMtnOp_protocol=value.prvMtnOp_protocol,
-            this.prvMtnOp_id=value.id
-            console.log(value)
+            this.prvMtnOp_protocol=value.prvMtnOp_protocol;
+            this.prvMtnOp_startDate_placeholer=value.prvMtnOp_nextDate;
+            this.prvMtnOp_id=value.id;
         }
     },
     created(){
@@ -320,6 +321,7 @@ export default {
             axios.get(consultUrl(this.eq_id))
                 .then (response =>{
                     this.prvMtnOps=response.data;
+                    console.log(response.data);
                     })
                 .catch(error => console.log(error));
         }
