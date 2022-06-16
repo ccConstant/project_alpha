@@ -64,13 +64,12 @@ class RegisteredUserController extends Controller
             ], 429);
         }
 
-        //tester si username déjà utilisé
-
+        //We check if user_pseudo is already used in the data base
         $users=User::where('user_pseudo', '=', $request->user_pseudo)->get() ; 
         if (count($users)>0){
             return response()->json([
                 'errors' => [
-                    'user_pseudo' => ["This username is already use"]
+                    'user_pseudo' => ["This username is already used"]
                 ]
             ], 429);
         }

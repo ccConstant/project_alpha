@@ -380,6 +380,17 @@ class UserController extends Controller{
                 ]
             ], 429);
         }
+       
+        //We check if user_initials is already used in the data base
+        $users=User::where('user_initials', '=', $request->user_initials)->where('id', '<>', $id)->get() ; 
+        if (count($users)>0){
+            return response()->json([
+                'errors' => [
+                    'user_initials' => ["This initials are already used"]
+                ]
+            ], 429);
+        }
+
 
         $user->update([
             'password' => Hash::make($request->user_password),
