@@ -352,50 +352,59 @@ class UserController extends Controller{
     public function update_info(Request $request, $id){
         $user=User::findOrFail($id) ; 
 
-        $request->validate([
-            'user_initials' => ['required', 'string', 'max:4', 'min:2'],
-           'user_password' => ['required', Rules\Password::defaults()], 
-           'user_confirmation_password' => ['required', Rules\Password::defaults()], 
-        ],[
-            'user_initials.required' => 'You must enter the initials ',
-            'user_initials.string' => 'Your firstName must be of type string',
-            'user_initials.max' => 'You must enter a maximum of 4 characters',
-            'user_initials.min' => 'You must enter a at least 2 characters',
+        if ($request->user_initials!=NULL){
+            $request->validate([
+                'user_initials' => ['required', 'string', 'max:4', 'min:2'],
+            ],[
+                'user_initials.required' => 'You must enter the initials ',
+                'user_initials.string' => 'Your firstName must be of type string',
+                'user_initials.max' => 'You must enter a maximum of 4 characters',
+                'user_initials.min' => 'You must enter a at least 2 characters',
+            ]);
 
-            'user_password.required' => 'You must enter a password',
-            'user_password.string' => 'Your password must be of type string',
-            'user_password.max' => 'You must enter a maximum of 255 characters',
-            'user_password.min' => 'You must enter at least 8 characters',
+            //We check if user_initials is already used in the data base
+            $users=User::where('user_initials', '=', $request->user_initials)->where('id', '<>', $id)->get() ; 
+            if (count($users)>0){
+                return response()->json([
+                    'errors' => [
+                        'user_initials' => ["This initials are already used"]
+                    ]
+                ], 429);
+            }
 
-            'user_confirmation_password.required' => 'You must confirm your password',
-            'user_confirmation_password.string' => 'Your password must be of type string',
-            'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
-            'user_confirmation_password.min' => 'You must enter at least 8 characters',
-        ]);
-
-        if ($request->user_confirmation_password!==$request->user_password){
-            return response()->json([
-                'errors' => [
-                    'user_confirmation_password' => ["These passwords are differents"]
-                ]
-            ], 429);
-        }
-       
-        //We check if user_initials is already used in the data base
-        $users=User::where('user_initials', '=', $request->user_initials)->where('id', '<>', $id)->get() ; 
-        if (count($users)>0){
-            return response()->json([
-                'errors' => [
-                    'user_initials' => ["This initials are already used"]
-                ]
-            ], 429);
+            $user->update([
+                'user_initials' => $request->user_initials,
+            ]);
         }
 
+        if ($request->user_password!=NULL || $request->user_confirmation_password){
+            $request->validate([
+               'user_password' => ['required', Rules\Password::defaults()], 
+               'user_confirmation_password' => ['required', Rules\Password::defaults()], 
+            ],[
+                'user_password.required' => 'You must enter a password',
+                'user_password.string' => 'Your password must be of type string',
+                'user_password.max' => 'You must enter a maximum of 255 characters',
+                'user_password.min' => 'You must enter at least 8 characters',
+    
+                'user_confirmation_password.required' => 'You must confirm your password',
+                'user_confirmation_password.string' => 'Your password must be of type string',
+                'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
+                'user_confirmation_password.min' => 'You must enter at least 8 characters',
+            ]);
 
-        $user->update([
-            'password' => Hash::make($request->user_password),
-            'user_initials' => $request->user_initials,
-        ]);
+            if ($request->user_confirmation_password!==$request->user_password){
+                return response()->json([
+                    'errors' => [
+                        'user_confirmation_password' => ["These passwords are differents"]
+                    ]
+                ], 429);
+            }
+            
+            $user->update([
+                'password' => Hash::make($request->user_password),
+            ]);
+        }
     }
 
 }

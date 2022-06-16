@@ -383,6 +383,61 @@ class PreventiveMaintenanceOperationController extends Controller
         return response()->json($container) ;
     }
 
+    /**
+     * Function call by EquipementMaintenanceCalendar.vue  with the route : /prvMtnOp/send/revisionTimeLimitPassed/{id} (get)
+     * Get the preventive maintenance operations validated whose time limit has passed of the equipment whose id is passed in parameter
+     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations validated
+     * @return \Illuminate\Http\Response
+     */
+    public function send_prvMtnOp_from_eq_revisionTimeLimitPassed($id) {
+        $container=array() ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
+
+        $today=Carbon::now() ;
+       foreach ($prvMtnOps as $prvMtnOp) {
+            $OneWeekLater=$prvMtnOp->prvMtnOp_nextDate->addDays(7) ; 
+           if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
+                $obj=([
+                    "id" => $prvMtnOp->id,
+                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                    "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                ]);
+                array_push($container,$obj);
+           }
+       }
+        return response()->json($container) ;
+    }
+
+    /**
+     * Function call by EquipementMaintenanceCalendar.vue  with the route : /prvMtnOp/send/revisionDatePassed/{id} (get)
+     * Get the preventive maintenance operations validated whose time limit has passed of the equipment whose id is passed in parameter
+     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations validated
+     * @return \Illuminate\Http\Response
+     */
+    public function send_prvMtnOp_from_eq_revisionDatePassed($id) {
+        $container=array() ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
+
+        $today=Carbon::now() ;
+       foreach ($prvMtnOps as $prvMtnOp) {
+           if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $prvMtnOp->prvMtnOp_nextDate<$now ){
+                $obj=([
+                    "id" => $prvMtnOp->id,
+                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                    "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                ]);
+                array_push($container,$obj);
+           }
+       }
+        return response()->json($container) ;
+    }
+
 
     /**
      * Function call by ???  with the route : /prvMtnOp/send/validated/{id} (get)

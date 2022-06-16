@@ -69,6 +69,32 @@ class CurativeMaintenanceOperationController extends Controller
                 ], 429);
             }
 
+            if ($request->curMtnOp_realizedBy_id==NULL){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_realizedBy' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
+                    ]
+                ], 429);
+            }
+
+            if ($request->curMtnOp_qualityVerifier_id==NULL){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_qualityVerifier' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
+                    ]
+                ], 429);
+            }
+
+            if ($request->curMtnOp_technicalVerifier_id==NULL){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_technicalVerifier' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
+                    ]
+                ], 429);
+            }
+
+
+
         //-----CASE curMtnOp->validate=drafted or curMtnOp->validate=to be validate----//
         //if the user has choosen "drafted" or "to be validated" he have no obligations 
         }else{
