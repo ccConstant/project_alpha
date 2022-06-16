@@ -17,6 +17,7 @@ use App\Models\EquipmentTemp ;
 use App\Models\State ; 
 use App\Models\Equipment ; 
 use App\Models\PreventiveMaintenanceOperationRealized;
+use App\Models\PreventiveMaintenanceOperation;
 use App\Models\CurativeMaintenanceOperation;
 
 
@@ -226,6 +227,7 @@ class StateController extends Controller
                 $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $state->id)->get() ; 
                 $container_prvMtnOpRlz=array() ; 
                 foreach($prvMtnOpRlzs as $prvMtnOpRlz){
+                    $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
                     $obj=([
                         "id" => $prvMtnOpRlz->id,
                         "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
@@ -234,6 +236,10 @@ class StateController extends Controller
                         "prvMtnOpRlz_entryDate" => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
                         "prvMtnOpRlz_validate" => $prvMtnOpRlz->prvMtnOpRlz_validate,
                         "prvMtnOp_id" => $prvMtnOpRlz->prvMtnOp_id,
+                        "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number, 
+                        "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description, 
+                        "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol, 
+
                     ]);
                     array_push($container_prvMtnOpRlz, $obj); 
                 }

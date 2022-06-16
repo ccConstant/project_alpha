@@ -144,7 +144,7 @@ class VerificationController extends Controller
         $max_number=1 ; 
         if (count($mmeMtnOpsInMme)!=0){
             foreach ($verifInMmes as $verifInMme){
-                $number=intval($prvMtnOpInEq->prvMtnOp_number) ; 
+                $number=intval($verifInMme->verif_number) ; 
                 if ($number>$max_number){
                     $max_number=$prvMtnOpInEq->prvMtnOp_number ; 
                 }
