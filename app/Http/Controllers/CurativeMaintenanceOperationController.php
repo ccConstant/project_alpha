@@ -17,12 +17,14 @@ use App\Models\EquipmentTemp ;
 use App\Models\CurativeMaintenanceOperation ; 
 use App\Models\Equipment ; 
 use App\Models\State ; 
+use App\Models\User ; 
 use App\Http\Controllers\PowerController ; 
 use App\Http\Controllers\FileController ; 
 use App\Http\Controllers\UsageController ; 
 use App\Http\Controllers\StateController ; 
 use App\Http\Controllers\RiskController ; 
 use App\Http\Controllers\DimensionController;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class CurativeMaintenanceOperationController extends Controller
@@ -231,6 +233,37 @@ class CurativeMaintenanceOperationController extends Controller
         if (count($state->curative_maintenance_operations)>0){
             $curMtnOps=$state->curative_maintenance_operations ; 
             foreach ($curMtnOps as $curMtnOp) {
+                
+                $technicalVerifier_firstName=NULL;
+                $technicalVerifier_lastName=NULL;
+                $qualityVerifier_firstName=NULL;
+                $qualityVerifier_lastName=NULL;
+                $enteredBy_firstName=NULL;
+                $enteredBy_lastName=NULL;
+                $realizedBy_firstName=NULL;
+                $realizedBy_lastName=NULL ; 
+
+                if ($curMtnOp->technicalVerifier_id!=NULL){
+                    $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                    $technicalVerifier_firstName=$technicalVerifier->user_firstName;
+                    $technicalVerifier_lastName=$technicalVerifier->user_lastName;
+                }
+                if ($curMtnOp->qualityVerifier_id!=NULL){
+                    $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
+                    $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
+                    $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                }
+                if ($curMtnOp->realizedBy_id!=NULL){
+                    $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
+                    $realizedBy_firstName=$realizedBy->user_firstName ; 
+                    $realizedBy_lastName=$realizedBy->user_lastName ; 
+                }
+                if ($curMtnOp->enteredBy_id!=NULL){
+                    $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
+                    $enteredBy_firstName=$enteredBy->user_firstName ; 
+                    $enteredBy_lastName=$enteredBy->user_lastName ; 
+                }
+
                 $obj=([
                    "id" => $curMtnOp->id,
                    "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
@@ -239,6 +272,14 @@ class CurativeMaintenanceOperationController extends Controller
                     "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,
                     "curMtnOp_endDate" => $curMtnOp->curMtnOp_endDate,
                     "curMtnOp_validate" => $curMtnOp->curMtnOp_validate,
+                    "qualityVerifier_firstName" => $qualityVerifier_firstName,
+                    "qualityVerifier_lastName" => $qualityVerifier_lastName,
+                    "realizedBy_firstName" => $realizedBy_firstName,
+                    "realizedBy_lastName" => $realizedBy_lastName,
+                    "enteredBy_firstName" =>$enteredBy_firstName,
+                    "enteredBy_lastName" =>$enteredBy_lastName,
+                    "technicalVerifier_firstName" => $technicalVerifier_firstName,
+                    "technicalVerifier_lastName" => $technicalVerifier_lastName,
                 ]);
                 array_push($container,$obj);
            }
@@ -246,33 +287,71 @@ class CurativeMaintenanceOperationController extends Controller
         return response()->json($container) ;
     }
 
-     /**
-     * Function call by DimensionController (and more) when we need to copy links between curMtnOp and a state
-     * Copy the links between a curMtnOp and a state to the new state
-     * The actualId parameter correspond of the id of the state from which we want to copy the curMtnOp
-     * The newId parameter correspond of the id of the state where we want to copy the curMtnOp
-     * The idNotCopy parameter correspond of the id of the curMtnOp we don't have to copy 
+    /**
+     * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/qualityVerifier/{id}
+     * Check qualitatively a curative maintenance operation 
+     * The id parameter correspond to the id of the curative maintenance operation we want to check
      * */
-    public function copy_curMtnOp_linked_state($actualId, $newId, $idNotCopy){   
-        $actualState= State::findOrFail($actualId) ; 
-        $newState=State::findOrFail($newId) ; 
-        $curMtnOps=$actualState->curative_maintenance_operations ; 
-        foreach($curMtnOps as $curMtnOp){
-            if ($curMtnOp->id!=$idNotCopy){
-                //Creation of a new curative maintenance operation
-                $curMtnOp=CurativeMaintenanceOperation::create([
-                    'curMtnOp_reportNumber' => $curMtnOp->curMtnOp_reportNumber,
-                    'curMtnOp_validate' => $curMtnOp->curMtnOp_validate,
-                    'curMtnOp_description' => $curMtnOp->curMtnOp_description,
-                    'curMtnOp_startDate' => $curMtnOp->curMtnOp_startDate,
-                    'curMtnOp_endDate' => $curMtnOp->curMtnOp_endDate,
-                    'state_id' => $newId,
-                    'curMtnOp_number' => $curMtnOp->curMtnOp_number,
-                ]) ; 
-            }
+    public function qualityVerification_curMtnOp(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
         }
+        
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+        $curMtnOp->update([
+            'qualityVerifier_id' => $user->id, 
+        ]);
     }
-    
+
+     /**
+     * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/technicalVerifier/{id}
+     * Check technically a curative maintenance operation 
+     * The id parameter correspond to the id of the curative maintenance operation we want to check
+     * */
+    public function technicalVerification_curMtnOp(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
+        }
+        
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+        $curMtnOp->update([
+            'technicalVerifier_id' => $user->id, 
+        ]);
+    }
+
+     /**
+     * Function call by  CurMtnOpModal.vue when we want to tell that we are the realizator of a curative maintenance operation with the route : /curMtnOp/realize/{id}
+     * Tell that you have realize a curative maintenance operation 
+     * The id parameter correspond to the id of the curative maintenance operation we want to entered the realizator
+     * */
+    public function realize_curMtnOp(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
+        }
+
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+        $curMtnOp->update([
+            'realizedBy_id' => $user->id, 
+        ]);
+    }
 }
 
 

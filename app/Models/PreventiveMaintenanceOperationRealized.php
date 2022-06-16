@@ -16,7 +16,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\State ;
-use App\Models\People ; 
+use App\Models\User ; 
 use App\Models\PreventiveMaintenanceOperation ;  
 
 class PreventiveMaintenanceOperationRealized extends Model
@@ -32,17 +32,17 @@ class PreventiveMaintenanceOperationRealized extends Model
 
      //Define the relation between a preventive maintenance operation realized and the person realizing it 
      public function realizedBy(){
-        return $this->belongsTo(People::class, 'realizedBy_id') ; 
+        return $this->belongsTo(User::class, 'realizedBy_id') ; 
     }
 
     //Define the relation between a preventive maintenance operation realized and the person entering it 
     public function enteredBy(){
-        return $this->belongsTo(People::class, 'enteredBy_id') ; 
+        return $this->belongsTo(User::class, 'enteredBy_id') ; 
     }
 
     //Define the relation between a preventive maintenance operation realized and the person approving it 
     public function approvedBy(){
-        return $this->belongsTo(People::class, 'approvedBy_id') ; 
+        return $this->belongsTo(User::class, 'approvedBy_id') ; 
     }
 
     //Define the relation between a preventive maintenance operation realized and the preventive maintenance operation which she is corresponding

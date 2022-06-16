@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
 use App\Models\EquipmentTemp ; 
 use App\Models\State ; 
+use App\Models\User ; 
 use App\Models\Equipment ; 
 use App\Models\PreventiveMaintenanceOperationRealized;
 use App\Models\PreventiveMaintenanceOperation;
@@ -228,6 +229,29 @@ class StateController extends Controller
                 $container_prvMtnOpRlz=array() ; 
                 foreach($prvMtnOpRlzs as $prvMtnOpRlz){
                     $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
+                    $enteredBy_firstName=NULL;
+                    $enteredBy_lastName=NULL;
+                    $realizedBy_firstName=NULL;
+                    $realizedBy_lastName=NULL ; 
+                    $approvedBy_firstName=NULL;
+                    $approvedBy_lastName=NULL ;
+
+                    if ($prvMtnOpRlz->realizedBy_id!=NULL){
+                        $realizedBy=User::findOrFail($prvMtnOpRlz->realizedBy_id) ; 
+                        $realizedBy_firstName=$realizedBy->user_firstName ; 
+                        $realizedBy_lastName=$realizedBy->user_lastName ; 
+                    }
+                    if ($prvMtnOpRlz->enteredBy_id!=NULL){
+                        $enteredBy=User::findOrFail($prvMtnOpRlz->enteredBy_id) ; 
+                        $enteredBy_firstName=$enteredBy->user_firstName ; 
+                        $enteredBy_lastName=$enteredBy->user_lastName ; 
+                    }
+                    if ($prvMtnOpRlz->approvedBy_id!=NULL){
+                        $approvedBy=User::findOrFail($prvMtnOpRlz->approvedBy_id) ; 
+                        $approvedBy_firstName=$approvedBy->user_firstName ; 
+                        $approvedBy_lastName=$approvedBy->user_lastName ; 
+                    }
+                    
                     $obj=([
                         "id" => $prvMtnOpRlz->id,
                         "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
@@ -239,7 +263,12 @@ class StateController extends Controller
                         "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number, 
                         "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description, 
                         "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol, 
-
+                        "realizedBy_firstName" => $realizedBy_firstName,
+                        "realizedBy_lastName" => $realizedBy_lastName,
+                        "enteredBy_firstName" => $enteredBy_firstName,
+                        "enteredBy_lastName" => $enteredBy_lastName,
+                        "approvedBy_firstName" => $approvedBy_firstName,
+                        "approvedBy_lastName" => $approvedBy_lastName,
                     ]);
                     array_push($container_prvMtnOpRlz, $obj); 
                 }
@@ -247,19 +276,62 @@ class StateController extends Controller
                 $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $state->id)->get() ; 
                 $container_curMtnOp=array() ; 
                 foreach($curMtnOps as $curMtnOp){
+                    $technicalVerifier_firstName=NULL;
+                    $technicalVerifier_lastName=NULL;
+                    $qualityVerifier_firstName=NULL;
+                    $qualityVerifier_lastName=NULL;
+                    $enteredBy_firstName=NULL;
+                    $enteredBy_lastName=NULL;
+                    $realizedBy_firstName=NULL;
+                    $realizedBy_lastName=NULL ; 
+
+                    if ($curMtnOp->technicalVerifier_id!=NULL){
+                        $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                        $technicalVerifier_firstName=$technicalVerifier->user_firstName;
+                        $technicalVerifier_lastName=$technicalVerifier->user_lastName;
+                    }
+                    if ($curMtnOp->qualityVerifier_id!=NULL){
+                        $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
+                        $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
+                        $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                    }
+                    if ($curMtnOp->realizedBy_id!=NULL){
+                        $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
+                        $realizedBy_firstName=$realizedBy->user_firstName ; 
+                        $realizedBy_lastName=$realizedBy->user_lastName ; 
+                    }
+                    if ($curMtnOp->enteredBy_id!=NULL){
+                        $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
+                        $enteredBy_firstName=$enteredBy->user_firstName ; 
+                        $enteredBy_lastName=$enteredBy->user_lastName ; 
+                    }
+
+
+
                     $obj=([
-                        "id" => $curMtnOp->id,
-                        "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
-                         "curMtnOp_reportNumber" => $curMtnOp->curMtnOp_reportNumber,
-                         "curMtnOp_description" => $curMtnOp->curMtnOp_description,
-                         "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,
-                         "curMtnOp_endDate" => $curMtnOp->curMtnOp_endDate,
-                         "curMtnOp_validate" => $curMtnOp->curMtnOp_validate,
-                     ]);
+                    "id" => $curMtnOp->id,
+                    "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
+                        "curMtnOp_reportNumber" => $curMtnOp->curMtnOp_reportNumber,
+                        "curMtnOp_description" => $curMtnOp->curMtnOp_description,
+                        "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,
+                        "curMtnOp_endDate" => $curMtnOp->curMtnOp_endDate,
+                        "curMtnOp_validate" => $curMtnOp->curMtnOp_validate,
+                        "qualityVerifier_firstName" => $qualityVerifier_firstName,
+                        "qualityVerifier_lastName" => $qualityVerifier_lastName,
+                        "realizedBy_firstName" => $realizedBy_firstName,
+                        "realizedBy_lastName" => $realizedBy_lastName,
+                        "enteredBy_firstName" =>$enteredBy_firstName,
+                        "enteredBy_lastName" =>$enteredBy_lastName,
+                        "technicalVerifier_firstName" => $technicalVerifier_firstName,
+                        "technicalVerifier_lastName" => $technicalVerifier_lastName,
+                    ]);
                     array_push($container_curMtnOp, $obj); 
                 }
 
-                
+                $reformedBy_id=NULL ; 
+                if ($state->reformedBy_id!=NULL){
+                    $reformedBy_id=$state->reformedBy_id;
+                }
                 $obj=([
                     "id" => $state->id,
                     'state_remarks' => $state->state_remarks,
@@ -268,6 +340,7 @@ class StateController extends Controller
                     'state_startDate' => $state->state_startDate,
                     'state_endDate' => $state->state_endDate,
                     'state_name' => $state->state_name,
+                    'reformedBy_id' =>$reformedBy_id,
                     'prvMtnOpRlz' => $container_prvMtnOpRlz,
                     'curMtnOp' => $container_curMtnOp,
                 ]);

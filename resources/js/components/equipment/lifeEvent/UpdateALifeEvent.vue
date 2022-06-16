@@ -18,7 +18,7 @@
                                 <li class="list-group-item" v-for="(prvMtnOpRlz,index) in eq_prvMtnOpRlz " :key="index"  >
                                     <div>
                                         <p>
-                                            Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
+                                            Operation Number : {{prvMtnOpRlz.prvMtnOp_number}} <br>
                                             Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
                                             Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
                                             Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
@@ -26,7 +26,7 @@
                                             End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
                                             Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}}
 
-                                            <PrvMtnOpRlzManagmentModal approuve :prvMtnOp_id="prvMtnOpRlz.prvMtnOp_id" :prvMtnOp_number="prvMtnOpRlz.prvMtnOp_number" 
+                                            <PrvMtnOpRlzManagmentModal :prvMtnOp_id="prvMtnOpRlz.prvMtnOp_id" :prvMtnOp_number="prvMtnOpRlz.prvMtnOp_number" 
                                             :prvMtnOp_description="prvMtnOpRlz.prvMtnOp_description" :prvMtnOp_protocol="prvMtnOpRlz.prvMtnOp_protocol"
                                             :prvMtnOpRlz_id="prvMtnOpRlz.id" :prvMtnOpRlz_reportNumber="prvMtnOpRlz.prvMtnOpRlz_reportNumber"
                                             :prvMtnOpRlz_startDate="prvMtnOpRlz.prvMtnOpRlz_startDate" :prvMtnOpRlz_endDate="prvMtnOpRlz.prvMtnOpRlz_endDate"
@@ -47,7 +47,26 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
-                            <ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curMtnOp" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
+                            <div v-if="eq_prvMtnOpRlz.length>0" class="all_preventive_ope">
+                                <h3>Recorded Curative maintenance operation</h3>
+                                <li class="list-group-item" v-for="(curMtnOp,index) in eq_curMtnOp " :key="index"  >
+                                    <div>
+                                        <p>
+                                            Operation Number : {{curMtnOp.curMtnOp_number}} <br>
+                                            Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
+                                            Description : {{curMtnOp.curMtnOp_description}} <br>
+                                            Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
+                                            End date : {{curMtnOp.curMtnOp_endDate}} <br>
+                                            Saved as : {{curMtnOp.curMtnOp_validate}} 
+                                        </p>
+
+                                        <CurMtnOpModal :curMtnOp_id="curMtnOp.id" :curMtnOp_reportNumber="curMtnOp.curMtnOp_reportNumber"
+                                        :curMtnOp_startDate="curMtnOp.curMtnOp_startDate" :curMtnOp_endDate="curMtnOp.curMtnOp_endDate"
+                                        :curMtnOp_validate="curMtnOp.curMtnOp_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage" />
+                                    </div>
+                                </li>
+                            </div>
+                            <!--<ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curMtnOp" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>-->
                         </div>
                     </div>
                 </div>
@@ -59,13 +78,16 @@
 <script>
 import ReferenceACurMtnOp from './ReferenceACurMtnOp.vue'
 import PrvMtnOpRlzManagmentModal from './PrvMtnOpRlzManagmentModal.vue'
+import CurMtnOpModal from './CurMtnOpModal.vue'
 import ReferenceAPrvMtnOpRlz from './ReferenceAPrvMtnOpRlz.vue'
+
 
 export default {
     components:{
         ReferenceACurMtnOp,
         ReferenceAPrvMtnOpRlz,
-        PrvMtnOpRlzManagmentModal
+        PrvMtnOpRlzManagmentModal,
+        CurMtnOpModal
     },
     data(){
         return{
@@ -89,6 +111,7 @@ export default {
         var consultUrlCurMtnOp = (id) => `/state/curMtnOp/send/${id}`;
         axios.get(consultUrlCurMtnOp(this.state_id))
             .then (response=>{
+                console.log(response.data)
                 this.eq_curMtnOp=response.data
                 this.loaded=true
             })

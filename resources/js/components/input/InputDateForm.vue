@@ -18,7 +18,7 @@
         <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
         <!--Initializing of the number type input with his props initialized in the parent compenant-->
         
-        <input type="date" :max="new Date().getMonth()+1" id="datePickerId" :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"  
+        <input type="date" :max="new Date().getMonth()+1"  :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"  
          :name="name" :required="!!isRequired" :disabled="!!isDisabled" data-date-inline-picker="true"
           :value="value" v-on:input="updateValue($event.target.value)" >
         <!--If this field has an error this div appear with the error described inside -->   

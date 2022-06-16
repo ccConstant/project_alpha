@@ -8,6 +8,7 @@ use App\Models\PreventiveMaintenanceOperationRealized ;
 use App\Models\EquipmentTemp ; 
 use App\Models\Equipment ; 
 use App\Models\State ; 
+use App\Models\User ; 
 use App\Models\PreventiveMaintenanceOperation ; 
 use App\Http\Controllers\DimensionController ; 
 use App\Http\Controllers\PowerController ; 
@@ -16,6 +17,7 @@ use App\Http\Controllers\UsageController ;
 use App\Http\Controllers\StateController ; 
 use App\Http\Controllers\RiskController ; 
 use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 
@@ -257,6 +259,30 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             $prvMtnOpRlzs=$state->preventive_maintenance_operation_realizeds ; 
             foreach ($prvMtnOpRlzs as $prvMtnOpRlz) {
                 $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
+               
+                $enteredBy_firstName=NULL;
+                $enteredBy_lastName=NULL;
+                $realizedBy_firstName=NULL;
+                $realizedBy_lastName=NULL ; 
+                $approvedBy_firstName=NULL;
+                $approvedBy_lastName=NULL ;
+
+                if ($prvMtnOpRlz->realizedBy_id!=NULL){
+                    $realizedBy=User::findOrFail($prvMtnOpRlz->realizedBy_id) ; 
+                    $realizedBy_firstName=$realizedBy->user_firstName ; 
+                    $realizedBy_lastName=$realizedBy->user_lastName ; 
+                }
+                if ($prvMtnOpRlz->enteredBy_id!=NULL){
+                    $enteredBy=User::findOrFail($prvMtnOpRlz->enteredBy_id) ; 
+                    $enteredBy_firstName=$enteredBy->user_firstName ; 
+                    $enteredBy_lastName=$enteredBy->user_lastName ; 
+                }
+                if ($prvMtnOpRlz->approvedBy_id!=NULL){
+                    $approvedBy=User::findOrFail($prvMtnOpRlz->approvedBy_id) ; 
+                    $approvedBy_firstName=$approvedBy->user_firstName ; 
+                    $approvedBy_lastName=$approvedBy->user_lastName ; 
+                }
+               
                 $obj=([
                     "id" => $prvMtnOpRlz->id,
                     "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
@@ -268,6 +294,12 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                     "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number, 
                     "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description, 
                     "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol, 
+                    "realizedBy_firstName" => $realizedBy_firstName,
+                    "realizedBy_lastName" => $realizedBy_lastName,
+                    "enteredBy_firstName" => $enteredBy_firstName,
+                    "enteredBy_lastName" => $enteredBy_lastName,
+                    "approvedBy_firstName" => $approvedBy_firstName,
+                    "approvedBy_lastName" => $approvedBy_lastName,
                 ]);
 
                 array_push($container,$obj);
@@ -281,7 +313,29 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * Approuve a preventive maintenance operation realized 
      * The id parameter correspond to the id of the preventive maintenance operation realized we want to approuve
      * */
-    public function approuved_prvMtnOpRlz(Request $request, $id){
+    public function approve_prvMtnOpRlz(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
+        }
+        
+        $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id) ; 
+        $prvMtnOpRlz->update([
+            'approvedBy_id' => $user->id, 
+        ]);
+    }
+
+     /**
+     * Function call by PrvMtnOpRlzManagementModal.vue when we want to tell that we are the realizator of a preventive maintenance operation realized with the route : /prvMtnOpRlz/realize/{id}
+     * Tell that you have realize a preventive maintenance operation realized 
+     * The id parameter correspond to the id of the preventive maintenance operation realized we want to entered the realizator
+     * */
+    public function realize_prvMtnOpRlz(Request $request, $id){
         $user=User::findOrFail($request->user_id) ; 
         
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
@@ -294,7 +348,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
 
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id) ; 
         $prvMtnOpRlz->update([
-            'approvedBy_id' => $user->id, 
+            'realizedBy_id' => $user->id, 
         ]);
     }
 }

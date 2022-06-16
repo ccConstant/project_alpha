@@ -344,6 +344,11 @@ Route::get('/state/prvMtnOpRlz/send/{id}', [PreventiveMaintenanceOperationRealiz
 
 Route::post('/state/delete/prvMtnOpRlz/{id}', [PreventiveMaintenanceOperationRealizedController::class, 'delete_prvMtnOpRlz'])  ;
 
+Route::post('/prvMtnOpRlz/approve/{id}', [PreventiveMaintenanceOperationRealizedController::class, 'approve_prvMtnOpRlz'])  ;
+
+Route::post('/prvMtnOpRlz/realize/{id}', [PreventiveMaintenanceOperationRealizedController::class, 'realize_prvMtnOpRlz'])  ;
+
+
 /* Curative Maintenance Operation Form Routes */ 
 
 Route::post('/curMtnOp/verif', [CurativeMaintenanceOperationController::class, 'verif_curMtnOp'])  ;
@@ -355,6 +360,13 @@ Route::post('/equipment/update/state/curMtnOp/{id}', [CurativeMaintenanceOperati
 Route::get('/state/curMtnOp/send/{id}', [CurativeMaintenanceOperationController::class, 'send_curMtnOp'])  ;
 
 Route::post('/state/delete/curMtnOp/{id}', [CurativeMaintenanceOperationController::class, 'delete_curMtnOp'])  ;
+
+Route::post('/curMtnOp/realize/{id}', [CurativeMaintenanceOperationController::class, 'realize_curMtnOp'])  ;
+
+Route::post('curMtnOp/qualityVerifier/{id}', [CurativeMaintenanceOperationController::class, 'qualityVerification_curMtnOp'])  ;
+
+Route::post('/curMtnOp/technicalVerifier/{id}', [CurativeMaintenanceOperationController::class, 'technicalVerification_curMtnOp'])  ;
+
 
 
 /* Enum Form Routes */ 
