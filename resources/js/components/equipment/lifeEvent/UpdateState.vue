@@ -4,6 +4,7 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true">
+            <ErrorAlert ref="errorAlert"/>
             <form class="container state-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <div v-if="isInModifMod">
@@ -31,6 +32,8 @@
                 <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" :info_text="infos_state[3].info_value"/> 
                 <SaveButtonForm v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
+
+
             <div v-if="state_name=='Downgraded'">
                 <div v-if="state_validate=='validated'">
                     <div v-if="!isEmpty(eq_idCard)">
@@ -79,6 +82,8 @@ import RadioGroupForm from '../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import moment from 'moment'
 import EquipmentIDForm from '../referencing/EquipmentIDForm.vue'
+import ErrorAlert from '../../alert/ErrorAlert.vue'
+
 
 export default {
     components : {
@@ -88,7 +93,8 @@ export default {
         RadioGroupForm,
         InputTextForm,
         SaveButtonForm,
-        EquipmentIDForm
+        EquipmentIDForm,
+        ErrorAlert
     },
     props:{
         consultMod:{
@@ -155,9 +161,11 @@ export default {
     },
     methods:{
         addEquipmentState(savedAs){
+            if(this.$userId.user_declareNewStateRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right");
+                return;
+            }
             if(!this.addSucces){
-                console.log("ADD nom:", this.state_name,"\n","remark:", this.state_remarks,"\n","startDate:", this.selected_startDate
-                ,"\n","\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n",this.$userId.id)
                 axios.post('/state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
@@ -193,8 +201,6 @@ export default {
         },
         /*Sending to the controller all the information about the equipment so that it can be updated to the database */ 
         updateEquipmentState(savedAs){
-            console.log("UPDATE nom:", this.state_name,"\n","remark:", this.state_remarks,"\n","startDate:", this.selected_startDate
-                ,"\n","isOK:", this.state_isOk,"\n","validate:", savedAs,"\n","state id",this.state_id,"eq id:",this.eq_id)
                 axios.post('/state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
@@ -278,6 +284,9 @@ export default {
                 .catch(error => console.log(error)) ;
             
         }else{
+            if(this.$userId.user_declareNewStateRight!=true){
+                this.$router.replace({ name: "home"})
+            }
             var UrlState = (id) => `/state/send/${id}`;
             axios.get(UrlState(this.$route.query.currentState))
                 .then (response=>{

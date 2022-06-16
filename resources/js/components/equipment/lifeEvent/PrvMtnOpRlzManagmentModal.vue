@@ -1,35 +1,53 @@
 <template>
-    <div>   
+    <div class="op_prvrlz_modal_comp">   
+        <ErrorAlert ref="errorAlert"/>
+
+        <div class="prvrlz_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
             <b-button  @click="$bvModal.show(`modal-prvMtnOpManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
+        </div>
+        <div class="prvrlz_button" v-else>
+            <b-button  disabled variant="primary">Update</b-button>
+        </div>
+        <div class="prvrlz_button" v-if="this.$userId.user_makeEqRespValidationRight==true">
             <b-button v-if="approuvedBy_lastName==null" @click="$bvModal.show(`modal-prvMtnOpManagmentApprove-${_uid}`)" variant="primary">Approve</b-button>
+        </div>
+        <div class="prvrlz_button" v-else>
+            <b-button v-if="approuvedBy_lastName==null" variant="primary">Approve</b-button>
+        </div>
+        <div class="prvrlz_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
             <b-button v-if="realizedBy_lastName==null"  @click="$bvModal.show(`modal-prvMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
+        </div>
+        <div class="prvrlz_button" v-else>
+            <b-button v-if="realizedBy_lastName==null" disabled variant="primary">I realized it</b-button>
+        </div>
+        
 
-            <b-modal :id="`modal-prvMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
-                <EquipmentPrvMtnOpRlzForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
-                :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
-                :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
-                :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
-            </b-modal>
+        <b-modal :id="`modal-prvMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
+            <EquipmentPrvMtnOpRlzForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
+            :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
+            :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
+            :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
+        </b-modal>
 
-            <b-modal :id="`modal-prvMtnOpManagmentApprove-${_uid}`" title="Approve the record" @ok="handleOkApprove" @hidden="resetModal">
-                <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
-                :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
-                :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
-                :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
-                <h4>Please enter your Username and your password to approve</h4>
-                <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
-                <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
-            </b-modal>
+        <b-modal :id="`modal-prvMtnOpManagmentApprove-${_uid}`" title="Approve the record" @ok="handleOkApprove" @hidden="resetModal">
+            <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
+            :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
+            :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
+            :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
+            <h4>Please enter your Username and your password to approve</h4>
+            <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
+            <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
+        </b-modal>
 
-            <b-modal :id="`modal-prvMtnOpManagmentRealize-${_uid}`" title="Realize the record" @ok="handleOkRealize" @hidden="resetModal">
-                <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
-                :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
-                :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
-                :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
-                <h4>Please enter your Username and your password to realize</h4>
-                <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
-                <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
-            </b-modal>
+        <b-modal :id="`modal-prvMtnOpManagmentRealize-${_uid}`" title="Realize the record" @ok="handleOkRealize" @hidden="resetModal">
+            <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
+            :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
+            :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
+            :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
+            <h4>Please enter your Username and your password to realize</h4>
+            <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
+            <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
+        </b-modal>
     </div>
 
 </template>
@@ -38,12 +56,14 @@
 import EquipmentPrvMtnOpRlzForm  from'./EquipmentPrvMtnOpRlzForm.vue'
 import InputTextForm from '../../input/InputTextForm.vue'
 import InputPasswordForm from '../../input/InputPasswordForm.vue'
+import ErrorAlert from '../../alert/ErrorAlert.vue'
 
 export default {
     components:{
         EquipmentPrvMtnOpRlzForm,
         InputTextForm,
-        InputPasswordForm
+        InputPasswordForm,
+        ErrorAlert
     },
     props:{
         eq_id:{
@@ -139,12 +159,17 @@ export default {
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
-        },
+        }
     }
 
 }
 </script>
 
-<style>
+<style lang="scss">
+    .op_prvrlz_modal_comp{
+        .prvrlz_button{
+            display: inline-block;
+        }
+    }
 
 </style>

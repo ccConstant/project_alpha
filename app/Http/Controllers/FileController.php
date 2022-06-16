@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
 use App\Models\EquipmentTemp ; 
 use App\Models\Equipment ; 
+use App\Models\MmeTemp ; 
+use App\Models\Mme ; 
 use App\Models\File ; 
 use Carbon\Carbon;
 
@@ -22,6 +24,7 @@ use Carbon\Carbon;
 class FileController extends Controller
 {
     
+    /* ---------------------------------------- GENERALS FUNCTION FOR FILES --------------------------------------------*/
     /**
      * Function call by EquipmentFileForm.vue when the form is submitted for check data with the route : /file/verif''(post)
      * Check the informations entered in the form and send errors if it exists
@@ -69,13 +72,13 @@ class FileController extends Controller
         }
     }
 
-
+    /* ---------------------------------------- FUNCTIONS FOR FILES LINKED TO EQUIPMENT  --------------------------------------------*/
     /**
      * Function call by EquipmentFileForm.vue when the form is submitted for insert with the route : /equipment/add/file/${id} (post)
      * Add a new enregistrement of file in the data base with the informations entered in the form 
      * @return \Illuminate\Http\Response : id of the new file
      */
-    public function add_file(Request $request){
+    public function add_file_eq(Request $request){
 
         $id_eq=intval($request->eq_id) ; 
         $equipment=Equipment::findOrfail($request->eq_id) ; 
@@ -121,7 +124,7 @@ class FileController extends Controller
      * Update an enregistrement of file in the data base with the informations entered in the form 
      * The id parameter correspond to the id of the file we want to update
      * */
-    public function update_file(Request $request, $id){
+    public function update_file_eq(Request $request, $id){
 
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         //We search the most recently equipment temp of the equipment 
@@ -163,7 +166,7 @@ class FileController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function send_files($id) {
+    public function send_files_eq($id) {
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $files = File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
         $container=array() ; 
@@ -184,7 +187,7 @@ class FileController extends Controller
      * Delete a file thanks to the id given in parameter
      * The id parameter correspond to the id of the file we want to delete
      * */
-    public function delete_file(Request $request, $id){
+    public function delete_file_eq(Request $request, $id){
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
@@ -204,6 +207,150 @@ class FileController extends Controller
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
             'eqTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
+        }
+        $file=File::findOrFail($id);
+        $file->delete() ; 
+    }
+
+
+     /* ---------------------------------------- FUNCTIONS FOR FILES LINKED TO MME  --------------------------------------------*/
+
+
+     /**
+     * Function call by MmeFileForm.vue when the form is submitted for insert with the route : /mme/add/file/${id} (post)
+     * Add a new enregistrement of file in the data base with the informations entered in the form 
+     * @return \Illuminate\Http\Response : id of the new file
+     */
+    public function add_file_mme(Request $request){
+
+        $id_mme=intval($request->mme_id) ; 
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyMmeTmp!=NULL){
+
+            //Creation of a new file
+            $file=File::create([
+                'file_name' => $request->file_name,
+                'file_location' => $request->file_location,
+                'file_validate' => $request->file_validate,
+                'file_validate' => $request->file_validate,
+                'mmeTemp_id' => $mostRecentlyMmeTmp->id,
+            ]) ; 
+
+            $file_id=$file->id;
+            
+             //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add file
+            if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
+                
+            //We need to increase the number of mme temp linked to the mme
+            $version_mme=$mme->mme_nbrVersion+1 ; 
+            //Update of mme
+            $mme->update([
+                'mme_nbrVersion' =>$version_mme,
+            ]);
+            
+            //We need to increase the version of the mme temp (because we create a new mme temp)
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+                //update of mme temp
+            $mostRecentlyMmeTmp->update([
+                'mmeTemp_version' => $version,
+                'mmeTemp_date' => Carbon::now('Europe/Paris'),
+            ]);
+            }
+            return response()->json($file_id) ; 
+        }
+    }
+
+
+     /**
+     * Function call by MmeFileForm.vue when the form is submitted for update with the route :/mme/update/file/{id} (post)
+     * Update an enregistrement of file in the data base with the informations entered in the form 
+     * The id parameter correspond to the id of the file we want to update
+     * */
+    public function update_file_mme(Request $request, $id){
+
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        //We search the most recently mme temp of the mme 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        if ($mostRecentlyMmeTmp!=NULL){
+            //We checked if the most recently mme temp is validate and if a life sheet has been already created.
+            //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update file 
+            if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
+            
+                //We need to increase the number of mme temp linked to the mme
+                $version_mme=$mme->mme_nbrVersion+1 ; 
+                //Update of mme
+                $mme->update([
+                    'mme_nbrVersion' =>$version_mme,
+                ]);
+                
+               //We need to increase the version of the mme temp (because we create a new mme temp)
+                $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+                 //update of mme temp
+               $mostRecentlyEqTmp->update([
+                'mmeTemp_version' => $version,
+                'mmeTemp_date' => Carbon::now('Europe/Paris'),
+               ]);
+            }
+
+            $file=File::findOrFail($id) ; 
+            $file->update([
+                'file_name' => $request->file_name,
+                'file_location' => $request->file_location,
+                'file_validate' => $request->file_validate,
+            ]);
+        }
+    }
+
+    /**
+     * Function call by ReferenceAFile.vue with the route : /file/send/{$id} (get)
+     * Get the files of the mme whose id is passed in parameter
+     * The id parameter corresponds to the id of the mme from which we want the files
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_files_mme($id) {
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $files = File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get();
+        $container=array() ; 
+        foreach ($files as $file) {
+            $obj=([
+                "id" => $file->id,
+                "file_name" => $file->file_name,
+                "file_location" => $file->file_location,
+                "file_validate" => $file->file_validate,
+            ]);
+            array_push($container,$obj);
+        }
+        return response()->json($files) ;
+    }
+
+    /**
+     * Function call by MmeFileForm.vue when we want to delete a file with the route : /mme/delete/file{id}(post)
+     * Delete a file thanks to the id given in parameter
+     * The id parameter correspond to the id of the file we want to delete
+     * */
+    public function delete_file_mme(Request $request, $id){
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        //We search the most recently mme temp of the mme 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        //We checked if the most recently mme temp is validate and if a life sheet has been already created.
+        //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
+            //We need to increase the number of mme temp linked to the mme
+            $version_mme=$mme->mme_nbrVersion+1 ; 
+            //Update of mme
+            $mme->update([
+                'mme_nbrVersion' =>$version_mme,
+            ]);
+
+            //We need to increase the version of the mme temp (because we create a new mme temp)
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            //update of mme temp
+            $mostRecentlyMmeTmp->update([
+            'mmeTemp_version' => $version,
+            'mmeTemp_date' => Carbon::now('Europe/Paris'),
             ]);
         }
         $file=File::findOrFail($id);

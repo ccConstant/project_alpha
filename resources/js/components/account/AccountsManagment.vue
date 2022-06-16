@@ -4,6 +4,9 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
+        	<ErrorAlert ref="errorAlert"/>
+        	<SuccesAlert ref="succesAlert"/>
+			
 			<b-container class="user_table_container" fluid="xl">
 				<b-row>
 					<b-col class="right_title">Right</b-col>
@@ -30,7 +33,7 @@
 					<AccountManagmentElement right_title="Make a technical Validation" key_letter="Q" :users="pageOfItems" right_name="user_makeTechnicalValidationRight"/>
 					<AccountManagmentElement right_title="Acces to user managment" key_letter="R" :users="pageOfItems" right_name="user_menuUserAcessRight"/>
 					<AccountManagmentElement right_title="Update information" key_letter="S" :users="pageOfItems" right_name="user_updateInformationRight"/>
-					<AccountManagmentElement right_title="Delete signed data" key_letter="T" :users="pageOfItems" right_name="user_deleteDataSignedLinkedToEqOrEcmeRight"/>
+					<AccountManagmentElement right_title="Reform data" key_letter="T" :users="pageOfItems" right_name="makeReformRight"/>
 					<div class="w-100 row_right_tab"></div>
 				</b-row>
 			</b-container>
@@ -60,11 +63,15 @@
 import InputTextForm from '../input/InputTextForm.vue'
 import InputPasswordForm from '../input/InputPasswordForm.vue'
 import AccountManagmentElement from './AccountManagmentElement.vue'
+import ErrorAlert from '../alert/ErrorAlert.vue'
+import SuccesAlert from '../alert/SuccesAlert.vue'
 export default {
 	components:{
 		AccountManagmentElement,
 		InputPasswordForm,
-		InputTextForm
+		InputTextForm,
+		ErrorAlert,
+		SuccesAlert
 	},
 	data(){
 		return{
@@ -115,17 +122,23 @@ export default {
             // Prevent modal from closing
             bvModalEvent.preventDefault()
             // Trigger submit handler
+			if(this.modal_password!='' && this.$userId.user_resetUserPasswordRight==true){
+				this.$refs.errorAlert.showAlert("You don't have the right to change an other user password");
+				return;
+			}	
 			var postUrlUpdate = (id) => `/user/update/infos/${id}`;
 			axios.post(postUrlUpdate(this.modal_id),{
 					user_initials:this.modal_initials,
                     user_password:this.modal_password,
 					user_confirmation_password:this.modal_confirmation_password,
+					user_resetUserPasswordRight:this.$userId.user_resetUserPasswordRight
 			})
 			.then(response =>{           
 				// Hide the modal manually
 				console.log("updated")
 				this.$bvModal.hide(bvModalEvent.target.id);
-				this.resetModal()    
+				this.resetModal()
+				this.$refs.succesAlert.showAlert("Data updated succesfully");
 			})
 			.catch(error =>{
 				this.errors=error.response.data.errors;

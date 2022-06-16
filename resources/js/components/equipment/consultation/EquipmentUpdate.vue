@@ -160,7 +160,6 @@ export default {
             .then (response => this.eq_idCard=response.data)
             .catch(error => console.log(error));
 
-
         var consultUrlDim = (id) => `/dimension/send/${id}`;
         axios.get(consultUrlDim(this.eq_id))
             .then (response=> this.eq_dimensions=response.data)

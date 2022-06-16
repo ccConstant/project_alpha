@@ -13,9 +13,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
-use App\Models\EquipmentTemp ; 
-use App\Models\PreventiveMaintenanceOperation ; 
-use App\Models\PreventiveMaintenanceOperationRealized ; 
+use App\Models\MmeTemp ; 
+use App\Models\Verification ; 
+use App\Models\VerificationRealized ; 
 use App\Models\Equipment ; 
 use Carbon\Carbon;
 

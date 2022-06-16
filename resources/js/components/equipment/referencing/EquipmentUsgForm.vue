@@ -269,6 +269,10 @@ export default {
         reformComponent(endDate){
             //If the user is in update mode and the usage exist in the database
                 //Send a post request with the id of the usage who will be deleted in the url
+            if(this.$userId.user_makeReformRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right to reform")
+                return
+            }
             var consultUrl = (id) => `/equipment/reform/usg/${id}`;
             axios.post(consultUrl(this.usg_id),{
                 eq_id:this.equipment_id_update,

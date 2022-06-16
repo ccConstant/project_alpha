@@ -118,6 +118,7 @@ class EquipmentController extends Controller{
             $mass=$mostRecentlyEqTmp->eqTemp_mass ;
             $remarks=$mostRecentlyEqTmp->eqTemp_remarks ;
             $mobility=$mostRecentlyEqTmp->eqTemp_mobility;
+            $lifeSheetCreated=$mostRecentlyEqTmp->eqTemp_lifeSheetCreated ; 
 
             if ($mostRecentlyEqTmp->enumMassUnit_id!=NULL){
                 $massUnit = $mostRecentlyEqTmp->enumEquipmentMassUnit->value ;
@@ -140,6 +141,7 @@ class EquipmentController extends Controller{
             'eq_massUnit'=> $massUnit,
             'eq_mobility'=> (boolean)$mobility,
             'eq_validate' => $validate,
+            'eq_lifeSheetCreated' => $lifeSheetCreated,
         ]);
     }
 

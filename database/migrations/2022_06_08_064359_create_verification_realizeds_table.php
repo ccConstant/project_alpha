@@ -30,9 +30,11 @@ class CreateVerificationRealizedsTable extends Migration
             $table->date('verifRlz_entryDate') ->nullable();
             $table->enum('verifRlz_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enteredBy_id') -> nullable() ; 
-            $table->foreign('enteredBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('enteredBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('realizedBy_id')  -> nullable() ; 
-            $table->foreign('realizedBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('realizedBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
+            $table->unsignedBigInteger('approvedBy_id')  -> nullable() ; 
+            $table->foreign('approvedBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('state_id') ;
             $table->foreign('state_id')->references('id')->on('mme_states') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('verif_id') ;

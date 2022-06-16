@@ -101,12 +101,17 @@ export default {
 			this.technical=technical;
 			this.quality=quality;
 			if(technical==true && quality ==true){
-			this.$bvModal.show(`modal-updateWarning-${this._uid}`)
+				this.$bvModal.show(`modal-updateWarning-${this._uid}`)
 			}else{
-			this.$router.replace({ name: "url_eq_update", params: {id}})
+				this.$router.replace({ name: "url_eq_update", params: {id}})
 			}
 			if(redirect==true){
-			this.$router.replace({ name: "url_eq_update", params: {id}})
+				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight==true){
+					this.$router.replace({ name: "url_eq_update", params: {id}})
+				}else{
+					this.$refs.errorAlert.showAlert("You don't have the right");
+				}	
+				
 			} 
 		},
 		resetModal(){

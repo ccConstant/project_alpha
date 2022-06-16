@@ -1,7 +1,16 @@
 <template>
     <div>
         <div v-if="reformDate==null">
-            <b-button class="reformButton" v-if="this.reformMod==true" variant="danger" @click="$bvModal.show(`modal-reform_component-${_uid}`)" >Reform</b-button>
+            <div v-if="this.$userId.user_makeReformRight==true">
+                <b-button class="reformButton" v-if="this.reformMod==true" variant="danger" @click="$bvModal.show(`modal-reform_component-${_uid}`)" >Reform</b-button>
+            </div>
+            <div v-else>
+                <b-button class="reformButton" v-if="this.reformMod==true" variant="danger" disabled >Reform</b-button>
+                <p class="text-danger">
+                  You don't have the right to Reform  
+                </p>
+            </div>
+
             <div v-if="endDate==''">
                 <b-modal :id="`modal-reform_component-${_uid}`"  @ok="reformConfirmation" :ok-disabled="true">
                     <p class="my-4">Are you sure you want to reform</p>

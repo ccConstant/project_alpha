@@ -1,9 +1,32 @@
 <template>
-    <div>   
-        <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
-        <b-button v-if="realizedBy_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
-        <b-button v-if="qualityVerifier_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentQuality-${_uid}`)" variant="primary">Quality Check</b-button>
-        <b-button v-if="technicalVerifier_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentTechnical-${_uid}`)" variant="primary">Technical Check</b-button>
+    <div class="op_cur_modal_comp"> 
+        <div class="cur_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
+            <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
+        </div>
+        <div class="cur_button" v-else>
+            <b-button  disabled variant="primary">Update</b-button>
+        </div>  
+        
+        <div class="cur_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
+             <b-button v-if="realizedBy_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
+        </div>
+        <div class="cur_button" v-else>
+            <b-button v-if="realizedBy_lastName==null" disabled variant="primary">I realized it</b-button>
+        </div>
+
+        <div class="cur_button" v-if="this.$userId.user_makeQualityValidationRight==true">
+            <b-button v-if="qualityVerifier_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentQuality-${_uid}`)" variant="primary">Quality Check</b-button>
+        </div>
+        <div class="cur_button" v-else>
+            <b-button v-if="qualityVerifier_lastName==null" disabled variant="primary">Quality Check</b-button>
+        </div>
+
+        <div class="cur_button" v-if="this.$userId.user_makeTechnicalValidationRight==true">
+            <b-button v-if="technicalVerifier_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentTechnical-${_uid}`)" variant="primary">Technical Check</b-button>
+        </div>
+        <div class="cur_button" v-else>
+            <b-button v-if="technicalVerifier_lastName==null" disabled variant="primary">Technical Check</b-button>
+        </div>
 
         <b-modal :id="`modal-curMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
             <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
@@ -157,6 +180,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+    .op_cur_modal_comp{
+        .cur_button{
+            display: inline-block;
+        }
+    }
 </style>

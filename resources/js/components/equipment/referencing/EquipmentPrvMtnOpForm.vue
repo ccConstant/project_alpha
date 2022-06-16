@@ -346,6 +346,10 @@ export default {
             
         },
         reformComponent(endDate){
+            if(this.$userId.user_makeReformRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right to reform")
+                return
+            }
             //If the user is in update mode and the usage exist in the database
                 //Send a post request with the id of the usage who will be deleted in the url
             var consultUrl = (id) => `/equipment/reform/prvMtnOp/${id}`;

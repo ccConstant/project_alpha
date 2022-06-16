@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import InputTextForm from '../../input/InputTextForm.vue'
+
 import ErrorAlert from '../../alert/ErrorAlert.vue'
 export default {
   components:{
@@ -52,18 +52,23 @@ export default {
     }
   },
   methods:{
-    verifBeforeAddState(eq_id,state_id){        
-        var consultUrl = (id) => `/state/verif/beforeChangingState/${id}`;
-        axios.post(consultUrl(state_id),{
-        })
-        .then(response =>{
-            this.$router.replace({ name: "url_life_event_change_state", params: {id:eq_id}, query: {currentState: state_id } })
-        ;})
-        //If the controller sends errors we put it in the errors object 
-        .catch(error => {
-          console.log(error.response.data.errors)
-          this.$refs.errorAlert.showAlert(error.response.data.errors.state_verif);
-        }) ;
+    verifBeforeAddState(eq_id,state_id){       
+        if(this.$userId.user_declareNewStateRight!=true){
+          this.$refs.errorAlert.showAlert("You don't have the right");
+        }else{
+          var consultUrl = (id) => `/state/verif/beforeChangingState/${id}`;
+          axios.post(consultUrl(state_id),{
+          })
+          .then(response =>{
+              this.$router.replace({ name: "url_life_event_change_state", params: {id:eq_id}, query: {currentState: state_id } })
+          ;})
+          //If the controller sends errors we put it in the errors object 
+          .catch(error => {
+            console.log(error.response.data.errors)
+            this.$refs.errorAlert.showAlert(error.response.data.errors.state_verif);
+          }) ;
+        }
+
     },
     verifBeforeAddOpe(eq_id_to_send,state_id){
         console.log('state:',state_id)

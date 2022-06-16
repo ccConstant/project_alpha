@@ -263,13 +263,24 @@ Route::post('/equipment/reform/usg/{id}', [UsageController::class, 'reform_usage
 
 Route::post('/file/verif', [FileController::class, 'verif_file'])  ;
 
-Route::post('/equipment/add/file', [FileController::class, 'add_file'])  ;
+Route::post('/equipment/add/file', [FileController::class, 'add_file_eq'])  ;
 
-Route::post('/equipment/update/file/{id}', [FileController::class, 'update_file'])  ;
+Route::post('/equipment/update/file/{id}', [FileController::class, 'update_file_eq'])  ;
 
-Route::get('/file/send/{id}', [FileController::class, 'send_files'])  ;
+Route::get('/file/send/{id}', [FileController::class, 'send_files_eq'])  ;
 
-Route::post('/equipment/delete/file/{id}', [FileController::class, 'delete_file'])  ;
+Route::post('/equipment/delete/file/{id}', [FileController::class, 'delete_file_eq'])  ;
+
+Route::post('/mme/add/file', [FileController::class, 'add_file_mme'])  ;
+
+Route::post('/mme/update/file/{id}', [FileController::class, 'update_file_mme'])  ;
+
+Route::get('/file/send/mme/{id}', [FileController::class, 'send_files_mme'])  ;
+
+Route::post('/mme/delete/file/{id}', [FileController::class, 'delete_file_mme'])  ;
+
+
+
 
 /* Preventive Maintenance Operation Form Routes */ 
 
@@ -563,8 +574,26 @@ Route::post('/mme/validation/{id}', [MmeController::class, 'validation'] ) ;
 
 Route::post('/mme/delete/{id}', [MmeController::class, 'delete_mme'] ) ;
 
-Route::post('/state/mme/{id} ', [MmeController::class, 'add_mme_from_state'] ) ;
+Route::post('/mme_state/mme/{id} ', [MmeController::class, 'add_mme_from_state'] ) ;
 
-Route::get('/send/state/mme/{state_id} ', [MmeController::class, 'send_mme_from_state'] ) ;
+Route::get('/send/mme_state/mme/{state_id} ', [MmeController::class, 'send_mme_from_state'] ) ;
 
+
+/* Mme State Form Routes */ 
+
+Route::post('/mme_state/verif', [MmeStateController::class, 'verif_state'])  ;
+
+Route::post('/mme_state/verif/beforeChangingState/{id}', [MmeStateController::class, 'verif_before_changing_state'])  ;
+
+Route::post('/mme_state/verif/beforeReferenceVerif/{id}', [MmeStateController::class, 'verif_before_reference_verif'])  ;
+
+Route::post('/mme/add/state', [MmeStateController::class, 'add_state'])  ;
+
+Route::post('/mme/update/state/{id}', [MmeStateController::class, 'update_state'])  ;
+
+Route::get('/mme_states/send/{id}', [MmeStateController::class, 'send_states'])  ;
+
+Route::get('/mme_state/send/{id}', [MmeStateController::class, 'send_state'])  ;
+
+Route::post('/mme/delete/state/{id}', [MmeStateController::class, 'delete_state'])  ;
 

@@ -32,11 +32,11 @@ class CreateMmeTempsTable extends Migration
             $table->unsignedBigInteger('mme_id') ;
             $table->foreign('mme_id')->references('id')->on('mme') ->onDelete('cascade')  ; 
             $table->unsignedBigInteger('qualityVerifier_id') -> nullable() ; 
-            $table->foreign('qualityVerifier_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('qualityVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('technicalVerifier_id')  -> nullable() ; 
-            $table->foreign('technicalVerifier_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('technicalVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('createdBy_id') -> nullable() ; 
-            $table->foreign('createdBy_id')->references('id')->on('peoples') ->onDelete('restrict')  ; 
+            $table->foreign('createdBy_id')->references('id')->on('users') ->onDelete('restrict')  ; 
         });
     }
 

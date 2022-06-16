@@ -4,7 +4,7 @@
             <div v-if="!modifMod">
                 <div v-if="!consultMod">
 
-                    <div v-if="in_life_sheet_data==true">
+                    <div v-if="is_op_data==true">
                         <div class="save_button_draft_tbv" v-if="updateDataInDraftRight==true">
                             <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
                             <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
@@ -23,18 +23,18 @@
                         <p v-if="validateDescriptiveLifeSheetDataRight == false" class="text-danger">You don't have the right to save as validated </p>
                         
                     </div>
-                    <div v-else>
+                    <div v-else-if="is_op_data!=true">
                         <div class="save_button_draft_tbv">
                             <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
                             <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
                         </div>
-                        <div class="save_button_validated" v-if="validateOtherDataRight==true">
+                        <div class="save_button_validated" v-if="makeEqOpValidationRight==true">
                             <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
                         </div>
                         <div class="save_button_validated" v-else>
                             <b-button variant="primary" disabled>save as validated</b-button>
                         </div>
-                        <p class="text-danger" v-if="validateOtherDataRight == false">You don't have the right to save as validated </p>
+                        <p class="text-danger" v-if="makeEqOpValidationRight == false">You don't have the right to save as validated </p>
                     </div>
 
                     
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div v-else>
-                    <div v-if="in_life_sheet_data==true">
+                    <div v-if="is_op_data!=true">
                         <div class="save_button_draft_tbv" v-if="updateDataInDraftRight==true"  >
                             <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
                             <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
@@ -92,12 +92,12 @@
                             <button class="save btn btn-primary" type="button" disabled >validate</button>
                         </div>
                     </div>
-                    <div v-else>
+                    <div v-else-if="is_op_data==true">
                         <div class="save_button_draft_tbv">
                             <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
                             <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
                         </div>
-                        <div v-if="validateOtherDataRight==true" class="save_button_validated"  >
+                        <div v-if="makeEqOpValidationRight==true" class="save_button_validated"  >
                             <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
                         </div>
                         <div v-else class="save_button_validated">
@@ -114,7 +114,7 @@
                         </div>
                         <p class="text-danger" v-if="updateDataInDraftRight==false">You don't have the right to save as draft or as to be validated</p>
                         <p class="text-danger" v-if="validateDescriptiveLifeSheetDataRight == false">You don't have the right to save as validated </p>
-                        <p class="text-danger" v-if="validateOtherDataRight == false">You don't have the right to save as validated </p>
+                        <p class="text-danger" v-if="makeEqOpValidationRight == false">You don't have the right to save as validated </p>
 
                     </div>    
             </div>
@@ -148,7 +148,7 @@ export default {
             type:Boolean,
             default:false
         },
-        in_life_sheet:{
+        is_op:{
             type:Boolean,
             default:true
         }
@@ -158,8 +158,8 @@ export default {
             sucess:false,
             updateDataInDraftRight:this.$userId.user_updateDataInDraftRight,
             validateDescriptiveLifeSheetDataRight:this.$userId.user_validateDescriptiveLifeSheetDataRight,
-            validateOtherDataRight:this.$userId.user_validateOtherDataRight,
-            in_life_sheet_data:this.in_life_sheet
+            makeEqOpValidationRight:this.$userId.user_makeEqOpValidationRight,
+            is_op_data:this.is_op
         }
     },
     methods:{
