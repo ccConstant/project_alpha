@@ -17,22 +17,34 @@
                                 <h3>Recorded Preventive maintenance operation</h3>
                                 <li class="list-group-item" v-for="(prvMtnOpRlz,index) in eq_prvMtnOpRlz " :key="index"  >
                                     <div>
-                                        <p>
-                                            Operation Number : {{prvMtnOpRlz.prvMtnOp_number}} <br>
-                                            Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
-                                            Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
-                                            Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
-                                            Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
-                                            End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
-                                            Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}}
-
-                                            <PrvMtnOpRlzManagmentModal :prvMtnOp_id="prvMtnOpRlz.prvMtnOp_id" :prvMtnOp_number="prvMtnOpRlz.prvMtnOp_number" 
-                                            :prvMtnOp_description="prvMtnOpRlz.prvMtnOp_description" :prvMtnOp_protocol="prvMtnOpRlz.prvMtnOp_protocol"
-                                            :prvMtnOpRlz_id="prvMtnOpRlz.id" :prvMtnOpRlz_reportNumber="prvMtnOpRlz.prvMtnOpRlz_reportNumber"
-                                            :prvMtnOpRlz_startDate="prvMtnOpRlz.prvMtnOpRlz_startDate" :prvMtnOpRlz_endDate="prvMtnOpRlz.prvMtnOpRlz_endDate"
-                                            :prvMtnOpRlz_validate="prvMtnOpRlz.prvMtnOpRlz_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage" />
-                                        </p>
+                                        Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
+                                        Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
+                                        Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
+                                        Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
+                                        Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
+                                        End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
+                                        Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}} <br>
+                                        Entered by : {{prvMtnOpRlz.enteredBy_lastName}} {{prvMtnOpRlz.enteredBy_firstName}} <br>
                                     </div>
+                                    <div v-if="prvMtnOpRlz.realizedBy_lastName!=null">
+                                        Realized by : {{prvMtnOpRlz.realizedBy_firstName}} {{prvMtnOpRlz.realizedBy_lastName}} <br>
+                                    </div>
+                                    <div v-else>
+                                        Realized by : - <br>
+                                    </div>
+                                    <div v-if="prvMtnOpRlz.approvedBy_lastName!=null">
+                                        Approved by : {{prvMtnOpRlz.approvedBy_firstName}} {{prvMtnOpRlz.approvedBy_lastName}} <br>
+                                    </div>
+                                    <div v-else>
+                                        Approved by : - <br>
+                                    </div>
+                                    
+                                    <PrvMtnOpRlzManagmentModal :prvMtnOp_id="prvMtnOpRlz.prvMtnOp_id" :prvMtnOp_number="prvMtnOpRlz.prvMtnOp_number" 
+                                    :prvMtnOp_description="prvMtnOpRlz.prvMtnOp_description" :prvMtnOp_protocol="prvMtnOpRlz.prvMtnOp_protocol"
+                                    :prvMtnOpRlz_id="prvMtnOpRlz.id" :prvMtnOpRlz_reportNumber="prvMtnOpRlz.prvMtnOpRlz_reportNumber"
+                                    :prvMtnOpRlz_startDate="prvMtnOpRlz.prvMtnOpRlz_startDate" :prvMtnOpRlz_endDate="prvMtnOpRlz.prvMtnOpRlz_endDate"
+                                    :prvMtnOpRlz_validate="prvMtnOpRlz.prvMtnOpRlz_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage"
+                                    :approvedBy_lastName="prvMtnOpRlz.approvedBy_lastName" :realizedBy_lastName="prvMtnOpRlz.realizedBy_lastName" />
                                 </li>
                             </div>
                             <!--<ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>-->
@@ -51,19 +63,38 @@
                                 <h3>Recorded Curative maintenance operation</h3>
                                 <li class="list-group-item" v-for="(curMtnOp,index) in eq_curMtnOp " :key="index"  >
                                     <div>
-                                        <p>
-                                            Operation Number : {{curMtnOp.curMtnOp_number}} <br>
-                                            Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
-                                            Description : {{curMtnOp.curMtnOp_description}} <br>
-                                            Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
-                                            End date : {{curMtnOp.curMtnOp_endDate}} <br>
-                                            Saved as : {{curMtnOp.curMtnOp_validate}} 
-                                        </p>
-
-                                        <CurMtnOpModal :curMtnOp_id="curMtnOp.id" :curMtnOp_reportNumber="curMtnOp.curMtnOp_reportNumber"
-                                        :curMtnOp_startDate="curMtnOp.curMtnOp_startDate" :curMtnOp_endDate="curMtnOp.curMtnOp_endDate"
-                                        :curMtnOp_validate="curMtnOp.curMtnOp_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage" />
+                                        Operation Numner : {{curMtnOp.curMtnOp_number}} <br>
+                                        Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
+                                        Description : {{curMtnOp.curMtnOp_description}} <br>
+                                        Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
+                                        End date : {{curMtnOp.curMtnOp_endDate}} <br>
+                                        Saved as : {{curMtnOp.curMtnOp_validate}} <br>
+                                        Entered by : {{curMtnOp.enteredBy_lastName}} {{curMtnOp.enteredBy_firstName}} <br>
                                     </div>
+                                    <div v-if="curMtnOp.realizedBy_lastName!=null">
+                                        Realized by : {{curMtnOp.realizedBy_firstName}} {{curMtnOp.realizedBy_lastName}} <br>
+                                    </div>
+                                    <div v-else>
+                                        Realized by : - <br>
+                                    </div>
+                                    <div v-if="curMtnOp.qualityVerifier_lastName!=null">
+                                        Quality verifier : {{curMtnOp.qualityVerifier_lastName}} {{curMtnOp.qualityVerifier_firstName}} <br>
+                                    </div>
+                                    <div v-else>
+                                        Quality verifier : - <br>
+                                    </div>
+                                    <div v-if="curMtnOp.technicalVerifier_lastName!=null">
+                                        Technical verifier : {{curMtnOp.technicalVerifier_lastName}} {{curMtnOp.technicalVerifier_firstName}} <br>
+                                    </div>
+                                    <div v-else>
+                                        Technical verifier : - <br>
+                                    </div>
+                                    
+                                    <CurMtnOpModal :curMtnOp_id="curMtnOp.id" :curMtnOp_reportNumber="curMtnOp.curMtnOp_reportNumber"
+                                    :curMtnOp_startDate="curMtnOp.curMtnOp_startDate" :curMtnOp_endDate="curMtnOp.curMtnOp_endDate"
+                                    :curMtnOp_validate="curMtnOp.curMtnOp_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage"
+                                    :realizedBy_lastName="curMtnOp.realizedBy_lastName" :qualityVerifier_lastName="curMtnOp.qualityVerifier_lastName"
+                                    :technicalVerifier_lastName="curMtnOp.technicalVerifier_lastName" />
                                 </li>
                             </div>
                             <!--<ReferenceACurMtnOp v-if="eq_curMtnOp.length>0" :importedCurMtnOp="eq_curMtnOp" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>-->
@@ -111,7 +142,6 @@ export default {
         var consultUrlCurMtnOp = (id) => `/state/curMtnOp/send/${id}`;
         axios.get(consultUrlCurMtnOp(this.state_id))
             .then (response=>{
-                console.log(response.data)
                 this.eq_curMtnOp=response.data
                 this.loaded=true
             })

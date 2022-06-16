@@ -5,6 +5,7 @@
         </div>
         <div v-if="loaded==true" class="equipment_consultation">
             <ErrorAlert ref="errorAlert"/>
+            <SuccesAlert ref="successAlert"/>
             <h1>Equipment Consultation</h1>
             <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>
             <div class="accordion">
@@ -116,6 +117,7 @@
 
 <script>
 import ErrorAlert from '../../alert/ErrorAlert.vue'
+import SuccesAlert from '../../alert/SuccesAlert.vue'
 import EquipmentIDForm from '../referencing/EquipmentIDForm.vue'
 import ReferenceADim from '../referencing/ReferenceADim.vue'
 import ReferenceAPow from '../referencing/ReferenceAPow.vue'
@@ -141,7 +143,8 @@ export default {
         ReferenceAPrvMtnOp,
         ReferenceARisk,
         ValidationButton,
-        ErrorAlert
+        ErrorAlert,
+        SuccesAlert
     },
     data(){
         return{
@@ -161,7 +164,11 @@ export default {
     },
 
     created(){
-
+        if(this.validationMethod=='technical' && this.$userId.user_makeTechnicalValidationRight!=true){
+            this.$router.replace({ name: "url_eq_list"})
+        }else if(this.validationMethod=='quality' && this.$userId.user_makeQualityValidationRight!=true){
+            this.$router.replace({ name: "url_eq_list"})
+        }
         var consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
             .then (response => {this.eq_idCard=response.data;console.log(response.data)})
@@ -230,16 +237,14 @@ export default {
                             enteredBy_id:this.$userId.id
                         })
                         .then(response =>{
-                            console.log("added succesfuly")
-                            
-                            
+                            this.$refs.successAlert.showAlert(`${this.validationMethod} made succesfully`);
+                            this.$router.replace({ name: "url_eq_list"}) 
                         })
                         //If the controller sends errors we put it in the errors object 
                         .catch(error => this.errors=error.response.data.errors) ;
                     ;})
                     //If the controller sends errors we put it in the errors object 
                 .catch(error =>{
-                    console.log(error.response.data.errors)
                     this.errors=error.response.data.errors
                 });
             }

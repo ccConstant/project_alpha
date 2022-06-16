@@ -4,6 +4,7 @@
 			<b-spinner variant="primary"></b-spinner>
 		</div>
 		<div v-if="loaded==true" >
+		<ErrorAlert ref="errorAlert"/>
 		<h1>Equipment List</h1>
 			<input placeholder="Search an equipment by his Alpha Reference" v-model="searchTerm" class="form-control w-50 search_bar" type="text">
 		<ul>
@@ -36,20 +37,25 @@
 </template>
 
 <script>
+import ErrorAlert from '../../alert/ErrorAlert.vue'
 export default {
-	data(){
-	return{
-		equipments:[],
-		searchTerm: "",
-		loaded:false,
-		eq_id:null,
-		technical:null,
-		quality:null,
-		pageOfItems: [],
-		modal_eq_internalReference:'',
-		modal_eq_id:null
+	components:{
+        ErrorAlert,
 
-	}
+	},
+	data(){
+		return{
+			equipments:[],
+			searchTerm: "",
+			loaded:false,
+			eq_id:null,
+			technical:null,
+			quality:null,
+			pageOfItems: [],
+			modal_eq_internalReference:'',
+			modal_eq_id:null
+
+		}
 	},
 	computed: {
 	filterByTerm() {
@@ -73,10 +79,19 @@ export default {
 	},
 	methods:{
 		technicalValidation(id){
-			this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"technical" } })
+			if( this.$userId.user_makeTechnicalValidationRight!=true){
+				this.$refs.errorAlert.showAlert("You don't have the right");
+			}else{
+				this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"technical" } })
+			}
+			
 		},
 		qualityValidation(id){
-			this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"quality" } })
+			if( this.$userId.user_makeQualityValidationRight!=true){
+				this.$refs.errorAlert.showAlert("You don't have the right");
+			}else{
+				this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"quality" } })
+			}
 		},
 		reformEquipment(id){
 			this.$router.replace({ name: "url_eq_reform", params: {id:id}})

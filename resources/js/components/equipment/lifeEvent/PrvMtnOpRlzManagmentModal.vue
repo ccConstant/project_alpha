@@ -1,8 +1,8 @@
 <template>
     <div>   
             <b-button  @click="$bvModal.show(`modal-prvMtnOpManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
-            <b-button  @click="$bvModal.show(`modal-prvMtnOpManagmentApprove-${_uid}`)" variant="primary">Approve</b-button>
-            <b-button  @click="$bvModal.show(`modal-prvMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
+            <b-button v-if="approuvedBy_lastName==null" @click="$bvModal.show(`modal-prvMtnOpManagmentApprove-${_uid}`)" variant="primary">Approve</b-button>
+            <b-button v-if="realizedBy_lastName==null"  @click="$bvModal.show(`modal-prvMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
 
             <b-modal :id="`modal-prvMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
                 <EquipmentPrvMtnOpRlzForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
@@ -78,7 +78,14 @@ export default {
         },
         prvMtnOpRlz_validate:{
             type:String
-        }
+        },
+        approuvedBy_lastName:{
+            type:String
+        },
+        realizedBy_lastName:{
+            type:String
+        },
+        
 
     },
     data(){

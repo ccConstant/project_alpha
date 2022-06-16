@@ -1,9 +1,9 @@
 <template>
     <div>   
         <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
-        <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
-        <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentQuality-${_uid}`)" variant="primary">Quality Check</b-button>
-        <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentTechnical-${_uid}`)" variant="primary">Technical Check</b-button>
+        <b-button v-if="realizedBy_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
+        <b-button v-if="qualityVerifier_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentQuality-${_uid}`)" variant="primary">Quality Check</b-button>
+        <b-button v-if="technicalVerifier_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentTechnical-${_uid}`)" variant="primary">Technical Check</b-button>
 
         <b-modal :id="`modal-curMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
             <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
@@ -72,7 +72,16 @@ export default {
         },
         curMtnOp_validate:{
             type:String
-        }
+        },
+        realizedBy_lastName:{
+            type:String
+        },
+        qualityVerifier_lastName:{
+            type:String
+        },
+        technicalVerifier_lastName:{
+            type:String
+        },
 
     },
     methods:{

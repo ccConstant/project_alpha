@@ -36,12 +36,15 @@
 			</b-container>
 			<b-modal :id="`modal-updateUser-${_uid}`" @hidden="resetModal" @ok="handleOkUpdate" title="User info">
 				<div>
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_userName" name="user_userName" label="Username :" v-model="modal_userName" :isDisabled="true"/>
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_firstName" name="user_firstName" label="First :" v-model="modal_firstName" :isDisabled="true"/>
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_lastName" name="user_lastName" label="Last :" v-model="modal_lastName" :isDisabled="true"/>
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_initials" name="user_initials" label="Initial :" v-model="modal_initials"/>
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_passwordName" name="user_password" label="Change the current password :" v-model="modal_password"/>
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Confirm the password :" v-model="modal_confirmation_password"/>
+					<form @keydown="clearError">
+						<InputTextForm  inputClassName="form-control" :Errors="errors.user_userName" name="user_userName" label="Username :" v-model="modal_userName" :isDisabled="true"/>
+						<InputTextForm  inputClassName="form-control" :Errors="errors.user_firstName" name="user_firstName" label="First :" v-model="modal_firstName" :isDisabled="true"/>
+						<InputTextForm  inputClassName="form-control" :Errors="errors.user_lastName" name="user_lastName" label="Last :" v-model="modal_lastName" :isDisabled="true"/>
+						<InputTextForm  inputClassName="form-control" :Errors="errors.user_initials" name="user_initials" label="Initial :" v-model="modal_initials"/>
+						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_password" name="user_password" label="Change the current password :" v-model="modal_password"/>
+						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Confirm the password :" v-model="modal_confirmation_password"/>
+					</form>
+                    
 
 
 
@@ -55,10 +58,12 @@
 
 <script>
 import InputTextForm from '../input/InputTextForm.vue'
+import InputPasswordForm from '../input/InputPasswordForm.vue'
 import AccountManagmentElement from './AccountManagmentElement.vue'
 export default {
 	components:{
 		AccountManagmentElement,
+		InputPasswordForm,
 		InputTextForm
 	},
 	data(){
@@ -110,25 +115,21 @@ export default {
             // Prevent modal from closing
             bvModalEvent.preventDefault()
             // Trigger submit handler
-            this.handleSubmitUpdate()
-        },
-		handleSubmitUpdate() {
 			var postUrlUpdate = (id) => `/user/update/infos/${id}`;
 			axios.post(postUrlUpdate(this.modal_id),{
 					user_initials:this.modal_initials,
                     user_password:this.modal_password,
 					user_confirmation_password:this.modal_confirmation_password,
-                })
-				.then(response =>{           
-					// Hide the modal manually
-					this.$nextTick(() => {
-						this.$bvModal.hide(`modal-addEnum-${this.compId}`)
-					})      
-				})
-                .catch(error =>{
-                    console.log(error.response.data.errors);
-                });
-  
+			})
+			.then(response =>{           
+				// Hide the modal manually
+				console.log("updated")
+				this.$bvModal.hide(bvModalEvent.target.id);
+				this.resetModal()    
+			})
+			.catch(error =>{
+				this.errors=error.response.data.errors;
+			});
         },
 		resetModal(){
 			this.modal_userName='';
@@ -138,7 +139,12 @@ export default {
 			this.modal_password='';
 			this.modal_confirmation_password='';
 			this.modal_id='';
-		}
+			this.errors={};
+		},
+		/*Clear all the error of the targeted field*/
+        clearError(event){
+            delete this.errors[event.target.name];
+        },
 
 	},
 

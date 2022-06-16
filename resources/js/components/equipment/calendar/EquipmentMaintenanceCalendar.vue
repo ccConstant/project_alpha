@@ -1,7 +1,16 @@
 <template>
     <div>
+        <div class="remindOpe_container">
+            <h2>Maintenance to do urgently</h2>
+            <li class="list-group-item">
+                coco
+            </li>
+            <li class="list-group-item">
+                coco
+            </li>
+        </div>
         <EventDetailsModal ref="event_details" @modalClosed="modalClosed" :prvMtnOps="prvMtnOp"/>
-        <div class='container calendar_container'>
+        <div class='calendar_container'>
             <div class='calendar'>
                 <FullCalendar  :options="calendarOptions"/>
             </div>
@@ -36,7 +45,7 @@ export default {
         return {
             calendarOptions: {
                 plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin,resourceTimelinePlugin],
-                initialView: 'listMonth',
+                initialView: 'resourceTimelineMonth',
                 headerToolbar: {
                     left: 'listMonth,listWeek,resourceTimelineMonth',
                     center: 'title',
@@ -92,4 +101,23 @@ export default {
 </script>
 
 <style lang="scss">
+.remindOpe_container{
+    float:left;
+    width: 300px;
+    height: auto;
+    border:solid 1px lightcoral;
+    border-radius: 30px;
+    background-color:lightcoral ;
+    margin-right: 10px;
+    h2{
+        text-align:center ;
+        color:red;
+    }
+}
+.calendar_container{
+   margin-top :50px;
+   width: auto;
+   height: auto;
+}
+
 </style>

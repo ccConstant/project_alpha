@@ -23,15 +23,31 @@
                                     <h3>Recorded curative maintenance operation</h3>
                                     <li class="list-group-item" v-for="(curMtnOp,index) in list.curMtnOp " :key="index"  >
                                         <div>
-                                            <p>
-                                                Operation Numner : {{curMtnOp.curMtnOp_number}} <br>
-                                                Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
-                                                Description : {{curMtnOp.curMtnOp_description}} <br>
-                                                Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
-                                                End date : {{curMtnOp.curMtnOp_endDate}} <br>
-                                                Saved as : {{curMtnOp.curMtnOp_validate}} 
-                                                
-                                            </p>
+                                            Operation Numner : {{curMtnOp.curMtnOp_number}} <br>
+                                            Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
+                                            Description : {{curMtnOp.curMtnOp_description}} <br>
+                                            Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
+                                            End date : {{curMtnOp.curMtnOp_endDate}} <br>
+                                            Saved as : {{curMtnOp.curMtnOp_validate}} <br>
+                                            Entered by : {{curMtnOp.enteredBy_lastName}} {{curMtnOp.enteredBy_firstName}} <br>
+                                        </div>
+                                        <div v-if="curMtnOp.realizedBy_lastName!=null">
+                                            Realized by : {{curMtnOp.realizedBy_firstName}} {{curMtnOp.realizedBy_lastName}} <br>
+                                        </div>
+                                        <div v-else>
+                                            Realized by : - <br>
+                                        </div>
+                                        <div v-if="curMtnOp.qualityVerifier_lastName!=null">
+                                            Quality verifier : {{curMtnOp.qualityVerifier_lastName}} {{curMtnOp.qualityVerifier_firstName}} <br>
+                                        </div>
+                                        <div v-else>
+                                            Quality verifier : - <br>
+                                        </div>
+                                        <div v-if="curMtnOp.technicalVerifier_lastName!=null">
+                                            Technical verifier : {{curMtnOp.technicalVerifier_lastName}} {{curMtnOp.technicalVerifier_firstName}} <br>
+                                        </div>
+                                        <div v-else>
+                                            Technical verifier : - <br>
                                         </div>
                                     </li>
                                 </div>
@@ -39,15 +55,26 @@
                                     <h3>Recorded Preventive maintenance operation</h3>
                                     <li class="list-group-item" v-for="(prvMtnOpRlz,index) in list.prvMtnOpRlz " :key="index"  >
                                         <div>
-                                            <p>
-                                                Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
-                                                Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
-                                                Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
-                                                Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
-                                                Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
-                                                End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
-                                                Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}} 
-                                            </p>
+                                            Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
+                                            Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
+                                            Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
+                                            Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
+                                            Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
+                                            End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
+                                            Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}} <br>
+                                            Entered by : {{prvMtnOpRlz.enteredBy_lastName}} {{prvMtnOpRlz.enteredBy_firstName}} <br>
+                                        </div>
+                                        <div v-if="prvMtnOpRlz.realizedBy_lastName!=null">
+                                            Realized by : {{prvMtnOpRlz.realizedBy_firstName}} {{prvMtnOpRlz.realizedBy_lastName}} <br>
+                                        </div>
+                                        <div v-else>
+                                            Realized by : - <br>
+                                        </div>
+                                        <div v-if="prvMtnOpRlz.approvedBy_lastName!=null">
+                                            Approved by : {{prvMtnOpRlz.approvedBy_firstName}} {{prvMtnOpRlz.approvedBy_lastName}} <br>
+                                        </div>
+                                        <div v-else>
+                                            Approved by : - <br>
                                         </div>
                                     </li>
                                 </div>

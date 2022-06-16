@@ -293,6 +293,11 @@ Route::post('/equipment/delete/prvMtnOp/{id}', [PreventiveMaintenanceOperationCo
 
 Route::post('/equipment/reform/prvMtnOp/{id}', [PreventiveMaintenanceOperationController::class, 'reform_prvMtnOp'])  ;
 
+Route::get('/prvMtnOp/send/revisionDatePassed/{id}', [PreventiveMaintenanceOperationController::class, 'send_prvMtnOp_from_eq_revisionDatePassed'])  ;
+
+Route::get('/prvMtnOp/send/revisionTimeLimitPassed/{id}', [PreventiveMaintenanceOperationController::class, 'send_prvMtnOp_from_eq_revisionTimeLimitPassed'])  ;
+
+
 
 /* Risk Form Routes */ 
 
