@@ -20,7 +20,7 @@
                 <router-link :to="{name:'url_life_event_update_state',params:{id: list.id,state_id:list.state_id} }">Update the state</router-link>
                 <a href="#" @click="verifBeforeAddState(list.id,list.state_id)">Change the state</a>
                 <router-link :to="{name:'url_life_event_all',params:{id: list.id},query:{internalReference:list.eq_internalReference} }">All Event</router-link>
-                <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Record a maintenance operation</a>
+                <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Record a curative maintenance operation</a>
                 <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance record</router-link>
 
               </div>

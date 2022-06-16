@@ -274,59 +274,27 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             }
         }
         return response()->json($container) ; 
-    }
+    }    
 
      /**
-     * Function call by DimensionController (and more) when we need to copy links between prvMtnOpRlz and a state
-     * Copy the links between a state and a preventive maintenance operation realized to the new state
-     *  The actualId parameter correspond of the id of the state from which we want to copy the preventive maintenance operation realized
-     * The newId parameter correspond of the id of the state where we want to copy the preventive maintenance operation realized
-     * The idNotCopy parameter correspond of the id of the preventive maintenance operation realized we don't have to copy 
+     * Function call by PrvMtnOpRlzManagementModal.vue when we want to approuve a preventive maintenance operation realized with the route : /prvMtnOpRlz/approve/{id}
+     * Approuve a preventive maintenance operation realized 
+     * The id parameter correspond to the id of the preventive maintenance operation realized we want to approuve
      * */
-    public function copy_prvMtnOpRlz_linked_state($actualId, $newId, $idNotCopy){   
-        $actualState= State::findOrFail($actualId) ; 
-        $newState= State::findOrFail($newId) ; 
-        $prvMtnOpRlzs=$actualState->preventive_maintenance_operation_realizeds ; 
-        foreach($prvMtnOpRlzs as $prvMtnOpRlz){
-            if ($prvMtnOpRlz->id!=$idNotCopy){
-                //Creation of a new preventive maintenance operation realized
-                $newPrvMtnOpRlz=PreventiveMaintenanceOperationRealized::create([
-                    'prvMtnOpRlz_reportNumber' => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
-                    'prvMtnOpRlz_validate' => $prvMtnOpRlz->prvMtnOpRlz_validate,
-                    'prvMtnOpRlz_startDate' => $prvMtnOpRlz->prvMtnOpRlz_startDate,
-                    'prvMtnOpRlz_endDate' => $prvMtnOpRlz->prvMtnOpRlz_endDate,
-                    'prvMtnOpRlz_entryDate' => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
-                    'state_id' => $newId,
-                    'prvMtnOp_id' => $prvMtnOpRlz->prvMtnOp_id,
-                ]) ; 
-            }
+    public function approuved_prvMtnOpRlz(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
         }
-    }
 
-     /**
-     * Function call by DimensionController (and more) when we need to copy links between prvMtnOpRlz and a prvMtnOpRlz
-     * Copy the links between a prvMtnOp and a preventive maintenance operation realized to the new prvMtnOp
-     * The actualId parameter correspond of the id of the preventive maintenance operation from which we want to copy the preventive maintenance operation realized
-     * The newId parameter correspond of the id of the preventive maintenance operation where we want to copy the preventive maintenance operation realized
-     * The idNotCopy parameter correspond of the id of the preventive maintenance operation realized we don't have to copy 
-     * */
-    public function copy_prvMtnOpRlz_linked_prvMtnOp($actualId, $newId, $idNotCopy){   
-        $actualprvMtnOp= PreventiveMaintenanceOperation::findOrFail($actualId) ; 
-        $newprvMtnOp= PreventiveMaintenanceOperation::findOrFail($newId) ; 
-        $prvMtnOpRlzs=$actualprvMtnOp->preventiveMaintenanceOperationRealizeds ; 
-        foreach($prvMtnOpRlzs as $prvMtnOpRlz){
-            if ($prvMtnOpRlz->id!=$idNotCopy){
-                //Creation of a new preventive maintenance operation realized
-                $newPrvMtnOpRlz=PreventiveMaintenanceOperationRealized::create([
-                    'prvMtnOpRlz_reportNumber' => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
-                    'prvMtnOpRlz_validate' => $prvMtnOpRlz->prvMtnOpRlz_validate,
-                    'prvMtnOpRlz_startDate' => $prvMtnOpRlz->prvMtnOpRlz_startDate,
-                    'prvMtnOpRlz_endDate' => $prvMtnOpRlz->prvMtnOpRlz_endDate,
-                    'prvMtnOpRlz_entryDate' => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
-                    'state_id' => $prvMtnOpRlz->state_id,
-                    'prvMtnOp_id' => $newId,
-                ]) ; 
-            }
-        }
+        $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id) ; 
+        $prvMtnOpRlz->update([
+            'approvedBy_id' => $user->id, 
+        ]);
     }
 }

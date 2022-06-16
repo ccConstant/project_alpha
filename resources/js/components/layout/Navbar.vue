@@ -36,6 +36,11 @@ export default {
 	components:{
 		ErrorAlert
 	},
+	created(){
+	
+        console.log(this.$userId)
+
+	},
 	methods:{
 		disconnect(){
 			axios.post('logout',{

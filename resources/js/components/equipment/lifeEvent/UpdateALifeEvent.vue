@@ -13,7 +13,29 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-                            <ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>
+                            <div v-if="eq_prvMtnOpRlz.length>0" class="all_preventive_ope">
+                                <h3>Recorded Preventive maintenance operation</h3>
+                                <li class="list-group-item" v-for="(prvMtnOpRlz,index) in eq_prvMtnOpRlz " :key="index"  >
+                                    <div>
+                                        <p>
+                                            Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
+                                            Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
+                                            Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
+                                            Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
+                                            Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
+                                            End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
+                                            Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}}
+
+                                            <PrvMtnOpRlzManagmentModal approuve :prvMtnOp_id="prvMtnOpRlz.prvMtnOp_id" :prvMtnOp_number="prvMtnOpRlz.prvMtnOp_number" 
+                                            :prvMtnOp_description="prvMtnOpRlz.prvMtnOp_description" :prvMtnOp_protocol="prvMtnOpRlz.prvMtnOp_protocol"
+                                            :prvMtnOpRlz_id="prvMtnOpRlz.id" :prvMtnOpRlz_reportNumber="prvMtnOpRlz.prvMtnOpRlz_reportNumber"
+                                            :prvMtnOpRlz_startDate="prvMtnOpRlz.prvMtnOpRlz_startDate" :prvMtnOpRlz_endDate="prvMtnOpRlz.prvMtnOpRlz_endDate"
+                                            :prvMtnOpRlz_validate="prvMtnOpRlz.prvMtnOpRlz_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage" />
+                                        </p>
+                                    </div>
+                                </li>
+                            </div>
+                            <!--<ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>-->
                         </div>
                     </div>
                 </div>
@@ -36,12 +58,14 @@
 
 <script>
 import ReferenceACurMtnOp from './ReferenceACurMtnOp.vue'
+import PrvMtnOpRlzManagmentModal from './PrvMtnOpRlzManagmentModal.vue'
 import ReferenceAPrvMtnOpRlz from './ReferenceAPrvMtnOpRlz.vue'
 
 export default {
     components:{
         ReferenceACurMtnOp,
-        ReferenceAPrvMtnOpRlz
+        ReferenceAPrvMtnOpRlz,
+        PrvMtnOpRlzManagmentModal
     },
     data(){
         return{
@@ -58,6 +82,7 @@ export default {
         axios.get(consultUrlPrvMtnOpRlz(this.state_id))
             .then (response=>{
                 this.eq_prvMtnOpRlz=response.data
+                console.log(response.data)
             })
             .catch(error => console.log(error)) ;
 
@@ -70,6 +95,11 @@ export default {
             .catch(error => console.log(error)) ;
 
 
+    },
+    methods:{
+        reloadPage(){
+            window.location.reload();
+        }
     }
 
 

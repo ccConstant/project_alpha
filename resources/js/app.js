@@ -73,10 +73,6 @@ const router = new VueRouter({
         name: 'url_life_event_all',
         component:require('./components/equipment/lifeEvent/EquipmentAllEventList.vue').default
     },{
-        path:'/equipment/life_event/all/consult/:id(\\d+)/:state_id(\\d+)',
-        name: 'url_life_event_all_consult',
-        component:require('./components/equipment/lifeEvent/EquipmentEventConsult.vue').default
-    },{
         path:'/equipment/life_event/reference/:id(\\d+)/:state_id(\\d+)',
         name: 'url_life_event_reference',
         component:require('./components/equipment/lifeEvent/ReferenceALifeEvent.vue').default
