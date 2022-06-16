@@ -80,7 +80,7 @@ class CurativeMaintenanceOperationController extends Controller
             if ($request->curMtnOp_qualityVerifier_id==NULL){
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_qualityVerifier' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
+                        'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
             }
@@ -88,7 +88,7 @@ class CurativeMaintenanceOperationController extends Controller
             if ($request->curMtnOp_technicalVerifier_id==NULL){
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_technicalVerifier' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
+                        'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
             }

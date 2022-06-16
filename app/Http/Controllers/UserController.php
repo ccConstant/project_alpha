@@ -377,6 +377,20 @@ class UserController extends Controller{
             ]);
         }
 
+        if ($request->user_endDate!=NULL){
+            if ($request->user_endDate<$user->user_startDate){
+                return response()->json([
+                    'errors' => [
+                        'user_endDate' => ["You can't entered a leave date that is before start date"]
+                    ]
+                ], 429);
+            }
+
+            $user->update([
+                'user_endDate' => $request->user_endDate,
+            ]);
+        }
+
         if ($request->user_password!=NULL || $request->user_confirmation_password){
             $request->validate([
                'user_password' => ['required', Rules\Password::defaults()], 

@@ -23,6 +23,8 @@ class User extends Authenticatable
         'user_initials',
         'user_signaturePath',
         'password',
+        'user_startDate',
+        'user_endDate',
         'user_pseudo',
         'user_menuUserAcessRight',
         'user_resetUserPasswordRight',

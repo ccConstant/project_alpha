@@ -18,9 +18,11 @@ class CreateUsersTable extends Migration
             $table->string('user_firstName') ;
             $table->string('user_lastName') ;
             $table->string('user_initials') ->nullable();
-            $table->string('user_signaturePath') ->nullable();
+            $table->string('user_signaturePath')->nullable();
             $table->string('user_pseudo') ;
             $table->string('password') ;
+            $table->date('user_startDate') ;
+            $table->date('user_endDate') -> nullable(); 
              //rightLevel 
             $table->boolean('user_menuUserAcessRight') ->default(true);
             $table->boolean('user_resetUserPasswordRight') ->default(true);

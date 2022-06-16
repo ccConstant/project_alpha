@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
 {
@@ -76,12 +77,13 @@ class RegisteredUserController extends Controller
 
     
 
-        //verifié email
+        $date=Carbon::now() ;
         $user = User::create([
            'user_firstName' => $request->user_firstName,
             'user_lastName' => $request->user_lastName,
             'user_pseudo' => $request->user_pseudo,
             'password' => Hash::make($request->user_password),
+            'user_startDate'=> $date,
         ]);
         
         event(new Registered($user));

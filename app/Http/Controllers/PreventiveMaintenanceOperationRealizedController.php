@@ -101,7 +101,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             if ($request->prvMtnOpRlz_realizedBy_id==NULL){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOpRlz_realizedBy' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
+                        'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
                     ]
                 ], 429);
             }
@@ -109,7 +109,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             if ($request->prvMtnOpRlz_approvedBy_id==NULL){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOpRlz_approvedBy' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
+                        'prvMtnOpRlz_validate' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
                     ]
                 ], 429);
             }
