@@ -184,36 +184,6 @@ class PreventiveMaintenanceOperationController extends Controller
     }
 
 
-     /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and a preventive maintenance operation
-     * Copy the links between a equipment temp and a preventive maintenance operation to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the preventive maintenance operations
-     * The newId parameter correspond of the id of the equipment where we want to copy the preventive maintenance operations
-     * The idNotCopy parameter correspond of the id of the preventive maintenance operation we don't have to copy 
-     * */
-    public function copy_preventiveMaintenanceOperation($actualId, $newId, $idNotCopy){ 
-        $actualEqTemp= EquipmentTemp::findOrFail($actualId) ; 
-        $newEqTemp= EquipmentTemp::findOrFail($newId) ; 
-        $prv_mtn_ops=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $actualId)->get() ; 
-        foreach($prv_mtn_ops as $prv_mtn_op){
-            if ($prv_mtn_op->id!=$idNotCopy){
-                //Creation of a new preventive maintenance operation
-                $newPrvMtnOp=PreventiveMaintenanceOperation::create([
-                    'prvMtnOp_number' => $prv_mtn_op->prvMtnOp_number,
-                    'prvMtnOp_description' => $prv_mtn_op->prvMtnOp_description,
-                    'prvMtnOp_periodicity' => $prv_mtn_op->prvMtnOp_periodicity,
-                    'prvMtnOp_symbolPeriodicity' => $prv_mtn_op->prvMtnOp_symbolPeriodicity,
-                    'prvMtnOp_protocol' => $prv_mtn_op->prvMtnOp_protocol,
-                    'prvMtnOp_startDate' => $prv_mtn_op->prvMtnOp_startDate,
-                    'prvMtnOp_reformDate' => $prv_mtn_op->prvMtnOp_reformDate,
-                    'prvMtnOp_validate' => $prv_mtn_op->prvMtnOp_validate,
-                    'equipmentTemp_id' => $newId,
-                ]) ; 
-            } 
-        }
-    }
-
-
     /**
      * Function call by EquipmentPrvMtnOpForm.vue when the form is submitted for update with the route :/equipment/update/prvMtnOp/{id} (post)
      * Update an enregistrement of preventive maintenance operation in the data base with the informations entered in the form 
@@ -440,7 +410,7 @@ class PreventiveMaintenanceOperationController extends Controller
 
 
     /**
-     * Function call by ???  with the route : /prvMtnOp/send/validated/{id} (get)
+     * Function call by EquipmentPrvMtnOpRlzForm  with the route : /prvMtnOp/send/validated/{id} (get)
      * Get the preventive maintenance operations validated of the equipment whose id is passed in parameter
      * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations validated
      * @return \Illuminate\Http\Response
@@ -465,30 +435,9 @@ class PreventiveMaintenanceOperationController extends Controller
         return response()->json($container) ;
     }
 
-    /**
-     * Function call by ???  with the route : /prvMtnOp/send/validated/ (get)
-     * Get all the preventive maintenance operations validated present in the data base 
-     * @return \Illuminate\Http\Response
-     */
-   /* public function send_all_prvMtnOp_validated() {
-        $container=array() ; 
-        $prvMtnOps=PreventiveMaintenanceOperation::where('prvMtnOp_validate', '=', "validated")->get() ; 
-       foreach ($prvMtnOps as $prvMtnOp) {
-           if ($prvMtnOp->prvMtnOp_reformDate=='' && $prvMtnOp->prvMtnOp_reformDate==NULL){
-                $obj=([
-                    "id" => $prvMtnOp->id,
-                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                ]);
-                array_push($container,$obj);
-           }
-       }
-        return response()->json($container) ;
-    }*/
 
     /**
-     * Function call by EquipmentPrvMtnOpForm.vue when we want to delete a dimension with the route : /equipment/delete/prvMtnOp/{id}(post)
+     * Function call by EquipmentPrvMtnOpForm.vue when we want to delete a prvMtnOp with the route : /equipment/delete/prvMtnOp/{id}(post)
      * Delete a preventive maintenance operation thanks to the id given in parameter
      * The id parameter correspond to the id of the preventive maintenance operation we want to delete
      * */
@@ -497,7 +446,7 @@ class PreventiveMaintenanceOperationController extends Controller
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update prvMtnOp
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
             $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -566,7 +515,6 @@ class PreventiveMaintenanceOperationController extends Controller
         
         $prvMtnOp->update([
             'prvMtnOp_reformDate' => $request->prvMtnOp_reformDate,
-            //REVENIR ICI POUR REFORMED BY 
         ]) ;
     }
 

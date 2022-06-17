@@ -106,7 +106,7 @@ export default {
 				this.$router.replace({ name: "url_eq_update", params: {id}})
 			}
 			if(redirect==true){
-				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight==true){
+				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight==true || this.user_deleteDataSignedLinkedToEqOrMmeRight==true  ){
 					this.$router.replace({ name: "url_eq_update", params: {id}})
 				}else{
 					this.$refs.errorAlert.showAlert("You don't have the right");

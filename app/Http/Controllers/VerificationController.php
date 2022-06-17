@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\MmeTemp ; 
 use App\Models\Verification ; 
 use App\Models\VerificationRealized ; 
-use App\Models\Equipment ; 
+use App\Models\Mme ; 
 use Carbon\Carbon;
 
 class VerificationController extends Controller
@@ -146,7 +146,7 @@ class VerificationController extends Controller
             foreach ($verifInMmes as $verifInMme){
                 $number=intval($verifInMme->verif_number) ; 
                 if ($number>$max_number){
-                    $max_number=$prvMtnOpInEq->prvMtnOp_number ; 
+                    $max_number=$verifInMme->verif_number ; 
                 }
             }
             $max_number=$max_number+1 ;
@@ -154,128 +154,102 @@ class VerificationController extends Controller
         $nextDate=NULL ; 
        
         $startDate=Carbon::now('Europe/Paris');
-        if ($request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL && $request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL ){
+        if ($request->verif_symbolPeriodicity!='' && $request->verif_symbolPeriodicity!=NULL && $request->verif_periodicity!='' && $request->verif_periodicity!=NULL ){
             $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
            
-            if ($request->prvMtnOp_symbolPeriodicity=='Y'){
-                $nextDate->addYears($request->prvMtnOp_periodicity) ; 
+            if ($request->verif_symbolPeriodicity=='Y'){
+                $nextDate->addYears($request->verif_periodicity) ; 
             }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='M'){
-                $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
+            if ($request->verif_symbolPeriodicity=='M'){
+                $nextDate->addMonths($request->verif_periodicity) ; 
             }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='D'){
-                $nextDate->addDays($request->prvMtnOp_periodicity) ; 
+            if ($request->verif_symbolPeriodicity=='D'){
+                $nextDate->addDays($request->verif_periodicity) ; 
             }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='H'){
-                $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+            if ($request->verif_symbolPeriodicity=='H'){
+                $nextDate->addHours($request->verif_periodicity) ; 
             }
         }
         
-        //Creation of a new preventive maintenance operation
-        $prvMtnOp=PreventiveMaintenanceOperation::create([
-            'prvMtnOp_number' => $max_number,
-            'prvMtnOp_description' => $request->prvMtnOp_description,
-            'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
-            'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
-            'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
-            'prvMtnOp_startDate' => Carbon::now('Europe/Paris'),
-            'prvMtnOp_nextDate' => $nextDate,
-            'prvMtnOp_validate' => $request->prvMtnOp_validate,
-            'equipmentTemp_id' => $mostRecentlyEqTmp->id,
+        //Creation of a new verification
+        $verif=Verification::create([
+            'verif_number' => $max_number,
+            'verif_name' => $request->verif_name,
+            'verif_expectedResult' => $request->verif_expectedResult,
+            'verif_nonComplianceLimit' => $request->verif_nonComplianceLimit,
+            'verif_description' => $request->verif_description,
+            'verif_periodicity' => $request->verif_periodicity,
+            'verif_symbolPeriodicity' => $request->verif_symbolPeriodicity,
+            'verif_protocol' => $request->verif_protocol,
+            'verif_startDate' => Carbon::now('Europe/Paris'),
+            'verif_nextDate' => $nextDate,
+            'verif_validate' => $request->verif_validate,
+            'mmeTemp_id' => $mostRecentlyMmeTmp->id,
+            //RAJOUTER DES ATTRIBUTS ICI 
         ]) ; 
             
-        $prvMtnOp_id=$prvMtnOp->id;
-        if ($mostRecentlyEqTmp!=NULL){
-             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add prvMtnOp
-            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
+        $verif_id=$verif->id;
+        if ($mostRecentlyMmeTmp!=NULL){
+             //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add verif
+            if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlymmeTmp->mmeTemp_validate=="validated"){
                 
-                //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
-                //Update of equipment
-                $equipment->update([
-                    'eq_nbrVersion' =>$version_eq,
+                //We need to increase the number of mme temp linked to the mme
+                $version_mme=$mme->mme_nbrVersion+1 ; 
+                //Update of mme
+                $mme->update([
+                    'mme_nbrVersion' =>$version_mme,
                 ]);
                 
-                //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-                //update of equipment temp
-                $mostRecentlyEqTmp->update([
-                 'eqTemp_version' => $version,
-                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                //We need to increase the version of the mme temp (because we create a new mme temp)
+                $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+                //update of mme temp
+                $mostRecentlyMmeTmp->update([
+                 'mmeTemp_version' => $version,
+                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
                 ]);
             }
         }
-        return response()->json($prvMtnOp_id) ; 
-    }
-
-
-     /**
-     * Function call by DimensionController (and more) when we need to copy links between equipment temp and a preventive maintenance operation
-     * Copy the links between a equipment temp and a preventive maintenance operation to the new equipment temp
-     * The actualId parameter correspond of the id of the equipment from which we want to copy the preventive maintenance operations
-     * The newId parameter correspond of the id of the equipment where we want to copy the preventive maintenance operations
-     * The idNotCopy parameter correspond of the id of the preventive maintenance operation we don't have to copy 
-     * */
-    public function copy_preventiveMaintenanceOperation($actualId, $newId, $idNotCopy){ 
-        $actualEqTemp= EquipmentTemp::findOrFail($actualId) ; 
-        $newEqTemp= EquipmentTemp::findOrFail($newId) ; 
-        $prv_mtn_ops=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $actualId)->get() ; 
-        foreach($prv_mtn_ops as $prv_mtn_op){
-            if ($prv_mtn_op->id!=$idNotCopy){
-                //Creation of a new preventive maintenance operation
-                $newPrvMtnOp=PreventiveMaintenanceOperation::create([
-                    'prvMtnOp_number' => $prv_mtn_op->prvMtnOp_number,
-                    'prvMtnOp_description' => $prv_mtn_op->prvMtnOp_description,
-                    'prvMtnOp_periodicity' => $prv_mtn_op->prvMtnOp_periodicity,
-                    'prvMtnOp_symbolPeriodicity' => $prv_mtn_op->prvMtnOp_symbolPeriodicity,
-                    'prvMtnOp_protocol' => $prv_mtn_op->prvMtnOp_protocol,
-                    'prvMtnOp_startDate' => $prv_mtn_op->prvMtnOp_startDate,
-                    'prvMtnOp_reformDate' => $prv_mtn_op->prvMtnOp_reformDate,
-                    'prvMtnOp_validate' => $prv_mtn_op->prvMtnOp_validate,
-                    'equipmentTemp_id' => $newId,
-                ]) ; 
-            } 
-        }
+        return response()->json($verif_id) ; 
     }
 
 
     /**
-     * Function call by EquipmentPrvMtnOpForm.vue when the form is submitted for update with the route :/equipment/update/prvMtnOp/{id} (post)
-     * Update an enregistrement of preventive maintenance operation in the data base with the informations entered in the form 
-     * The id parameter correspond to the id of the preventive maintenance operation we want to update
+     * Function call by MmeVerifForm.vue when the form is submitted for update with the route :/mme/update/verif/{id} (post)
+     * Update an enregistrement of verification in the data base with the informations entered in the form 
+     * The id parameter correspond to the id of the verification we want to update
      * */
-    public function update_prvMtnOp(Request $request, $id){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        $oldPrvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
-        //We search the most recently equipment temp of the equipment 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
-        if ($mostRecentlyEqTmp!=NULL){
-            //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-           //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update prvMtnOp
-            if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+    public function update_verif(Request $request, $id){
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        $oldVerif=Verification::findOrFail($id) ; 
+        //We search the most recently mme temp of the mme 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        if ($mostRecentlyMmeTmp!=NULL){
+            //We checked if the most recently mme temp is validate and if a life sheet has been already created.
+           //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update verification
+            if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
             
-                //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
-                //Update of equipment
-                $equipment->update([
-                    'eq_nbrVersion' =>$version_eq,
+                //We need to increase the number of mme temp linked to the mme
+                $version_mme=$mme->mme_nbrVersion+1 ; 
+                //Update of mme
+                $mme->update([
+                    'mme_nbrVersion' =>$version_mme,
                 ]);
 
-                //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-               //update of equipment temp
-               $mostRecentlyEqTmp->update([
-                'eqTemp_version' => $version,
-                'eqTemp_date' => Carbon::now('Europe/Paris'),
+                //We need to increase the version of the mme temp (because we create a new mme temp)
+               $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+               //update of mme temp
+               $mostRecentlyMmeTmp->update([
+                'mmeTemp_version' => $version,
+                'mmeTemp_date' => Carbon::now('Europe/Paris'),
                ]);
             }
 
-            if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
+            if ($request->verif_periodicity!=NULL && $request->verif_symbolPeriodicity!=NULL && ($oldVerif->verif_periodicity!=$request->verif_periodicity || $oldVerif->verif_symbolPeriodicity!=$request->verif_symbolPeriodicity)){
                 
-                $dates=explode(' ', $oldPrvMtnOp->prvMtnOp_startDate) ; 
+                $dates=explode(' ', $oldVerif->verif_startDate) ; 
                 $ymd=explode('-', $dates[0]);
                 $year=$ymd[0] ; 
                 $month=$ymd[1] ;
@@ -288,65 +262,66 @@ class VerificationController extends Controller
                 
                 $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
 
-                if ($request->prvMtnOp_symbolPeriodicity=='Y'){
-                    $nextDate->addYears($request->prvMtnOp_periodicity) ; 
+                if ($request->verif_symbolPeriodicity=='Y'){
+                    $nextDate->addYears($request->verif_periodicity) ; 
                 }
     
-                if ($request->prvMtnOp_symbolPeriodicity=='M'){
-                    $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
+                if ($request->verif_symbolPeriodicity=='M'){
+                    $nextDate->addMonths($request->verif_periodicity) ; 
                 }
                 
-                if ($request->prvMtnOp_symbolPeriodicity=='D'){
-                    $nextDate->addDays($request->prvMtnOp_periodicity) ; 
+                if ($request->verif_symbolPeriodicity=='D'){
+                    $nextDate->addDays($request->verif_periodicity) ; 
                     return response()->json($nextDate) ;
                 }
-                 if ($request->prvMtnOp_symbolPeriodicity=='H'){
-                    $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+                 if ($request->verif_symbolPeriodicity=='H'){
+                    $nextDate->addHours($request->verif_periodicity) ; 
                 }
 
                 //return response()->json($nextDate) ;
-                 $oldPrvMtnOp->update([
-                    'prvMtnOp_nextDate' => $nextDate,
+                 $oldVerif->update([
+                    'verif_nextDate' => $nextDate,
                 ]);
             }
             
-            $oldPrvMtnOp->update([
-                'prvMtnOp_description' => $request->prvMtnOp_description,
-                'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
-                'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
-                'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
-                'prvMtnOp_validate' => $request->prvMtnOp_validate,
+            $oldVerif->update([
+                'verif_name' => $request->verif_name,
+                'verif_expectedResult' => $request->verif_expectedResult,
+                'verif_nonComplianceLimit' => $request->verif_nonComplianceLimit,
+                'verif_description' => $request->verif_description,
+                'verif_periodicity' => $request->verif_periodicity,
+                'verif_symbolPeriodicity' => $request->verif_symbolPeriodicity,
+                'verif_protocol' => $request->verif_protocol,
+                'verif_nextDate' => $nextDate,
+                'verif_validate' => $request->verif_validate,
+                'mmeTemp_id' => $mostRecentlyMmeTmp->id,
             ]) ;
 
         }
     }
 
     /**
-     * Function call by ConsultationLifeSheetPdf.vue with the route : /prvMtnOps/send/lifesheet/{id} (get)
-     * Get the preventive maintenance operations of the equipment whose id is passed in parameter for the lifesheet 
-     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations 
+     * Function call by ConsultationLifeSheetPdf.vue with the route : /verifs/send/lifesheet/{id} (get)
+     * Get the verifications of the mme whose id is passed in parameter for the lifesheet 
+     * The id parameter corresponds to the id of the mme from which we want the verifications
      * @return \Illuminate\Http\Response
      */
 
-    public function send_prvMtnOps_lifesheet($id) {
+    public function send_verifs_lifesheet($id) {
         $container=array() ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-       foreach ($prvMtnOps as $prvMtnOp) {
-            $riskExist=false ; 
-            $risks=Risk::where('preventiveMaintenanceOperation_id', '=', $prvMtnOp->id)->get() ; 
-            if (count($risks)>0){
-                $riskExist=true ; 
-            }
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->latest()->first();
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+       foreach ($verifs as $verif) {
             $obj=([
-                "id" => $prvMtnOp->id,
-                "Number" => (string)$prvMtnOp->prvMtnOp_number,
-                "Description" => $prvMtnOp->prvMtnOp_description,
-                "Periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
-                "Symbol" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-                "Protocol" => $prvMtnOp->prvMtnOp_protocol,
-                "Risk" => $riskExist,
-                
+                "id" => $verif->id,
+                "Number" => (string)$verif->verif_number,
+                "Description" => $verif->verif_description,
+                "Periodicity" => (string)$verif->verif_periodicity,
+                "Symbol" => $verif->verif_symbolPeriodicity,
+                "Protocol" => $verif->verif_protocol,
+                'Name' => $verif->verif_name,
+                'ExpectedResult' => $verif->verif_expectedResult,
+                'NonComplianceLimit' => $verif->verif_nonComplianceLimit,
             ]);
             array_push($container,$obj);
        }
@@ -355,29 +330,31 @@ class VerificationController extends Controller
 
 
     /**
-     * Function call by ReferenceAPrvMtnOp.vue with the route : /prvMtnOps/send/{id} (get)
-     * Get the preventive maintenance operations of the equipment whose id is passed in parameter
-     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations 
+     * Function call by ReferenceAVerif.vue with the route : /verifs/send/{id} (get)
+     * Get the verifications of the mme whose id is passed in parameter
+     * The id parameter corresponds to the id of the mme from which we want the verifications
      * @return \Illuminate\Http\Response
      */
 
-    public function send_prvMtnOps($id) {
+    public function send_verifs($id) {
         $container=array() ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
-       foreach ($prvMtnOps as $prvMtnOp) {
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->latest()->first();
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+       foreach ($verifs as $verif) {
             $obj=([
-                "id" => $prvMtnOp->id,
-                "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
-                "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-                "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
-                "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
-                "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
-                "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
-                
+                "id" => $verif->id,
+                "verif_number" => (string)$verif->verif_number,
+                "verif_description" => $verif->verif_description,
+                "verif_periodicity" => (string)$verif->verif_periodicity,
+                "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
+                "verif_protocol" => $verif->verif_protocol,
+                "verif_startDate" => $verif->verif_startDate,
+                "verif_nextDate" => $verif->verif_nextDate,
+                "verif_reformDate" => $verif->verif_reformDate,
+                'verif_name' => $verif->verif_name,
+                'verif_expectedResult' => $verif->verif_expectedResult,
+                'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                'verif_validate' => $verif->verif_validate,
             ]);
             array_push($container,$obj);
        }
@@ -385,26 +362,29 @@ class VerificationController extends Controller
     }
 
      /**
-     * Function call by ReferenceAPrvMtnOp.vue with the route : /prvMtnOp/send/{id} (get)
-     * Get the informations of the preventive maintenance operation whose id is passed in parameter
-     * The id parameter corresponds to the id of the preventive maintenance operations from which we want the informations
+     * Function call by ReferenceAVerif.vue with the route : /verif/send/{id} (get)
+     * Get the informations of the verification whose id is passed in parameter
+     * The id parameter corresponds to the id of the verification from which we want the informations
      * @return \Illuminate\Http\Response
      */
 
-    public function send_prvMtnOp($id) {
+    public function send_verif($id) {
         $container=array() ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
+        $verif=Verification::findOrFail($id) ; 
         $obj=([
-            "id" => $prvMtnOp->id,
-            "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-            "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-            "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
-            "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-            "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-            "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
-            "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
-            "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
-            "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
+            "id" => $verif->id,
+            "verif_number" => (string)$verif->verif_number,
+            "verif_description" => $verif->verif_description,
+            "verif_periodicity" => (string)$verif->verif_periodicity,
+            "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
+            "verif_protocol" => $verif->verif_protocol,
+            "verif_startDate" => $verif->verif_startDate,
+            "verif_nextDate" => $verif->verif_nextDate,
+            "verif_reformDate" => $verif->verif_reformDate,
+            'verif_name' => $verif->verif_name,
+            'verif_expectedResult' => $verif->verif_expectedResult,
+            'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+            'verif_validate' => $verif->verif_validate,
             
         ]);
         array_push($container,$obj);
@@ -413,23 +393,32 @@ class VerificationController extends Controller
 
 
     /**
-     * Function call by ???  with the route : /prvMtnOp/send/validated/{id} (get)
-     * Get the preventive maintenance operations validated of the equipment whose id is passed in parameter
-     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations validated
+     * Function call by MmeVerifRlzForm  with the route : /verif/send/validated/{id} (get)
+     * Get the verifications validated of the mme whose id is passed in parameter
+     * The id parameter corresponds to the id of the mme from which we want the verifications validated
      * @return \Illuminate\Http\Response
      */
-    public function send_prvMtnOp_from_eq_validated($id) {
+    public function send_verif_from_mme_validated($id) {
         $container=array() ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ; 
 
-       foreach ($prvMtnOps as $prvMtnOp) {
-           if ($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL){
+       foreach ($verifs as $verif) {
+           if ($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL){
                 $obj=([
-                    "id" => $prvMtnOp->id,
-                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                    "id" => $verif->id,
+                    "verif_number" => (string)$verif->verif_number,
+                    "verif_description" => $verif->verif_description,
+                    "verif_periodicity" => (string)$verif->verif_periodicity,
+                    "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
+                    "verif_protocol" => $verif->verif_protocol,
+                    "verif_startDate" => $verif->verif_startDate,
+                    "verif_nextDate" => $verif->verif_nextDate,
+                    "verif_reformDate" => $verif->verif_reformDate,
+                    'verif_name' => $verif->verif_name,
+                    'verif_expectedResult' => $verif->verif_expectedResult,
+                    'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                    'verif_validate' => $verif->verif_validate,
                 ]);
                 array_push($container,$obj);
            }
@@ -438,107 +427,84 @@ class VerificationController extends Controller
     }
 
     /**
-     * Function call by ???  with the route : /prvMtnOp/send/validated/ (get)
-     * Get all the preventive maintenance operations validated present in the data base 
-     * @return \Illuminate\Http\Response
-     */
-   /* public function send_all_prvMtnOp_validated() {
-        $container=array() ; 
-        $prvMtnOps=PreventiveMaintenanceOperation::where('prvMtnOp_validate', '=', "validated")->get() ; 
-       foreach ($prvMtnOps as $prvMtnOp) {
-           if ($prvMtnOp->prvMtnOp_reformDate=='' && $prvMtnOp->prvMtnOp_reformDate==NULL){
-                $obj=([
-                    "id" => $prvMtnOp->id,
-                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                ]);
-                array_push($container,$obj);
-           }
-       }
-        return response()->json($container) ;
-    }*/
-
-    /**
-     * Function call by EquipmentPrvMtnOpForm.vue when we want to delete a dimension with the route : /equipment/delete/prvMtnOp/{id}(post)
-     * Delete a preventive maintenance operation thanks to the id given in parameter
-     * The id parameter correspond to the id of the preventive maintenance operation we want to delete
+     * Function call by MmeVerifForm.vue when we want to delete a verification with the route : /mme/delete/verif/{id}(post)
+     * Delete a verif thanks to the id given in parameter
+     * The id parameter correspond to the id of the verification we want to delete
      * */
-    public function delete_prvMtnOp(Request $request, $id){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
-        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
-        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
-            //Update of equipment
-            $equipment->update([
-                'eq_nbrVersion' =>$version_eq,
+    public function delete_verif(Request $request, $id){
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        //We search the most recently mme temp of the mme 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        //We checked if the most recently mme temp is validate and if a life sheet has been already created.
+        //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update verification
+        if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
+            //We need to increase the number of mme temp linked to the mme
+            $version_mme=$mme->mme_nbrVersion+1 ; 
+            //Update of mme
+            $mme->update([
+                'mme_nbrVersion' =>$version_mme,
             ]);
 
-            //We need to increase the version of the equipment temp (because we create a new equipment temp)
-            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
-            //update of equipment temp
-            $mostRecentlyEqTmp->update([
-            'eqTemp_version' => $version,
-            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            //We need to increase the version of the mme temp (because we create a new mme temp)
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            //update of mme temp
+            $mostRecentlyMmeTmp->update([
+            'mmeTemp_version' => $version,
+            'mmeTemp_date' => Carbon::now('Europe/Paris'),
             ]);
         }
         
-        $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $request->eq_id)->get() ; 
-        $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('prvMtnOp_id', '=', $id)->get() ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
-        if (count($prvMtnOpRlzs)==0){
-            foreach($prvMtnOpsInEq as $prvMtnOpInEq){
-                if ($prvMtnOpInEq->prvMtnOp_number>$prvMtnOp->prvMtnOp_number){
-                    $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ; 
-                    $prvMtnOpInDB=PreventiveMaintenanceOperation::findOrFail($prvMtnOpInEq->id) ; 
-                    $prvMtnOpInDB->update([
-                        'prvMtnOp_number' =>  $prvMtnOpInEq->prvMtnOp_number,
+        $verifsInMme=Verification::where('mmeTemp_id', '=', $request->mme_id)->get() ; 
+        $verifRlzs=VerificationRealized::where('verif_id', '=', $id)->get() ; 
+        $verif=Verification::findOrFail($id) ; 
+        if (count($verifRlzs)==0){
+            foreach($verifsInMme as $verifInMme){
+                if ($verifInMme->verif_number>$verif->verif_number){
+                    $verifInMme->verif_number=$verifInMme->verif_number-1 ; 
+                    $verifInDB=Verification::findOrFail($verifInMme->id) ; 
+                    $verifInDB->update([
+                        'verif_number' =>  $verifInMme->verif_number,
                     ]);
                 }
             }
-            $prvMtnOp->delete() ; 
+            $verif->delete() ; 
         }else{
             return response()->json([
                 'errors' => [
-                    'prvMtnOp_delete' => ["You can't delete a preventive maintenance operation that is already realized"]
+                    'verif_delete' => ["You can't delete a verification that is already realized"]
                 ]
             ], 429);
         }
     }
 
         /**
-     * Function call by ReferenceAPrvMtnOp.vue when we want to reform a prvMtnOp with the route : '/equipment/reform/prvMtnOp/{id} (post)
-     * Reform a prvMtnOp thanks to the id given in parameter
-     * The id parameter correspond to the id of the prvMtnOp we want to reform
+     * Function call by ReferenceAVerif.vue when we want to reform a verif with the route : '/mme/reform/verif/{id} (post)
+     * Reform a verif thanks to the id given in parameter
+     * The id parameter correspond to the id of the verif we want to reform
      * 
      * */
 
-    public function reform_prvMtnOp(Request $request, $id){
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
-        if ($request->prvMtnOp_reformDate<$prvMtnOp->prvMtnOp_startDate){
+    public function reform_verif(Request $request, $id){
+        $verif=Verification::findOrFail($id) ; 
+        if ($request->verif_reformDate<$verif->verif_startDate){
             return response()->json([
                 'errors' => [
-                    'prvMtnOp_reformDate' => ["You must entered a reformDate that is after the startDate"] 
+                    'verif_reformDate' => ["You must entered a reformDate that is after the startDate"] 
                 ]
             ], 429);
         }
 
         $oneMonthAgo=Carbon::now()->subMonth(1) ; 
-        if ($request->prvMtnOp_reformDate!=NULL && $request->prvMtnOp_reformDate<$oneMonthAgo){
+        if ($request->verif_reformDate!=NULL && $request->verif_reformDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
-                    'prvMtnOp_reformDate' => ["You can't enter a date that is older than one month"]
+                    'verif_reformDate' => ["You can't enter a date that is older than one month"]
                 ]
             ], 429);
         }
         
-        $prvMtnOp->update([
-            'prvMtnOp_reformDate' => $request->prvMtnOp_reformDate,
-            //REVENIR ICI POUR REFORMED BY 
+        $verif->update([
+            'verif_reformDate' => $request->verif_reformDate,
         ]) ;
     }
 

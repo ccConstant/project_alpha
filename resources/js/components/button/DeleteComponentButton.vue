@@ -1,16 +1,28 @@
 <template>
     <div>
-        <div v-if=" validationMode!='' && deleteDataNotValidatedLinkedToEqOrMmeRight!=true">
-            <b-button v-if="this.consultMod==false" variant="danger" disabled >Delete</b-button>
-            <p class="enum_add_right_red"> You dont have the right to delete an element.</p>
+        <div v-if="lifesheet_created==false">
+            <div v-if=" validationMode!='' && deleteDataNotValidatedLinkedToEqOrMmeRight!=true">
+                <b-button v-if="this.consultMod==false" variant="danger" disabled >Delete</b-button>
+                <p class="enum_add_right_red"> You dont have the right to delete an element.</p>
+            </div>
+            <div v-else-if="validationMode=='validated' && deleteDataValidatedLinkedToEqOrMmeRight!=true">
+                <b-button v-if="this.consultMod==false" variant="danger" disabled >Delete</b-button>
+                <p class="enum_add_right_red"> You dont have the right to delete valideted element.</p>
+            </div>
+            <div v-else>
+                <b-button v-if="this.consultMod==false" variant="danger" @click="$bvModal.show(`modal-delete_component-${_uid}`)" >Delete</b-button>
+            </div>
         </div>
-        <div v-else-if="validationMode=='validated' && deleteDataValidatedLinkedToEqOrMmeRight!=true">
-            <b-button v-if="this.consultMod==false" variant="danger" disabled >Delete</b-button>
-            <p class="enum_add_right_red"> You dont have the right to delete valideted element.</p>
+        <div v-else-if="lifesheet_created==true">
+            <div v-if="deleteDataSignedLinkedToEqOrMmeRight!=true">
+                <b-button v-if="this.consultMod==false" variant="danger" disabled >Delete</b-button>
+                <p class="enum_add_right_red"> You dont have the right to delete a signed element.</p>
+            </div>
+            <div v-else>
+                <b-button v-if="this.consultMod==false" variant="danger" @click="$bvModal.show(`modal-delete_component-${_uid}`)" >Delete</b-button>
+            </div>
         </div>
-        <div v-else>
-            <b-button v-if="this.consultMod==false" variant="danger" @click="$bvModal.show(`modal-delete_component-${_uid}`)" >Delete</b-button>
-        </div>
+
        
         <b-modal :id="`modal-delete_component-${_uid}`"  @ok="deleteConfirmation">
             <p class="my-4">Are you sure you want to delete 
@@ -50,7 +62,9 @@ export default {
     data(){
         return{
             deleteDataValidatedLinkedToEqOrMmeRight:this.$userId.user_deleteDataValidatedLinkedToEqOrMmeRight,
-            deleteDataNotValidatedLinkedToEqOrMmeRight:this.$userId.user_deleteDataNotValidatedLinkedToEqOrMmeRight
+            deleteDataNotValidatedLinkedToEqOrMmeRight:this.$userId.user_deleteDataNotValidatedLinkedToEqOrMmeRight,
+            deleteDataSignedLinkedToEqOrMmeRight:this.$userId.user_deleteDataSignedLinkedToEqOrMmeRight,
+            lifesheet_created:true,
         }
         
     }

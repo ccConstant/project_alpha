@@ -24,17 +24,31 @@
                         
                     </div>
                     <div v-else-if="is_op_data!=true">
-                        <div class="save_button_draft_tbv">
-                            <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
-                            <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
+                        <div v-if="this.lifesheet_created==false">
+                            <div class="save_button_draft_tbv">
+                                <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
+                                <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
+                            </div>
+                            <div class="save_button_validated" v-if="makeEqOpValidationRight==true">
+                                <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
+                            </div>
+                            <div class="save_button_validated" v-else>
+                                <b-button variant="primary" disabled>save as validated</b-button>
+                            </div>
+                            <p class="text-danger" v-if="makeEqOpValidationRight == false">You don't have the right to save as validated </p>
                         </div>
-                        <div class="save_button_validated" v-if="makeEqOpValidationRight==true">
-                            <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
+                        <div v-else-if="this.lifesheet_created==true">
+                            <div v-if="updateDescriptiveLifeSheetDataSignedRight==true" class="save_button_draft_tbv">
+                                <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
+                                <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
+                                <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
+                            </div>
+                            <div v-else>
+                                <b-button variant="primary" disabled>save as draft</b-button>
+                                <b-button variant="primary"  disabled>save as to be validated</b-button>
+                                <b-button variant="primary" disabled>save as validated</b-button>
+                            </div>
                         </div>
-                        <div class="save_button_validated" v-else>
-                            <b-button variant="primary" disabled>save as validated</b-button>
-                        </div>
-                        <p class="text-danger" v-if="makeEqOpValidationRight == false">You don't have the right to save as validated </p>
                     </div>
 
                     
@@ -77,20 +91,35 @@
                 </div>
                 <div v-else>
                     <div v-if="is_op_data!=true">
-                        <div class="save_button_draft_tbv" v-if="updateDataInDraftRight==true"  >
-                            <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                            <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                        <div v-if="this.lifesheet_created==false">
+                            <div class="save_button_draft_tbv" v-if="updateDataInDraftRight==true"  >
+                                <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                                <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                            </div>
+                            <div class="save_button_draft_tbv" v-else>
+                                <button class="save btn btn-primary" type="button" disabled >save as draft</button>
+                                <button class="save btn btn-primary" type="button" disabled >to be validated</button>
+                            </div>
+                            <div v-if="validateDescriptiveLifeSheetDataRight==true" class="save_button_validated"  >
+                                <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                            </div>
+                            <div v-else class="save_button_validated">
+                                <button class="save btn btn-primary" type="button" disabled >validate</button>
+                            </div>
                         </div>
-                        <div class="save_button_draft_tbv" v-else>
-                            <button class="save btn btn-primary" type="button" disabled >save as draft</button>
-                            <button class="save btn btn-primary" type="button" disabled >to be validated</button>
+                        <div v-else-if="this.lifesheet_created==true">
+                            <div class="save_button_draft_tbv" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
+                                <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                                <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                                <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                            </div>
+                            <div v-else class="save_button_validated">
+                                <button class="save btn btn-primary" type="button"  disabled >save as draft</button>
+                                <button class="save btn btn-primary" type="button" disabled >to be validated</button>
+                                <button class="save btn btn-primary" type="button" disabled >validate</button>
+                            </div>
                         </div>
-                        <div v-if="validateDescriptiveLifeSheetDataRight==true" class="save_button_validated"  >
-                            <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
-                        </div>
-                        <div v-else class="save_button_validated">
-                            <button class="save btn btn-primary" type="button" disabled >validate</button>
-                        </div>
+
                     </div>
                     <div v-else-if="is_op_data==true">
                         <div class="save_button_draft_tbv">
@@ -112,6 +141,7 @@
                         <div v-if="hasError(this.Errors)" class="error_savebutton">
                             <p>{{this.Errors[0]}}</p>
                         </div>
+                        <p class="text-danger" v-if="updateDescriptiveLifeSheetDataSignedRight==false">You don't have the right to update a signed life sheet</p>
                         <p class="text-danger" v-if="updateDataInDraftRight==false">You don't have the right to save as draft or as to be validated</p>
                         <p class="text-danger" v-if="validateDescriptiveLifeSheetDataRight == false">You don't have the right to save as validated </p>
                         <p class="text-danger" v-if="makeEqOpValidationRight == false">You don't have the right to save as validated </p>
@@ -150,7 +180,7 @@ export default {
         },
         is_op:{
             type:Boolean,
-            default:true
+            default:false
         }
     },
     data(){
@@ -159,7 +189,10 @@ export default {
             updateDataInDraftRight:this.$userId.user_updateDataInDraftRight,
             validateDescriptiveLifeSheetDataRight:this.$userId.user_validateDescriptiveLifeSheetDataRight,
             makeEqOpValidationRight:this.$userId.user_makeEqOpValidationRight,
-            is_op_data:this.is_op
+            updateDescriptiveLifeSheetDataSignedRight:this.$userId.user_updateDescriptiveLifeSheetDataSignedRight,
+            lifesheet_created:this.$route.query.signed,
+            is_op_data:this.is_op,
+
         }
     },
     methods:{

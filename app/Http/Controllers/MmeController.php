@@ -673,6 +673,7 @@ class MmeController extends Controller{
         $massUnit=NULL;
         $type = NULL ; 
         $mobility=NULL;
+        $lifeSheetCreated=$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated ; 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyMmeTmp!=NULL){
             $validate=$mostRecentlyMmeTmp->mmeTemp_validate ; 
@@ -687,6 +688,7 @@ class MmeController extends Controller{
             'mme_remarks'  => $remarks,
             'mme_set'  => $mme->mme_set,
             'mme_validate' => $validate,
+            'mme_lifeSheetCreated' => $lifeSheetCreated,
         ]);
         return response()->json($obj) ;
 

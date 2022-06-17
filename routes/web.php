@@ -31,8 +31,10 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\UserController ; 
 use App\Http\Controllers\MmeController ; 
-
-
+use App\Http\Controllers\MmeTempController ; 
+use App\Http\Controllers\VerificationController ; 
+use App\Http\Controllers\VerificationRealizedController ; 
+use App\Http\Controllers\MmeStateController ; 
 
 
 /*
@@ -596,4 +598,49 @@ Route::get('/mme_states/send/{id}', [MmeStateController::class, 'send_states']) 
 Route::get('/mme_state/send/{id}', [MmeStateController::class, 'send_state'])  ;
 
 Route::post('/mme/delete/state/{id}', [MmeStateController::class, 'delete_state'])  ;
+
+
+
+/* Verification Form Routes */ 
+
+Route::post('/verif/verif', [VerificationController::class, 'verif_verif'])  ;
+
+Route::post('/mme/add/verif', [VerificationController::class, 'add_verif'])  ;
+
+Route::post('/mme/update/verif/{id}', [VerificationController::class, 'update_verif'])  ;
+
+Route::get('/verifs/send/{id}', [VerificationController::class, 'send_verifs'])  ;
+
+Route::get('/verifs/send/lifesheet/{id}', [VerificationController::class, 'send_verifs_lifesheet'])  ;
+
+Route::get('/verif/send/{id}', [VerificationController::class, 'send_verif'])  ;
+
+Route::get('/verif/send/validated/{id}', [VerificationController::class, 'send_verif_from_mme_validated'])  ;
+
+Route::get('/verif/send/validated/', [VerificationController::class, 'send_all_verif_validated'])  ;
+
+Route::post('/mme/delete/verif/{id}', [VerificationController::class, 'delete_verif'])  ;
+
+Route::post('/mme/reform/verif/{id}', [VerificationController::class, 'reform_verif'])  ;
+
+Route::get('/verif/send/revisionDatePassed/{id}', [VerificationController::class, 'send_verif_from_mme_revisionDatePassed'])  ;
+
+Route::get('/verif/send/revisionTimeLimitPassed/{id}', [VerificationController::class, 'send_verif_from_mme_revisionTimeLimitPassed'])  ;
+
+
+/* Preventive Maintenance Operation Realized Form Routes */ 
+
+Route::post('/verifRlz/verif', [VerificationRealizedController::class, 'verif_verifRlz'])  ;
+
+Route::post('/mme/add/mme_state/verifRlz', [VerificationRealizedController::class, 'add_verifRlz'])  ;
+
+Route::post('/mme/update/mme_state/verifRlz/{id}', [VerificationRealizedController::class, 'update_verifRlz'])  ;
+
+Route::get('/mme_state/verifRlz/send/{id}', [VerificationRealizedController::class, 'send_verifRlz'])  ;
+
+Route::post('/mme_state/delete/verifRlz/{id}', [VerificationRealizedController::class, 'delete_verifRlz'])  ;
+
+Route::post('/verifRlz/approve/{id}', [VerificationRealizedController::class, 'approve_verifRlz'])  ;
+
+Route::post('/verifRlz/realize/{id}', [VerificationRealizedController::class, 'realize_verifRlz'])  ;
 

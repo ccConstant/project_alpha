@@ -148,8 +148,7 @@ export default {
             eq_file:null,
             eq_prvMtnOp:null,
             eq_risk:null,
-            loaded:false
-
+            loaded:false,
         }
     },
 
@@ -157,7 +156,17 @@ export default {
 
         var consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
-            .then (response => this.eq_idCard=response.data)
+            .then (response =>{
+                this.eq_idCard=response.data
+                this.$router.push({ name: "url_eq_update", params: {id:this.eq_id}, query: {signed:response.data.eq_lifeSheetCreated }}).catch(()=>{});
+                if(response.data.eq_lifeSheetCreated==true && 
+                 (this.$userId.user_updateDescriptiveLifeSheetDataSignedRight!=true ||
+                  this.user_deleteDataSignedLinkedToEqOrMmeRight!=true) ){
+                    this.eq_lifeSheetCreated=response.data.eq_lifeSheetCreated;
+                    this.$router.push({ name: "home"})
+                    console.log("coco")
+                }
+            })
             .catch(error => console.log(error));
 
         var consultUrlDim = (id) => `/dimension/send/${id}`;

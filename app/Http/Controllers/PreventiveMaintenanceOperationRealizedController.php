@@ -10,13 +10,6 @@ use App\Models\Equipment ;
 use App\Models\State ; 
 use App\Models\User ; 
 use App\Models\PreventiveMaintenanceOperation ; 
-use App\Http\Controllers\DimensionController ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
