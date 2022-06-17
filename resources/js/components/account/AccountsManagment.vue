@@ -33,7 +33,12 @@
 					<AccountManagmentElement right_title="Make a technical Validation" key_letter="Q" :users="pageOfItems" right_name="user_makeTechnicalValidationRight"/>
 					<AccountManagmentElement right_title="Acces to user managment" key_letter="R" :users="pageOfItems" right_name="user_menuUserAcessRight"/>
 					<AccountManagmentElement right_title="Update information" key_letter="S" :users="pageOfItems" right_name="user_updateInformationRight"/>
-					<AccountManagmentElement right_title="Reform data" key_letter="T" :users="pageOfItems" right_name="makeReformRight"/>
+					<AccountManagmentElement right_title="Reform data" key_letter="T" :users="pageOfItems" right_name="user_makeReformRight"/>
+					<AccountManagmentElement right_title="Delete signed data" key_letter="U" :users="pageOfItems" right_name="user_deleteDataSignedLinkedToEqOrMmeRight"/>
+					<AccountManagmentElement right_title="Declare a new state" key_letter="V" :users="pageOfItems" right_name="user_declareNewStateRight"/>
+					<AccountManagmentElement right_title="Approve a maintenace record" key_letter="W" :users="pageOfItems" right_name="user_makeEqRespValidationRight"/>
+
+
 					<div class="w-100 row_right_tab"></div>
 				</b-row>
 			</b-container>
@@ -222,6 +227,18 @@ export default {
 			}
 			if(user.user_deleteDataSignedLinkedToEqOrEcmeRight==true){
 				document.getElementById('user_deleteDataSignedLinkedToEqOrEcmeRight'+user.id).setAttribute("checked", true)
+			}
+			if(user.user_makeReformRight==true){
+				document.getElementById('user_makeReformRight'+user.id).setAttribute("checked", true)
+			}
+			if(user.user_deleteDataSignedLinkedToEqOrMmeRight==true){
+				document.getElementById('user_deleteDataSignedLinkedToEqOrMmeRight'+user.id).setAttribute("checked", true)
+			}
+			if(user.user_declareNewStateRight==true){
+				document.getElementById('user_declareNewStateRight'+user.id).setAttribute("checked", true)
+			}
+			if(user.user_makeEqRespValidationRight==true){
+				document.getElementById('user_makeEqRespValidationRight'+user.id).setAttribute("checked", true)
 			}
 		}
 	}

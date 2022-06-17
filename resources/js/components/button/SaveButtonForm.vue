@@ -24,7 +24,7 @@
                         
                     </div>
                     <div v-else-if="is_op_data!=true">
-                        <div v-if="this.lifesheet_created==false">
+                        <div v-if="this.lifesheet_created!=true">
                             <div class="save_button_draft_tbv">
                                 <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
                                 <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
@@ -138,15 +138,16 @@
                 </div>
                     <div v-if="saveAll!==true">
                         <p >Actually saved as : {{savedAs}}</p>
-                        <div v-if="hasError(this.Errors)" class="error_savebutton">
-                            <p>{{this.Errors[0]}}</p>
-                        </div>
+
                         <p class="text-danger" v-if="updateDescriptiveLifeSheetDataSignedRight==false">You don't have the right to update a signed life sheet</p>
                         <p class="text-danger" v-if="updateDataInDraftRight==false">You don't have the right to save as draft or as to be validated</p>
                         <p class="text-danger" v-if="validateDescriptiveLifeSheetDataRight == false">You don't have the right to save as validated </p>
                         <p class="text-danger" v-if="makeEqOpValidationRight == false">You don't have the right to save as validated </p>
 
                     </div>    
+            </div>
+            <div v-if="hasError(this.Errors)" class="error_savebutton">
+                <p>{{this.Errors[0]}}</p>
             </div>
         </div>
     </div>

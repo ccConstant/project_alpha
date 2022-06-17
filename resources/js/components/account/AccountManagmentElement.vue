@@ -30,6 +30,15 @@ export default {
             console.log(e.target.checked)
             console.log(value)
             console.log(name)
+            console.log("/user/update_right/"+name+'/'+value)
+            
+            var rightUrl = (right_name,user_id) => `/user/update_right/${right_name}/${user_id}`;
+            axios.post(rightUrl(name,value),{
+                user_value:e.target.checked
+            })
+            .then(response =>{console.log(response.data)})
+            //If the controller sends errors we put it in the errors object 
+            .catch(error => this.errors=error.response.data.errors) ;
         }
 
     },

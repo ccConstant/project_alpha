@@ -72,7 +72,7 @@ class CurativeMaintenanceOperationController extends Controller
             if ($request->curMtnOp_realizedBy_id==NULL){
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_realizedBy' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
+                        'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
             }
