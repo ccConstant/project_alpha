@@ -76,7 +76,7 @@ class UserController extends Controller{
     public function update_menuUserAcessRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_menuUserAcessRight' => $request->user_menuUserAcessRight,
+            'user_menuUserAcessRight' => $request->user_value,
         ]);
     }
 
@@ -88,7 +88,7 @@ class UserController extends Controller{
     public function update_resetUserPasswordRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_resetUserPasswordRight' => $request->user_resetUserPasswordRight,
+            'user_resetUserPasswordRight' => $request->user_value,
         ]);
     }
 
@@ -100,7 +100,7 @@ class UserController extends Controller{
     public function update_updateDataInDraftRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_updateDataInDraftRight' => $request->user_updateDataInDraftRight,
+            'user_updateDataInDraftRight' => $request->user_value,
         ]);
     }
 
@@ -112,7 +112,7 @@ class UserController extends Controller{
     public function update_validateDescriptiveLifeSheetDataRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_validateDescriptiveLifeSheetDataRight' => $request->user_validateDescriptiveLifeSheetDataRight,
+            'user_validateDescriptiveLifeSheetDataRight' => $request->user_value,
         ]);
     }
 
@@ -124,7 +124,7 @@ class UserController extends Controller{
     public function update_validateOtherDataRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_validateOtherDataRight' => $request->user_validateOtherDataRight,
+            'user_validateOtherDataRight' => $request->user_value,
         ]);
     }
 
@@ -136,7 +136,7 @@ class UserController extends Controller{
     public function update_updateDataValidatedButNotSignedRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_updateDataValidatedButNotSignedRight' => $request->user_updateDataValidatedButNotSignedRight,
+            'user_updateDataValidatedButNotSignedRight' => $request->user_value,
         ]);
     }
 
@@ -148,7 +148,7 @@ class UserController extends Controller{
     public function update_updateDescriptiveLifeSheetDataSignedRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_updateDescriptiveLifeSheetDataSignedRight' => $request->user_updateDescriptiveLifeSheetDataSignedRight,
+            'user_updateDescriptiveLifeSheetDataSignedRight' => $request->user_value,
         ]);
     }
 
@@ -160,7 +160,7 @@ class UserController extends Controller{
     public function update_makeQualityValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_makeQualityValidationRight' => $request->user_makeQualityValidationRight,
+            'user_makeQualityValidationRight' => $request->user_value,
         ]);
     }
 
@@ -172,7 +172,7 @@ class UserController extends Controller{
     public function update_makeTechnicalValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_makeTechnicalValidationRight' => $request->user_makeTechnicalValidationRight,
+            'user_makeTechnicalValidationRight' => $request->user_value,
         ]);
     }
 
@@ -184,7 +184,7 @@ class UserController extends Controller{
     public function update_makeEqOpValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_makeEqOpValidationRight' => $request->user_makeEqOpValidationRight,
+            'user_makeEqOpValidationRight' => $request->user_value,
         ]);
     }
     
@@ -196,7 +196,7 @@ class UserController extends Controller{
     public function update_updateEnumRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_updateEnumRight' => $request->user_updateEnumRight,
+            'user_updateEnumRight' => $request->user_value,
         ]);
     }
 
@@ -208,7 +208,7 @@ class UserController extends Controller{
     public function update_deleteEnumRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_deleteEnumRight' => $request->user_deleteEnumRight,
+            'user_deleteEnumRight' => $request->user_value,
         ]);
     }
 
@@ -220,7 +220,7 @@ class UserController extends Controller{
     public function update_addEnumRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_addEnumRight' => $request->user_addEnumRight,
+            'user_addEnumRight' => $request->user_value,
         ]);
     }
 
@@ -232,7 +232,7 @@ class UserController extends Controller{
     public function update_deleteDataNotValidatedLinkedToEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => $request->user_deleteDataNotValidatedLinkedToEqOrMmeRight,
+            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => $request->user_value,
         ]);
     }
 
@@ -244,7 +244,7 @@ class UserController extends Controller{
     public function update_deleteDataValidatedLinkedToEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_deleteDataValidatedLinkedToEqOrMmeRight' => $request->user_deleteDataValidatedLinkedToEqOrMmeRight,
+            'user_deleteDataValidatedLinkedToEqOrMmeRight' => $request->user_value,
         ]);
     }
 
@@ -256,7 +256,7 @@ class UserController extends Controller{
     public function update_deleteDataSignedLinkedToEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_deleteDataSignedLinkedToEqOrMmeRight' => $request->user_deleteDataSignedLinkedToEqOrEcmeRight,
+            'user_deleteDataSignedLinkedToEqOrMmeRight' => $request->user_value,
         ]);
     }
 
@@ -268,7 +268,7 @@ class UserController extends Controller{
     public function update_deleteEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_deleteEqOrMmeRight' => $request->user_deleteEqOrMmeRight,
+            'user_deleteEqOrMmeRight' => $request->user_value,
         ]);
     }
 
@@ -280,7 +280,7 @@ class UserController extends Controller{
     public function update_updateInformationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_updateInformationRight' => $request->user_updateInformationRight,
+            'user_updateInformationRight' => $request->user_value,
         ]);
     }
 
@@ -292,7 +292,7 @@ class UserController extends Controller{
     public function update_personTrainedToGeneralPrinciplesOfEqManagementRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => $request->user_personTrainedToGeneralPrinciplesOfEqManagementRight,
+            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => $request->user_value,
         ]);
     }
 
@@ -304,7 +304,7 @@ class UserController extends Controller{
     public function update_personTrainedToGeneralPrinciplesOfMMEManagementRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => $request->user_personTrainedToGeneralPrinciplesOfMMEManagementRight,
+            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => $request->user_value,
         ]);
     }
 
@@ -316,7 +316,7 @@ class UserController extends Controller{
     public function update_makeEqRespValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_makeEqRespValidationRight' => $request->user_makeEqRespValidationRight,
+            'user_makeEqRespValidationRight' => $request->user_value,
         ]);
     }
 
@@ -328,7 +328,7 @@ class UserController extends Controller{
     public function update_makeReformRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_makeReformRight' => $request->user_makeReformRight,
+            'user_makeReformRight' => $request->user_value,
         ]);
     }
 
@@ -340,7 +340,7 @@ class UserController extends Controller{
     public function update_declareNewStateRight($id, Request $request){
         $user=User::findOrFail($id) ; 
         $user->update([
-            'user_declareNewStateRight' => $request->user_declareNewStateRight,
+            'user_declareNewStateRight' => $request->user_value,
         ]);
     }
 

@@ -500,55 +500,55 @@ Route::get(' /info/send/mme_usage', [InformationController::class, 'send_informa
 Route::get(' /info/send/mme_precaution', [InformationController::class, 'send_informations_mme_precaution']);
 
 
-/* User Form Routes */ 
+/* User Form Routes /*
 
 Route::get(' /users/send', [UserController::class, 'send_users']);
 
-Route::post(' /user/update_right/menuUserAcessRight/{id}', [UserController::class, 'update_menuUserAcessRight']);
+Route::post(' /user/update_right/user_menuUserAcessRight/{id}', [UserController::class, 'update_menuUserAcessRight']);
 
-Route::post(' /user/update_right/resetUserPasswordRight/{id}', [UserController::class, 'update_resetUserPasswordRight']);
+Route::post(' /user/update_right/user_resetUserPasswordRight/{id}', [UserController::class, 'update_resetUserPasswordRight']);
 
-Route::post(' /user/update_right/updateDataInDraftRight/{id}', [UserController::class, 'update_updateDataInDraftRight']);
+Route::post(' /user/update_right/user_updateDataInDraftRight/{id}', [UserController::class, 'update_updateDataInDraftRight']);
 
-Route::post(' /user/update_right/validateDescriptiveLifeSheetDataRight/{id}', [UserController::class, 'update_validateDescriptiveLifeSheetDataRight']);
+Route::post(' /user/update_right/user_validateDescriptiveLifeSheetDataRight/{id}', [UserController::class, 'update_validateDescriptiveLifeSheetDataRight']);
 
-Route::post(' /user/update_right/validateOtherDataRight/{id}', [UserController::class, 'update_validateOtherDataRight']);
+Route::post(' /user/update_right/user_validateOtherDataRight/{id}', [UserController::class, 'update_validateOtherDataRight']);
 
-Route::post(' /user/update_right/updateDataValidatedButNotSignedRight/{id}', [UserController::class, 'update_updateDataValidatedButNotSignedRight']);
+Route::post(' /user/update_right/user_updateDataValidatedButNotSignedRight/{id}', [UserController::class, 'update_updateDataValidatedButNotSignedRight']);
 
-Route::post(' /user/update_right/updateDescriptiveLifeSheetDataSignedRight/{id}', [UserController::class, 'update_updateDescriptiveLifeSheetDataSignedRight']);
+Route::post(' /user/update_right/user_updateDescriptiveLifeSheetDataSignedRight/{id}', [UserController::class, 'update_updateDescriptiveLifeSheetDataSignedRight']);
 
-Route::post(' /user/update_right/makeQualityValidationRight/{id}', [UserController::class, 'update_makeQualityValidationRight']);
+Route::post(' /user/update_right/user_makeQualityValidationRight/{id}', [UserController::class, 'update_makeQualityValidationRight']);
 
-Route::post(' /user/update_right/makeTechnicalValidationRight/{id}', [UserController::class, 'update_makeTechnicalValidationRight']);
+Route::post(' /user/update_right/user_makeTechnicalValidationRight/{id}', [UserController::class, 'update_makeTechnicalValidationRight']);
 
-Route::post(' /user/update_right/makeEqOpValidationRight/{id}', [UserController::class, 'update_makeEqOpValidationRight']);
+Route::post(' /user/update_right/user_makeEqOpValidationRight/{id}', [UserController::class, 'update_makeEqOpValidationRight']);
 
-Route::post(' /user/update_right/updateEnumRight/{id}', [UserController::class, 'update_updateEnumRight']);
+Route::post(' /user/update_right/user_updateEnumRight/{id}', [UserController::class, 'update_updateEnumRight']);
 
-Route::post(' /user/update_right/deleteEnumRight/{id}', [UserController::class, 'update_deleteEnumRight']);
+Route::post(' /user/update_right/user_deleteEnumRight/{id}', [UserController::class, 'update_deleteEnumRight']);
 
-Route::post(' /user/update_right/addEnumRight/{id}', [UserController::class, 'update_addEnumRight']);
+Route::post(' /user/update_right/user_addEnumRight/{id}', [UserController::class, 'update_addEnumRight']);
 
-Route::post(' /user/update_right/deleteDataNotValidatedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataNotValidatedLinkedToEqOrMmeRight']);
+Route::post(' /user/update_right/user_deleteDataNotValidatedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataNotValidatedLinkedToEqOrMmeRight']);
 
-Route::post(' /user/update_right/deleteDataValidatedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataValidatedLinkedToEqOrMmeRight']);
+Route::post(' /user/update_right/user_deleteDataValidatedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataValidatedLinkedToEqOrMmeRight']);
 
-Route::post(' /user/update_right/deleteDataSignedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataSignedLinkedToEqOrMmeRight']);
+Route::post(' /user/update_right/user_deleteDataSignedLinkedToEqOrMmeRight/{id}', [UserController::class, 'update_deleteDataSignedLinkedToEqOrMmeRight']);
 
-Route::post(' /user/update_right/deleteEqOrMmeRight/{id}', [UserController::class, 'update_deleteEqOrMmeRight']);
+Route::post(' /user/update_right/user_deleteEqOrMmeRight/{id}', [UserController::class, 'update_deleteEqOrMmeRight']);
 
-Route::post(' /user/update_right/updateInformationRight/{id}', [UserController::class, 'update_updateInformationRight']);
+Route::post(' /user/update_right/user_updateInformationRight/{id}', [UserController::class, 'update_updateInformationRight']);
 
-Route::post(' /user/update_right/personTrainedToGeneralPrinciplesOfEqManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfEqManagementRight']);
+Route::post(' /user/update_right/user_personTrainedToGeneralPrinciplesOfEqManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfEqManagementRight']);
 
-Route::post(' /user/update_right/personTrainedToGeneralPrinciplesOfMMEManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfMMEManagementRight']);
+Route::post(' /user/update_right/user_personTrainedToGeneralPrinciplesOfMMEManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfMMEManagementRight']);
 
-Route::post(' /user/update_right/makeEqRespValidationRight/{id}', [UserController::class, 'update_makeEqRespValidationRight']);
+Route::post(' /user/update_right/user_makeEqRespValidationRight/{id}', [UserController::class, 'update_makeEqRespValidationRight']);
 
-Route::post(' /user/update_right/makeReformRight/{id}', [UserController::class, 'update_makeReformRight']);
+Route::post(' /user/update_right/user_makeReformRight/{id}', [UserController::class, 'update_makeReformRight']);
 
-Route::post(' /user/update_right/declareNewStateRight/{id}', [UserController::class, 'update_declareNewStateRight']);
+Route::post(' /user/update_right/user_declareNewStateRight/{id}', [UserController::class, 'update_declareNewStateRight']);
 
 Route::post(' /user/update/infos/{id} ', [UserController::class, 'update_info']);
 

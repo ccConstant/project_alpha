@@ -36,19 +36,21 @@ class User extends Authenticatable
         'user_makeQualityValidationRight',
         'user_makeTechnicalValidationRight',
         'user_makeEqRespValidationRight',
-        'user_makeOpValidationRight',
+        'user_makeEqOpValidationRight',
         'user_updateEnumRight',
         'user_deleteEnumRight',
         'user_addEnumRight',
         'user_deleteDataNotValidatedLinkedToEqOrMmeRight',
         'user_deleteDataValidatedLinkedToEqOrMmeRight',
-        'user_deleteDataSignedLinkedToEqOrEcmeRight',
+        'user_deleteDataSignedLinkedToEqOrMmeRight',
         'user_deleteEqOrMmeRight',
         'user_updateInformationRight',
         'user_personTrainedToGeneralPrinciplesOfEqManagementRight',
         'user_formationEqDate',
         'user_personTrainedToGeneralPrinciplesOfMMEManagementRight',
-        'user_formationMmeDate'
+        'user_formationMmeDate',
+        'user_declareNewStateRight',
+        'user_makeReformRight',
     ];
 
     /**
