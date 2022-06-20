@@ -88,34 +88,34 @@ class CurativeMaintenanceOperationController extends Controller
                     ], 429);
                 }
     
-                if ($curMtnOp->technicalVerifier_id==NULL){
+                if ($curMtnOp->technicalVerifier_id===NULL){
                     return response()->json([
                         'errors' => [
                             'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
                         ]
                     ], 429);
                 }
+            }else{
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
+                    ]
+                ], 429);
+    
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
+                    ]
+                ], 429);
+    
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
+                    ]
+                ], 429);
             }
 
-            return response()->json([
-                'errors' => [
-                    'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
-                ]
-            ], 429);
-
-            return response()->json([
-                'errors' => [
-                    'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
-                ]
-            ], 429);
-
-            return response()->json([
-                'errors' => [
-                    'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
-                ]
-            ], 429);
-
-
+    
 
         //-----CASE curMtnOp->validate=drafted or curMtnOp->validate=to be validate----//
         //if the user has choosen "drafted" or "to be validated" he have no obligations 

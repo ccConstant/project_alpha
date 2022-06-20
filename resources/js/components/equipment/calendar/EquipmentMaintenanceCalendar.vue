@@ -2,11 +2,9 @@
     <div>
         <div class="remindOpe_container">
             <h2>Maintenance to do urgently</h2>
-            <li class="list-group-item">
-                coco
-            </li>
-            <li class="list-group-item">
-                coco
+            <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
+            @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
+                {{prvMtnOp.internalReference}}
             </li>
         </div>
         <EventDetailsModal ref="event_details" @modalClosed="modalClosed" :prvMtnOps="prvMtnOp"/>
@@ -61,6 +59,7 @@ export default {
                 schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives'
             },
             prvMtnOp:[],
+            prvMtnOp_LimitPassed:[]
             
            
         }
@@ -74,6 +73,15 @@ export default {
             console.log(arg)
             this.$refs.event_details.$bvModal.show('modal-event_details');
         },
+        handleListClick(eq_id,eq_internalReference,state_id,prvMtnOps) {
+            for(const prvMtnOp of prvMtnOps){
+                this.prvMtnOp.push({eq_internalReference:eq_internalReference,prvMtnOp_number:prvMtnOp.prvMtnOp_number,
+                eq_id:eq_id,state_id:state_id,prvMtnOp_description:prvMtnOp.prvMtnOp_description,
+                prvMtnOp_protocol:prvMtnOp.prvMtnOp_protocol,prvMtnOp_nextDate:prvMtnOp.prvMtnOp_nextDate});
+            }
+            
+            this.$refs.event_details.$bvModal.show('modal-event_details');
+        },
         modalClosed(){
             this.prvMtnOp=[]
         }
@@ -81,6 +89,7 @@ export default {
     created(){
         axios.get('/equipment/prvMtnOp/planning')
             .then (response=>{
+                this.prvMtnOp_LimitPassed=response.data;
                 console.log(response.data)
                 for (const data of response.data) {
                     this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
@@ -94,6 +103,11 @@ export default {
                          resourceId:data.internalReference});
                     }
                 }
+            })
+            axios.get('/equipment/prvMtnOp/revisionLimitPassed')
+            .then (response=>{
+                console.log(response.data)
+
             })
     }
 

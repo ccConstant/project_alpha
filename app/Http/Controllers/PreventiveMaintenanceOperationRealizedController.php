@@ -91,15 +91,31 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ], 429);
             }
 
-            if ($request->prvMtnOpRlz_realizedBy_id==NULL){
+            if ($request->reason=="update"){
+                $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($request->prvMtnOpRlz_id) ; 
+                if ($prvMtnOpRlz->realizedBy_id==NULL){
+                    return response()->json([
+                        'errors' => [
+                            'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
+                        ]
+                    ], 429);
+                }
+    
+                if ($prvMtnOpRlz->approvedBy_id==NULL){
+                    return response()->json([
+                        'errors' => [
+                            'prvMtnOpRlz_validate' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
+                        ]
+                    ], 429);
+                }
+
+            }else{
                 return response()->json([
                     'errors' => [
                         'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
                     ]
                 ], 429);
-            }
-
-            if ($request->prvMtnOpRlz_approvedBy_id==NULL){
+            
                 return response()->json([
                     'errors' => [
                         'prvMtnOpRlz_validate' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
@@ -107,8 +123,6 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ], 429);
             }
         }
-        
-        
         
         $this->validate(
             $request,

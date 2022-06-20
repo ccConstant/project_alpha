@@ -134,6 +134,7 @@ export default {
         var consultUrlPrvMtnOpRlz = (id) => `/state/prvMtnOpRlz/send/${id}`;
         axios.get(consultUrlPrvMtnOpRlz(this.state_id))
             .then (response=>{
+                console.log(response.data)
                 this.eq_prvMtnOpRlz=response.data
             })
             .catch(error => console.log(error)) ;

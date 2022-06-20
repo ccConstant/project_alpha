@@ -644,8 +644,20 @@ class EquipmentController extends Controller{
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ;    
                 $today=Carbon::now() ;
                 foreach( $prvMtnOps as $prvMtnOp){
-                    $OneWeekLater=$prvMtnOp->prvMtnOp_nextDate->addDays(7) ; 
-                    if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
+                    $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ; 
+                    $ymd=explode('-', $dates[0]);
+                    $year=$ymd[0] ; 
+                    $month=$ymd[1] ;
+                    $day=$ymd[2] ;
+
+                    $time=explode(':', $dates[1]); 
+                    $hour=$time[0] ;
+                    $min=$time[1] ; 
+                    $sec=$time[2] ;
+                
+                    $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
+                    $OneWeekLater=$nextDate->addDays(7) ; 
+;                    if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
                         $opMtn=([
                             "id" => $prvMtnOp->id,
                             "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,

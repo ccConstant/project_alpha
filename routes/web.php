@@ -126,6 +126,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/accounts', function () {
         return view('welcome');
     });
+
+    Route::get('/accounts', function () {
+        return view('welcome');
+    });
 });
 
 Route::get('/sign_up', function () {
@@ -135,6 +139,7 @@ Route::get('/sign_up', function () {
 Route::get('/sign_in', function () {
     return view('welcome');
 });
+
 
 
 
