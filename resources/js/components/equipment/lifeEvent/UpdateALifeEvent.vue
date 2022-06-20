@@ -48,7 +48,6 @@
                                      />
                                 </li>
                             </div>
-                            <!--<ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>-->
                         </div>
                     </div>
                 </div>
@@ -60,7 +59,7 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
-                            <div v-if="eq_prvMtnOpRlz.length>0" class="all_preventive_ope">
+                            <div v-if="eq_curMtnOp.length>0" class="all_preventive_ope">
                                 <h3>Recorded Curative maintenance operation</h3>
                                 <li class="list-group-item" v-for="(curMtnOp,index) in eq_curMtnOp " :key="index"  >
                                     <div>
@@ -136,13 +135,13 @@ export default {
         axios.get(consultUrlPrvMtnOpRlz(this.state_id))
             .then (response=>{
                 this.eq_prvMtnOpRlz=response.data
-                console.log(response.data)
             })
             .catch(error => console.log(error)) ;
 
         var consultUrlCurMtnOp = (id) => `/state/curMtnOp/send/${id}`;
         axios.get(consultUrlCurMtnOp(this.state_id))
             .then (response=>{
+                console.log(response.data)
                 this.eq_curMtnOp=response.data
                 this.loaded=true
             })

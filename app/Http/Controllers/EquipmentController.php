@@ -524,8 +524,8 @@ class EquipmentController extends Controller{
     public function send_eq_prvMtnOp_for_planning(){
         $equipments=Equipment::all() ;
         $container=array() ; 
-        $containerOp=array() ;
         foreach($equipments as $equipment){
+            $containerOp=array() ;
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
@@ -579,8 +579,8 @@ class EquipmentController extends Controller{
     public function send_eq_prvMtnOp_revisionDatePassed(){
         $equipments=Equipment::all() ;
         $container=array() ; 
-        $containerOp=array() ;
         foreach($equipments as $equipment){
+            $containerOp=array() ;
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ;  
@@ -637,8 +637,8 @@ class EquipmentController extends Controller{
     public function send_eq_prvMtnOp_revisionLimitPassed(){
         $equipments=Equipment::all() ;
         $container=array() ; 
-        $containerOp=array() ;
         foreach($equipments as $equipment){
+            $containerOp=array() ;
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ;    

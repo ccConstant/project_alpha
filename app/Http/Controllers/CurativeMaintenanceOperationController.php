@@ -69,29 +69,51 @@ class CurativeMaintenanceOperationController extends Controller
                 ], 429);
             }
 
-            if ($request->curMtnOp_realizedBy_id==NULL){
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
-                    ]
-                ], 429);
+            if ($request->reason=="update"){
+                $curMtnOp=CurativeMaintenanceOperation::findOrFail($request->curMtnOp_id) ;
+
+                if ($curMtnOp->realizedBy_id===NULL){
+                    return response()->json([
+                        'errors' => [
+                            'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
+                        ]
+                    ], 429);
+                }
+    
+                if ($curMtnOp->qualityVerifier_id===NULL){
+                    return response()->json([
+                        'errors' => [
+                            'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
+                        ]
+                    ], 429);
+                }
+    
+                if ($curMtnOp->technicalVerifier_id==NULL){
+                    return response()->json([
+                        'errors' => [
+                            'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
+                        ]
+                    ], 429);
+                }
             }
 
-            if ($request->curMtnOp_qualityVerifier_id==NULL){
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
-                    ]
-                ], 429);
-            }
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
+                ]
+            ], 429);
 
-            if ($request->curMtnOp_technicalVerifier_id==NULL){
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
-                    ]
-                ], 429);
-            }
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
+                ]
+            ], 429);
+
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
+                ]
+            ], 429);
 
 
 
