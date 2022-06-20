@@ -589,4 +589,38 @@ class UserController extends Controller{
         }
 
     }
+
+    public function FormationEqOk($id){
+        $user=User::findOrFail($id) ; 
+        $now=Carbon::now() ; 
+        $ymd=explode('-', $user->user_formationEqDate);
+        $year=$ymd[0] ; 
+        $month=$ymd[1] ;
+        $day=$ymd[2] ;
+    
+        $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
+        $OneYearLater=$formationEqDate->addYear(1) ; 
+        if ($OneYearLater<$now){
+            return response()->json(false) ; 
+        }else{
+            return response()->json(true) ; 
+        }
+    }
+
+    public function FormationMmeOk($id){
+        $user=User::findOrFail($id) ; 
+        $now=Carbon::now() ; 
+        $ymd=explode('-', $user->user_formationMmeDate);
+        $year=$ymd[0] ; 
+        $month=$ymd[1] ;
+        $day=$ymd[2] ;
+    
+        $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
+        $OneYearLater=$formationMmeDate->addYear(1) ; 
+        if ($OneYearLater<$now){
+            return response()->json(false) ; 
+        }else{
+            return response()->json(true) ; 
+        }
+    }
 }

@@ -562,6 +562,13 @@ Route::post(' /user/update_right/user_declareNewStateRight/{id}', [UserControlle
 
 Route::post(' /user/update/infos/{id} ', [UserController::class, 'update_info']);
 
+Route::post(' /user/update/myAccount/{id} ', [UserController::class, 'update_myAccount']);
+
+Route::get(' /user/get/formationEqOk/{id} ', [UserController::class, 'formationEqOk']);
+
+Route::get(' /user/get/formationMmeOk/{id} ', [UserController::class, 'formationMmeOk']);
+
+
 /* Mme ID Form Routes */ 
 
 Route::get('/mme/sets', [MmeController::class, 'send_sets'] ) ;
