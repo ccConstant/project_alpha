@@ -500,7 +500,7 @@ Route::get(' /info/send/mme_usage', [InformationController::class, 'send_informa
 Route::get(' /info/send/mme_precaution', [InformationController::class, 'send_informations_mme_precaution']);
 
 
-/* User Form Routes /*
+/* User Form Routes */
 
 Route::get(' /users/send', [UserController::class, 'send_users']);
 

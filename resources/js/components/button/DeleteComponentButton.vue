@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="lifesheet_created==false">
+        <div v-if="lifesheet_created!=true">
             <div v-if=" validationMode!='' && deleteDataNotValidatedLinkedToEqOrMmeRight!=true">
                 <b-button v-if="this.consultMod==false" variant="danger" disabled >Delete</b-button>
                 <p class="enum_add_right_red"> You dont have the right to delete an element.</p>
@@ -64,7 +64,7 @@ export default {
             deleteDataValidatedLinkedToEqOrMmeRight:this.$userId.user_deleteDataValidatedLinkedToEqOrMmeRight,
             deleteDataNotValidatedLinkedToEqOrMmeRight:this.$userId.user_deleteDataNotValidatedLinkedToEqOrMmeRight,
             deleteDataSignedLinkedToEqOrMmeRight:this.$userId.user_deleteDataSignedLinkedToEqOrMmeRight,
-            lifesheet_created:true,
+            lifesheet_created:this.$route.query.signed,
         }
         
     }

@@ -91,7 +91,7 @@
                 </div>
                 <div v-else>
                     <div v-if="is_op_data!=true">
-                        <div v-if="this.lifesheet_created==false">
+                        <div v-if="this.lifesheet_created!=true">
                             <div class="save_button_draft_tbv" v-if="updateDataInDraftRight==true"  >
                                 <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
                                 <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>

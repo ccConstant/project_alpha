@@ -44,7 +44,7 @@
             <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
         </b-modal>
 
-        <b-modal :id="`modal-curMtnOpManagmentQuality-${_uid}`" title="Quality Chech" @ok="handleOkQuality" @hidden="resetModal">
+        <b-modal :id="`modal-curMtnOpManagmentQuality-${_uid}`" title="Quality Check" @ok="handleOkQuality" @hidden="resetModal">
             <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
