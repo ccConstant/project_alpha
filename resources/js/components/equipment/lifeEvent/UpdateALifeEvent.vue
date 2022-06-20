@@ -44,7 +44,8 @@
                                     :prvMtnOpRlz_id="prvMtnOpRlz.id" :prvMtnOpRlz_reportNumber="prvMtnOpRlz.prvMtnOpRlz_reportNumber"
                                     :prvMtnOpRlz_startDate="prvMtnOpRlz.prvMtnOpRlz_startDate" :prvMtnOpRlz_endDate="prvMtnOpRlz.prvMtnOpRlz_endDate"
                                     :prvMtnOpRlz_validate="prvMtnOpRlz.prvMtnOpRlz_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage"
-                                    :approvedBy_lastName="prvMtnOpRlz.approvedBy_lastName" :realizedBy_lastName="prvMtnOpRlz.realizedBy_lastName" />
+                                    :approvedBy_lastName="prvMtnOpRlz.approvedBy_lastName" :realizedBy_lastName="prvMtnOpRlz.realizedBy_lastName"
+                                     />
                                 </li>
                             </div>
                             <!--<ReferenceAPrvMtnOpRlz  v-if="eq_prvMtnOpRlz.length>0"  :importedPrvMtnOpRlz="eq_prvMtnOpRlz" modifMod :eq_id="this.eq_id" :state_id="this.state_id"/>-->

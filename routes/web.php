@@ -59,80 +59,84 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 
+Route::middleware('auth')->group(function () {
+    Route::get('/equipment/add', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/add', function () {
-    return view('welcome');
-});
-Route::get('/equipment/list', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/list', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/list/consult/{id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/list/consult/{id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/list/update/{id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/list/update/{id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/enum', function () {
-    return view('welcome');
-});
+    Route::get('/enum', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/life_event', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/life_event', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/life_event/state/{id}/{state_id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/life_event/state/{id}/{state_id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/life_event/state/{id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/life_event/state/{id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/life_event/all/{id}', function () {
-    return view('welcome');
-});
-Route::get('/equipment/life_event/all/consult/{id}/{state_id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/life_event/all/{id}', function () {
+        return view('welcome');
+    });
+    Route::get('/equipment/life_event/all/consult/{id}/{state_id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/life_event/reference/{id}/{state_id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/life_event/reference/{id}/{state_id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/life_event/update/{id}/{state_id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/life_event/update/{id}/{state_id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/maintenance/calendar', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/maintenance/calendar', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/lifesheet_pdf/{id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/lifesheet_pdf/{id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/equipment/reform/{id}', function () {
-    return view('welcome');
-});
+    Route::get('/equipment/reform/{id}', function () {
+        return view('welcome');
+    });
 
-Route::get('/infos', function () {
-    return view('welcome');
+    Route::get('/infos', function () {
+        return view('welcome');
+    });
+
+    Route::get('/accounts', function () {
+        return view('welcome');
+    });
 });
 
 Route::get('/sign_up', function () {
     return view('welcome');
-});
+}) -> name('sign_up');
 
 Route::get('/sign_in', function () {
     return view('welcome');
 });
 
-Route::get('/accounts', function () {
-    return view('welcome');
-});
+
 
 
 Route::middleware('guest')->group(function () {
@@ -140,9 +144,6 @@ Route::middleware('guest')->group(function () {
                 ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
-
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
@@ -191,6 +192,10 @@ Route::get('/equipments/same_set/{set}', [EquipmentController::class, 'send_equi
 Route::get('/equipment/{id}', [EquipmentController::class, 'send_equipment'] )->whereNumber('id') ;
 
 Route::get('/equipment/prvMtnOp/planning', [EquipmentController::class, 'send_eq_prvMtnOp_for_planning'] ) ;
+
+Route::get('/equipment/prvMtnOp/revisionDatePassed', [EquipmentController::class, 'send_eq_prvMtnOp_revisionDatePassed'] ) ;
+
+Route::get('/equipment/prvMtnOp/revisionLimitPassed ', [EquipmentController::class, 'send_eq_prvMtnOp_revisionLimitPassed'] ) ;
 
 Route::post('/equipment/verifValidation/{id}', [EquipmentController::class, 'verif_validation'] ) ;
 

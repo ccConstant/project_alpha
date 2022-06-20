@@ -39,13 +39,13 @@ class CreateUsersTable extends Migration
             $table->boolean('user_addEnumRight') ->default(true);
             $table->boolean('user_deleteDataNotValidatedLinkedToEqOrMmeRight') ->default(true);
             $table->boolean('user_deleteDataValidatedLinkedToEqOrMmeRight')->default(true);
-            $table->boolean('user_deleteDataSignedLinkedToEqOrMmmeRight') ->default(true);
+            $table->boolean('user_deleteDataSignedLinkedToEqOrMmeRight') ->default(true);
             $table->boolean('user_deleteEqOrMmeRight') ->default(true);
             $table->boolean('user_updateInformationRight') ->default(true);
             $table->boolean('user_personTrainedToGeneralPrinciplesOfEqManagementRight') ->default(true);
-            $table->boolean('user_formationEqDate') ->default(true);
+            $table->date('user_formationEqDate') ->nullable() ;
             $table->boolean('user_personTrainedToGeneralPrinciplesOfMMEManagementRight') ->default(true);
-            $table->boolean('user_formationMmeDate') ->default(true);
+            $table->date('user_formationMmeDate') ->nullable();
             $table->boolean('user_makeEqRespValidationRight') ->default(true);
             $table->boolean('user_makeReformRight') ->default(true);
             $table->boolean('user_declareNewStateRight') ->default(true);

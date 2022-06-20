@@ -29,41 +29,43 @@ class UserController extends Controller{
         $users=User::all() ; 
         $container_userInfo=array() ;
         foreach($users as $user){
-            $infoUser=([
-                "id" => $user->id,
-                "user_firstName" => $user->user_firstName,
-                "user_lastName" => $user->user_lastName,
-                "user_initials" => $user->user_initials,
-                "user_signaturePath" => $user->user_signaturePath,
-                "user_pseudo" => $user->user_pseudo,
-                "user_password" => $user->password,
-                "user_menuUserAcessRight" => $user->user_menuUserAcessRight,
-                "user_resetUserPasswordRight" => $user->user_resetUserPasswordRight,
-                "user_updateDataInDraftRight" => $user->user_updateDataInDraftRight,
-                "user_validateDescriptiveLifeSheetDataRight" => $user->user_validateDescriptiveLifeSheetDataRight,
-                "user_validateOtherDataRight" => $user->user_validateOtherDataRight,
-                "user_updateDataValidatedButNotSignedRight" => $user->user_updateDataValidatedButNotSignedRight,
-                "user_updateDescriptiveLifeSheetDataSignedRight" => $user->user_updateDescriptiveLifeSheetDataSignedRight,
-                "user_makeQualityValidationRight" => $user->user_makeQualityValidationRight,
-                "user_makeTechnicalValidationRight" => $user->user_makeTechnicalValidationRight,
-                "user_makeEqOpValidationRight" => $user->user_makeEqOpValidationRight,
-                "user_updateEnumRight" => $user->user_updateEnumRight,
-                "user_deleteEnumRight" => $user->user_deleteEnumRight,
-                "user_addEnumRight" => $user->user_addEnumRight,
-                "user_deleteDataNotValidatedLinkedToEqOrMmeRight" => $user->user_deleteDataNotValidatedLinkedToEqOrMmeRight,
-                "user_deleteDataValidatedLinkedToEqOrMmeRight" => $user->user_deleteDataValidatedLinkedToEqOrMmeRight,
-                "user_deleteDataSignedLinkedToEqOrMmeRight" => $user->user_deleteDataSignedLinkedToEqOrMmeRight,
-                "user_deleteEqOrMmeRight" => $user->user_deleteEqOrMmeRight,
-                "user_updateInformationRight" => $user->user_updateInformationRight,
-                "user_personTrainedToGeneralPrinciplesOfEqManagementRight" => $user->user_personTrainedToGeneralPrinciplesOfEqManagementRight,
-                "user_formationEqDate" => $user->user_formationEqDate,
-                "user_personTrainedToGeneralPrinciplesOfMMEManagementRight" => $user->user_personTrainedToGeneralPrinciplesOfMMEManagementRight,
-                "user_formationMmeDate" => $user->user_formationMmeDate,
-                "user_makeEqRespValidationRight" => $user->user_makeEqRespValidationRight,
-                "user_makeReformRight" => $user->user_makeReformRight,
-                "user_declareNewStateRight" => $user->user_declareNewStateRight,
-            ]);
-            array_push($container_userInfo,$infoUser);
+            if ($user->user_endDate==NULL){
+                $infoUser=([
+                    "id" => $user->id,
+                    "user_firstName" => $user->user_firstName,
+                    "user_lastName" => $user->user_lastName,
+                    "user_initials" => $user->user_initials,
+                    "user_signaturePath" => $user->user_signaturePath,
+                    "user_pseudo" => $user->user_pseudo,
+                    "user_password" => $user->password,
+                    "user_menuUserAcessRight" => $user->user_menuUserAcessRight,
+                    "user_resetUserPasswordRight" => $user->user_resetUserPasswordRight,
+                    "user_updateDataInDraftRight" => $user->user_updateDataInDraftRight,
+                    "user_validateDescriptiveLifeSheetDataRight" => $user->user_validateDescriptiveLifeSheetDataRight,
+                    "user_validateOtherDataRight" => $user->user_validateOtherDataRight,
+                    "user_updateDataValidatedButNotSignedRight" => $user->user_updateDataValidatedButNotSignedRight,
+                    "user_updateDescriptiveLifeSheetDataSignedRight" => $user->user_updateDescriptiveLifeSheetDataSignedRight,
+                    "user_makeQualityValidationRight" => $user->user_makeQualityValidationRight,
+                    "user_makeTechnicalValidationRight" => $user->user_makeTechnicalValidationRight,
+                    "user_makeEqOpValidationRight" => $user->user_makeEqOpValidationRight,
+                    "user_updateEnumRight" => $user->user_updateEnumRight,
+                    "user_deleteEnumRight" => $user->user_deleteEnumRight,
+                    "user_addEnumRight" => $user->user_addEnumRight,
+                    "user_deleteDataNotValidatedLinkedToEqOrMmeRight" => $user->user_deleteDataNotValidatedLinkedToEqOrMmeRight,
+                    "user_deleteDataValidatedLinkedToEqOrMmeRight" => $user->user_deleteDataValidatedLinkedToEqOrMmeRight,
+                    "user_deleteDataSignedLinkedToEqOrMmeRight" => $user->user_deleteDataSignedLinkedToEqOrMmeRight,
+                    "user_deleteEqOrMmeRight" => $user->user_deleteEqOrMmeRight,
+                    "user_updateInformationRight" => $user->user_updateInformationRight,
+                    "user_personTrainedToGeneralPrinciplesOfEqManagementRight" => $user->user_personTrainedToGeneralPrinciplesOfEqManagementRight,
+                    "user_formationEqDate" => $user->user_formationEqDate,
+                    "user_personTrainedToGeneralPrinciplesOfMMEManagementRight" => $user->user_personTrainedToGeneralPrinciplesOfMMEManagementRight,
+                    "user_formationMmeDate" => $user->user_formationMmeDate,
+                    "user_makeEqRespValidationRight" => $user->user_makeEqRespValidationRight,
+                    "user_makeReformRight" => $user->user_makeReformRight,
+                    "user_declareNewStateRight" => $user->user_declareNewStateRight,
+                ]);
+                array_push($container_userInfo,$infoUser);
+            }
         }
         return response()->json($container_userInfo) ;
     }
@@ -388,7 +390,32 @@ class UserController extends Controller{
 
             $user->update([
                 'user_endDate' => $request->user_endDate,
+                "user_menuUserAcessRight" => false,
+                "user_resetUserPasswordRight" => false,
+                "user_updateDataInDraftRight" => false,
+                "user_validateDescriptiveLifeSheetDataRight" => false,
+                "user_validateOtherDataRight" => false,
+                "user_updateDataValidatedButNotSignedRight" => false,
+                "user_updateDescriptiveLifeSheetDataSignedRight" => false,
+                "user_makeQualityValidationRight" => false,
+                "user_makeTechnicalValidationRight" => false,
+                "user_makeEqOpValidationRight" => false,
+                "user_updateEnumRight" => false,
+                "user_deleteEnumRight" => false,
+                "user_addEnumRight" => false,
+                "user_deleteDataNotValidatedLinkedToEqOrMmeRight" => false,
+                "user_deleteDataValidatedLinkedToEqOrMmeRight" => false,
+                "user_deleteDataSignedLinkedToEqOrMmeRight" => false,
+                "user_deleteEqOrMmeRight" => false,
+                "user_updateInformationRight" => false,
+                "user_personTrainedToGeneralPrinciplesOfEqManagementRight" => false,
+                "user_personTrainedToGeneralPrinciplesOfMMEManagementRight" =>false,
+                "user_makeEqRespValidationRight" => false,
+                "user_makeReformRight" => false,
+                "user_declareNewStateRight" => false,
             ]);
+
+
         }
 
         if ($request->user_password!=NULL || $request->user_confirmation_password){

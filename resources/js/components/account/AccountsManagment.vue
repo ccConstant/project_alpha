@@ -49,13 +49,14 @@
 						<InputTextForm  inputClassName="form-control" :Errors="errors.user_firstName" name="user_firstName" label="First :" v-model="modal_firstName" :isDisabled="true"/>
 						<InputTextForm  inputClassName="form-control" :Errors="errors.user_lastName" name="user_lastName" label="Last :" v-model="modal_lastName" :isDisabled="true"/>
 						<InputTextForm  inputClassName="form-control" :Errors="errors.user_initials" name="user_initials" label="Initial :" v-model="modal_initials"/>
+						<div class="input-group">
+							<InputTextForm inputClassName="form-control" :Errors="errors.user_endDate" name="user_endDate" label="End date :" :isDisabled="true"  isRequired v-model="user_endDate"/>
+							<InputDateForm inputClassName="form-control  date-selector"  name="selected_endDate"  isRequired v-model="selected_endDate"/>
+						</div>
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_password" name="user_password" label="Change the current password :" v-model="modal_password"/>
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Confirm the password :" v-model="modal_confirmation_password"/>
 					</form>
                     
-
-
-
 				</div>
 			</b-modal>
 
@@ -65,7 +66,9 @@
 </template>
 
 <script>
+import moment from 'moment'
 import InputTextForm from '../input/InputTextForm.vue'
+import InputDateForm from '../input/InputDateForm.vue'
 import InputPasswordForm from '../input/InputPasswordForm.vue'
 import AccountManagmentElement from './AccountManagmentElement.vue'
 import ErrorAlert from '../alert/ErrorAlert.vue'
@@ -75,6 +78,7 @@ export default {
 		AccountManagmentElement,
 		InputPasswordForm,
 		InputTextForm,
+		InputDateForm,
 		ErrorAlert,
 		SuccesAlert
 	},
@@ -90,6 +94,8 @@ export default {
 			modal_lastName:'',
 			modal_initials:'',
 			modal_password:'',
+			selected_endDate:null,
+			user_endDate:'',
 			modal_confirmation_password:'',
 			errors:[],									
 
@@ -136,7 +142,8 @@ export default {
 					user_initials:this.modal_initials,
                     user_password:this.modal_password,
 					user_confirmation_password:this.modal_confirmation_password,
-					user_resetUserPasswordRight:this.$userId.user_resetUserPasswordRight
+					user_resetUserPasswordRight:this.$userId.user_resetUserPasswordRight,
+					user_endDate:this.selected_endDate
 			})
 			.then(response =>{           
 				// Hide the modal manually
@@ -156,6 +163,8 @@ export default {
 			this.modal_initials='';
 			this.modal_password='';
 			this.modal_confirmation_password='';
+			this.selected_endDate=null,
+			this.user_endDate='',
 			this.modal_id='';
 			this.errors={};
 		},
@@ -167,6 +176,9 @@ export default {
 	},
 
 	updated(){
+        if(this.selected_endDate!==null){
+            this.user_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+        }
 		for(const user of this.pageOfItems){
 			if(user.user_makeEqOpValidationRight==true){
 				document.getElementById('user_makeEqOpValidationRight'+user.id).setAttribute("checked", true)

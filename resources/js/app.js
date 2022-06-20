@@ -117,6 +117,11 @@ const router = new VueRouter({
         component:require('./components/account/SignIn.vue').default
 
     },{
+        path:'/my_account',
+        name: 'url_my_account',
+        component:require('./components/account/MyAccount.vue').default
+
+    },{
         path:'*',
     }]
 
