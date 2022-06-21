@@ -122,7 +122,7 @@ class MmeController extends Controller{
      */
 
     public function send_sets (){
-        $sets=DB::select(DB::raw('SELECT DISTINCT mme_set FROM mme'));
+        $sets=DB::select(DB::raw('SELECT DISTINCT mme_set FROM mmes'));
         return response()->json($sets) ;
     }
 

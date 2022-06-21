@@ -107,10 +107,10 @@ export default {
     },
     /*All function inside the created option is called after the component has been created.*/
     created(){
-        /*axios.get('/mme/sets')
-            .then (response=> this.enum_sets=response.data) 
+        axios.get('/mme/sets')
+            .then (response=>console.log(response.data) )
             .catch(error => console.log(error)) ; 
-*/
+
         /*axios.get('/info/send/mmeIdCard')
             .then (response=> {
                 this.infos_idCard=response.data;

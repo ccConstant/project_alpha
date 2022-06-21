@@ -49,7 +49,7 @@ class MmeTemp extends Model
  
      //Define the relation between an mme_temp and its states : an mme_temp can have many states
      public function states(){
-         return $this->belongsToMany(MmeState::class, 'pivot_mme_temp_state', 'mmeTemp_id', 'state_id') ; 
+         return $this->belongsToMany(MmeState::class, 'pivot_mme_temp_state', 'mmeTemp_id', 'mme_state_id') ; 
      }
  
      //Define the relation between a mme_temp and its verifications : a mme_temp can have many verifications

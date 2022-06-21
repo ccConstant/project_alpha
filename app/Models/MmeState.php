@@ -39,7 +39,7 @@ class MmeState extends Model
 
     //Define the relation between an mme_temp and its state : a state can correspond to many equipment temps
     public function mme_temps(){
-        return $this->belongsToMany(MmeTemp::class, 'pivot_mme_temp_state', 'state_id', 'mmeTemp_id') ; 
+        return $this->belongsToMany(MmeTemp::class, 'pivot_mme_temp_state', 'mme_state_id', 'mmeTemp_id') ; 
     }
 
     //Define the relation between a state and the curative_maintenance_operations that can take place during the state

@@ -134,6 +134,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/mme/add', function () {
         return view('welcome');
     });
+
+    Route::get('/mme/list/consult/{id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/list/update/{id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/reform/{id}', function () {
+        return view('welcome');
+    });
 });
 
 
