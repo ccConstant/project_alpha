@@ -25,7 +25,7 @@ class CreateMmeStatesTable extends Migration
             $table->id();
             $table->string('state_remarks') ;
             $table->date('state_startDate') ->nullable(); 
-            $table->enum('state_name', ['In_use', 'Waiting_to_be_in_use', 'Broken_down', 'Broken', 'Under_maintenance', 'Downgraded', 'Reform', 'Lost', 'Return_to_service_use', 'Waiting_for_referencing', 'In_quarantine']) ;  
+            $table->enum('state_name', ['In_use', 'Waiting_to_be_in_use', 'Broken_down', 'Broken', 'Under_verification', 'Under_reparation', 'Downgraded', 'Reform', 'Lost', 'Return_to_service_use', 'Waiting_for_referencing', 'In_quarantine']) ;  
             $table->date('state_endDate') ->nullable() ; 
             $table->boolean('state_isOk') ->nullable(); 
             $table->enum('state_validate', ['drafted', 'to_be_validated', 'validated']) ; 

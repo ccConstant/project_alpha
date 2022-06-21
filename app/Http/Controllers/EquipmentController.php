@@ -658,7 +658,7 @@ class EquipmentController extends Controller{
                     $sec=$time[2] ;
                 
                     $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
-                    //$OneWeekLater=$nextDate->addDays(7) ; 
+                    $OneWeekLater=$nextDate->addDays(7) ; 
                     if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
                         $opMtn=([
                             "id" => $prvMtnOp->id,

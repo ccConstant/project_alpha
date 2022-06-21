@@ -11,10 +11,10 @@
 				<b-row>
 					<b-col class="right_title">Right</b-col>
 					<b-col class="right_name" v-for="(user, index) in pageOfItems" :key="index">
-						<a href="#" @click="openUserUpdateModal(user.user_pseudo,user.user_firstName,user.user_lastName,user.user_initials,user.id)">{{user.user_lastName}} {{user.user_firstName}}</a>
+						<a href="#" @click="openUserUpdateModal(user.user_pseudo,user.user_firstName,user.user_lastName,user.user_initials,user.id,user.user_formationEqDate)">{{user.user_lastName}} {{user.user_firstName}}</a>
 					</b-col>
 
-					<AccountManagmentElement right_title="Make equipment opération validation" key_letter="A" :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
+					<AccountManagmentElement right_title="Make equipment operation validation" key_letter="A" :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
 					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
 					<AccountManagmentElement right_title="Person trained to general principles of MME managment" key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
 					<AccountManagmentElement right_title="Reset user password" key_letter="D" :users="pageOfItems" right_name="user_resetUserPasswordRight"/>
@@ -22,7 +22,7 @@
 					<AccountManagmentElement right_title="Update descriptive LifeSheet of signed data" key_letter="F" :users="pageOfItems" right_name="user_updateDescriptiveLifeSheetDataSignedRight"/>
 					<AccountManagmentElement right_title="Validate other data" key_letter="G" :users="pageOfItems" right_name="user_validateOtherDataRight"/>
 					<AccountManagmentElement right_title="Update data in draft or to be validated" key_letter="H" :users="pageOfItems" right_name="user_updateDataInDraftRight"/>
-					<AccountManagmentElement right_title="Validate descriptive LifeSheet data right" key_letter="I" :users="pageOfItems" right_name="user_validateDescriptiveLifeSheetDataRight"/>
+					<AccountManagmentElement right_title="Validate descriptive LifeSheet data " key_letter="I" :users="pageOfItems" right_name="user_validateDescriptiveLifeSheetDataRight"/>
 					<AccountManagmentElement right_title="Delete not validated data of an MME or equipment" key_letter="J" :users="pageOfItems" right_name="user_deleteDataNotValidatedLinkedToEqOrMmeRight"/>
 					<AccountManagmentElement right_title="Delete validated data of an MME or equipment" key_letter="K" :users="pageOfItems" right_name="user_deleteDataValidatedLinkedToEqOrMmeRight"/>
 					<AccountManagmentElement right_title="Delete an MME or equipment" key_letter="L" :users="pageOfItems" right_name="user_deleteEqOrMmeRight"/>
@@ -52,6 +52,10 @@
 						<div class="input-group">
 							<InputTextForm inputClassName="form-control" :Errors="errors.user_endDate" name="user_endDate" label="End date :" :isDisabled="true"  isRequired v-model="user_endDate"/>
 							<InputDateForm inputClassName="form-control  date-selector"  name="selected_endDate"  isRequired v-model="selected_endDate"/>
+						</div>
+						<div class="input-group">
+							<InputTextForm inputClassName="form-control" :Errors="errors.user_formationEqDate" name="user_formationEqDate" label="Formation Date :" :isDisabled="true"  isRequired v-model="user_formationEqDate"/>
+							<InputDateForm inputClassName="form-control  date-selector"  name="selected_formationEqDate"  isRequired v-model="selected_formationEqDate"/>
 						</div>
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_password" name="user_password" label="Change the current password :" v-model="modal_password"/>
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Confirm the password :" v-model="modal_confirmation_password"/>
@@ -96,6 +100,8 @@ export default {
 			modal_password:'',
 			selected_endDate:null,
 			user_endDate:'',
+			user_formationEqDate:'',
+			selected_formationEqDate:null,
 			modal_confirmation_password:'',
 			errors:[],									
 
@@ -125,12 +131,13 @@ export default {
 			this.pageOfItems = pageOfItems;
 
 		},
-		openUserUpdateModal(user,first,last,initials,id){
+		openUserUpdateModal(user,first,last,initials,id,formation_eq_date){
 			this.modal_userName=user;
 			this.modal_firstName=first;
 			this.modal_lastName=last;
 			this.modal_initials=initials;
 			this.modal_id=id
+			this.user_formationEqDate=formation_eq_date;
 			this.$bvModal.show(`modal-updateUser-${this.compId}`)
 		},
 		handleOkUpdate(bvModalEvent) {
@@ -147,7 +154,10 @@ export default {
                     user_password:this.modal_password,
 					user_confirmation_password:this.modal_confirmation_password,
 					user_resetUserPasswordRight:this.$userId.user_resetUserPasswordRight,
-					user_endDate:this.selected_endDate
+					user_endDate:this.selected_endDate,
+					user_formationEqDate:this.selected_formationEqDate,
+					//id of user who change the info
+					user_id:this.$userId.id
 			})
 			.then(response =>{           
 				// Hide the modal manually
@@ -182,6 +192,9 @@ export default {
 	updated(){
         if(this.selected_endDate!==null){
             this.user_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+        }
+		if(this.selected_formationEqDate!==null){
+            this.user_formationEqDate=moment(this.selected_formationEqDate).format('D MMM YYYY'); 
         }
 		for(const user of this.pageOfItems){
 			if(user.user_makeEqOpValidationRight==true){

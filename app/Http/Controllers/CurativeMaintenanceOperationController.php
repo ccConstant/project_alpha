@@ -30,8 +30,76 @@ use Carbon\Carbon;
 class CurativeMaintenanceOperationController extends Controller
 {
 
+
+    /*
+                GENERALE FUNCTION FOR CURATIVE MAINTENANCE OPERATION 
      /**
-     * Function call by EquipmentCurMtnOpForm.vue when the form is submitted for check data with the route : /curMtnOp/verif'(post)
+    
+
+    /**
+     * Function call by EquipmentCurMtnOpForm.vue when we want to delete a curative maintenance operation with the route : /state/delete/curMtnOp/{id}(post)
+     * Delete a curative maintenance operation thanks to the id given in parameter
+     * The id parameter correspond to the id of the curative maintenance operation we want to delete
+     * */
+    public function delete_curMtnOp($id){
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id);
+        if ($curMtnOp->curMtnOp_validate=='validated'){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_delete' => ["You can't delete a curative maintenance operation validated"]
+                ]
+            ], 429);
+        }else{
+            $curMtnOp->delete() ; 
+        }
+    }
+
+     /**
+     * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/technicalVerifier/{id}
+     * Check technically a curative maintenance operation 
+     * The id parameter correspond to the id of the curative maintenance operation we want to check
+     * */
+    public function technicalVerification_curMtnOp(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
+        }
+        
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+        $curMtnOp->update([
+            'technicalVerifier_id' => $user->id, 
+        ]);
+    }
+
+     /**
+     * Function call by  CurMtnOpModal.vue when we want to tell that we are the realizator of a curative maintenance operation with the route : /curMtnOp/realize/{id}
+     * Tell that you have realize a curative maintenance operation 
+     * The id parameter correspond to the id of the curative maintenance operation we want to entered the realizator
+     * */
+    public function realize_curMtnOp(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
+        }
+
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+        $curMtnOp->update([
+            'realizedBy_id' => $user->id, 
+        ]);
+    }
+
+
+    /* Function call by EquipmentCurMtnOpForm.vue when the form is submitted for check data with the route : /curMtnOp/verif'(post)
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_curMtnOp(Request $request){
@@ -195,13 +263,39 @@ class CurativeMaintenanceOperationController extends Controller
         }
     }
 
-    
+    /**
+     * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/qualityVerifier/{id}
+     * Check qualitatively a curative maintenance operation 
+     * The id parameter correspond to the id of the curative maintenance operation we want to check
+     * */
+    public function qualityVerification_curMtnOp(Request $request, $id){
+        $user=User::findOrFail($request->user_id) ; 
+        
+        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                ]
+            ], 429);
+        }
+        
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+        $curMtnOp->update([
+            'qualityVerifier_id' => $user->id, 
+        ]);
+    }
+
+
+    /*
+                FUNCTION FOR CURATIVE MAINTENANCE OPERATION LINKED TO EQUIPMENT
+    /**
+
     /**
      * Function call by EquipmentCurMtnOpForm.vue when the form is submitted for insert with the route :/equipment/add/state/curMtnOp (post)
      * Add a new enregistrement of curative maintenance operation in the data base with the informations entered in the form 
      * @return \Illuminate\Http\Response : id of the new curMtnOp
      */
-    public function add_curMtnOp(Request $request){
+    public function add_curMtnOp_eq(Request $request){
         $state=State::findOrFail($request->state_id) ; 
         $curMtnOpsInEq=CurativeMaintenanceOperation::where('state_id', '=', $request->state_id)->get();
         $max_number=1 ; 
@@ -238,7 +332,7 @@ class CurativeMaintenanceOperationController extends Controller
      * Update an enregistrement of curative maintenance operation in the data base with the informations entered in the form 
      * The id parameter correspond to the id of the curative maintenance operation we want to update
      * */
-    public function update_curMtnOp(Request $request, $id){
+    public function update_curMtnOp_eq(Request $request, $id){
         $curMtnOp=CurativeMaintenanceOperation::FindOrFail($id) ;
         $curMtnOp->update([
             'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
@@ -249,23 +343,6 @@ class CurativeMaintenanceOperationController extends Controller
         ]);
     }
 
-    /**
-     * Function call by EquipmentCurMtnOpForm.vue when we want to delete a curative maintenance operation with the route : /state/delete/curMtnOp/{id}(post)
-     * Delete a curative maintenance operation thanks to the id given in parameter
-     * The id parameter correspond to the id of the curative maintenance operation we want to delete
-     * */
-    public function delete_curMtnOp($id){
-        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id);
-        if ($curMtnOp->curMtnOp_validate=='validated'){
-            return response()->json([
-                'errors' => [
-                    'curMtnOp_delete' => ["You can't delete a curative maintenance operation validated"]
-                ]
-            ], 429);
-        }else{
-            $curMtnOp->delete() ; 
-        }
-    }
 
 
      /**
@@ -275,7 +352,7 @@ class CurativeMaintenanceOperationController extends Controller
      * @return \Illuminate\Http\Response 
      */
 
-    public function send_curMtnOp($id) {
+    public function send_curMtnOp_eq($id) {
         $state = State::findOrFail($id);
         $container=array() ; 
         if (count($state->curative_maintenance_operations)>0){
@@ -335,71 +412,134 @@ class CurativeMaintenanceOperationController extends Controller
         return response()->json($container) ;
     }
 
+     /*
+                FUNCTION FOR CURATIVE MAINTENANCE OPERATION LINKED TO MME
     /**
-     * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/qualityVerifier/{id}
-     * Check qualitatively a curative maintenance operation 
-     * The id parameter correspond to the id of the curative maintenance operation we want to check
-     * */
-    public function qualityVerification_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
-        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
-            return response()->json([
-                'errors' => [
-                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
-                ]
-            ], 429);
+    
+      /**
+     * Function call by MmeCurMtnOpForm.vue when the form is submitted for insert with the route :/mme/add/state/curMtnOp (post)
+     * Add a new enregistrement of curative maintenance operation in the data base with the informations entered in the form 
+     * @return \Illuminate\Http\Response : id of the new curMtnOp
+     */
+    public function add_curMtnOp_mme(Request $request){
+        $state=MmeState::findOrFail($request->mme_state_id) ; 
+        $curMtnOpsInEq=CurativeMaintenanceOperation::where('mme_state_id', '=', $request->state_id)->get();
+        $max_number=1 ; 
+        if (count($curMtnOpsInMme)!=0){
+            foreach ($curMtnOpsInMme as $curMtnOpInMme){
+                $number=intval($curMtnOpInMme->curMtnOp_number) ; 
+                if ($number>$max_number){
+                    $max_number=$curMtnOpInMme->curMtnOp_number ; 
+                }
+            }
+            $max_number=$max_number+1 ;
         }
         
-        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
-        $curMtnOp->update([
-            'qualityVerifier_id' => $user->id, 
-        ]);
+        
+        //Creation of a new curative maintenance operation
+        $curMtnOp=CurativeMaintenanceOperation::create([
+            'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
+            'curMtnOp_validate' => $request->curMtnOp_validate,
+            'curMtnOp_description' => $request->curMtnOp_description,
+            'curMtnOp_startDate' => $request->curMtnOp_startDate,
+            'curMtnOp_endDate' => $request->curMtnOp_endDate,
+            'mme_state_id' => $request->mme_state_id,   
+            'curMtnOp_number' => $max_number,
+            'enteredBy_id' => $request->enteredBy_id,
+
+        ]) ; 
+        
+        $curMtnOp_id=$curMtnOp->id;
+        return response()->json($curMtnOp->id) ; 
     }
 
      /**
-     * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/technicalVerifier/{id}
-     * Check technically a curative maintenance operation 
-     * The id parameter correspond to the id of the curative maintenance operation we want to check
+     * Function call by MmeCurMtnOpForm.vue when the form is submitted for update with the route :/mme/update/state/curMtnOp/{id} (post)
+     * Update an enregistrement of curative maintenance operation in the data base with the informations entered in the form 
+     * The id parameter correspond to the id of the curative maintenance operation we want to update
      * */
-    public function technicalVerification_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
-        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
-            return response()->json([
-                'errors' => [
-                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
-                ]
-            ], 429);
-        }
-        
-        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+    public function update_curMtnOp_mme(Request $request, $id){
+        $curMtnOp=CurativeMaintenanceOperation::FindOrFail($id) ;
         $curMtnOp->update([
-            'technicalVerifier_id' => $user->id, 
+            'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
+            'curMtnOp_validate' => $request->curMtnOp_validate,
+            'curMtnOp_description' => $request->curMtnOp_description,
+            'curMtnOp_startDate' => $request->curMtnOp_startDate,
+            'curMtnOp_endDate' => $request->curMtnOp_endDate,
         ]);
     }
+
+
 
      /**
-     * Function call by  CurMtnOpModal.vue when we want to tell that we are the realizator of a curative maintenance operation with the route : /curMtnOp/realize/{id}
-     * Tell that you have realize a curative maintenance operation 
-     * The id parameter correspond to the id of the curative maintenance operation we want to entered the realizator
-     * */
-    public function realize_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
-        if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
-            return response()->json([
-                'errors' => [
-                    'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
-                ]
-            ], 429);
-        }
+     * Function call by ReferenceACurMtnOp.vue with the route : /mme_state/curMtnOp/send/{id}(get)
+     * Get the curative maintenance operations of the state whose id is passed in parameter
+     * The id parameter corresponds to the id of the mme_state from which we want the curative maintenance operations. 
+     * @return \Illuminate\Http\Response 
+     */
 
-        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
-        $curMtnOp->update([
-            'realizedBy_id' => $user->id, 
-        ]);
+    public function send_curMtnOp_mme($id) {
+        $state = Mmme_State::findOrFail($id);
+        $container=array() ; 
+        if (count($state->curative_maintenance_operations)>0){
+            $curMtnOps=$state->curative_maintenance_operations ; 
+            foreach ($curMtnOps as $curMtnOp) {
+                
+                $technicalVerifier_firstName=NULL;
+                $technicalVerifier_lastName=NULL;
+                $qualityVerifier_firstName=NULL;
+                $qualityVerifier_lastName=NULL;
+                $enteredBy_firstName=NULL;
+                $enteredBy_lastName=NULL;
+                $realizedBy_firstName=NULL;
+                $realizedBy_lastName=NULL ; 
+
+                if ($curMtnOp->technicalVerifier_id!=NULL){
+                    $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                    $technicalVerifier_firstName=$technicalVerifier->user_firstName;
+                    $technicalVerifier_lastName=$technicalVerifier->user_lastName;
+                }
+                if ($curMtnOp->qualityVerifier_id!=NULL){
+                    $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
+                    $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
+                    $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                }
+                if ($curMtnOp->realizedBy_id!=NULL){
+                    $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
+                    $realizedBy_firstName=$realizedBy->user_firstName ; 
+                    $realizedBy_lastName=$realizedBy->user_lastName ; 
+                }
+                if ($curMtnOp->enteredBy_id!=NULL){
+                    $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
+                    $enteredBy_firstName=$enteredBy->user_firstName ; 
+                    $enteredBy_lastName=$enteredBy->user_lastName ; 
+                }
+
+                $obj=([
+                   "id" => $curMtnOp->id,
+                   "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
+                    "curMtnOp_reportNumber" => $curMtnOp->curMtnOp_reportNumber,
+                    "curMtnOp_description" => $curMtnOp->curMtnOp_description,
+                    "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,
+                    "curMtnOp_endDate" => $curMtnOp->curMtnOp_endDate,
+                    "curMtnOp_validate" => $curMtnOp->curMtnOp_validate,
+                    "qualityVerifier_firstName" => $qualityVerifier_firstName,
+                    "qualityVerifier_lastName" => $qualityVerifier_lastName,
+                    "realizedBy_firstName" => $realizedBy_firstName,
+                    "realizedBy_lastName" => $realizedBy_lastName,
+                    "enteredBy_firstName" =>$enteredBy_firstName,
+                    "enteredBy_lastName" =>$enteredBy_lastName,
+                    "technicalVerifier_firstName" => $technicalVerifier_firstName,
+                    "technicalVerifier_lastName" => $technicalVerifier_lastName,
+                ]);
+                array_push($container,$obj);
+           }
+       }
+        return response()->json($container) ;
     }
+    
+
+    
 }
 
 

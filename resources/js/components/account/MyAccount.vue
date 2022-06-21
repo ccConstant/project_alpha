@@ -97,7 +97,6 @@ export default {
         var getUrlFormationOk = (id) => ` /user/get/formationEqOk/${id}`;
         axios.get(getUrlFormationOk(this.$userId.id))
         .then (response=> {
-            console.log(response.data)
             this.formation_eq_ok=response.data;
             this.loaded=true;
             }) 

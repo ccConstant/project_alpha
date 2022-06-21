@@ -22,10 +22,10 @@
                 <div v-if="this.addSucces==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addEquipmentCurMtnOp is called function else the updateEquipmentCurMtnOp function is called -->
                     <div v-if="this.curMtnOp_id==null ">
-                        <SaveButtonForm :in_life_sheet="false" :Errors="errors.curMtnOp_validate" @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
+                        <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate" @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
                     </div>
                     <div v-else-if="this.curMtnOp_id!==null">
-                        <SaveButtonForm :in_life_sheet="false" :Errors="errors.curMtnOp_validate"  @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="curMtnOp_validate"/>
+                        <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate"  @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="curMtnOp_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <div v-if="isInModifMod==true">
@@ -165,6 +165,7 @@ export default {
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
         addEquipmentCurMtnOp(savedAs){
+            console.log("add")
             if(!this.addSucces){
                 //Id of the equipment in which the preventive maintenance operation will be added
                 var id;
@@ -232,6 +233,7 @@ export default {
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
         updateEquipmentCurMtnOp(savedAs){
+            console.log("update")
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             axios.post('/curMtnOp/verif',{

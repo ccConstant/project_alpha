@@ -5,7 +5,7 @@
 * Creation date : 17 May 2022
 * Update date : 19 May 2022
 * This file is used to link the view files and the database that concern the usage table. 
-* For example : add a usage for an equipment in the data base, update a file, delete it...
+* For example : add a usage for an equipment in the data base, update a usage, delete it...
 */ 
 
 
@@ -16,15 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
 use App\Models\EquipmentTemp ; 
 use App\Models\Equipment ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\DimensionController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\UsageController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\RiskController ; 
 use App\Models\Usage ;
-use App\Http\Controllers\SpecialProcessController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ; 
 use Carbon\Carbon;
 
 
@@ -156,7 +148,6 @@ class UsageController extends Controller
                 'usg_type' => $request->usg_type,
                 'usg_validate' => $request->usg_validate,
                 'usg_precaution' => $request->usg_precaution,
-                'usg_startDate' => Carbon::now('Europe/Paris'),
             ]);
         }
     }
@@ -294,7 +285,6 @@ class UsageController extends Controller
         
         $usg->update([
             'usg_reformDate' => $request->usg_reformDate,
-            //REVENIR ICI POUR REFORMED BY 
         ]) ;
     }
     

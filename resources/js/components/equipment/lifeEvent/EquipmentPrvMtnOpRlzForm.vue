@@ -17,7 +17,7 @@
                 
                 <InputTextForm inputClassName="form-control w-50" :Errors="errors.prvMtnOpRlz_reportNumber" name="prvMtnOpRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="prvMtnOpRlz_reportNumber" :info_text="infos_prvMtnOpRlz[0].info_value"/>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :placeholer="prvMtnOp_startDate_placeholer" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
+                    <InputTextForm inputClassName="form-control" :placeholer="'Operation date :'+prvMtnOp_startDate_placeholer" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
                     <InputDateForm  inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
                 </div>
                 <div class="input-group">
@@ -28,10 +28,10 @@
                     <div v-if="this.addSucces==false">
                         <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOpRlzMtnOp is called function else the updateEquipmentPrvMtnOpRlz function is called -->
                         <div v-if="this.prvMtnOpRlz_id==null ">
-                            <SaveButtonForm :is_op="false" :Errors="errors.prvMtnOpRlz_validate" @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :savedAs="prvMtnOpRlz_validate"/>
+                            <SaveButtonForm :is_op="true" :Errors="errors.prvMtnOpRlz_validate" @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :savedAs="prvMtnOpRlz_validate"/>
                         </div>
                         <div v-else-if="this.prvMtnOpRlz_id!==null">
-                            <SaveButtonForm :is_op="false" :Errors="errors.prvMtnOpRlz_validate"  @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="prvMtnOpRlz_validate"/>
+                            <SaveButtonForm :is_op="true" :Errors="errors.prvMtnOpRlz_validate"  @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="prvMtnOpRlz_validate"/>
                         </div>
                         <!-- If the user is not in the consultation mode, the delete button appear -->
                         <div v-if="isInModifMod==true">
@@ -174,6 +174,7 @@ export default {
             this.prvMtnOpRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
         }
     },
+
     methods:{
         /*Sending to the controller all the information about the equipment so that it can be added to the database
         Params : 

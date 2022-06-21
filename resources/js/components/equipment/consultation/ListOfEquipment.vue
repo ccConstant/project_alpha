@@ -95,7 +95,12 @@ export default {
 			}
 		},
 		reformEquipment(id){
-			this.$router.replace({ name: "url_eq_reform", params: {id:id}})
+			if( this.$userId.user_makeReformRight!=true){
+				this.$refs.errorAlert.showAlert("You don't have the right");
+			}else{
+				this.$router.replace({ name: "url_eq_reform", params: {id:id}})
+			}
+			
 		},
 		warningUpdate(id,technical,quality,redirect){
 			this.eq_id=id;
@@ -107,10 +112,10 @@ export default {
 				this.$router.replace({ name: "url_eq_update", params: {id}})
 			}
 			if(redirect==true){
-				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight!=false || this.user_deleteDataSignedLinkedToEqOrMmeRight!=false ){
-					this.$router.replace({ name: "url_eq_update", params: {id}})
-				}else{
+				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight==false && this.$userId.user_deleteDataSignedLinkedToEqOrMmeRight==false ){
 					this.$refs.errorAlert.showAlert("You don't have the right");
+				}else{
+					this.$router.replace({ name: "url_eq_update", params: {id}})
 				}	
 				
 			} 

@@ -79,9 +79,25 @@ class UserController extends Controller{
      */
     public function update_menuUserAcessRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_menuUserAcessRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_menuUserAcessRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
       /**
@@ -91,9 +107,33 @@ class UserController extends Controller{
      */
     public function update_resetUserPasswordRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_resetUserPasswordRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($userResponsable->user_resetUserPasswordRight){
+            if ($user->id!=$userResponsable->id){
+                if ($user->user_pseudo=="admin"){
+                    return response()->json([
+                        'errors' => [
+                            'user' => ["You can't modify the rights of the admin"]
+                        ]
+                    ], 429);
+                }
+                $user->update([
+                    'user_resetUserPasswordRight' => $request->user_value,
+                ]);
+            }else{
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify your own right"]
+                    ]
+                ], 429);
+            }
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You don't have the right to modify the password of another user"]
+                ]
+            ], 429);
+        }
     }
 
       /**
@@ -103,9 +143,25 @@ class UserController extends Controller{
      */
     public function update_updateDataInDraftRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_updateDataInDraftRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_updateDataInDraftRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
       /**
@@ -115,9 +171,25 @@ class UserController extends Controller{
      */
     public function update_validateDescriptiveLifeSheetDataRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_validateDescriptiveLifeSheetDataRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_validateDescriptiveLifeSheetDataRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -127,9 +199,25 @@ class UserController extends Controller{
      */
     public function update_validateOtherDataRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_validateOtherDataRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_validateOtherDataRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -139,9 +227,25 @@ class UserController extends Controller{
      */
     public function update_updateDataValidatedButNotSignedRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_updateDataValidatedButNotSignedRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_updateDataValidatedButNotSignedRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
     /**
@@ -151,9 +255,25 @@ class UserController extends Controller{
      */
     public function update_updateDescriptiveLifeSheetDataSignedRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_updateDescriptiveLifeSheetDataSignedRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_updateDescriptiveLifeSheetDataSignedRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -163,9 +283,25 @@ class UserController extends Controller{
      */
     public function update_makeQualityValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_makeQualityValidationRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_makeQualityValidationRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
       /**
@@ -175,9 +311,25 @@ class UserController extends Controller{
      */
     public function update_makeTechnicalValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_makeTechnicalValidationRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_makeTechnicalValidationRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
       /**
@@ -187,9 +339,25 @@ class UserController extends Controller{
      */
     public function update_makeEqOpValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_makeEqOpValidationRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_makeEqOpValidationRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
     
     /**
@@ -199,9 +367,25 @@ class UserController extends Controller{
      */
     public function update_updateEnumRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_updateEnumRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_updateEnumRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
       /**
@@ -211,9 +395,25 @@ class UserController extends Controller{
      */
     public function update_deleteEnumRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_deleteEnumRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_deleteEnumRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -223,9 +423,25 @@ class UserController extends Controller{
      */
     public function update_addEnumRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_addEnumRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_addEnumRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -235,9 +451,25 @@ class UserController extends Controller{
      */
     public function update_deleteDataNotValidatedLinkedToEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
     /**
@@ -247,9 +479,25 @@ class UserController extends Controller{
      */
     public function update_deleteDataValidatedLinkedToEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_deleteDataValidatedLinkedToEqOrMmeRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -259,9 +507,25 @@ class UserController extends Controller{
      */
     public function update_deleteDataSignedLinkedToEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_deleteDataSignedLinkedToEqOrMmeRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -271,9 +535,25 @@ class UserController extends Controller{
      */
     public function update_deleteEqOrMmeRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_deleteEqOrMmeRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_deleteEqOrMmeRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -283,9 +563,25 @@ class UserController extends Controller{
      */
     public function update_updateInformationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_updateInformationRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_updateInformationRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -295,9 +591,25 @@ class UserController extends Controller{
      */
     public function update_personTrainedToGeneralPrinciplesOfEqManagementRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -307,9 +619,25 @@ class UserController extends Controller{
      */
     public function update_personTrainedToGeneralPrinciplesOfMMEManagementRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -319,9 +647,25 @@ class UserController extends Controller{
      */
     public function update_makeEqRespValidationRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_makeEqRespValidationRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_makeEqRespValidationRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -331,9 +675,25 @@ class UserController extends Controller{
      */
     public function update_makeReformRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_makeReformRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_makeReformRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -343,9 +703,25 @@ class UserController extends Controller{
      */
     public function update_declareNewStateRight($id, Request $request){
         $user=User::findOrFail($id) ; 
-        $user->update([
-            'user_declareNewStateRight' => $request->user_value,
-        ]);
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_declareNewStateRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
     }
 
      /**
@@ -355,98 +731,140 @@ class UserController extends Controller{
      */
     public function update_info(Request $request, $id){
         $user=User::findOrFail($id) ; 
-
-        if ($request->user_initials!=NULL){
-            $request->validate([
-                'user_initials' => ['required', 'string', 'max:4', 'min:2'],
-            ],[
-                'user_initials.required' => 'You must enter the initials ',
-                'user_initials.string' => 'Your firstName must be of type string',
-                'user_initials.max' => 'You must enter a maximum of 4 characters',
-                'user_initials.min' => 'You must enter a at least 2 characters',
-            ]);
-
-            //We check if user_initials is already used in the data base
-            $users=User::where('user_initials', '=', $request->user_initials)->where('id', '<>', $id)->get() ; 
-            if (count($users)>0){
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
                 return response()->json([
                     'errors' => [
-                        'user_initials' => ["This initials are already used"]
+                        'user' => ["You can't modify the rights of the admin"]
                     ]
                 ], 429);
             }
 
-            $user->update([
-                'user_initials' => $request->user_initials,
-            ]);
-        }
+            if ($request->user_initials!=NULL){
+                $request->validate([
+                    'user_initials' => ['required', 'string', 'max:4', 'min:2'],
+                ],[
+                    'user_initials.required' => 'You must enter the initials ',
+                    'user_initials.string' => 'Your firstName must be of type string',
+                    'user_initials.max' => 'You must enter a maximum of 4 characters',
+                    'user_initials.min' => 'You must enter a at least 2 characters',
+                ]);
 
-        if ($request->user_endDate!=NULL){
-            if ($request->user_endDate<$user->user_startDate){
-                return response()->json([
-                    'errors' => [
-                        'user_endDate' => ["You can't entered a leave date that is before start date"]
-                    ]
-                ], 429);
+                //We check if user_initials is already used in the data base
+                $users=User::where('user_initials', '=', $request->user_initials)->where('id', '<>', $id)->get() ; 
+                if (count($users)>0){
+                    return response()->json([
+                        'errors' => [
+                            'user_initials' => ["This initials are already used"]
+                        ]
+                    ], 429);
+                }
+
+                $user->update([
+                    'user_initials' => $request->user_initials,
+                ]);
             }
 
-            $user->update([
-                'user_endDate' => $request->user_endDate,
-                "user_menuUserAcessRight" => false,
-                "user_resetUserPasswordRight" => false,
-                "user_updateDataInDraftRight" => false,
-                "user_validateDescriptiveLifeSheetDataRight" => false,
-                "user_validateOtherDataRight" => false,
-                "user_updateDataValidatedButNotSignedRight" => false,
-                "user_updateDescriptiveLifeSheetDataSignedRight" => false,
-                "user_makeQualityValidationRight" => false,
-                "user_makeTechnicalValidationRight" => false,
-                "user_makeEqOpValidationRight" => false,
-                "user_updateEnumRight" => false,
-                "user_deleteEnumRight" => false,
-                "user_addEnumRight" => false,
-                "user_deleteDataNotValidatedLinkedToEqOrMmeRight" => false,
-                "user_deleteDataValidatedLinkedToEqOrMmeRight" => false,
-                "user_deleteDataSignedLinkedToEqOrMmeRight" => false,
-                "user_deleteEqOrMmeRight" => false,
-                "user_updateInformationRight" => false,
-                "user_personTrainedToGeneralPrinciplesOfEqManagementRight" => false,
-                "user_personTrainedToGeneralPrinciplesOfMMEManagementRight" =>false,
-                "user_makeEqRespValidationRight" => false,
-                "user_makeReformRight" => false,
-                "user_declareNewStateRight" => false,
-            ]);
+            if ($request->user_endDate!=NULL){
+                if ($request->user_endDate<$user->user_startDate){
+                    return response()->json([
+                        'errors' => [
+                            'user_endDate' => ["You can't entered a leave date that is before start date"]
+                        ]
+                    ], 429);
+                }
 
-
-        }
-
-        if ($request->user_password!=NULL || $request->user_confirmation_password){
-            $request->validate([
-               'user_password' => ['required', Rules\Password::defaults()], 
-               'user_confirmation_password' => ['required', Rules\Password::defaults()], 
-            ],[
-                'user_password.required' => 'You must enter a password',
-                'user_password.string' => 'Your password must be of type string',
-                'user_password.max' => 'You must enter a maximum of 255 characters',
-                'user_password.min' => 'You must enter at least 8 characters',
-    
-                'user_confirmation_password.required' => 'You must confirm your password',
-                'user_confirmation_password.string' => 'Your password must be of type string',
-                'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
-                'user_confirmation_password.min' => 'You must enter at least 8 characters',
-            ]);
-
-            if ($request->user_confirmation_password!==$request->user_password){
-                return response()->json([
-                    'errors' => [
-                        'user_confirmation_password' => ["These passwords are differents"]
-                    ]
-                ], 429);
+                $user->update([
+                    'user_endDate' => $request->user_endDate,
+                    "user_menuUserAcessRight" => false,
+                    "user_resetUserPasswordRight" => false,
+                    "user_updateDataInDraftRight" => false,
+                    "user_validateDescriptiveLifeSheetDataRight" => false,
+                    "user_validateOtherDataRight" => false,
+                    "user_updateDataValidatedButNotSignedRight" => false,
+                    "user_updateDescriptiveLifeSheetDataSignedRight" => false,
+                    "user_makeQualityValidationRight" => false,
+                    "user_makeTechnicalValidationRight" => false,
+                    "user_makeEqOpValidationRight" => false,
+                    "user_updateEnumRight" => false,
+                    "user_deleteEnumRight" => false,
+                    "user_addEnumRight" => false,
+                    "user_deleteDataNotValidatedLinkedToEqOrMmeRight" => false,
+                    "user_deleteDataValidatedLinkedToEqOrMmeRight" => false,
+                    "user_deleteDataSignedLinkedToEqOrMmeRight" => false,
+                    "user_deleteEqOrMmeRight" => false,
+                    "user_updateInformationRight" => false,
+                    "user_personTrainedToGeneralPrinciplesOfEqManagementRight" => false,
+                    "user_personTrainedToGeneralPrinciplesOfMMEManagementRight" =>false,
+                    "user_makeEqRespValidationRight" => false,
+                    "user_makeReformRight" => false,
+                    "user_declareNewStateRight" => false,
+                ]);
             }
-            
-            $user->update([
-                'password' => Hash::make($request->user_password),
-            ]);
+
+            if ($request->user_formationEqDate!=NULL){
+                //we checked if the new date is after the actual if it exist
+                if ($user->user_formationEqDate!=NULL && $user->user_formationEqDate>$request->user_formationEqDate){
+                    return response()->json([
+                        'errors' => [
+                            'user_formationEqDate' => ["You have to entered a formation equipment date that is after the previous formation equipment date"]
+                        ]
+                    ], 429);
+                }
+                $user->update([
+                    'user_formationEqDate' => $request->user_formationEqDate,
+                ]);
+            }
+
+            if ($request->user_formationMmeDate!=NULL){
+                //we checked if the new date is after the actual if it exist
+                if ($user->user_formationMmeDate!=NULL && $user->user_formationMmeDate>$request->user_formationMmeDate){
+                    return response()->json([
+                        'errors' => [
+                            'user_formationMmeDate' => ["You have to entered a formation mme date that is after the previous formation mme date"]
+                        ]
+                    ], 429);
+                }
+                $user->update([
+                    'user_formationMmeDate' => $request->user_formationMmeDate,
+                ]);
+            }
+
+            if ($request->user_password!=NULL || $request->user_confirmation_password){
+                $request->validate([
+                'user_password' => ['required', Rules\Password::defaults()], 
+                'user_confirmation_password' => ['required', Rules\Password::defaults()], 
+                ],[
+                    'user_password.required' => 'You must enter a password',
+                    'user_password.string' => 'Your password must be of type string',
+                    'user_password.max' => 'You must enter a maximum of 255 characters',
+                    'user_password.min' => 'You must enter at least 8 characters',
+        
+                    'user_confirmation_password.required' => 'You must confirm your password',
+                    'user_confirmation_password.string' => 'Your password must be of type string',
+                    'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
+                    'user_confirmation_password.min' => 'You must enter at least 8 characters',
+                ]);
+
+                if ($request->user_confirmation_password!==$request->user_password){
+                    return response()->json([
+                        'errors' => [
+                            'user_confirmation_password' => ["These passwords are differents"]
+                        ]
+                    ], 429);
+                }
+                
+                $user->update([
+                    'password' => Hash::make($request->user_password),
+                ]);
+            }
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own information here, please go in myAccount menu"]
+                ]
+            ], 429);
         }
     }
 

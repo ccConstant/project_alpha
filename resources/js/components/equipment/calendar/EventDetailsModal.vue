@@ -12,7 +12,13 @@
                                 Protocol : {{option.prvMtnOp_protocol}}<br>
                                 Operation date : {{option.prvMtnOp_nextDate}}
                             </p>
-                            <b-button variant="primary" @click="redirect_to_preventive(option.eq_id,option.state_id)">Record it</b-button>
+                            <div v-if="makeEqOpValidationRight==true">
+                                <b-button variant="primary" @click="redirect_to_preventive(option.eq_id,option.state_id)">Record it</b-button>
+                            </div>
+                            <div v-else>
+                                <b-button variant="primary" disabled >Record it</b-button>
+                            </div>
+                            
                         </b-card>
                     </div>
                 </div>
@@ -30,6 +36,11 @@ export default {
             type:Array
         }
     },
+    data(){
+        return{
+            makeEqOpValidationRight:this.$userId.user_makeEqOpValidationRight,
+        }
+    },
     methods:{
         closeAndClear(){
             this.$bvModal.hide('modal-event_details')
@@ -38,7 +49,26 @@ export default {
             this.$emit('modalClosed','')
         },
         redirect_to_preventive(eq_id,state_id){
-            this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id,state_id:state_id }, query: {type:"preventive"}})
+            if(this.$userId.user_makeEqOpValidationRight!=true){
+            this.$refs.errorAlert.showAlert("You don't have the right");
+            
+            }
+            var consultUrl = (state_id) => `/state/verif/beforeReferenceOp/${state_id}`;
+            axios.post(consultUrl(state_id),{
+                eq_id:eq_id
+            })
+            .then(response =>{
+                this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id,state_id:state_id }, query: {type:"preventive"}})
+            ;})
+            //If the controller sends errors we put it in the errors object 
+            .catch(error => {
+            this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
+            });
+
+
+
+
+            
         }
     }
 

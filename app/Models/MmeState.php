@@ -13,6 +13,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CurativeMaintenanceOperation ;
 
 class MmeState extends Model
 {
@@ -39,5 +40,10 @@ class MmeState extends Model
     //Define the relation between an mme_temp and its state : a state can correspond to many equipment temps
     public function mme_temps(){
         return $this->belongsToMany(MmeTemp::class, 'pivot_mme_temp_state', 'state_id', 'mmeTemp_id') ; 
+    }
+
+    //Define the relation between a state and the curative_maintenance_operations that can take place during the state
+    public function curative_maintenance_operations(){
+        return $this->hasMany(CurativeMaintenanceOperation::class) ; 
     }
 }

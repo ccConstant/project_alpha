@@ -12,13 +12,16 @@
             <b-button v-if="approvedBy_lastName==null" @click="$bvModal.show(`modal-prvMtnOpManagmentApprove-${_uid}`)" variant="primary">Approve</b-button>
         </div>
         <div class="prvrlz_button" v-else>
-            <b-button v-if="approvedBy_lastName==null" variant="primary">Approve</b-button>
+            <b-button v-if="approvedBy_lastName==null" variant="primary" disabled>Approve</b-button>
         </div>
         <div class="prvrlz_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
             <b-button v-if="realizedBy_lastName==null"  @click="$bvModal.show(`modal-prvMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
         </div>
         <div class="prvrlz_button" v-else>
             <b-button v-if="realizedBy_lastName==null" disabled variant="primary">I realized it</b-button>
+        </div>
+        <div>
+            <p class="text-danger"> You don't have the right to approve a record</p>
         </div>
         
 

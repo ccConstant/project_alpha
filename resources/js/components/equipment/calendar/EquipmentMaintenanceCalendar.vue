@@ -1,19 +1,22 @@
 <template>
     <div>
-        <div class="remindOpe_container">
-            <h2>Maintenance late</h2>
-            <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
-            @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                {{prvMtnOp.internalReference}}
-            </li>
+        <div class="remind_containers">
+            <div class="remindOpeLate_container">
+                <h2>Maintenance late</h2>
+                <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
+                @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
+                    {{prvMtnOp.internalReference}}
+                </li>
+            </div>
+            <div class="remindOpeToDo_container">
+                <h2>Maintenance to do</h2>
+                <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
+                @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
+                    {{prvMtnOp.internalReference}}
+                </li>
+            </div>
         </div>
-        <div class="remindOpe_container">
-            <h2>Maintenance to do</h2>
-            <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
-            @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                {{prvMtnOp.internalReference}}
-            </li>
-        </div>
+
         <EventDetailsModal ref="event_details" @modalClosed="modalClosed" :prvMtnOps="prvMtnOp"/>
         <div class='calendar_container'>
             <div class='calendar'>
@@ -121,19 +124,31 @@ export default {
 </script>
 
 <style lang="scss">
-.remindOpe_container{
-    float:left;
-    width: 300px;
-    height: auto;
-    border:solid 1px lightcoral;
-    border-radius: 30px;
-    background-color:lightcoral ;
-    margin-right: 10px;
-    h2{
-        text-align:center ;
-        color:red;
-    }
+.remind_containers{
+        float:left;
+        .remindOpeLate_container{
+        width: 300px;
+        height: auto;
+        border:solid 1px lightcoral;
+        border-radius: 30px;
+        background-color:lightcoral ;
+        margin-right: 10px;
+            h2{
+                text-align:center ;
+                color:red;
+            }
+        }
+        .remindOpeLate_container{
+            width: 300px;
+            height: auto;
+            border:solid 1px lightcoral;
+            border-radius: 30px;
+            background-color:lightcoral ;
+            margin-right: 10px;
+
+         }   
 }
+
 .calendar_container{
    margin-top :50px;
    width: auto;

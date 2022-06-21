@@ -381,11 +381,11 @@ Route::post('/prvMtnOpRlz/realize/{id}', [PreventiveMaintenanceOperationRealized
 
 Route::post('/curMtnOp/verif', [CurativeMaintenanceOperationController::class, 'verif_curMtnOp'])  ;
 
-Route::post('/equipment/add/state/curMtnOp/', [CurativeMaintenanceOperationController::class, 'add_curMtnOp'])  ;
+Route::post('/equipment/add/state/curMtnOp/', [CurativeMaintenanceOperationController::class, 'add_curMtnOp_eq'])  ;
 
-Route::post('/equipment/update/state/curMtnOp/{id}', [CurativeMaintenanceOperationController::class,'update_curMtnOp'])  ;
+Route::post('/equipment/update/state/curMtnOp/{id}', [CurativeMaintenanceOperationController::class,'update_curMtnOp_eq'])  ;
 
-Route::get('/state/curMtnOp/send/{id}', [CurativeMaintenanceOperationController::class, 'send_curMtnOp'])  ;
+Route::get('/state/curMtnOp/send/{id}', [CurativeMaintenanceOperationController::class, 'send_curMtnOp_eq'])  ;
 
 Route::post('/state/delete/curMtnOp/{id}', [CurativeMaintenanceOperationController::class, 'delete_curMtnOp'])  ;
 
@@ -395,7 +395,11 @@ Route::post('curMtnOp/qualityVerifier/{id}', [CurativeMaintenanceOperationContro
 
 Route::post('/curMtnOp/technicalVerifier/{id}', [CurativeMaintenanceOperationController::class, 'technicalVerification_curMtnOp'])  ;
 
+Route::post('/mme/add/state/curMtnOp/', [CurativeMaintenanceOperationController::class, 'add_curMtnOp_mme'])  ;
 
+Route::post('/mme/update/state/curMtnOp/{id}', [CurativeMaintenanceOperationController::class,'update_curMtnOp_mme'])  ;
+
+Route::get('/state/curMtnOp/send/{id}', [CurativeMaintenanceOperationController::class, 'send_curMtnOp_mme'])  ;
 
 /* Enum Form Routes */ 
 
@@ -645,7 +649,7 @@ Route::get('/verif/send/revisionDatePassed/{id}', [VerificationController::class
 Route::get('/verif/send/revisionTimeLimitPassed/{id}', [VerificationController::class, 'send_verif_from_mme_revisionTimeLimitPassed'])  ;
 
 
-/* Preventive Maintenance Operation Realized Form Routes */ 
+/* Preventive Verification Realized Form Routes */ 
 
 Route::post('/verifRlz/verif', [VerificationRealizedController::class, 'verif_verifRlz'])  ;
 
@@ -661,3 +665,16 @@ Route::post('/verifRlz/approve/{id}', [VerificationRealizedController::class, 'a
 
 Route::post('/verifRlz/realize/{id}', [VerificationRealizedController::class, 'realize_verifRlz'])  ;
 
+/* Mme Usage Form Routes */ 
+
+Route::post('/mme_usage/verif', [MmeUsageController::class, 'verif_usage'])  ;
+
+Route::post('/mme/add/usg/{id}', [MmeUsageController::class, 'add_usage'])  ;
+
+Route::post('/mme/update/usg/{id}', [MmeUsageController::class, 'update_usage'])  ;
+
+Route::get('/mme_usage/send/{id}', [MmeUsageController::class, 'send_usages'])  ;
+
+Route::post('/mme/delete/usg{id}', [MmeUsageController::class, 'delete_usage'])  ;
+
+Route::post('/mme/reform/usg/{id}', [MmeUsageController::class, 'reform_usage'])  ; 

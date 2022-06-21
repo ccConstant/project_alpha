@@ -17,12 +17,11 @@
                 Current state : {{list.eq_state}}
               </div>
               <div class="eq_list_option_state">
-                <router-link :to="{name:'url_life_event_update_state',params:{id: list.id,state_id:list.state_id} }">Update the state</router-link>
+                <a href="#" @click="verifBeforeUpdateState(list.id,list.state_id)">Update the state</a>
                 <a href="#" @click="verifBeforeAddState(list.id,list.state_id)">Change the state</a>
                 <router-link :to="{name:'url_life_event_all',params:{id: list.id},query:{internalReference:list.eq_internalReference} }">All Event</router-link>
                 <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Record a curative maintenance operation</a>
-                <router-link :to="{name:'url_life_event_update',params:{id: list.id,state_id:list.state_id} }">Update maintenance record</router-link>
-
+                <a href="#" @click="verifBeforeUpdateOp(list.id,list.state_id)">Update maintenance record</a>
               </div>
             </li>
           </div>
@@ -48,7 +47,8 @@ export default {
       searchTerm: "",
       loaded:false,
       currentState:'',
-      pageOfItems: []
+      pageOfItems: [],
+      user_makeEqOpValidationRight:this.$userId.user_makeEqOpValidationRight
     }
   },
   methods:{
@@ -71,14 +71,16 @@ export default {
 
     },
     verifBeforeAddOpe(eq_id_to_send,state_id){
-        console.log('state:',state_id)
-        
+        if(this.$userId.user_makeEqOpValidationRight!=true){
+          this.$refs.errorAlert.showAlert("You don't have the right");
+          return;
+        }
         var consultUrl = (state_id) => `/state/verif/beforeReferenceOp/${state_id}`;
         axios.post(consultUrl(state_id),{
           eq_id:eq_id_to_send
         })
         .then(response =>{
-            this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }, query: {type:"curative"}})
+            this.$router.push({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }, query: {type:"curative"}})
         ;})
         //If the controller sends errors we put it in the errors object 
         .catch(error => {
@@ -89,7 +91,24 @@ export default {
             console.log(pageOfItems)
             // update page of items
             this.pageOfItems = pageOfItems;
-    }
+    },
+    verifBeforeUpdateOp(eq_id_to_send,state_id){
+        if(this.$userId.user_makeEqOpValidationRight!=true){
+          this.$refs.errorAlert.showAlert("You don't have the right");
+        }else{
+          this.$router.push({ name: "url_life_event_update", params: {id:eq_id_to_send,state_id:state_id }})
+        }
+    },
+    verifBeforeUpdateState(eq_id_to_send,state_id){
+        if(this.$userId.user_declareNewStateRight!=true){
+          this.$refs.errorAlert.showAlert("You don't have the right");
+
+        }else{
+           this.$router.push({ name: "url_life_event_update_state", params:{id:eq_id_to_send,state_id:state_id} })
+
+        }
+    },
+    
   },
   computed: {
       filterByTerm() {

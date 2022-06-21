@@ -30,7 +30,7 @@
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate" />
                 </div>
                 <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" :info_text="infos_state[3].info_value"/> 
-                <SaveButtonForm v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
+                <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
 
 
@@ -259,6 +259,10 @@ export default {
     },
     created(){
         /*Ask for the controller other equipments sets */
+        if(this.$userId.user_declareNewStateRight!=true){
+            this.$router.push({ name: "home"})
+            return;
+        }
         if(this.state_id!=undefined){
             if(this.isInConsultMod==false){
                 this.isInModifMod=true;
@@ -284,9 +288,6 @@ export default {
                 .catch(error => console.log(error)) ;
             
         }else{
-            if(this.$userId.user_declareNewStateRight!=true){
-                this.$router.replace({ name: "home"})
-            }
             var UrlState = (id) => `/state/send/${id}`;
             axios.get(UrlState(this.$route.query.currentState))
                 .then (response=>{

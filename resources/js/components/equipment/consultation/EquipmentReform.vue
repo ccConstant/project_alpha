@@ -51,7 +51,9 @@ export default {
     },
 
     created(){
-
+        if( this.$userId.user_makeReformRight!=true){
+            this.$router.replace({ name: "home" })
+        }
         var consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
             .then (response => this.eq_idCard=response.data)

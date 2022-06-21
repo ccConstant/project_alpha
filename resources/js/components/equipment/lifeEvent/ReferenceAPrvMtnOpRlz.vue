@@ -136,7 +136,12 @@ export default {
         }else{
             this.addComponent();
         }
-    }
+    },
+    created(){
+        if(this.$userId.user_makeEqOpValidationRight!=true){
+            this.$router.push({ name: "home"});
+        }
+    },
 
 }
 </script>

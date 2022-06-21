@@ -1,5 +1,6 @@
 <template>
     <div class="row row_right">
+        <ErrorAlert ref="errorAlert"/>
         <div class="w-100 row_right_tab"></div>
         <b-col class="col_right_tab_title" >{{right_title}}</b-col>
         <b-col class="col_right_tab" v-for="(user) in users" :key="key_letter+user.id">
@@ -26,7 +27,11 @@
 </template>
 
 <script>
+import ErrorAlert from '../alert/ErrorAlert.vue'
 export default {
+    components:{
+        ErrorAlert
+    },
     props:{
         right_title:{
             type:String
@@ -54,7 +59,9 @@ export default {
         send_right_change(e,value,name){
             var rightUrl = (right_name,user_id) => `/user/update_right/${right_name}/${user_id}`;
             axios.post(rightUrl(name,value),{
-                user_value:e.target.checked
+                user_value:e.target.checked,
+                //id of user who change the right
+                user_id:this.$userId.id
             })
             .then(response =>{console.log(response.data)})
             //If the controller sends errors we put it in the errors object 
@@ -66,7 +73,7 @@ export default {
             .then (response=> {
                 this.eq_formation_isOk_res=response.data;
             }) 
-            .catch(error => console.log(error)) ;
+            .catch(error =>{this.$refs.successAlert.showAlert(error.response.data.errors.user);}) ;
             return false;
         }
 

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="lifesheet_created!=true">
-            <div v-if=" validationMode!='' && deleteDataNotValidatedLinkedToEqOrMmeRight!=true">
+            <div v-if=" validationMode!='' && (deleteDataNotValidatedLinkedToEqOrMmeRight!=true && deleteDataValidatedLinkedToEqOrMmeRight!=true)">
                 <b-button v-if="this.consultMod==false" variant="danger" disabled >Delete</b-button>
                 <p class="enum_add_right_red"> You dont have the right to delete an element.</p>
             </div>
@@ -22,8 +22,6 @@
                 <b-button v-if="this.consultMod==false" variant="danger" @click="$bvModal.show(`modal-delete_component-${_uid}`)" >Delete</b-button>
             </div>
         </div>
-
-       
         <b-modal :id="`modal-delete_component-${_uid}`"  @ok="deleteConfirmation">
             <p class="my-4">Are you sure you want to delete 
                 if the information is imported it can no longer be re-imported
