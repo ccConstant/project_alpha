@@ -586,7 +586,7 @@ class EquipmentController extends Controller{
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ;  
                 $today=Carbon::now() ;
                 foreach( $prvMtnOps as $prvMtnOp){
-                    if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $prvMtnOp->prvMtnOp_nextDate<$now ){
+                    if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $prvMtnOp->prvMtnOp_nextDate<$today ){
                         $opMtn=([
                             "id" => $prvMtnOp->id,
                             "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -614,14 +614,16 @@ class EquipmentController extends Controller{
                     }
                 }
 
-                $eq = ([
-                    "id" => $equipment->id,
-                    "internalReference" => $equipment->eq_internalReference,
-                    "preventive_maintenance_operations" => $containerOp,
-                    "state_id" => $mostRecentlyState->id,
-                ]) ; 
+                if (count($containerOp)>0){
+                    $eq = ([
+                        "id" => $equipment->id,
+                        "internalReference" => $equipment->eq_internalReference,
+                        "preventive_maintenance_operations" => $containerOp,
+                        "state_id" => $mostRecentlyState->id,
+                    ]) ; 
+                    array_push($container,$eq);
+                }
 
-                array_push($container,$eq);
 
 
             }
@@ -642,7 +644,7 @@ class EquipmentController extends Controller{
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ;    
-                $today=Carbon::now() ;
+                $today=Carbon::now('Europe/London') ;
                 foreach( $prvMtnOps as $prvMtnOp){
                     $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ; 
                     $ymd=explode('-', $dates[0]);
@@ -656,8 +658,8 @@ class EquipmentController extends Controller{
                     $sec=$time[2] ;
                 
                     $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
-                    $OneWeekLater=$nextDate->addDays(7) ; 
-;                    if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
+                    //$OneWeekLater=$nextDate->addDays(7) ; 
+                    if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
                         $opMtn=([
                             "id" => $prvMtnOp->id,
                             "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -684,16 +686,16 @@ class EquipmentController extends Controller{
                     }
                 }
 
-                $eq = ([
-                    "id" => $equipment->id,
-                    "internalReference" => $equipment->eq_internalReference,
-                    "preventive_maintenance_operations" => $containerOp,
-                    "state_id" => $mostRecentlyState->id,
-                ]) ; 
-
-                array_push($container,$eq);
-
-
+                if (count($containerOp)>0){
+                    $eq = ([
+                        "id" => $equipment->id,
+                        "internalReference" => $equipment->eq_internalReference,
+                        "preventive_maintenance_operations" => $containerOp,
+                        "state_id" => $mostRecentlyState->id,
+                    ]) ; 
+    
+                    array_push($container,$eq);
+                }
             }
         }
         return response()->json($container) ;

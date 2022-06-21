@@ -54,21 +54,21 @@ export default {
 			if(this.$userId.user_addEnumRight==true ||
 			this.$userId.user_deleteEnumRight==true ||
 			this.$userId.user_updateEnumRight==true){
-				this.$router.replace({ name: "url_enum" })
+				this.$router.push({ name: "url_enum" }).catch(() => {})
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}
 		},
 		account_managment_acces(){
 			if(this.$userId.user_menuUserAcessRight==true){
-				this.$router.replace({ name: "url_accounts" })
+				this.$router.push({ name: "url_accounts" }).catch(() => {})
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}
 		},
 		info_acces(){
 			if(this.$userId.user_updateInformationRight==true){
-				this.$router.replace({ name: "url_infos" })
+				this.$router.push({ name: "url_infos" }).catch(() => {})
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}

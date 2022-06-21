@@ -18,7 +18,7 @@
 					<a href="#" @click="warningUpdate(list.id,list.alreadyValidatedTechnical,list.alreadyValidatedQuality)">Update</a>
 					<a v-if="list.alreadyValidatedTechnical===false" href="#" @click="technicalValidation(list.id)">Technical validation</a>
 					<a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
-					<a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Validated</a>
+					<a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Signed</a>
 					<a @click="reformEquipment(list.id)" href="#">Reform</a>
 					<router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
 				</div>
@@ -53,7 +53,8 @@ export default {
 			quality:null,
 			pageOfItems: [],
 			modal_eq_internalReference:'',
-			modal_eq_id:null
+			modal_eq_id:null,
+			
 
 		}
 	},
@@ -106,7 +107,7 @@ export default {
 				this.$router.replace({ name: "url_eq_update", params: {id}})
 			}
 			if(redirect==true){
-				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight==true || this.user_deleteDataSignedLinkedToEqOrMmeRight==true  ){
+				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight!=false || this.user_deleteDataSignedLinkedToEqOrMmeRight!=false ){
 					this.$router.replace({ name: "url_eq_update", params: {id}})
 				}else{
 					this.$refs.errorAlert.showAlert("You don't have the right");

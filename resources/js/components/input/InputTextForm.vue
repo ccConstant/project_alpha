@@ -70,7 +70,7 @@ export default {
             default : null
         },
         inputClassName:{
-            type:String
+            type:[String,Array]
         },
         divClassName:{
             type:String

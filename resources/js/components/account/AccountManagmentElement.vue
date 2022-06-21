@@ -3,7 +3,23 @@
         <div class="w-100 row_right_tab"></div>
         <b-col class="col_right_tab_title" >{{right_title}}</b-col>
         <b-col class="col_right_tab" v-for="(user) in users" :key="key_letter+user.id">
-            <input type="checkbox" :id="right_name+user.id" :class="[right_name, 'right_checkbox']" :name="right_name" :value="user.id" @click="send_right_change($event,user.id,right_name)">
+            <div class="check_formed">
+                <input type="checkbox" :id="right_name+user.id" :class="[right_name, 'right_checkbox']" :name="right_name" :value="user.id" @click="send_right_change($event,user.id,right_name)">
+                <div v-if="training!=null && user.user_formationEqDate!=null">
+                    <div v-if="formationEqOk(user.id)!=true">
+                        <p  :class="['formed', 'text-danger']">
+                            Since : {{user.user_formationEqDate}} training expired
+                        </p>
+                    </div>
+                    <div v-else>
+                        <p class="formed">
+                            Since : {{user.user_formationEqDate}}</p>
+                    </div>
+                </div>
+            </div>
+
+                
+
         </b-col>
     </div>
 
@@ -23,15 +39,19 @@ export default {
         },
         right_name:{
             type:String
+        },
+        training:{
+            type:Boolean,
+            default:null
+        },
+    },
+    data(){
+        return{
+            eq_formation_isOk_res:true,
         }
     },
     methods:{
         send_right_change(e,value,name){
-            console.log(e.target.checked)
-            console.log(value)
-            console.log(name)
-            console.log("/user/update_right/"+name+'/'+value)
-            
             var rightUrl = (right_name,user_id) => `/user/update_right/${right_name}/${user_id}`;
             axios.post(rightUrl(name,value),{
                 user_value:e.target.checked
@@ -39,9 +59,19 @@ export default {
             .then(response =>{console.log(response.data)})
             //If the controller sends errors we put it in the errors object 
             .catch(error => this.errors=error.response.data.errors) ;
+        },
+        formationEqOk(user_id){
+            var getUrlFormationOk = (id) => ` /user/get/formationEqOk/${id}`;
+            axios.get(getUrlFormationOk(user_id))
+            .then (response=> {
+                this.eq_formation_isOk_res=response.data;
+            }) 
+            .catch(error => console.log(error)) ;
+            return false;
         }
 
-    }
+    },
+   
 
 
 }
@@ -59,10 +89,20 @@ export default {
     .col_right_tab_title{
         border-left: solid 1px lightgrey;
     }
-    .right_checkbox{
-        display: block;
-        margin: auto;
+    .check_formed{
+        
+        text-align: center;
+        .right_checkbox{
+            margin: auto;
+            display: block;
+            
+        }
+        .formed{
+            display: block;
+            
+        }
     }
+
 }
 
 </style>

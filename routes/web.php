@@ -127,7 +127,7 @@ Route::middleware('auth')->group(function () {
         return view('welcome');
     });
 
-    Route::get('/accounts', function () {
+    Route::get('/my_account', function () {
         return view('welcome');
     });
 });

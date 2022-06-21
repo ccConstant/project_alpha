@@ -1,7 +1,14 @@
 <template>
     <div>
         <div class="remindOpe_container">
-            <h2>Maintenance to do urgently</h2>
+            <h2>Maintenance late</h2>
+            <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
+            @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
+                {{prvMtnOp.internalReference}}
+            </li>
+        </div>
+        <div class="remindOpe_container">
+            <h2>Maintenance to do</h2>
             <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
             @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
                 {{prvMtnOp.internalReference}}
@@ -43,7 +50,7 @@ export default {
         return {
             calendarOptions: {
                 plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin,resourceTimelinePlugin],
-                initialView: 'resourceTimelineMonth',
+                initialView: 'resourceTimelineYear',
                 headerToolbar: {
                     left: 'listMonth,listWeek,resourceTimelineMonth',
                     center: 'title',
@@ -90,7 +97,6 @@ export default {
         axios.get('/equipment/prvMtnOp/planning')
             .then (response=>{
                 this.prvMtnOp_LimitPassed=response.data;
-                console.log(response.data)
                 for (const data of response.data) {
                     this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
                     for(const operation of data.preventive_maintenance_operations){

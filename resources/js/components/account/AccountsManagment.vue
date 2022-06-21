@@ -15,7 +15,7 @@
 					</b-col>
 
 					<AccountManagmentElement right_title="Make equipment opération validation" key_letter="A" :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
-					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
+					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
 					<AccountManagmentElement right_title="Person trained to general principles of MME managment" key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
 					<AccountManagmentElement right_title="Reset user password" key_letter="D" :users="pageOfItems" right_name="user_resetUserPasswordRight"/>
 					<AccountManagmentElement right_title="Update data validated but not signed" key_letter="E" :users="pageOfItems" right_name="user_updateDataValidatedButNotSignedRight" />
@@ -108,11 +108,15 @@ export default {
 		axios.get('/users/send')
         .then (response=> {
             this.users=response.data;
+			for (var i=0;i<this.users.length;i++) {
+                if(this.users[i].user_formationEqDate!=null){
+                    this.users[i].user_formationEqDate=moment(this.users[i].user_formationEqDate).format('D MMM YYYY'); 
+                }
+            }
             this.loaded=true;
 			console.log(response.data)
 		}) 
         .catch(error => console.log(error)) ;
-		
 	},
 
 	methods:{

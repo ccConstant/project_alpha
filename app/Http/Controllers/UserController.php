@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use App\Models\User ; 
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+
 
 class UserController extends Controller{
 
@@ -448,6 +450,11 @@ class UserController extends Controller{
         }
     }
 
+     /**
+     * Function call by MyAccount.vue with the route : /user/update/myAccount/{id} (post)
+     * Update the personnal informations of the user like his password or his pseudo
+     * The id parameter correspond to the id of the user we want to change the informations
+     */
     public function update_myAccount(Request $request, $id){
         $user=User::findOrFail($id) ; 
         if ($request->user_firstName!=NULL){
@@ -590,37 +597,50 @@ class UserController extends Controller{
 
     }
 
-    public function FormationEqOk($id){
+       /**
+     * Function call by MyAccount.vue with the route : /user/get/formationEqOk/{id}  (post)
+     * Get if the date of equipment formation is already available
+     * The id parameter correspond to the id of the user we want to know if the equipment formation date is already available
+     */
+    public function formationEqOk($id){
         $user=User::findOrFail($id) ; 
         $now=Carbon::now() ; 
-        $ymd=explode('-', $user->user_formationEqDate);
-        $year=$ymd[0] ; 
-        $month=$ymd[1] ;
-        $day=$ymd[2] ;
-    
-        $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
-        $OneYearLater=$formationEqDate->addYear(1) ; 
-        if ($OneYearLater<$now){
-            return response()->json(false) ; 
+        if ($user->user_formationEqDate!=NULL){
+            $ymd=explode('-', $user->user_formationEqDate);
+            $year=$ymd[0] ; 
+            $month=$ymd[1] ;
+            $day=$ymd[2] ;
+        
+            $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
+            $OneYearLater=$formationEqDate->addYear(1) ; 
+            if ($OneYearLater<$now){
+                return response()->json(false) ; 
+            }else{
+                return response()->json(true) ; 
+            }
         }else{
-            return response()->json(true) ; 
+            return response()->json(false) ;  
         }
     }
 
-    public function FormationMmeOk($id){
+    public function formationMmeOk($id){
         $user=User::findOrFail($id) ; 
         $now=Carbon::now() ; 
-        $ymd=explode('-', $user->user_formationMmeDate);
-        $year=$ymd[0] ; 
-        $month=$ymd[1] ;
-        $day=$ymd[2] ;
-    
-        $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
-        $OneYearLater=$formationMmeDate->addYear(1) ; 
-        if ($OneYearLater<$now){
-            return response()->json(false) ; 
+        if ($user->user_formationMmeDate!=NULL){
+            $ymd=explode('-', $user->user_formationMmeDate);
+            $year=$ymd[0] ; 
+            $month=$ymd[1] ;
+            $day=$ymd[2] ;
+        
+            $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
+            $OneYearLater=$formationMmeDate->addYear(1) ; 
+            if ($OneYearLater<$now){
+                return response()->json(false) ; 
+            }else{
+                return response()->json(true) ; 
+            }
         }else{
-            return response()->json(true) ; 
+            return response()->json(false) ;  
         }
     }
 }
