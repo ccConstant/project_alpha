@@ -35,7 +35,9 @@ use App\Http\Controllers\MmeTempController ;
 use App\Http\Controllers\VerificationController ; 
 use App\Http\Controllers\VerificationRealizedController ; 
 use App\Http\Controllers\MmeStateController ; 
-
+use App\Http\Controllers\EnumVerificationRequiredSkillController;
+use App\Http\Controllers\EnumPrecautionTypeController;
+use App\Http\Controllers\EnumUsageMetrologicalLevelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -144,6 +146,22 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/mme/reform/{id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/list/consult/{id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/list/update/{id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/reform/{id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/list', function () {
         return view('welcome');
     });
 });
@@ -485,6 +503,39 @@ Route::post('/state/enum/name/delete/{id}', [EnumStateNameController::class, 'de
 Route::post('/state/enum/name/add', [EnumStateNameController::class, 'add_enum_name'] ) ;
 
 Route::post('/state/enum/name/update/{id}', [EnumStateNameController::class, 'update_enum_name'] ) ;
+
+Route::get('/verification/enum/requiredSkill', [EnumVerificationRequiredSkillController::class, 'send_enum_verificationRequiredSkill'] ) ;
+
+Route::post('/verification/enum/requiredSkill/delete/{id}', [EnumVerificationRequiredSkillController::class, 'delete_enum_requiredSkill'] ) ;
+
+Route::post('/verification/enum/requiredSkill/add', [EnumVerificationRequiredSkillController::class, 'add_enum_requiredSkill'] ) ;
+
+Route::post('/verification/enum/requiredSkill/update/{id}', [EnumVerificationRequiredSkillController::class, 'update_enum_requiredSkill'] ) ;
+
+Route::get('/precaution/enum/type', [EnumPrecautionTypeController::class, 'send_enum_type'] ) ;
+
+Route::post('/precaution/enum/type/delete/{id}', [EnumPrecautionTypeController::class, 'delete_enum_type'] ) ;
+
+Route::post('/precaution/enum/type/add', [EnumPrecautionTypeController::class, 'add_enum_type'] ) ;
+
+Route::post('/precaution/enum/type/update/{id}', [EnumPrecautionTypeController::class, 'update_enum_type'] ) ;
+
+Route::get('/usage/enum/metrologicalLevel', [EnumUsageMetrologicalLevelController::class, 'send_enum_metrologicalLevel'] ) ;
+
+Route::post('/usage/enum/metrologicalLevel/delete/{id}', [EnumUsageMetrologicalLevelController::class, 'delete_enum_metrologicalLevel'] ) ;
+
+Route::post('/usage/enum/metrologicalLevel/add', [EnumUsageMetrologicalLevelController::class, 'add_enum_metrologicalLevel'] ) ;
+
+Route::post('/usage/enum/metrologicalLevel/update/{id}', [EnumUsageMetrologicalLevelController::class, 'update_enum_metrologicalLevel'] ) ;
+
+Route::get('/usage/enum/verifAcceptanceAuthority', [EnumUsageVerifAcceptanceAuthorityController::class, 'send_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('/usage/enum/verifAcceptanceAuthority/delete/{id}', [EnumUsageVerifAcceptanceAuthorityController::class, 'delete_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('/usage/enum/verifAcceptanceAuthority/add', [EnumUsageVerifAcceptanceAuthorityController::class, 'add_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('/usage/enum/verifAcceptanceAuthority/update/{id}', [EnumUsageVerifAcceptanceAuthorityController::class, 'update_enum_verifAcceptanceAuthority'] ) ;
+
 
 
 /* Information Form Routes */ 

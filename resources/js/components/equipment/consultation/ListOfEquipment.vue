@@ -52,31 +52,23 @@ export default {
 			technical:null,
 			quality:null,
 			pageOfItems: [],
-			modal_eq_internalReference:'',
-			modal_eq_id:null,
-			
-
 		}
 	},
 	computed: {
-	filterByTerm() {
-			return this.equipments.filter(option => {
-				return option.eq_internalReference.toLowerCase().includes(this.searchTerm);
-			});
-	}
+		filterByTerm() {
+				return this.equipments.filter(option => {
+					return option.eq_internalReference.toLowerCase().includes(this.searchTerm);
+				});
+		}
 	},
-  
-
-  created(){
-	axios.get('/equipment/equipments')
-		.then (response=>{
-			console.log(response.data)
-			this.equipments=response.data;
-			this.loaded=true;
-		})
-		.catch(error => console.log(error));
-
-
+  	created(){
+		axios.get('/equipment/equipments')
+			.then (response=>{
+				console.log(response.data)
+				this.equipments=response.data;
+				this.loaded=true;
+			})
+			.catch(error => console.log(error));
 	},
 	methods:{
 		technicalValidation(id){
@@ -119,10 +111,6 @@ export default {
 				}	
 				
 			} 
-		},
-		resetModal(){
-			this.modal_eq_internalReference='';
-			this.modal_eq_id=null
 		},
 		onChangePage(pageOfItems) {
 				console.log(pageOfItems)

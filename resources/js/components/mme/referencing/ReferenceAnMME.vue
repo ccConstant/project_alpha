@@ -1,26 +1,45 @@
 <template>
   <div>
         <MmeIdForm @MMEID="put_mme_id" @importFromMMEID="put_import_id"/>
+        <div v-if="this.mme_id!=null">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                           MME Dimension
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                            <ReferenceAMMEFile :mme_id="this.mme_id" :import_id="this.importation_id"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
   </div>
 </template>
 
 <script>
 import MmeIdForm from './MmeIdForm.vue'
+import ReferenceAMMEFile from './RefereneceAMMEFile.vue'
 export default {
     components: {
-        MmeIdForm
+        MmeIdForm,
+        ReferenceAMMEFile
+
     },
     data(){
         return{
-            //Id de l'equipement qui vien detre crée
-            eq_id:null,
-            //Id de l'equiepement depuis lequel importer
+            //Id de l'mme qui vien detre crée
+            mme_id:null,
+            //Id de l'mme depuis lequel importer
             importation_id:null
         }
     },
     methods:{
         put_mme_id(value){
-            this.eq_id=value;
+            this.mme_id=value;
         },
         put_import_id(value){
             this.importation_id=value;

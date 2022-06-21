@@ -241,7 +241,7 @@ class MmeController extends Controller{
                         ], 429);
                     }
                     //we checked if a life sheet is already created. If it's the case we can't update the external reference, the name, the constructor (...)
-                    if ($mostRecentlymmeTmp->mmeTemp_lifeSheetCreated==true){
+                    if ($mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
                         if($mme->mme_externalReference!=$request->mme_externalReference){
                             return response()->json([
                                 'errors' => [

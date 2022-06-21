@@ -123,9 +123,27 @@ const router = new VueRouter({
         component:require('./components/account/MyAccount.vue').default
 
     },{
+        //MME path
         path:'/mme/add',
         name: 'url_mme_add',
         component:require('./components/mme/referencing/ReferenceAnMME.vue').default
+    },{
+        path:'/mme/list',
+        name: 'url_mme_list',
+        component:require('./components/mme/consultation/ListOfMME.vue').default
+    },{
+        path:'/mme/list/consult/:id(\\d+)',
+        name: 'url_mme_consult',
+        component:require('./components/mme/consultation/MMEConsult.vue').default
+    },{
+        path:'/mme/list/update/:id(\\d+)',
+        name: 'url_mme_update',
+        component:require('./components/mme/consultation/MMEUpdate.vue').default
+    },{
+        path:'/mme/reform/:id(\\d+)',
+        name: 'url_mme_reform',
+        component:require('./components/mme/consultation/MMEReform.vue').default
+
     },{
         path:'*',
     }]

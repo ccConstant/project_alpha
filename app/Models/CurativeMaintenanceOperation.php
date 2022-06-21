@@ -22,7 +22,7 @@ class CurativeMaintenanceOperation extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['curMtnOp_number', 'curMtnOp_reportNumber', 'curMtnOp_description', 'curMtnOp_startDate', 'curMtnOp_endDate', 'curMtnOp_validate', 'state_id', 'qualityVerifier_id', 'technicalVerifier_id', 'realizedBy_id', 'enteredBy_id' ];
+    protected $fillable = ['curMtnOp_number', 'curMtnOp_reportNumber', 'curMtnOp_description', 'curMtnOp_startDate', 'curMtnOp_endDate', 'curMtnOp_validate', 'state_id', 'mme_state_id','qualityVerifier_id', 'technicalVerifier_id', 'realizedBy_id', 'enteredBy_id' ];
 
     //Define the relation between a state and the curative_maintenance_operations that can take place during a state 
     public function state(){

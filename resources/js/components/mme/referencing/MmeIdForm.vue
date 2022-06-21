@@ -108,7 +108,7 @@ export default {
     /*All function inside the created option is called after the component has been created.*/
     created(){
         axios.get('/mme/sets')
-            .then (response=>console.log(response.data) )
+            .then (response=> this.enum_sets=response.data) 
             .catch(error => console.log(error)) ; 
 
         /*axios.get('/info/send/mmeIdCard')
@@ -237,6 +237,13 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+    .titleForm{
+        padding-left: 10px;
+    }
+    form{
+        margin: 20px;
+        margin-bottom: 100px;
+    }
 
 </style>
