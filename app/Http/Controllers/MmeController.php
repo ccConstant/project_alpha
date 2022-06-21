@@ -215,11 +215,11 @@ class MmeController extends Controller{
                 ]
             );
         }
-
+        
         if ($request->reason=="update"){
             //we checked if the internal reference entered is already used for another mme
             $mme_already_exist=Mme::where('mme_internalReference', '=', $request->mme_internalReference, 'and')->where('id', '<>', $request->mme_id)->first() ; 
-            if ($mme_already_exist!=null){
+            if ($mme_already_exist!=NULL){
                 return response()->json([
                     'errors' => [
                         'mme_internalReference' => ["This internal reference is already use for another mme"]
@@ -281,12 +281,13 @@ class MmeController extends Controller{
                     }
                 } 
             }
-        }else{
+        }
+        else{
             if ($request->reason=="add"){
                 //we checked if the internal reference entered is already used for another mme
-                $mme_already_exist= Mme::where('mme_internalReference', '=', $request->mme_internalReference)->first() ; 
+                $mme_already_exist=Mme::where('mme_internalReference', '=', $request->mme_internalReference)->first() ; 
                 
-                if ($mme_already_exist!=null){
+               if ($mme_already_exist!=null){
                     return response()->json([
                         'errors' => [
                             'mme_internalReference' => ["This internal reference is already use for another mme"]

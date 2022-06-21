@@ -39,6 +39,7 @@ const router = new VueRouter({
         component:require('./components/HomePage.vue').default
     }, {
         path:'/equipment/add',
+        name: 'url_eq_add',
         component:require('./components/equipment/referencing/ReferenceAnEquipment.vue').default
     },{
         path:'/equipment/list/consult/:id(\\d+)',
@@ -121,6 +122,10 @@ const router = new VueRouter({
         name: 'url_my_account',
         component:require('./components/account/MyAccount.vue').default
 
+    },{
+        path:'/mme/add',
+        name: 'url_mme_add',
+        component:require('./components/mme/referencing/ReferenceAnMME.vue').default
     },{
         path:'*',
     }]

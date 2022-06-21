@@ -12,7 +12,7 @@
 				</b-nav-item-dropdown>
 
 				<b-nav-item-dropdown text="ECME" right>
-
+					<b-dropdown-item href="/mme/add">Add a new mme</b-dropdown-item>
 				</b-nav-item-dropdown>
 
 					<b-nav-item @click="enum_acces">Enum Managment</b-nav-item>

@@ -220,13 +220,6 @@ export default {
 
     /*--------Declartion of the differents methods:--------*/
     methods: {
-        equipment_save(){
-            console.log("ENREGISTRER EN BROUILLON\n")
-            console.log(this.eq_internalReference,"\n",this.eq_externalReference,"\n"
-            ,this.eq_name,"\n",this.eq_type,"\n",this.eq_serialNumber,"\n",
-            this.eq_constructor,"\n",this.eq_mass,"\n",this.eq_massUnit,"\n",
-            this.mobility,"\n",this.eq_remarks,"\n",this.eq_set,"\n",this.eq_validate,"\nID:",this.eq_id);
-        }, 
         /*Sending to the controller all the information about the equipment so that it can be added to the database */ 
         addEquipment(savedAs){
             if(!this.addSucces){
@@ -346,10 +339,6 @@ export default {
                         .catch(error => this.errors=error.response.data.errors) ; 
                     })
                 .catch(error => this.errors=error.response.data.errors) ;
-                
-                
-                
-
         },
         /*Clear all the error of the targeted field*/
         clearError(event){

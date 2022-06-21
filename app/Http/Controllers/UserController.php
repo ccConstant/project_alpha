@@ -736,7 +736,7 @@ class UserController extends Controller{
             if ($user->user_pseudo=="admin"){
                 return response()->json([
                     'errors' => [
-                        'user' => ["You can't modify the rights of the admin"]
+                        'user_confirmation_password' => ["You can't modify the information of the admin"]
                     ]
                 ], 429);
             }
@@ -862,7 +862,7 @@ class UserController extends Controller{
         }else{
             return response()->json([
                 'errors' => [
-                    'user' => ["You can't modify your own information here, please go in myAccount menu"]
+                    'user_confirmation_password' => ["You can't modify your own information here, please go in myAccount menu"]
                 ]
             ], 429);
         }

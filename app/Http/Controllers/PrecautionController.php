@@ -6,7 +6,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Mme ;  
 use App\Models\MmeTemp ;  
-use App\Models\MmeUsage ;  
+use App\Models\MmeUsage ; 
+use App\Models\EnumPrecautionType  ;
 use Carbon\Carbon;
 
 class PrecautionController extends Controller
@@ -18,46 +19,12 @@ class PrecautionController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_precaution(Request $request){        
-        $state=State::findOrFail($request->state_id) ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
-
-        if ($request->prvMtnOpRlz_validate=="validated"){
-            if ($request->prvMtnOpRlz_endDate=='' || $request->prvMtnOpRlz_endDate===NULL){
+        $usage=MmeUsage::findOrFail($request->usage_id) ;         
+        if ($request->prctn_validate=="VALIDATED"){
+            if ($request->prctn_type=='' || $request->prctn_type==NULL ){
                 return response()->json([
                     'errors' => [
-                        'prvMtnOpRlz_endDate' => ["You have to entered the endDate of your preventive maintenance operation realized for validate it"]
-                    ]
-                ], 429);
-            }
-
-            if ($request->reason=="update"){
-                $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($request->prvMtnOpRlz_id) ; 
-                if ($prvMtnOpRlz->realizedBy_id==NULL){
-                    return response()->json([
-                        'errors' => [
-                            'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
-                        ]
-                    ], 429);
-                }
-    
-                if ($prvMtnOpRlz->approvedBy_id==NULL){
-                    return response()->json([
-                        'errors' => [
-                            'prvMtnOpRlz_validate' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
-                        ]
-                    ], 429);
-                }
-
-            }else{
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
-                    ]
-                ], 429);
-            
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_validate' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
+                        'prctn_type' => ["You must choose a type"]
                     ]
                 ], 429);
             }
@@ -66,80 +33,86 @@ class PrecautionController extends Controller
         $this->validate(
             $request,
             [
-                'prvMtnOpRlz_reportNumber' => 'required|min:3|max:255',
+                'precaution_description' => 'required|min:3|max:255',
             ],
             [
-                'prvMtnOpRlz_reportNumber.required' => 'You must enter a report number for the preventive maintenance operation realized ',
-                'prvMtnOpRlz_reportNumber.min' => 'You must enter at least three characters ',
-                'prvMtnOpRlz_reportNumber.max' => 'You must enter a maximum of 255 characters',
+                'precaution_description.required' => 'You must enter a description for the precaution ',
+                'precaution_description.min' => 'You must enter at least three characters ',
+                'precaution_description.max' => 'You must enter a maximum of 255 characters',
 
             
             ]
         );
-        if ($request->prvMtnOpRlz_startDate=='' || $request->prvMtnOpRlz_startDate===NULL){
-            return response()->json([
-                'errors' => [
-                    'prvMtnOpRlz_startDate' => ["You have to entered the startDate of your preventive maintenance operation realized"]
-                ]
-            ], 429);
-        }
-    
-        if ($request->reason=="update"){
-            $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
-            if ($prvMtnOpRlz->prvMtnOpRlz_validate=="validated"){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_validate' => ["You can't update a preventive maintenance operation realized already validated"]
-                    ]
-                ], 429);
-            }
-        }
-
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
-        if ($request->prvMtnOpRlz_startDate!=NULL && $request->prvMtnOpRlz_startDate<$oneMonthAgo){
-            return response()->json([
-                'errors' => [
-                    'prvMtnOpRlz_startDate' => ["You can't enter a date that is older than one month"]
-                ]
-            ], 429);
-        }
-
-        if ($request->prvMtnOpRlz_endDate!=NULL && $request->prvMtnOpRlz_endDate<$oneMonthAgo){
-            return response()->json([
-                'errors' => [
-                    'prvMtnOpRlz_endDate' => ["You can't enter a date that is older than one month"]
-                ]
-            ], 429);
-        }
-
-        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_startDate!=NULL){
-            if ($request->prvMtnOpRlz_startDate<$state->state_startDate){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_startDate' => ["You can't entered this startDate because it must be after the startDate of the state"]
-                    ]
-                ], 429);
-            }
-        }
-        if ($state->state_startDate!=NULL && $request->prvMtnOpRlz_endDate!=NULL){
-            if ($request->prvMtnOpRlz_endDate<$state->state_startDate){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_endDate' => ["You can't entered this endDate because it must be after the startDate of the state"]
-                    ]
-                ], 429);
-            }
-        }
-
-        if ($request->prvMtnOpRlz_startDate!=NULL && $request->prvMtnOpRlz_endDate!=NULL){
-            if ($request->prvMtnOpRlz_endDate < $request->prvMtnOpRlz_startDate){
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_endDate' => ["You must entered a startDate that is before endDate"]
-                    ]
-                ], 429);
-
-            }
-        }
+        
     }
+
+    /**
+     * Function call by MmePrecautionForm.vue when the form is submitted for insert with the route :/mme/add/usage/prctn (post)
+     * Add a new enregistrement of precaution in the data base with the informations entered in the form 
+     * @return \Illuminate\Http\Response : the id of the new precaution
+     */
+    public function add_precaution(Request $request){
+        $usage=MmeUsage::findOrFail($request->usage_id) ;         
+    
+        //A precaution is linked to its type. So we need to find the id of the type choosen by the user and write it in the attribute of the precaution.
+        //But if no one type is choosen by the user we define this id to NULL
+        // And if the type choosen is find in the data base the NULL value will be replace by the id value
+        $type_id=NULL ; 
+        if ($request->prctn_type!=''){
+            $type= EnumPrecautionType::where('value', '=', $request->prctn_type)->first() ;
+            $type_id=$type->id ; 
+        }
+        //Creation of a new precaution
+        $prctn=Precaution::create([
+            'prctn_description' => $request->prctn_description,
+            'enumPrecautionType_id' => $type_id,
+            'prctn_validate' => $request->prctn_validate,
+            'mmeUsage_id' => $usage->id,
+        ]) ; 
+        return response()->json($prctn->id) ;
+    }
+
+     /**
+     * Function call by MmePrecautionForm.vue when the form is submitted for update with the route : /mme/update/prctn (post)
+     * Update an enregistrement of precaution in the data base with the informations entered in the form 
+     * The id parameter correspond to the id of the equipment we want to update
+     * */
+    public function update_precaution(Request $request, $id){
+        $precaution= Precaution::findOrFail($id) ;
+
+        //A precaution is linked to its type. So we need to find the id of the type choosen by the user and write it in the attribute of the mme.
+        //But if no one type is choosen by the user we define this id to NULL
+        // And if the type choosen is find in the data base the NULL value will be replace by the id value
+        $type_id=NULL ; 
+        if ($request->eq_type!=''){
+            $type= EnumPrecautionType::where('value', '=', $request->prctn_type)->first() ;
+            $type_id=$type->id ; 
+        }
+
+        
+        //Creation of a new equipment temp
+        $precaution->update([
+            'prctn_description' => $request->prctn_description,
+            'enumPrecautionType_id' => $type_id,
+            'prctn_validate' => $request->prctn_validate,
+        ]);
+    }
+
+
+    /**
+     * Function call by MmePrecautionForm when we delete a precaution with the route : /precaution/delete/{id} (post)
+     * Delete a precaution 
+     * The id parameter is the id of the precaution in which we want to delete
+     * */
+
+    public function delete_precaution($id){
+        $precaution=Precaution::findOrFail($id) ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $precaution->delete() ; 
+    }
+
+    
+    //send
 }
+
+

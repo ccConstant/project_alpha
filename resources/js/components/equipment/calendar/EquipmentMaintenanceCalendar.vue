@@ -1,28 +1,35 @@
 <template>
-    <div>
-        <div class="remind_containers">
-            <div class="remindOpeLate_container">
-                <h2>Maintenance late</h2>
-                <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
-                @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                    {{prvMtnOp.internalReference}}
-                </li>
+    <div class="eq_maintenance_page">
+        <div v-if="loaded==false" >
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-else>
+            <div class="remind_containers">
+                <div class="remindOpeLate_container">
+                    <h2>Maintenance late</h2>
+                    <li v-for="(prvMtnOp, index) in  pageOfItems_LimitPassed" :key="index" class="list-group-item"
+                    @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
+                        {{prvMtnOp.internalReference}}
+                    </li>
+                    <jw-pagination class="eq_list_pagination" :pageSize=7 :items="prvMtnOp_LimitPassed" @changePage="onChangePage_limitPassed"></jw-pagination>
+                </div>
+
+                <div class="remindOpeToDo_container">
+                    <h2>Maintenance to do</h2>
+                    <li v-for="(prvMtnOp, index) in  pageOfItems_ToDo" :key="index" class="list-group-item"
+                    @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
+                        {{prvMtnOp.internalReference}}
+                    </li>
+                    <jw-pagination class="eq_list_pagination" :pageSize=7 :items="prvMtnOp_ToDo" @changePage="onChangePage_ToDo"></jw-pagination>
+                </div>
             </div>
-            <div class="remindOpeToDo_container">
-                <h2>Maintenance to do</h2>
-                <li v-for="(prvMtnOp, index) in  prvMtnOp_LimitPassed" :key="index" class="list-group-item"
-                @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                    {{prvMtnOp.internalReference}}
-                </li>
+
+            <EventDetailsModal ref="event_details" @modalClosed="modalClosed" :prvMtnOps="prvMtnOp"/>
+            <div class='container-xxl'>
+                    <FullCalendar  :options="calendarOptions"/>
             </div>
         </div>
 
-        <EventDetailsModal ref="event_details" @modalClosed="modalClosed" :prvMtnOps="prvMtnOp"/>
-        <div class='calendar_container'>
-            <div class='calendar'>
-                <FullCalendar  :options="calendarOptions"/>
-            </div>
-        </div>
 
         
 
@@ -62,6 +69,7 @@ export default {
                 eventClick:this.handleEventClick,
                 dateClick:this.handleDateClick,
                 events:[],
+                height: 'auto',
                 displayEventTime : false,
                 resources: [
                 ],
@@ -69,7 +77,12 @@ export default {
                 schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives'
             },
             prvMtnOp:[],
-            prvMtnOp_LimitPassed:[]
+            prvMtnOp_LimitPassed:[],
+            prvMtnOp_ToDo:[],
+            pageOfItems_LimitPassed: [],
+            pageOfItems_ToDo: [],
+            loaded:false
+
             
            
         }
@@ -94,12 +107,18 @@ export default {
         },
         modalClosed(){
             this.prvMtnOp=[]
+        },
+        onChangePage_limitPassed(pageOfItems) {
+            // update page of items
+            this.pageOfItems_LimitPassed = pageOfItems;
+		},
+        onChangePage_ToDo(pageOfItems){
+            this.pageOfItems_ToDo = pageOfItems;
         }
     },
     created(){
         axios.get('/equipment/prvMtnOp/planning')
             .then (response=>{
-                this.prvMtnOp_LimitPassed=response.data;
                 for (const data of response.data) {
                     this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
                     for(const operation of data.preventive_maintenance_operations){
@@ -112,47 +131,71 @@ export default {
                          resourceId:data.internalReference});
                     }
                 }
-            })
-            axios.get('/equipment/prvMtnOp/revisionLimitPassed')
-            .then (response=>{
-                console.log(response.data)
+        })
+        axios.get('/equipment/prvMtnOp/revisionLimitPassed')
+        .then (response=>{
+            console.log(response.data)
+            this.prvMtnOp_LimitPassed=response.data;
 
-            })
+        });
+        axios.get('/equipment/prvMtnOp/revisionDatePassed')
+        .then (response=>{
+            console.log(response.data)
+            this.prvMtnOp_ToDo=response.data;
+            this.loaded=true;
+        })
+        
     }
 
 }
 </script>
 
 <style lang="scss">
-.remind_containers{
+.eq_maintenance_page{
+    .remind_containers{
         float:left;
+        margin-left:10px ;
+        width: auto;
         .remindOpeLate_container{
-        width: 300px;
+        width: 100%;
         height: auto;
         border:solid 1px lightcoral;
-        border-radius: 30px;
+        border-radius: 15px;
         background-color:lightcoral ;
         margin-right: 10px;
+       
             h2{
                 text-align:center ;
                 color:red;
             }
         }
-        .remindOpeLate_container{
-            width: 300px;
+        .remindOpeToDo_container{
+            width: 100%;
             height: auto;
-            border:solid 1px lightcoral;
-            border-radius: 30px;
-            background-color:lightcoral ;
+            border:solid 1px lightblue;
+            border-radius: 15px;
+            background-color:lightblue ;
             margin-right: 10px;
+            h2{
+                text-align:center ;
+                color:grey;
+            }
+        }  
+        .eq_list_pagination{
+            display: block;
+            margin-right: 10px;
+        } 
+    }
 
-         }   
+    .calendar_container{
+    margin-top :50px;
+    margin-left: 100px ;
+
+    }
+
 }
 
-.calendar_container{
-   margin-top :50px;
-   width: auto;
-   height: auto;
-}
+
+
 
 </style>

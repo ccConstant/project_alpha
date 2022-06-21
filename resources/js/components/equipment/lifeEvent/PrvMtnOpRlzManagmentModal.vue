@@ -20,7 +20,7 @@
         <div class="prvrlz_button" v-else>
             <b-button v-if="realizedBy_lastName==null" disabled variant="primary">I realized it</b-button>
         </div>
-        <div>
+        <div v-if="this.$userId.user_makeEqRespValidationRight==false">
             <p class="text-danger"> You don't have the right to approve a record</p>
         </div>
         

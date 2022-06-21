@@ -65,7 +65,10 @@ export default {
             })
             .then(response =>{console.log(response.data)})
             //If the controller sends errors we put it in the errors object 
-            .catch(error => this.errors=error.response.data.errors) ;
+            .catch(error => {
+                this.$refs.errorAlert.showAlert(error.response.data.errors.user);
+                e.target.checked="checked";
+            });
         },
         formationEqOk(user_id){
             var getUrlFormationOk = (id) => ` /user/get/formationEqOk/${id}`;
@@ -73,7 +76,7 @@ export default {
             .then (response=> {
                 this.eq_formation_isOk_res=response.data;
             }) 
-            .catch(error =>{this.$refs.successAlert.showAlert(error.response.data.errors.user);}) ;
+            .catch(error =>{}) ;
             return false;
         }
 

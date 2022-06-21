@@ -30,7 +30,7 @@ class CreateMmeTempsTable extends Migration
             $table->boolean('mmeTemp_lifeSheetCreated') ->default(false) ; 
             $table->text('mmeTemp_remarks') -> nullable();
             $table->unsignedBigInteger('mme_id') ;
-            $table->foreign('mme_id')->references('id')->on('mme') ->onDelete('cascade')  ; 
+            $table->foreign('mme_id')->references('id')->on('mmes') ->onDelete('cascade')  ; 
             $table->unsignedBigInteger('qualityVerifier_id') -> nullable() ; 
             $table->foreign('qualityVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
             $table->unsignedBigInteger('technicalVerifier_id')  -> nullable() ; 

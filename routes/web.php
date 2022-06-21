@@ -130,7 +130,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/my_account', function () {
         return view('welcome');
     });
+
+    Route::get('/mme/add', function () {
+        return view('welcome');
+    });
 });
+
 
 Route::get('/sign_up', function () {
     return view('welcome');
@@ -139,6 +144,7 @@ Route::get('/sign_up', function () {
 Route::get('/sign_in', function () {
     return view('welcome');
 });
+
 
 
 
@@ -399,7 +405,7 @@ Route::post('/mme/add/state/curMtnOp/', [CurativeMaintenanceOperationController:
 
 Route::post('/mme/update/state/curMtnOp/{id}', [CurativeMaintenanceOperationController::class,'update_curMtnOp_mme'])  ;
 
-Route::get('/state/curMtnOp/send/{id}', [CurativeMaintenanceOperationController::class, 'send_curMtnOp_mme'])  ;
+Route::get('/mme_state/curMtnOp/send/{id}', [CurativeMaintenanceOperationController::class, 'send_curMtnOp_mme'])  ;
 
 /* Enum Form Routes */ 
 
@@ -678,3 +684,13 @@ Route::get('/mme_usage/send/{id}', [MmeUsageController::class, 'send_usages'])  
 Route::post('/mme/delete/usg{id}', [MmeUsageController::class, 'delete_usage'])  ;
 
 Route::post('/mme/reform/usg/{id}', [MmeUsageController::class, 'reform_usage'])  ; 
+
+/* Precaution Form Routes */ 
+
+Route::post('/precaution/verif', [MmeUsageController::class, 'verif_precaution'])  ;
+
+Route::post('/mme/add/usage/prctn', [MmeUsageController::class, 'add_precaution'])  ;
+
+Route::post('/mme/update/prctn/{id}', [MmeUsageController::class, 'update_precaution'])  ;
+
+Route::post('/precaution/delete/{id}', [MmeUsageController::class, 'delete_precaution'])  ;
