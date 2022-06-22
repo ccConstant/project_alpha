@@ -48,6 +48,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item" v-if="mme_usages.length>0">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            MME Usage
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                        <div class="accordion-body">
+                            <ReferenceAMMEUsage :importedVerif="mme_usages" consultMod/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -60,7 +72,7 @@ import MmeIdForm from '../referencing/MmeIdForm.vue'
 import ValidationButton from '../../button/ValidationButton.vue'
 import ReferenceAMMEFile from '../referencing/ReferenceAMMEFile.vue'
 import ReferenceAMMEVerif from '../referencing/ReferenceAMMEVerif.vue'
-
+import ReferenceAMMEUsage from '../referencing/ReferenceAMMEUsage.vue'
 export default {
     components: {
         MmeIdForm,
@@ -68,7 +80,8 @@ export default {
         SuccesAlert,
         ValidationButton,
         ReferenceAMMEFile,
-        ReferenceAMMEVerif
+        ReferenceAMMEVerif,
+        ReferenceAMMEUsage
     },
     data(){
         return{
@@ -76,6 +89,7 @@ export default {
             mme_idCard:null,
             mme_files:null,
             mme_verifs:null,
+            mme_usages:null,
             loaded:false,
             validationMethod:this.$route.query.method,
             errors:[]
@@ -105,10 +119,16 @@ export default {
             axios.get(consultUrl(this.mme_id))
                 .then (response=> {
                     this.mme_verifs=response.data
-                    console.log(response.data)
-                    this.loaded=true})
+                })
                 .catch(error => console.log(error)) ;
 
+        var consultUrl = (id) => `/mme_usage/send/${id}`;
+            axios.get(consultUrl(this.mme_id))
+            .then (response=> {
+                this.mme_usages=response.data
+                console.log(response.data)
+                this.loaded=true})
+            .catch(error => console.log(error)) ;
 
 
 

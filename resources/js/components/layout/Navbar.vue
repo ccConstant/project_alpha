@@ -14,6 +14,8 @@
 				<b-nav-item-dropdown text="ECME" right>
 					<b-dropdown-item href="/mme/add">Add a new mme</b-dropdown-item>
 					<b-dropdown-item href="/mme/list">List of all mme</b-dropdown-item>
+					<b-dropdown-item href="/mme/life_event">Life Event</b-dropdown-item>
+					
 				</b-nav-item-dropdown>
 
 					<b-nav-item @click="enum_acces">Enum Managment</b-nav-item>

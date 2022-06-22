@@ -78,8 +78,8 @@ class EnumUsageVerifAcceptanceAuthorityController extends Controller
      */
 
     public function delete_enum_verifAcceptanceAuthority ($id){
-        $$enum_verifAcceptanceAuthority=EnumUsageVerifAcceptanceAuthority::findOrFail($id) ; 
-        $UsageLinked=MmeUsage::where('enumUsageVerifAcceptanceAuthority_id	', '=', $id)->get() ; 
+        $enum_verifAcceptanceAuthority=EnumUsageVerifAcceptanceAuthority::findOrFail($id) ; 
+        $UsageLinked=MmeUsage::where('enumUsageVerifAcceptanceAuthority_id', '=', $id)->get() ; 
         if (count($UsageLinked)!=0){
             return response()->json([
                 'errors' => [

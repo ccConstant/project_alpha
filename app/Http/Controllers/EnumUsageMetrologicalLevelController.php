@@ -78,8 +78,8 @@ class EnumUsageMetrologicalLevelController extends Controller
      */
 
     public function delete_enum_metrologicalLevel ($id){
-        $$enum_metrologicalLevel=EnumUsageMetrologicalLevel::findOrFail($id) ; 
-        $UsageLinked=Usage::where('enumUsageMetrologicalLevel_id	', '=', $id)->get() ; 
+        $enum_metrologicalLevel=EnumUsageMetrologicalLevel::findOrFail($id) ; 
+        $UsageLinked=MmeUsage::where('enumUsageMetrologicalLevel_id', '=', $id)->get() ; 
         if (count($UsageLinked)!=0){
             return response()->json([
                 'errors' => [

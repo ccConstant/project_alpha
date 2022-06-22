@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
 use App\Models\MmeTemp ; 
 use App\Models\Mme ; 
+use App\Models\MmeUsage ; 
 use App\Models\EnumUsageVerifAcceptanceAuthority ;
 use App\Models\EnumUsageMetrologicalLevel;
 use App\Models\Usage ;
@@ -117,18 +118,18 @@ class MmeUsageController extends Controller
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
 
         //Creation of a new usage
-        $mme=Mme::create([
+        $usg=MmeUsage::create([
             'usg_measurementType' => $request->usg_measurementType,
             'usg_validate' => $request->usg_validate,
             'usg_precision' => $request->usg_precision,
             'usg_application' => $request->usg_application,
             'usg_startDate' => Carbon::now('Europe/Paris'),
-            'enumUsageMetrologicalLevel_id' => $metrologicalLevel_id,
-            'enumUsageVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
+            //'enumUsageMetrologicalLevel_id' => $metrologicalLevel_id,
+            //'enumUsageVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
         ]) ;
 
-        $usg_id=$usage->id;
+        /*$usg_id=$usage->id;
         $id_mme=intval($request->mme_id) ; 
         if ($mostRecentlyMmeTmp!=NULL){
               //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add usage
@@ -150,7 +151,7 @@ class MmeUsageController extends Controller
                 ]);
              }
             return response()->json($usg_id) ; 
-        }
+        }*/
     }
 
     /**

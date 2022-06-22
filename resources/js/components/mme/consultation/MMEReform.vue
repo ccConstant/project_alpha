@@ -8,7 +8,7 @@
             :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor" 
             :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
             consultMod/>
-            <ReferenceAMMEVerif v-if="mme_verifs.length>0" :importedVerif="mme_verifs" consultMod :reformMod="true"/>
+            <ReferenceAMMEVerif v-if="mme_verifs.length>0" :importedVerif="mme_verifs" consultMod :reformMod="true"/>  
         </div>                     
                         
                         

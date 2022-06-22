@@ -145,6 +145,10 @@ const router = new VueRouter({
         component:require('./components/mme/consultation/MMEReform.vue').default
 
     },{
+        path:'/mme/life_event',
+        name: 'url_mme_life_event',
+        component:require('./components/mme/lifeEvent/ListOfMMELifeEvent.vue').default
+    },{
         path:'*',
     }]
 

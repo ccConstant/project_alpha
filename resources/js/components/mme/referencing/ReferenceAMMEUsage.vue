@@ -2,7 +2,7 @@
       <div class="MMEUsage" >
         <h2 class="titleForm">MME Usage</h2>
         <MMEUsageForm ref="ask_usage_data" v-for="(component, key) in components" :key="component.key"
-            :is="component.comp" :measurementType="component.measurementType" :precision="component.precision"
+            :is="component.comp" :measurementType="component.measurementType" :precision="component.precision" :application="component.application"
             :verifAcceptanceAuthority="component.verifAcceptanceAuthority" :metrologicalLevel="component.metrologicalLevel" 
             :reformMod="isInReformMod" :divClass="component.className" :id="component.id" :import_id="component.import"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :mme_id="data_mme_id"
@@ -83,7 +83,7 @@ export default {
         },
         //Function for adding imported preventive maintenance operation form with his data
         addImportedComponent(usg_measurementType,usg_precision,usg_verifAcceptanceAuthority,usg_metrologicalLevel,
-        usg_validate,usg_className,id,usg_reformDate,usg_reformBy) {
+        usg_application,usg_validate,usg_className,id,usg_reformDate,usg_reformBy) {
             this.components.push({
                 comp:'MMEUsageForm',
                 key : this.uniqueKey++,
@@ -91,6 +91,7 @@ export default {
                 precision :usg_precision,
                 verifAcceptanceAuthority:usg_verifAcceptanceAuthority,
                 metrologicalLevel:usg_metrologicalLevel,
+                application:usg_application,
                 className:usg_className,
                 validate:usg_validate,
                 import:this.import_id,
@@ -111,7 +112,7 @@ export default {
                 for (const usage of this.usages) {
                     var className="importedUsage"+usage.id
                     this.addImportedComponent(usage.usg_measurementType,usage.usg_precision,usage.usg_verifAcceptanceAuthority,usage.usg_metrologicalLevel,
-                        usage.usg_validate,className,usage.id,usage.usg_reformDate,usage.usg_reformBy);
+                       usage.usg_application,usage.usg_validate,className,usage.id,usage.usg_reformDate,usage.usg_reformBy);
                 }
             }
             this.usages=null

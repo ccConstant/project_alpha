@@ -34,6 +34,7 @@ use App\Http\Controllers\MmeController ;
 use App\Http\Controllers\MmeTempController ; 
 use App\Http\Controllers\VerificationController ; 
 use App\Http\Controllers\VerificationRealizedController ; 
+use App\Http\Controllers\MmeUsageController ; 
 use App\Http\Controllers\MmeStateController ; 
 use App\Http\Controllers\EnumVerificationRequiredSkillController;
 use App\Http\Controllers\EnumPrecautionTypeController;
@@ -163,6 +164,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/mme/list', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/life_event', function () {
         return view('welcome');
     });
 });

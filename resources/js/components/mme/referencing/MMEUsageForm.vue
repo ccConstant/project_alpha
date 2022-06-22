@@ -9,6 +9,7 @@
                 <!--Call of the different component with their props-->
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_measurementType" name="usg_measurementType" label="Measurement type :" :isDisabled="!!isInConsultedMod" v-model="usg_measurementType" />
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
+                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_application" name="usg_application" label="Application :" :isDisabled="!!isInConsultedMod" v-model="usg_application" />
                 <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50"  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
                 <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Required Skill :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
                 
@@ -92,6 +93,9 @@ export default {
         metrologicalLevel:{
             type:String
         },
+        application:{
+            type:String
+        },
         validate:{
             type:String
         },
@@ -137,6 +141,7 @@ export default {
             usg_precision:this.precision,
             usg_verifAcceptanceAuthority:this.verifAcceptanceAuthority,
             usg_metrologicalLevel:this.metrologicalLevel,
+            usg_application:this.application,
             usg_validate:this.validate,
             usg_refromDate:this.reformDate,
             usg_refromBy:this.reformBy,
@@ -193,6 +198,7 @@ export default {
                     usg_precision:this.usg_precision,
                     usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                     usg_metrologicalLevel:this.usg_metrologicalLevel,
+                    usg_application:this.usg_application,
                     usg_validate :savedAs,
                 })
                 .then(response =>{
@@ -204,6 +210,7 @@ export default {
                         usg_precision:this.usg_precision,
                         usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                         usg_metrologicalLevel:this.usg_metrologicalLevel,
+                        usg_application:this.usg_application,
                         usg_validate :savedAs,
                         mme_id:id
                 
@@ -246,6 +253,7 @@ export default {
                     usg_precision:this.usg_precision,
                     usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                     usg_metrologicalLevel:this.usg_metrologicalLevel,
+                    usg_application:this.usg_application,
                     usg_validate :savedAs,
                 })
                 .then(response =>{
@@ -259,6 +267,7 @@ export default {
                         usg_precision:this.usg_precision,
                         usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                         usg_metrologicalLevel:this.usg_metrologicalLevel,
+                        usg_application:this.usg_application,
                         usg_validate :savedAs,
                         mme_id:this.mme_id_update,
                     })

@@ -23,10 +23,10 @@ class CreateMmeUsagesTable extends Migration
     {
         Schema::create('mme_usages', function (Blueprint $table) {
             $table->id();
-            $table->string('usg_mesurementType') ; 
-            $table->string('usg_precision') ; 
-            $table->string('usg_application') ; 
-            $table->date('usg_startDate') ; 
+            $table->string('usg_mesurementType') ->nullable(); 
+            $table->string('usg_precision') ->nullable(); 
+            $table->string('usg_application') ->nullable(); 
+            $table->date('usg_startDate') ->nullable(); 
             $table->date('usg_reformDate') -> nullable(); 
             $table->enum('usg_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enumUsageMetrologicalLevel_id') ->nullable();

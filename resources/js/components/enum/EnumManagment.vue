@@ -126,6 +126,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingEleven">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+                            MME precaution type
+                        </button>
+                    </h2>
+                    <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven">
+                        <div class="accordion-body">
+                            <EnumElement error_name='enum_prctn_type' :enumList="enum_prctn_type" title="MME precaution type" url="/precaution/enum/type/" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -190,21 +202,28 @@ export default {
             .catch(error => console.log(error)) ;
         axios.get('/verification/enum/requiredSkill')
             .then (response=>{
+                console.log(response.data)
                 this.enum_requiredSkill=response.data
-                this.loaded=true
             }) 
             .catch(error => console.log(error)) ;
 
         axios.get('/usage/enum/verifAcceptanceAuthority')
             .then (response=>{
+                console.log(response.data)
                 this.enum_verifAcceptanceAuthority=response.data;
             } ) 
             .catch(error => console.log(error)) ;
         axios.get('/usage/enum/metrologicalLevel')
             .then (response=>{
                 this.enum_metrologicalLevel=response.data;
-                this.loaded=true
             } ) 
+            .catch(error => console.log(error)) ;
+
+        axios.get('/precaution/enum/type')
+            .then (response=> {
+                this.enum_prctn_type=response.data;
+                this.loaded=true;
+            }) 
             .catch(error => console.log(error)) ;
     }
 
