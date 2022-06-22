@@ -51,6 +51,8 @@ class User extends Authenticatable
         'user_formationMmeDate',
         'user_declareNewStateRight',
         'user_makeReformRight',
+        'user_makeMmeRespValidationRight',
+        'user_makeMmeOpValidationRight',
     ];
 
     /**

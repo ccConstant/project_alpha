@@ -23,7 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('password') ;
             $table->date('user_startDate') ;
             $table->date('user_endDate') -> nullable(); 
-             //rightLevel 
+            
+            //rightLevel general
             $table->boolean('user_menuUserAcessRight') ->default(true);
             $table->boolean('user_resetUserPasswordRight') ->default(true);
             $table->boolean('user_updateDataInDraftRight') ->default(true);
@@ -33,7 +34,6 @@ class CreateUsersTable extends Migration
             $table->boolean('user_updateDescriptiveLifeSheetDataSignedRight') ->default(true);
             $table->boolean('user_makeQualityValidationRight') ->default(true);
             $table->boolean('user_makeTechnicalValidationRight') ->default(true);
-            $table->boolean('user_makeEqOpValidationRight') ->default(true);
             $table->boolean('user_updateEnumRight')->default(true);
             $table->boolean('user_deleteEnumRight')->default(true);
             $table->boolean('user_addEnumRight') ->default(true);
@@ -42,13 +42,21 @@ class CreateUsersTable extends Migration
             $table->boolean('user_deleteDataSignedLinkedToEqOrMmeRight') ->default(true);
             $table->boolean('user_deleteEqOrMmeRight') ->default(true);
             $table->boolean('user_updateInformationRight') ->default(true);
-            $table->boolean('user_personTrainedToGeneralPrinciplesOfEqManagementRight') ->default(true);
-            $table->date('user_formationEqDate') ->nullable() ;
-            $table->boolean('user_personTrainedToGeneralPrinciplesOfMMEManagementRight') ->default(true);
-            $table->date('user_formationMmeDate') ->nullable();
-            $table->boolean('user_makeEqRespValidationRight') ->default(true);
             $table->boolean('user_makeReformRight') ->default(true);
             $table->boolean('user_declareNewStateRight') ->default(true);
+            
+            //right level for equipment
+            $table->boolean('user_makeEqOpValidationRight') ->default(true);
+            $table->boolean('user_personTrainedToGeneralPrinciplesOfEqManagementRight') ->default(true);
+            $table->date('user_formationEqDate') ->nullable() ;
+            $table->boolean('user_makeEqRespValidationRight') ->default(true);
+
+            //right level for MME 
+            $table->boolean('user_personTrainedToGeneralPrinciplesOfMMEManagementRight') ->default(true);
+            $table->date('user_formationMmeDate') ->nullable();
+            /*$table->boolean('user_makeMmeOpValidationRight') ->default(true);
+            $table->boolean('user_makeMmeRespValidationRight') ->default(true);*/
+        
             $table->rememberToken();
             $table->timestamps();
         });

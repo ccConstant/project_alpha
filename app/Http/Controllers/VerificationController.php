@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\MmeTemp ; 
 use App\Models\Verification ; 
 use App\Models\VerificationRealized ; 
+use App\Models\EnumVerificationRequiredSkill ; 
 use App\Models\Mme ; 
 use Carbon\Carbon;
 
@@ -70,6 +71,15 @@ class VerificationController extends Controller
                     'verif_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your verification',
                 ]
             );
+
+            //verification about verif_requiredSkill, if no one value is selected we need to alert the user
+            if ($request->verif_requiredSkill=='' || $request->verif_requiredSkill==NULL){
+                return response()->json([
+                    'errors' => [
+                        'verif_requiredSkill' => ["You must choose a required skill"]
+                    ]
+                ], 429);
+            }
 
         }else{
              //-----CASE verif->validate=drafted or verif->validate=to be validate----//
@@ -137,12 +147,21 @@ class VerificationController extends Controller
      */
     public function add_verif(Request $request){
         
+        //A verification is linked to its required skill. So we need to find the id of the required skill choosen by the user and write it in the attribute of the verification.
+        //But if no one required skill is choosen by the user we define this id to NULL
+        // And if the required skill choosen is find in the data base the NULL value will be replace by the id value
+        $requiredSkill_id=NULL ;
+        if ($request->verif_requiredSkill!=''){
+            $requiredSkill= EnumVerificationRequiredSkill::where('value', '=', $request->verif_requiredSkill)->first() ;
+            $requiredSkill_id=$requiredSkill->id ; 
+        }
+
         $id_mme=intval($request->mme_id) ; 
         $mme=Mme::findOrfail($request->mme_id) ; 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
         $verifInMmes=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get();
         $max_number=1 ; 
-        if (count($mmeMtnOpsInMme)!=0){
+        if (count($verifInMmes)!=0){
             foreach ($verifInMmes as $verifInMme){
                 $number=intval($verifInMme->verif_number) ; 
                 if ($number>$max_number){
@@ -187,10 +206,10 @@ class VerificationController extends Controller
             'verif_startDate' => Carbon::now('Europe/Paris'),
             'verif_nextDate' => $nextDate,
             'verif_validate' => $request->verif_validate,
+            'verif_requiredSkill' => $requiredSkill_id,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
-            //RAJOUTER DES ATTRIBUTS ICI 
         ]) ; 
-            
+        
         $verif_id=$verif->id;
         if ($mostRecentlyMmeTmp!=NULL){
              //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add verif
@@ -222,6 +241,17 @@ class VerificationController extends Controller
      * The id parameter correspond to the id of the verification we want to update
      * */
     public function update_verif(Request $request, $id){
+        
+        //A verification is linked to its required skill. So we need to find the id of the required skill choosen by the user and write it in the attribute of the verification.
+        //But if no one required skill is choosen by the user we define this id to NULL
+        // And if the required skill choosen is find in the data base the NULL value will be replace by the id value
+        $requiredSkill_id=NULL ;
+        if ($request->verif_requiredSkill!=''){
+            $requiredSkill= EnumVerificationRequiredSkill::where('value', '=', $request->verif_requiredSkill)->first() ;
+            $requiredSkill_id=$requiredSkill->id ; 
+        }
+        
+        
         $mme=Mme::findOrfail($request->mme_id) ; 
         $oldVerif=Verification::findOrFail($id) ; 
         //We search the most recently mme temp of the mme 
@@ -294,6 +324,7 @@ class VerificationController extends Controller
                 'verif_protocol' => $request->verif_protocol,
                 'verif_nextDate' => $nextDate,
                 'verif_validate' => $request->verif_validate,
+                'verif_requiredSkill' => $requiredSkill_id,
                 'mmeTemp_id' => $mostRecentlyMmeTmp->id,
             ]) ;
 
@@ -321,6 +352,7 @@ class VerificationController extends Controller
                 "Protocol" => $verif->verif_protocol,
                 'Name' => $verif->verif_name,
                 'ExpectedResult' => $verif->verif_expectedResult,
+                'RequiredSkill' => $verif->verif_requiredSkill,
                 'NonComplianceLimit' => $verif->verif_nonComplianceLimit,
             ]);
             array_push($container,$obj);
@@ -354,6 +386,7 @@ class VerificationController extends Controller
                 'verif_name' => $verif->verif_name,
                 'verif_expectedResult' => $verif->verif_expectedResult,
                 'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                'verif_requiredSkill' => $verif->verif_requiredSkill,
                 'verif_validate' => $verif->verif_validate,
             ]);
             array_push($container,$obj);
@@ -384,6 +417,7 @@ class VerificationController extends Controller
             'verif_name' => $verif->verif_name,
             'verif_expectedResult' => $verif->verif_expectedResult,
             'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+            'verif_requiredSkill' => $verif->verif_requiredSkill,
             'verif_validate' => $verif->verif_validate,
             
         ]);
@@ -418,6 +452,7 @@ class VerificationController extends Controller
                     'verif_name' => $verif->verif_name,
                     'verif_expectedResult' => $verif->verif_expectedResult,
                     'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                    'verif_requiredSkill' => $verif->verif_requiredSkill,
                     'verif_validate' => $verif->verif_validate,
                 ]);
                 array_push($container,$obj);

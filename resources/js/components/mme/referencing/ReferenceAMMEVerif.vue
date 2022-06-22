@@ -1,0 +1,193 @@
+<template>
+    <div class="mmeVerif" >
+        <h2 class="titleForm">MME Verification</h2>
+        <!--Adding to the vue MMEVerificationForm by going through the components array with the v-for-->
+        <!--ref="ask_verif_data" is used to call the child elements in this component-->
+        <!--The emitted deleteVerif is catched here and call the function getContent -->
+        <MMEVerificationForm ref="ask_verif_data" v-for="(component, key) in components" :key="component.key"
+            :is="component.comp" :number="component.number" :name="component.name" :description="component.description"
+            :nonComplianceLimit="component.nonComplianceLimit" :expectedResult="component.expectedResult"
+            :periodicity="component.periodicity" :symbolPeriodicity="component.symbolPeriodicity" :reformMod="isInReformMod"
+            :protocol="component.protocol" :divClass="component.className" :id="component.id" :requiredSkill="component.requiredSkill"
+            :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :mme_id="data_mme_id"
+            :reformDate="component.reformDate" :reformBy="component.reformBy"  
+            @deleteVerif="getContent(key)"/>
+        <!--If the user is not in consultation mode -->
+        <div v-if="!this.consultMod">
+            <!--Add another preventive maintenance operation button appear -->
+            <button v-on:click="addComponent">Add</button>
+            <!--If preventive maintenance operation array is not empty and if the user is not in modifacion mode -->
+            <div v-if="this.verifs!==null">
+                <!--The importation button appear -->
+                <button v-if="!modifMod " v-on:click="importVerif">import</button>
+            </div>
+        </div>
+        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        <ImportationAlert ref="importAlert"/>
+    </div>
+</template>
+
+<script>
+/*Importation of the others Components who will be used here*/
+import SaveButtonForm from '../../button/SaveButtonForm.vue'
+import ImportationAlert from '../../alert/ImportationAlert.vue'
+import MMEVerificationForm from './MMEVerificationForm.vue'
+export default {
+    components:{
+        MMEVerificationForm,
+        SaveButtonForm,
+        ImportationAlert
+    },
+    /*--------Declartion of the differents props:--------
+        consultMod: If this props is present the form is in consult mode we disable all the field
+        modifMod: If this props is present the form is in modif mode we disable save button and show update button
+        importedVerif: All preventive maintenance operation imported from the database
+        mme_id: Id of the mme in which the preventive maintenance operation will be added
+        import_id: Id of the mme with which preventive maintenance operation 
+    ---------------------------------------------------*/
+        props:{
+        consultMod:{
+            type:Boolean,
+            default:false
+        },
+        modifMod:{
+            type:Boolean,
+            default:false
+        },
+        importedVerif:{
+            type:Array,
+            default:null
+        },
+        mme_id:{
+            type:Number
+        },
+        import_id:{
+            type:Number,
+            default:null
+        },
+        reformMod:{
+            type:Boolean,
+            default:false
+        }
+    },
+    /*--------Declartion of the differents returned data:--------
+    components: Array in which will be added the data of a component 
+    uniqueKey: A unique key assigned to a component
+    verifs: Array of all imported verifications
+    isInConsultedMod: data of the consultMod prop
+    isInModifMod: data of the modifMod prop
+    data_mme_id: data of the mme_id prop
+    -----------------------------------------------------------*/
+    data() {
+      return {
+        components: [],
+        uniqueKey:0,
+        verifs:this.importedVerif,
+        count:0,
+        isInConsultMod:this.consultMod,
+        isInModifMod:this.modifMod,
+        isInReformMod:this.reformMod,
+        data_mme_id:this.mme_id
+      };
+    },
+    methods:{
+        //Function for adding a new empty preventive maintenance operation form 
+        addComponent() {
+            this.components.push({
+                comp:'MMEVerificationForm',
+                key : this.uniqueKey++,
+            });
+        },
+        //Function for adding imported preventive maintenance operation form with his data
+        addImportedComponent(verif_number,verif_name,verif_nonComplianceLimit,verif_expectedResult,verif_description,verif_periodicity,
+        verif_symbolPeriodicity,verif_requiredSkill,verif_protocol,
+        verif_validate,verif_className,id,verif_reformDate,verif_reformBy) {
+            this.components.push({
+                comp:'MMEVerificationForm',
+                key : this.uniqueKey++,
+                number:verif_number,
+                name:verif_name,
+                nonComplianceLimit:verif_nonComplianceLimit,
+                expectedResult:verif_expectedResult,
+                description :verif_description,
+                periodicity:verif_periodicity,
+                symbolPeriodicity:verif_symbolPeriodicity,
+                requiredSkill:verif_requiredSkill,
+                protocol:verif_protocol,
+                className:verif_className,
+                validate:verif_validate,
+                id:id,
+                reformDate:verif_reformDate,
+                reformBy:verif_reformBy
+            });
+        },
+        //Suppresion of a preventive maintenance operation component from the vue
+        getContent(key) {
+            this.components.splice(key, 1);
+        },
+        //Function for adding to the vue the imported preventive maintenance operation
+        importVerif(){
+            if(this.verifs.length==0 && !this.isInModifMod){
+                this.$refs.importAlert.showAlert();
+            }else{
+                for (const verif of this.verifs) {
+                    var className="importedVerif"+verif.id
+                    this.addImportedComponent(verif.verif_number,verif.verif_name,verif.verif_nonComplianceLimit,verif.verif_expectedResult,
+                    verif.verif_description,verif.verif_periodicity,verif.verif_symbolPeriodicity,verif.verif_requiredSkill,
+                    verif.verif_protocol,verif.verif_validate,className,verif.id,verif.verif_reformDate,verif.verif_reformBy);
+                }
+            }
+            this.verifs=null
+        },
+        //Function for saving all the data in one time
+        saveAll(savedAs){
+            for(const component of this.$refs.ask_verif_data){
+                //If the user is in modification mode
+                if(this.modifMod==true){
+                    //If the preventive maintenance operation doesn't have an id
+                    if(component.verif_id==null ){
+                        //AddequipmentVerif is used
+                        component.addEquipmentVerif(savedAs);
+                    }else
+                    //Else if the preventive maintenance operation have an id and addSucces is equal to true 
+                    if(component.verif_id!=null || component.addSucces==true){
+                        //updateEquipmentVerif is used
+                        if(component.verif_validate!=="validated"){
+                            component.updateEquipmentVerif(savedAs);
+                        }
+                    }
+                }else{
+                    //Else If the user is not in modification mode
+                    component.addEquipmentVerif(savedAs);
+                }
+                
+
+            }
+        }
+    },
+    /*All function inside the created option is called after the component has been created.*/
+    created(){
+        //If the user choose an importation equipment
+        if(this.import_id!==null){
+            //Make a get request to ask to the controller the preventive maintenance operation corresponding to the id of the equipment with which data will be imported
+            var consultUrl = (id) => `/verifs/send/${id}`;
+            axios.get(consultUrl(this.import_id))
+                .then (response=> this.verifs=response.data)
+                .catch(error => console.log(error)) ;
+        }
+
+    },
+        /*All function inside the created option is called after the component has been mounted.*/
+    mounted(){
+        //If the user is in consultation or modification mode preventive maintenance operation will be added to the vue automatically
+        if(this.consultMod || this.modifMod ){
+            this.importVerif();
+        }
+}
+
+}
+</script>
+
+<style>
+
+</style>

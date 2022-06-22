@@ -14,30 +14,64 @@
 						<a href="#" @click="openUserUpdateModal(user.user_pseudo,user.user_firstName,user.user_lastName,user.user_initials,user.id,user.user_formationEqDate)">{{user.user_lastName}} {{user.user_firstName}}</a>
 					</b-col>
 
-					<AccountManagmentElement right_title="Make equipment operation validation" key_letter="A" :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
-					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
-					<AccountManagmentElement right_title="Person trained to general principles of MME managment" key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> User Management </b-col>  </b-row>
+					
+
+					<AccountManagmentElement right_title="Acces to user managment" key_letter="R" :users="pageOfItems" right_name="user_menuUserAcessRight"/>
 					<AccountManagmentElement right_title="Reset user password" key_letter="D" :users="pageOfItems" right_name="user_resetUserPasswordRight"/>
+
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> Data recording </b-col>  </b-row>
+
+					<AccountManagmentElement right_title="Update data in draft or to be validated" key_letter="H" :users="pageOfItems" right_name="user_updateDataInDraftRight"/>
+					<AccountManagmentElement right_title="Validate descriptive LifeSheet data " key_letter="I" :users="pageOfItems" right_name="user_validateDescriptiveLifeSheetDataRight"/>
 					<AccountManagmentElement right_title="Update data validated but not signed" key_letter="E" :users="pageOfItems" right_name="user_updateDataValidatedButNotSignedRight" />
 					<AccountManagmentElement right_title="Update descriptive LifeSheet of signed data" key_letter="F" :users="pageOfItems" right_name="user_updateDescriptiveLifeSheetDataSignedRight"/>
 					<AccountManagmentElement right_title="Validate other data" key_letter="G" :users="pageOfItems" right_name="user_validateOtherDataRight"/>
-					<AccountManagmentElement right_title="Update data in draft or to be validated" key_letter="H" :users="pageOfItems" right_name="user_updateDataInDraftRight"/>
-					<AccountManagmentElement right_title="Validate descriptive LifeSheet data " key_letter="I" :users="pageOfItems" right_name="user_validateDescriptiveLifeSheetDataRight"/>
-					<AccountManagmentElement right_title="Delete not validated data of an MME or equipment" key_letter="J" :users="pageOfItems" right_name="user_deleteDataNotValidatedLinkedToEqOrMmeRight"/>
-					<AccountManagmentElement right_title="Delete validated data of an MME or equipment" key_letter="K" :users="pageOfItems" right_name="user_deleteDataValidatedLinkedToEqOrMmeRight"/>
-					<AccountManagmentElement right_title="Delete an MME or equipment" key_letter="L" :users="pageOfItems" right_name="user_deleteEqOrMmeRight"/>
+					
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> Data Validation </b-col>  </b-row>
+
+					<AccountManagmentElement right_title="Make a quality Validation" key_letter="P" :users="pageOfItems" right_name="user_makeQualityValidationRight"/>
+					<AccountManagmentElement right_title="Make a technical Validation" key_letter="Q" :users="pageOfItems" right_name="user_makeTechnicalValidationRight"/>
+
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> Enum Management </b-col>  </b-row>
+
 					<AccountManagmentElement right_title="Update an enumeration" key_letter="M" :users="pageOfItems" right_name="user_updateEnumRight" />
 					<AccountManagmentElement right_title="Delete an enumeration" key_letter="N" :users="pageOfItems" right_name="user_deleteEnumRight"/>
 					<AccountManagmentElement right_title="Add an enumeration" key_letter="O" :users="pageOfItems" right_name="user_addEnumRight"/>
-					<AccountManagmentElement right_title="Make a quality Validation" key_letter="P" :users="pageOfItems" right_name="user_makeQualityValidationRight"/>
-					<AccountManagmentElement right_title="Make a technical Validation" key_letter="Q" :users="pageOfItems" right_name="user_makeTechnicalValidationRight"/>
-					<AccountManagmentElement right_title="Acces to user managment" key_letter="R" :users="pageOfItems" right_name="user_menuUserAcessRight"/>
-					<AccountManagmentElement right_title="Update information" key_letter="S" :users="pageOfItems" right_name="user_updateInformationRight"/>
-					<AccountManagmentElement right_title="Reform data" key_letter="T" :users="pageOfItems" right_name="user_makeReformRight"/>
-					<AccountManagmentElement right_title="Delete signed data" key_letter="U" :users="pageOfItems" right_name="user_deleteDataSignedLinkedToEqOrMmeRight"/>
-					<AccountManagmentElement right_title="Declare a new state" key_letter="V" :users="pageOfItems" right_name="user_declareNewStateRight"/>
-					<AccountManagmentElement right_title="Approve a maintenace record" key_letter="W" :users="pageOfItems" right_name="user_makeEqRespValidationRight"/>
 
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> Data suppression management </b-col>  </b-row>
+
+					<AccountManagmentElement right_title="Delete not validated data of a MME or equipment" key_letter="J" :users="pageOfItems" right_name="user_deleteDataNotValidatedLinkedToEqOrMmeRight"/>
+					<AccountManagmentElement right_title="Delete validated data of a MME or equipment" key_letter="K" :users="pageOfItems" right_name="user_deleteDataValidatedLinkedToEqOrMmeRight"/>
+					<AccountManagmentElement right_title="Delete a MME or equipment" key_letter="L" :users="pageOfItems" right_name="user_deleteEqOrMmeRight"/>
+					<AccountManagmentElement right_title="Delete signed data" key_letter="U" :users="pageOfItems" right_name="user_deleteDataSignedLinkedToEqOrMmeRight"/>
+					<AccountManagmentElement right_title="Reform data" key_letter="T" :users="pageOfItems" right_name="user_makeReformRight"/>
+
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> Dictionnary management </b-col>  </b-row>
+
+					<AccountManagmentElement right_title="Update information" key_letter="S" :users="pageOfItems" right_name="user_updateInformationRight"/>
+					
+
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> Formation management </b-col>  </b-row>
+
+					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
+					<AccountManagmentElement right_title="Person trained to general principles of MME managment" key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
+	
+					<b-row><div class="w-100 row_right_tab"></div>
+					<b-col class="right_title"> Life Event Management </b-col>  </b-row>
+					
+					<AccountManagmentElement right_title="state management" key_letter="V" :users="pageOfItems" right_name="user_declareNewStateRight"/>
+					<AccountManagmentElement right_title="Approve an equipment maintenance record" key_letter="W" :users="pageOfItems" right_name="user_makeEqRespValidationRight"/>
+					<AccountManagmentElement right_title="Make equipment operation validation" key_letter="A"  :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
+					<AccountManagmentElement right_title="Approve an mme verification or maintenance record" key_letter="X" :users="pageOfItems" right_name="user_makeMmeRespValidationRight"/>
+					<AccountManagmentElement right_title="Make mme verification validation" key_letter="Y" :users="pageOfItems" right_name="user_makeMmeOpValidationRight"/>
 
 					<div class="w-100 row_right_tab"></div>
 				</b-row>
@@ -268,6 +302,12 @@ export default {
 			}
 			if(user.user_makeEqRespValidationRight==true){
 				document.getElementById('user_makeEqRespValidationRight'+user.id).setAttribute("checked", true)
+			}
+			if(user.user_makeMmeRespValidationRight==true){
+				document.getElementById('user_makeMmeRespValidationRight'+user.id).setAttribute("checked", true)
+			}
+			if(user.user_makeMmeOpValidationRight==true){
+				document.getElementById('user_makeMmeOpValidationRight'+user.id).setAttribute("checked", true)
 			}
 		}
 	}

@@ -24,6 +24,30 @@
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item"  v-if="mme_files.length>0">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            MME File
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            <ReferenceAMMEFile :importedFile="mme_files" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" v-if="mme_verifs.length>0">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            MME Verification
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                        <div class="accordion-body">
+                            <ReferenceAMMEVerif :importedVerif="mme_verifs" consultMod/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -34,17 +58,24 @@ import ErrorAlert from '../../alert/ErrorAlert.vue'
 import SuccesAlert from '../../alert/SuccesAlert.vue'
 import MmeIdForm from '../referencing/MmeIdForm.vue'
 import ValidationButton from '../../button/ValidationButton.vue'
+import ReferenceAMMEFile from '../referencing/ReferenceAMMEFile.vue'
+import ReferenceAMMEVerif from '../referencing/ReferenceAMMEVerif.vue'
+
 export default {
     components: {
         MmeIdForm,
         ErrorAlert,
         SuccesAlert,
-        ValidationButton
+        ValidationButton,
+        ReferenceAMMEFile,
+        ReferenceAMMEVerif
     },
     data(){
         return{
             mme_id:this.$route.params.id.toString(),
             mme_idCard:null,
+            mme_files:null,
+            mme_verifs:null,
             loaded:false,
             validationMethod:this.$route.query.method,
             errors:[]
@@ -60,8 +91,27 @@ export default {
         axios.get(consultUrl(this.mme_id))
             .then (response => {
                 this.mme_idCard=response.data;
-                this.loaded=true})
+                })
             .catch(error => console.log(error));
+
+        var consultUrl = (id) => `/file/send/mme/${id}`;
+            axios.get(consultUrl(this.mme_id))
+                .then (response=> {
+                    this.mme_files=response.data
+                })
+                .catch(error => console.log(error)) ;
+
+        var consultUrl = (id) => `/verifs/send/${id}`;
+            axios.get(consultUrl(this.mme_id))
+                .then (response=> {
+                    this.mme_verifs=response.data
+                    console.log(response.data)
+                    this.loaded=true})
+                .catch(error => console.log(error)) ;
+
+
+
+
     },
     methods:{
         Validate(){

@@ -13,6 +13,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Verification;
 use App\Models\EnumVerificationRequiredSkill;
+use Illuminate\Support\Facades\DB ; 
 
 class EnumVerificationRequiredSkillController extends Controller
 {

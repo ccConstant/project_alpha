@@ -20,6 +20,30 @@
                             modifMod/>
                         </div>
                     </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            MME File
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                            <div class="accordion-body">
+                                <ReferenceAMMEFile  :importedFile="mme_files" modifMod/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            MME Verification
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                            <div class="accordion-body">
+                                <ReferenceAMMEVerif  :importedVerif="mme_verifs" modifMod/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,15 +52,20 @@
 
 <script>
 import MmeIdForm from '../referencing/MmeIdForm.vue'
+import ReferenceAMMEFile from '../referencing/ReferenceAMMEFile.vue'
+import ReferenceAMMEVerif from '../referencing/ReferenceAMMEVerif.vue'
 export default {
         components: {
         MmeIdForm,
+        ReferenceAMMEFile,
+        ReferenceAMMEVerif
     },
 
     data(){
         return{
             mme_id:this.$route.params.id,
             mme_idCard:null,
+            mme_files:null,
             loaded:false,
         }
     },
@@ -52,9 +81,24 @@ export default {
                     this.mme_lifeSheetCreated=response.data.mme_lifeSheetCreated;
                     this.$router.push({ name: "home"})
                 }
-                this.loaded=true;
             })
             .catch(error => console.log(error));
+
+        var consultUrl = (id) => `/file/send/mme/${id}`;
+            axios.get(consultUrl(this.mme_id))
+                .then (response=> {
+                    this.mme_files=response.data
+                })
+                .catch(error => console.log(error)) ;
+
+        var consultUrl = (id) => `/verifs/send/${id}`;
+            axios.get(consultUrl(this.mme_id))
+                .then (response=> {
+                    this.mme_verifs=response.data
+                    console.log(response.data)
+                    this.loaded=true})
+                .catch(error => console.log(error)) ;
+
     }
 
 }

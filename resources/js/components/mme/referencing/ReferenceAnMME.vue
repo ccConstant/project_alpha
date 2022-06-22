@@ -15,6 +15,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item" >
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            MME Verification
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            <ReferenceAMMEVerif :mme_id="this.mme_id" :import_id="this.importation_id"/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
   </div>
@@ -22,11 +34,14 @@
 
 <script>
 import MmeIdForm from './MmeIdForm.vue'
-import ReferenceAMMEFile from './RefereneceAMMEFile.vue'
+import ReferenceAMMEFile from './ReferenceAMMEFile.vue'
+import ReferenceAMMEVerif from './ReferenceAMMEVerif.vue'
+
 export default {
     components: {
         MmeIdForm,
-        ReferenceAMMEFile
+        ReferenceAMMEFile,
+        ReferenceAMMEVerif
 
     },
     data(){

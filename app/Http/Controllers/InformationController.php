@@ -146,7 +146,7 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_person(){
-        $informations=Information::where('info_set', '=', 'person')->get() ; 
+        $informations=Information::where('info_set', '=', 'user')->get() ; 
         return response()->json($informations) ; 
     }
 

@@ -90,6 +90,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingEight">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                        Equipment Required Skill
+                        </button>
+                    </h2>
+                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight">
+                        <div class="accordion-body">
+                            <EnumElement error_name='enum_requiredSkill' :enumList="enum_requiredSkill" title="Equipment Required Skill" url="/verification/enum/requiredSkill/" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -110,6 +122,7 @@ export default {
             enum_dim_unit : [],
             enum_pow_type : [],
             enum_risk_for : [],
+            enum_requiredSkill:[],
             loaded:false
 
         }
@@ -147,6 +160,11 @@ export default {
         axios.get('/risk/enum/riskfor')
             .then (response=>{
                 this.enum_risk_for=response.data
+            }) 
+            .catch(error => console.log(error)) ;
+        axios.get('/verification/enum/requiredSkill')
+            .then (response=>{
+                this.enum_requiredSkill=response.data
                 this.loaded=true
             }) 
             .catch(error => console.log(error)) ;
