@@ -217,7 +217,7 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
-                        console.log(response)
+                        console.log(response.data)
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True

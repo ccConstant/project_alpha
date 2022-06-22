@@ -119,17 +119,18 @@ class MmeUsageController extends Controller
 
         //Creation of a new usage
         $usg=MmeUsage::create([
-            'usg_measurementType' => $request->usg_measurementType,
+            'usg_mesurementType' => $request->usg_measurementType,
             'usg_validate' => $request->usg_validate,
             'usg_precision' => $request->usg_precision,
             'usg_application' => $request->usg_application,
             'usg_startDate' => Carbon::now('Europe/Paris'),
-            //'enumUsageMetrologicalLevel_id' => $metrologicalLevel_id,
-            //'enumUsageVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
+            'enumUsageMetrologicalLevel_id' => $metrologicalLevel_id,
+            'enumUsageVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
         ]) ;
+    
 
-        /*$usg_id=$usage->id;
+        $usg_id=$usg->id;
         $id_mme=intval($request->mme_id) ; 
         if ($mostRecentlyMmeTmp!=NULL){
               //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add usage
@@ -151,7 +152,7 @@ class MmeUsageController extends Controller
                 ]);
              }
             return response()->json($usg_id) ; 
-        }*/
+        }
     }
 
     /**
@@ -275,11 +276,14 @@ class MmeUsageController extends Controller
             $verifAcceptanceAuthority = NULL ;
 
             if ($usage->enumUsageMetrologicalLevel_id!=NULL){
-                $metrologicalLevel = $usage->enumUsageMetrologicalLevel_id->value ;
+
+                $metrologicalLevel_enum= EnumUsageMetrologicalLevel::findOrFail($usage->enumUsageMetrologicalLevel_id)->first() ;
+                $metrologicalLevel = $metrologicalLevel_enum->value ;
             }
 
             if ($usage->enumUsageVerifAcceptanceAuthority_id!=NULL){
-                $verifAcceptanceAuthority = $usage->enumUsageVerifAcceptanceAuthority_id->value ;
+                $verifAcceptanceAuthority_enum= EnumUsageVerifAcceptanceAuthority::findOrFail($usage->enumUsageVerifAcceptanceAuthority_id)->first() ;
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
             }
             $day=$dates[2] ;
             $newDate=$day." ".$month." ".$year ; 
