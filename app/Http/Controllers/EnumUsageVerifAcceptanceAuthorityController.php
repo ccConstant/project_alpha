@@ -1,16 +1,5 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-
-class EnumUsageVerifAcceptanceAuthorityController extends Controller
-{
-    //
-}
-
-
-
 /*
 * Filename : EnumUsageVerifAcceptanceAuthorityController.php 
 * Creation date : 21 Jun 2022
@@ -36,7 +25,7 @@ class EnumUsageVerifAcceptanceAuthorityController extends Controller
     */
 
     public function send_enum_verifAcceptanceAuthority (){
-        $enums_verifAcceptanceAuthority=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_usage_metrological_levels'));
+        $enums_verifAcceptanceAuthority=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_usage_verif_acceptance_authorities'));
         return response()->json($enums_verifAcceptanceAuthority) ; 
     }
 

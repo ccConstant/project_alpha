@@ -93,12 +93,36 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingEight">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                        Equipment Required Skill
+                        MME Required Skill
                         </button>
                     </h2>
                     <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight">
                         <div class="accordion-body">
                             <EnumElement error_name='enum_requiredSkill' :enumList="enum_requiredSkill" title="Equipment Required Skill" url="/verification/enum/requiredSkill/" />
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingNine">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                            MME Verification acceptance authority
+                        </button>
+                    </h2>
+                    <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
+                        <div class="accordion-body">
+                            <EnumElement error_name='enum_verifAcceptanceAuthority' :enumList="enum_verifAcceptanceAuthority" title="MME Verification acceptance authority" url="/usage/enum/verifAcceptanceAuthority/" />
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTen">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                            MME metrological level
+                        </button>
+                    </h2>
+                    <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen">
+                        <div class="accordion-body">
+                            <EnumElement error_name='enum_metrologicalLevel' :enumList="enum_metrologicalLevel" title="MME metrological level" url="/usage/enum/metrologicalLevel/" />
                         </div>
                     </div>
                 </div>
@@ -123,6 +147,8 @@ export default {
             enum_pow_type : [],
             enum_risk_for : [],
             enum_requiredSkill:[],
+            enum_verifAcceptanceAuthority:[],
+            enum_metrologicalLevel:[],
             loaded:false
 
         }
@@ -167,6 +193,18 @@ export default {
                 this.enum_requiredSkill=response.data
                 this.loaded=true
             }) 
+            .catch(error => console.log(error)) ;
+
+        axios.get('/usage/enum/verifAcceptanceAuthority')
+            .then (response=>{
+                this.enum_verifAcceptanceAuthority=response.data;
+            } ) 
+            .catch(error => console.log(error)) ;
+        axios.get('/usage/enum/metrologicalLevel')
+            .then (response=>{
+                this.enum_metrologicalLevel=response.data;
+                this.loaded=true
+            } ) 
             .catch(error => console.log(error)) ;
     }
 

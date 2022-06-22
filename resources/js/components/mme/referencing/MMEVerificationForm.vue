@@ -317,9 +317,9 @@ export default {
             //Emit to the parent component that we want to delete this component
             
             //If the user is in update mode and the preventive maintenance operation exist in the database
-            if(this.modifMod==true && this.mme_id!==null){
+            if(this.modifMod==true && this.verif_id!==null){
                 var consultUrl = (id) => `/mme/delete/verif/${id}`;
-                axios.post(consultUrl(this.mme_id),{
+                axios.post(consultUrl(this.verif_id),{
                     mme_id:this.mme_id_update,
                 })
                 .then(response =>{

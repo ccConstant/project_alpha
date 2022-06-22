@@ -126,7 +126,7 @@ export default {
         addSucces: Boolean who tell if this risk has been added successfully
         isInConsultedMod: data of the consultMod prop
     -----------------------------------------------------------*/
-        data(){
+    data(){
         return{
             risk_for:this.for,
             risk_remarks:this.remarks,
@@ -321,7 +321,7 @@ export default {
         clearError(event){
             delete this.errors[event.target.name];
         },
-                //Function for deleting a risk from the view and the database
+        //Function for deleting a risk from the view and the database
         deleteComponent(){
 
             //If the user is in update mode and the risk exist in the database

@@ -9,8 +9,8 @@
                 <!--Call of the different component with their props-->
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_measurementType" name="usg_measurementType" label="Measurement type :" :isDisabled="!!isInConsultedMod" v-model="usg_measurementType" />
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
-                <InputSelectForm @clearSelectError='clearSelectError'  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
-                <InputSelectForm @clearSelectError='clearSelectError'  name="usg_metrologicalLevel"  label="Required Skill :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
+                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50"  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
+                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Required Skill :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
                 
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
@@ -156,6 +156,20 @@ export default {
 
         }
     },
+    created(){
+        /*Ask for the controller different required skill  */
+        axios.get('/usage/enum/verifAcceptanceAuthority')
+            .then (response=>{
+                this.enum_verifAcceptanceAuthority=response.data;
+            } ) 
+            .catch(error => console.log(error)) ;
+        axios.get('/usage/enum/metrologicalLevel')
+            .then (response=>{
+                this.enum_metrologicalLevel=response.data;
+                this.loaded=true
+            } ) 
+            .catch(error => console.log(error)) ;
+    },
     methods:{
         /*Sending to the controller all the information about the   mme so that it can be added to the database
         Params : 
@@ -267,7 +281,7 @@ export default {
             if(this.modifMod==true && this.usg_id!==null){
                 var consultUrl = (id) => `/mme/delete/usg/${id}`;
                 axios.post(consultUrl(this.usg_id),{
-                    eq_id:this.equipment_id_update,
+                    mme_id:this.mme_id_update,
                 })
                 .then(response =>{
                     //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
@@ -282,10 +296,46 @@ export default {
             }
             
         },
+        reformComponent(endDate){
+            if(this.$userId.user_makeReformRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right to reform")
+                return
+            }
+            //If the user is in update mode and the usage exist in the database
+                //Send a post request with the id of the usage who will be deleted in the url
+            var consultUrl = (id) => `/mme/reform/usg/${id}`;
+            axios.post(consultUrl(this.usg_id),{
+                mme_id:this.mme_id_update,
+                usg_reformDate:endDate
+            })
+            .then(response =>{
+                //Emit to the parent component that we want to delete this component
+                this.$emit('deleteUsage','')
+            })
+            //If the controller sends errors we put it in the errors object 
+            .catch(error => {this.$refs.errorAlert.showAlert(error.response.data.errors['usg_reformDate'])}) ;
+        
+            
+        },
+        clearSelectError(value){
+            delete this.errors[value];
+        },
     }
 }
 </script>
 
-<style>
-
+<style lang="scss">
+    .hr {
+        display: block;
+        flex: 1;
+        height: 3px;
+        background: #D4D4D4;
+    }
+    .titleForm{
+        padding-left: 10px;
+    }
+    form{
+        margin: 20px;
+        margin-bottom: 100px;
+    }
 </style>

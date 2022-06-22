@@ -156,7 +156,7 @@ export default {
     mounted(){
         //If the user is in consultation or modification mode preventive maintenance operation will be added to the vue automatically
         if(this.consultMod || this.modifMod ){
-            this.importPrvMtnOp();
+            this.importUsage();
         }
     }
 

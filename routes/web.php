@@ -38,6 +38,7 @@ use App\Http\Controllers\MmeStateController ;
 use App\Http\Controllers\EnumVerificationRequiredSkillController;
 use App\Http\Controllers\EnumPrecautionTypeController;
 use App\Http\Controllers\EnumUsageMetrologicalLevelController;
+use App\Http\Controllers\EnumUsageVerifAcceptanceAuthorityController;
 
 /*
 |--------------------------------------------------------------------------

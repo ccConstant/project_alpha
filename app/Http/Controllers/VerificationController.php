@@ -307,8 +307,6 @@ class VerificationController extends Controller
                  if ($request->verif_symbolPeriodicity=='H'){
                     $nextDate->addHours($request->verif_periodicity) ; 
                 }
-
-                //return response()->json($nextDate) ;
                  $oldVerif->update([
                     'verif_nextDate' => $nextDate,
                 ]);
@@ -322,7 +320,6 @@ class VerificationController extends Controller
                 'verif_periodicity' => $request->verif_periodicity,
                 'verif_symbolPeriodicity' => $request->verif_symbolPeriodicity,
                 'verif_protocol' => $request->verif_protocol,
-                'verif_nextDate' => $nextDate,
                 'verif_validate' => $request->verif_validate,
                 'enumRequiredSkill_id' => $requiredSkill_id,
                 'mmeTemp_id' => $mostRecentlyMmeTmp->id,

@@ -93,7 +93,7 @@ export default {
         import_id: Id of the equipment with which risks will be imported
         riskForEq :
     ---------------------------------------------------*/
-        props:{
+    props:{
         consultMod:{
             type:Boolean,
             default:false

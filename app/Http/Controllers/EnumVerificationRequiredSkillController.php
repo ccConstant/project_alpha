@@ -79,7 +79,7 @@ class EnumVerificationRequiredSkillController extends Controller
 
     public function delete_enum_requiredSkill($id){
         $enum_requiredSkill=EnumVerificationRequiredSkill::findOrFail($id) ; 
-        $VerifLinked=Verification::where('verif_requiredSkill', '=', $id)->get() ; 
+        $VerifLinked=Verification::where('enumRequiredSkill_id', '=', $id)->get() ; 
         if (count($VerifLinked)!=0){
             return response()->json([
                 'errors' => [
