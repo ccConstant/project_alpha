@@ -52,7 +52,7 @@
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
                             <div class="accordion-body">
-                                <ReferenceAMMEUsage :importedVerif="mme_usages" modifMod/>
+                                <ReferenceAMMEUsage :importedUsage="mme_usages" modifMod/>
                             </div>
                         </div>
                     </div>

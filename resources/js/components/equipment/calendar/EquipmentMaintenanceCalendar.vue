@@ -29,10 +29,6 @@
                     <FullCalendar  :options="calendarOptions"/>
             </div>
         </div>
-
-
-        
-
     </div>
 
 
@@ -123,7 +119,7 @@ export default {
                     this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
                     for(const operation of data.preventive_maintenance_operations){
                         this.calendarOptions.events.push({title:data.internalReference,date:operation.prvMtnOp_nextDate,
-                            eq_id:data.id,state_id:data.state_id,
+                         eq_id:data.id,state_id:data.state_id,
                          number:operation.prvMtnOp_number,id:operation.id,
                          description:operation.prvMtnOp_description,
                          operation_date:moment(operation.prvMtnOp_nextDate).format('D MMM YYYY hh:mm a'),

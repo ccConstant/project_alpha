@@ -149,6 +149,10 @@ const router = new VueRouter({
         name: 'url_mme_life_event',
         component:require('./components/mme/lifeEvent/ListOfMMELifeEvent.vue').default
     },{
+        path:'/mme/life_event/state/:id(\\d+)/:state_id(\\d+)',
+        name: 'url_mme_life_event_update_state',
+        component:require('./components/mme/lifeEvent/UpdateMMEState.vue').default
+    },{
         path:'*',
     }]
 

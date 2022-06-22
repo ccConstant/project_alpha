@@ -119,7 +119,7 @@ class MmeUsageController extends Controller
 
         //Creation of a new usage
         $usg=MmeUsage::create([
-            'usg_mesurementType' => $request->usg_measurementType,
+            'usg_measurementType' => $request->usg_measurementType,
             'usg_validate' => $request->usg_validate,
             'usg_precision' => $request->usg_precision,
             'usg_application' => $request->usg_application,

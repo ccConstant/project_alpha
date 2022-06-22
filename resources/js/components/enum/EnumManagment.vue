@@ -98,7 +98,7 @@
                     </h2>
                     <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight">
                         <div class="accordion-body">
-                            <EnumElement error_name='enum_requiredSkill' :enumList="enum_requiredSkill" title="Equipment Required Skill" url="/verification/enum/requiredSkill/" />
+                            <EnumElement error_name='enum_requiredSkill' :enumList="enum_requiredSkill" title="MME Required Skill" url="/verification/enum/requiredSkill/" />
                         </div>
                     </div>
                 </div>

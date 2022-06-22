@@ -11,7 +11,7 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_application" name="usg_application" label="Application :" :isDisabled="!!isInConsultedMod" v-model="usg_application" />
                 <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50"  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Required Skill :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
+                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Metrological level :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
                 
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
@@ -192,7 +192,7 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
- 
+
                 axios.post('/mme_usage/verif',{
                     usg_measurementType:this.usg_measurementType,
                     usg_precision:this.usg_precision,
@@ -203,6 +203,14 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
+                    console.log(this.usg_measurementType)
+                    console.log(this.usg_precision)
+                    console.log(this.usg_verifAcceptanceAuthority)
+                    console.log(this.usg_metrologicalLevel)
+                    console.log(this.usg_application)
+                    console.log(savedAs)
+                    console.log(id)
+
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the mme is sended to the controller*/
                     axios.post('/mme/add/usg',{
@@ -217,7 +225,8 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
-                        console.log(response.data)
+                        
+                        console.log(response)
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True

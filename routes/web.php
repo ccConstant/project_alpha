@@ -36,6 +36,7 @@ use App\Http\Controllers\VerificationController ;
 use App\Http\Controllers\VerificationRealizedController ; 
 use App\Http\Controllers\MmeUsageController ; 
 use App\Http\Controllers\MmeStateController ; 
+use App\Http\Controllers\PrecautionController ; 
 use App\Http\Controllers\EnumVerificationRequiredSkillController;
 use App\Http\Controllers\EnumPrecautionTypeController;
 use App\Http\Controllers\EnumUsageMetrologicalLevelController;
@@ -168,6 +169,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/mme/life_event', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/life_event/reference/{id}/{state_id}', function () {
         return view('welcome');
     });
 });
@@ -756,10 +761,12 @@ Route::post('/mme/reform/usg/{id}', [MmeUsageController::class, 'reform_usage'])
 
 /* Precaution Form Routes */ 
 
-Route::post('/precaution/verif', [MmeUsageController::class, 'verif_precaution'])  ;
+Route::post('/precaution/verif', [PrecautionController::class, 'verif_precaution'])  ;
 
-Route::post('/mme/add/usage/prctn', [MmeUsageController::class, 'add_precaution'])  ;
+Route::post('/mme/add/usage/prctn', [PrecautionController::class, 'add_precaution'])  ;
 
-Route::post('/mme/update/prctn/{id}', [MmeUsageController::class, 'update_precaution'])  ;
+Route::post('/mme/update/prctn/{id}', [PrecautionController::class, 'update_precaution'])  ;
 
-Route::post('/precaution/delete/{id}', [MmeUsageController::class, 'delete_precaution'])  ;
+Route::post('/precaution/delete/{id}', [PrecautionController::class, 'delete_precaution'])  ;
+
+Route::get('/precaution/send/{id}', [PrecautionController::class, 'send_precautions'])  ;

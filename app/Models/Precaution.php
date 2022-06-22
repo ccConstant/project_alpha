@@ -25,4 +25,9 @@ class Precaution extends Model
     public function usage(){
         return $this->belongsTo(MmeUsage::class, 'mmeUsage_id') ; 
     }
+
+    //Define the relation between a usage and its precaution
+    public function enumPrecautionType(){
+        return $this->belongsTo(EnumPrecautionType::class, 'enumPrecautionType_id') ; 
+    }
 }

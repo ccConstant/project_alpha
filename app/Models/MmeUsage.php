@@ -21,7 +21,7 @@ class MmeUsage extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['usg_mesurementType','usg_precision','usg_application','usg_startDate','usg_reformDate','usg_validate', 'enumUsageMetrologicalLevel_id','enumUsageVerifAcceptanceAuthority_id','mmeTemp_id'] ;
+    protected $fillable = ['usg_measurementType','usg_precision','usg_application','usg_startDate','usg_reformDate','usg_validate', 'enumUsageMetrologicalLevel_id','enumUsageVerifAcceptanceAuthority_id','mmeTemp_id'] ;
 
     //Define the relation between an mme_temp and its usages : a usage can correspond to many mme temps
    public function mme_temps(){

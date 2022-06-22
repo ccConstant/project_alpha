@@ -91,7 +91,7 @@ export default {
             this.$refs.errorAlert.showAlert("You don't have the right");
 
             }else{
-            //this.$router.push({ name: "url_life_event_update_state", params:{id:mme_id_to_send,state_id:state_id} })
+            this.$router.push({ name: "url_mme_life_event_update_state", params:{id:mme_id_to_send,state_id:state_id} })
 
             }
         },

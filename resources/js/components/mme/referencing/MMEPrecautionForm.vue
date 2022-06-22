@@ -107,7 +107,7 @@ export default {
                 /*Sending to the controller all the information about the mme so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addMmePrctn(savedAs){
+        addMMEPrctn(savedAs){
             if(!this.addSucces){
                 //Id of the mme in which the precaution will be added
                 var id;
@@ -161,7 +161,7 @@ export default {
         /*Sending to the controller all the information about the precaution so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validate or validated  */ 
-        updateMmePrctn(savedAs){
+        updateMMEPrctn(savedAs){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             axios.post('/precaution/verif',{

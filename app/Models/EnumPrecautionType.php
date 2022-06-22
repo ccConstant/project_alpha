@@ -13,8 +13,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Precaution  ;
 
 class EnumPrecautionType extends Model
 {
     use HasFactory;
+
+    //Data which can be added, updated or deleted by us in the data base.
+    protected $fillable = ['value'] ; 
+
+    //Define the relation between a precaution and his type 
+   public function precautions(){
+       return $this->hasMany(Precaution::class) ; 
+   }
 }

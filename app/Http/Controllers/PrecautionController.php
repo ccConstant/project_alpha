@@ -8,6 +8,7 @@ use App\Models\Mme ;
 use App\Models\MmeTemp ;  
 use App\Models\MmeUsage ; 
 use App\Models\EnumPrecautionType  ;
+use App\Models\Precaution  ;
 use Carbon\Carbon;
 
 class PrecautionController extends Controller
@@ -18,8 +19,7 @@ class PrecautionController extends Controller
      * Function call by MmePrecautionForm.vue when the form is submitted for check data with the route : /precaution/verif'(post)
      * Check the informations entered in the form and send errors if it exists
      */
-    public function verif_precaution(Request $request){        
-        $usage=MmeUsage::findOrFail($request->usage_id) ;         
+    public function verif_precaution(Request $request){              
         if ($request->prctn_validate=="VALIDATED"){
             if ($request->prctn_type=='' || $request->prctn_type==NULL ){
                 return response()->json([
@@ -112,7 +112,31 @@ class PrecautionController extends Controller
     }
 
     
-    //send
+     /**
+     * Function call by ReferenceAUsage.vue with the route : /mme/usg/send/{id} (get)
+     * Get the precaution of one usage whose id is passed in parameter
+     *  The id parameter corresponds to the id of the usage from which we want the precaution to take
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_precautions($id) {
+        $precautions=Precaution::where('mmeUsage_id', '=', $id)->latest()->first();
+        $container=array() ; 
+        foreach ($precaution as $precaution) {
+            $type = NULL ; 
+            if ($precaution->enumPrecautionType_id!=NULL){
+                $type = $precaution->enumPrecautionType->value ;
+            }
+            $obj=([
+                'id' => $precaution->id,
+                'prctn_type' => $precaution->prctn_type,
+                'prctn_description' => $precaution->prctn_description,
+                'prctn_validate' => $precaution->prctn_validate,
+            ]) ; 
+            array_push($container,$obj);
+        }
+        return response()->json($container) ;
+    }
 }
 
 
