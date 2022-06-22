@@ -9,17 +9,17 @@
                 <!--Call of the different component with their props-->
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_measurementType" name="usg_measurementType" label="Measurement type :" :isDisabled="!!isInConsultedMod" v-model="usg_measurementType" />
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
-                
+                <InputSelectForm @clearSelectError='clearSelectError'  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
+                <InputSelectForm @clearSelectError='clearSelectError'  name="usg_metrologicalLevel"  label="Required Skill :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
                 
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
-                    <!--If this preventive maintenance operation doesn't have a id the addEquipmentUsage is called function else the updateEquipmentUsage function is called -->
                     <div v-if="this.usg_id===null ">
                         <div v-if="modifMod==true">
-                            <SaveButtonForm @add="addEquipmentUsage" @update="updateEquipmentUsage" :consultMod="this.isInConsultedMod" :savedAs="usg_validate" :AddinUpdate="true"/>
+                            <SaveButtonForm @add="addMmeUsage" @update="updateMmeUsage" :consultMod="this.isInConsultedMod" :savedAs="usg_validate" :AddinUpdate="true"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addEquipmentUsage" @update="updateEquipmentUsage" :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
+                            <SaveButtonForm @add="addMmeUsage" @update="updateMmeUsage" :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
                         </div>
                     </div>
                     <div v-else-if="this.usg_id!==null && reformMod==false ">
@@ -27,7 +27,7 @@
                             <p>Refrom by {{usg_refromBy}} at {{usg_refromDate}}</p>
                         </div>
                         <div v-else>
-                            <SaveButtonForm  @add="addEquipmentUsage" @update="updateEquipmentUsage" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
+                            <SaveButtonForm  @add="addMmeUsage" @update="updateMmeUsage" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
                         </div>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
@@ -40,13 +40,13 @@
                 </div>       
             </form>
             <div v-if="this.usg_id!==null && modifMod==false & consultMod==false && import_id==null " >
-                <ReferenceAMMEPrecaution :eq_id="this.eq_id" :usg_id="this.usg_id" :riskForEq="false"/>
+                <ReferenceAMMEPrecaution :mme_id="this.mme_id" :usg_id="this.usg_id"/>
             </div>
             <div v-else-if="this.usg_id!==null && modifMod==true">
-                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedRisk="importedOpRisk" :eq_id="this.eq_id" :usg_id="this.usg_id" :riskForEq="false" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
+                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedPrecaution="importedUsgPrecaution" :mme_id="this.mme_id" :usg_id="this.usg_id"  :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
             </div>
             <div v-else-if="loaded==true">
-                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedRisk="importedOpRisk" :eq_id="this.eq_id" :usg_id="this.usg_id" :riskForEq="false" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
+                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedPrecaution="importedUsgPrecaution" :mme_id="this.mme_id" :usg_id="this.usg_id" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
             </div>
             <ErrorAlert ref="errorAlert"/>
         </div>
@@ -59,6 +59,8 @@
 import ErrorAlert from '../../alert/ErrorAlert.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
+import InputSelectForm from '../../input/InputSelectForm.vue'
+
 import ReferenceAMMEPrecaution from './ReferenceAMMEPrecaution.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import ReformComponentButton from '../../button/ReformComponentButton.vue'
@@ -68,6 +70,7 @@ export default {
     components : {
         SaveButtonForm,
         InputTextAreaForm,
+        InputSelectForm,
         ReferenceAMMEPrecaution,
         DeleteComponentButton,
         ReformComponentButton,
@@ -75,6 +78,211 @@ export default {
 
 
     },
+    props:{
+        measurementType:{
+            type:String,
+            default:null
+        },
+        precision:{
+            type:String
+        },
+        verifAcceptanceAuthority:{
+            type:String
+        },
+        metrologicalLevel:{
+            type:String
+        },
+        validate:{
+            type:String
+        },
+        consultMod:{
+            type:Boolean,
+            default:false
+        },
+        modifMod:{
+            type:Boolean,
+            default :false
+        },
+        divClass:{
+            type:String
+        },
+        id:{
+            type:Number,
+            default:null
+        },
+        mme_id:{
+            type:Number
+        },
+        reformDate:{
+            type:String,
+            default:null
+        },
+        reformBy:{
+            type:String,
+            dfault:null
+        },
+        import_id:{
+            type: Number,
+            default :null
+        },
+        reformMod:{
+            type:Boolean,
+            default:false
+        }
+
+    },
+    data(){
+        return{
+            usg_measurementType:this.measurementType,
+            usg_precision:this.precision,
+            usg_verifAcceptanceAuthority:this.verifAcceptanceAuthority,
+            usg_metrologicalLevel:this.metrologicalLevel,
+            usg_validate:this.validate,
+            usg_refromDate:this.reformDate,
+            usg_refromBy:this.reformBy,
+            usg_id:this.id,
+            mme_id_add:this.mme_id,
+            mme_id_update:this.$route.params.id,
+            enum_verifAcceptanceAuthority: [],
+            enum_metrologicalLevel: [],
+            importedUsgPrecaution:[],
+            errors:{},
+            addSucces:false,
+            isInConsultedMod:this.consultMod,
+            loaded:false,
+            isInReformMod:this.reformMod,
+            infos_usage:[],
+            loaded:false
+
+        }
+    },
+    methods:{
+        /*Sending to the controller all the information about the   mme so that it can be added to the database
+        Params : 
+            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        addMmeUsage(savedAs){
+            if(!this.addSucces){
+                //Id of the Mme in which the preventive maintenance operation will be added
+                var id;
+                //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data Mme_id_add 
+                if(!this.modifMod){
+                        id=this.mme_id_add
+                //else the user is in the update menu, we allocate to the id the value of the id get in the url
+                }else{
+                    id=this.mme_id_update;
+                }
+                /*First post to verify if all the fields are filled correctly
+                Type, name, value, unit and validate option is sended to the controller*/
+ 
+                axios.post('/mme_usage/verif',{
+                    usg_measurementType:this.usg_measurementType,
+                    usg_precision:this.usg_precision,
+                    usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
+                    usg_metrologicalLevel:this.usg_metrologicalLevel,
+                    usg_validate :savedAs,
+                })
+                .then(response =>{
+                    this.errors={};
+                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
+                    Type, name, value, unit, validate option and id of the mme is sended to the controller*/
+                    axios.post('/mme/add/usg',{
+                        usg_measurementType:this.usg_measurementType,
+                        usg_precision:this.usg_precision,
+                        usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
+                        usg_metrologicalLevel:this.usg_metrologicalLevel,
+                        usg_validate :savedAs,
+                        mme_id:id
+                
+                    })
+                    //If the preventive maintenance operation is added succesfuly
+                    .then(response =>{
+                        console.log(response)
+                        //If we the user is not in modifMod
+                        if(!this.modifMod){
+                            //The form pass in consulting mode and addSucces pass to True
+                            this.isInConsultedMod=true;
+                            this.addSucces=true
+                        }
+                        //the id of the preventive maintenance operation take the value of the newlly created id
+                        this.usg_id=response.data;
+                        //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
+                        this.usg_validate=savedAs;
+                        
+                    })
+                    //If the controller sends errors we put it in the errors object 
+                    .catch(error => this.errors=error.response.data.errors) ;
+                ;})
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+
+
+
+            }
+
+        },
+        /*Sending to the controller all the information about the mme so that it can be updated in the database
+        Params : 
+            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        updateMmeUsage(savedAs){
+            /*First post to verify if all the fields are filled correctly
+                Type, name, value, unit and validate option is sended to the controller*/
+            console.log("update dans la base");
+            axios.post('/mme_usage/verif',{
+                    usg_measurementType:this.usg_measurementType,
+                    usg_precision:this.usg_precision,
+                    usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
+                    usg_metrologicalLevel:this.usg_metrologicalLevel,
+                    usg_validate :savedAs,
+                })
+                .then(response =>{
+                    this.errors={};
+                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
+                        Type, name, value, unit, validate option and id of the mme is sended to the controller
+                        In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
+                    var consultUrl = (id) => `/mme/update/usg/${id}`;
+                    axios.post(consultUrl(this.usg_id),{
+                        usg_measurementType:this.usg_measurementType,
+                        usg_precision:this.usg_precision,
+                        usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
+                        usg_metrologicalLevel:this.usg_metrologicalLevel,
+                        usg_validate :savedAs,
+                        mme_id:this.mme_id_update,
+                    })
+                    .then(response =>{this.usg_validate=savedAs;})
+                    //If the controller sends errors we put it in the errors object 
+                    .catch(error => this.errors=error.response.data.errors) ;
+                })
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+        },
+                /*Clear all the error of the targeted field*/
+        clearError(event){
+            delete this.errors[event.target.name];
+        },
+                //Function for deleting a preventive maintenance operation from the view and the database
+        deleteComponent(){
+            //Emit to the parent component that we want to delete this component
+            
+            //If the user is in update mode and the preventive maintenance operation exist in the database
+            if(this.modifMod==true && this.usg_id!==null){
+                var consultUrl = (id) => `/mme/delete/usg/${id}`;
+                axios.post(consultUrl(this.usg_id),{
+                    eq_id:this.equipment_id_update,
+                })
+                .then(response =>{
+                    //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
+                    this.$emit('deleteUsage','')
+                })
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+
+            }else{
+                this.$emit('deleteUsage','')
+
+            }
+            
+        },
+    }
 }
 </script>
 

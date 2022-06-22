@@ -206,7 +206,7 @@ class VerificationController extends Controller
             'verif_startDate' => Carbon::now('Europe/Paris'),
             'verif_nextDate' => $nextDate,
             'verif_validate' => $request->verif_validate,
-            'verif_requiredSkill' => $requiredSkill_id,
+            'enumRequiredSkill_id' => $requiredSkill_id,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
         ]) ; 
         
@@ -324,7 +324,7 @@ class VerificationController extends Controller
                 'verif_protocol' => $request->verif_protocol,
                 'verif_nextDate' => $nextDate,
                 'verif_validate' => $request->verif_validate,
-                'verif_requiredSkill' => $requiredSkill_id,
+                'enumRequiredSkill_id' => $requiredSkill_id,
                 'mmeTemp_id' => $mostRecentlyMmeTmp->id,
             ]) ;
 
@@ -343,6 +343,13 @@ class VerificationController extends Controller
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->latest()->first();
         $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
        foreach ($verifs as $verif) {
+
+            $requiredSkill=NULL;
+            if ($verif->enumRequiredSkill_id!=NULL){
+                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
+                $requiredSkill=$requiredSkillEnum->value ; 
+            }
+
             $obj=([
                 "id" => $verif->id,
                 "Number" => (string)$verif->verif_number,
@@ -352,7 +359,7 @@ class VerificationController extends Controller
                 "Protocol" => $verif->verif_protocol,
                 'Name' => $verif->verif_name,
                 'ExpectedResult' => $verif->verif_expectedResult,
-                'RequiredSkill' => $verif->verif_requiredSkill,
+                'RequiredSkill' => $requiredSkill,
                 'NonComplianceLimit' => $verif->verif_nonComplianceLimit,
             ]);
             array_push($container,$obj);
@@ -373,6 +380,12 @@ class VerificationController extends Controller
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->latest()->first();
         $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
        foreach ($verifs as $verif) {
+
+            $requiredSkill=NULL;
+            if ($verif->enumRequiredSkill_id!=NULL){
+                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
+                $requiredSkill=$requiredSkillEnum->value ; 
+            }
             $obj=([
                 "id" => $verif->id,
                 "verif_number" => (string)$verif->verif_number,
@@ -386,7 +399,7 @@ class VerificationController extends Controller
                 'verif_name' => $verif->verif_name,
                 'verif_expectedResult' => $verif->verif_expectedResult,
                 'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
-                'verif_requiredSkill' => $verif->verif_requiredSkill,
+                'verif_requiredSkill' => $requiredSkill,
                 'verif_validate' => $verif->verif_validate,
             ]);
             array_push($container,$obj);
@@ -404,6 +417,11 @@ class VerificationController extends Controller
     public function send_verif($id) {
         $container=array() ; 
         $verif=Verification::findOrFail($id) ; 
+        $requiredSkill=NULL;
+        if ($verif->enumRequiredSkill_id!=NULL){
+            $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
+            $requiredSkill=$requiredSkillEnum->value ; 
+        }
         $obj=([
             "id" => $verif->id,
             "verif_number" => (string)$verif->verif_number,
@@ -417,7 +435,7 @@ class VerificationController extends Controller
             'verif_name' => $verif->verif_name,
             'verif_expectedResult' => $verif->verif_expectedResult,
             'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
-            'verif_requiredSkill' => $verif->verif_requiredSkill,
+            'verif_requiredSkill' => $requiredSkill,
             'verif_validate' => $verif->verif_validate,
             
         ]);
@@ -439,6 +457,12 @@ class VerificationController extends Controller
 
        foreach ($verifs as $verif) {
            if ($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL){
+                
+            $requiredSkill=NULL;
+            if ($verif->enumRequiredSkill_id!=NULL){
+                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
+                $requiredSkill=$requiredSkillEnum->value ; 
+            }
                 $obj=([
                     "id" => $verif->id,
                     "verif_number" => (string)$verif->verif_number,
@@ -452,7 +476,7 @@ class VerificationController extends Controller
                     'verif_name' => $verif->verif_name,
                     'verif_expectedResult' => $verif->verif_expectedResult,
                     'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
-                    'verif_requiredSkill' => $verif->verif_requiredSkill,
+                    'verif_requiredSkill' => $requiredSkill,
                     'verif_validate' => $verif->verif_validate,
                 ]);
                 array_push($container,$obj);

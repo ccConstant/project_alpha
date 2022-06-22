@@ -104,6 +104,7 @@ export default {
         var consultUrl = (id) => `/verifs/send/${id}`;
             axios.get(consultUrl(this.mme_id))
                 .then (response=> {
+                    console.log(response.data)
                     this.mme_verifs=response.data
                     console.log(response.data)
                     this.loaded=true})

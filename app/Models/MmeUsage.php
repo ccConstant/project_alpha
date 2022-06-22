@@ -13,6 +13,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\EnumUsageVerifAcceptanceAuthority ; 
+use App\Models\EnumUsageMetrologicalLevel ; 
 
 class MmeUsage extends Model
 {
@@ -30,4 +32,15 @@ class MmeUsage extends Model
      public function precaution(){
         return $this->hasMany(Precaution::class) ; 
     }
+
+      //Define the relation between a usage and the verif acceptance autority : a usage has only one verif acceptance autority
+      public function enumUsageVerifAcceptanceAuthority(){
+        return $this->belongsTo(EnumUsageVerifAcceptanceAuthority::class, 'enumUsageVerifAcceptanceAuthority_id') ; 
+    }
+
+    //Define the relation between a usage and its metrological level : a usage has only one metrological level
+      public function enumUsageMetrologicalLevel(){
+        return $this->belongsTo(EnumUsageMetrologicalLevel::class, 'enumUsageMetrologicalLevel_id') ; 
+    }
+
 }

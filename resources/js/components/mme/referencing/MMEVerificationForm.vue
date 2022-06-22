@@ -13,9 +13,9 @@
                 <InputTextForm  inputClassName="form-control w-50" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
-                <InputSelectForm @clearSelectError='clearSelectError'  name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill"/>
+                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill"/>
                 <div class="input-group">
-                    <InputNumberForm  inputClassName="form-control" :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
+                    <InputNumberForm  inputClassName="form-control " :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
                     <InputSelectForm @clearSelectError='clearSelectError'  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.verif_description" name="verif_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="verif_description" />
@@ -170,14 +170,17 @@ export default {
             loaded:false,
             isInReformMod:this.reformMod,
             infos_verif:[],
-            loaded:true
+            loaded:false
 
         }
     },
     created(){
         /*Ask for the controller different required skill  */
         axios.get('/verification/enum/requiredSkill')
-            .then (response=> this.enum_dim_type=response.data) 
+            .then (response=>{
+                this.enum_requiredSkill=response.data;
+                this.loaded=true
+            } ) 
             .catch(error => console.log(error)) ;
     },
     methods:{
@@ -202,7 +205,7 @@ export default {
                     verif_name:this.verif_name,
                     verif_description:this.verif_description,
                     verif_expectedResult:this.verif_expectedResult,
-                    veirf_requiredSkill:this.verif_requiredSkill,
+                    verif_requiredSkill:this.verif_requiredSkill,
                     verif_nonComplianceLimit:this.verif_nonComplianceLimit,
                     verif_periodicity:parseInt(this.verif_periodicity),
                     verif_symbolPeriodicity:this.verif_symbolPeriodicity,
@@ -230,7 +233,7 @@ export default {
                         verif_nonComplianceLimit:this.verif_nonComplianceLimit,
                         verif_periodicity:parseInt(this.verif_periodicity),
                         verif_symbolPeriodicity:this.verif_symbolPeriodicity,
-                        veirf_requiredSkill:this.verif_requiredSkill,
+                        verif_requiredSkill:this.verif_requiredSkill,
                         verif_protocol:this.verif_protocol,
                         verif_validate :savedAs,
                         mme_id:id
@@ -246,9 +249,9 @@ export default {
                             this.addSucces=true
                         }
                         //the id of the preventive maintenance operation take the value of the newlly created id
-                        this.mme_id=response.data;
+                        this.verif_id=response.data;
                         //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
-                        this.mme_validate=savedAs;
+                        this.verif_validate=savedAs;
                         
                     })
                     //If the controller sends errors we put it in the errors object 
@@ -275,7 +278,7 @@ export default {
                     verif_expectedResult:this.verif_expectedResult,
                     verif_nonComplianceLimit:this.verif_nonComplianceLimit,
                     verif_periodicity:parseInt(this.verif_periodicity),
-                    veirf_requiredSkill:this.verif_requiredSkill,
+                    verif_requiredSkill:this.verif_requiredSkill,
                     verif_symbolPeriodicity:this.verif_symbolPeriodicity,
                     verif_protocol:this.verif_protocol,
                     verif_validate :savedAs,
@@ -285,14 +288,14 @@ export default {
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller
                         In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
-                    var consultUrl = (id) => `/equipment/update/verif/${id}`;
+                    var consultUrl = (id) => `/mme/update/verif/${id}`;
                     axios.post(consultUrl(this.verif_id),{
                         verif_name:this.verif_name,
                         verif_description:this.verif_description,
                         verif_expectedResult:this.verif_expectedResult,
                         verif_nonComplianceLimit:this.verif_nonComplianceLimit,
                         verif_periodicity:parseInt(this.verif_periodicity),
-                        veirf_requiredSkill:this.verif_requiredSkill,
+                        verif_requiredSkill:this.verif_requiredSkill,
                         verif_symbolPeriodicity:this.verif_symbolPeriodicity,
                         verif_protocol:this.verif_protocol,
                         verif_validate :savedAs,

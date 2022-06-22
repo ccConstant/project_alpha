@@ -738,13 +738,13 @@ Route::post('/verifRlz/realize/{id}', [VerificationRealizedController::class, 'r
 
 Route::post('/mme_usage/verif', [MmeUsageController::class, 'verif_usage'])  ;
 
-Route::post('/mme/add/usg/{id}', [MmeUsageController::class, 'add_usage'])  ;
+Route::post('/mme/add/usg', [MmeUsageController::class, 'add_usage'])  ;
 
 Route::post('/mme/update/usg/{id}', [MmeUsageController::class, 'update_usage'])  ;
 
 Route::get('/mme_usage/send/{id}', [MmeUsageController::class, 'send_usages'])  ;
 
-Route::post('/mme/delete/usg{id}', [MmeUsageController::class, 'delete_usage'])  ;
+Route::post('/mme/delete/usg/{id}', [MmeUsageController::class, 'delete_usage'])  ;
 
 Route::post('/mme/reform/usg/{id}', [MmeUsageController::class, 'reform_usage'])  ; 
 

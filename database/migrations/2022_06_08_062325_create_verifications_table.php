@@ -29,7 +29,6 @@ class CreateVerificationsTable extends Migration
             $table->string('verif_nonComplianceLimit') ->nullable(); 
             $table->unsignedMediumInteger('verif_periodicity') ->nullable(); 
             $table->enum('verif_symbolPeriodicity', ['Y', 'M', 'D', 'H']) ->nullable();  
-            $table->string('verif_requiredSkill') ->nullable(); 
             $table->mediumText('verif_protocol') ->nullable(); 
             $table->mediumText('verif_description') ->nullable(); 
             $table->timestamp('verif_startDate') ; 
@@ -38,6 +37,8 @@ class CreateVerificationsTable extends Migration
             $table->enum('verif_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('mmeTemp_id') ->nullable() ;
             $table->foreign('mmeTemp_id')->references('id')->on('mme_temps') ->onDelete('cascade')  ;
+            $table->unsignedBigInteger('enumRequiredSkill_id') ->nullable() ;
+            $table->foreign('enumRequiredSkill_id')->references('id')->on('enum_verification_required_skills') ->onDelete('restrict')  ;
             $table->timestamps();
         });
     }

@@ -35,7 +35,7 @@ class EnumVerificationRequiredSkillController extends Controller
      */
 
     public function add_enum_requiredSkill (Request $request){
-        $enum_already_exist=EnumRequiredSkill::where('value', '=', $request->value)->get();
+        $enum_already_exist=EnumVerificationRequiredSkill::where('value', '=', $request->value)->get();
         if (count($enum_already_exist)!=0){
             return response()->json([
                 'errors' => [
@@ -44,7 +44,7 @@ class EnumVerificationRequiredSkillController extends Controller
             ], 429);
         }
         
-        $enum_requiredSkill=EnumRequiredSkill::create([
+        $enum_requiredSkill=EnumVerificationRequiredSkill::create([
             'value' => $request->value, 
         ]);
     }
@@ -56,8 +56,8 @@ class EnumVerificationRequiredSkillController extends Controller
      */
 
     public function update_enum_requiredSkill (Request $request, $id){
-        $enum_requiredSkill=EnumRequiredSkill::findOrFail($id) ; 
-        $enum_already_exist=EnumRequiredSkill::where('value', '=', $request->value)->where('id','<>', $id)->get();
+        $enum_requiredSkill=EnumVerificationRequiredSkill::findOrFail($id) ; 
+        $enum_already_exist=EnumVerificationRequiredSkill::where('value', '=', $request->value)->where('id','<>', $id)->get();
         if (count($enum_already_exist)!=0 ){
             return response()->json([
                 'errors' => [
@@ -78,7 +78,7 @@ class EnumVerificationRequiredSkillController extends Controller
      */
 
     public function delete_enum_requiredSkill($id){
-        $enum_requiredSkill=EnumRequiredSkill::findOrFail($id) ; 
+        $enum_requiredSkill=EnumVerificationRequiredSkill::findOrFail($id) ; 
         $VerifLinked=Verification::where('verif_requiredSkill', '=', $id)->get() ; 
         if (count($VerifLinked)!=0){
             return response()->json([
