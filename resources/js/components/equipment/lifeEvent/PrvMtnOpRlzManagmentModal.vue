@@ -131,6 +131,7 @@ export default {
             this.$emit('okReload','')
         },
         resetModal(){
+            this.errors={};
             this.user_pseudo='',
             this.user_password=''
         },

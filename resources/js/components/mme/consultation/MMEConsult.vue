@@ -144,7 +144,6 @@ export default {
                 axios.post(validVerifUrl(this.mme_id),{
                     })
                     .then(response =>{
-                        console.log("coucou")
                         var techVeriftUrl = (id) => `/mme/validation/${id}`;
                         axios.post(techVeriftUrl(this.mme_id),{
                             reason:this.validationMethod,

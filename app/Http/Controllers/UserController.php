@@ -1110,7 +1110,7 @@ class UserController extends Controller{
             $month=$ymd[1] ;
             $day=$ymd[2] ;
         
-            $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
+            $formationMmeDate=Carbon::create($year, $month, $day, 0,0,0);
             $OneYearLater=$formationMmeDate->addYear(1) ; 
             if ($OneYearLater<$now){
                 return response()->json(false) ; 
