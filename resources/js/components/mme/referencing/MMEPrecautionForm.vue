@@ -124,6 +124,7 @@ export default {
                     prctn_type:this.prctn_type,
                     prctn_description:this.prctn_description,
                     prctn_validate :savedAs,
+                    usage_id:this.usg_id,
                 })
                 .then(response =>{
                     this.errors={};
@@ -132,7 +133,7 @@ export default {
                         prctn_description:this.prctn_description,
                         prctn_validate :savedAs,
                         mme_id:id,
-                        usg_id:this.usg_id
+                        usage_id:this.usg_id
                 
                     })
                     //If the precaution is added succesfuly
@@ -168,6 +169,7 @@ export default {
                     prctn_type:this.prctn_type,
                     prctn_description:this.prctn_description,
                     prctn_validate :savedAs,
+                    usage_id:this.usg_id,
                 })
                 .then(response =>{
                     this.errors={};
@@ -179,7 +181,7 @@ export default {
                             prctn_type:this.prctn_type,
                             prctn_description:this.prctn_description,
                             prctn_validate :savedAs,
-                            usg_id:this.usg_id,
+                            usage_id:this.usg_id,
                             mme_id:this.mme_id_update,
                         })
                         .then(response =>{this.prctn_validate=savedAs;})

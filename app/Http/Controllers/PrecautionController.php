@@ -33,12 +33,12 @@ class PrecautionController extends Controller
         $this->validate(
             $request,
             [
-                'precaution_description' => 'required|min:3|max:255',
+                'prctn_description' => 'required|min:3|max:255',
             ],
             [
-                'precaution_description.required' => 'You must enter a description for the precaution ',
-                'precaution_description.min' => 'You must enter at least three characters ',
-                'precaution_description.max' => 'You must enter a maximum of 255 characters',
+                'prctn_description.required' => 'You must enter a description for the precaution ',
+                'prctn_description.min' => 'You must enter at least three characters ',
+                'prctn_description.max' => 'You must enter a maximum of 255 characters',
 
             
             ]
