@@ -24,7 +24,7 @@ class VerificationRealizedController extends Controller
      * @return \Illuminate\Http\Response : the id of the new verifRlz
      */
     public function add_verifRlz(Request $request){
-        /*$state=MmeState::findOrFail($request->state_id) ; 
+        $state=MmeState::findOrFail($request->state_id) ; 
         $verif=Verification::findOrFail($request->verif_id) ; 
 
         //Creation of a new verification realized
@@ -71,7 +71,7 @@ class VerificationRealizedController extends Controller
     
         
         $verifRlz_id=$verifRlz->id;
-        return response()->json($verifRlz_id) ;*/
+        return response()->json($verifRlz_id) ;
     }
 
 
@@ -266,56 +266,54 @@ class VerificationRealizedController extends Controller
     public function send_verifRlz($id) {
         $state = MmeState::findOrFail($id);
         $container=array() ; 
-        if (count($state->verifications_realizeds)>0){
-            $verifRlzs=$state->verifications_realizeds ; 
-            foreach ($verifRlzs as $verifRlz) {
-                $verif=Verification::findOrFail($verifRlz->verif_id) ; 
-               
-                $enteredBy_firstName=NULL;
-                $enteredBy_lastName=NULL;
-                $realizedBy_firstName=NULL;
-                $realizedBy_lastName=NULL ; 
-                $approvedBy_firstName=NULL;
-                $approvedBy_lastName=NULL ;
+        $verifRlzs=VerificationRealized::where('state_id', '=', $id)->get();
+        foreach ($verifRlzs as $verifRlz) {
+            $verif=Verification::findOrFail($verifRlz->verif_id) ; 
+            
+            $enteredBy_firstName=NULL;
+            $enteredBy_lastName=NULL;
+            $realizedBy_firstName=NULL;
+            $realizedBy_lastName=NULL ; 
+            $approvedBy_firstName=NULL;
+            $approvedBy_lastName=NULL ;
 
-                if ($verifRlz->realizedBy_id!=NULL){
-                    $realizedBy=User::findOrFail($verifRlz->realizedBy_id) ; 
-                    $realizedBy_firstName=$realizedBy->user_firstName ; 
-                    $realizedBy_lastName=$realizedBy->user_lastName ; 
-                }
-                if ($verifRlz->enteredBy_id!=NULL){
-                    $enteredBy=User::findOrFail($verifRlz->enteredBy_id) ; 
-                    $enteredBy_firstName=$enteredBy->user_firstName ; 
-                    $enteredBy_lastName=$enteredBy->user_lastName ; 
-                }
-                if ($verifRlz->approvedBy_id!=NULL){
-                    $approvedBy=User::findOrFail($verifRlz->approvedBy_id) ; 
-                    $approvedBy_firstName=$approvedBy->user_firstName ; 
-                    $approvedBy_lastName=$approvedBy->user_lastName ; 
-                }
-               
-                $obj=([
-                    "id" => $verifRlz->id,
-                    "verifRlz_reportNumber" => $verifRlz->verifRlz_reportNumber,
-                    "verifRlz_startDate" => $verifRlz->verifRlz_startDate,
-                    "verifRlz_endDate" => $verifRlz->verifRlz_endDate,
-                    "verifRlz_entryDate" => $verifRlz->verifRlz_entryDate,
-                    "verifRlz_validate" => $verifRlz->verifRlz_validate,
-                    'verifRlz_isPassed' => $verifRlz->verifRlz_isPassed,   
-                    "verif_id" => $verifRlz->verif_id,
-                    "verif_number" => (string)$verif->verif_number, 
-                    "verif_description" => $verif->verif_description, 
-                    "verif_protocol" => $verif->verif_protocol, 
-                    "realizedBy_firstName" => $realizedBy_firstName,
-                    "realizedBy_lastName" => $realizedBy_lastName,
-                    "enteredBy_firstName" => $enteredBy_firstName,
-                    "enteredBy_lastName" => $enteredBy_lastName,
-                    "approvedBy_firstName" => $approvedBy_firstName,
-                    "approvedBy_lastName" => $approvedBy_lastName,
-                ]);
-
-                array_push($container,$obj);
+            if ($verifRlz->realizedBy_id!=NULL){
+                $realizedBy=User::findOrFail($verifRlz->realizedBy_id) ; 
+                $realizedBy_firstName=$realizedBy->user_firstName ; 
+                $realizedBy_lastName=$realizedBy->user_lastName ; 
             }
+            if ($verifRlz->enteredBy_id!=NULL){
+                $enteredBy=User::findOrFail($verifRlz->enteredBy_id) ; 
+                $enteredBy_firstName=$enteredBy->user_firstName ; 
+                $enteredBy_lastName=$enteredBy->user_lastName ; 
+            }
+            if ($verifRlz->approvedBy_id!=NULL){
+                $approvedBy=User::findOrFail($verifRlz->approvedBy_id) ; 
+                $approvedBy_firstName=$approvedBy->user_firstName ; 
+                $approvedBy_lastName=$approvedBy->user_lastName ; 
+            }
+            
+            $obj=([
+                "id" => $verifRlz->id,
+                "verifRlz_reportNumber" => $verifRlz->verifRlz_reportNumber,
+                "verifRlz_startDate" => $verifRlz->verifRlz_startDate,
+                "verifRlz_endDate" => $verifRlz->verifRlz_endDate,
+                "verifRlz_entryDate" => $verifRlz->verifRlz_entryDate,
+                "verifRlz_validate" => $verifRlz->verifRlz_validate,
+                'verifRlz_isPassed' => $verifRlz->verifRlz_isPassed,   
+                "verif_id" => $verifRlz->verif_id,
+                "verif_number" => (string)$verif->verif_number, 
+                "verif_description" => $verif->verif_description, 
+                "verif_protocol" => $verif->verif_protocol, 
+                "realizedBy_firstName" => $realizedBy_firstName,
+                "realizedBy_lastName" => $realizedBy_lastName,
+                "enteredBy_firstName" => $enteredBy_firstName,
+                "enteredBy_lastName" => $enteredBy_lastName,
+                "approvedBy_firstName" => $approvedBy_firstName,
+                "approvedBy_lastName" => $approvedBy_lastName,
+            ]);
+
+            array_push($container,$obj);
         }
         return response()->json($container) ; 
     }    

@@ -443,7 +443,7 @@ class CurativeMaintenanceOperationController extends Controller
             'curMtnOp_description' => $request->curMtnOp_description,
             'curMtnOp_startDate' => $request->curMtnOp_startDate,
             'curMtnOp_endDate' => $request->curMtnOp_endDate,
-            'mme_state_id' => $request->mme_state_id,   
+            'mme_state_id' => $request->state_id,   
             'curMtnOp_number' => $max_number,
             'enteredBy_id' => $request->enteredBy_id,
 
@@ -479,12 +479,10 @@ class CurativeMaintenanceOperationController extends Controller
      */
 
     public function send_curMtnOp_mme($id) {
-        $state = Mmme_State::findOrFail($id);
-        $container=array() ; 
-        if (count($state->curative_maintenance_operations)>0){
-            $curMtnOps=$state->curative_maintenance_operations ; 
+        $state = MmeState::findOrFail($id);
+        $container=array(); 
+        $curMtnOps=CurativeMaintenanceOperation::where('mme_state_id', '=', $id)->get();
             foreach ($curMtnOps as $curMtnOp) {
-                
                 $technicalVerifier_firstName=NULL;
                 $technicalVerifier_lastName=NULL;
                 $qualityVerifier_firstName=NULL;
@@ -516,8 +514,8 @@ class CurativeMaintenanceOperationController extends Controller
                 }
 
                 $obj=([
-                   "id" => $curMtnOp->id,
-                   "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
+                "id" => $curMtnOp->id,
+                "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
                     "curMtnOp_reportNumber" => $curMtnOp->curMtnOp_reportNumber,
                     "curMtnOp_description" => $curMtnOp->curMtnOp_description,
                     "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,
@@ -533,8 +531,7 @@ class CurativeMaintenanceOperationController extends Controller
                     "technicalVerifier_lastName" => $technicalVerifier_lastName,
                 ]);
                 array_push($container,$obj);
-           }
-       }
+        }
         return response()->json($container) ;
     }
 

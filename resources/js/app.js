@@ -161,6 +161,15 @@ const router = new VueRouter({
         name: 'url_mme_life_event_change_state',
         component:require('./components/mme/lifeEvent/UpdateMMEState.vue').default
     },{
+        path:'/mme/life_event/all/:id(\\d+)',
+        name: 'url_mme_life_event_all',
+        component:require('./components/mme/lifeEvent/MMEAllEventList.vue').default
+    },{
+        path:'/mme/life_event/update/:id(\\d+)/:state_id(\\d+)',
+        name: 'url_mme_life_event_update',
+        component:require('./components/mme/lifeEvent/UpdateAMMELifeEvent.vue').default
+
+    },{
         path:'*',
     }]
 

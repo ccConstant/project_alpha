@@ -8,7 +8,7 @@
             <b-button variant="primary" @click="generateReport" >Export PDF</b-button>
             <div class="container" id="page">
                 <div class="accordion all_event">
-                    <h1>{{eq_internalReference}}</h1>
+                    <h1>{{mme_internalReference}}</h1>
                     <div class="accordion-item" v-for="(list,index) in states " :key="index">
                         <h2 class="accordion-header" :id="'heading'+index">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+index" aria-expanded="true" :aria-controls="'collapse'+index">
@@ -51,27 +51,29 @@
                                         </div>
                                     </li>
                                 </div>
-                                <div v-if="list.prvMtnOpRlz.length>0" class="all_preventive_ope">
-                                    <h3>Recorded Preventive maintenance operation</h3>
-                                    <li class="list-group-item" v-for="(prvMtnOpRlz,index) in list.prvMtnOpRlz " :key="index"  >
+                                <div v-if="list.verifRlz.length>0" class="all_verif">
+                                    <h3>Recorded verifications</h3>
+                                    <li class="list-group-item" v-for="(verifRlz,index) in list.verifRlz " :key="index"  >
                                         <div>
-                                            Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
-                                            Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
-                                            Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
-                                            Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
-                                            Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
-                                            End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
-                                            Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}} <br>
-                                            Entered by : {{prvMtnOpRlz.enteredBy_lastName}} {{prvMtnOpRlz.enteredBy_firstName}} <br>
+                                            Operation Numner : {{verifRlz.verif_number}} <br>
+                                            Expected Result : {{verifRlz.verif_expectedResult}} <br>
+                                            Non Compliance Limit : {{verifRlz.verif_nonComplianceLimit}} <br>
+                                            Description : {{verifRlz.verif_description}} <br>
+                                            Protocol : {{verifRlz.verif_protocol}} <br>
+                                            Report Numner : {{verifRlz.verifRlz_reportNumber}} <br>
+                                            Start Date : {{verifRlz.verifRlz_startDate}} <br>
+                                            End date : {{verifRlz.verifRlz_endDate}} <br>
+                                            Saved as : {{verifRlz.verifRlz_validate}} <br>
+                                            Entered by : {{verifRlz.enteredBy_lastName}} {{verifRlz.enteredBy_firstName}} <br>
                                         </div>
-                                        <div v-if="prvMtnOpRlz.realizedBy_lastName!=null">
-                                            Realized by : {{prvMtnOpRlz.realizedBy_firstName}} {{prvMtnOpRlz.realizedBy_lastName}} <br>
+                                        <div v-if="verifRlz.realizedBy_lastName!=null">
+                                            Realized by : {{verifRlz.realizedBy_firstName}} {{verifRlz.realizedBy_lastName}} <br>
                                         </div>
                                         <div v-else>
                                             Realized by : - <br>
                                         </div>
-                                        <div v-if="prvMtnOpRlz.approvedBy_lastName!=null">
-                                            Approved by : {{prvMtnOpRlz.approvedBy_firstName}} {{prvMtnOpRlz.approvedBy_lastName}} <br>
+                                        <div v-if="verifRlz.approvedBy_lastName!=null">
+                                            Approved by : {{verifRlz.approvedBy_firstName}} {{verifRlz.approvedBy_lastName}} <br>
                                         </div>
                                         <div v-else>
                                             Approved by : - <br>
@@ -87,3 +89,100 @@
         </div>
     </div>
 </template>
+
+<script>
+import moment from 'moment'
+import html2PDF from 'jspdf-html2canvas';
+export default {
+    data(){
+        return{
+            mme_id:this.$route.params.id,
+            states:null,
+            loaded:false,
+            mme_internalReference:this.$route.query.internalReference,
+        }
+    },
+    methods:{
+        
+        generateReport () {
+            let page = document.getElementById('page');
+            html2PDF(page, {
+                jsPDF: {
+                    unit: 'px',
+                    format: 'a4',
+                    width : 100
+                },
+                html2canvas: {
+                    imageTimeout: 15000,
+                    logging: true,
+                    useCORS: false,
+                },
+                imageType: 'image/jpeg',
+                imageQuality: 1,
+                margin: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                },
+                output: 'jspdf-generate.pdf', 
+            });
+        }
+        
+    },
+    created(){
+        var UrlState = (id)=> `/mme_states/send/${id}`;
+        axios.get(UrlState(this.mme_id))
+            .then (response=>{
+                console.log(response.data)
+                this.states=response.data
+                for (var i=0;i<this.states.length;i++) {
+                    this.states[i].state_startDate=moment(this.states[i].state_startDate).format('D MMM YYYY');
+                    if(this.states[i].state_endDate===null){
+                        this.states[i].state_endDate="-"
+                    }else{
+                        this.states[i].state_endDate=moment(this.states[i].state_endDate).format('D MMM YYYY'); 
+                    }
+                    for(var j=0;j<this.states[i].curMtnOp.length;j++){
+                        this.states[i].curMtnOp[j].curMtnOp_startDate=moment(this.states[i].curMtnOp[j].curMtnOp_startDate).format('D MMM YYYY'); 
+                        if(this.states[i].curMtnOp[j].curMtnOp_endDate===null){
+                            this.states[i].curMtnOp[j].curMtnOp_endDate="-"
+                        }else{
+                            this.states[i].curMtnOp[j].curMtnOp_endDate=moment(this.states[i].curMtnOp[j].curMtnOp_endDate).format('D MMM YYYY'); 
+                        }
+                    }
+                    
+                    for(var k=0;k<this.states[i].verifRlz.length;k++){
+                        this.states[i].verifRlz[k].verifRlz_startDate=moment(this.states[i].verifRlz[k].verifRlz_startDate).format('D MMM YYYY'); 
+                        if(this.states[i].verifRlz[k].verifRlz_endDate===null){
+                            this.states[i].verifRlz[k].verifRlz_endDate="-"
+                        }else{
+                            this.states[i].verifRlz[k].verifRlz_endDate=moment(this.states[i].verifRlz[k].verifRlz_endDate).format('D MMM YYYY'); 
+                        }
+                    }
+                }
+                this.loaded=true;
+            })
+            .catch(error => console.log(error)) ;
+
+        
+    }
+
+}
+</script>
+
+<style lang="scss">
+    .all_curative_ope{
+        margin-left:20px ;
+    }
+    .all_verif{
+         margin-left:20px ;
+    }
+    .all_event{
+        h1{
+            text-align: center;
+        }
+    }
+       
+
+</style>

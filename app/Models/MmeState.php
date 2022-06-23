@@ -14,6 +14,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CurativeMaintenanceOperation ;
+use App\Models\VerificationRealized ;
 use App\Models\MmeTemp ;
 
 class MmeState extends Model

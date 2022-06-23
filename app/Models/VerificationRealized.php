@@ -13,6 +13,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\MmeState ;
 
 class VerificationRealized extends Model
 {
@@ -27,16 +28,16 @@ class VerificationRealized extends Model
 
      //Define the relation between a verification realized and the person realizing it 
      public function realizedBy(){
-        return $this->belongsTo(People::class, 'realizedBy_id') ; 
+        return $this->belongsTo(User::class, 'realizedBy_id') ; 
     }
 
     //Define the relation between a verification realized and the person entering it 
     public function enteredBy(){
-        return $this->belongsTo(People::class, 'enteredBy_id') ; 
+        return $this->belongsTo(User::class, 'enteredBy_id') ; 
     }
 
     //Define the relation between a verification realized and the verification which she is corresponding
     public function verification(){
-        return $this->belongsTo(verification::class, 'verif_id') ; 
+        return $this->belongsTo(Verification::class, 'verif_id') ; 
     }
 }

@@ -18,6 +18,7 @@ use App\Models\MmeState ;
 use App\Models\User ; 
 use App\Models\Mme ; 
 use App\Models\VerificationRealized ; 
+use App\Models\CurativeMaintenanceOperation ; 
 use App\Models\Verification ; 
 use Carbon\Carbon;
 
@@ -268,8 +269,8 @@ class MmeStateController extends Controller
                     ]);
                     array_push($container_verifRlz, $obj); 
                 }
-
-                $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $state->id)->get() ; 
+                
+                $curMtnOps=CurativeMaintenanceOperation::where('mme_state_id', '=', $state->id)->get() ; 
                 $container_curMtnOp=array() ; 
                 foreach($curMtnOps as $curMtnOp){
                     $technicalVerifier_firstName=NULL;

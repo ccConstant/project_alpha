@@ -206,6 +206,11 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
+                console.log(this.verif_id)
+                console.log(this.mme_state_id)
+                console.log(savedAs)
+
+
                 axios.post('/verifRlz/verif',{
                     verifRlz_reportNumber:this.verifRlz_reportNumber,
                     verifRlz_startDate:this.selected_startDate,
@@ -218,7 +223,6 @@ export default {
                     reason:'add'
                 })
                 .then(response =>{
-                    console.log(response.data)
                     this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the mmme is sended to the controller*/

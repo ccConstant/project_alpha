@@ -19,7 +19,7 @@
                         <div class="mme_list_option_state">
                             <a href="#" @click="verifBeforeUpdateState(list.id,list.state_id)">Update the state</a>
                             <a href="#" @click="verifBeforeAddState(list.id,list.state_id)">Change the state</a>
-                            <router-link :to="{name:'url_life_event_all',params:{id: list.id},query:{internalReference:list.mme_internalReference} }">All Event</router-link>
+                            <router-link :to="{name:'url_mme_life_event_all',params:{id: list.id},query:{internalReference:list.mme_internalReference} }">All Event</router-link>
                             <a href="#" @click="verifBeforeAddOpe(list.id,list.state_id)">Record a curative maintenance operation</a>
                             <a href="#" @click="verifBeforeUpdateOp(list.id,list.state_id)">Update maintenance record</a>
                         </div>
@@ -98,7 +98,7 @@ export default {
             if(this.$userId.user_makeEqOpValidationRight!=true){
                 this.$refs.errorAlert.showAlert("You don't have the right");
             }else{
-                //this.$router.push({ name: "url_life_event_update", params: {id:mme_id_to_send,state_id:state_id }})
+                this.$router.push({ name: "url_mme_life_event_update", params: {id:mme_id_to_send,state_id:state_id }})
             }
         },
     },

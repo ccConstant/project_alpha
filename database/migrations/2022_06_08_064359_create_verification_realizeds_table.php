@@ -24,7 +24,7 @@ class CreateVerificationRealizedsTable extends Migration
         Schema::create('verification_realizeds', function (Blueprint $table) {
             $table->id();
             $table->string('verifRlz_reportNumber') ;
-            $table->string('verifRlz_isPassed') ;
+            $table->string('verifRlz_isPassed') ->nullable();
             $table->date('verifRlz_startDate') ->nullable();
             $table->date('verifRlz_endDate') -> nullable(); 
             $table->date('verifRlz_entryDate') ->nullable();
