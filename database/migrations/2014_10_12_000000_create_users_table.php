@@ -54,8 +54,8 @@ class CreateUsersTable extends Migration
             //right level for MME 
             $table->boolean('user_personTrainedToGeneralPrinciplesOfMMEManagementRight') ->default(true);
             $table->date('user_formationMmeDate') ->nullable();
-            /*$table->boolean('user_makeMmeOpValidationRight') ->default(true);
-            $table->boolean('user_makeMmeRespValidationRight') ->default(true);*/
+            $table->boolean('user_makeMmeOpValidationRight') ->default(true);
+            $table->boolean('user_makeMmeRespValidationRight') ->default(true);
         
             $table->rememberToken();
             $table->timestamps();

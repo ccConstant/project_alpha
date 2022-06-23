@@ -65,6 +65,8 @@ class UserController extends Controller{
                     "user_makeEqRespValidationRight" => $user->user_makeEqRespValidationRight,
                     "user_makeReformRight" => $user->user_makeReformRight,
                     "user_declareNewStateRight" => $user->user_declareNewStateRight,
+                    "user_makeMmeOpValidationRight" => $user->user_makeEqOpValidationRight,
+                    "user_makeMmeRespValidationRight" => $user->user_makeEqRespValidationRight,
                 ]);
                 array_push($container_userInfo,$infoUser);
             }
