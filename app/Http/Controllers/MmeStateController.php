@@ -260,6 +260,8 @@ class MmeStateController extends Controller
                         "verif_number" => (string)$verif->verif_number, 
                         "verif_description" => $verif->verif_description, 
                         "verif_protocol" => $verif->verif_protocol, 
+                        "verif_expectedResult" => $verif->verif_expectedResult, 
+                        'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
                         "realizedBy_firstName" => $realizedBy_firstName,
                         "realizedBy_lastName" => $realizedBy_lastName,
                         "enteredBy_firstName" => $enteredBy_firstName,
