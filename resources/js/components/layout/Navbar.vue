@@ -48,7 +48,7 @@ export default {
 	},
 	methods:{
 		disconnect(){
-			axios.post('logout',{
+			axios.post('/logout',{
 			})
 			//If the dimension is added succesfuly
 			.then(response =>{window.location.href = "/"})

@@ -13,6 +13,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request ; 
 use Illuminate\Support\Facades\DB ; 
 use App\Models\Mme;
+use App\Models\File;
+use App\Models\MmeUsage;
 use App\Models\Verification;
 use App\Models\MmeTemp;
 use App\Models\MmeState;
@@ -490,10 +492,6 @@ class MmeController extends Controller{
                 }
             }
         }
-
-    
-
-        
         $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
         if (count($verifs)<1){
             $obj9=([
@@ -510,27 +508,12 @@ class MmeController extends Controller{
                 }
             }
         }
-        
-        if (count($mostRecentlyMmeTmp->states)<1){
-            $obj11=([
-                'validation' => ["You can't validate an mme that doesn't have at least one state"]
-            ]);
-            array_push($container2,$obj11);
-        }else{
-            foreach($mostRecentlyMmeTmp->states as $state){
-                if ($state->state_validate != "validated"){
-                    $obj12=([
-                        'validation' => ["You can't validate an mme that have at least one state in draft or in to be validated, you have to validated it"]
-                    ]);
-                    array_push($container2,$obj12);
-                }
-            }
-        }
-         
-        return response()->json([
-                'errors' => $container2
-        ], 429);
 
+        if (count($container2)>0){
+            return response()->json([
+                    'errors' => $container2
+            ], 429);
+        }
     }
 
     /**

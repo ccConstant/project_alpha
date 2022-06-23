@@ -8,7 +8,7 @@
                 <div class="remindOpeLate_container">
                     <h2>Maintenance late</h2>
                     <li v-for="(verif, index) in  pageOfItems_LimitPassed" :key="index" class="list-group-item"
-                    @click="handleListClick(verif.id,verif.internalReference,verif.state_id,verif.preventive_maintenance_operations)">
+                    @click="handleListClick(verif.id,verif.internalReference,verif.state_id,verif.verifications)">
                         {{verif.internalReference}}
                     </li>
                     <jw-pagination class="mme_list_pagination" :pageSize=7 :items="verif_LimitPassed" @changePage="onChangePage_limitPassed"></jw-pagination>
@@ -17,7 +17,7 @@
                 <div class="remindOpeToDo_container">
                     <h2>Maintenance to do</h2>
                     <li v-for="(verif, index) in  pageOfItems_ToDo" :key="index" class="list-group-item"
-                    @click="handleListClick(verif.id,verif.internalReference,verif.state_id,verif.preventive_maintenance_operations)">
+                    @click="handleListClick(verif.id,verif.internalReference,verif.state_id,verif.verifications)">
                         {{verif.internalReference}}
                     </li>
                     <jw-pagination class="mme_list_pagination" :pageSize=7 :items="verif_ToDo" @changePage="onChangePage_ToDo"></jw-pagination>
@@ -113,7 +113,7 @@ export default {
                 console.log(response.data)
                 for (const data of response.data) {
                     this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
-                    for(const operation of data.preventive_maintenance_operations){
+                    for(const operation of data.verifications){
                         this.calendarOptions.events.push({title:data.internalReference,date:operation.verif_nextDate,
                          mme_id:data.id,state_id:data.state_id,
                          number:operation.verif_number,id:operation.id,
@@ -127,12 +127,16 @@ export default {
         })
         axios.get('/verif/send/revisionTimeLimitPassed')
         .then (response=>{
+            console.log("limit")
             console.log(response.data)
+            
             this.verif_LimitPassed=response.data;
 
         });
         axios.get('/verif/send/revisionDatePassed')
         .then (response=>{
+            console.log("limit")
+
             console.log(response.data)
             this.verif_ToDo=response.data;
             this.loaded=true;

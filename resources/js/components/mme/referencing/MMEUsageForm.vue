@@ -184,9 +184,10 @@ export default {
                     console.log(this.importedUsgPrecaution)
                     this.loaded=true
                     })
-                .catch(error => console.log(error)) ;
+                .catch(error => console.log(error)) ; 
                 
-                
+        }else{
+            this.loaded=true
         }
     },
     methods:{

@@ -20,7 +20,7 @@ class VerificationRealized extends Model
     use HasFactory;
 
      //Data which can be added, updated or deleted by us in the data base.
-     protected $fillable = ['verifRlz_reportNumber', 'verifRlz_startDate', 'verifRlz_endDate', 'verifRlz_nextDate', 'verifRlz_entryDate', 'verifRlz_validate', 'verifRlz_isPassed', 'enteredBy_id', 'realizedBy_id', 'state_id', 'verif_id'];
+     protected $fillable = ['verifRlz_reportNumber', 'verifRlz_startDate', 'verifRlz_endDate', 'verifRlz_nextDate', 'verifRlz_entryDate', 'verifRlz_validate', 'verifRlz_isPassed', 'enteredBy_id', 'approvedBy_id','realizedBy_id', 'state_id', 'verif_id'];
     //Define the relation between an preventive_maintenance_operation_realized and the state during wich she is realized
     public function state(){
         return $this->belongsTo(MmeState::class, 'state_id') ; 
