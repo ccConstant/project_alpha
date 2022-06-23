@@ -170,6 +170,11 @@ const router = new VueRouter({
         component:require('./components/mme/lifeEvent/UpdateAMMELifeEvent.vue').default
 
     },{
+        path:'/mme/maintenance/calendar',
+        name: 'url_mme_maintenance_calendar',
+        component:require('./components/mme/calendar/MMEMaintenanceCalendar.vue').default
+
+    },{
         path:'*',
     }]
 

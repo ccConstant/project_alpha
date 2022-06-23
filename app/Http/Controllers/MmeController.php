@@ -13,6 +13,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request ; 
 use Illuminate\Support\Facades\DB ; 
 use App\Models\Mme;
+use App\Models\Verification;
 use App\Models\MmeTemp;
 use App\Models\MmeState;
 use Carbon\Carbon;
@@ -702,7 +703,7 @@ class MmeController extends Controller{
      * @return \Illuminate\Http\Response
      * */
     public function send_mme_verif_revisionDatePassed(){
-        $mmes=Mme::all() ;
+        /*$mmes=Mme::all() ;
         $container=array() ; 
         foreach($mmes as $mme){
             $containerVerif=array() ;
@@ -752,7 +753,7 @@ class MmeController extends Controller{
                 }
             }
         }
-        return response()->json($container) ;
+        return response()->json($container) ;*/
     }
 
       /**

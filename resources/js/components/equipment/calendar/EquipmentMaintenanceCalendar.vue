@@ -30,8 +30,6 @@
             </div>
         </div>
     </div>
-
-
 </template>
 
 <script>
@@ -56,7 +54,7 @@ export default {
         return {
             calendarOptions: {
                 plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin,resourceTimelinePlugin],
-                initialView: 'resourceTimelineYear',
+                initialView: 'resourceTimelineMonth',
                 headerToolbar: {
                     left: 'listMonth,listWeek,resourceTimelineMonth',
                     center: 'title',
@@ -78,9 +76,6 @@ export default {
             pageOfItems_LimitPassed: [],
             pageOfItems_ToDo: [],
             loaded:false
-
-            
-           
         }
     },
     methods: {

@@ -194,6 +194,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/mme/maintenance/calendar', function () {
         return view('welcome');
     });
+
+    Route::get('/mme/life_event/update/{id}/{state_id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/maintenance/calendar', function () {
+        return view('welcome');
+    });
 });
 
 
@@ -277,8 +285,6 @@ Route::post('/equipment/delete/{id}', [EquipmentController::class, 'delete_equip
 Route::post('/state/equipment/{id} ', [EquipmentController::class, 'add_equipment_from_state'] ) ;
 
 Route::get('/send/state/equipment/{state_id} ', [EquipmentController::class, 'send_equipment_from_state'] ) ;
-
-
 
 
 /* Dimension Form Routes */ 
@@ -690,7 +696,7 @@ Route::get('/mmes/same_set/{set}', [MmeController::class, 'send_mmes_same_set'])
 
 Route::get('/mme/{id}', [MmeController::class, 'send_mme'] )->whereNumber('id') ;
 
-Route::get('/mme/prvMtnOp/planning', [MmeController::class, 'send_mme_verif_for_planning'] ) ;
+Route::get('/mme/verif/planning', [MmeController::class, 'send_mme_verif_for_planning'] ) ;
 
 Route::post('/mme/verifValidation/{id}', [MmeController::class, 'verif_validation'] ) ;
 
@@ -701,6 +707,11 @@ Route::post('/mme/delete/{id}', [MmeController::class, 'delete_mme'] ) ;
 Route::post('/mme_state/mme/{id} ', [MmeController::class, 'add_mme_from_state'] ) ;
 
 Route::get('/send/mme_state/mme/{state_id} ', [MmeController::class, 'send_mme_from_state'] ) ;
+
+Route::get('/verif/send/revisionDatePassed', [MmeController::class, 'send_mme_verif_revisionDatePassed'])  ;
+
+Route::get('/verif/send/revisionTimeLimitPassed', [MmeController::class, 'send_mme_verif_revisionLimitPassed'])  ;
+
 
 
 /* Mme State Form Routes */ 
@@ -744,11 +755,6 @@ Route::get('/verif/send/validated/', [VerificationController::class, 'send_all_v
 Route::post('/mme/delete/verif/{id}', [VerificationController::class, 'delete_verif'])  ;
 
 Route::post('/mme/reform/verif/{id}', [VerificationController::class, 'reform_verif'])  ;
-
-Route::get('/verif/send/revisionDatePassed/{id}', [VerificationController::class, 'send_verif_from_mme_revisionDatePassed'])  ;
-
-Route::get('/verif/send/revisionTimeLimitPassed/{id}', [VerificationController::class, 'send_verif_from_mme_revisionTimeLimitPassed'])  ;
-
 
 /* Preventive Verification Realized Form Routes */ 
 

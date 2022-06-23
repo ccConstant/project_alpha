@@ -15,6 +15,7 @@
 					<b-dropdown-item href="/mme/add">Add a new MME</b-dropdown-item>
 					<b-dropdown-item href="/mme/list">List of all MME</b-dropdown-item>
 					<b-dropdown-item href="/mme/life_event">Life Event</b-dropdown-item>
+					<b-dropdown-item href="/mme/maintenance/calendar">Maintenance</b-dropdown-item>
 					
 				</b-nav-item-dropdown>
 
