@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB ; 
 use App\Models\MmeTemp ; 
-use App\Models\State ; 
+use App\Models\MmeState ; 
 use App\Models\User ; 
 use App\Models\Mme ; 
 use App\Models\VerificationRealized ; 
@@ -268,6 +268,62 @@ class MmeStateController extends Controller
                     ]);
                     array_push($container_verifRlz, $obj); 
                 }
+
+                $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $state->id)->get() ; 
+                $container_curMtnOp=array() ; 
+                foreach($curMtnOps as $curMtnOp){
+                    $technicalVerifier_firstName=NULL;
+                    $technicalVerifier_lastName=NULL;
+                    $qualityVerifier_firstName=NULL;
+                    $qualityVerifier_lastName=NULL;
+                    $enteredBy_firstName=NULL;
+                    $enteredBy_lastName=NULL;
+                    $realizedBy_firstName=NULL;
+                    $realizedBy_lastName=NULL ; 
+
+                    if ($curMtnOp->technicalVerifier_id!=NULL){
+                        $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                        $technicalVerifier_firstName=$technicalVerifier->user_firstName;
+                        $technicalVerifier_lastName=$technicalVerifier->user_lastName;
+                    }
+                    if ($curMtnOp->qualityVerifier_id!=NULL){
+                        $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
+                        $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
+                        $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                    }
+                    if ($curMtnOp->realizedBy_id!=NULL){
+                        $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
+                        $realizedBy_firstName=$realizedBy->user_firstName ; 
+                        $realizedBy_lastName=$realizedBy->user_lastName ; 
+                    }
+                    if ($curMtnOp->enteredBy_id!=NULL){
+                        $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
+                        $enteredBy_firstName=$enteredBy->user_firstName ; 
+                        $enteredBy_lastName=$enteredBy->user_lastName ; 
+                    }
+
+
+
+                    $obj=([
+                    "id" => $curMtnOp->id,
+                    "curMtnOp_number" => (string)$curMtnOp->curMtnOp_number,
+                        "curMtnOp_reportNumber" => $curMtnOp->curMtnOp_reportNumber,
+                        "curMtnOp_description" => $curMtnOp->curMtnOp_description,
+                        "curMtnOp_startDate" => $curMtnOp->curMtnOp_startDate,
+                        "curMtnOp_endDate" => $curMtnOp->curMtnOp_endDate,
+                        "curMtnOp_validate" => $curMtnOp->curMtnOp_validate,
+                        "qualityVerifier_firstName" => $qualityVerifier_firstName,
+                        "qualityVerifier_lastName" => $qualityVerifier_lastName,
+                        "realizedBy_firstName" => $realizedBy_firstName,
+                        "realizedBy_lastName" => $realizedBy_lastName,
+                        "enteredBy_firstName" =>$enteredBy_firstName,
+                        "enteredBy_lastName" =>$enteredBy_lastName,
+                        "technicalVerifier_firstName" => $technicalVerifier_firstName,
+                        "technicalVerifier_lastName" => $technicalVerifier_lastName,
+                    ]);
+                    array_push($container_curMtnOp, $obj); 
+                }
+
                 $reformedBy_id=NULL ; 
                 if ($state->reformedBy_id!=NULL){
                     $reformedBy_id=$state->reformedBy_id;
@@ -282,6 +338,7 @@ class MmeStateController extends Controller
                     'state_name' => $state->state_name,
                     'reformedBy_id' =>$reformedBy_id,
                     'verifRlz' => $container_verifRlz,
+                    'curMtnOp' => $container_curMtnOp,
                 ]);
                 array_push($container,$obj);
             }

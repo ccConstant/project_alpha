@@ -24,7 +24,7 @@ class VerificationRealizedController extends Controller
      * @return \Illuminate\Http\Response : the id of the new verifRlz
      */
     public function add_verifRlz(Request $request){
-        $state=MmeState::findOrFail($request->state_id) ; 
+        /*$state=MmeState::findOrFail($request->state_id) ; 
         $verif=Verification::findOrFail($request->verif_id) ; 
 
         //Creation of a new verification realized
@@ -71,7 +71,7 @@ class VerificationRealizedController extends Controller
     
         
         $verifRlz_id=$verifRlz->id;
-        return response()->json($verifRlz_id) ;
+        return response()->json($verifRlz_id) ;*/
     }
 
 
@@ -81,7 +81,7 @@ class VerificationRealizedController extends Controller
      */
     public function verif_verifRlz(Request $request){        
         $state=MmeState::findOrFail($request->state_id) ; 
-        $verif=VerificationRealized::findOrFail($request->verif_id) ; 
+        $verif=Verification::findOrFail($request->verif_id) ; 
 
         if ($request->verifRlz_validate=="validated"){
             if ($request->verifRlz_endDate=='' || $request->verifRlz_endDate===NULL){

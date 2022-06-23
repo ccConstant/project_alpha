@@ -56,7 +56,7 @@ export default {
                 axios.post(consultUrl(state_id),{
                 })
                 .then(response =>{
-                   // this.$router.replace({ name: "url_life_event_change_state", params: {id:mme_id}, query: {currentState: state_id } })
+                   this.$router.replace({ name: "url_mme_life_event_change_state", params: {id:mme_id}, query: {currentState: state_id } })
                 ;})
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => {
@@ -74,7 +74,7 @@ export default {
                 mme_id:mme_id_to_send
             })
             .then(response =>{
-                //this.$router.push({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }, query: {type:"curative"}})
+                this.$router.push({ name: "url_mme_life_event_reference", params: {id:mme_id_to_send,state_id:state_id }, query: {type:"curative"}})
             ;})
             //If the controller sends errors we put it in the errors object 
             .catch(error => {
@@ -91,8 +91,7 @@ export default {
             this.$refs.errorAlert.showAlert("You don't have the right");
 
             }else{
-            this.$router.push({ name: "url_mme_life_event_update_state", params:{id:mme_id_to_send,state_id:state_id} })
-
+                this.$router.push({ name: "url_mme_life_event_update_state", params:{id:mme_id_to_send,state_id:state_id} })
             }
         },
         verifBeforeUpdateOp(mme_id_to_send,state_id){

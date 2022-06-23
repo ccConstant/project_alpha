@@ -13,15 +13,11 @@
 <script>
 import ReferenceACurMtnOp from './ReferenceACurMtnOp.vue'
 import ReferenceAPrvMtnOpRlz from './ReferenceAPrvMtnOpRlz.vue'
-import RadioGroupForm from '../../input/RadioGroupForm.vue'
-import InputSelectForm from '../../input/InputSelectForm.vue'
 
 export default {
     components: {
         ReferenceACurMtnOp,
         ReferenceAPrvMtnOpRlz,
-        RadioGroupForm,
-        InputSelectForm
         
     },
     data(){
@@ -30,10 +26,6 @@ export default {
             eq_id:parseInt(this.$route.params.id),
             state_id:parseInt(this.$route.params.state_id),
             selected_reference:'',
-            referenceOption :[
-                {value:'Preventive Maintenance Operation'},
-                {value:'Curative Maintenance Operation'}
-            ],
             isInConsultMod:false,
             operation_type:this.$route.query.type
         }

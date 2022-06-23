@@ -80,6 +80,7 @@ export default {
             mme_id:this.$route.params.id,
             mme_idCard:null,
             mme_files:null,
+            mme_verifs:null,
             loaded:false,
         }
     },

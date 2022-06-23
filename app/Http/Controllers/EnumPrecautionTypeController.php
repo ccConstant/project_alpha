@@ -55,6 +55,14 @@ class EnumPrecautionTypeController extends Controller{
      */
 
     public function update_enum_type (Request $request, $id){
+        $enum_type=EnumPrecautionType::findOrFail($id) ; 
+        if ($enum_type->value=="Preservation" || $enum_type->value=="Handling" || $enum_type->value=="Storage"){
+            return response()->json([
+                'errors' => [
+                    'enum_prctn_type' => ["You can't modify this enum because it belongs of the principals precaution type"]
+                ]
+            ], 429);
+        }
         $enum_already_exist=EnumPrecautionType::where('value', '=', $request->value)->where('id','<>', $id)->get();
         if (count($enum_already_exist)!=0 ){
             return response()->json([
@@ -65,7 +73,7 @@ class EnumPrecautionTypeController extends Controller{
         }
         
         
-        $enum_type=EnumPrecautionType::findOrFail($id) ; 
+
         $enum_type->update([
             'value' => $request->value, 
         ]); 
@@ -79,8 +87,15 @@ class EnumPrecautionTypeController extends Controller{
 
     public function delete_enum_type ($id){
         $enum_type=EnumPrecautionType::findOrFail($id) ; 
-        $pwLinked=Precaution::where('enumPrecautionType_id', '=', $id)->get() ; 
-        if (count($pwLinked)!=0){
+        if ($enum_type->value=="Preservation" || $enum_type->value=="Handling" || $enum_type->value=="Storage"){
+            return response()->json([
+                'errors' => [
+                    'enum_prctn_type' => ["You can't delete this enum because it belongs of the principals precaution type"]
+                ]
+            ], 429);
+        }
+        $prctnLinked=Precaution::where('enumPrecautionType_id', '=', $id)->get() ; 
+        if (count($prctnLinked)!=0){
             return response()->json([
                 'errors' => [
                     'enum_prctn_type' => ["This value is already used in the data base so you can't delete it"]

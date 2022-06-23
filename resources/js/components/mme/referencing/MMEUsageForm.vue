@@ -44,10 +44,10 @@
                 <ReferenceAMMEPrecaution :mme_id="this.mme_id" :usg_id="this.usg_id"/>
             </div>
             <div v-else-if="this.usg_id!==null && modifMod==true">
-                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedPrecaution="importedUsgPrecaution" :mme_id="this.mme_id" :usg_id="this.usg_id"  :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
+                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedPrctn="importedUsgPrecaution" :mme_id="this.mme_id" :usg_id="this.usg_id"  :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
             </div>
             <div v-else-if="loaded==true">
-                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedPrecaution="importedUsgPrecaution" :mme_id="this.mme_id" :usg_id="this.usg_id" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
+                <ReferenceAMMEPrecaution v-if="this.usg_id!=null" :importedPrctn="importedUsgPrecaution" :mme_id="this.mme_id" :usg_id="this.usg_id" :consultMod="!!isInConsultedMod" :modifMod="!!this.modifMod"/>
             </div>
             <ErrorAlert ref="errorAlert"/>
         </div>
@@ -171,9 +171,23 @@ export default {
         axios.get('/usage/enum/metrologicalLevel')
             .then (response=>{
                 this.enum_metrologicalLevel=response.data;
-                this.loaded=true
+               
             } ) 
             .catch(error => console.log(error)) ;
+
+        if(this.usg_id!==null && this.addSucces==false){
+            //Make a get request to ask to the controller the preventive maintenance operation corresponding to the id of the equipment with which data will be imported
+            var consultUrl = (id) => `/precaution/send/${id}`;
+            axios.get(consultUrl(this.usg_id))
+                .then (response=> {
+                    this.importedUsgPrecaution=response.data;
+                    console.log(this.importedUsgPrecaution)
+                    this.loaded=true
+                    })
+                .catch(error => console.log(error)) ;
+                
+                
+        }
     },
     methods:{
         /*Sending to the controller all the information about the   mme so that it can be added to the database

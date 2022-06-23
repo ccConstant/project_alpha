@@ -291,7 +291,7 @@ export default {
         deleteComponent(){
             
             //If the user is in update mode and the preventive maintenance operation exist in the database
-            if(this.modifMod==true && this.curMtnOp_id!==null){
+            if(this.modifMod==true && this.prvMtnOpRlz_id!==null){
                 console.log("supression");
                 //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
                 var consultUrl = (id) => `/state/delete/prvMtnOpRlz/${id}`;

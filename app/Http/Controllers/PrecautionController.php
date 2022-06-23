@@ -20,7 +20,7 @@ class PrecautionController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_precaution(Request $request){              
-        if ($request->prctn_validate=="VALIDATED"){
+        if ($request->prctn_validate=="validated"){
             if ($request->prctn_type=='' || $request->prctn_type==NULL ){
                 return response()->json([
                     'errors' => [
@@ -84,7 +84,7 @@ class PrecautionController extends Controller
         //But if no one type is choosen by the user we define this id to NULL
         // And if the type choosen is find in the data base the NULL value will be replace by the id value
         $type_id=NULL ; 
-        if ($request->eq_type!=''){
+        if ($request->prctn_type!=''){
             $type= EnumPrecautionType::where('value', '=', $request->prctn_type)->first() ;
             $type_id=$type->id ; 
         }
@@ -107,29 +107,28 @@ class PrecautionController extends Controller
 
     public function delete_precaution($id){
         $precaution=Precaution::findOrFail($id) ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $precaution->delete() ; 
     }
 
     
      /**
-     * Function call by ReferenceAUsage.vue with the route : /mme/usg/send/{id} (get)
+     * Function call by MmeUsageForm.vue with the route : /mme/usg/send/{id} (get)
      * Get the precaution of one usage whose id is passed in parameter
      *  The id parameter corresponds to the id of the usage from which we want the precaution to take
      * @return \Illuminate\Http\Response
      */
 
     public function send_precautions($id) {
-        $precautions=Precaution::where('mmeUsage_id', '=', $id)->latest()->first();
+        $precautions=Precaution::where('mmeUsage_id', '=', $id)->get();
         $container=array() ; 
-        foreach ($precaution as $precaution) {
+        foreach ($precautions as $precaution) {
             $type = NULL ; 
             if ($precaution->enumPrecautionType_id!=NULL){
                 $type = $precaution->enumPrecautionType->value ;
             }
             $obj=([
                 'id' => $precaution->id,
-                'prctn_type' => $precaution->prctn_type,
+                'prctn_type' => $type,
                 'prctn_description' => $precaution->prctn_description,
                 'prctn_validate' => $precaution->prctn_validate,
             ]) ; 

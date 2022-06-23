@@ -47,10 +47,12 @@ export default {
     },
     props:{
         type:{
-            type:String
+            type:String,
+            default:null
         },
         description:{
-            type:String
+            type:String,
+            default:null
         },
         validate:{
             type:String
@@ -120,6 +122,8 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
+                console.log(savedAs)
+                console.log(this.prctn_type)
                 axios.post('/precaution/verif',{
                     prctn_type:this.prctn_type,
                     prctn_description:this.prctn_description,
@@ -165,6 +169,7 @@ export default {
         updateMMEPrctn(savedAs){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
+
             axios.post('/precaution/verif',{
                     prctn_type:this.prctn_type,
                     prctn_description:this.prctn_description,
@@ -206,7 +211,7 @@ export default {
                 //Send a post request with the id of the precaution who will be deleted in the url
                 var consultUrl = (id) => `/precaution/delete/${id}`;
                 axios.post(consultUrl(this.prctn_id),{
-                    eq_id:this.equipment_id_update
+                    mme_id:this.mme_id_update
                 })
                 .then(response =>{
                     //Emit to the parent component that we want to delete this component

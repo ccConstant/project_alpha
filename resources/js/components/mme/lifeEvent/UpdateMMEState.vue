@@ -5,6 +5,7 @@
         </div>
         <div v-if="loaded==true">
             <ErrorAlert ref="errorAlert"/>
+            <SuccesAlert ref="succesAlert"/>
             <form class="container state-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <div v-if="isInModifMod">
@@ -81,6 +82,7 @@ import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import moment from 'moment'
 import MmeIdForm from '../referencing/MmeIdForm.vue'
 import ErrorAlert from '../../alert/ErrorAlert.vue'
+import SuccesAlert from '../../alert/SuccesAlert.vue'
 export default {
     components : {
         InputTextAreaForm,
@@ -90,7 +92,8 @@ export default {
         InputTextForm,
         SaveButtonForm,
         MmeIdForm,
-        ErrorAlert
+        ErrorAlert,
+        SuccesAlert
     },
     props:{
         consultMod:{
@@ -165,7 +168,7 @@ export default {
                 return;
             }
             if(!this.addSucces){
-                axios.post('/state/verif',{
+                axios.post('/mme_state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
                     state_startDate:this.selected_startDate,
@@ -188,6 +191,8 @@ export default {
 
                         })
                         .then(response =>{
+                                this.$refs.succesAlert.showAlert("State changed succesfully");
+                                this.$router.replace({ name: "url_mme_life_event" })
                                 this.addSucces=true;
                                 this.isInConsultMod=true;
                                 this.state_validate=savedAs
@@ -200,7 +205,11 @@ export default {
         },
         /*Sending to the controller all the information about the mme so that it can be updated to the database */ 
         updateMmeState(savedAs){
-                axios.post('/state/verif',{
+                console.log(this.mme_id)
+                console.log(this.state_id)
+                console.log(savedAs)
+
+                axios.post('/mme_state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
                     state_startDate:this.selected_startDate,
@@ -261,6 +270,8 @@ export default {
             this.$router.push({ name: "home"})
             return;
         }
+
+
         if(this.state_id!=undefined){
             if(this.isInConsultMod==false){
                 this.isInModifMod=true;
@@ -278,20 +289,28 @@ export default {
                     if(this.state_name=="Downgraded"){
                         var consultUrl = (state_id) => `/send/mme_state/mme/${state_id}`;
                         axios.get(consultUrl(this.state_id))
-                            .then (response => {this.mme_idCard=response.data;console.log(response.data)})
+                            .then (response => {
+                                this.mme_idCard=response.data;
+                                console.log(response.data)
+                                this.loaded=true})
                             .catch(error => console.log(error));
+                    }else{
+                        this.loaded=true
+                        console.log("coco")
                     }
 
                 })
                 .catch(error => console.log(error)) ;
             
         }else{
-            var UrlState = (id) => `/state/send/${id}`;
+            
+            var UrlState = (id) => `/mme_state/send/${id}`;
             axios.get(UrlState(this.$route.query.currentState))
                 .then (response=>{
                     console.log(response.data)
                     this.current_state=response.data[0].state_name;
                     this.current_startDate=moment(response.data[0].state_startDate).format('D MMM YYYY');
+                    this.loaded=true
 
                 })
                 .catch(error => console.log(error)) ;

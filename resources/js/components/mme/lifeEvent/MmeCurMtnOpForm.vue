@@ -141,6 +141,9 @@ export default {
             this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
         }
     },
+    created(){
+        this.loaded=true;
+    },
     methods:{
         /*Sending to the controller all the information about the mme so that it can be added to the database
         Params : 
@@ -158,14 +161,13 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
-                axios.post('/curMtnOp/verif',{
+                axios.post('/mme/curMtnOp/verif',{
                     curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                     curMtnOp_description:this.curMtnOp_description,
                     curMtnOp_startDate:this.selected_startDate,
                     curMtnOp_endDate:this.selected_endDate,
                     curMtnOp_validate :savedAs,
-                    curMtnOp_id:this.curMtnOp_id,
-                    eq_id:id,
+                    mme_id:id,
                     state_id:this.mme_state_id,
                     reason:'add'
                 })
@@ -173,14 +175,14 @@ export default {
                     this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the mme is sended to the controller*/
-                    axios.post('/equipment/add/state/curMtnOp',{
+                    axios.post('/mme/add/state/curMtnOp',{
                         curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                         curMtnOp_description:this.curMtnOp_description,
                         curMtnOp_startDate:this.selected_startDate,
                         curMtnOp_endDate:this.selected_endDate,
                         curMtnOp_validate :savedAs,
-                        eq_id:id,
-                        state_id:this.equipment_state_id,
+                        mme_id:id,
+                        state_id:this.mme_state_id,
                         enteredBy_id:this.$userId.id
 
                 
@@ -207,8 +209,72 @@ export default {
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
             }
-
         },
+        /*Sending to the controller all the information about the mme so that it can be updated in the database
+        Params : 
+            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        updateMmeCurMtnOp(savedAs){
+            console.log("update")
+            /*First post to verify if all the fields are filled correctly
+                Type, name, value, unit and validate option is sended to the controller*/
+            axios.post('/mme/curMtnOp/verif',{
+                    curMtnOp_reportNumber:this.curMtnOp_reportNumber,
+                    curMtnOp_description:this.curMtnOp_description,
+                    curMtnOp_startDate:this.selected_startDate,
+                    curMtnOp_endDate:this.selected_endDate,
+                    curMtnOp_validate :savedAs,
+                    curMtnOp_id:this.curMtnOp_id,
+                    mme_id:this.mme_id_update,
+                    state_id:this.mme_state_id,
+                    reason:'update'
+                })
+                .then(response =>{
+                    console.log("update dans la base");
+                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
+                        Type, name, value, unit, validate option and id of the mme is sended to the controller
+                        In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
+                    var consultUrl = (id) => `/mme/update/state/curMtnOp/${id}`;
+                    axios.post(consultUrl(this.curMtnOp_id),{
+                        curMtnOp_reportNumber:this.curMtnOp_reportNumber,
+                        curMtnOp_description:this.curMtnOp_description,
+                        curMtnOp_startDate:this.selected_startDate,
+                        curMtnOp_endDate:this.selected_endDate,
+                        curMtnOp_validate :savedAs,
+                        mme_id:this.mme_id_update,
+                        curMtnOp_validate :savedAs,
+                        state_id:this.mme_state_id
+
+                    })
+                    .then(response =>{this.curMtnOp_validate=savedAs;})
+                    //If the controller sends errors we put it in the errors object 
+                    .catch(error => this.errors=error.response.data.errors) ;
+                })
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+        },
+        /*Clear all the error of the targeted field*/
+        clearError(event){
+            delete this.errors[event.target.name];
+        },
+        //Function for deleting a preventive maintenance operation from the view and the database
+        deleteComponent(){
+            //If the user is in update mode and the preventive maintenance operation exist in the database
+            if(this.modifMod==true && this.curMtnOp_id!==null){
+                //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
+                var consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
+                axios.post(consultUrl(this.curMtnOp_id),{
+                    mme_id:this.mme_id_update,
+                })
+                .then(response =>{
+                    //Emit to the parent component that we want to delete this component
+                    this.$emit('deleteCurMtnOp','')
+                })
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
+
+            }
+            
+        }
     }
 }
 </script>

@@ -175,6 +175,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/mme/life_event/reference/{id}/{state_id}', function () {
         return view('welcome');
     });
+
+    Route::get('/mme/life_event/state/{id}/{state_id}', function () {
+        return view('welcome');
+    });
+    Route::get('/mme/life_event/state/{id}', function () {
+        return view('welcome');
+    });
 });
 
 
@@ -441,6 +448,8 @@ Route::post('/curMtnOp/realize/{id}', [CurativeMaintenanceOperationController::c
 Route::post('curMtnOp/qualityVerifier/{id}', [CurativeMaintenanceOperationController::class, 'qualityVerification_curMtnOp'])  ;
 
 Route::post('/curMtnOp/technicalVerifier/{id}', [CurativeMaintenanceOperationController::class, 'technicalVerification_curMtnOp'])  ;
+
+Route::post('/mme/curMtnOp/verif', [CurativeMaintenanceOperationController::class, 'verif_curMtnOp_mme'])  ;
 
 Route::post('/mme/add/state/curMtnOp/', [CurativeMaintenanceOperationController::class, 'add_curMtnOp_mme'])  ;
 
