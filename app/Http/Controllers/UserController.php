@@ -361,6 +361,34 @@ class UserController extends Controller{
             ], 429);
         }
     }
+
+     /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/makeMmeOpValidationRight/{id} (post)
+     * Update the right makeMmeOpValidation of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the makeMmeOpValidationRight
+     */
+    public function update_makeMmeOpValidationRight($id, Request $request){
+        $user=User::findOrFail($id) ; 
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_makeMmeOpValidationRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
     
     /**
      * Function call by AccountManagementElement.vue with the route : /user/update_right/updateEnumRight/{id} (post)
@@ -671,6 +699,34 @@ class UserController extends Controller{
     }
 
      /**
+     * Function call by AccountManagementElement.vue with the route :  /user/update_right/makeEqRespValidationRight/{id}
+     * Update the right makeEqRespValidation, of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the makeEqRespValidationRight
+     */
+    public function update_makeMmeRespValidationRight($id, Request $request){
+        $user=User::findOrFail($id) ; 
+        $userResponsable=User::findOrFail($request->user_id) ;
+        if ($user->id!=$userResponsable->id){
+            if ($user->user_pseudo=="admin"){
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_makeMmeRespValidationRight' => $request->user_value,
+            ]);
+        }else{
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
+     /**
      * Function call by AccountManagementElement.vue with the route :/user/update_right/makeReformRight/{id} (post)
      * Update the right makeReformRight of the user which the id is passed in parameter
      * The id parameter correspond to the id of the user we want to change the makeReformRight
@@ -789,6 +845,7 @@ class UserController extends Controller{
                     "user_makeQualityValidationRight" => false,
                     "user_makeTechnicalValidationRight" => false,
                     "user_makeEqOpValidationRight" => false,
+                    "user_makeMmeOpValidationRight" => false,
                     "user_updateEnumRight" => false,
                     "user_deleteEnumRight" => false,
                     "user_addEnumRight" => false,
@@ -800,6 +857,7 @@ class UserController extends Controller{
                     "user_personTrainedToGeneralPrinciplesOfEqManagementRight" => false,
                     "user_personTrainedToGeneralPrinciplesOfMMEManagementRight" =>false,
                     "user_makeEqRespValidationRight" => false,
+                    "user_makeMmeRespValidationRight" => false,
                     "user_makeReformRight" => false,
                     "user_declareNewStateRight" => false,
                 ]);

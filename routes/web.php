@@ -644,6 +644,8 @@ Route::post(' /user/update_right/user_makeTechnicalValidationRight/{id}', [UserC
 
 Route::post(' /user/update_right/user_makeEqOpValidationRight/{id}', [UserController::class, 'update_makeEqOpValidationRight']);
 
+Route::post(' /user/update_right/user_makeMmeOpValidationRight/{id}', [UserController::class, 'update_makeMmeOpValidationRight']);
+
 Route::post(' /user/update_right/user_updateEnumRight/{id}', [UserController::class, 'update_updateEnumRight']);
 
 Route::post(' /user/update_right/user_deleteEnumRight/{id}', [UserController::class, 'update_deleteEnumRight']);
@@ -665,6 +667,8 @@ Route::post(' /user/update_right/user_personTrainedToGeneralPrinciplesOfEqManage
 Route::post(' /user/update_right/user_personTrainedToGeneralPrinciplesOfMMEManagementRight/{id}', [UserController::class, 'update_personTrainedToGeneralPrinciplesOfMMEManagementRight']);
 
 Route::post(' /user/update_right/user_makeEqRespValidationRight/{id}', [UserController::class, 'update_makeEqRespValidationRight']);
+
+Route::post(' /user/update_right/user_makeMmeRespValidationRight/{id}', [UserController::class, 'update_makeMmeRespValidationRight']);
 
 Route::post(' /user/update_right/user_makeReformRight/{id}', [UserController::class, 'update_makeReformRight']);
 
