@@ -66,10 +66,6 @@ export default {
             .catch(error => {
             this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
             });
-
-
-
-
             
         }
     }

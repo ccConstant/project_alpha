@@ -102,7 +102,7 @@ export default {
             type:String
         },
         verifRlz_isPassed:{
-            type:String
+            type:Boolean
         },
         verifRlz_startDate:{
             type:String
@@ -119,6 +119,14 @@ export default {
         realizedBy_lastName:{
             type:String
         },
+    },
+    data(){
+        return{
+            errors:{},
+            user_pseudo:'',
+            user_password:'',
+            compId:this.$userId.id
+        }
     },
     methods:{
         closeModal(modal){

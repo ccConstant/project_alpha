@@ -133,7 +133,7 @@ class VerificationRealizedController extends Controller
         }
     
         if ($request->reason=="update"){
-            $verifRlz=VerificationRealized::FindOrFail($request->verifRlz_id ) ;
+            $verifRlz=VerificationRealized::findOrFail($request->verifRlz_id ) ;
             if ($verifRlz->verifRlz_validate=="validated"){
                 return response()->json([
                     'errors' => [
@@ -197,7 +197,7 @@ class VerificationRealizedController extends Controller
      * The id parameter correspond to the id of the verification realized we want to update
      * */
     public function update_verifRlz(Request $request, $id){
-        $verifRlz=VerificationRealized::FindOrFail($id) ;
+        $verifRlz=VerificationRealized::findOrFail($id) ;
         $verifRlz->update([
             'verifRlz_reportNumber' => $request->verifRlz_reportNumber,
             'verifRlz_validate' => $request->verifRlz_validate,

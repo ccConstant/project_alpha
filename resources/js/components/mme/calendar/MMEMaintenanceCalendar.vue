@@ -127,14 +127,12 @@ export default {
         })
         axios.get('/verif/send/revisionTimeLimitPassed')
         .then (response=>{
-            console.log("coucou")
             console.log(response.data)
             this.verif_LimitPassed=response.data;
 
         });
         axios.get('/verif/send/revisionDatePassed')
         .then (response=>{
-            console.log("coucou2")
             console.log(response.data)
             this.verif_ToDo=response.data;
             this.loaded=true;

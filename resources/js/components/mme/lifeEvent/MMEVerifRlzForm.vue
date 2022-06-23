@@ -274,9 +274,10 @@ export default {
                     verifRlz_endDate:this.selected_endDate,
                     verifRlz_isPassed:this. verifRlz_isPassed,
                     verifRlz_validate :savedAs,
+                    verifRlz_id:this.verifRlz_id,
                     state_id:this.mme_state_id,
                     verif_id:this.verif_id,
-                    mme_id:id,
+                    mme_id:this.mme_id_update,
                     reason:'update'
                 })
                 .then(response =>{
@@ -348,6 +349,8 @@ export default {
                     this.loaded=true;
                     })
                 .catch(error => console.log(error));
+        }else{
+            this.loaded=true;
         }
 
     }

@@ -703,13 +703,13 @@ class MmeController extends Controller{
      * @return \Illuminate\Http\Response
      * */
     public function send_mme_verif_revisionDatePassed(){
-        /*$mmes=Mme::all() ;
+        $mmes=Mme::all() ;
         $container=array() ; 
         foreach($mmes as $mme){
             $containerVerif=array() ;
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mme_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;  
+                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;  
                 $today=Carbon::now() ;
                 foreach( $verifs as $verif){
                     if (($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL) && $verif->verif_nextDate<$today ){
@@ -753,7 +753,7 @@ class MmeController extends Controller{
                 }
             }
         }
-        return response()->json($container) ;*/
+        return response()->json($container) ;
     }
 
       /**
