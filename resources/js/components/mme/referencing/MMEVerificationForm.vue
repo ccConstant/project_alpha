@@ -10,16 +10,16 @@
                 <div v-if="isInConsultedMod==true && this.verif_number!==null || this.modifMod==true && this.verif_number!==null">
                     <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.verif_number" name="verif_number" label="Number :" :stepOfInput="1" v-model="verif_number" isDisabled />
                 </div>
-                <InputTextForm  inputClassName="form-control w-50" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill"/>
+                <InputTextForm  inputClassName="form-control w-50" :info_text="infos_verif[0].info_value" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[1].info_value" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[2].info_value" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[3].info_value" selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill"/>
                 <div class="input-group">
-                    <InputNumberForm  inputClassName="form-control " :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
-                    <InputSelectForm @clearSelectError='clearSelectError'  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
+                    <InputNumberForm  inputClassName="form-control " :info_text="infos_verif[4].info_value" :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
+                    <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[5].info_value"  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
                 </div>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.verif_description" name="verif_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="verif_description" />
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.verif_protocol" name="verif_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="verif_protocol" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[6].info_value" :Errors="errors.verif_description" name="verif_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="verif_description" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[7].info_value" :Errors="errors.verif_protocol" name="verif_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="verif_protocol" />
                
                
                
@@ -179,8 +179,14 @@ export default {
         axios.get('/verification/enum/requiredSkill')
             .then (response=>{
                 this.enum_requiredSkill=response.data;
-                this.loaded=true
             } ) 
+            .catch(error => console.log(error)) ;
+
+        axios.get('/info/send/verif')
+            .then (response=> {
+                this.infos_verif=response.data;
+                this.loaded=true;
+                }) 
             .catch(error => console.log(error)) ;
     },
     methods:{

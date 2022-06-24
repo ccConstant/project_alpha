@@ -4,15 +4,15 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference" name="mme_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod" v-model="mme_internalReference" />
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  v-model="mme_externalReference" />
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod" v-model="mme_name"  />
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_serialNumber" name="mme_serialNumber" label="MME serial Number :" :isDisabled="!!isInConsultMod" v-model="mme_serialNumber" />
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_constructor" name="mme_constructor" label="MME constructor :" :isDisabled="!!isInConsultMod" v-model="mme_constructor" />
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.mme_remarks" name="mme_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="mme_remarks" />
-            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.mme_set" name="mme_set" label="MME Set" :isDisabled="!!isInConsultMod" :options="enum_sets" v-model="mme_set"  />
-            <InputTextForm v-if="this.mme_importFrom!== undefined " inputClassName="form-control w-50" name="mme_importFrom" label="Import From :" isDisabled v-model="mme_importFrom"/>
-            <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addMME" @update="updateMME" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="mme_validate"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference" name="mme_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod" v-model="mme_internalReference" :info_text="infos_idCard[0].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod" v-model="mme_name" :info_text="infos_idCard[2].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_serialNumber" name="mme_serialNumber" label="MME serial Number :" :isDisabled="!!isInConsultMod" v-model="mme_serialNumber" :info_text="infos_idCard[3].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_constructor" name="mme_constructor" label="MME constructor :" :isDisabled="!!isInConsultMod" v-model="mme_constructor" :info_text="infos_idCard[4].info_value" />
+            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.mme_remarks" name="mme_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="mme_remarks" :info_text="infos_idCard[6].info_value"/>
+            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.mme_set" name="mme_set" label="MME Set" :isDisabled="!!isInConsultMod" :options="enum_sets" v-model="mme_set"  :info_text="infos_idCard[5].info_value" />
+            <InputTextForm v-if="this.mme_importFrom!== undefined " inputClassName="form-control w-50" name="mme_importFrom" label="Import From :" isDisabled v-model="mme_importFrom" />
+            <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addMME" @update="updateMME" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="mme_validate" />
             <div v-if="this.modifMod!=true">
                 <div v-if="this.isInConsultMod!=true">
                     <MMEImportationModal v-if="disableImport==false" :set="this.mme_set" @choosedMME="importFrom"/>
@@ -111,13 +111,15 @@ export default {
             .then (response=> this.enum_sets=response.data) 
             .catch(error => console.log(error)) ; 
 
-        /*axios.get('/info/send/mmeIdCard')
+        axios.get('/info/send/mme')
             .then (response=> {
+                console.log("coucou");
+                console.log(response.data);
                 this.infos_idCard=response.data;
                 this.loaded=true;
+                
                 }) 
-            .catch(error => console.log(error)) ;*/
-        this.loaded=true;
+            .catch(error => console.log(error)) ;
     },
     methods:{
         addMME(savedAs){

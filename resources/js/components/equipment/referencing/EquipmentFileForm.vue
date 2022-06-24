@@ -18,7 +18,7 @@
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <InputTextForm  inputClassName="form-control" :Errors="errors.file_name" name="file_name" label="File name :" v-model="file_name" :isDisabled="!!isInConsultedMod" :info_text="infos_file[0].info_value"/>
-                <InputTextForm  inputClassName="form-control" :Errors="errors.file_location" name="file_location" label="File location :" v-model="file_location" :isDisabled="!!isInConsultedMod" :info_text="infos_file[0].info_value"/>
+                <InputTextForm  inputClassName="form-control" :Errors="errors.file_location" name="file_location" label="File location :" v-model="file_location" :isDisabled="!!isInConsultedMod" :info_text="infos_file[1].info_value"/>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addEquipmentFile is called function else the updateEquipmentFile function is called -->

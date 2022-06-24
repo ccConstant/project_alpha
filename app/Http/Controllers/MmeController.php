@@ -406,6 +406,15 @@ class MmeController extends Controller{
         $containerVerif=array() ;
         foreach($mmes as $mme){
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
+            $states=$mostRecentlyMmeTmp->states;
+            $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ; 
+                $date2=$mostRecentlyState->created_at;
+               if ($date>=$date2){
+                     $mostRecentlyState=$state ; 
+                }
+            }
             if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
                 $verifs=Verification::where('mmeTemp_id', "=", $mostRecentlyMmeTmp->id)->get() ;
                 foreach( $verifs as $verif){
@@ -426,8 +435,10 @@ class MmeController extends Controller{
                 }
                 
                 $mme = ([
+                    "id" => $mme->id,
                     "internalReference" => $mme->mme_internalReference,
                     "verifications" => $containerVerif,
+                    "state_id" => $mostRecentlyState->id,
                 ]) ; 
 
                 array_push($container,$mme);

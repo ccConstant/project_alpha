@@ -7,8 +7,8 @@
         <div v-else>
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.prctn_type" name="prctn_type" label="Precaution type :" :options="enum_prctn_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.prctn_type" :selectedDivName="this.divClass" v-model="prctn_type"/>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prctn_description" name="prctn_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prctn_description" />
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_prctn[0].info_value" selectClassName="form-select w-50" :Errors="errors.prctn_type" name="prctn_type" label="Precaution type :" :options="enum_prctn_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.prctn_type" :selectedDivName="this.divClass" v-model="prctn_type"/>
+                <InputTextAreaForm inputClassName="form-control w-50"  :info_text="infos_prctn[1].info_value" :Errors="errors.prctn_description" name="prctn_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prctn_description" />
                 <!--If addSucces is equal to false, the buttons appear -->
 
                 <div v-if="this.addSucces==false ">
@@ -101,8 +101,15 @@ export default {
         axios.get('/precaution/enum/type')
             .then (response=> {
                 this.enum_prctn_type=response.data;
-                this.loaded=true;
             }) 
+            .catch(error => console.log(error)) ;
+
+        axios.get('/info/send/mme_precaution')
+            .then (response=> {
+                console.log(response.data)
+                this.infos_prctn=response.data;
+                this.loaded=true;
+                }) 
             .catch(error => console.log(error)) ;
     },
     methods:{

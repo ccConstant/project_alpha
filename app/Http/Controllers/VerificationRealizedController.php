@@ -91,22 +91,6 @@ class VerificationRealizedController extends Controller
                     ]
                 ], 429);
             }
-
-            if ($request->verifRlz_realizedBy_id==NULL){
-                return response()->json([
-                    'errors' => [
-                        'verifRlz_validate' => ["You have to entered the realizator of this verification realized for validate it"]
-                    ]
-                ], 429);
-            }
-
-            if ($request->verifRlz_approvedBy_id==NULL){
-                return response()->json([
-                    'errors' => [
-                        'verifRlz_validate' => ["You have to entered the person who approved this verification realized for validate it"]
-                    ]
-                ], 429);
-            }
         }
         
         
@@ -135,12 +119,47 @@ class VerificationRealizedController extends Controller
         if ($request->reason=="update"){
             $verifRlz=VerificationRealized::findOrFail($request->verifRlz_id ) ;
             if ($verifRlz->verifRlz_validate=="validated"){
+
+                if ($verifRlz->realizedBy_id==NULL){
+                    return response()->json([
+                        'errors' => [
+                            'verifRlz_validate' => ["You have to entered the realizator of this verification realized for validate it"]
+                        ]
+                    ], 429);
+                }
+    
+                if ($verifRlz->approvedBy_id==NULL){
+                    return response()->json([
+                        'errors' => [
+                            'verifRlz_validate' => ["You have to entered the person who approved this verification realized for validate it"]
+                        ]
+                    ], 429);
+                }
+
                 return response()->json([
                     'errors' => [
                         'verifRlz_validate' => ["You can't update a verification realized already validated"]
                     ]
                 ], 429);
             }
+        }else{
+            if ($request->verifRlz_validate=="validated"){
+
+                return response()->json([
+                    'errors' => [
+                        'verifRlz_validate' => ["You have to entered the realizator of this verification realized for validate it"]
+                    ]
+                ], 429);
+            
+
+            
+                return response()->json([
+                    'errors' => [
+                        'verifRlz_validate' => ["You have to entered the person who approved this verification realized for validate it"]
+                    ]
+                ], 429);
+            }
+            
         }
 
         $oneMonthAgo=Carbon::now()->subMonth(1) ; 

@@ -130,7 +130,7 @@ export default {
                 this.$refs.importAlert.showAlert();
             }else{
                 for (const power of this.powers) {
-                    var className="importedDim"+power.id
+                    var className="importedPow"+power.id
                     this.addImportedComponent(power.pow_type,power.pow_name,power.pow_value,power.pow_unit,
                         power.pow_consumptionValue,power.pow_consumptionUnit,power.pow_validate,className,power.id);
                 }

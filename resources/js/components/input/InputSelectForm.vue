@@ -128,12 +128,24 @@ export default {
         
     },
     mounted(){
-        var option = document.getElementsByTagName('option');
-        for (var i = 0; i < option.length; i++) {
-            if(option[i].value == this.selctedOption) {
-                option[i].setAttribute("selected", "selected");
+        if(this.selectedDivName!=undefined){
+            var selectedDiv = document.getElementsByClassName(this.selectedDivName)
+            var option =selectedDiv[0].getElementsByTagName('option');
+            for (var i = 0; i < option.length; i++) {
+                if(option[i].value == this.selctedOption) {
+                    option[i].setAttribute("selected", "selected");
+                    
+                }
+            }
+        }else{
+            var option = document.getElementsByTagName('option');
+            for (var i = 0; i < option.length; i++) {
+                if(option[i].value == this.selctedOption) {
+                    option[i].setAttribute("selected", "selected");
+                }
             }
         }
+        /**/
     },
     /*--------Declartion of the differents methods:--------
     updateValue: Emit to the parent component the value of the input

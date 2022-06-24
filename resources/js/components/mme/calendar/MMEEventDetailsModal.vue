@@ -68,7 +68,7 @@ export default {
             ;})
             //If the controller sends errors we put it in the errors object 
             .catch(error => {
-            this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
+                this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
             });
             
         }

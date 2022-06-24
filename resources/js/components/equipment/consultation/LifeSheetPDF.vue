@@ -1,7 +1,7 @@
 <template>
     <div v-if="loaded==true">
         <div id="page">
-            <p>a</p>
+            <p> '</p>
             <div class="top_infos">
                 <div class=" equipement_pdf_logo ">
                     LOGO<br>
@@ -17,11 +17,13 @@
                 </div>
 
                 <div class="equipement_pdf_version">
-                    <h2>ENR QA-25</h2>
+                    <h2>REC IWE-xx</h2>
                 </div>
-
+                <div class="equipement_pdf_index">
+                    <h2>Index 01</h2>
+                </div>
                 <div class="equipment_revued_by">
-                    <p>Revue par (date & visa)</p>
+                    <p >Revue par (date & visa)</p>
                 </div>
 
                 <div class="equipment_approuved_by">
@@ -37,7 +39,6 @@
             </div>
 
             <div class="eq_identification_infos_pdf">
-                <div class="eq_indentification_pdf">
                     <div class="title_identification_pdf">
                         <p>IDENTIFICATION</p>
                     </div>
@@ -53,9 +54,9 @@
 
                         </div>
                     </div>
-                    <div class="Ecme_designation_type_pdf">
+                    <div class="eq_designation_type_pdf">
                         <p>
-                            Désignation et type : <b>{{eq_idCard.eq_name}} {{eq_idCard.eq_type}}</b>
+                            Désignation et type : <b>123456789123456789123456789123456789123456789123456789123</b>
                         </p>
                         <p>
                             
@@ -72,7 +73,6 @@
                     <div class="eq_serialNumber_pdf">
                         <p>Serial Number : <b>{{eq_idCard.eq_serialNumber}}</b></p>
                     </div>
-                </div>  
             </div>
 
 
@@ -80,27 +80,46 @@
                 <div class="title_usage_pdf">
                     <p>USAGE</p>
                 </div>
-                <div class="usg_type_and_precaution_pdf" v-for="(usg,index) in eq_usg " :key="index">
-                    <div class="eq_usage_type_pdf">
-                        <p>
-                            Type of the operation realized by/with the equipment :
-                        </p>
-                        <br>
-                        <p>
-                            {{usg.usg_type}}
-                        </p>
+                <div v-if="eq_usg.length>0">
+                    <div class="usg_type_and_precaution_pdf" v-for="(usg,index) in eq_usg " :key="index">
+                        <div class="eq_usage_type_pdf">
+                            <p>
+                                Type of the operation realized by/with the equipment :
+                            </p>
+                            <br>
+                            <p>
+                                {{usg.usg_type}}
+                            </p>
+                        </div>
+                        <div class="eq_usage_precaution_pdf">
+                            <p>
+                                Precaution :
+                            </p>
+                            <br>
+                            <p>
+                                {{usg.usg_precaution}}
+                            </p>
+                        </div>
                     </div>
-                    <div class="eq_usage_precaution_pdf">
-                        <p>
-                            Precaution :
-                        </p>
-                        <br>
-                        <p>
-                            {{usg.usg_precaution}}
-                        </p>
+                </div>
+                <div v-else>
+                    <div class="usg_type_and_precaution_pdf">
+                        <div class="eq_usage_type_pdf">
+                            <p>
+                                Type of the operation realized by/with the equipment :
+                            </p>
+                            <br>
+                        </div>
+                        <div class="eq_usage_precaution_pdf">
+                            <p>
+                                Special Precaution (if needed) :
+                            </p>
+                            <br>
+                        </div>
                     </div>
                 </div>
             </div>
+
 
             <div class="eq_file_infos_pdf">
                 <div class="title_file_pdf">
@@ -110,7 +129,7 @@
                     <p>
                         Name of the file : Location
                     </p>
-                    <p v-for="(file,index) in eq_file " :key="index">
+                    <p class="text-primary" v-for="(file,index) in eq_file " :key="index">
                         {{file.file_name}} : {{file.file_location}}<br>
 
                     </p>
@@ -129,7 +148,7 @@
                                     <p>{{power.type}}</p>
                                     <div class ="eq_power_content_pdf" v-for="(power_elemnt,index) in power.powers " :key="index">
                                         <div class="eq_power_name_pdf">
-                                            <p>Power name{{power_elemnt.pow_name}}</p>
+                                            <p>Power name :{{power_elemnt.pow_name}}</p>
                                         </div>
                                         <div class="eq_power_consumption_pdf">
                                             <p>Power consumption</p>
@@ -139,13 +158,8 @@
                                             <p>Power value</p>
                                             <p>{{power_elemnt.pow_value}}  {{power_elemnt.pow_unit}} </p>
                                         </div>
-    
                                     </div>
                                 </div>
-                                <div>
-                                    
-                                </div>
-                                
                             </div>
                         </div>
                     </div>
@@ -325,7 +339,10 @@ export default {
     created(){
         var consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
-            .then (response => {this.eq_idCard=response.data; console.log(this.eq_idCard)})
+            .then (response => {
+                this.eq_idCard=response.data;
+                console.log(this.eq_idCard)
+            })
             .catch(error => console.log(error));
 
 
@@ -404,6 +421,7 @@ export default {
                     width: 642px;
                     top: 100px;
                     left:300px;
+                    height: 87px;
                     
                     
                 }
@@ -417,10 +435,18 @@ export default {
                     border: solid 1px black;
                     margin: auto;
                     position: absolute;
-
                     left: 942px;
                     top: 100px;
-                    height: 87px;
+                    height: 47px;
+                    width: 200px;
+                }
+                .equipement_pdf_index{
+                    border: solid 1px black;
+                    margin: auto;
+                    position: absolute;
+                    left: 942px;
+                    top: 147px;
+                    height: 40px;
                     width: 200px;
                 }
                 .equipment_revued_by{
@@ -479,12 +505,11 @@ export default {
                     height: auto;
                     width: 1042px;
                 }
-                .Ecme_designation_type_pdf{
+                .eq_designation_type_pdf{
                     border: solid 1px black;
                     margin-left: 100px;
-                    position: relative;
                     width: 500px;
-                    height: 30px;
+                    height: 60px;
                     margin-bottom: 20px;
                     float: left;
                     
@@ -492,9 +517,8 @@ export default {
                 .eq_externalReference_pdf{
                     border: solid 1px black;
                     margin-left: 42px;
-                    position: relative;
                     width: 500px;
-                    height: 30px;
+                    height: 60px;
                     margin-bottom: 20px;
                     float: left;
                 }
@@ -502,14 +526,14 @@ export default {
                     border: solid 1px black;
                     margin-left: 100px;
                     width: 500px;
-                    height: 30px;
+                    height: 60px;
                     float: left;
                 }
                 .eq_serialNumber_pdf{
                     border: solid 1px black;
                     margin-left: 42px;
                     width: 500px;
-                    height: 30px;
+                    height: 60px;
                     float: left; 
                 }
 
@@ -527,17 +551,20 @@ export default {
                     .eq_usage_type_pdf{
                         border: solid 1px black;
                         margin-left: 100px;
-                        float: left;
-                        margin-bottom: 20px;
+                        //float: left;
+                        position: relative;
+
                         height: 170px;
-                        width: 521px;
+                        width: 1042px;
                     }
                     .eq_usage_precaution_pdf{
                         border: solid 1px black;
                         margin-bottom: 20px;
                         height: 170px;
-                        width: 521px;
-                        float: left; 
+                        width: 1042px;
+                        position: relative;
+                        margin-left: 100px;
+                        //float: left; 
                     }
                 }
             }
@@ -651,14 +678,14 @@ export default {
                             p{
                                 font-size: 20px;
                                 font-weight: normal;
-                                margin-left: 150px;
+                                margin-left: 100px;
                                 margin-top: 5px;
                             }
                             .eq_dimension_name_value_pdf{
                                 border: solid 1px black;
                                 position: relative;
                                 height: 40px;
-                                width: 510px;
+                                width: 336px;
                                 margin-right: 11px;   
                                 
                             }
@@ -687,8 +714,8 @@ export default {
                         display: inline-block;
                         margin-bottom: 20px;
                         height: 40px;
-                        margin-left: 100px;
-                        width: 250px;
+                        margin-left: 120px;
+                        width: 270px;
                     }
                     .eq_set_pdf{
                         display: inline-block;

@@ -7,11 +7,11 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_measurementType" name="usg_measurementType" label="Measurement type :" :isDisabled="!!isInConsultedMod" v-model="usg_measurementType" />
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_application" name="usg_application" label="Application :" :isDisabled="!!isInConsultedMod" v-model="usg_application" />
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50"  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Metrological level :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[0].info_value" :Errors="errors.usg_measurementType" name="usg_measurementType" label="Measurement type :" :isDisabled="!!isInConsultedMod" v-model="usg_measurementType" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[1].info_value" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[2].info_value" :Errors="errors.usg_application" name="usg_application" label="Application :" :isDisabled="!!isInConsultedMod" v-model="usg_application" />
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_usage[3].info_value" selectClassName="form-select w-50"  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_usage[4].info_value" selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Metrological level :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
                 
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
@@ -182,13 +182,16 @@ export default {
                 .then (response=> {
                     this.importedUsgPrecaution=response.data;
                     console.log(this.importedUsgPrecaution)
-                    this.loaded=true
                     })
                 .catch(error => console.log(error)) ; 
-                
-        }else{
-            this.loaded=true
         }
+        axios.get('/info/send/mme_usage')
+            .then (response=> {
+                console.log(response.data)
+                this.infos_usage=response.data;
+                this.loaded=true;
+                }) 
+            .catch(error => console.log(error)) ;
     },
     methods:{
         /*Sending to the controller all the information about the   mme so that it can be added to the database
@@ -207,6 +210,7 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
+
 
                 axios.post('/mme_usage/verif',{
                     usg_measurementType:this.usg_measurementType,
@@ -272,6 +276,8 @@ export default {
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             console.log("update dans la base");
+            console.log(this.usg_verifAcceptanceAuthority)
+            console.log(this.usg_metrologicalLevel)
             axios.post('/mme_usage/verif',{
                     usg_measurementType:this.usg_measurementType,
                     usg_precision:this.usg_precision,

@@ -3,6 +3,7 @@
 	<div>
 		<b-navbar type="dark" variant="dark">
 			<b-navbar-nav>
+				<b-navbar-brand href="/">Alpha</b-navbar-brand>
 				<!-- Navbar dropdowns -->
 				<b-nav-item-dropdown text="Equipment" right>
 					<b-dropdown-item href="/equipment/add">Add a new equipment</b-dropdown-item>

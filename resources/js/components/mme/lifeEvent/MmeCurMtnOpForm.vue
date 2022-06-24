@@ -7,17 +7,17 @@
             <form class="container curMtnOp-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <div v-if="isInConsultMod==true && this.curMtnOp_number!==null || this.modifMod==true && this.curMtnOp_number!==null">
-                    <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.curMtnOp_number" name="curMtnOp_number" label="Number :" :stepOfInput="1" v-model="curMtnOp_number" isDisabled />
+                    <InputNumberForm :info_text="infos_curMtnOp[0].info_value"  inputClassName="form-control w-25" :Errors="errors.curMtnOp_number" name="curMtnOp_number" label="Number :" :stepOfInput="1" v-model="curMtnOp_number" isDisabled />
                 </div>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.curMtnOp_reportNumber" name="curMtnOp_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod" v-model="curMtnOp_reportNumber" />
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.curMtnOp_description" name="curMtnOp_description" label="Description :" :isDisabled="!!isInConsultMod" v-model="curMtnOp_description"/>
+                <InputTextForm :info_text="infos_curMtnOp[1].info_value" inputClassName="form-control w-50" :Errors="errors.curMtnOp_reportNumber" name="curMtnOp_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod" v-model="curMtnOp_reportNumber" />
+                <InputTextAreaForm :info_text="infos_curMtnOp[2].info_value" inputClassName="form-control w-50" :Errors="errors.curMtnOp_description" name="curMtnOp_description" label="Description :" :isDisabled="!!isInConsultMod" v-model="curMtnOp_description"/>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.curMtnOp_startDate" name="curMtnOp_startDate" label="Start date :" :isDisabled="true"  v-model="curMtnOp_startDate" />
-                    <InputDateForm inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"   v-model="selected_startDate"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.curMtnOp_startDate" name="curMtnOp_startDate" label="Start date :" :isDisabled="true"  v-model="curMtnOp_startDate" />
+                    <InputDateForm :info_text="infos_curMtnOp[3].info_value" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"   v-model="selected_startDate"/>
                 </div>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.curMtnOp_endDate" name="curMtnOp_endDate" label="End date :" :isDisabled="true"  v-model="curMtnOp_endDate" />
-                    <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  v-model="selected_endDate"/>
+                    <InputTextForm  inputClassName="form-control" :Errors="errors.curMtnOp_endDate" name="curMtnOp_endDate" label="End date :" :isDisabled="true"  v-model="curMtnOp_endDate" />
+                    <InputDateForm :info_text="infos_curMtnOp[4].info_value" inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  v-model="selected_endDate"/>
                 </div>
                 <div v-if="this.addSucces==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addMmeCurMtnOp is called function else the updateMmeCurMtnOp function is called -->
@@ -142,7 +142,12 @@ export default {
         }
     },
     created(){
-        this.loaded=true;
+        axios.get('/info/send/curativeMaintenanceOperation')
+            .then (response=> {
+                this.infos_curMtnOp=response.data;
+                this.loaded=true;
+                }) 
+            .catch(error => console.log(error)) ;
     },
     methods:{
         /*Sending to the controller all the information about the mme so that it can be added to the database

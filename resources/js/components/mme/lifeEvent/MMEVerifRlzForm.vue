@@ -8,25 +8,25 @@
                 <!--Call of the different component with their props-->
                 <VerifChooseModal v-if="isInModifMod==false && isInConsultMod==false" :verifs="verifs" @choosedOpe="choosedOpe"/>
                 <div v-if="verif_number!==null  ">
-                    <InputTextForm inputClassName="form-control w-50"  name="verif_number" label="Number :" isDisabled  v-model="verif_number"/>
-                    <InputTextAreaForm inputClassName="form-control w-50" name="verif_expectedResult" label="Expected Result :" isDisabled   v-model="verif_expectedResult" />
-                    <InputTextAreaForm inputClassName="form-control w-50" name="verif_nonComplianceLimit" label="Non Compliance Limit :" isDisabled   v-model="verif_nonComplianceLimit" />
-                    <InputTextAreaForm inputClassName="form-control w-50" name="verif_description" label="Description :" isDisabled   v-model="verif_description" />
-                    <InputTextAreaForm inputClassName="form-control w-50" name="verif_protocol" label="Protocol :" isDisabled   v-model="verif_protocol"/>
+                    <InputTextForm :info_text="infos_verif[0].info_value" inputClassName="form-control w-50"  name="verif_number" label="Number :" isDisabled  v-model="verif_number"/>
+                    <InputTextAreaForm :info_text="infos_verif[2].info_value" inputClassName="form-control w-50" name="verif_expectedResult" label="Expected Result :" isDisabled   v-model="verif_expectedResult" />
+                    <InputTextAreaForm :info_text="infos_verif[3].info_value" inputClassName="form-control w-50" name="verif_nonComplianceLimit" label="Non Compliance Limit :" isDisabled   v-model="verif_nonComplianceLimit" />
+                    <InputTextAreaForm :info_text="infos_verif[7].info_value" inputClassName="form-control w-50" name="verif_description" label="Description :" isDisabled   v-model="verif_description" />
+                    <InputTextAreaForm :info_text="infos_verif[8].info_value" inputClassName="form-control w-50" name="verif_protocol" label="Protocol :" isDisabled   v-model="verif_protocol"/>
                 </div>
 
 
                 
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.verifRlz_reportNumber" name="verifRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  v-model="verifRlz_reportNumber"/>
+                <InputTextForm :info_text="infos_verifRlz[0].info_value" inputClassName="form-control w-50" :Errors="errors.verifRlz_reportNumber" name="verifRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  v-model="verifRlz_reportNumber"/>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :placeholer="'Operation date :'+verif_startDate_placeholer" :Errors="errors.verifRlz_startDate" name="verifRlz_startDate" label="Start date :" :isDisabled="true" v-model="verifRlz_startDate" />
+                    <InputTextForm :info_text="infos_verifRlz[1].info_value" inputClassName="form-control" :placeholer="'Operation date :'+verif_startDate_placeholer" :Errors="errors.verifRlz_startDate" name="verifRlz_startDate" label="Start date :" :isDisabled="true" v-model="verifRlz_startDate" />
                     <InputDateForm  inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  v-model="selected_startDate"/>
                 </div>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.verifRlz_endDate" name="verifRlz_endDate" label="End date :" :isDisabled="true" v-model="verifRlz_endDate" />
-                    <InputDateForm  inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod" v-model="selected_endDate"/>
+                    <InputTextForm :info_text="infos_verifRlz[2].info_value" inputClassName="form-control" :Errors="errors.verifRlz_endDate" name="verifRlz_endDate" label="End date :" :isDisabled="true" v-model="verifRlz_endDate" />
+                    <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod" v-model="selected_endDate"/>
                 </div>
-                <RadioGroupForm label="is Passed?:" :options="isPassedOption" :Errors="errors.verifRlz_isPassed" :checkedOption="verifRlz_isPassed" :isDisabled="!!isInConsultMod" v-model="verifRlz_isPassed"/> 
+                <RadioGroupForm :info_text="infos_verifRlz[3].info_value" label="is Passed?:"  :options="isPassedOption" :Errors="errors.verifRlz_isPassed" :checkedOption="verifRlz_isPassed" :isDisabled="!!isInConsultMod" v-model="verifRlz_isPassed"/> 
                 <div v-if="this.verif_id!==null">
                     <div v-if="this.addSucces==false">
                         <!--If this preventive maintenance operation doesn't have a id the addMmeVerifRlz is called function else the updateMmeVerifRlz function is called -->
@@ -346,12 +346,23 @@ export default {
                 .then (response =>{
                     this.verifs=response.data;
                     console.log(response.data);
-                    this.loaded=true;
                     })
                 .catch(error => console.log(error));
-        }else{
-            this.loaded=true;
         }
+
+        axios.get('/info/send/verif')
+            .then (response=> {
+                this.infos_verif=response.data;
+
+                }) 
+            .catch(error => console.log(error)) ;
+
+        axios.get('/info/send/verifRlz')
+            .then (response=> {
+                this.loaded=true;
+                this.infos_verifRlz=response.data;
+                }) 
+            .catch(error => console.log(error)) ;
 
     }
 

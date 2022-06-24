@@ -11,7 +11,7 @@
                     <InputTextForm :Errors="errors.user_lastName " v-model="user_lastName" name="user_lastName" label="Last name :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[1].info_value"/>
                     <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[4].info_value"/>
                     <InputPasswordForm :Errors="errors.user_password" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control " divClassName="password" :info_text="infos_person[5].info_value"/>
-                    <InputPasswordForm :Errors="errors.user_confirmation_password" v-model="user_confirmation_password" name="user_confirmation_password" label="Confirm password :" inputClassName="form-control " divClassName="password" />
+                    <InputPasswordForm :Errors="errors.user_confirmation_password" v-model="user_confirmation_password" name="user_confirmation_password" label="Confirm password :" inputClassName="form-control " divClassName="password" :info_text="infos_person[6].info_value"/>
                 </form>
                 <button type="button" @click="create_account()" class="save btn btn-primary register_button ">Register</button>
 

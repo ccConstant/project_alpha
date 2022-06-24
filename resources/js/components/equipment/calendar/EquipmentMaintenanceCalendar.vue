@@ -110,6 +110,7 @@ export default {
     created(){
         axios.get('/equipment/prvMtnOp/planning')
             .then (response=>{
+                console.log(response.data)
                 for (const data of response.data) {
                     this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
                     for(const operation of data.preventive_maintenance_operations){

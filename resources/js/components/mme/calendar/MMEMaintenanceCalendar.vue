@@ -51,7 +51,7 @@ export default {
         return {
             calendarOptions: {
                 plugins: [ dayGridPlugin,interactionPlugin,listPlugin,momentPlugin,resourceTimelinePlugin],
-                initialView: 'resourceTimelineYear',
+                initialView: 'resourceTimelineMonth',
                 headerToolbar: {
                     left: 'listMonth,listWeek,resourceTimelineMonth',
                     center: 'title',
