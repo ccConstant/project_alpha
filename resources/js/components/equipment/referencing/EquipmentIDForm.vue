@@ -16,7 +16,7 @@
 -------------------------------------------------------------->
 <template>
     <div class="equipmentID" v-if="loaded==true">
-        <h2 class="titleForm">Equipment ID</h2>
+        <h2 class="titleForm">Equipment ID Card</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->

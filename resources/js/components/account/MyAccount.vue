@@ -23,7 +23,7 @@
                         <InputTextForm :inputClassName="['form-control', !this.formation_mme_ok?'is-invalid':'']" :Errors="errors.user_mme_formation_date" name="user_eq_formation_date" label="Trained to general principles of mme management since:" :isDisabled="true" divClassName="user_text_field" v-model="user_mme_formation_date"/>
                         <InputDateForm  inputClassName="form-control date-selector" name="selected_mme_formation_date"  isRequired v-model="selected_mme_formation_date"/>
                     </div>
-                    <div v-if="this.formation_eq_ok==false">
+                    <div v-if="this.formation_mme_ok==false">
                         <p class="train_alert">The mme formation is no longer available </p>
                     </div>
                     <InputPasswordForm :Errors="errors.user_password" v-model="user_password" name="user_password" label="Change my password :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[5].info_value"/>

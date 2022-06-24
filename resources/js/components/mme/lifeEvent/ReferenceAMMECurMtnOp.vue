@@ -147,7 +147,7 @@ export default {
         }
     },
     created(){
-        if(this.$userId.user_makeEqOpValidationRight!=true){
+        if(this.$userId.user_makeMmeOpValidationRight!=true){
             this.$router.push({ name: "home"});
         }
     },

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <ErrorAlert ref="errorAlert"/>
         <b-modal id="modal-event_details" @hidden="resetModal" title="Details" hide-footer>
             <div>
                 <div v-for="option in verifs" :key="option.id">
@@ -14,7 +15,7 @@
                                 Protocol : {{option.verif_protocol}}<br>
                                 Operation date : {{option.verif_nextDate}}
                             </p>
-                            <div v-if="makeEqOpValidationRight==true">
+                            <div v-if="makeMmeOpValidationRight==true">
                                 <b-button variant="primary" @click="redirect_to_preventive(option.mme_id,option.state_id)">Record it</b-button>
                             </div>
                             <div v-else>
@@ -31,8 +32,12 @@
 </template>
 
 <script>
-
+import ErrorAlert from '../../alert/ErrorAlert.vue'
 export default {
+    components:{
+        ErrorAlert
+
+    },
     props:{
         verifs:{
             type:Array
@@ -40,7 +45,7 @@ export default {
     },
     data(){
         return{
-            makeEqOpValidationRight:this.$userId.user_makeEqOpValidationRight,
+            makeMmeOpValidationRight:this.$userId.user_makeMmeOpValidationRight,
         }
     },
     methods:{
@@ -51,9 +56,8 @@ export default {
             this.$emit('modalClosed','')
         },
         redirect_to_preventive(mme_id,state_id){
-            if(this.$userId.user_makeEqOpValidationRight!=true){
-            this.$refs.errorAlert.showAlert("You don't have the right");
-            
+            if(this.$userId.user_makeMmeOpValidationRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right");
             }
             var consultUrl = (state_id) => `/mme_state/verif/beforeReferenceVerif/${state_id}`;
             axios.post(consultUrl(state_id),{

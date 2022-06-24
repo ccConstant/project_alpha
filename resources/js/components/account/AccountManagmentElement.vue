@@ -6,17 +6,8 @@
         <b-col class="col_right_tab" v-for="(user) in users" :key="key_letter+user.id">
             <div class="check_formed">
                 <input type="checkbox" :id="right_name+user.id" :class="[right_name, 'right_checkbox']" :name="right_name" :value="user.id" @click="send_right_change($event,user.id,right_name)">
-                <div v-if="training!=null && user.user_formationEqDate!=null">
-                    <div v-if="formationEqOk(user.id)!=true">
-                        <p  :class="['formed', 'text-danger']">
-                            Since : {{user.user_formationEqDate}} training expired
-                        </p>
-                    </div>
-                    <div v-else>
-                        <p class="formed">
-                            Since : {{user.user_formationEqDate}}</p>
-                    </div>
-                </div>
+                
+  
             </div>
 
                 
@@ -45,14 +36,24 @@ export default {
         right_name:{
             type:String
         },
+        right_date:{
+            type:String
+        },
         training:{
             type:Boolean,
             default:null
         },
+        training_type:{
+            type:String,
+            default:null
+        },
+
     },
     data(){
         return{
             eq_formation_isOk_res:true,
+            mme_formation_isOk_res:true,
+
         }
     },
     methods:{
@@ -70,11 +71,29 @@ export default {
                 e.target.checked="checked";
             });
         },
+        
+        formationOk(user_id){
+            if(this.training_type=='equipment'){
+                this.formationEqOk(user_id)
+            }else if(this.training_type=='mme'){
+                this.formationMmeOk(user_id)
+            }
+        },
+
         formationEqOk(user_id){
             var getUrlFormationOk = (id) => ` /user/get/formationEqOk/${id}`;
             axios.get(getUrlFormationOk(user_id))
             .then (response=> {
                 this.eq_formation_isOk_res=response.data;
+            }) 
+            .catch(error =>{}) ;
+            return false;
+        },
+        formationMmeOk(user_id){
+            var getUrlFormationOk = (id) => ` /user/get/formationMmeOk/${id}`;
+            axios.get(getUrlFormationOk(user_id))
+            .then (response=> {
+                this.mme_formation_isOk_res=response.data;
             }) 
             .catch(error =>{}) ;
             return false;

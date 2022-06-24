@@ -38,25 +38,25 @@
         <b-modal :id="`modal-curMtnOpManagmentRealize-${_uid}`" title="Realize the record" @ok="handleOkRealize" @hidden="resetModal">
             <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
-            :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
+            :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to realize</h4>
             <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
             <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
         </b-modal>
 
         <b-modal :id="`modal-curMtnOpManagmentQuality-${_uid}`" title="Quality Check" @ok="handleOkQuality" @hidden="resetModal">
-            <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
+            <EquipmentCurMtnOpForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
-            :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
+            :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to make the quality check</h4>
             <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
             <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
         </b-modal>
 
         <b-modal :id="`modal-curMtnOpManagmentTechnical-${_uid}`" title="Technical Check" @ok="handleOkTechnical" @hidden="resetModal">
-            <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
+            <EquipmentCurMtnOpForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
-            :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
+            :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to make the Technical check</h4>
             <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
             <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control "/>
@@ -85,6 +85,9 @@ export default {
             type:Number
         },
         curMtnOp_reportNumber:{
+            type:String
+        },
+        curMtnOp_description:{
             type:String
         },
         curMtnOp_startDate:{

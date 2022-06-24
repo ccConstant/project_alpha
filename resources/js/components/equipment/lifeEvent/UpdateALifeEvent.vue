@@ -92,6 +92,7 @@
                                     
                                     <CurMtnOpModal :curMtnOp_id="curMtnOp.id" :curMtnOp_reportNumber="curMtnOp.curMtnOp_reportNumber"
                                     :curMtnOp_startDate="curMtnOp.curMtnOp_startDate" :curMtnOp_endDate="curMtnOp.curMtnOp_endDate"
+                                    :curMtnOp_description="curMtnOp.curMtnOp_description"
                                     :curMtnOp_validate="curMtnOp.curMtnOp_validate" :eq_id="eq_id" :state_id="state_id" @okReload="reloadPage"
                                     :realizedBy_lastName="curMtnOp.realizedBy_lastName" :qualityVerifier_lastName="curMtnOp.qualityVerifier_lastName"
                                     :technicalVerifier_lastName="curMtnOp.technicalVerifier_lastName" />

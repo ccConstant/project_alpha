@@ -44,7 +44,7 @@ export default {
             loaded:false,
             currentState:'',
             pageOfItems: [],
-            user_makeEqOpValidationRight:this.$userId.user_makeEqOpValidationRight
+            user_makeMmeOpValidationRight:this.$userId.user_makeMmeOpValidationRight
         }
     },
     methods:{
@@ -65,7 +65,7 @@ export default {
             }
         },
         verifBeforeAddOpe(mme_id_to_send,state_id){
-            if(this.$userId.user_makeEqOpValidationRight!=true){
+            if(this.$userId.user_makeMmeOpValidationRight!=true){
                 this.$refs.errorAlert.showAlert("You don't have the right");
                 return;
             }
@@ -95,7 +95,7 @@ export default {
             }
         },
         verifBeforeUpdateOp(mme_id_to_send,state_id){
-            if(this.$userId.user_makeEqOpValidationRight!=true){
+            if(this.$userId.user_makeMmeOpValidationRight!=true){
                 this.$refs.errorAlert.showAlert("You don't have the right");
             }else{
                 this.$router.push({ name: "url_mme_life_event_update", params: {id:mme_id_to_send,state_id:state_id }})

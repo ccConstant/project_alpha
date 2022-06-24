@@ -186,20 +186,11 @@ Route::middleware('auth')->group(function () {
         return view('welcome');
     });
 
-
-    Route::get('/mme/life_event/update/{id}/{state_id}', function () {
-        return view('welcome');
-    });
-
     Route::get('/mme/maintenance/calendar', function () {
         return view('welcome');
     });
 
     Route::get('/mme/life_event/update/{id}/{state_id}', function () {
-        return view('welcome');
-    });
-
-    Route::get('/mme/maintenance/calendar', function () {
         return view('welcome');
     });
 });

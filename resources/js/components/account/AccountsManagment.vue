@@ -11,7 +11,7 @@
 				<b-row>
 					<b-col class="right_title">Right</b-col>
 					<b-col class="right_name" v-for="(user, index) in pageOfItems" :key="index">
-						<a href="#" @click="openUserUpdateModal(user.user_pseudo,user.user_firstName,user.user_lastName,user.user_initials,user.id,user.user_formationEqDate)">{{user.user_lastName}} {{user.user_firstName}}</a>
+						<a href="#" @click="openUserUpdateModal(user.user_pseudo,user.user_firstName,user.user_lastName,user.user_initials,user.id,user.user_formationEqDate,user.user_formationMmeDate)">{{user.user_lastName}} {{user.user_firstName}}</a>
 					</b-col>
 
 					<b-row><div class="w-100 row_right_tab"></div>
@@ -61,8 +61,8 @@
 					<b-row><div class="w-100 row_right_tab"></div>
 					<b-col class="right_title"> Formation management </b-col>  </b-row>
 
-					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
-					<AccountManagmentElement right_title="Person trained to general principles of MME managment" key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
+					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" training_type="equipment" right_date='user_formationEqDate' key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
+					<AccountManagmentElement right_title="Person trained to general principles of MME managment"  :training="true" training_type="mme" right_date='user_formationMmeDate' key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
 	
 					<b-row><div class="w-100 row_right_tab"></div>
 					<b-col class="right_title"> Life Event Management </b-col>  </b-row>
@@ -88,8 +88,12 @@
 							<InputDateForm inputClassName="form-control  date-selector"  name="selected_endDate"  isRequired v-model="selected_endDate"/>
 						</div>
 						<div class="input-group">
-							<InputTextForm inputClassName="form-control" :Errors="errors.user_formationEqDate" name="user_formationEqDate" label="Formation Date :" :isDisabled="true"  isRequired v-model="user_formationEqDate"/>
+							<InputTextForm inputClassName="form-control" :Errors="errors.user_formationEqDate" name="user_formationEqDate" label="Eq Formation Date :" :isDisabled="true"  isRequired v-model="user_formationEqDate"/>
 							<InputDateForm inputClassName="form-control  date-selector"  name="selected_formationEqDate"  isRequired v-model="selected_formationEqDate"/>
+						</div>
+						<div class="input-group">
+							<InputTextForm inputClassName="form-control" :Errors="errors.user_formationMmeDate" name="user_formationMmeDate" label="MME Formation Date :" :isDisabled="true"  isRequired v-model="user_formationMmeDate"/>
+							<InputDateForm inputClassName="form-control  date-selector"  name="selected_formationMmeDate"  isRequired v-model="selected_formationMmeDate"/>
 						</div>
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_password" name="user_password" label="Change the current password :" v-model="modal_password"/>
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Confirm the password :" v-model="modal_confirmation_password"/>
@@ -136,6 +140,8 @@ export default {
 			user_endDate:'',
 			user_formationEqDate:'',
 			selected_formationEqDate:null,
+			user_formationMmeDate:'',
+			selected_formationMmeDate:null,
 			modal_confirmation_password:'',
 			errors:[],									
 
@@ -152,6 +158,9 @@ export default {
                 if(this.users[i].user_formationEqDate!=null){
                     this.users[i].user_formationEqDate=moment(this.users[i].user_formationEqDate).format('D MMM YYYY'); 
                 }
+				if(this.users[i].user_formationMmeDate!=null){
+                    this.users[i].user_formationMmeDate=moment(this.users[i].user_formationMmeDate).format('D MMM YYYY'); 
+                }
             }
             this.loaded=true;
 			console.log(response.data)
@@ -165,13 +174,14 @@ export default {
 			this.pageOfItems = pageOfItems;
 
 		},
-		openUserUpdateModal(user,first,last,initials,id,formation_eq_date){
+		openUserUpdateModal(user,first,last,initials,id,formation_eq_date,formation_mme_date){
 			this.modal_userName=user;
 			this.modal_firstName=first;
 			this.modal_lastName=last;
 			this.modal_initials=initials;
 			this.modal_id=id
 			this.user_formationEqDate=formation_eq_date;
+			this.user_formationMmeDate=formation_mme_date;
 			this.$bvModal.show(`modal-updateUser-${this.compId}`)
 		},
 		handleOkUpdate(bvModalEvent) {
@@ -190,6 +200,8 @@ export default {
 					user_resetUserPasswordRight:this.$userId.user_resetUserPasswordRight,
 					user_endDate:this.selected_endDate,
 					user_formationEqDate:this.selected_formationEqDate,
+					user_formationMmeDate:this.selected_formationMmeDate,
+
 					//id of user who change the info
 					user_id:this.$userId.id
 			})
@@ -229,6 +241,9 @@ export default {
         }
 		if(this.selected_formationEqDate!==null){
             this.user_formationEqDate=moment(this.selected_formationEqDate).format('D MMM YYYY'); 
+        }
+		if(this.selected_formationMmeDate!==null){
+            this.user_formationMmeDate=moment(this.selected_formationMmeDate).format('D MMM YYYY'); 
         }
 		for(const user of this.pageOfItems){
 			if(user.user_makeEqOpValidationRight==true){

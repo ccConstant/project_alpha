@@ -3,25 +3,25 @@
         <ErrorAlert ref="errorAlert"/>
         <SuccesAlert ref="succesAlert"/>
 
-        <div class="verifRlz_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
+        <div class="verifRlz_button" v-if="this.$userId.user_makeMmeOpValidationRight==true">
             <b-button  @click="$bvModal.show(`modal-verifManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
         </div>
         <div class="verifRlz_button" v-else>
             <b-button  disabled variant="primary">Update</b-button>
         </div>
-        <div class="verifRlz_button" v-if="this.$userId.user_makeEqRespValidationRight==true">
+        <div class="verifRlz_button" v-if="this.$userId.user_makeMmeRespValidationRight==true">
             <b-button v-if="approvedBy_lastName==null" @click="$bvModal.show(`modal-verifManagmentApprove-${_uid}`)" variant="primary">Approve</b-button>
         </div>
         <div class="verifRlz_button" v-else>
             <b-button v-if="approvedBy_lastName==null" variant="primary" disabled>Approve</b-button>
         </div>
-        <div class="verifRlz_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
+        <div class="verifRlz_button" v-if="this.$userId.user_makeMmeOpValidationRight==true">
             <b-button v-if="realizedBy_lastName==null"  @click="$bvModal.show(`modal-verifManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
         </div>
         <div class="verifRlz_button" v-else>
             <b-button v-if="realizedBy_lastName==null" disabled variant="primary">I realized it</b-button>
         </div>
-        <div v-if="this.$userId.user_makeEqRespValidationRight==false">
+        <div v-if="this.$userId.user_makeMmeRespValidationRight==false">
             <p class="text-danger"> You don't have the right to approve a record</p>
         </div>
         
