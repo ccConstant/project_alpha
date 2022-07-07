@@ -35,8 +35,8 @@
                         </div>
                     </div>
                     <div v-else-if="this.verif_id!==null && reformMod==false ">
-                        <div v-if="verif_refromDate!=null" >
-                            <p>Refrom by {{verif_refromBy}} at {{verif_refromDate}}</p>
+                        <div v-if="verif_reformDate!=null" >
+                            <p>Reform at {{verif_reformDate}}</p>
                         </div>
                         <div v-else>
                             <SaveButtonForm  @add="addMmeVerif" @update="updateMmeVerif" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="verif_validate"/>
@@ -44,8 +44,8 @@
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :validationMode="verif_validate" :Errors="errors.verif_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-                    <div v-if="reformMod!==false && verif_refromDate===null">
-                        <ReformComponentButton :reformBy="verif_refromBy" :reformDate="verif_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
+                    <div v-if="reformMod!==false && verif_reformDate===null">
+                        <ReformComponentButton :reformBy="verif_reformBy" :reformDate="verif_reformDate" :reformMod="this.isInReformMod" @reformOk="reformComponent"/>
                     </div>
                 </div>       
             </form>
@@ -152,8 +152,8 @@ export default {
             verif_requiredSkill:this.requiredSkill,
             verif_protocol:this.protocol,
             verif_validate:this.validate,
-            verif_refromDate:this.reformDate,
-            verif_refromBy:this.reformBy,
+            verif_reformDate:this.reformDate,
+            verif_reformBy:this.reformBy,
             verif_id:this.id,
             mme_id_add:this.mme_id,
             mme_id_update:this.$route.params.id,
