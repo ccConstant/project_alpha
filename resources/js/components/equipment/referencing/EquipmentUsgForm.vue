@@ -25,8 +25,8 @@
                         </div>
                     </div>
                     <div v-else-if="this.usg_id!==null && reformMod==false">
-                        <div v-if="usg_refromDate!=null" >
-                            <p>Refrom by {{usg_refromBy}} at {{usg_refromDate}}</p>
+                        <div v-if="usg_reformDate!=null" >
+                            <p>Reformed at {{usg_reformDate}}</p>
                         </div>
                         <div v-else>
                             <SaveButtonForm  @add="addEquipmentUsg" @update="updateEquipmentUsg" :reformMod="this.isInReformMod" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="usg_validate"/>
@@ -34,8 +34,8 @@
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :validationMode="usg_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-                    <div v-if="reformMod!==false && usg_refromDate===null">
-                        <ReformComponentButton :reformBy="usg_refromBy" :reformDate="usg_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_usage[2].info_value"/>
+                    <div v-if="reformMod!==false && usg_reformDate===null">
+                        <ReformComponentButton :reformedBy="usg_reformedBy" :reformDate="usg_reformDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_usage[2].info_value"/>
                     </div>
                 </div>  
             </form>
@@ -110,10 +110,6 @@ export default {
             type:String,
             default:null
         },
-        reformBy:{
-            type:String,
-            dfault:null
-        },
         eq_id:{
             type:Number
         },
@@ -139,8 +135,7 @@ export default {
             usg_type:this.type,
             usg_precaution:this.precuation,
             usg_validate:this.validate,
-            usg_refromDate:this.reformDate,
-            usg_refromBy:this.reformBy,
+            usg_reformDate:this.reformDate,
             usg_id:this.id,
             equipment_id_add:this.eq_id,
             equipment_id_update:this.$route.params.id,

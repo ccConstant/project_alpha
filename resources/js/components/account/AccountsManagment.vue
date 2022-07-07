@@ -188,7 +188,7 @@ export default {
             // Prevent modal from closing
             bvModalEvent.preventDefault()
             // Trigger submit handler
-			if(this.modal_password!='' && this.$userId.user_resetUserPasswordRight==true){
+			if(this.modal_password!='' && this.$userId.user_resetUserPasswordRight==false){
 				this.$refs.errorAlert.showAlert("You don't have the right to change an other user password");
 				return;
 			}	

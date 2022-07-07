@@ -42,8 +42,8 @@
                         </div>
                     </div>
                     <div v-else-if="this.prvMtnOp_id!==null && reformMod==false ">
-                        <div v-if="prvMtnOp_refromDate!=null" >
-                            <p>Refrom by {{prvMtnOp_refromBy}} at {{prvMtnOp_refromDate}}</p>
+                        <div v-if="prvMtnOp_reformDate!=null" >
+                            <p>Reformed at {{prvMtnOp_reformDate}}</p>
                         </div>
                         <div v-else>
                             <SaveButtonForm  @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="prvMtnOp_validate"/>
@@ -51,8 +51,8 @@
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :validationMode="prvMtnOp_validate" :Errors="errors.prvMtnOp_delete" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
-                    <div v-if="reformMod!==false && prvMtnOp_refromDate===null">
-                        <ReformComponentButton :reformBy="prvMtnOp_refromBy" :reformDate="prvMtnOp_refromDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_prvMtnOp[5].info_value"/>
+                    <div v-if="reformMod!==false && prvMtnOp_reformDate===null">
+                        <ReformComponentButton :reformBy="prvMtnOp_reformBy" :reformDate="prvMtnOp_reformDate" :reformMod="this.isInReformMod" @reformOk="reformComponent" :info="infos_prvMtnOp[5].info_value"/>
                     </div>
 
 
@@ -158,10 +158,6 @@ export default {
             type:String,
             default:null
         },
-        reformBy:{
-            type:String,
-            dfault:null
-        },
         import_id:{
             type: Number,
             default :null
@@ -196,8 +192,7 @@ export default {
             prvMtnOp_symbolPeriodicity:this.symbolPeriodicity,
             prvMtnOp_protocol:this.protocol,
             prvMtnOp_validate:this.validate,
-            prvMtnOp_refromDate:this.reformDate,
-            prvMtnOp_refromBy:this.reformBy,
+            prvMtnOp_reformDate:this.reformDate,
             prvMtnOp_id:this.id,
             equipment_id_add:this.eq_id,
             equipment_id_update:this.$route.params.id,
