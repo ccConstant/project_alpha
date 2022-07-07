@@ -5,7 +5,7 @@
         <meta name="user-id" content="{{Auth::user()}}">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Alpha</title>
+        <title>EQ & MME data mngt SW01</title>
     </head>
     <link href="{{mix('css/app.css')}}" rel="stylesheet">
     <body>
