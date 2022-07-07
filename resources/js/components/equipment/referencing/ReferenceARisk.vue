@@ -40,7 +40,7 @@
         <div v-else>
                 <div class="prvMtnOpRisk">
                     <div v-if="this.components.length>0">
-                        <h3 class="titleForm">Preventive maintenance opération Risk</h3>
+                        <h3 class="titleForm">Preventive maintenance operation Risk</h3>
                     </div>
                     
                     <!--Adding to the vue EquipmentRiskForm by going through the components array with the v-for-->

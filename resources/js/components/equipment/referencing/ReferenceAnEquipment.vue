@@ -6,7 +6,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                           Equipment Dimension
+                           Equipment Dimension(s)
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
@@ -18,7 +18,7 @@
                 <div class="accordion-item" >
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Power
+                        Equipment Power source(s)
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
@@ -66,24 +66,25 @@
                 <div class="accordion-item" >
                     <h2 class="accordion-header" id="headingSix">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                        Equipment Preventive maintenace operation
+                            Equipment's due Risk(s)
                         </button>
                     </h2>
                     <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix">
                         <div class="accordion-body">
-                            <ReferenceAPrvMtnOp :eq_id="this.eq_id" :import_id="this.importation_id"/>
+
+                            <ReferenceARisk :eq_id="this.eq_id" :import_id="this.importation_id" :riskForEq="true"/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingEight">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                        Equipment Risk
+                            Equipment Preventive maintenace operation
                         </button>
                     </h2>
                     <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingEight">
                         <div class="accordion-body">
-                            <ReferenceARisk :eq_id="this.eq_id" :import_id="this.importation_id" :riskForEq="true"/>
+                            <ReferenceAPrvMtnOp :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>

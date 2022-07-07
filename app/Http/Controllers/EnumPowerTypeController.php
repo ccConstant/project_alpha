@@ -23,7 +23,7 @@ class EnumPowerTypeController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function send_enum_type (){
-        $enums_type=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_power_types'));
+        $enums_type=DB::table('enum_power_types')->orderBy('value', 'asc')->get() ;   
         return response()->json($enums_type) ; 
     }
 

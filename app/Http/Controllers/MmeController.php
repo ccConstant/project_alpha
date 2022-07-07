@@ -67,6 +67,37 @@ class MmeController extends Controller{
         return response()->json($container) ;
     }
 
+    /**
+     * Function call by ?? with the route : /mme/mmes_not_linked (get)
+     * Get all the internalReference and the id of mme linked of no one equipment in the data base for print them in the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_mme_not_linked(){
+        $mmes= Mme::where('equipmentTemp_id', '=', NULL)->get() ;
+        $container=array() ; 
+        foreach($mmes as $mme){
+            $obj=([
+                'id' => $mme->id,
+                'mme_internalReference' => $mme->mme_internalReference,
+            ]) ; 
+            array_push($container,$obj);
+        }
+        return response()->json($container) ;
+    }
+
+    /**
+     * Function call by ?? with the route : /mme/link_to_eq/{id} (get)
+     * Link a mme to an equipment in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function link_mme_to_equipment(Request $request, $id){
+        $mme=Mme::findOrFail($id) ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        $mme->update([
+            'equipmentTemp_id' => $mostRecentlyEqTmp->id,
+        ]);
+    }
+
 
      /**
      * Function call by ImportationModal.vue with the route : /mmes/same_set/{$set} (get)
@@ -115,6 +146,34 @@ class MmeController extends Controller{
             'mme_set'  => $mme->mme_set,
             'mme_validate' => $validate,
         ]);
+    }
+
+    /**
+     * Function call by ??? with the route : /dimension/send/{$id} (get)
+     * Get the mmes of the equipment whose id is passed in parameter
+     * The id parameter corresponds to the id of the equipment from which we want the mmes
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_mmes($id) {
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
+        $mmes = Mme::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
+        $container=array() ; 
+        foreach ($mmes as $mme) {
+            $obj=([
+                'id' => $mme->id,
+                'mme_internalReference' => $mme->mme_internalReference,
+                'mme_externalReference' => $mme->mme_externalReference,
+                'mme_name' => $mme->mme_name,
+                'mme_serialNumber' => $mme->mme_serialNumber,
+                'mme_constructor'  => $mme->mme_constructor,
+                'mme_remarks'  => $remarks,
+                'mme_set'  => $mme->mme_set,
+                'mme_validate' => $validate,
+            ]);
+            array_push($container,$obj);
+        }
+        return response()->json($container) ;
     }
 
 

@@ -19,7 +19,7 @@ class Mme extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['mme_internalReference', 'mme_externalReference', 'mme_name', 'mme_serialNumber', 'mme_constructor', 'mme_set', 'mme_nbrVersion', 'state_id'] ; 
+    protected $fillable = ['mme_internalReference', 'mme_externalReference', 'mme_name', 'mme_serialNumber', 'mme_constructor', 'mme_set', 'mme_nbrVersion', 'state_id', 'equipmentTemp_id'] ; 
     
     //Define the relation between a mme and its mmeTemps: a mme has many mme_temps
     public function mme_temps(){
@@ -29,6 +29,11 @@ class Mme extends Model
     //Define the relation between an mme and the state from which it originates (if it exist) 
     public function state(){
         return $this->belongsTo(State::class, 'state_id') ; 
+    }
+
+     //Define the relation between an equipment_temp and its mmes : a mme can correspond to only one mme
+     public function equipment_temps(){
+        return $this->belongsTo(EquipmentTemp::class, 'equipmentTemp_id') ; 
     }
 
     

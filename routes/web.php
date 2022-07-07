@@ -202,7 +202,8 @@ Route::get('/sign_up', function () {
 
 Route::get('/sign_in', function () {
     return view('welcome');
-});
+}) -> name('sign_in');
+
 
 
 
@@ -684,7 +685,11 @@ Route::post('/mme/verif', [MmeController::class, 'verif_mme'])  ;
 
 Route::post('/mme/update/{id}', [MmeController::class, 'update_mme'])  ;
 
-Route::get('/mme/mmes', [MmeController::class, 'send_internalReferences_ids'] ) ;
+Route::get('/mme/mmes/', [MmeController::class, 'send_internalReferences_ids'] ) ;
+
+Route::get('/mme/mmes_not_linked', [MmeController::class, 'send_mme_not_linked'] ) ;
+
+Route::post('/mme/link_to_eq/{id}', [MmeController::class, 'link_mme_to_equipment'] ) ;
 
 Route::get('/mmes/same_set/{set}', [MmeController::class, 'send_mmes_same_set'])  ;
 
@@ -706,7 +711,7 @@ Route::get('/verif/send/revisionDatePassed', [MmeController::class, 'send_mme_ve
 
 Route::get('/verif/send/revisionTimeLimitPassed', [MmeController::class, 'send_mme_verif_revisionLimitPassed'])  ;
 
-
+Route::get('/mme/send/{id}', [MmeController::class, 'send_mmes']) ; 
 
 /* Mme State Form Routes */ 
 

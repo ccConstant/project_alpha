@@ -28,7 +28,7 @@
                 <div class="accordion-item"  v-if="eq_dimensions.length>0">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Dimension
+                        Equipment Dimension(s)
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
@@ -40,7 +40,7 @@
                 <div class="accordion-item" v-if="eq_powers.length>0">
                     <h2 class="accordion-header" id="headingThree">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Equipment Power
+                        Equipment Power source(s)
                         </button>
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
@@ -85,19 +85,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_prvMtnOp.length>0">
+                <div class="accordion-item" v-if="eq_risk.length>0">
                     <h2 class="accordion-header" id="headingEight">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                        Equipment Preventive maintenace Operation
+                        Equipment's due Risk(s)
+
                         </button>
                     </h2>
                     <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingEight">
                         <div class="accordion-body">
-                            <ReferenceAPrvMtnOp  :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
+                            <ReferenceARisk  :importedRisk="eq_risk" :riskForEq="true" consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_risk.length>0">
+                <div class="accordion-item" v-if="eq_prvMtnOp.length>0">
                     <h2 class="accordion-header" id="headingNine">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
                         Equipment Preventive maintenace Operation
@@ -105,7 +106,7 @@
                     </h2>
                     <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
                         <div class="accordion-body">
-                            <ReferenceARisk  :importedRisk="eq_risk" :riskForEq="true" consultMod/>
+                            <ReferenceAPrvMtnOp  :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
                         </div>
                     </div>
                 </div>

@@ -32,6 +32,8 @@ class CreateMmesTable extends Migration
             $table->unsignedTinyInteger('mme_nbrVersion') -> default(1) ;
             $table->unsignedBigInteger('state_id') ->nullable(); 
             $table->foreign('state_id')->references('id')->on('mme_states') ;
+            $table->unsignedBigInteger('equipmentTemp_id') ->nullable(); 
+            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') ;
             $table->timestamps();
         });
     }

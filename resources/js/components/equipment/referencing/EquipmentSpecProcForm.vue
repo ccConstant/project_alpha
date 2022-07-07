@@ -18,8 +18,8 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <RadioGroupForm @clearRadioError="clearRadioError" label="Exist?:" :options="existOption" :Errors="errors.spProc_exist"  :checkedOption="spProc_exist" :isDisabled="!!isInConsultedMod" v-model="spProc_exist" :info_text="infos_spProc[0].info_value"/>
-                <InputTextForm v-if="this.spProc_exist==true" inputClassName="form-control w-50" :Errors="errors.spProc_name" name="spProc_name" label="Precaution name :" v-model="spProc_name" :isDisabled="!!isInConsultedMod" :info_text="infos_spProc[1].info_value"/>
+                <RadioGroupForm @clearRadioError="clearRadioError" label="Does the equipment realize special processes ? :" :options="existOption" :Errors="errors.spProc_exist"  :checkedOption="spProc_exist" :isDisabled="!!isInConsultedMod" v-model="spProc_exist" :info_text="infos_spProc[0].info_value"/>
+                <InputTextForm v-if="this.spProc_exist==true" inputClassName="form-control w-50" :Errors="errors.spProc_name" name="spProc_name" label="Special process name :" v-model="spProc_name" :isDisabled="!!isInConsultedMod" :info_text="infos_spProc[1].info_value"/>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.spProc_remarksOrPrecaution" name="spProc_remarksOrPrecaution" label="Remarks :" :isDisabled="!!isInConsultedMod" v-model="spProc_remarksOrPrecaution" :info_text="infos_spProc[2].info_value"/>
                 
                 <!--If addSucces is equal to false, the buttons appear -->

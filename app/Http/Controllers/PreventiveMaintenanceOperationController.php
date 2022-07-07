@@ -16,6 +16,7 @@ use App\Models\EquipmentTemp ;
 use App\Models\PreventiveMaintenanceOperation ; 
 use App\Models\PreventiveMaintenanceOperationRealized ; 
 use App\Models\Equipment ; 
+use App\Models\Risk ; 
 use Carbon\Carbon;
 
 class PreventiveMaintenanceOperationController extends Controller
@@ -240,7 +241,6 @@ class PreventiveMaintenanceOperationController extends Controller
                 
                 if ($request->prvMtnOp_symbolPeriodicity=='D'){
                     $nextDate->addDays($request->prvMtnOp_periodicity) ; 
-                    return response()->json($nextDate) ;
                 }
                  if ($request->prvMtnOp_symbolPeriodicity=='H'){
                     $nextDate->addHours($request->prvMtnOp_periodicity) ; 

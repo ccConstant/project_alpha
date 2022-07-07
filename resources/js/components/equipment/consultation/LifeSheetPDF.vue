@@ -264,20 +264,82 @@
                 <div class="title_prvMtnOp_pdf">
                     Preventive Maintenance Operation
                 </div>
-                <!--<div class="table-header table-row">
-                    <div class="table-col">N°</div>
-                    <div class="table-col"> Type od operation to realize</div>
-                    <div class="table-col"> Peridicity</div>
-                    <div class="table-col">Negative influence?</div>
+                <div class="prvMtnop_table">
+                    <b-row>
+                        <b-col cols="1" class="prvMtnOp_table_number">
+                            N°
+                        </b-col>
+                        <b-col cols="4" class="prvMtnOp_table_description">
+                            Type of operations to be carried out
+                        </b-col>
+                        <b-col cols="4"  class="prvMtnOp_table_protocol">
+                            Protocol
+                        </b-col>
+                        <b-col cols="1" class="prvMtnOp_table_periodicity">
+                            Frequency of interventions
+                        </b-col >
+                        <b-col cols="1" class="prvMtnOp_table_risk">
+                            Risk
+                        </b-col>                    
+                    </b-row>
+                    <div v-for="(prvMtnOp,index) in eq_prvMtnOp " :key="index">
+                        <b-row>
+                            <b-col cols="1" class="prvMtnOp_table_number">
+                                {{prvMtnOp.Number}}
+                            </b-col>
+                            <b-col cols="4" class="prvMtnOp_table_description">
+                                {{prvMtnOp.Description}}
+                            </b-col>
+                            <b-col cols="4"  class="prvMtnOp_table_protocol">
+                                {{prvMtnOp.Protocol}}
+                            </b-col>
+                            <b-col  cols="1" class="prvMtnOp_table_periodicity">
+                                {{prvMtnOp.Periodicity}} {{prvMtnOp.Symbol}} 
+
+                            </b-col>
+                            <b-col  cols="1" class="prvMtnOp_table_risk">
+                                {{prvMtnOp.Risk}}
+                            </b-col>                    
+                        </b-row>
+                    </div>
                 </div>
-                <div class="member table-row" v-for="(prvMtnOp,index) in eq_prvMtnOp " :key="index">
-                    <div class="table-col prvMtnOp_number">ez </div>
-                    <div class="table-col prvMtnOp_type"> zee</div>
-                    <div class="table-col prvMtnOp_periodicity"> ezfsd</div>
-                    <div class="table-col prvMtnOp_risk"> dsdfs</div>
-                </div>-->
-                <b-table :items="eq_prvMtnOp"></b-table>
             </div>
+
+
+
+            <div class="eq_risk_infos_pdf">
+                <div class="title_risk_pdf">
+                    Risk related to the preventive maintenace operation
+                </div>
+                <div class="risk_table">
+                    <b-row>
+                        <b-col cols="1" class="risk_table_number">
+                            N°
+                        </b-col>
+                        <b-col cols="6" class="risk_table_description">
+                            Inventory of possible effects on product, manufacturing environment or safety following periodic OP maintenance
+                        </b-col>
+                        <b-col cols="4"  class="risk_table_wayOfControl">
+                            Way of control
+                        </b-col>              
+                    </b-row>
+                    <div v-for="(prvMtnOp_risk,index) in eq_prvMtnOp_risk " :key="index">
+                        <b-row>
+                            <b-col cols="1" class="risk_table_number">
+                                {{prvMtnOp_risk.prvMtnOp_number}}
+                            </b-col>
+                            <b-col cols="6" class="risk_table_description">
+                                {{prvMtnOp_risk.risk_remarks}}
+                            </b-col>
+                            <b-col cols="4"  class="risk_table_wayOfControl">
+                                {{prvMtnOp_risk.risk_wayOfControl}}
+                            </b-col>                  
+                        </b-row>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
         <button @click="generateReport" class="btn btn-primary">Generate</button>
     </div>  
@@ -298,6 +360,7 @@ export default {
             eq_file:null,
             eq_prvMtnOp:null,
             eq_risk:null,
+            eq_prvMtnOp_risk:null,
             eq_ecme:[
                 {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'},
                 {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'},
@@ -378,16 +441,27 @@ export default {
         axios.get(consultUrlFile(this.eq_id))
             .then (response=>this.eq_file=response.data)
             .catch(error => console.log(error)) ;
-
-        var consultUrlPrvMtnOp = (id) => `/prvMtnOps/send/${id}`;
-        axios.get(consultUrlPrvMtnOp(this.eq_id))
-            .then (response=>this.eq_prvMtnOp=response.data)
-            .catch(error => console.log(error)) ;
-        
+    
         var consultUrlRisk = (id) => `/equipment/risk/send/${id}`;
         axios.get(consultUrlRisk(this.eq_id))
             .then (response=>{
                 this.eq_risk=response.data
+            })
+            .catch(error => console.log(error)) ;
+        
+        var consultUrlPrvMtnOp = (id) => `/prvMtnOps/send/lifesheet/${id}`;
+        axios.get(consultUrlPrvMtnOp(this.eq_id))
+            .then (response=>{
+                this.eq_prvMtnOp=response.data
+                console.log(response.data)
+            })
+            .catch(error => console.log(error)) ;
+
+        var consultUrlRisk = (id) => `/prvMtnOp/risk/send/${id}`;
+        axios.get(consultUrlRisk(this.eq_id))
+            .then (response=>{
+                console.log(response.data)
+                this.eq_prvMtnOp_risk=response.data
                 this.loaded=true;
             })
             .catch(error => console.log(error)) ;
@@ -795,11 +869,62 @@ export default {
             .eq_prvMtnOp_infos_pdf{
                 position: relative;
                 margin-top:10px ;
+
                 .title_prvMtnOp_pdf{
                     margin-left: 100px;
                     width: 400px;
                     font-size : 20px;
                     font-weight: bold;
+                }
+                .prvMtnop_table{
+                    margin-left: 100px;
+                    .prvMtnOp_table_number{
+                        border: solid 1px black;
+                        text-align: center;
+                    }
+                    .prvMtnOp_table_description{
+                        border: solid 1px black;
+                        text-align: center;
+                    }
+                    .prvMtnOp_table_protocol{
+                        border: solid 1px black;
+                        text-align: center;
+                    }                    
+                    .prvMtnOp_table_periodicity{
+                        border: solid 1px black;
+                        text-align: center;
+                    }
+                    .prvMtnOp_table_risk{
+                        border: solid 1px black;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .eq_risk_infos_pdf{
+                position: relative;
+                margin-top:10px ;
+
+                .title_risk_pdf{
+                    margin-left: 100px;
+                    width: 500px;
+                    font-size : 20px;
+                    font-weight: bold;
+                }
+                .risk_table{
+                    margin-left: 100px;
+                    .risk_table_number{
+                        border: solid 1px black;
+                        text-align: center;
+                    }
+                    .risk_table_description{
+                        border: solid 1px black;
+                        text-align: center;
+                    }
+                    .risk_table_wayOfControl{
+                        border: solid 1px black;
+                        text-align: center;
+                    }                    
                 }
             }
         }

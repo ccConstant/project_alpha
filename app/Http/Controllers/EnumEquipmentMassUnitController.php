@@ -27,7 +27,7 @@ class EnumEquipmentMassUnitController extends Controller
     * @return \Illuminate\Http\Response
     */
     public function send_enum_massUnit (){
-        $enums_massUnit=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_equipment_mass_units'));
+        $enums_massUnit=DB::table('enum_equipment_mass_units')->orderBy('value', 'asc')->get() ;  
         return response()->json($enums_massUnit) ; 
     }
 

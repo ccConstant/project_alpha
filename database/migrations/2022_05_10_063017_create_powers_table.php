@@ -24,7 +24,7 @@ return new class extends Migration
         Schema::create('powers', function (Blueprint $table) {
             $table->id();
             $table->string('pow_name') ; 
-            $table->double('pow_value') -> nullable(); 
+            $table->string('pow_value') -> nullable(); 
             $table->string('pow_unit') ->nullable(); 
             $table->string('pow_consumptionValue') ->nullable(); 
             $table->string('pow_consumptionUnit') ->nullable(); 

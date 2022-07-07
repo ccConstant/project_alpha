@@ -479,11 +479,7 @@ class EquipmentController extends Controller{
                 'eqTemp_remarks' => $request->eq_remarks,
                 'eq_mobility' => $request->eq_mobility,
                 'enumType_id' => $type_id,
-                 // NEED TO UPDATE
-               /* 'qualityVerifier_id' => $mostRecentlyEqTmp->qualityVerifier_id,
-                'technicalVerifier_id' => $mostRecentlyEqTmp->technicalVerifier_id,
-                'createdBy_id' => $mostRecentlyEqTmp->createdBy_id,
-                'specialProcess_id' => $mostRecentlyEqTmp->specialProcess_id,*/
+
             ]);
 
             // In the other case, we can modify the informations without problems
@@ -712,8 +708,6 @@ class EquipmentController extends Controller{
     public function verif_validation($id){
         $container=array() ; 
         $container2=array() ; 
-
-        //MANQUE DIM ET POWER
         
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){

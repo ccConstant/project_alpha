@@ -10,7 +10,7 @@
 -------------------------------------------------------------->
 <template>
     <div class="equipmentPow">
-        <h2 class="titleForm">Equipment Power</h2>
+        <h2 class="titleForm">Equipment Power source(s)</h2>
         <!--Adding to the vue EquipmentPowForm by going through the components array with the v-for-->
         <!--ref="ask_pow_data" is used to call the child elements in this component-->
         <!--The emitted deleteDim is catched here and call the function getContent -->

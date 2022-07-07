@@ -25,7 +25,7 @@ class EnumUsageVerifAcceptanceAuthorityController extends Controller
     */
 
     public function send_enum_verifAcceptanceAuthority (){
-        $enums_verifAcceptanceAuthority=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_usage_verif_acceptance_authorities'));
+        $enums_verifAcceptanceAuthority=DB::table('enum_usage_verif_acceptance_authorities')->orderBy('value', 'asc')->get() ;  
         return response()->json($enums_verifAcceptanceAuthority) ; 
     }
 

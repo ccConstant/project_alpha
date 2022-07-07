@@ -26,7 +26,7 @@ class EnumRiskForController extends Controller
     */
 
     public function send_enum_riskFor (){
-        $enums_riskFor=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_risk_fors'));
+        $enums_riskFor=DB::table('enum_risk_fors')->orderBy('value', 'asc')->get() ;   
         return response()->json($enums_riskFor) ; 
     }
 

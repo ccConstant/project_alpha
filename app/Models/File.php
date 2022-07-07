@@ -24,7 +24,7 @@ class File extends Model
 
     //Define the relation between an equipment_temp and its files : a file can correspond to many equipment temps
     public function equipment_temps(){
-        return $this->belongsTo(quipmentTemp::class, 'equipmentTemp_id') ; 
+        return $this->belongsTo(EquipmentTemp::class, 'equipmentTemp_id') ; 
     }
 
 }

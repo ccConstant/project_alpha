@@ -25,7 +25,7 @@ class EnumVerificationRequiredSkillController extends Controller
     */
 
     public function send_enum_verificationRequiredSkill (){
-        $enums_verifRequiredSkills=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_verification_required_skills'));
+        $enums_verifRequiredSkills=DB::table('enum_verification_required_skills')->orderBy('value', 'asc')->get() ;  
         return response()->json($enums_verifRequiredSkills) ; 
     }
 

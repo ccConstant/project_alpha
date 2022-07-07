@@ -26,7 +26,7 @@ class EnumEquipmentTypeController extends Controller
      */
 
     public function send_enum_type (){
-        $enums_type=EnumEquipmentType::all() ;
+        $enums_type=DB::table('enum_equipment_types')->orderBy('value', 'asc')->get() ;  
         return response()->json($enums_type) ; 
     }
 

@@ -25,7 +25,7 @@ class EnumDimensionUnitController extends Controller
      */
 
     public function send_enum_unit (){
-        $enums_unit=DB::select(DB::raw('SELECT value, id FROM enum_dimension_units'));
+        $enums_unit=DB::table('enum_dimension_units')->orderBy('value', 'asc')->get() ;  
         return response()->json($enums_unit) ; 
     }
 

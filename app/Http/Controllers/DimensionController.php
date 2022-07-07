@@ -104,7 +104,7 @@ class DimensionController extends Controller
 
         //-----CASE dim->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his dimension, so he must enter all the attributes
-        if ($request->dim_validate=='validated'){
+        if ($request->dim_validate!='drafted'){
             $this->validate(
                 $request,
                 [

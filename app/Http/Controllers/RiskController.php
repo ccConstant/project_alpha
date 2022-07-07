@@ -292,6 +292,7 @@ class RiskController extends Controller
                 'risk_wayOfControl' => $risk->risk_wayOfControl,
                 'risk_validate' => $risk->risk_validate,
                 'risk_for'=> $target,
+                'prvMtnOp_id' => $id,
             ]) ; 
             array_push($container,$obj);
         }

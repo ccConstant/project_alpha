@@ -25,7 +25,7 @@ class EnumUsageMetrologicalLevelController extends Controller
     */
 
     public function send_enum_metrologicalLevel (){
-        $enums_metrologicalLevel=DB::select(DB::raw('SELECT DISTINCT value, id FROM enum_usage_metrological_levels'));
+        $enums_metrologicalLevel=DB::table('enum_usage_metrological_levels')->orderBy('value', 'asc')->get() ;   
         return response()->json($enums_metrologicalLevel) ; 
     }
 

@@ -25,7 +25,8 @@ class EnumDimensionNameController extends Controller
      */
 
     public function send_enum_name (){
-        $enums_name=EnumDimensionName::all() ;
+        
+        $enums_name=DB::table('enum_dimension_names')->orderBy('value', 'asc')->get() ;
         return response()->json($enums_name) ; 
     }
 

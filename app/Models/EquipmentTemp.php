@@ -23,6 +23,7 @@ use App\Models\Risk ;
 use App\Models\Usage ; 
 use App\Models\Dimension ;
 use App\Models\File ;  
+use App\Models\Mme ;  
 use App\Models\EnumEquipmentMassUnit ; 
 use App\Models\EnumEquipmentType ; 
 
@@ -36,6 +37,11 @@ class EquipmentTemp extends Model{
     //Define the relation between an equipment_temp and its files : an equipment_temp can have many files
      public function files(){
         return $this->hasMany(File::class) ; 
+    }
+
+    //Define the relation between an equipment_temp and its mme : an equipment_temp can have many mme
+    public function mmes(){
+        return $this->hasMany(Mme::class) ; 
     }
 
     //Define the relation between an equipment_temp and the equipment which he is linked : an equipment_temp can be linked to only one equipment 

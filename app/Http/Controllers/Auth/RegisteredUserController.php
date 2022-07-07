@@ -60,7 +60,7 @@ class RegisteredUserController extends Controller
         if ($request->user_confirmation_password!==$request->user_password){
             return response()->json([
                 'errors' => [
-                    'user_confirmation_password' => ["These passwords are differents"]
+                    'user_confirmation_password' => ["These passwords are different"]
                 ]
             ], 429);
         }

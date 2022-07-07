@@ -26,7 +26,7 @@ class EnumDimensionTypeController extends Controller
      */
 
     public function send_enum_type (){
-        $enums_type=DB::select(DB::raw('SELECT value, id FROM enum_dimension_types'));
+        $enums_type=DB::table('enum_dimension_types')->orderBy('value', 'asc')->get() ; 
         return response()->json($enums_type) ; 
     }
 
