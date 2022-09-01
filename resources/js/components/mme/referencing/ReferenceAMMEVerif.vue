@@ -7,10 +7,12 @@
         <MMEVerificationForm ref="ask_verif_data" v-for="(component, key) in components" :key="component.key"
             :is="component.comp" :number="component.number" :name="component.name" :description="component.description"
             :nonComplianceLimit="component.nonComplianceLimit" :expectedResult="component.expectedResult"
+             :verifAcceptanceAuthority="component.verifAcceptanceAuthority" 
             :periodicity="component.periodicity" :symbolPeriodicity="component.symbolPeriodicity" :reformMod="isInReformMod"
             :protocol="component.protocol" :divClass="component.className" :id="component.id" :requiredSkill="component.requiredSkill"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :mme_id="data_mme_id"
-            :reformDate="component.reformDate" :reformBy="component.reformBy"  
+            :reformDate="component.reformDate" :reformBy="component.reformBy"
+            :puttingIntoService="component.puttingIntoService"
             @deleteVerif="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -100,8 +102,8 @@ export default {
         },
         //Function for adding imported preventive maintenance operation form with his data
         addImportedComponent(verif_number,verif_name,verif_nonComplianceLimit,verif_expectedResult,verif_description,verif_periodicity,
-        verif_symbolPeriodicity,verif_requiredSkill,verif_protocol,
-        verif_validate,verif_className,id,verif_reformDate,verif_reformBy) {
+        verif_symbolPeriodicity,verif_requiredSkill,verif_verifAcceptanceAuthority,verif_protocol,
+        verif_className,verif_validate,id,verif_reformDate,verif_reformBy, verif_puttingIntoService) {
             this.components.push({
                 comp:'MMEVerificationForm',
                 key : this.uniqueKey++,
@@ -113,12 +115,14 @@ export default {
                 periodicity:verif_periodicity,
                 symbolPeriodicity:verif_symbolPeriodicity,
                 requiredSkill:verif_requiredSkill,
+                verifAcceptanceAuthority:verif_verifAcceptanceAuthority,
                 protocol:verif_protocol,
                 className:verif_className,
                 validate:verif_validate,
                 id:id,
                 reformDate:verif_reformDate,
-                reformBy:verif_reformBy
+                reformBy:verif_reformBy,
+                puttingIntoService:verif_puttingIntoService,
             });
         },
         //Suppresion of a preventive maintenance operation component from the vue
@@ -132,9 +136,9 @@ export default {
             }else{
                 for (const verif of this.verifs) {
                     var className="importedVerif"+verif.id
-                    this.addImportedComponent(verif.verif_number,verif.verif_name,verif.verif_nonComplianceLimit,verif.verif_expectedResult,
-                    verif.verif_description,verif.verif_periodicity,verif.verif_symbolPeriodicity,verif.verif_requiredSkill,
-                    verif.verif_protocol,verif.verif_validate,className,verif.id,verif.verif_reformDate,verif.verif_reformBy);
+                    this.addImportedComponent(verif.verif_number, verif.verif_name, verif.verif_nonComplianceLimit, verif.verif_expectedResult, verif.verif_description, verif.verif_periodicity,
+        verif.verif_symbolPeriodicity,verif.verif_requiredSkill,verif.verif_verifAcceptanceAuthority,verif.verif_protocol,
+        verif.verif_className,verif.verif_validate,verif.id,verif.verif_reformDate,verif.verif_reformBy, verif.verif_puttingIntoService);
                 }
             }
             this.verifs=null
@@ -147,13 +151,13 @@ export default {
                     //If the preventive maintenance operation doesn't have an id
                     if(component.verif_id==null ){
                         //AddequipmentVerif is used
-                        component.addEquipmentVerif(savedAs);
+                        component.addMmeVerif(savedAs);
                     }else
                     //Else if the preventive maintenance operation have an id and addSucces is equal to true 
                     if(component.verif_id!=null || component.addSucces==true){
-                        //updateEquipmentVerif is used
+                        //updateMmeVerif is used
                         if(component.verif_validate!=="validated"){
-                            component.updateEquipmentVerif(savedAs);
+                            component.updateMmeVerif(savedAs);
                         }
                     }
                 }else{

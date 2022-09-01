@@ -13,7 +13,7 @@
             <!--Label of options, the for loop here is used to initialize them with an array of the differents value-->
             <label v-for="(option,index) in options " :key="index">
                 <!--Initializing of the radio type input with his props initialized in the parent compenant-->
-                <input type="radio" name="radio-input" :value="option.value" :id="option.id" 
+                <input type="radio" :label="label" name="radio-input" :value="option.value" :id="option.id" 
                  :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)" />
                 {{ option.id }}
             </label>

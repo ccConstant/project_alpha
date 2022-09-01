@@ -1,38 +1,31 @@
 <template>
     <div v-if="loaded==true">
         <div id="page">
-            <p> '</p>
+            <p>'</p>
             <div class="top_infos">
                 <div class=" equipement_pdf_logo ">
-                    LOGO<br>
-                    LOGO<br>
-                    LOGO<br>
-                    LOGO<br>
-                    LOGO<br>
+                  <img :src="'${process.env.BASE_URL}images/logo.png'"  width="50" height="50" >
+                  <p class="text-primary" text-align="center"> ALPHA </p>
                 </div>
 
                 <div class="equipement_pdf_titre">
-                    <h2 id="equipement_fiche_de_vie_titre">FICHE DE VIE</h2>
-                    <h2>DESCRIPTION DE L'EQUIPEMENT</h2>
+                    <h2 id="equipement_fiche_de_vie_titre">EQUIPMENT LIFE SHEET DESCRIPTIVE PART</h2>
                 </div>
 
-                <div class="equipement_pdf_version">
-                    <h2>REC IWE-xx</h2>
-                </div>
                 <div class="equipement_pdf_index">
-                    <h2>Index 01</h2>
+                    <h2>{{eq_idCard.eq_internalReference}}_LS-D_V{{eq_idCard.eq_version}} </h2>
                 </div>
                 <div class="equipment_revued_by">
-                    <p >Revue par (date & visa)</p>
+                    <p >Technical Review <b class="text-primary">{{ eq_idCard.eq_technicalVerifier_firstName}} {{eq_idCard.eq_technicalVerifier_lastName}} </b></p>
                 </div>
 
                 <div class="equipment_approuved_by">
-                    <p>Approuvé par (date & visa)</p>
+                    <p>Quality Review <b class="text-primary">{{ eq_idCard.eq_qualityVerifier_firstName}} {{eq_idCard.eq_qualityVerifier_lastName}} </b></p>
                 </div>
 
                 <div class="eq_internalReference_pdf">
-                    <p>Réf interne EQ:</p>
-                    <h5>{{eq_idCard.eq_internalReference}}</h5>
+                    <p>Equipment internal reference:</p>
+                    <h5 class="text-primary">{{eq_idCard.eq_internalReference}}</h5>
                 </div>
                 
 
@@ -43,20 +36,20 @@
                         <p>IDENTIFICATION</p>
                     </div>
                     <div class="Ecme_assoc_pdf">
-                        <p>
-                            Fiche ECME associé
-                        </p>
+                        <b>
+                            MME Linked
+                        </b>
                         <div class="content_Ecme_assoc_pdf" >
-                            <p v-for="(ecme,index) in eq_ecme " :key="index">
-                                {{ecme.name}} : {{ecme.description}} <br>
+                            <b class="text-primary" v-for="(mme,index) in eq_mme " :key="index">
+                                {{mme.mme_internalReference}} : {{mme.mme_name}} <br>
         
-                            </p>
+                            </b>
 
                         </div>
                     </div>
                     <div class="eq_designation_type_pdf">
                         <p>
-                            Désignation et type : <b>123456789123456789123456789123456789123456789123456789123</b>
+                            Designation and type : <b class="text-primary"> {{ eq_idCard.eq_name}} {{ eq_idCard.eq_type}} </b>
                         </p>
                         <p>
                             
@@ -64,14 +57,14 @@
                     </div>
                     <div class="eq_externalReference_pdf">
                         <p>
-                            External Reference : <b>{{eq_idCard.eq_externalReference}}</b>
+                            External Reference : <b class="text-primary">{{eq_idCard.eq_externalReference}}</b>
                         </p>
                     </div>
                     <div class="eq_constructor_pdf">
-                        <p>Constructor: <b>{{eq_idCard.eq_constructor}}</b></p>
+                        <p>Constructor: <b class="text-primary">{{eq_idCard.eq_constructor}}</b></p>
                     </div>
                     <div class="eq_serialNumber_pdf">
-                        <p>Serial Number : <b>{{eq_idCard.eq_serialNumber}}</b></p>
+                        <p>Serial Number : <b class="text-primary">{{eq_idCard.eq_serialNumber}}</b></p>
                     </div>
             </div>
 
@@ -84,21 +77,21 @@
                     <div class="usg_type_and_precaution_pdf" v-for="(usg,index) in eq_usg " :key="index">
                         <div class="eq_usage_type_pdf">
                             <p>
-                                Type of the operation realized by/with the equipment :
+                                Type of the operation realized by/with the equipment:
                             </p>
                             <br>
-                            <p>
+                            <b class="text-primary">
                                 {{usg.usg_type}}
-                            </p>
+                            </b>
                         </div>
                         <div class="eq_usage_precaution_pdf">
-                            <p>
-                                Precaution :
-                            </p>
+                            <b>
+                                Associated Precaution: 
+                            </b>
                             <br>
-                            <p>
+                            <b class="text-primary">
                                 {{usg.usg_precaution}}
-                            </p>
+                            </b>
                         </div>
                     </div>
                 </div>
@@ -123,7 +116,7 @@
 
             <div class="eq_file_infos_pdf">
                 <div class="title_file_pdf">
-                    <p>ASSOCIETED FILE</p>
+                    <p>ASSOCIATED FILE(s)</p>
                 </div>
                 <div class="eq_file_assoc_pdf" >
                     <p>
@@ -138,7 +131,7 @@
 
             <div class="eq_carac_infos_pdf">
                 <div class="title_carac_pdf">
-                    <p>CARACTERISTIQUES</p>
+                    <p>CARACTERISTICS</p>
                 </div>
                 <div class="power_title_pdf">
                     <p>Power supply :</p>
@@ -148,15 +141,15 @@
                                     <p>{{power.type}}</p>
                                     <div class ="eq_power_content_pdf" v-for="(power_elemnt,index) in power.powers " :key="index">
                                         <div class="eq_power_name_pdf">
-                                            <p>Power name :{{power_elemnt.pow_name}}</p>
+                                            <b>Power name : <b class="text-primary">{{power_elemnt.pow_name}}</b></b>
                                         </div>
                                         <div class="eq_power_consumption_pdf">
-                                            <p>Power consumption</p>
-                                            <p>{{power_elemnt.pow_consumptionValue}}  {{power_elemnt.pow_consumptionUnit}} </p>
+                                            <b>Power consumption</b>
+                                            <b class="text-primary">{{power_elemnt.pow_consumptionValue}}  {{power_elemnt.pow_consumptionUnit}} </b>
                                         </div>
                                         <div class="eq_power_value_pdf">
-                                            <p>Power value</p>
-                                            <p>{{power_elemnt.pow_value}}  {{power_elemnt.pow_unit}} </p>
+                                            <b>Power value</b>
+                                            <b class="text-primary">{{power_elemnt.pow_value}}  {{power_elemnt.pow_unit}} </b>
                                         </div>
                                     </div>
                                 </div>
@@ -165,14 +158,14 @@
                     </div>
 
                     <div class="dimension_title_pdf">
-                    <p>Dimension :</p>
+                    <p>Dimension(s):</p>
                         <div>
                             <div class="eq_dimension_pdf"  v-for="(dimension,index) in eq_dimensions " :key="index">
                                 <div class="eq_dimension_type_pdf" v-if="dimension.dimensions.length>0">
                                     <p>{{dimension.type}}</p>
                                     <div class ="eq_dimension_content_pdf" v-for="(dim_elemnt,index) in dimension.dimensions " :key="index">
                                         <div class="eq_dimension_name_value_pdf">
-                                            <p>{{dim_elemnt.dim_name}}  {{dim_elemnt.dim_value}}  {{dim_elemnt.dim_unit}}</p>
+                                            <p class="text-primary">{{dim_elemnt.dim_name}}  {{dim_elemnt.dim_value}}  {{dim_elemnt.dim_unit}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -185,29 +178,52 @@
                     </div>
                 <div class="eq_mass_set_mobility_pdf">
                     <div class="eq_mass_pdf">
-                        <p >Masse : {{eq_idCard.eq_mass}} {{eq_idCard.eq_massUnit}}</p>
+                        <p>Masse : <b class="text-primary">{{eq_idCard.eq_mass}} {{eq_idCard.eq_massUnit}} </b></p>
                     </div>
                     <div class="eq_mobility_pdf">
                         <div v-if="eq_idCard.eq_mobility==true">
-                            <p>Mobil? : Yes</p>
+                            <p>Mobil? : <b class="text-primary">Yes</b></p>
                         </div>
                         <div v-else-if="eq_idCard.eq_mobility==false">
-                            <p>Mobil? : No</p>
+                            <p>Mobil? : <b class="text-primary">No</b></p>
                         </div>
                     </div>
                     <div class="eq_set_pdf">
-                        <p >Set : {{eq_idCard.eq_set}}</p>
+                        <p >Set : <b class="text-primary">{{eq_idCard.eq_set}}</b></p>
                     </div>
                 </div>
 
                 <div class="eq_remark_pdf" >
-                    <p>
-                        Remarques
+                    <p >
+                        Remarks
                     </p>
-                    <p>
+                    <p class="text-primary">
                         {{eq_idCard.eq_remarks}}
                     </p>
                 </div>   
+            </div>
+
+             <div class="eq_specProc_infos_pdf">
+                <div class="title_spProc_pdf">
+                    SPECIAL PROCESS? 
+                </div>
+                <div class="eq_specProc_pdf" v-for="(spProc,index) in eq_spProc " :key="index">
+                    <div v-if="spProc.spProc_exist==true">
+                        <p class="text-primary">
+                            Yes <br>
+                            {{spProc.spProc_name}}<br>
+                            {{spProc.spProc_remarksOrPrecaution}}
+
+
+                        </p>
+                    </div>
+                    <div v-if="spProc.spProc_exist==false">
+                        <p class="text-primary">
+                            No<br>
+                            {{spProc.spProc_remarksOrPrecaution}}
+                        </p>
+                    </div>
+                </div> 
             </div>
 
             <div class="eq_risk_infos_pdf">
@@ -217,13 +233,13 @@
                 <div v-for="(risk,index) in eq_risk " :key="index" class="eq_risk_pdf" >
                     
                     <div class="eq_risk_for_pdf">
-                        Risk for{{risk.risk_for}}
+                        <p> Risk for <b class="text-primary"> {{risk.risk_for}}</b> </p>
                     </div>
                     <div class="eq_risk_wayOfControl_pdf">
-                        <p>
+                        <p >
                             Way of control
                         </p>
-                        <p>
+                        <p class="text-primary">
                             {{risk.risk_wayOfControl}}
                         </p>
                     </div>
@@ -231,38 +247,16 @@
                         <p>
                             Remarks
                         </p>
-                        <p>
+                        <p class="text-primary">
                             {{risk.risk_remarks}}
                         </p>
                     </div>                    
                 </div> 
             </div>
 
-            <div class="eq_specProc_infos_pdf">
-                <div class="title_spProc_pdf">
-                    Special process ?
-                </div>
-                <div class="eq_specProc_pdf" v-for="(spProc,index) in eq_spProc " :key="index">
-                    <div v-if="spProc.spProc_exist==true">
-                        <p>
-                            Yes <br>
-                            {{spProc.spProc_name}}<br>
-                            {{spProc.spProc_remarksOrPrecaution}}
-
-
-                        </p>
-                    </div>
-                    <div v-if="spProc.spProc_exist==false">
-                        <p>
-                            No<br>
-                            {{spProc.spProc_remarksOrPrecaution}}
-                        </p>
-                    </div>
-                </div> 
-            </div>
             <div class="eq_prvMtnOp_infos_pdf">
                 <div class="title_prvMtnOp_pdf">
-                    Preventive Maintenance Operation
+                    PREVENTIVE MAINTENANCE OPERATION
                 </div>
                 <div class="prvMtnop_table">
                     <b-row>
@@ -276,29 +270,29 @@
                             Protocol
                         </b-col>
                         <b-col cols="1" class="prvMtnOp_table_periodicity">
-                            Frequency of interventions
+                            Frequency of intervention
                         </b-col >
                         <b-col cols="1" class="prvMtnOp_table_risk">
-                            Risk
+                            Assoc Risk identified?
                         </b-col>                    
                     </b-row>
                     <div v-for="(prvMtnOp,index) in eq_prvMtnOp " :key="index">
                         <b-row>
                             <b-col cols="1" class="prvMtnOp_table_number">
-                                {{prvMtnOp.Number}}
+                               <p class="text-primary"> {{prvMtnOp.Number}} </p>
                             </b-col>
                             <b-col cols="4" class="prvMtnOp_table_description">
-                                {{prvMtnOp.Description}}
+                                <p class="text-primary">{{prvMtnOp.Description}}</p>
                             </b-col>
                             <b-col cols="4"  class="prvMtnOp_table_protocol">
-                                {{prvMtnOp.Protocol}}
+                               <p class="text-primary"> {{prvMtnOp.Protocol}}</p>
                             </b-col>
                             <b-col  cols="1" class="prvMtnOp_table_periodicity">
-                                {{prvMtnOp.Periodicity}} {{prvMtnOp.Symbol}} 
+                                <p class="text-primary">{{prvMtnOp.Periodicity}} {{prvMtnOp.Symbol}} </p>
 
                             </b-col>
                             <b-col  cols="1" class="prvMtnOp_table_risk">
-                                {{prvMtnOp.Risk}}
+                                <p class="text-primary">{{prvMtnOp.Risk}}</p>
                             </b-col>                    
                         </b-row>
                     </div>
@@ -309,12 +303,12 @@
 
             <div class="eq_risk_infos_pdf">
                 <div class="title_risk_pdf">
-                    Risk related to the preventive maintenace operation
+                    Risk related to the preventive maintenance operation
                 </div>
                 <div class="risk_table">
                     <b-row>
                         <b-col cols="1" class="risk_table_number">
-                            N°
+                            related mtn op N°
                         </b-col>
                         <b-col cols="6" class="risk_table_description">
                             Inventory of possible effects on product, manufacturing environment or safety following periodic OP maintenance
@@ -326,18 +320,30 @@
                     <div v-for="(prvMtnOp_risk,index) in eq_prvMtnOp_risk " :key="index">
                         <b-row>
                             <b-col cols="1" class="risk_table_number">
-                                {{prvMtnOp_risk.prvMtnOp_number}}
+                               <p class="text-primary"> {{prvMtnOp_risk.prvMtnOp_number}} </p>
                             </b-col>
                             <b-col cols="6" class="risk_table_description">
-                                {{prvMtnOp_risk.risk_remarks}}
+                                <p class="text-primary">{{prvMtnOp_risk.risk_remarks}}</p>
                             </b-col>
                             <b-col cols="4"  class="risk_table_wayOfControl">
-                                {{prvMtnOp_risk.risk_wayOfControl}}
+                                <p class="text-primary">{{prvMtnOp_risk.risk_wayOfControl}}</p>
                             </b-col>                  
                         </b-row>
                     </div>
                 </div>
             </div>
+
+             <div class="recordTemplateRefPdf">
+                <div class="table_recordTemplateRefPdf">
+                     <div class="index_recordTemplateRefPdf">
+                        Record Template Ref :  REC-IWE01
+                    </div>
+                    <div class="confidential_recordTemplateRefPdf">
+                        This document contains CONFIDENTIAL information
+                    </div>
+                </div>
+             </div>
+
 
 
         </div>
@@ -361,11 +367,7 @@ export default {
             eq_prvMtnOp:null,
             eq_risk:null,
             eq_prvMtnOp_risk:null,
-            eq_ecme:[
-                {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'},
-                {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'},
-                {name: 'TRAC01-F', description :'Ceci est la descritpion dun ecme elle peut aller vraiment loin'}
-            ],
+            eq_mme:[],
             loaded:false,
         }
     },
@@ -390,12 +392,12 @@ export default {
                   imageType: 'image/jpeg',
                 imageQuality: 1,
                 margin: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
+                    top: 10,
+                    right: 10,
+                    bottom: 10,
+                    left: 10,
                 },
-                output: 'jspdf-generate.pdf', 
+                output: this.eq_idCard.eq_internalReference+'_LS-D'+'_V'+this.eq_idCard.eq_version+'.pdf', 
             });
         }
     },
@@ -457,11 +459,20 @@ export default {
             })
             .catch(error => console.log(error)) ;
 
-        var consultUrlRisk = (id) => `/prvMtnOp/risk/send/${id}`;
+        var consultUrlRisk = (id) => `/prvMtnOp/risk/send/pdf/${id}`;
         axios.get(consultUrlRisk(this.eq_id))
             .then (response=>{
                 console.log(response.data)
                 this.eq_prvMtnOp_risk=response.data
+            })
+            .catch(error => console.log(error)) ;
+
+        var consultUrlMme = (id) => `/mme/send/${id}`;
+        axios.get(consultUrlMme(this.eq_id))
+            .then (response=>{
+                console.log("coucou")
+                console.log(response.data)
+                this.eq_mme=response.data
                 this.loaded=true;
             })
             .catch(error => console.log(error)) ;
@@ -472,13 +483,16 @@ export default {
 <style lang="scss">
         #page{
             width:1329px;
-            
+            font-size : 20px ;
+            .text-primary{
+                font-size : 25px ;
+            }
             .top_infos{
                
                 position: absolute;
                 top: 0px;
                 .equipement_pdf_logo{
-                    border: solid 1px black;
+                    border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
                     width: 200px;
@@ -489,42 +503,32 @@ export default {
                     
                 }
                 .equipement_pdf_titre{
-                    border: solid 1px black;
+                    border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
                     width: 642px;
                     top: 100px;
                     left:300px;
                     height: 87px;
+                   
                     
                     
                 }
                 .equipement_fiche_de_vie_titre{
                     text-align: center;
                     position: relative;
-                    
-
                 }
-                .equipement_pdf_version{
-                    border: solid 1px black;
+                .equipement_pdf_index{
+                    border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
                     left: 942px;
                     top: 100px;
-                    height: 47px;
-                    width: 200px;
-                }
-                .equipement_pdf_index{
-                    border: solid 1px black;
-                    margin: auto;
-                    position: absolute;
-                    left: 942px;
-                    top: 147px;
-                    height: 40px;
+                    height: 86px;
                     width: 200px;
                 }
                 .equipment_revued_by{
-                    border: solid 1px black;
+                    border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
 
@@ -535,7 +539,7 @@ export default {
 
                 }
                 .equipment_approuved_by{
-                    border: solid 1px black;
+                    border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
 
@@ -546,7 +550,7 @@ export default {
                     width: 242px;
                 }
                 .eq_internalReference_pdf{
-                    border: solid 1px black;
+                    border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
                     left :942px;
@@ -569,10 +573,14 @@ export default {
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
+                    p{
+                        margin-top : 220px;
+                        margin-bottom : 0px ;
+                    }
                 }
             
                 .Ecme_assoc_pdf{
-                    border: solid 1px black;
+                    border: solid 0.5px black;
                     margin-left: 100px;
                     position: relative;
                     margin-bottom: 20px;
@@ -593,7 +601,7 @@ export default {
                     margin-left: 42px;
                     width: 500px;
                     height: 60px;
-                    margin-bottom: 20px;
+                    margin-bottom: 50px;
                     float: left;
                 }
                 .eq_constructor_pdf{
@@ -619,6 +627,10 @@ export default {
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
+                    p{
+                        margin-top : 220px;
+                        margin-bottom : 0px ;
+                    }
                 }
                 .usg_type_and_precaution_pdf{
                     position: relative;
@@ -649,6 +661,10 @@ export default {
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
+                    p{
+                        margin-top : 30px;
+                        margin-bottom : 0px ;
+                    }
                 }
                 .eq_file_assoc_pdf{
                     border: solid 1px black;
@@ -672,7 +688,8 @@ export default {
                 .power_title_pdf{
                     position: relative;
                     margin-left: 100px;
-                    margin-top: -10px;
+                    margin-top: 0px;
+                    
                     p{
                         font-size : 18px;
                         font-weight: bold;
@@ -685,24 +702,19 @@ export default {
                     width: 1042px;   
                     margin-bottom: 30px;
                     .eq_power_type_pdf{
-                        p{
-                            font-size : 15px;
-                            font-weight: bold;
-                        }
+                        
                         position: relative;
                         height: auto;
+                        margin-bottom:0px;
                         .eq_power_content_pdf{
                             position: relative;
                             height: auto;
-                            margin-bottom: 10px;
-                            p{
-                                font-size: 13px;
-                                font-weight: normal;
-                            }
+                            margin-bottom: 0px;
+                            
                             .eq_power_name_pdf{
                                 border: solid 1px black;
                                 position: relative;
-                                height: 20px;
+                                height: auto;
                                 width: 1042px;   
                                 
                             }
@@ -813,17 +825,17 @@ export default {
             .eq_risk_infos_pdf{
                 position: relative;
                 .title_risk_pdf{
+                    margin-bottom:0px;
+                    margin-top:30px;
                     margin-left: 100px;
                     width: 400px;
                     font-size : 20px;
                     font-weight: bold;
                 }
                 .eq_risk_pdf{
-                    
                     position: relative;
                     height: auto;
                     width: 1042px;   
-                    margin-bottom: 30px;
                 }
                 .eq_risk_for_pdf{
                     border: solid 1px black;
@@ -926,6 +938,29 @@ export default {
                         text-align: center;
                     }                    
                 }
+            }
+
+            .recordTemplateRefPdf{
+                position: relative;
+                margin-top:10px ;
+                width: 1240px;
+                
+
+                .table_recordTemplateRefPdf{
+                     margin-left: 100px;
+                    .confidential_recordTemplateRefPdf{
+                        border: solid 1px black;
+                        background-color: lightgrey;
+                        text-align: center;
+                    }
+                    .index_recordTemplateRefPdf{
+                        background-color: lightgrey;
+                        border: solid 1px black;
+                        text-align: center;
+                    }
+                }
+
+
             }
         }
 

@@ -97,6 +97,7 @@ export default {
             eq_id:this.$route.params.id,
             states:null,
             loaded:false,
+            states_sort:null,
             eq_internalReference:this.$route.query.internalReference,
         }
     },
@@ -129,6 +130,7 @@ export default {
         
     },
     created(){
+        console.log("coucou7")
         var UrlState = (id)=> `/states/send/${id}`;
         axios.get(UrlState(this.eq_id))
             .then (response=>{
@@ -160,7 +162,15 @@ export default {
                     } 
                 }
                 this.loaded=true;
+                this.states.sort(function compare(a, b) {
+                    if (a.startDate > b.startDate)
+                        return 1;
+                    else
+                        return -1;
+                    return 0;
+                });
             })
+    
             .catch(error => console.log(error)) ;
 
         

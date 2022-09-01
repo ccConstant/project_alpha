@@ -9,7 +9,7 @@
 			<input placeholder="Search an mme by his Alpha Reference" v-model="searchTerm" class="form-control w-50 search_bar" type="text">
 		<ul>
 			<div class="one_element_list" v-for="(list,index) in pageOfItems " :key="index">
-			<li class="list-group-item" :class="'element'+index%2"  >
+			<li class="list-group-item" :class="'element'+index%2">
 				<div class="mme_list_internalReference">
 					<b>{{list.mme_internalReference}}</b>
 				</div>
@@ -20,7 +20,7 @@
 					<a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
 					<a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Signed</a>
 					<a @click="reformMME(list.id)" href="#">Reform</a>
-					<router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
+					<router-link  :to="{name:'mme_url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
 				</div>
 			</li>
 			</div>
@@ -123,24 +123,28 @@ export default {
 </script>
 
 	<style lang="scss">
-	.listOfMME{
-	.element0{
-		background-color: #ccc;
+	.listOfMme{
+		.element0{
+			background-color: #ccc;
+		}
+		h1{
+			text-align:center;
+		}
+		.search_bar{
+			margin-left:30px;
+			margin-bottom: 20px;
+		}
+		.mme_list_internalReference{
+			display: inline-block;
+		}
+		.mme_list_option{
+			display: block;
+			margin-left: 200px;
+			margin-top: -20px;
+			a{
+				margin-right:50px;
+			}
+		}
 	}
-	h1{
-		text-align:center;
-	}
-	.search_bar{
-		margin-left:30px;
-		margin-bottom: 20px;
-	}
-	}
-	.mme_list_internalReference{
-		display: inline-block;
-	}
-	.mme_list_option{
-		display: block;
-		margin-left: 200px;
-		margin-top: -20px;
-	}
+
 	</style>

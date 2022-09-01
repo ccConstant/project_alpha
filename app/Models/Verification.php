@@ -20,7 +20,7 @@ class Verification extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['verif_number','verif_name', 'verif_expectedResult', 'verif_nonComplianceLimit', 'verif_periodicity','verif_symbolPeriodicity', 'enumRequiredSkill_id', 'verif_description', 'verif_protocol', 'verif_startDate', 'verif_nextDate', 'verif_reformDate', 'verif_validate', 'mmeTemp_id' ];
+    protected $fillable = ['verif_number','verif_name', 'verif_expectedResult', 'verif_nonComplianceLimit', 'verif_periodicity','verif_symbolPeriodicity', 'enumRequiredSkill_id', 'enumVerifAcceptanceAuthority_id','verif_description',  'verif_puttingIntoService', 'verif_protocol', 'verif_startDate', 'verif_nextDate', 'verif_reformDate', 'verif_validate', 'mmeTemp_id' ];
 
 
     //Define the relation between a preventive maintenance operation and a preventive maintenance operation realized :  like a preventive maintenance operative can be realized many times, a preventive maintenance operative has many preventive maintenance operation realized

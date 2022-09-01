@@ -21,6 +21,7 @@ use App\Models\VerificationRealized ;
 use App\Models\CurativeMaintenanceOperation ; 
 use App\Models\Verification ; 
 use Carbon\Carbon;
+use App\Http\Controllers\MmeController ; 
 
 class MmeStateController extends Controller
 {
@@ -119,6 +120,127 @@ class MmeStateController extends Controller
                         ], 429);
                     }
                 }
+                switch($mostRecentlyState->state_name){
+                    case "Waiting_for_referencing" : 
+                        if ($request->state_name!="Waiting_to_be_in_use"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in waiting to be in use state from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Waiting_to_be_in_use" : 
+                        if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="In_use" && $request->state_name!="In_quarantine" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in waiting for referencing, in use, in quarantine, reformed and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "In_use" : 
+                        if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="Under_verification" && $request->state_name!="In_quarantine" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in waiting for referencing, Under_verification, In_quarantine, reformed and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Under_verification" : 
+                        if ($request->state_name!="In_use" && $request->state_name!="In_quarantine" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in In_use, In_quarantine and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "In_quarantine":
+                        if ($request->state_name!="In_use" && $request->state_name!="Under_verification" && $request->state_name!="Under_repair" && $request->state_name!="Broken" && $request->state_name!="Downgraded" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in In_use, Under_verification, Under_repair, Broken, Downgraded, Reformed and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Under_repair":
+                        if ($request->state_name!="In_use" && $request->state_name!="Under_verification" && $request->state_name!="Broken" && $request->state_name!="Downgraded" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in In_use, Under_verification, Broken, Downgraded and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Broken" :
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't go in another state"]
+                            ]
+                        ], 429);
+                        break;
+                    case "Downgraded":
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't go in another state"]
+                            ]
+                        ], 429);
+                        break;
+                    case "Reformed" : 
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't go in another state"]
+                            ]
+                        ], 429);
+                        break;
+                    case "Lost":
+                        if ($request->state_name!="Waiting_to_be_in_use" && $request->state_name!="Under_verification" && $request->state_name!="In_use" && $request->state_name!="In_quarantine" && $request->state_name!="Reformed"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in Waiting_to_be_in_use, Under_verification, In_use, In_quarantine and Reformed states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                }
+
+                $mme=Mme::findOrFail($request->mme_id);
+                if ($mme->equipmentTemp_id!=NULL){
+                    if ($request->state_name=="Broken"){
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't put an mme already linked to an equipment to the broken state. Please delete the mme from the equipment before."]
+                            ]
+                        ], 429);
+                    }
+
+                    if ($request->state_name=="Downgraded"){
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't put an mme already linked to an equipment to the downgraded state. Please delete the mme from the equipment before."]
+                            ]
+                        ], 429);
+                    }
+
+                    if ($request->state_name=="Reformed"){
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't put an mme already linked to an equipment to the reformed state. Please delete the mme from the equipment before."]
+                            ]
+                        ], 429);
+                    }
+                }
+                $user=User::findOrFail($request->user_id);
+                if (!$request->user_deleteEqOrMmeRight && ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed")){
+                    return response()->json([
+                        'errors' => [
+                            'state_name' => ["You don't have the right to delete a mme"]
+                        ]
+                    ], 429);
+                }
             }
         }
     }
@@ -173,6 +295,11 @@ class MmeStateController extends Controller
             $state->update([
                 'reformedBy_id' => $request->enteredBy_id,
             ]);
+        }
+
+        if ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed"){
+             $MmeController= new MmeController() ; 
+             $MmeController->delete_mme($request->mme_id) ; 
         }
         
         $state_id=$state->id;
@@ -375,17 +502,17 @@ class MmeStateController extends Controller
 
 
     /**
-     * Function call by ListOfMmeLifeEvent with the route : /state/verif/beforeReferenceVerif/{id} (post)
+     * Function call by ListOfMmeLifeEvent with the route : /mme_state/verif/beforeReferenceVerif/{id} (post)
      * Check if we can create a new state (the previous state is validated, it has a endDate...) 
      * The id parameter is the id of the actual state 
      * @return \Illuminate\Http\Response
      */
     public function verif_before_reference_verif(Request $request, $id){
         $state=MmeState::findOrFail($id) ; 
-        if ($state->state_name=="Lost"){
+        if ($state->state_name!="In_use" && $state->state_name!="Under_verification" && $state->state_name!="In_quarantine"){
             return response()->json([
                 'errors' => [
-                    'verif_reference' => ["You can't reference a verification during a lost state"]
+                    'verif_reference' => ["You can only reference a verification during an in use, an under verification or an in quarantine state"]
                 ]
             ], 429);
         }
@@ -395,6 +522,32 @@ class MmeStateController extends Controller
             return response()->json([
                 'errors' => [
                     'verif_reference' => ["You can't add a maintenance operation while you have'nt finished to complete the Id card of the mme"]
+                ]
+            ], 429);
+        }
+    }
+
+     /**
+     * Function call by ListOfMMELifeEvent with the route : /mme_state/verif/beforeReferenceCurOp/{id} (post)
+     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
+     * The id parameter is the id of the actual state 
+     * @return \Illuminate\Http\Response
+     */
+    public function verif_before_reference_cur_op(Request $request, $id){
+        $state=MmeState::findOrFail($id) ; 
+        if ($state->state_name!="In_quarantine" && $state->state_name!="Under_repair"){
+            return response()->json([
+                'errors' => [
+                    'verif_reference' => ["You can only reference a curative maintenance operation during an in quarantine or an under repair state"]
+                ]
+            ], 429);
+        }
+
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyMmeTmp->mmeTemp_validate!="validated"){
+            return response()->json([
+                'errors' => [
+                    'verif_reference' => ["You can't add a curative maintenance operation while you have'nt finished to complete the Id card of the mme"]
                 ]
             ], 429);
         }
@@ -426,8 +579,9 @@ class MmeStateController extends Controller
                     'state_verif' => ["You must validate your state before add a new state"]
                 ]
             ], 429);
-
         }
+
+        
     }
 
     /**

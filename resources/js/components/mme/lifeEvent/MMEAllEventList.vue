@@ -170,6 +170,13 @@ export default {
                     }
                 }
                 this.loaded=true;
+                this.states.sort(function compare(a, b) {
+                    if (a.startDate > b.startDate)
+                        return 1;
+                    else
+                        return -1;
+                    return 0;
+                });
             })
             .catch(error => console.log(error)) ;
 

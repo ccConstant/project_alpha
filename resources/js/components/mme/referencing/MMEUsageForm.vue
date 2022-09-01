@@ -10,7 +10,6 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[0].info_value" :Errors="errors.usg_measurementType" name="usg_measurementType" label="Measurement type :" :isDisabled="!!isInConsultedMod" v-model="usg_measurementType" />
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[1].info_value" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[2].info_value" :Errors="errors.usg_application" name="usg_application" label="Application :" :isDisabled="!!isInConsultedMod" v-model="usg_application" />
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_usage[3].info_value" selectClassName="form-select w-50"  name="usg_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.usg_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.usg_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_verifAcceptanceAuthority"/>
                 <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_usage[4].info_value" selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Metrological level :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
                 
                 <!--If addSucces is equal to false, the buttons appear -->
@@ -24,7 +23,7 @@
                         </div>
                     </div>
                     <div v-else-if="this.usg_id!==null && reformMod==false ">
-                        <div v-if="usg_refomDate!=null" >
+                        <div v-if="usg_reformDate!=null" >
                             <p>Reform at {{usg_reformDate}}</p>
                         </div>
                         <div v-else>
@@ -87,9 +86,6 @@ export default {
         precision:{
             type:String
         },
-        verifAcceptanceAuthority:{
-            type:String
-        },
         metrologicalLevel:{
             type:String
         },
@@ -139,7 +135,6 @@ export default {
         return{
             usg_measurementType:this.measurementType,
             usg_precision:this.precision,
-            usg_verifAcceptanceAuthority:this.verifAcceptanceAuthority,
             usg_metrologicalLevel:this.metrologicalLevel,
             usg_application:this.application,
             usg_validate:this.validate,
@@ -148,7 +143,6 @@ export default {
             usg_id:this.id,
             mme_id_add:this.mme_id,
             mme_id_update:this.$route.params.id,
-            enum_verifAcceptanceAuthority: [],
             enum_metrologicalLevel: [],
             importedUsgPrecaution:[],
             errors:{},
@@ -162,12 +156,6 @@ export default {
         }
     },
     created(){
-        /*Ask for the controller different required skill  */
-        axios.get('/usage/enum/verifAcceptanceAuthority')
-            .then (response=>{
-                this.enum_verifAcceptanceAuthority=response.data;
-            } ) 
-            .catch(error => console.log(error)) ;
         axios.get('/usage/enum/metrologicalLevel')
             .then (response=>{
                 this.enum_metrologicalLevel=response.data;
@@ -215,7 +203,6 @@ export default {
                 axios.post('/mme_usage/verif',{
                     usg_measurementType:this.usg_measurementType,
                     usg_precision:this.usg_precision,
-                    usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                     usg_metrologicalLevel:this.usg_metrologicalLevel,
                     usg_application:this.usg_application,
                     usg_validate :savedAs,
@@ -224,7 +211,6 @@ export default {
                     this.errors={};
                     console.log(this.usg_measurementType)
                     console.log(this.usg_precision)
-                    console.log(this.usg_verifAcceptanceAuthority)
                     console.log(this.usg_metrologicalLevel)
                     console.log(this.usg_application)
                     console.log(savedAs)
@@ -235,7 +221,6 @@ export default {
                     axios.post('/mme/add/usg',{
                         usg_measurementType:this.usg_measurementType,
                         usg_precision:this.usg_precision,
-                        usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                         usg_metrologicalLevel:this.usg_metrologicalLevel,
                         usg_application:this.usg_application,
                         usg_validate :savedAs,
@@ -276,12 +261,10 @@ export default {
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             console.log("update dans la base");
-            console.log(this.usg_verifAcceptanceAuthority)
             console.log(this.usg_metrologicalLevel)
             axios.post('/mme_usage/verif',{
                     usg_measurementType:this.usg_measurementType,
                     usg_precision:this.usg_precision,
-                    usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                     usg_metrologicalLevel:this.usg_metrologicalLevel,
                     usg_application:this.usg_application,
                     usg_validate :savedAs,
@@ -295,7 +278,6 @@ export default {
                     axios.post(consultUrl(this.usg_id),{
                         usg_measurementType:this.usg_measurementType,
                         usg_precision:this.usg_precision,
-                        usg_verifAcceptanceAuthority:this.usg_verifAcceptanceAuthority,
                         usg_metrologicalLevel:this.usg_metrologicalLevel,
                         usg_application:this.usg_application,
                         usg_validate :savedAs,

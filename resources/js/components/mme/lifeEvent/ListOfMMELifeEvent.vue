@@ -56,6 +56,8 @@ export default {
                 axios.post(consultUrl(state_id),{
                 })
                 .then(response =>{
+                    console.log("coucou")
+                    console.log(response.data)
                    this.$router.replace({ name: "url_mme_life_event_change_state", params: {id:mme_id}, query: {currentState: state_id } })
                 ;})
                 //If the controller sends errors we put it in the errors object 
@@ -69,7 +71,7 @@ export default {
                 this.$refs.errorAlert.showAlert("You don't have the right");
                 return;
             }
-            var consultUrl = (state_id) => `/mme_state/verif/beforeReferenceVerif/${state_id}`;
+            var consultUrl = (state_id) => `/mme_state/verif/beforeReferenceCurOp/${state_id}`;
             axios.post(consultUrl(state_id),{
                 mme_id:mme_id_to_send
             })

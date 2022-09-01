@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\MmeTemp ; 
 use App\Models\Mme ; 
 use App\Models\MmeUsage ; 
-use App\Models\EnumUsageVerifAcceptanceAuthority ;
 use App\Models\EnumUsageMetrologicalLevel;
 use App\Models\Usage ;
 use Carbon\Carbon;
@@ -54,24 +53,6 @@ class MmeUsageController extends Controller
                     'usg_application.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
-
-            //verification about usg_verifAcceptanceAuthority, if no one value is selected we need to alert the user
-            if ($request->usg_verifAcceptanceAuthority=='' || $request->usg_verifAcceptanceAuthority==NULL ){
-                return response()->json([
-                    'errors' => [
-                        'usg_verifAcceptanceAuthority' => ["You must choose a verif acceptance authority"]
-                    ]
-                ], 429);
-            }
-
-            //verification about usg_verifAcceptanceAuthority, if no one value is selected we need to alert the user
-            if ($request->usg_metrologicalLevel=='' || $request->usg_metrologicalLevel==NULL ){
-                return response()->json([
-                    'errors' => [
-                        'usg_metrologicalLevel' => ["You must choose a metrological level"]
-                    ]
-                ], 429);
-            }
         }else{
              //-----CASE usg->validate=drafted or usg->validate=to be validate----//
             //if the user has choosen "drafted" or "to be validated" he have no obligations 
@@ -96,14 +77,6 @@ class MmeUsageController extends Controller
      * @return \Illuminate\Http\Response : id of the new usage
      */
     public function add_usage(Request $request){
-        //A usage is linked to its verifAcceptanceAuthority. So we need to find the id of the verifAcceptanceAuthority choosen by the user and write it in the attribute of the usage.
-        //But if no one verif acceptance authority is choosen by the user we define this id to NULL
-        // And if the verifAcceptanceAuthority choosen is find in the data base the NULL value will be replace by the id value
-        $verifAcceptanceAuthority_id=NULL ;
-        if ($request->usg_verifAcceptanceAuthority!=''){
-            $verifAcceptanceAuthority= EnumUsageVerifAcceptanceAuthority::where('value', '=', $request->usg_verifAcceptanceAuthority)->first() ;
-            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ; 
-        }
 
         //A usage is linked to its metrologicalLevel. So we need to find the id of the metrologicalLevel choosen by the user and write it in the attribute of the usage.
         //But if no one metrologicalLevel is choosen by the user we define this id to NULL
@@ -125,7 +98,6 @@ class MmeUsageController extends Controller
             'usg_application' => $request->usg_application,
             'usg_startDate' => Carbon::now('Europe/Paris'),
             'enumUsageMetrologicalLevel_id' => $metrologicalLevel_id,
-            'enumUsageVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
         ]) ;
     
@@ -161,15 +133,6 @@ class MmeUsageController extends Controller
      * The id parameter correspond to the id of the usage we want to update
      * */
     public function update_usage(Request $request, $id){
-
-         //A usage is linked to its verifAcceptanceAuthority. So we need to find the id of the verifAcceptanceAuthority choosen by the user and write it in the attribute of the usage.
-        //But if no one verif acceptance authority is choosen by the user we define this id to NULL
-        // And if the verifAcceptanceAuthority choosen is find in the data base the NULL value will be replace by the id value
-        $verifAcceptanceAuthority_id=NULL ;
-        if ($request->usg_verifAcceptanceAuthority!=''){
-            $verifAcceptanceAuthority= EnumUsageVerifAcceptanceAuthority::where('value', '=', $request->usg_verifAcceptanceAuthority)->first() ;
-            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ; 
-        }
 
         //A usage is linked to its metrologicalLevel. So we need to find the id of the metrologicalLevel choosen by the user and write it in the attribute of the usage.
         //But if no one metrologicalLevel is choosen by the user we define this id to NULL
@@ -212,7 +175,6 @@ class MmeUsageController extends Controller
                 'usg_precision' => $request->usg_precision,
                 'usg_application' => $request->usg_application,
                 'enumUsageMetrologicalLevel_id' => $metrologicalLevel_id,
-                'enumUsageVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
                 'mmeTemp_id' => $mostRecentlyMmeTmp->id,
             ]);
         }
@@ -273,7 +235,6 @@ class MmeUsageController extends Controller
 
             }
             $metrologicalLevel=NULL;
-            $verifAcceptanceAuthority = NULL ;
 
             if ($usage->enumUsageMetrologicalLevel_id!=NULL){
 
@@ -281,10 +242,6 @@ class MmeUsageController extends Controller
                 $metrologicalLevel = $metrologicalLevel_enum->value ;
             }
 
-            if ($usage->enumUsageVerifAcceptanceAuthority_id!=NULL){
-                $verifAcceptanceAuthority_enum= EnumUsageVerifAcceptanceAuthority::findOrFail($usage->enumUsageVerifAcceptanceAuthority_id)->first() ;
-                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
-            }
             $day=$dates[2] ;
             $newDate=$day." ".$month." ".$year ; 
 
@@ -295,7 +252,6 @@ class MmeUsageController extends Controller
                 'usg_precision' => $usage->usg_precision,
                 'usg_application' => $usage->usg_application,
                 'mmeTemp_id' => $usage->mmeTemp_id,
-                'usg_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
                 'usg_metrologicalLevel' => $metrologicalLevel,
                 'usg_startDate' => $newDate,
                 'usg_reformDate' => $usage->usg_reformDate,

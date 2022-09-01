@@ -31,8 +31,6 @@ class CreateMmeUsagesTable extends Migration
             $table->enum('usg_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('enumUsageMetrologicalLevel_id') ->nullable();
             $table->foreign('enumUsageMetrologicalLevel_id')->references('id')->on('enum_usage_metrological_levels') -> onDelete('restrict') ;
-            $table->unsignedBigInteger('enumUsageVerifAcceptanceAuthority_id') ->nullable();
-            $table->foreign('enumUsageVerifAcceptanceAuthority_id')->references('id')->on('enum_usage_verif_acceptance_authorities') -> onDelete('restrict') ;
             $table->unsignedBigInteger('mmeTemp_id') ->nullable();
             $table->foreign('mmeTemp_id')->references('id')->on('mme_temps') -> onDelete('cascade') ; 
             $table->timestamps();

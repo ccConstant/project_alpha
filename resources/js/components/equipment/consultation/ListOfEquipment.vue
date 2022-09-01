@@ -9,7 +9,7 @@
 			<input placeholder="Search an equipment by his Alpha Reference" v-model="searchTerm" class="form-control w-50 search_bar" type="text">
 		<ul>
 			<div class="one_element_list" v-for="(list,index) in pageOfItems " :key="index">
-			<li class="list-group-item" :class="'element'+index%2"  >
+			<li class="list-group-item" :class="'element'+index%2">
 				<div class="eq_list_internalReference">
 					<b>{{list.eq_internalReference}}</b>
 				</div>
@@ -146,5 +146,8 @@ export default {
 		display: block;
 		margin-left: 200px;
 		margin-top: -20px;
+		a{
+		margin-right:50px;
+		}
 	}
 	</style>

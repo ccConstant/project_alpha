@@ -16,7 +16,7 @@
 -------------------------------------------------------------->
 <template>
     <div class="equipmentID" v-if="loaded==true">
-        <h2 class="titleForm">Equipment ID Card</h2>
+        <h2 class="titleForm1">EQ ID : {{eq_internalReference}}</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
@@ -361,12 +361,19 @@ export default {
 </script>
 
 <style lang="scss">
-    .titleForm{
+    .titleForm1{
         padding-left: 10px;
+        right: 100px;
+        position:fixed;
+        background-color:aqua;
+        top:90px;
     }
     form{
         margin: 20px;
-        margin-bottom: 100px;
+        margin-bottom: 50px;
+    }
+    .container{
+        margin-top:50px;
     }
 
 </style>

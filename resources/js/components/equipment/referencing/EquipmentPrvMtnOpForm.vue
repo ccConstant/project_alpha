@@ -24,6 +24,7 @@
                 <div v-if="isInConsultedMod==true && this.prvMtnOp_number!==null || this.modifMod==true && this.prvMtnOp_number!==null">
                     <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.prvMtnOp_number" name="prvMtnOp_number" label="Number :" :stepOfInput="1" v-model="prvMtnOp_number" isDisabled :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
+                 <RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized during putting into service? :" :options="existOption" :Errors="errors.prvMtnOp_puttingIntoService"  :checkedOption="this.prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_puttingIntoService"/>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" :info_text="infos_prvMtnOp[1].info_value"/>
@@ -37,7 +38,7 @@
                         <div v-if="modifMod==true">
                             <SaveButtonForm @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :savedAs="prvMtnOp_validate" :AddinUpdate="true"/>
                         </div>
-                        <div v-else>
+                        <div v-else> <!-- grise la sauvegarde en brouillon et en validé-->
                             <SaveButtonForm @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :savedAs="prvMtnOp_validate"/>
                         </div>
                     </div>
@@ -46,6 +47,7 @@
                             <p>Reformed at {{prvMtnOp_reformDate}}</p>
                         </div>
                         <div v-else>
+                            <!-- Bouton en dessous de chaque formulaire -->
                             <SaveButtonForm  @add="addEquipmentPrvMtnOp" @update="updateEquipmentPrvMtnOp" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="prvMtnOp_validate"/>
                         </div>
                     </div>
@@ -84,6 +86,7 @@ import InputNumberForm from '../../input/InputNumberForm.vue'
 import ReferenceARisk from './ReferenceARisk.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import ReformComponentButton from '../../button/ReformComponentButton.vue'
+import RadioGroupForm from '../../input/RadioGroupForm.vue'
 
 
 
@@ -98,7 +101,8 @@ export default {
         ReferenceARisk,
         DeleteComponentButton,
         ReformComponentButton,
-        ErrorAlert
+        ErrorAlert,
+        RadioGroupForm,
 
 
     },
@@ -165,7 +169,12 @@ export default {
         reformMod:{
             type:Boolean,
             default:false
+        },
+        puttingIntoService:{
+            type:Boolean,
+            default:false
         }
+
 
     },
     /*--------Declartion of the differents returned data:--------
@@ -194,6 +203,7 @@ export default {
             prvMtnOp_validate:this.validate,
             prvMtnOp_reformDate:this.reformDate,
             prvMtnOp_id:this.id,
+            prvMtnOp_puttingIntoService:this.puttingIntoService,
             equipment_id_add:this.eq_id,
             equipment_id_update:this.$route.params.id,
             enum_periodicity_symbol: [
@@ -201,6 +211,10 @@ export default {
                 {value:'M'},
                 {value:'D'},
                 {value:'H'},
+            ],
+            existOption :[
+                {id: 'Yes', value:true},
+                {id : 'No', value:false}
             ],
             importedOpRisk:[],
             errors:{},
@@ -237,6 +251,7 @@ export default {
                     prvMtnOp_symbolPeriodicity:this.prvMtnOp_symbolPeriodicity,
                     prvMtnOp_protocol:this.prvMtnOp_protocol,
                     prvMtnOp_validate :savedAs,
+                    prvMtnOp_puttingIntoService:this.prvMtnOp_puttingIntoService,
                 })
                 .then(response =>{
                     this.errors={};
@@ -248,7 +263,8 @@ export default {
                         prvMtnOp_symbolPeriodicity:this.prvMtnOp_symbolPeriodicity,
                         prvMtnOp_protocol:this.prvMtnOp_protocol,
                         prvMtnOp_validate :savedAs,
-                        eq_id:id
+                        eq_id:id,
+                        prvMtnOp_puttingIntoService:this.prvMtnOp_puttingIntoService,
                 
                     })
                     //If the preventive maintenance operation is added succesfuly
@@ -284,12 +300,14 @@ export default {
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             console.log("update dans la base");
+             console.log(this.prvMtnOp_puttingIntoService)
             axios.post('/prvMtnOp/verif',{
                     prvMtnOp_description:this.prvMtnOp_description,
                     prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),
                     prvMtnOp_symbolPeriodicity:this.prvMtnOp_symbolPeriodicity,
                     prvMtnOp_protocol:this.prvMtnOp_protocol,
                     prvMtnOp_validate :savedAs,
+                    prvMtnOp_puttingIntoService:this.prvMtnOp_puttingIntoService,
                 })
                 .then(response =>{
                     this.errors={};
@@ -305,8 +323,12 @@ export default {
                         prvMtnOp_protocol:this.prvMtnOp_protocol,
                         eq_id:this.equipment_id_update,
                         prvMtnOp_validate :savedAs,
+                        prvMtnOp_puttingIntoService:this.prvMtnOp_puttingIntoService,
                     })
-                    .then(response =>{this.prvMtnOp_validate=savedAs;})
+                    .then(response =>{
+                        console.log("lol")
+                        console.log(response.data)
+                        this.prvMtnOp_validate=savedAs;})
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
@@ -316,6 +338,9 @@ export default {
                 /*Clear all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
+        },
+         clearRadioError(){
+            delete this.errors["prvMtnOp_puttingIntoService"]
         },
         //Function for deleting a preventive maintenance operation from the view and the database
         deleteComponent(){
@@ -366,6 +391,8 @@ export default {
         },
     },
     created(){
+         console.log("coucou36")
+        console.log(this.prvMtnOp_puttingIntoService)
         if(this.prvMtnOp_id!==null && this.addSucces==false){
             //Make a get request to ask to the controller the preventive maintenance operation corresponding to the id of the equipment with which data will be imported
             var consultUrl = (id) => `/prvMtnOp/risk/send/${id}`;

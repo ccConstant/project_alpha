@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\CurativeMaintenanceOperation ;
 use App\Models\VerificationRealized ;
 use App\Models\MmeTemp ;
+use App\Models\Mme;
 
 class MmeState extends Model
 {

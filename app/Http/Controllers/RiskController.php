@@ -298,6 +298,39 @@ class RiskController extends Controller
         }
         return response()->json($container) ;
     }
+
+    /**
+     * Function call by LifeSheetPDF.vue with the route : /prvMtnOp/risk/send/pdf/{$id} (get)
+     * Get all the risks of all the preventive maintenance operation linked of one equipement whose id is passed in parameter
+     * The id parameter corresponds to the id of the equipment from which we want the risks linked to the prv mtn op linked 
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_risks_pdf($id) {
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $id)->get() ; 
+        $container=array(); 
+        foreach($prvMtnOps as $prvMtnOp){
+            $risks = Risk::where('preventiveMaintenanceOperation_id', '=', $prvMtnOp->id)->get();
+            foreach ($risks as $risk) {
+                $target = NULL ; 
+                if ($risk->enumRiskFor_id!=NULL){
+                    $target = $risk->enumRiskFor->value ;
+                }
+                $obj=([
+                    'id' => $risk->id,
+                    'risk_remarks' => $risk->risk_remarks,
+                    'risk_wayOfControl' => $risk->risk_wayOfControl,
+                    'risk_validate' => $risk->risk_validate,
+                    'risk_for'=> $target,
+                    'prvMtnOp_id' => $id,
+                    'prvMtnOp_number' => $prvMtnOp->prvMtnOp_number,
+                ]) ; 
+                array_push($container,$obj);
+            }
+        
+        }
+        return response()->json($container) ;
+    }
          
 
 

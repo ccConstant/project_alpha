@@ -130,6 +130,93 @@ class StateController extends Controller
                         ], 429);
                     }
                 }
+                switch($mostRecentlyState->state_name){
+                    case "Waiting_for_referencing" : 
+                        if ($request->state_name!="Waiting_for_installation"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in waiting for installation state from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Waiting_for_installation" : 
+                        if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="In_use" && $request->state_name!="On_hold" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in waiting for referencing, in use, on hold, reformed and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "In_use" : 
+                        if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="Under_maintenance" && $request->state_name!="On_hold" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in waiting for referencing, Under_maintenance, on hold, reformed and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Under_maintenance" : 
+                        if ($request->state_name!="In_use" && $request->state_name!="On_hold" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in In_use, On_hold and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "On_hold":
+                        if ($request->state_name!="In_use" && $request->state_name!="Under_maintenance" && $request->state_name!="Under_repair" && $request->state_name!="Broken" && $request->state_name!="Downgraded" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in In_use, Under_maintenance, Under_repair, Broken, Downgraded, Reformed and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Under_repair":
+                        if ($request->state_name!="In_use" && $request->state_name!="Under_maintenance" && $request->state_name!="Broken" && $request->state_name!="Downgraded" && $request->state_name!="Lost"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+                    case "Broken" :
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't go in another state"]
+                            ]
+                        ], 429);
+                        break;
+                    case "Downgraded":
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't go in another state"]
+                            ]
+                        ], 429);
+                        break;
+                    case "Reformed" : 
+                        return response()->json([
+                            'errors' => [
+                                'state_name' => ["You can't go in another state"]
+                            ]
+                        ], 429);
+                        break;
+                    case "Lost":
+                        if ($request->state_name!="Waiting_for_installation" && $request->state_name!="Under_maintenance" && $request->state_name!="In_use" && $request->state_name!="On_hold" && $request->state_name!="Reformed"){
+                            return response()->json([
+                                'errors' => [
+                                    'state_name' => ["You can't only go in Waiting_for_installation, Under_maintenance, In_use, On_hold and Reformed states from this one"]
+                                ]
+                            ], 429);
+                        }
+                        break;
+
+                }
             }
         }
     }
@@ -384,17 +471,17 @@ class StateController extends Controller
 
 
     /**
-     * Function call by ListOfEquipmentLifeEvent with the route : /state/verif/beforeReferenceOp/{id} (post)
+     * Function call by ListOfEquipmentLifeEvent with the route : /state/verif/beforeReferenceCurOp/{id} (post)
      * Check if we can create a new state (the previous state is validated, it has a endDate...) 
      * The id parameter is the id of the actual state 
      * @return \Illuminate\Http\Response
      */
-    public function verif_before_reference_op(Request $request, $id){
+    public function verif_before_reference_cur_op(Request $request, $id){
         $state=State::findOrFail($id) ; 
-        if ($state->state_name=="Lost"){
+        if ($state->state_name!="On_hold" && $state->state_name!="Under_repair"){
             return response()->json([
                 'errors' => [
-                    'verif_reference' => ["You can't reference a maintenance operation during a lost state"]
+                    'verif_reference' => ["You can only reference a curative maintenance operation during an on hold or an under repair state"]
                 ]
             ], 429);
         }
@@ -403,7 +490,33 @@ class StateController extends Controller
         if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){
             return response()->json([
                 'errors' => [
-                    'verif_reference' => ["You can't add a maintenance operation while you have'nt finished to complete the Id card of the equipment"]
+                    'verif_reference' => ["You can't add a curative maintenance operation while you have'nt finished to complete the Id card of the equipment"]
+                ]
+            ], 429);
+        }
+    }
+
+     /**
+     * Function call by EventDetailsModal with the route : /state/verif/beforeReferencePrvOp/{id} (post)
+     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
+     * The id parameter is the id of the actual state 
+     * @return \Illuminate\Http\Response
+     */
+    public function verif_before_reference_prv_op(Request $request, $id){
+        $state=State::findOrFail($id) ; 
+        if ($state->state_name!="In_use" && $state->state_name!="Under_maintenance" && $state->state_name!="On_hold"){
+            return response()->json([
+                'errors' => [
+                    'verif_reference' => ["You can only reference a preventive maintenance operation during an in use, an on hold or an under maintenance state"]
+                ]
+            ], 429);
+        }
+
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){
+            return response()->json([
+                'errors' => [
+                    'verif_reference' => ["You can't add a preventive maintenance operation while you have'nt finished to complete the Id card of the equipment"]
                 ]
             ], 429);
         }

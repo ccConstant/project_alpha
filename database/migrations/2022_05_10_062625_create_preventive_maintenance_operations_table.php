@@ -25,6 +25,7 @@ return new class extends Migration
     {
         Schema::create('preventive_maintenance_operations', function (Blueprint $table) {
             $table->id();
+            $table->boolean('prvMtnOp_puttingIntoService')->nullable();
             $table->unsignedTinyInteger('prvMtnOp_number')  ; 
             $table->string('prvMtnOp_description') ; 
             $table->unsignedMediumInteger('prvMtnOp_periodicity') ->nullable(); 

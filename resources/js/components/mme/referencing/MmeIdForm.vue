@@ -1,9 +1,9 @@
 <template>
       <div class="mmeID" v-if="loaded==true">
-        <h2 class="titleForm">MME ID Card</h2>
+        <h2 class="titleForm1">MME ID : {{mme_internalReference}}</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
-            <!--Call of the different component with their props-->
+            <br><br><!--Call of the different component with their props-->
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference" name="mme_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod" v-model="mme_internalReference" :info_text="infos_idCard[0].info_value" />
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod" v-model="mme_name" :info_text="infos_idCard[2].info_value" />
@@ -238,7 +238,7 @@ export default {
 
 <style lang="scss">
     .titleForm{
-        padding-left: 10px;
+        padding-left: 80px;
     }
     form{
         margin: 20px;

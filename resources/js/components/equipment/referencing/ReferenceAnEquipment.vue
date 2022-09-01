@@ -6,7 +6,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                           Equipment Dimension(s)
+                        Equipment Dimension(s)
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
@@ -77,26 +77,45 @@
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingEight">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                    <h2 class="accordion-header" id="headingSeven">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                             Equipment Preventive maintenace operation
                         </button>
                     </h2>
-                    <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingEight">
+                    <div id="collapseSeven"  class="accordion-collapse collapse" aria-labelledby="headingSeven">
                         <div class="accordion-body">
                             <ReferenceAPrvMtnOp :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingHeight">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                            Equipment Associated MME (Create a new MME )
+                        </button>
+                    </h2>
+                    <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingHeight">
+                        <div class="accordion-body">
+                            <ReferenceAMme :eq_id="this.eq_id"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingNine">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                            Equipment Associated MME (Adding already created MMEs to an equipment )
+                        </button>
+                    </h2>
+                    <div id="collapseNine"  class="accordion-collapse collapse" aria-labelledby="headingNine">
+                        <div class="accordion-body">
+                            <ReferenceAMmeList :eq_id="this.eq_id"/>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-
-
+        </div>
     </div>
-
-</div>
-
-
 </template>
 
 <script>
@@ -109,6 +128,8 @@ import ReferenceAUsage from './ReferenceAUsage.vue'
 import ReferenceAFile from './ReferenceAFile.vue'
 import ReferenceAPrvMtnOp from './ReferenceAPrvMtnOp.vue'
 import ReferenceARisk from './ReferenceARisk.vue'
+import ReferenceAMme from './ReferenceAMme.vue'
+import ReferenceAMmeList from './ReferenceAMmeList.vue'
 
 
 
@@ -123,7 +144,9 @@ export default {
     ReferenceAUsage,
     ReferenceAFile,
     ReferenceAPrvMtnOp,
-    ReferenceARisk
+    ReferenceARisk,
+    ReferenceAMme,
+    ReferenceAMmeList,
   },
   data(){
     return{

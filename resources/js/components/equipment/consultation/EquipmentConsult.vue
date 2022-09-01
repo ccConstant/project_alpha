@@ -12,7 +12,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Equipment Id Card
+                            Equipment Id
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
@@ -101,12 +101,24 @@
                 <div class="accordion-item" v-if="eq_prvMtnOp.length>0">
                     <h2 class="accordion-header" id="headingNine">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-                        Equipment Preventive maintenace Operation
+                        Equipment Preventive Maintenance Operation
                         </button>
                     </h2>
                     <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
                         <div class="accordion-body">
                             <ReferenceAPrvMtnOp  :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
+                        </div>
+                    </div>
+                </div>
+                    <div class="accordion-item" v-if="eq_mme.length>0">
+                    <h2 class="accordion-header" id="headingTen">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                        Equipment Associated MME
+                        </button>
+                    </h2>
+                    <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen">
+                        <div class="accordion-body">
+                            <ReferenceAMme  :importedMme="eq_mme" consultMod/>
                         </div>
                     </div>
                 </div>
@@ -127,6 +139,7 @@ import ReferenceAUsage from '../referencing/ReferenceAUsage.vue'
 import ReferenceAFile from '../referencing/ReferenceAFile.vue'
 import ReferenceAPrvMtnOp from '../referencing/ReferenceAPrvMtnOp.vue'
 import ReferenceARisk from '../referencing/ReferenceARisk.vue'
+import ReferenceAMme from '../referencing/ReferenceAMme.vue'
 import ValidationButton from '../../button/ValidationButton.vue'
 
 
@@ -138,6 +151,7 @@ export default {
         EquipmentIDForm,
         ReferenceADim,
         ReferenceAPow,
+        ReferenceAMme,
         ReferenceASpecProc,
         ReferenceAUsage,
         ReferenceAFile,
@@ -158,6 +172,7 @@ export default {
             eq_file:null,
             eq_prvMtnOp:null,
             eq_risk:null,
+            eq_mme:null,
             loaded:false,
             validationMethod:this.$route.query.method,
             errors:[]
@@ -209,16 +224,28 @@ export default {
 
         var consultUrlPrvMtnOp = (id) => `/prvMtnOps/send/${id}`;
         axios.get(consultUrlPrvMtnOp(this.eq_id))
-            .then (response=>this.eq_prvMtnOp=response.data)
+            .then (response=>{
+            console.log(response.data),
+            this.eq_prvMtnOp=response.data})
             .catch(error => console.log(error)) ;
         
         var consultUrlRisk = (id) => `/equipment/risk/send/${id}`;
         axios.get(consultUrlRisk(this.eq_id))
             .then (response=>{
                 this.eq_risk=response.data
-                this.loaded=true;
             })
             .catch(error => console.log(error)) ;
+
+        var consultUrlMme = (id) => `/mme/send/${id}`;
+            axios.get(consultUrlMme(this.eq_id))
+                .then (response=>{
+                    this.eq_mme=response.data
+                    console.log("coucou");
+                    console.log(response.data)
+                    console.log(this.eq_mme)
+                    this.loaded=true;
+                })
+                .catch(error => console.log(error)) ;
         
     },
     methods:{

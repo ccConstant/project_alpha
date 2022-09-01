@@ -40,7 +40,7 @@ use App\Http\Controllers\PrecautionController ;
 use App\Http\Controllers\EnumVerificationRequiredSkillController;
 use App\Http\Controllers\EnumPrecautionTypeController;
 use App\Http\Controllers\EnumUsageMetrologicalLevelController;
-use App\Http\Controllers\EnumUsageVerifAcceptanceAuthorityController;
+use App\Http\Controllers\EnumVerifAcceptanceAuthorityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -191,6 +191,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/mme/life_event/update/{id}/{state_id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('/mme/lifesheet_pdf/{id}', function () {
         return view('welcome');
     });
 });
@@ -403,6 +407,8 @@ Route::post('/equipment/update/prvMtnOp/risk/{id}', [RiskController::class, 'upd
 
 Route::get('/prvMtnOp/risk/send/{id}', [RiskController::class, 'send_risks_prvMtnOp'])  ;
 
+Route::get('/prvMtnOp/risk/send/pdf/{id}', [RiskController::class, 'send_risks_pdf'])  ;
+
 
 /* State Form Routes */ 
 
@@ -410,7 +416,9 @@ Route::post('/state/verif', [StateController::class, 'verif_state'])  ;
 
 Route::post('/state/verif/beforeChangingState/{id}', [StateController::class, 'verif_before_changing_state'])  ;
 
-Route::post('/state/verif/beforeReferenceOp/{id}', [StateController::class, 'verif_before_reference_op'])  ;
+Route::post('/state/verif/beforeReferencePrvOp/{id}', [StateController::class, 'verif_before_reference_prv_op'])  ;
+
+Route::post('/state/verif/beforeReferenceCurOp/{id}', [StateController::class, 'verif_before_reference_cur_op'])  ;
 
 Route::post('/equipment/add/state', [StateController::class, 'add_state'])  ;
 
@@ -557,13 +565,13 @@ Route::post('/usage/enum/metrologicalLevel/add', [EnumUsageMetrologicalLevelCont
 
 Route::post('/usage/enum/metrologicalLevel/update/{id}', [EnumUsageMetrologicalLevelController::class, 'update_enum_metrologicalLevel'] ) ;
 
-Route::get('/usage/enum/verifAcceptanceAuthority', [EnumUsageVerifAcceptanceAuthorityController::class, 'send_enum_verifAcceptanceAuthority'] ) ;
+Route::get('/usage/enum/verifAcceptanceAuthority', [EnumVerifAcceptanceAuthorityController::class, 'send_enum_verifAcceptanceAuthority'] ) ;
 
-Route::post('/usage/enum/verifAcceptanceAuthority/delete/{id}', [EnumUsageVerifAcceptanceAuthorityController::class, 'delete_enum_verifAcceptanceAuthority'] ) ;
+Route::post('/usage/enum/verifAcceptanceAuthority/delete/{id}', [EnumVerifAcceptanceAuthorityController::class, 'delete_enum_verifAcceptanceAuthority'] ) ;
 
-Route::post('/usage/enum/verifAcceptanceAuthority/add', [EnumUsageVerifAcceptanceAuthorityController::class, 'add_enum_verifAcceptanceAuthority'] ) ;
+Route::post('/usage/enum/verifAcceptanceAuthority/add', [EnumVerifAcceptanceAuthorityController::class, 'add_enum_verifAcceptanceAuthority'] ) ;
 
-Route::post('/usage/enum/verifAcceptanceAuthority/update/{id}', [EnumUsageVerifAcceptanceAuthorityController::class, 'update_enum_verifAcceptanceAuthority'] ) ;
+Route::post('/usage/enum/verifAcceptanceAuthority/update/{id}', [EnumVerifAcceptanceAuthorityController::class, 'update_enum_verifAcceptanceAuthority'] ) ;
 
 
 
@@ -689,6 +697,8 @@ Route::get('/mme/mmes/', [MmeController::class, 'send_internalReferences_ids'] )
 
 Route::get('/mme/mmes_not_linked', [MmeController::class, 'send_mme_not_linked'] ) ;
 
+Route::get('/mme/eq_linked/{id}', [MmeController::class, 'send_eq_linked_mme'] ) ;
+
 Route::post('/mme/link_to_eq/{id}', [MmeController::class, 'link_mme_to_equipment'] ) ;
 
 Route::get('/mmes/same_set/{set}', [MmeController::class, 'send_mmes_same_set'])  ;
@@ -720,6 +730,8 @@ Route::post('/mme_state/verif', [MmeStateController::class, 'verif_state'])  ;
 Route::post('/mme_state/verif/beforeChangingState/{id}', [MmeStateController::class, 'verif_before_changing_state'])  ;
 
 Route::post('/mme_state/verif/beforeReferenceVerif/{id}', [MmeStateController::class, 'verif_before_reference_verif'])  ;
+
+Route::post('/mme_state/verif/beforeReferenceCurOp/{id}', [MmeStateController::class, 'verif_before_reference_cur_op'])  ;
 
 Route::post('/mme/add/state', [MmeStateController::class, 'add_state'])  ;
 
@@ -796,3 +808,6 @@ Route::post('/mme/update/prctn/{id}', [PrecautionController::class, 'update_prec
 Route::post('/precaution/delete/{id}', [PrecautionController::class, 'delete_precaution'])  ;
 
 Route::get('/precaution/send/{id}', [PrecautionController::class, 'send_precautions'])  ;
+
+Route::get('/prctn/send/pdf/{id} ', [PrecautionController::class, 'send_precautions_pdf'])  ;
+

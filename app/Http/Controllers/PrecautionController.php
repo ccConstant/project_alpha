@@ -72,6 +72,30 @@ class PrecautionController extends Controller
         return response()->json($prctn->id) ;
     }
 
+    /**
+     * Function call by LifeSheetPDF.vue with the route : /prctn/send/pdf/{$id} (get)
+     * Get all the prctn of all the usages linked of one mme whose id is passed in parameter
+     * The id parameter corresponds to the id of the mme from which we want the prctn linked to the usage linked 
+     * @return \Illuminate\Http\Response
+     */
+
+    public function send_precautions_pdf($id) {
+        $usages=MmeUsage::where('mmeTemp_id', '=', $id)->get() ; 
+        $container=array(); 
+        foreach($usages as $usage){
+            $prctns = Precaution::where('mmeUsage_id', '=', $usage->id)->get();
+            foreach ($prctns as $prctn) {
+                $obj=([
+                    'id' => $prctn->id,
+                    'prctn_description' => $prctn->prctn_description,
+                    'usg_id' => $usage->id,
+                ]) ; 
+                array_push($container,$obj);
+            }
+        }
+        return response()->json($container) ;
+    }
+
      /**
      * Function call by MmePrecautionForm.vue when the form is submitted for update with the route : /mme/update/prctn (post)
      * Update an enregistrement of precaution in the data base with the informations entered in the form 

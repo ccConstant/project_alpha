@@ -9,20 +9,22 @@
 			
 			<b-container class="user_table_container" fluid="xl">
 				<b-row>
-					<b-col class="right_title">Right</b-col>
+					<b-col class="right_title">Right </b-col>
 					<b-col class="right_name" v-for="(user, index) in pageOfItems" :key="index">
 						<a href="#" @click="openUserUpdateModal(user.user_pseudo,user.user_firstName,user.user_lastName,user.user_initials,user.id,user.user_formationEqDate,user.user_formationMmeDate)">{{user.user_lastName}} {{user.user_firstName}}</a>
 					</b-col>
 
-					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> User Management </b-col>  </b-row>
+					<b-row>
+					<div class="w-100 row_right_tab"></div>
+					<b-col class="right_section"> User Management </b-col>  
+					</b-row>
 					
 
 					<AccountManagmentElement right_title="Acces to user managment" key_letter="R" :users="pageOfItems" right_name="user_menuUserAcessRight"/>
 					<AccountManagmentElement right_title="Reset user password" key_letter="D" :users="pageOfItems" right_name="user_resetUserPasswordRight"/>
 
 					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> Data recording </b-col>  </b-row>
+					<b-col class="right_section"> Data recording </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Update data in draft or to be validated" key_letter="H" :users="pageOfItems" right_name="user_updateDataInDraftRight"/>
 					<AccountManagmentElement right_title="Validate descriptive LifeSheet data " key_letter="I" :users="pageOfItems" right_name="user_validateDescriptiveLifeSheetDataRight"/>
@@ -31,20 +33,20 @@
 					<AccountManagmentElement right_title="Validate other data" key_letter="G" :users="pageOfItems" right_name="user_validateOtherDataRight"/>
 					
 					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> Data Validation </b-col>  </b-row>
+					<b-col class="right_section"> Data Validation </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Make a quality Validation" key_letter="P" :users="pageOfItems" right_name="user_makeQualityValidationRight"/>
 					<AccountManagmentElement right_title="Make a technical Validation" key_letter="Q" :users="pageOfItems" right_name="user_makeTechnicalValidationRight"/>
 
 					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> Enum Management </b-col>  </b-row>
+					<b-col class="right_section"> Enum Management </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Update an enumeration" key_letter="M" :users="pageOfItems" right_name="user_updateEnumRight" />
 					<AccountManagmentElement right_title="Delete an enumeration" key_letter="N" :users="pageOfItems" right_name="user_deleteEnumRight"/>
 					<AccountManagmentElement right_title="Add an enumeration" key_letter="O" :users="pageOfItems" right_name="user_addEnumRight"/>
 
 					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> Data suppression management </b-col>  </b-row>
+					<b-col class="right_section"> Data suppression management </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Delete not validated data of a MME or equipment" key_letter="J" :users="pageOfItems" right_name="user_deleteDataNotValidatedLinkedToEqOrMmeRight"/>
 					<AccountManagmentElement right_title="Delete validated data of a MME or equipment" key_letter="K" :users="pageOfItems" right_name="user_deleteDataValidatedLinkedToEqOrMmeRight"/>
@@ -53,28 +55,27 @@
 					<AccountManagmentElement right_title="Reform data" key_letter="T" :users="pageOfItems" right_name="user_makeReformRight"/>
 
 					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> Dictionnary management </b-col>  </b-row>
+					<b-col class="right_section"> Dictionnary management </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Update information" key_letter="S" :users="pageOfItems" right_name="user_updateInformationRight"/>
 					
 
 					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> Formation management </b-col>  </b-row>
+					<b-col class="right_section"> Formation management </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" training_type="equipment" right_date='user_formationEqDate' key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
 					<AccountManagmentElement right_title="Person trained to general principles of MME managment"  :training="true" training_type="mme" right_date='user_formationMmeDate' key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
 	
 					<b-row><div class="w-100 row_right_tab"></div>
-					<b-col class="right_title"> Life Event Management </b-col>  </b-row>
+					<b-col class="right_section"> Life Event Management </b-col>  </b-row>
 					
 					<AccountManagmentElement right_title="state management" key_letter="V" :users="pageOfItems" right_name="user_declareNewStateRight"/>
 					<AccountManagmentElement right_title="Approve an equipment maintenance record" key_letter="W" :users="pageOfItems" right_name="user_makeEqRespValidationRight"/>
 					<AccountManagmentElement right_title="Make equipment operation validation" key_letter="A"  :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
 					<AccountManagmentElement right_title="Approve an mme verification or maintenance record" key_letter="X" :users="pageOfItems" right_name="user_makeMmeRespValidationRight"/>
 					<AccountManagmentElement right_title="Make mme verification validation" key_letter="Y" :users="pageOfItems" right_name="user_makeMmeOpValidationRight"/>
-
-					<div class="w-100 row_right_tab"></div>
 				</b-row>
+					<div class="w-100 row_right_tab"></div>
 			</b-container>
 			<b-modal :id="`modal-updateUser-${_uid}`" @hidden="resetModal" @ok="handleOkUpdate" title="User info">
 				<div>
@@ -338,18 +339,23 @@ export default {
 		.right_name{
 			border-top: solid 1px lightgray;
 			border-left: solid 1px lightgray;
-			
 			margin-left:-24px ;
 		}
 		.right_title{
 			border-top: solid 1px lightgray;
 			border-left: solid 1px lightgray;
-			
+		}
+		.right_section{
+			border-top: solid 1px lightgray;
+			border-left: solid 1px lightgray;
+			background: deepskyblue;
 		}
 		.row_right_tab{
 			border: solid 1px lightgray;
 		
 		}
 	}
+	
+
 
 </style>

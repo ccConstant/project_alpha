@@ -18,6 +18,7 @@ use App\Models\Verification ;
 use App\Models\VerificationRealized ; 
 use App\Models\EnumVerificationRequiredSkill ; 
 use App\Models\Mme ; 
+use App\Models\EnumVerifAcceptanceAuthority;
 use Carbon\Carbon;
 
 class VerificationController extends Controller
@@ -42,8 +43,10 @@ class VerificationController extends Controller
                     'verif_nonComplianceLimit' => 'required|min:3|max:50',
                     'verif_protocol' => 'required|min:3|max:255',
                     'verif_symbolPeriodicity' => 'required',
+                    'verif_puttingIntoService' => 'required',
                 ],
                 [
+                    'verif_puttingIntoService.required' => 'You must enter if the verification is realized during the comissioning',
                     'verif_name.required' => 'You must enter a name for your verification',
                     'verif_name.min' => 'You must enter at least three characters ',
                     'verif_name.max' => 'You must enter a maximum of 100 characters',
@@ -77,6 +80,14 @@ class VerificationController extends Controller
                 return response()->json([
                     'errors' => [
                         'verif_requiredSkill' => ["You must choose a required skill"]
+                    ]
+                ], 429);
+            }
+            //verification about verif_verifAcceptanceAuthority, if no one value is selected we need to alert the user
+            if ($request->verif_verifAcceptanceAuthority=='' || $request->verif_verifAcceptanceAuthority==NULL ){
+                return response()->json([
+                    'errors' => [
+                        'verif_verifAcceptanceAuthority' => ["You must choose a verif acceptance authority"]
                     ]
                 ], 429);
             }
@@ -146,7 +157,14 @@ class VerificationController extends Controller
      * @return \Illuminate\Http\Response : the id of the new verification
      */
     public function add_verif(Request $request){
-        
+        //A verification is linked to its verifAcceptanceAuthority. So we need to find the id of the verifAcceptanceAuthority choosen by the user and write it in the attribute of the verification.
+        //But if no one verif acceptance authority is choosen by the user we define this id to NULL
+        // And if the verifAcceptanceAuthority choosen is find in the data base the NULL value will be replace by the id value
+        $verifAcceptanceAuthority_id=NULL ;
+        if ($request->verif_verifAcceptanceAuthority!=''){
+            $verifAcceptanceAuthority= EnumVerifAcceptanceAuthority::where('value', '=', $request->verif_verifAcceptanceAuthority)->first() ;
+            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ; 
+        }
         //A verification is linked to its required skill. So we need to find the id of the required skill choosen by the user and write it in the attribute of the verification.
         //But if no one required skill is choosen by the user we define this id to NULL
         // And if the required skill choosen is find in the data base the NULL value will be replace by the id value
@@ -207,13 +225,15 @@ class VerificationController extends Controller
             'verif_nextDate' => $nextDate,
             'verif_validate' => $request->verif_validate,
             'enumRequiredSkill_id' => $requiredSkill_id,
+            'enumVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
+            'verif_puttingIntoService' => $request->verif_puttingIntoService,
         ]) ; 
-        
+    
         $verif_id=$verif->id;
         if ($mostRecentlyMmeTmp!=NULL){
              //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add verif
-            if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlymmeTmp->mmeTemp_validate=="validated"){
+            if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
                 
                 //We need to increase the number of mme temp linked to the mme
                 $version_mme=$mme->mme_nbrVersion+1 ; 
@@ -231,7 +251,7 @@ class VerificationController extends Controller
                 ]);
             }
         }
-        return response()->json($verif_id) ; 
+        //return response()->json($verif_id) ; 
     }
 
 
@@ -241,7 +261,14 @@ class VerificationController extends Controller
      * The id parameter correspond to the id of the verification we want to update
      * */
     public function update_verif(Request $request, $id){
-        
+        //A verification is linked to its verifAcceptanceAuthority. So we need to find the id of the verifAcceptanceAuthority choosen by the user and write it in the attribute of the verification.
+        //But if no one verif acceptance authority is choosen by the user we define this id to NULL
+        // And if the verifAcceptanceAuthority choosen is find in the data base the NULL value will be replace by the id value
+        $verifAcceptanceAuthority_id=NULL ;
+        if ($request->verif_verifAcceptanceAuthority!=''){
+            $verifAcceptanceAuthority= EnumVerifAcceptanceAuthority::where('value', '=', $request->verif_verifAcceptanceAuthority)->first() ;
+            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ; 
+        }
         //A verification is linked to its required skill. So we need to find the id of the required skill choosen by the user and write it in the attribute of the verification.
         //But if no one required skill is choosen by the user we define this id to NULL
         // And if the required skill choosen is find in the data base the NULL value will be replace by the id value
@@ -323,6 +350,8 @@ class VerificationController extends Controller
                 'verif_validate' => $request->verif_validate,
                 'enumRequiredSkill_id' => $requiredSkill_id,
                 'mmeTemp_id' => $mostRecentlyMmeTmp->id,
+                'enumVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
+                'verif_puttingIntoService' => $request->verif_puttingIntoService,
             ]) ;
 
         }
@@ -346,6 +375,11 @@ class VerificationController extends Controller
                 $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
                 $requiredSkill=$requiredSkillEnum->value ; 
             }
+            $verifAcceptanceAuthority = NULL ;
+            if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
+                $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id)->first() ;
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+            }
 
             $obj=([
                 "id" => $verif->id,
@@ -356,8 +390,10 @@ class VerificationController extends Controller
                 "Protocol" => $verif->verif_protocol,
                 'Name' => $verif->verif_name,
                 'ExpectedResult' => $verif->verif_expectedResult,
+                'VerificationAcceptanceAuthoritiy' => $verifAcceptanceAuthority,
                 'RequiredSkill' => $requiredSkill,
                 'NonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                'PuttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
             ]);
             array_push($container,$obj);
        }
@@ -383,6 +419,12 @@ class VerificationController extends Controller
                 $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
                 $requiredSkill=$requiredSkillEnum->value ; 
             }
+
+            $verifAcceptanceAuthority = NULL ;
+            if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
+                $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id) ;
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+            }
             $obj=([
                 "id" => $verif->id,
                 "verif_number" => (string)$verif->verif_number,
@@ -397,7 +439,9 @@ class VerificationController extends Controller
                 'verif_expectedResult' => $verif->verif_expectedResult,
                 'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
                 'verif_requiredSkill' => $requiredSkill,
+                'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
                 'verif_validate' => $verif->verif_validate,
+                'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
             ]);
             array_push($container,$obj);
        }
@@ -419,6 +463,12 @@ class VerificationController extends Controller
             $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
             $requiredSkill=$requiredSkillEnum->value ; 
         }
+
+        $verifAcceptanceAuthority = NULL ;
+            if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
+                $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id)->first() ;
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+            }
         $obj=([
             "id" => $verif->id,
             "verif_number" => (string)$verif->verif_number,
@@ -433,7 +483,9 @@ class VerificationController extends Controller
             'verif_expectedResult' => $verif->verif_expectedResult,
             'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
             'verif_requiredSkill' => $requiredSkill,
+            'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
             'verif_validate' => $verif->verif_validate,
+            'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
             
         ]);
         array_push($container,$obj);
@@ -460,6 +512,12 @@ class VerificationController extends Controller
                 $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
                 $requiredSkill=$requiredSkillEnum->value ; 
             }
+
+            $verifAcceptanceAuthority = NULL ;
+            if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
+                $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id)->first() ;
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+            }
                 $obj=([
                     "id" => $verif->id,
                     "verif_number" => (string)$verif->verif_number,
@@ -474,7 +532,9 @@ class VerificationController extends Controller
                     'verif_expectedResult' => $verif->verif_expectedResult,
                     'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
                     'verif_requiredSkill' => $requiredSkill,
+                    'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
                     'verif_validate' => $verif->verif_validate,
+                    'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
                 ]);
                 array_push($container,$obj);
            }

@@ -75,7 +75,7 @@ export default {
           this.$refs.errorAlert.showAlert("You don't have the right");
           return;
         }
-        var consultUrl = (state_id) => `/state/verif/beforeReferenceOp/${state_id}`;
+        var consultUrl = (state_id) => `/state/verif/beforeReferenceCurOp/${state_id}`;
         axios.post(consultUrl(state_id),{
           eq_id:eq_id_to_send
         })

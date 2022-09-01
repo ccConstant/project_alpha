@@ -25,7 +25,7 @@ return new class extends Migration
             $table->id();
             $table->string('state_remarks') ;
             $table->date('state_startDate') ;
-            $table->enum('state_name', ['In_use', 'Waiting_to_be_in_use', 'Broken_down', 'Broken', 'Under_maintenance', 'Downgraded', 'Reform', 'Lost', 'Return_to_service_use', 'Waiting_for_referencing'])  ;  
+            $table->enum('state_name', ['Waiting_for_referencing', 'Waiting_for_installation','In_use', 'Under_maintenance', 'On_hold','Under_repair', 'Broken', 'Downgraded', 'Reformed', 'Lost'])  ;  
             $table->date('state_endDate') ->nullable() ; 
             $table->boolean('state_isOk') ->nullable(); 
             $table->enum('state_validate', ['drafted', 'to_be_validated', 'validated']) ;

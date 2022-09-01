@@ -17,6 +17,8 @@ use App\Models\File;
 use App\Models\MmeUsage;
 use App\Models\Verification;
 use App\Models\MmeTemp;
+use App\Models\EquipmentTemp;
+use App\Models\Equipment;
 use App\Models\MmeState;
 use Carbon\Carbon;
 
@@ -73,16 +75,31 @@ class MmeController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function send_mme_not_linked(){
+        //$mmes=DB::select(DB::raw('SELECT DISTINCT mme_internalReference FROM mmes WHERE equipmentTemp_id LIKE NULL'));
         $mmes= Mme::where('equipmentTemp_id', '=', NULL)->get() ;
         $container=array() ; 
         foreach($mmes as $mme){
             $obj=([
-                'id' => $mme->id,
-                'mme_internalReference' => $mme->mme_internalReference,
+                'value' => $mme->mme_internalReference,
             ]) ; 
             array_push($container,$obj);
         }
         return response()->json($container) ;
+    }
+
+    /**
+     * Function call by ?? with the route : /mme/eq_linked/{id} (get)
+     * Get the internal reference of the equipment in which the mme is linked  
+     * @return \Illuminate\Http\Response
+     */
+    public function send_eq_linked_mme($id){
+        $mme= Mme::findOrFail($id);
+        if ($mme->equipmentTemp_id!=NULL){
+            $eqTemp=EquipmentTemp::findOrFail($mme->equipmentTemp_id) ; 
+            $eq=Equipment::findOrFail($eqTemp->equipment_id);
+            return response()->json($eq->eq_internalReference) ;
+        }
+        return response()->json(NULL);
     }
 
     /**
@@ -91,8 +108,8 @@ class MmeController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function link_mme_to_equipment(Request $request, $id){
-        $mme=Mme::findOrFail($id) ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        $mme=Mme::where('mme_internalReference','=', $request->mme_internalReference) ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $mme->update([
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
         ]);
@@ -145,6 +162,7 @@ class MmeController extends Controller{
             'mme_remarks'  => $remarks,
             'mme_set'  => $mme->mme_set,
             'mme_validate' => $validate,
+            'mme_version' => $mostRecentlyMmeTmp->mmeTemp_version,
         ]);
     }
 
@@ -160,6 +178,9 @@ class MmeController extends Controller{
         $mmes = Mme::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
         $container=array() ; 
         foreach ($mmes as $mme) {
+            $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->latest()->first();
+            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ; 
+            $remarks=$mostRecentlyMmeTmp->mmeTemp_remarks ;
             $obj=([
                 'id' => $mme->id,
                 'mme_internalReference' => $mme->mme_internalReference,
@@ -394,12 +415,12 @@ class MmeController extends Controller{
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
             'state_isOk' => true,
-            'state_validate' => "drafted",
+            'state_validate' => "validated",
             'state_name' => "Waiting_for_referencing"
         ]) ; 
         
         $newState->mme_temps()->attach($new_mmeTemp);
-        return response()->json($mme_id) ; 
+        return response()->json($mme->id) ; 
     }
 
 
@@ -639,35 +660,17 @@ class MmeController extends Controller{
     public function delete_mme($id){
         $mme=Mme::findOrFail($id) ; 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
-
-        $states=$mostRecentlyMmeTmp->states;
-        $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
-        foreach($states as $state){
-            $date=$state->created_at ; 
-            $date2=$mostRecentlyState->created_at;
-            if ($date>=$date2){
-                    $mostRecentlyState=$state ; 
-            }
+        $mme->update([
+            'equipmentTemp_id' => null,
+        ]);
+        $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        foreach ($files as $file){
+            $file->delete() ;
         }
 
-        if ($mostRecentlyState->state_name=="Reform"){
-            $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
-            foreach ($files as $file){
-                $file->delete() ;
-            }
-
-            $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
-            foreach ($usages as $usage){
-                $usage->delete() ;
-            }
-
-        }else{
-            return response()->json([
-                'errors' => [
-                    'delete' => ["You can't delete a mme that isn't in reform state"]
-                ]
-            ], 429);
-
+        $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        foreach ($usages as $usage){
+            $usage->delete() ;
         }
     }
 

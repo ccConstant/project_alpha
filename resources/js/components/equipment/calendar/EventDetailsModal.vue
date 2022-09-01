@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-modal id="modal-event_details" @hidden="resetModal" title="Details" hide-footer>
+             <ErrorAlert ref="errorAlert"/>
             <div>
                 <div v-for="option in prvMtnOps" :key="option.id">
                     <div>
@@ -29,12 +30,18 @@
 </template>
 
 <script>
+import ErrorAlert from '../../alert/ErrorAlert.vue'
+
 
 export default {
+    components:{
+        ErrorAlert,
+    },
     props:{
         prvMtnOps:{
             type:Array
         }
+        
     },
     data(){
         return{
@@ -53,7 +60,7 @@ export default {
             this.$refs.errorAlert.showAlert("You don't have the right");
             
             }
-            var consultUrl = (state_id) => `/state/verif/beforeReferenceOp/${state_id}`;
+            var consultUrl = (state_id) => `/state/verif/beforeReferencePrvOp/${state_id}`;
             axios.post(consultUrl(state_id),{
                 eq_id:eq_id
             })

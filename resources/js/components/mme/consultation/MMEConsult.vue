@@ -7,6 +7,9 @@
             <ErrorAlert ref="errorAlert"/>
             <SuccesAlert ref="successAlert"/>
             <h1>MME Consultation</h1>
+            <div v-if="mme_eq.length>0">
+                <p class="mme_linked"> The MME is linked to the equipment: {{this.mme_eq}}</p>
+            </div>
             <ValidationButton @ValidatePressed="Validate" :mme_id="mme_id" :validationMethod="validationMethod" :Errors="errors"/>
             <div class="accordion">
                 <div class="accordion-item">
@@ -92,7 +95,8 @@ export default {
             mme_usages:null,
             loaded:false,
             validationMethod:this.$route.query.method,
-            errors:[]
+            errors:[],
+            mme_eq:null,
         }
     },
     created(){
@@ -101,6 +105,16 @@ export default {
         }else if(this.validationMethod=='quality' && this.$userId.user_makeQualityValidationRight!=true){
             this.$router.replace({ name: "url_mme_list"})
         }
+
+         var consultUrl = (id) => `/mme/eq_linked/${id}`;
+        axios.get(consultUrl(this.mme_id))
+            .then (response => {
+                this.mme_eq=response.data;
+                console.log(response.data)
+                })
+            .catch(error => console.log(error));
+
+
         var consultUrl = (id) => `/mme/${id}`;
         axios.get(consultUrl(this.mme_id))
             .then (response => {
@@ -118,6 +132,8 @@ export default {
         var consultUrl = (id) => `/verifs/send/${id}`;
             axios.get(consultUrl(this.mme_id))
                 .then (response=> {
+                    console.log("hello")
+                    console.log(response.data)
                     this.mme_verifs=response.data
                 })
                 .catch(error => console.log(error)) ;
@@ -180,13 +196,23 @@ export default {
         display: block;
         margin : auto;
         margin-bottom: 15px;
-    }
+    };
 
     .mme_consultation{
         h1{
             text-align: center;
         }
-    }
+    };
+
+    .mme_linked{
+        font-size : 18px;
+        font-style: italic;
+        color : deepskyblue;
+
+
+    };
+
+
 
 
 

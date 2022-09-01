@@ -118,15 +118,16 @@ export default {
             state_validate:'',
             state_isOk:null,
             enum_state_name :[
-                {value:"Waiting_to_be_in_use"},
+                {value:"Waiting_for_referencing"},
+                {value:"Waiting_for_installation"},
                 {value:"In_use"},
-                {value:"Broken_down"},
+                {value:"Under_maintenance"},
+                {value:"On_hold"},
+                {value:"Under_repair"},
                 {value:"Broken"},
                 {value:"Downgraded"},
-                {value:"Reform"},
+                {value:"Reformed"},
                 {value:"Lost"},
-                {value:"Return_to_service_use"},
-                {value:"Waiting_for_referencing"},
             ],
             isOkOptions :[
                 {id: 'Yes', value:true},
@@ -176,7 +177,7 @@ export default {
                     reason:'add'
                 })
                 .then(response =>{
-                    
+                        console.log(response.data)
                         this.errors={}
                         axios.post('/equipment/add/state',{
                             state_name:this.state_name,

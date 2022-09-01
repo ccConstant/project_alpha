@@ -10,10 +10,12 @@
                 <div v-if="isInConsultedMod==true && this.verif_number!==null || this.modifMod==true && this.verif_number!==null">
                     <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.verif_number" name="verif_number" label="Number :" :stepOfInput="1" v-model="verif_number" isDisabled />
                 </div>
+                <RadioGroupForm @clearRadioError="clearRadioError" label="Does the verification is realized during putting into service? :" :options="existOption" :Errors="errors.verif_puttingIntoService"  :checkedOption="this.verif_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="verif_puttingIntoService"/>
                 <InputTextForm  inputClassName="form-control w-50" :info_text="infos_verif[0].info_value" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[1].info_value" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[2].info_value" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
                 <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[3].info_value" selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill"/>
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[10].info_value" selectClassName="form-select w-50"  name="verif_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.verif_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.verif_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_verifAcceptanceAuthority"/>
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control " :info_text="infos_verif[4].info_value" :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
                     <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[5].info_value"  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
@@ -36,7 +38,7 @@
                     </div>
                     <div v-else-if="this.verif_id!==null && reformMod==false ">
                         <div v-if="verif_reformDate!=null" >
-                            <p>Reform at {{verif_reformDate}}</p>
+                            <p>Reformed at {{verif_reformDate}}</p>
                         </div>
                         <div v-else>
                             <SaveButtonForm  @add="addMmeVerif" @update="updateMmeVerif" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="verif_validate"/>
@@ -64,10 +66,12 @@ import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import InputNumberForm from '../../input/InputNumberForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import ReformComponentButton from '../../button/ReformComponentButton.vue'
+import RadioGroupForm from '../../input/RadioGroupForm.vue'
 export default {
     /*--------Declartion of the others Components:--------*/
     components : {
         InputSelectForm,
+        RadioGroupForm,
         InputTextForm,
         SaveButtonForm,
         InputTextAreaForm,
@@ -77,6 +81,9 @@ export default {
         ErrorAlert
     },
     props:{
+        verifAcceptanceAuthority:{
+            type:String
+        },
         number:{
             type:String,
             default:null
@@ -137,13 +144,19 @@ export default {
         reformMod:{
             type:Boolean,
             default:false
+        },
+        puttingIntoService:{
+            type:Boolean,
+            default:false
         }
 
     },
     data(){
         return{
+            verif_verifAcceptanceAuthority:this.verifAcceptanceAuthority,
             verif_number:this.number,
             verif_name:this.name,
+            verif_puttingIntoService:this.puttingIntoService,
             verif_expectedResult:this.expectedResult,
             verif_nonComplianceLimit:this.nonComplianceLimit,
             verif_description:this.description,
@@ -163,6 +176,11 @@ export default {
                 {value:'D'},
                 {value:'H'},
             ],
+            existOption :[
+                {id: 'Yes', value:true},
+                {id : 'No', value:false}
+            ],
+            enum_verifAcceptanceAuthority: [],
             enum_requiredSkill:[],
             errors:{},
             addSucces:false,
@@ -181,7 +199,12 @@ export default {
                 this.enum_requiredSkill=response.data;
             } ) 
             .catch(error => console.log(error)) ;
-
+        /*Ask for the controller different required skill  */
+        axios.get('/usage/enum/verifAcceptanceAuthority')
+            .then (response=>{
+                this.enum_verifAcceptanceAuthority=response.data;
+            } ) 
+            .catch(error => console.log(error)) ;
         axios.get('/info/send/verif')
             .then (response=> {
                 this.infos_verif=response.data;
@@ -216,7 +239,9 @@ export default {
                     verif_periodicity:parseInt(this.verif_periodicity),
                     verif_symbolPeriodicity:this.verif_symbolPeriodicity,
                     verif_protocol:this.verif_protocol,
+                    verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
                     verif_validate :savedAs,
+                    verif_puttingIntoService:this.verif_puttingIntoService,
                 })
                 .then(response =>{
                     console.log(this.verif_name)
@@ -234,6 +259,7 @@ export default {
                     Type, name, value, unit, validate option and id of the mme is sended to the controller*/
                     axios.post('/mme/add/verif',{
                         verif_name:this.verif_name,
+                        verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
                         verif_description:this.verif_description,
                         verif_expectedResult:this.verif_expectedResult,
                         verif_nonComplianceLimit:this.verif_nonComplianceLimit,
@@ -242,7 +268,8 @@ export default {
                         verif_requiredSkill:this.verif_requiredSkill,
                         verif_protocol:this.verif_protocol,
                         verif_validate :savedAs,
-                        mme_id:id
+                        mme_id:id,
+                        verif_puttingIntoService:this.verif_puttingIntoService,
                 
                     })
                     //If the preventive maintenance operation is added succesfuly
@@ -288,6 +315,8 @@ export default {
                     verif_symbolPeriodicity:this.verif_symbolPeriodicity,
                     verif_protocol:this.verif_protocol,
                     verif_validate :savedAs,
+                    verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
+                    verif_puttingIntoService:this.verif_puttingIntoService,
                 })
                 .then(response =>{
                     this.errors={};
@@ -305,7 +334,9 @@ export default {
                         verif_symbolPeriodicity:this.verif_symbolPeriodicity,
                         verif_protocol:this.verif_protocol,
                         verif_validate :savedAs,
-                        mme_id:this.mme_id_update
+                        mme_id:this.mme_id_update,
+                        verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
+                        verif_puttingIntoService:this.verif_puttingIntoService,
                     })
                     .then(response =>{this.verif_validate=savedAs;})
                     //If the controller sends errors we put it in the errors object 
@@ -317,6 +348,9 @@ export default {
         /*Clear all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
+        },
+         clearRadioError(){
+            delete this.errors["verif_puttingIntoService"]
         },
          //Function for deleting a preventive maintenance operation from the view and the database
         deleteComponent(){

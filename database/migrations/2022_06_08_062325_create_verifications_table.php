@@ -23,6 +23,7 @@ class CreateVerificationsTable extends Migration
     {
         Schema::create('verifications', function (Blueprint $table) {
             $table->id();
+            $table->boolean('verif_puttingIntoService')->nullable();
             $table->unsignedTinyInteger('verif_number')  ; 
             $table->string('verif_name')  ; 
             $table->string('verif_expectedResult') ->nullable(); 
@@ -34,6 +35,8 @@ class CreateVerificationsTable extends Migration
             $table->timestamp('verif_startDate') ; 
             $table->timestamp('verif_nextDate') ->nullable(); 
             $table->date('verif_reformDate') ->nullable() ; 
+            $table->unsignedBigInteger('enumVerifAcceptanceAuthority_id') ->nullable();
+            $table->foreign('enumVerifAcceptanceAuthority_id')->references('id')->on('enum_verif_acceptance_authorities') -> onDelete('restrict') ;
             $table->enum('verif_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->unsignedBigInteger('mmeTemp_id') ->nullable() ;
             $table->foreign('mmeTemp_id')->references('id')->on('mme_temps') ->onDelete('cascade')  ;

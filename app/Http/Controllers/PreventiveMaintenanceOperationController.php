@@ -27,8 +27,7 @@ class PreventiveMaintenanceOperationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_prvMtnOp(Request $request){
-
-        //-----CASE prvMtnOp->validate=validated----//
+                //-----CASE prvMtnOp->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his preventive maintenance operation, so he must enter all the attributes
         if ($request->prvMtnOp_validate=='validated'){
             $this->validate(
@@ -38,6 +37,7 @@ class PreventiveMaintenanceOperationController extends Controller
                     'prvMtnOp_periodicity' => 'required|min:1|max:4',
                     'prvMtnOp_protocol' => 'required|min:3',
                     'prvMtnOp_symbolPeriodicity' => 'required',
+                    'prvMtnOp_puttingIntoService' => 'required', 
                 ],
                 [
                     'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
@@ -157,6 +157,7 @@ class PreventiveMaintenanceOperationController extends Controller
             'prvMtnOp_startDate' => Carbon::now('Europe/Paris'),
             'prvMtnOp_nextDate' => $nextDate,
             'prvMtnOp_validate' => $request->prvMtnOp_validate,
+            'prvMtnOp_puttingIntoService' => $request->prvMtnOp_puttingIntoService, 
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
         ]) ; 
             
@@ -245,19 +246,18 @@ class PreventiveMaintenanceOperationController extends Controller
                  if ($request->prvMtnOp_symbolPeriodicity=='H'){
                     $nextDate->addHours($request->prvMtnOp_periodicity) ; 
                 }
-
-                //return response()->json($nextDate) ;
                  $oldPrvMtnOp->update([
                     'prvMtnOp_nextDate' => $nextDate,
                 ]);
             }
-            
+            //return response()->json($request->prvMtnOp_puttingIntoService);
             $oldPrvMtnOp->update([
                 'prvMtnOp_description' => $request->prvMtnOp_description,
                 'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
                 'prvMtnOp_symbolPeriodicity' => $request->prvMtnOp_symbolPeriodicity,
                 'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
                 'prvMtnOp_validate' => $request->prvMtnOp_validate,
+                'prvMtnOp_puttingIntoService' => $request->prvMtnOp_puttingIntoService,
             ]) ;
 
         }
@@ -288,7 +288,6 @@ class PreventiveMaintenanceOperationController extends Controller
                 "Symbol" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
                 "Protocol" => $prvMtnOp->prvMtnOp_protocol,
                 "Risk" => $riskExist,
-                
             ]);
             array_push($container,$obj);
        }
@@ -319,6 +318,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
                 "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
                 "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
+                "prvMtnOp_puttingIntoService" => (boolean)$prvMtnOp->prvMtnOp_puttingIntoService,
                 
             ]);
             array_push($container,$obj);
@@ -347,6 +347,7 @@ class PreventiveMaintenanceOperationController extends Controller
             "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
             "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
             "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
+            "prvMtnOp_puttingIntoService" => (boolean)$prvMtnOp->prvMtnOp_puttingIntoService,
             
         ]);
         array_push($container,$obj);
@@ -362,7 +363,7 @@ class PreventiveMaintenanceOperationController extends Controller
     public function send_prvMtnOp_from_eq_revisionTimeLimitPassed($id) {
         $container=array() ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ; 
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
@@ -390,7 +391,7 @@ class PreventiveMaintenanceOperationController extends Controller
     public function send_prvMtnOp_from_eq_revisionDatePassed($id) {
         $container=array() ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ; 
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
@@ -418,7 +419,7 @@ class PreventiveMaintenanceOperationController extends Controller
     public function send_prvMtnOp_from_eq_validated($id) {
         $container=array() ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ; 
 
        foreach ($prvMtnOps as $prvMtnOp) {
            if ($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL){

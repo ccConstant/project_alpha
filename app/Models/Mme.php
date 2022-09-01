@@ -13,6 +13,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\MmeState;
 
 class Mme extends Model
 {
@@ -27,8 +28,8 @@ class Mme extends Model
     }
 
     //Define the relation between an mme and the state from which it originates (if it exist) 
-    public function state(){
-        return $this->belongsTo(State::class, 'state_id') ; 
+    public function mme_state(){
+        return $this->belongsTo(MmeState::class, 'state_id') ; 
     }
 
      //Define the relation between an equipment_temp and its mmes : a mme can correspond to only one mme

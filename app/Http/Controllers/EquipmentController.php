@@ -22,6 +22,7 @@ use App\Models\Dimension;
 use App\Models\Risk;
 use App\Models\SpecialProcess;
 use App\Models\Usage;
+use App\Models\User;
 use App\Models\EnumEquipmentMassUnit ;
 use App\Models\EnumEquipmentType ;
 use App\Http\Controllers\StateController ; 
@@ -127,12 +128,29 @@ class EquipmentController extends Controller{
             if ($mostRecentlyEqTmp->enumType_id!=NULL){
                 $type = $mostRecentlyEqTmp->enumEquipmentType->value ;
             }
+
+            $technicalVerifier_firstName=NULL;
+            $technicalVerifier_lastName=NULL;
+            $qualityVerifier_firstName=NULL;
+            $qualityVerifier_lastName=NULL;
+
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=NULL){
+                $technicalVerifier=User::findOrFail($mostRecentlyEqTmp->technicalVerifier_id) ; 
+                $technicalVerifier_firstName=$technicalVerifier->user_firstName;
+                $technicalVerifier_lastName=$technicalVerifier->user_lastName;
+            }
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL){
+                $qualityVerifier=User::findOrFail($mostRecentlyEqTmp->qualityVerifier_id) ; 
+                $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
+                $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+            }
         }
         return response()->json([
             'eq_internalReference' => $equipment->eq_internalReference,
             'eq_externalReference' => $equipment->eq_externalReference,
             'eq_name' => $equipment->eq_name,
             'eq_type'=> $type,
+            'eq_version' => $mostRecentlyEqTmp->eqTemp_version,
             'eq_serialNumber' => $equipment->eq_serialNumber,
             'eq_constructor'  => $equipment->eq_constructor,
             'eq_mass'  => (string)$mass,
@@ -142,6 +160,10 @@ class EquipmentController extends Controller{
             'eq_mobility'=> (boolean)$mobility,
             'eq_validate' => $validate,
             'eq_lifeSheetCreated' => $lifeSheetCreated,
+            'eq_technicalVerifier_firstName' => $technicalVerifier_firstName,
+            'eq_technicalVerifier_lastName' => $technicalVerifier_lastName,
+            'eq_qualityVerifier_firstName' => $qualityVerifier_firstName,
+            'eq_qualityVerifier_lastName' => $qualityVerifier_lastName,
         ]);
     }
 
@@ -420,7 +442,7 @@ class EquipmentController extends Controller{
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
             'state_isOk' => true,
-            'state_validate' => "drafted",
+            'state_validate' => "validated",
             'state_name' => "Waiting_for_referencing"
         ]) ; 
         
@@ -524,7 +546,7 @@ class EquipmentController extends Controller{
             $containerOp=array() ;
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
-                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ; 
+                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ; 
                 foreach( $prvMtnOps as $prvMtnOp){
                     $opMtn=([
                         "id" => $prvMtnOp->id,
@@ -579,7 +601,7 @@ class EquipmentController extends Controller{
             $containerOp=array() ;
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
-                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ;  
+                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;  
                 $today=Carbon::now() ;
                 foreach( $prvMtnOps as $prvMtnOp){
                     if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $prvMtnOp->prvMtnOp_nextDate<$today ){
@@ -639,7 +661,7 @@ class EquipmentController extends Controller{
             $containerOp=array() ;
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
-                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->get() ;    
+                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;    
                 $today=Carbon::now('Europe/London') ;
                 foreach( $prvMtnOps as $prvMtnOp){
                     $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ; 

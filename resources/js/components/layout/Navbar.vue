@@ -85,6 +85,12 @@ export default {
 </script>
 
 <style>
+	/*.navbar{
+		width:1042px;
+		height:60px;
+		position:fixed;
+	}*/
+	
 
 </style>
 

@@ -91,7 +91,6 @@ const router = new VueRouter({
         path:'/equipment/lifesheet_pdf/:id(\\d+)',
         name: 'url_lifesheet_pdf',
         component:require('./components/equipment/consultation/LifeSheetPDF.vue').default
-
     },{
         path:'/equipment/reform/:id(\\d+)',
         name: 'url_eq_reform',
@@ -173,7 +172,10 @@ const router = new VueRouter({
         path:'/mme/maintenance/calendar',
         name: 'url_mme_maintenance_calendar',
         component:require('./components/mme/calendar/MMEMaintenanceCalendar.vue').default
-
+    },{
+        path:'/mme/lifesheet_pdf/:id(\\d+)',
+        name: 'mme_url_lifesheet_pdf',
+        component:require('./components/mme/consultation/LifeSheetPDFMME.vue').default
     },{
         path:'*',
     }]

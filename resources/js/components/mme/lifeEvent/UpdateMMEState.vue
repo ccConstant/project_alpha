@@ -30,8 +30,8 @@
                     <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate" />
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate" />
                 </div>
-                <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" /> 
-                <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addMmeState" @update="updateMmeState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
+                <RadioGroupForm label="is Ok?:" :options="isOkOptions"  :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" /> 
+                <SaveButtonForm :is_state="true" :Errors="errors.mme_delete" v-if="this.addSucces==false" @add="addMmeState" @update="updateMmeState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
 
 
@@ -41,7 +41,7 @@
                         <MmeIdForm :internalReference="mme_idCard.mme_internalReference" :externalReference="mme_idCard.mme_externalReference"
                             :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor" 
                             :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
-                            consultMod/>
+                            consultMod />
                     </div>
                     <div v-else>
                         <RadioGroupForm label="Do you want to reference a new mme ?:" :options="radioOption" v-model="new_mme"/>
@@ -51,19 +51,6 @@
                         :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"/>
                     </div>
                 </div>
-            </div>
-            <div v-if="state_name=='Reform' && isInModifMod==true && isInConsultMod==false">
-
-                <div v-if="deleteEqOrMmeRight==true">
-                    <button type="button" class="btn btn-danger" @click="warningDelete()">Delete the MME</button>
-                </div>
-                <div v-else>
-                    <b-button disabled variant="primary">Delete the MME</b-button> 
-                    <p class="enum_add_right_red"> You dont have the right to delete the MME.</p>
-                </div>
-                <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteMME()"  >
-                    <p class="my-4">Are you sur you want to delete </p>
-                </b-modal>
             </div>
 
         </div>
@@ -117,18 +104,16 @@ export default {
             state_validate:'',
             state_isOk:null,
             enum_state_name :[
-                {value:"In_use"},
-                {value:"Waiting_to_be_in_use"},
-                {value:"Broken_down"},
-                {value:"Broken"},
-                {value:"Under_verification"},
-                {value:"Under_reparation"},
-                {value:"Downgraded"},
-                {value:"Reform"},
-                {value:"Lost"},
-                {value:"Return_to_service_use"},
                 {value:"Waiting_for_referencing"},
-                {value:"In_quarantine"}
+                {value:"Waiting_to_be_in_use"},
+                {value:"In_use"},
+                {value:"Under_verification"},
+                {value:"In_quarantine"},
+                {value:"Under_repair"},
+                {value:"Broken"},
+                {value:"Downgraded"},
+                {value:"Reformed"},
+                {value:"Lost"},
             ],
             isOkOptions :[
                 {id: 'Yes', value:true},
@@ -151,7 +136,6 @@ export default {
             new_mme:null,
             mme_idCard:[],
             infos_state:[],
-            deleteEqOrMmeRight:this.$userId.user_deleteEqOrMmeRight
             
 
         }
@@ -163,9 +147,8 @@ export default {
     },
     methods:{
         addMmeState(savedAs){
-            if(this.$userId.user_declareNewStateRight!=true){
-                this.$refs.errorAlert.showAlert("You don't have the right");
-                return;
+            if (this.state_name=="Reformed" || this.state_name=="Broken" || this.state_name=="Downgraded"){
+                
             }
             if(!this.addSucces){
                 axios.post('/mme_state/verif',{
@@ -175,7 +158,8 @@ export default {
                     state_isOk:this.state_isOk,
                     state_validate:savedAs,
                     mme_id:this.mme_id,
-                    reason:'add'
+                    reason:'add',
+                    user_id:this.$userId.id
                 })
                 .then(response =>{
                     
@@ -191,6 +175,7 @@ export default {
 
                         })
                         .then(response =>{
+                            console.log(response.data)
                                 this.$refs.succesAlert.showAlert("State changed succesfully");
                                 this.$router.replace({ name: "url_mme_life_event" })
                                 this.addSucces=true;
@@ -205,11 +190,7 @@ export default {
         },
         /*Sending to the controller all the information about the mme so that it can be updated to the database */ 
         updateMmeState(savedAs){
-                console.log(this.mme_id)
-                console.log(this.state_id)
-                console.log(savedAs)
-
-                axios.post('/mme_state/verif',{
+             axios.post('/mme_state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
                     state_startDate:this.selected_startDate,
@@ -254,15 +235,7 @@ export default {
         warningDelete(id,refernece){
             this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
         },
-        deleteMME(){
-            var consultUrl = (id) => `/mme/delete/${id}`;
-            axios.post(consultUrl(this.mme_id),{
-                user_deleteEqOrMmeRight:this.deleteEqOrMmeRight
-            })
-            .then(response =>{console.log("deleted")})
-            //If the controller sends errors we put it in the errors object 
-            .catch(error => {console.log(error.response.data.errors)});
-        },
+       
     },
     created(){
         /*Ask for the controller other mme sets */
@@ -280,7 +253,6 @@ export default {
             var UrlState = (id) => `/mme_state/send/${id}`;
             axios.get(UrlState(this.state_id))
                 .then (response=>{
-                    console.log(response.data)
                     this.state_name=response.data[0].state_name;
                     this.state_remarks=response.data[0].state_remarks;
                     this.selected_startDate=response.data[0].state_startDate;
@@ -300,7 +272,7 @@ export default {
                     }
 
                 })
-                .catch(error => console.log(error)) ;
+               .catch(error => this.errors=error.response.data.errors) ;
             
         }else{
             
