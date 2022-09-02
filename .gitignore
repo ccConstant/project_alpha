@@ -1,13 +1,4 @@
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
-.env
-.env.backup
-.phpunit.result.cache
-<<<<<<< HEAD
-docker-compose.override.yml
+
 =======
 >>>>>>> 7de7b0ce9cff7518d489a46daf1c8af73a284dd5
 Homes
