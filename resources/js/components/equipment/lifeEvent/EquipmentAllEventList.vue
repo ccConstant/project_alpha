@@ -4,11 +4,28 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" >
-            <h2>Life event List</h2>
             <b-button variant="primary" @click="generateReport" >Export PDF</b-button>
             <div class="container" id="page">
-                <div class="accordion all_event">
-                    <h1>{{eq_internalReference}}</h1>
+                <p>'</p>
+                <div class="top_infos">
+                    <div class=" equipement_pdf_logo ">
+                    <p class="text-primary" text-align="center"> ALPHA </p>
+                    </div>
+
+                    <div class="equipement_pdf_titre">
+                        <h2 id="equipement_life_event_titre">LIST OF REGISTERED LIFE EVENTS</h2>
+                    </div>
+
+                    <div class="equipement_pdf_index">
+                        <h2>{{eq_internalReference}}_LS-R_{{this.chaine}}</h2>
+                    </div>
+
+                    <div class="eq_internalReference_pdf">
+                        <p>Equipment internal reference:</p>
+                        <h5 class="text-primary">{{eq_internalReference}}</h5>
+                    </div>
+                </div>
+                <div class="accordion_all_event">
                     <div class="accordion-item" v-for="(list,index) in states " :key="index">
                         <h2 class="accordion-header" :id="'heading'+index">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+index" aria-expanded="true" :aria-controls="'collapse'+index">
@@ -23,8 +40,8 @@
                                     <h3>Recorded curative maintenance operation</h3>
                                     <li class="list-group-item" v-for="(curMtnOp,index) in list.curMtnOp " :key="index"  >
                                         <div>
-                                            Operation Numner : {{curMtnOp.curMtnOp_number}} <br>
-                                            Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
+                                            Operation Number : {{curMtnOp.curMtnOp_number}} <br>
+                                            Report Number : {{curMtnOp.curMtnOp_reportNumber}} <br>
                                             Description : {{curMtnOp.curMtnOp_description}} <br>
                                             Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
                                             End date : {{curMtnOp.curMtnOp_endDate}} <br>
@@ -55,10 +72,10 @@
                                     <h3>Recorded Preventive maintenance operation</h3>
                                     <li class="list-group-item" v-for="(prvMtnOpRlz,index) in list.prvMtnOpRlz " :key="index"  >
                                         <div>
-                                            Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
+                                            Operation Number : {{prvMtnOpRlz.prvMtnOp_number}} <br>
                                             Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
                                             Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
-                                            Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
+                                            Report Number : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
                                             Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
                                             End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
                                             Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}} <br>
@@ -82,6 +99,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="recordTemplateRefPdf">
+                <div class="table_recordTemplateRefPdf">
+                     <div class="index_recordTemplateRefPdf">
+                        Record Template Ref :  REC-IWE01
+                    </div>
+                    <div class="confidential_recordTemplateRefPdf">
+                        This document contains CONFIDENTIAL information
+                    </div>
+                </div>
+             </div>
             </div>
             
         </div>
@@ -98,6 +126,7 @@ export default {
             states:null,
             loaded:false,
             states_sort:null,
+            chaine:null,
             eq_internalReference:this.$route.query.internalReference,
         }
     },
@@ -124,13 +153,18 @@ export default {
                     bottom: 0,
                     left: 0,
                 },
-                output: 'jspdf-generate.pdf', 
+                output: this.eq_internalReference+'_LS-R_'+this.chaine+'.pdf', 
             });
+        },
+
+        Date(){
+            var date = new Date();
+            var month=date.getMonth()+1;
+            this.chaine=date.getFullYear()+'/'+month+'/'+date.getDate();
         }
         
     },
     created(){
-        console.log("coucou7")
         var UrlState = (id)=> `/states/send/${id}`;
         axios.get(UrlState(this.eq_id))
             .then (response=>{
@@ -174,6 +208,9 @@ export default {
             .catch(error => console.log(error)) ;
 
         
+    },
+    mounted(){
+        this.Date();
     }
 
 }
@@ -181,17 +218,108 @@ export default {
 
 
 <style lang="scss">
+    #page{
+        width:1329px;
+        font-size : 20px ;
+        .text-primary{
+            font-size : 25px ;
+        }
+
+        .recordTemplateRefPdf{
+            position: block;
+            width: 1200px;
+            margin-left:-100px;
+            
+
+            .table_recordTemplateRefPdf{
+                position:block;
+                left:-200px;
+                 width: 1120px;
+                margin-top:70px ;
+                margin-left:-100px;
+                .confidential_recordTemplateRefPdf{
+                    border: solid 1px black;
+                    background-color: lightgrey;
+                    text-align: center;
+                }
+                .index_recordTemplateRefPdf{
+                    background-color: lightgrey;
+                    border: solid 1px black;
+                    text-align: center;
+                }
+            }
+
+
+        }
+    }
+   .container{
+    display:block;
+    margin-top: 0px;
+   }
+    .top_infos{
+        margin-left:-70px;
+        .equipement_pdf_logo{
+            border: solid 0.5px black;
+            margin: auto;
+            position: absolute;
+            width: 200px;
+            height: 170px;
+            text-align:center;
+            //left:-100px;
+            
+            
+        }
+        .equipement_pdf_titre{
+            border: solid 0.5px black;
+            margin: auto;
+            position: absolute;
+            width: 642px;
+            top: 100px;
+            height: 87px;
+            text-align:center;
+        }
+        .equipement_life_event_titre{
+            text-align: center;
+            position: relative;
+        }
+        .equipement_pdf_index{
+            border: solid 0.5px black;
+            margin: auto;
+            position: absolute;
+            left: 942px;
+            top: 100px;
+            height: 86px;
+            width: 200px;
+            text-align:center
+        }
+        
+        .eq_internalReference_pdf{
+            border: solid 0.5px black;
+            margin: auto;
+            position: absolute;
+            left :942px;
+            top: 186px;
+            width: 200px;
+            height: 84px;
+            h5{
+                margin: 0 auto;
+                width: auto;
+            }
+            text-align:center;
+        }
+    }
+
     .all_curative_ope{
         margin-left:20px ;
     }
     .all_preventive_ope{
          margin-left:20px ;
     }
-    .all_event{
-        h1{
-            text-align: center;
-        }
+    .accordion_all_event{
+        display:block ;
+        margin-top : 200px;
     }
+
        
 
 </style>

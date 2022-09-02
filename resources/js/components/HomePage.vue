@@ -6,7 +6,7 @@
         <br><br><br><br><br><br><br><br><br><br><br>
         <br><br><br><br>
         <br>
-        <p> Software Version : 1.0.0  (last update 12 Jul 2022)</p>
+        <p> Software Version : 2.1.1  (last update 2 Sep 2022)</p>
 	</div>
 </template>
 

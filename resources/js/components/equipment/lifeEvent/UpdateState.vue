@@ -53,19 +53,6 @@
                     </div>
                 </div>
             </div>
-            <div v-if="state_name=='Reform' && isInModifMod==true && isInConsultMod==false">
-
-                <div v-if="deleteEqOrMmeRight==true">
-                    <button type="button" class="btn btn-danger" @click="warningDelete()">Delete the equipment</button>
-                </div>
-                <div v-else>
-                    <b-button disabled variant="primary">Delete the equipment</b-button> 
-                    <p class="enum_add_right_red"> You dont have the right to delete the equipment.</p>
-                </div>
-                <b-modal :id="`modal-deleteWarning-${_uid}`" @ok="deleteEquipment()"  >
-                    <p class="my-4">Are you sur you want to delete </p>
-                </b-modal>
-            </div>
 
         </div>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
@@ -150,7 +137,6 @@ export default {
             new_eq:null,
             eq_idCard:[],
             infos_state:[],
-            deleteEqOrMmeRight:this.$userId.user_deleteEqOrMmeRight
             
 
         }
@@ -166,6 +152,7 @@ export default {
                 this.$refs.errorAlert.showAlert("You don't have the right");
                 return;
             }
+            console.log(this.$userId.id)
             if(!this.addSucces){
                 axios.post('/state/verif',{
                     state_name:this.state_name,
@@ -174,7 +161,9 @@ export default {
                     state_isOk:this.state_isOk,
                     state_validate:savedAs,
                     eq_id:this.eq_id,
-                    reason:'add'
+                    reason:'add',
+                    user_id:this.$userId.id
+
                 })
                 .then(response =>{
                         console.log(response.data)
@@ -190,6 +179,7 @@ export default {
 
                         })
                         .then(response =>{
+                            console.log(response.data)
                                 this.addSucces=true;
                                 this.isInConsultMod=true;
                                 this.state_validate=savedAs
@@ -244,18 +234,6 @@ export default {
                 return false;
             }
             return true;
-        },
-        warningDelete(id,refernece){
-            this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
-        },
-        deleteEquipment(){
-            var consultUrl = (id) => `/equipment/delete/${id}`;
-            axios.post(consultUrl(this.eq_id),{
-                user_deleteEqOrMmeRight:this.deleteEqOrMmeRight
-            })
-            .then(response =>{console.log("deleted")})
-            //If the controller sends errors we put it in the errors object 
-            .catch(error => {console.log(error.response.data.errors)});
         },
     },
     created(){

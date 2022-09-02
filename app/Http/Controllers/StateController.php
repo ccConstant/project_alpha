@@ -20,6 +20,7 @@ use App\Models\Equipment ;
 use App\Models\PreventiveMaintenanceOperationRealized;
 use App\Models\PreventiveMaintenanceOperation;
 use App\Models\CurativeMaintenanceOperation;
+use App\Http\Controllers\EquipmentController ; 
 
 
 use Carbon\Carbon;
@@ -217,6 +218,15 @@ class StateController extends Controller
                         break;
 
                 }
+
+                $user=User::findOrFail($request->user_id);
+                if (!$user->user_deleteEqOrMmeRight && ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed")){
+                    return response()->json([
+                        'errors' => [
+                            'state_name' => ["You don't have the right to delete an equipment"]
+                        ]
+                    ], 429);
+                }
             }
         }
     }
@@ -267,11 +277,16 @@ class StateController extends Controller
             'state_name' => $request->state_name,
         ]) ; 
 
-        if ($request->state_name=="Reform"){
+        if ($request->state_name=="Reformed"){
             $state->update([
                 'reformedBy_id' => $request->enteredBy_id,
             ]);
         }
+
+        if ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed"){
+            $EquipmentController= new EquipmentController() ; 
+            $EquipmentController->delete_equipment($request->eq_id) ; 
+       }
         
         $state_id=$state->id;
         $id_eq=intval($request->eq_id) ; 
