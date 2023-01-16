@@ -20,17 +20,17 @@
                     </div>
                 </div>
                 <div v-if="state_id!==undefined || isInConsultMod==true">
-                    <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name" />
+                    <InputSelectForm selectClassName="form-select w-50" :info_text="infos_state[0].info_value" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name" />
                 </div>
                 <div v-else>
-                    <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name"  :selctedOption="state_name" v-model="state_name" />
+                    <InputSelectForm selectClassName="form-select w-50" :info_text="infos_state[0].info_value" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name"  :selctedOption="state_name" v-model="state_name" />
                 </div>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="state_remarks" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_state[1].info_value" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="state_remarks" />
                 <div class="input-group">
-                    <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate" />
+                    <InputTextForm  inputClassName="form-control" :info_text="infos_state[2].info_value" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate" />
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate" />
                 </div>
-                <RadioGroupForm label="is Ok?:" :options="isOkOptions"  :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" /> 
+                <RadioGroupForm label="is Ok?:" :info_text="infos_state[4].info_value" :options="isOkOptions"  :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" /> 
                 <SaveButtonForm :is_state="true" :Errors="errors.mme_delete" v-if="this.addSucces==false" @add="addMmeState" @update="updateMmeState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
 
@@ -282,12 +282,18 @@ export default {
                     console.log(response.data)
                     this.current_state=response.data[0].state_name;
                     this.current_startDate=moment(response.data[0].state_startDate).format('D MMM YYYY');
-                    this.loaded=true
 
                 })
                 .catch(error => console.log(error)) ;
 
         }
+
+        axios.get('/info/send/mme_state')
+            .then (response=> {
+                this.infos_state=response.data;
+                this.loaded=true;
+            }) 
+            .catch(error => console.log(error)) ;
     }
 }
 </script>

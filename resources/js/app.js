@@ -53,6 +53,11 @@ const router = new VueRouter({
         path:'/equipment/list',
         name: 'url_eq_list',
         component:require('./components/equipment/consultation/ListOfEquipment.vue').default
+    }, 
+    {
+        path:'/equipment/list/PDF',
+        name: 'url_eq_list_pdf',
+        component:require('./components/equipment/consultation/ListOfEquipmentPDF.vue').default
     },{
         path:'/enum',
         name: 'url_enum',
@@ -85,7 +90,7 @@ const router = new VueRouter({
     },{
         path:'/equipment/maintenance/calendar',
         name: 'url_maintenance_calendar',
-        component:require('./components/equipment/calendar/EquipmentMaintenanceCalendar.vue').default
+        component:require('./components/equipment/calendar/AnnualEquipmentCalendar.vue').default
 
     },{
         path:'/equipment/lifesheet_pdf/:id(\\d+)',

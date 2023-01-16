@@ -72,6 +72,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/equipment/list', function () {
         return view('welcome');
     });
+    Route::get('/equipment/list/PDF', function () {
+        return view('welcome');
+    });
 
     Route::get('/equipment/list/consult/{id}', function () {
         return view('welcome');
@@ -700,6 +703,8 @@ Route::get('/mme/mmes_not_linked', [MmeController::class, 'send_mme_not_linked']
 Route::get('/mme/eq_linked/{id}', [MmeController::class, 'send_eq_linked_mme'] ) ;
 
 Route::post('/mme/link_to_eq/{id}', [MmeController::class, 'link_mme_to_equipment'] ) ;
+
+Route::get('/mme/delete/link_to_eq/{id}', [MmeController::class, 'delete_link_mme_to_equipment'] ) ;
 
 Route::get('/mmes/same_set/{set}', [MmeController::class, 'send_mmes_same_set'])  ;
 

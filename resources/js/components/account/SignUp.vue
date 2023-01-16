@@ -14,6 +14,7 @@
                     <InputPasswordForm :Errors="errors.user_confirmation_password" v-model="user_confirmation_password" name="user_confirmation_password" label="Confirm password :" inputClassName="form-control " divClassName="password" :info_text="infos_person[6].info_value"/>
                 </form>
                 <button type="button" @click="create_account()" class="save btn btn-primary register_button ">Register</button>
+                  <div> You have already an account? <router-link :to="{name:'url_sign_in',params:{} }">Please Sign In</router-link></div>
 
             </div>
         </div>

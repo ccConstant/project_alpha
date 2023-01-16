@@ -52,6 +52,10 @@ export default {
             type:Boolean,
             default:false
         },
+        updateMod:{
+            type:Boolean,
+            default:false
+        },
         modifMod:{
             type:Boolean,
             default:false

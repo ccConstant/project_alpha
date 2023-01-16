@@ -23,7 +23,7 @@ class PreventiveMaintenanceOperation extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['prvMtnOp_number', 'prvMtnOp_description','prvMtnOp_periodicity','prvMtnOp_symbolPeriodicity', 'prvMtnOp_protocol', 'prvMtnOp_startDate', 'prvMtnOp_nextDate', 'prvMtnOp_reformDate', 'prvMtnOp_validate', 'prvMtnOp_puttingIntoService', 'equipmentTemp_id' ];
+    protected $fillable = ['prvMtnOp_number', 'prvMtnOp_description','prvMtnOp_periodicity','prvMtnOp_symbolPeriodicity', 'prvMtnOp_protocol', 'prvMtnOp_startDate', 'prvMtnOp_nextDate', 'prvMtnOp_reformDate', 'prvMtnOp_validate', 'prvMtnOp_puttingIntoService', 'prvMtnOp_preventiveOperation', 'equipmentTemp_id' ];
 
      //Define the relation between a preventive maintenance operation and its risks : a preventive maintenance operations has many risks
      public function risks(){

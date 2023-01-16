@@ -31,7 +31,8 @@
 			<p class="my-4">Your equipment has a validated life sheet, If you update your equipment you will have to 
 			revalidate </p>
 		</b-modal>
-
+		<div class="router-link"><router-link :to="{name:'url_eq_list_pdf',params:{} }"> <button class="btn btn-primary">GO TO PDF</button> </router-link></div>
+		
 	</div>
 
 </template>
@@ -149,5 +150,8 @@ export default {
 		a{
 		margin-right:50px;
 		}
+	}
+	.router-link{
+		margin-left : 700px;
 	}
 	</style>

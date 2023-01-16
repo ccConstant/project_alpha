@@ -3,9 +3,8 @@
         <div v-if="!reformMod">
             <div v-if="!modifMod">
                 <div v-if="!consultMod">
-
                     <div v-if="is_op_data==true">
-                        <div v-if="makeEqOpValidationRight==true" class="save_button_validated"  >
+                        <div v-if="makeEqOpValidationRight==true" class="save_button_validated">
                             <button class="save btn btn-primary" type="button"  value="drafted" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</button>
                             <button class="save btn btn-primary" type="button" value="to_be_validated" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >to be validated</button>
                             <button class="save btn btn-primary" type="button" value="validated" @click="$bvModal.show(`modal-validated-${_uid}`)" >validate</button>
@@ -86,26 +85,26 @@
                 <div v-if="savedAs=='validated' ">
                     <div v-if="this.lifesheet_created==true">
                         <div class="save_button_draft_tbv" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
-                            <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                            <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
-                            <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                            <button class="save btn btn-info" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                            <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                            <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                         </div>
                         <div v-else class="save_button_validated">
-                            <button class="save btn btn-primary" type="button"  disabled >save as draft</button>
-                            <button class="save btn btn-primary" type="button" disabled >to be validated</button>
-                            <button class="save btn btn-primary" type="button" disabled >validate</button>
+                            <button class="save btn btn-info" type="button"  disabled >save as draft</button>
+                            <button class="save btn btn-info" type="button" disabled >to be validated</button>
+                            <button class="save btn btn-info" type="button" disabled >validate</button>
                         </div>
                     </div>
                     <div v-else>
                         <div class="save_button_draft_tbv">
-                            <button class="save btn btn-primary" disabled type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                            <button class="save btn btn-primary" disabled type="button" value="to_be_validated" @click="update($event)" >to be validated</button>   
+                            <button class="save btn btn-info" disabled type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                            <button class="save btn btn-info" disabled type="button" value="to_be_validated" @click="update($event)" >to be validated</button>   
                         </div>
                         <div v-if="user_updateDataValidatedButNotSignedRight==true" class="save_button_validated"  >
-                            <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                            <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                         </div>
                         <div v-else class="save_button_validated">
-                            <button class="save btn btn-primary" type="button" disabled>validate</button>
+                            <button class="save btn btn-info" type="button" disabled>validate</button>
                         </div>
                     </div>
                 </div>
@@ -113,50 +112,50 @@
                     <div v-if="is_op_data!=true && is_state_data!=true">
                         <div v-if="this.lifesheet_created!=true">
                             <div class="save_button_draft_tbv" v-if="updateDataInDraftRight==true"  >
-                                <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                                <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                                <button class="save btn btn-info" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                                <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
                             </div>
                             <div class="save_button_draft_tbv" v-else>
-                                <button class="save btn btn-primary" type="button" disabled >save as draft</button>
-                                <button class="save btn btn-primary" type="button" disabled >to be validated</button>
+                                <button class="save btn btn-info" type="button" disabled >save as draft</button>
+                                <button class="save btn btn-warning" type="button" disabled >to be validated</button>
                             </div>
                             <div v-if="user_updateDataValidatedButNotSignedRight==true" class="save_button_validated"  >
-                                <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                                <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                             </div>
                             <div v-else class="save_button_validated">
-                                <button class="save btn btn-primary" type="button" disabled >validate</button>
+                                <button class="save btn btn-info" type="button" disabled >validate</button>
                             </div>
                         </div>
                         <div v-else-if="this.lifesheet_created==true">
-                            <div class="save_button_draft_tbv" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
-                                <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                                <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
-                                <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                            <div class="save_button_update" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
+                                <button class="save btn btn-info" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                                <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                                <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                             </div>
                             <div v-else class="save_button_validated">
-                                <button class="save btn btn-primary" type="button"  disabled >save as draft</button>
-                                <button class="save btn btn-primary" type="button" disabled >to be validated</button>
-                                <button class="save btn btn-primary" type="button" disabled >validate</button>
+                                <button class="save btn btn-info" type="button"  disabled >save as draft</button>
+                                <button class="save btn btn-info" type="button" disabled >to be validated</button>
+                                <button class="save btn btn-info" type="button" disabled >validate</button>
                             </div>
                         </div>
 
                     </div>
                     <div v-else-if="is_op_data==true">
                         <div v-if="makeEqOpValidationRight==true" class="save_button_validated"  >
-                            <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                            <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
-                            <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                            <button class="save btn btn-info" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                            <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                            <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                         </div>
                         <div v-else class="save_button_validated">
-                            <button class="save btn btn-primary" type="button" disabled >save as draft</button>
-                            <button class="save btn btn-primary" type="button" disabled>to be validated</button>
-                            <button class="save btn btn-primary" type="button" disabled >validate</button>
+                            <button class="save btn btn-info" type="button" disabled >save as draft</button>
+                            <button class="save btn btn-info" type="button" disabled>to be validated</button>
+                            <button class="save btn btn-info" type="button" disabled >validate</button>
                         </div>
                     </div>
                     <div v-else>
-                        <button class="save btn btn-primary" type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                        <button class="save btn btn-primary" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
-                        <button class="save btn btn-primary" type="button" value="validated" @click="update($event)" >validate</button>
+                        <button class="save btn btn-info" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                        <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
+                        <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                     </div>
 
                     
@@ -254,6 +253,12 @@ export default {
         }
         .save_button_validated{
             display: inline-block;
+        }
+        .save_button_update{
+            color:green;
+        }
+        .save_button_group{
+            color:orange;
         }
     };
     .error_savebutton{

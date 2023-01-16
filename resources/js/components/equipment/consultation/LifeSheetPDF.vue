@@ -1,11 +1,17 @@
+<!--
+* Filename : LifeSheetPDF.vue
+* Creation date : 6 Jul 2022
+* Update date : 9 Jan 2022
+* The document allows us to create the life sheet of an equipment and to export it in PDF.
+-->
+
 <template>
     <div v-if="loaded==true">
         <div id="page">
             <p>'</p>
-            <div class="top_infos">
+            <div class="eq_top_infos">
                 <div class=" equipement_pdf_logo ">
-                  <img :src="'${process.env.BASE_URL}images/logo.png'"  width="50" height="50" >
-                  <p class="text-primary" text-align="center"> ALPHA </p>
+                  <img src="/images/logo.png" alt="Alpha logo" class="logo" >
                 </div>
 
                 <div class="equipement_pdf_titre">
@@ -13,7 +19,7 @@
                 </div>
 
                 <div class="equipement_pdf_index">
-                    <h2>{{eq_idCard.eq_internalReference}}_LS-D_V{{eq_idCard.eq_version}} </h2>
+                    <h5>Version : {{eq_idCard.eq_internalReference}}_LS-D_V{{eq_idCard.eq_version}} </h5>
                 </div>
                 <div class="equipment_revued_by">
                     <p >Technical Review <b class="text-primary">{{ eq_idCard.eq_technicalVerifier_firstName}} {{eq_idCard.eq_technicalVerifier_lastName}} </b></p>
@@ -134,7 +140,7 @@
                     <p>CARACTERISTICS</p>
                 </div>
                 <div class="power_title_pdf">
-                    <p>Power supply :</p>
+                    <p class="caracteristic_name">Power supply :</p>
                         <div>
                             <div class="eq_power_pdf"  v-for="(power,index) in eq_powers " :key="index">
                                 <div class="eq_power_type_pdf" v-if="power.powers.length>0">
@@ -158,7 +164,7 @@
                     </div>
 
                     <div class="dimension_title_pdf">
-                    <p>Dimension(s):</p>
+                    <p class=caracteristic_name> Dimension(s) :</p>
                         <div>
                             <div class="eq_dimension_pdf"  v-for="(dimension,index) in eq_dimensions " :key="index">
                                 <div class="eq_dimension_type_pdf" v-if="dimension.dimensions.length>0">
@@ -263,6 +269,9 @@
                         <b-col cols="1" class="prvMtnOp_table_number">
                             N°
                         </b-col>
+                        <b-col cols="1" class="prvMtnOp_table_puttingIntoService">
+                            PIS?
+                        </b-col>
                         <b-col cols="4" class="prvMtnOp_table_description">
                             Type of operations to be carried out
                         </b-col>
@@ -274,12 +283,18 @@
                         </b-col >
                         <b-col cols="1" class="prvMtnOp_table_risk">
                             Assoc Risk identified?
-                        </b-col>                    
+                        </b-col>   
+                        <b-col cols="1" class="prvMtnOp_table_reformed">
+                            Reformed?
+                        </b-col>                   
                     </b-row>
                     <div v-for="(prvMtnOp,index) in eq_prvMtnOp " :key="index">
                         <b-row>
                             <b-col cols="1" class="prvMtnOp_table_number">
                                <p class="text-primary"> {{prvMtnOp.Number}} </p>
+                            </b-col>
+                            <b-col cols="1" class="prvMtnOp_table_puttingIntoService">
+                                <p class="text-primary">{{prvMtnOp.PuttingIntoService}}</p>
                             </b-col>
                             <b-col cols="4" class="prvMtnOp_table_description">
                                 <p class="text-primary">{{prvMtnOp.Description}}</p>
@@ -293,7 +308,10 @@
                             </b-col>
                             <b-col  cols="1" class="prvMtnOp_table_risk">
                                 <p class="text-primary">{{prvMtnOp.Risk}}</p>
-                            </b-col>                    
+                            </b-col>    
+                            <b-col  cols="1" class="prvMtnOp_table_reformed">
+                                <p class="text-primary">{{prvMtnOp.Reformed}}</p>
+                            </b-col>                  
                         </b-row>
                     </div>
                 </div>
@@ -301,31 +319,31 @@
 
 
 
-            <div class="eq_risk_infos_pdf">
-                <div class="title_risk_pdf">
+            <div class="eq_risk_prvMtnOp_infos_pdf">
+                <div class="title_risk_prvMtnOp_pdf">
                     Risk related to the preventive maintenance operation
                 </div>
-                <div class="risk_table">
+                <div class="risk_prvMtnOp_table">
                     <b-row>
-                        <b-col cols="1" class="risk_table_number">
+                        <b-col cols="1" class="risk_prvMtnOp_table_number">
                             related mtn op N°
                         </b-col>
-                        <b-col cols="6" class="risk_table_description">
+                        <b-col cols="6" class="risk_prvMtnOp_table_description">
                             Inventory of possible effects on product, manufacturing environment or safety following periodic OP maintenance
                         </b-col>
-                        <b-col cols="4"  class="risk_table_wayOfControl">
+                        <b-col cols="4"  class="risk_prvMtnOp_table_wayOfControl">
                             Way of control
                         </b-col>              
                     </b-row>
                     <div v-for="(prvMtnOp_risk,index) in eq_prvMtnOp_risk " :key="index">
                         <b-row>
-                            <b-col cols="1" class="risk_table_number">
+                            <b-col cols="1" class="risk_prvMtnOp_table_number">
                                <p class="text-primary"> {{prvMtnOp_risk.prvMtnOp_number}} </p>
                             </b-col>
-                            <b-col cols="6" class="risk_table_description">
+                            <b-col cols="6" class="risk_prvMtnOp_table_description">
                                 <p class="text-primary">{{prvMtnOp_risk.risk_remarks}}</p>
                             </b-col>
-                            <b-col cols="4"  class="risk_table_wayOfControl">
+                            <b-col cols="4"  class="risk_prvMtnOp_table_wayOfControl">
                                 <p class="text-primary">{{prvMtnOp_risk.risk_wayOfControl}}</p>
                             </b-col>                  
                         </b-row>
@@ -333,12 +351,12 @@
                 </div>
             </div>
 
-             <div class="recordTemplateRefPdf">
-                <div class="table_recordTemplateRefPdf">
-                     <div class="index_recordTemplateRefPdf">
+             <div class="eq_recordTemplateRefPdf">
+                <div class="eq_table_recordTemplateRefPdf">
+                     <div class="eq_index_recordTemplateRefPdf">
                         Record Template Ref :  REC-IWE01
                     </div>
-                    <div class="confidential_recordTemplateRefPdf">
+                    <div class="eq_confidential_recordTemplateRefPdf">
                         This document contains CONFIDENTIAL information
                     </div>
                 </div>
@@ -347,7 +365,7 @@
 
 
         </div>
-        <button @click="generateReport" class="btn btn-primary">Generate</button>
+        <button class="btn btn-primary" @click="addMargin" >Generate PDF</button>
     </div>  
 
 </template>
@@ -376,6 +394,7 @@ export default {
         
     },
     methods: { 
+
         generateReport () {
             let page = document.getElementById('page');
             html2PDF(page, {
@@ -392,14 +411,61 @@ export default {
                   imageType: 'image/jpeg',
                 imageQuality: 1,
                 margin: {
-                    top: 10,
+                    top: 40,
                     right: 10,
-                    bottom: 10,
+                    bottom: 40,
                     left: 10,
                 },
                 output: this.eq_idCard.eq_internalReference+'_LS-D'+'_V'+this.eq_idCard.eq_version+'.pdf', 
             });
-        }
+        },
+
+        addMargin(){
+
+            const tab_className = [7];
+            tab_className[0]="eq_top_infos";
+            tab_className[1]="eq_identification_infos_pdf";
+            tab_className[2]="eq_usage_infos_pdf";
+            tab_className[3]="eq_file_infos_pdf";
+            tab_className[4]="eq_carac_infos_pdf";
+            tab_className[5]="eq_specProc_infos_pdf";
+            tab_className[6]="eq_risk_infos_pdf";
+            tab_className[7]="eq_prvMtnOp_infos_pdf";
+            tab_className[8]="eq_risk_prvMtnOp_infos_pdf";
+            tab_className[9]="eq_recordTemplateRefPdf";
+
+            tab_className.forEach(function(element) {
+                  console.log(element);
+                let elem=document.getElementsByClassName(element)[0];
+                const rect = elem.getBoundingClientRect();
+                let top=rect.top + window.scrollY;
+                let bottom=rect.bottom+window.scrollY; ;
+                console.log("bottom : "+bottom);
+                console.log("top :"+top);
+                console.log("height : "+rect.height+window.scrollY);
+
+                //case of an element that is between the first page and the second page
+                if (top>0 && top<1810 && bottom>1780 && bottom<3300){
+                    let marginTop=1810-top+30 ;
+                  elem.style.marginTop = marginTop+"px";
+                  console.log("cas 1")
+                  console.log(marginTop)
+
+                }
+
+                if (top>2000 && top<3520 && bottom>3550 && bottom<4800){
+                    let marginTop=3550-top ;
+                    elem.style.marginTop = marginTop+"px";
+                    console.log("cas 2")
+                    console.log(marginTop)
+
+                }
+
+
+            });
+            this.generateReport();
+        },
+        
     },
     created(){
         var consultUrl = (id) => `/equipment/${id}`;
@@ -483,14 +549,23 @@ export default {
 <style lang="scss">
         #page{
             width:1329px;
-            font-size : 20px ;
+            font-size : 10px ;
             .text-primary{
-                font-size : 25px ;
+                font-size : 20px ;
             }
-            .top_infos{
-               
+            .eq_top_infos{
                 position: absolute;
-                top: 0px;
+                margin-top: 0px;
+                margin-left:50px;
+
+                h5{
+                        margin-top :auto;
+                        width: auto;
+                        font-size:25px;
+                        text-align:center;
+                        font-weight: bold;
+                    }
+
                 .equipement_pdf_logo{
                     border: solid 0.5px black;
                     margin: auto;
@@ -498,8 +573,11 @@ export default {
                     width: 200px;
                     height: 170px;
                     margin-left:100px ;
-                    margin-top: 100px;
+                    margin-top: 00px;
                     
+                    .logo{
+                        margin-top:30px;
+                    }
                     
                 }
                 .equipement_pdf_titre{
@@ -507,9 +585,10 @@ export default {
                     margin: auto;
                     position: absolute;
                     width: 642px;
-                    top: 100px;
+                    top: 00px;
                     left:300px;
                     height: 87px;
+                    text-align:center;
                    
                     
                     
@@ -523,9 +602,10 @@ export default {
                     margin: auto;
                     position: absolute;
                     left: 942px;
-                    top: 100px;
+                    top: 0px;
                     height: 86px;
                     width: 200px;
+                    
                 }
                 .equipment_revued_by{
                     border: solid 0.5px black;
@@ -533,7 +613,7 @@ export default {
                     position: absolute;
 
                     left :300px;
-                    top: 186px;
+                    top: 86px;
                     height: 84px;
                     width: 400px;
 
@@ -545,7 +625,7 @@ export default {
 
 
                     left :700px;
-                    top: 186px;
+                    top: 86px;
                     height: 84px;
                     width: 242px;
                 }
@@ -554,13 +634,9 @@ export default {
                     margin: auto;
                     position: absolute;
                     left :942px;
-                    top: 186px;
+                    top: 86px;
                     width: 200px;
                     height: 84px;
-                    h5{
-                        margin: 0 auto;
-                        width: auto;
-                    }
                 }
 
             }
@@ -568,8 +644,8 @@ export default {
                 position: relative;
                 margin-top: 240px;
                 margin-bottom: 60px;
+                margin-left:150px;
                 .title_identification_pdf{
-                    margin-left: 100px;
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
@@ -581,7 +657,6 @@ export default {
             
                 .Ecme_assoc_pdf{
                     border: solid 0.5px black;
-                    margin-left: 100px;
                     position: relative;
                     margin-bottom: 20px;
                     height: auto;
@@ -589,7 +664,6 @@ export default {
                 }
                 .eq_designation_type_pdf{
                     border: solid 1px black;
-                    margin-left: 100px;
                     width: 500px;
                     height: 60px;
                     margin-bottom: 20px;
@@ -606,7 +680,6 @@ export default {
                 }
                 .eq_constructor_pdf{
                     border: solid 1px black;
-                    margin-left: 100px;
                     width: 500px;
                     height: 60px;
                     float: left;
@@ -622,8 +695,8 @@ export default {
             }
             .eq_usage_infos_pdf{
                 position: relative;
+                margin-left: 150px;
                 .title_usage_pdf{
-                    margin-left: 100px;
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
@@ -636,28 +709,23 @@ export default {
                     position: relative;
                     .eq_usage_type_pdf{
                         border: solid 1px black;
-                        margin-left: 100px;
-                        //float: left;
                         position: relative;
-
                         height: 170px;
                         width: 1042px;
                     }
                     .eq_usage_precaution_pdf{
                         border: solid 1px black;
                         margin-bottom: 20px;
-                        height: 170px;
+                        height: auto ; 
                         width: 1042px;
                         position: relative;
-                        margin-left: 100px;
-                        //float: left; 
                     }
                 }
             }
             .eq_file_infos_pdf{
                 position: relative;
+                margin-left: 150px;
                 .title_file_pdf{
-                    margin-left: 100px;
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
@@ -668,7 +736,6 @@ export default {
                 }
                 .eq_file_assoc_pdf{
                     border: solid 1px black;
-                    margin-left: 100px;
                     position: relative;
                     margin-bottom: 20px;
                     height: auto;
@@ -679,33 +746,30 @@ export default {
 
             .eq_carac_infos_pdf{
                 position: relative;
+                 margin-left: 150px;
                 .title_carac_pdf{
-                    margin-left: 100px;
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
                 }
                 .power_title_pdf{
                     position: relative;
-                    margin-left: 100px;
                     margin-top: 0px;
-                    
-                    p{
-                        font-size : 18px;
-                        font-weight: bold;
-                    }
+                
 
-                }
                 .eq_power_pdf{
                     position: relative;
                     height: auto;
                     width: 1042px;   
                     margin-bottom: 30px;
+                     margin-left: 150px;
                     .eq_power_type_pdf{
                         
                         position: relative;
                         height: auto;
                         margin-bottom:0px;
+                        font-size : 15px;
+                         font-weight: bold;
                         .eq_power_content_pdf{
                             position: relative;
                             height: auto;
@@ -734,235 +798,256 @@ export default {
                         }   
                     }
                 }
-                .dimension_title_pdf{
-                    position: relative;
-                    margin-left: 100px;
-                    margin-top: -10px;
+            }
+            .caracteristic_name{
+                text-decoration: underline;
+                font-size : 18px;
+                font-weight: bold;
+            }
+            .dimension_title_pdf{
+                position: relative;
+                margin-top: -10px;
+                p{
+                    font-size : 18px;
+                    font-weight: bold;
+                }
+
+            }
+            .eq_dimension_pdf{
+                position: relative;
+                height: auto;
+                width: 1060px;   
+                margin-bottom: 30px;
+                .eq_dimension_type_pdf{
                     p{
-                        font-size : 18px;
+                        font-size : 15px;
                         font-weight: bold;
                     }
-
-                }
-                .eq_dimension_pdf{
                     position: relative;
                     height: auto;
-                    width: 1042px;   
-                    margin-bottom: 30px;
-                    .eq_dimension_type_pdf{
-                        p{
-                            font-size : 15px;
-                            font-weight: bold;
-                        }
+                    .eq_dimension_content_pdf{
                         position: relative;
                         height: auto;
-                        .eq_dimension_content_pdf{
+                        display: inline-block;
+                        margin-bottom: 10px;
+                        p{
+                            font-size: 20px;
+                            font-weight: normal;
+                            margin-left: 100px;
+                            margin-top: 5px;
+                        }
+                        .eq_dimension_name_value_pdf{
+                            border: solid 1px black;
                             position: relative;
-                            height: auto;
-                            display: inline-block;
-                            margin-bottom: 10px;
-                            p{
-                                font-size: 20px;
-                                font-weight: normal;
-                                margin-left: 100px;
-                                margin-top: 5px;
-                            }
-                            .eq_dimension_name_value_pdf{
-                                border: solid 1px black;
-                                position: relative;
-                                height: 40px;
-                                width: 336px;
-                                margin-right: 11px;   
-                                
-                            }
+                            height: 40px;
+                            width: 340px;
+                            margin-right: 10px;   
                             
-                        }   
-                    }
-                }
-                .eq_mass_set_mobility_pdf{
-                    position: relative;
-                    p{
-                        font-size: 20px;
-                        margin-top: 3px;
-                        margin-left: 10px;
+                        }
                         
-                    }
-                    .eq_mass_pdf{
-                        border: solid 1px black;
-                        display: inline-block;
-                        margin-bottom: 20px;
-                        height: 40px;
-                        margin-left: 100px;
-                        width: 250px;
-                    }
-                    .eq_mobility_pdf{
-                        border: solid 1px black;
-                        display: inline-block;
-                        margin-bottom: 20px;
-                        height: 40px;
-                        margin-left: 120px;
-                        width: 270px;
-                    }
-                    .eq_set_pdf{
-                        display: inline-block;
-                        border: solid 1px black;
-                        margin-bottom: 20px;
-                        height: 40px;
-                        margin-left: 100px;
-                        width: 250px;
-                    }
-                }
-
-                .eq_remark_pdf{
-                    border: solid 1px black;
-                    margin-left: 100px;
-                    position: relative;
-                    margin-bottom: 20px;
-                    height: auto;
-                    width: 1042px;
+                    }   
                 }
             }
-            .eq_risk_infos_pdf{
+            .eq_mass_set_mobility_pdf{
                 position: relative;
-                .title_risk_pdf{
-                    margin-bottom:0px;
-                    margin-top:30px;
-                    margin-left: 100px;
-                    width: 400px;
-                    font-size : 20px;
-                    font-weight: bold;
-                }
-                .eq_risk_pdf{
-                    position: relative;
-                    height: auto;
-                    width: 1042px;   
-                }
-                .eq_risk_for_pdf{
-                    border: solid 1px black;
-                    position: relative;
-                    height: auto;
-                    width: 1042px;   
-                    margin-left: 100px;
-                }
-                .eq_risk_remarks_pdf{
-                    border: solid 1px black;
-                    position: relative;
-                    height: auto;
-                    width: 521px;   
-                    margin-left: 100px;
+                p{
+                    font-size: 20px;
+                    margin-top: 3px;
+                    margin-left: 10px;
                     
                 }
-                .eq_risk_wayOfControl_pdf{
+                .eq_mass_pdf{
                     border: solid 1px black;
-                    position: relative;
-                    height: auto;
-                    width: 521px;   
-                    margin-right: -100px;
-                    float: right;
+                    display: inline-block;
+                    margin-bottom: 20px;
+                    height: 40px;
+                    width: 340px;
                 }
-
-            }
-            .eq_specProc_infos_pdf{
-                position: relative;
-                .title_spProc_pdf{
-                    margin-left: 100px;
-                    width: 400px;
-                    font-size : 20px;
-                    font-weight: bold;
-                }
-                .eq_specProc_pdf{
+                .eq_mobility_pdf{
                     border: solid 1px black;
-                    position: relative;
-                    height: auto;
-                    width: 1042px;   
-                    margin-left: 100px;
+                    display: inline-block;
+                    margin-bottom: 20px;
+                    height: 40px;
+                    margin-left: 8.5px;
+                    width: 340px;
                 }
-            }
-            .eq_prvMtnOp_infos_pdf{
-                position: relative;
-                margin-top:10px ;
-
-                .title_prvMtnOp_pdf{
-                    margin-left: 100px;
-                    width: 400px;
-                    font-size : 20px;
-                    font-weight: bold;
-                }
-                .prvMtnop_table{
-                    margin-left: 100px;
-                    .prvMtnOp_table_number{
-                        border: solid 1px black;
-                        text-align: center;
-                    }
-                    .prvMtnOp_table_description{
-                        border: solid 1px black;
-                        text-align: center;
-                    }
-                    .prvMtnOp_table_protocol{
-                        border: solid 1px black;
-                        text-align: center;
-                    }                    
-                    .prvMtnOp_table_periodicity{
-                        border: solid 1px black;
-                        text-align: center;
-                    }
-                    .prvMtnOp_table_risk{
-                        border: solid 1px black;
-                        text-align: center;
-                    }
+                .eq_set_pdf{
+                    display: inline-block;
+                    border: solid 1px black;
+                    margin-bottom: 20px;
+                    height: 40px;
+                    margin-left: 8.5px;
+                    width: 340px;
                 }
             }
 
-            .eq_risk_infos_pdf{
+            .eq_remark_pdf{
+                border: solid 1px black;
                 position: relative;
-                margin-top:10px ;
-
-                .title_risk_pdf{
-                    margin-left: 100px;
-                    width: 500px;
-                    font-size : 20px;
-                    font-weight: bold;
-                }
-                .risk_table{
-                    margin-left: 100px;
-                    .risk_table_number{
-                        border: solid 1px black;
-                        text-align: center;
-                    }
-                    .risk_table_description{
-                        border: solid 1px black;
-                        text-align: center;
-                    }
-                    .risk_table_wayOfControl{
-                        border: solid 1px black;
-                        text-align: center;
-                    }                    
-                }
-            }
-
-            .recordTemplateRefPdf{
-                position: relative;
-                margin-top:10px ;
-                width: 1240px;
-                
-
-                .table_recordTemplateRefPdf{
-                     margin-left: 100px;
-                    .confidential_recordTemplateRefPdf{
-                        border: solid 1px black;
-                        background-color: lightgrey;
-                        text-align: center;
-                    }
-                    .index_recordTemplateRefPdf{
-                        background-color: lightgrey;
-                        border: solid 1px black;
-                        text-align: center;
-                    }
-                }
-
-
+                margin-bottom: 20px;
+                height: auto;
+                width: 1042px;
             }
         }
+        .eq_risk_infos_pdf{
+            position: relative;
+            margin-left:150px;
+            .title_risk_pdf{
+                margin-bottom:0px;
+                margin-top:30px;
+                width: 400px;
+                font-size : 20px;
+                font-weight: bold;
+            }
+            .eq_risk_pdf{
+                position: relative;
+                height: auto;
+                width: 1042px;   
+            }
+            .eq_risk_for_pdf{
+                border: solid 1px black;
+                position: relative;
+                height: auto;
+                width: 1042px;   
+            }
+            .eq_risk_remarks_pdf{
+                border: solid 1px black;
+                position: relative;
+                height: auto;
+                width: 521px;   
+                
+            }
+            .eq_risk_wayOfControl_pdf{
+                border: solid 1px black;
+                position: relative;
+                height: auto;
+                width: 521px;   
+                float: right;
+            }
+
+        }
+        .eq_specProc_infos_pdf{
+            position: relative;
+            margin-left:150px;
+            .title_spProc_pdf{
+                width: 400px;
+                font-size : 20px;
+                font-weight: bold;
+            }
+            .eq_specProc_pdf{
+                border: solid 1px black;
+                position: relative;
+                height: auto;
+                width: 1042px;   
+            }
+        }
+        .eq_prvMtnOp_infos_pdf{
+            position: relative;
+            margin-top:10px ;
+            width : 1112px;
+            
+            .title_prvMtnOp_pdf{
+                width: 400px;
+                font-size : 20px;
+                font-weight: bold;
+                margin-left:150px;
+            }
+            .prvMtnop_table{
+                margin-left:163px;
+                width:1042px;
+                .prvMtnOp_table_number{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:30px;
+                }
+                    .prvMtnOp_table_puttingIntoService{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:45px;
+                }
+                .prvMtnOp_table_description{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:380px;
+                }
+                .prvMtnOp_table_protocol{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:380px;
+                }                    
+                .prvMtnOp_table_periodicity{
+                    border: solid 1px black;
+                    text-align: center;
+                    width : 70px;
+                }
+                .prvMtnOp_table_risk{
+                    border: solid 1px black;
+                    text-align: center;
+                    width : 68px;
+                }
+                .prvMtnOp_table_reformed{
+                    border: solid 1px black;
+                    text-align: center;
+                    width : 70px;
+                }
+            }
+        }
+
+        .eq_risk_prvMtnOp_infos_pdf{
+            position: relative;
+            margin-top:10px ;
+            width : 1112px;
+
+            .title_risk_prvMtnOp_pdf{
+                width: 500px;
+                font-size : 20px;
+                font-weight: bold;
+                margin-left:150px;
+            }
+            .risk_prvMtnOp_table{
+                margin-left:163px;
+                width:1112px;
+                .risk_prvMtnOp_table_number{
+                    border: solid 1px black;
+                    text-align: center;
+                }
+                .risk_prvMtnOp_table_description{
+                    border: solid 1px black;
+                    text-align: center;
+                }
+                .risk_prvMtnOp_table_wayOfControl{
+                    border: solid 1px black;
+                    text-align: center;
+                }                    
+            }
+        }
+
+        .eq_recordTemplateRefPdf{
+            position: relative;
+            left:150px;
+            margin-top:10px ;
+            width: 1042px;
+            
+
+            .eq_table_recordTemplateRefPdf{
+                .eq_confidential_recordTemplateRefPdf{
+                    border: solid 1px black;
+                    background-color: lightgrey;
+                    text-align: center;
+                    height: auto;
+                    font-size: 20px;
+                    font-style : italic;
+                }
+                .eq_index_recordTemplateRefPdf{
+                    background-color: lightgrey;
+                    border: solid 1px black;
+                    text-align: center;
+                    height: auto;
+                    font-size: 20px;
+                }
+            }
+        }
+    }
 
         
         

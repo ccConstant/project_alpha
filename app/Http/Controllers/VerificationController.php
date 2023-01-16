@@ -366,7 +366,7 @@ class VerificationController extends Controller
 
     public function send_verifs_lifesheet($id) {
         $container=array() ; 
-        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->latest()->first();
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->first();
         $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
        foreach ($verifs as $verif) {
 
@@ -381,19 +381,36 @@ class VerificationController extends Controller
                 $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
             }
 
+            $verifPuttingIntoService = NULL ; 
+            if ($verif->verif_puttingIntoService==1){
+                $verifPuttingIntoService = 'Yes' ; 
+            }else{
+                $verifPuttingIntoService = 'No' ; 
+            }
+
+            $reformed="no" ; 
+            if ($verif->verif_reformDate!=NULL){
+                $reformed="yes" ; 
+            }
+
             $obj=([
                 "id" => $verif->id,
-                "Number" => (string)$verif->verif_number,
-                "Description" => $verif->verif_description,
-                "Periodicity" => (string)$verif->verif_periodicity,
-                "Symbol" => $verif->verif_symbolPeriodicity,
-                "Protocol" => $verif->verif_protocol,
-                'Name' => $verif->verif_name,
-                'ExpectedResult' => $verif->verif_expectedResult,
-                'VerificationAcceptanceAuthoritiy' => $verifAcceptanceAuthority,
-                'RequiredSkill' => $requiredSkill,
-                'NonComplianceLimit' => $verif->verif_nonComplianceLimit,
-                'PuttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
+                "verif_number" => (string)$verif->verif_number,
+                "verif_description" => $verif->verif_description,
+                "verif_periodicity" => (string)$verif->verif_periodicity,
+                "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
+                "verif_protocol" => $verif->verif_protocol,
+                "verif_startDate" => $verif->verif_startDate,
+                "verif_nextDate" => $verif->verif_nextDate,
+                "verif_reformDate" => $verif->verif_reformDate,
+                'verif_name' => $verif->verif_name,
+                'verif_expectedResult' => $verif->verif_expectedResult,
+                'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                'verif_requiredSkill' => $requiredSkill,
+                'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
+                'verif_validate' => $verif->verif_validate,
+                'verif_puttingIntoService'=> $verifPuttingIntoService,
+                'verif_reformed' => $reformed,
             ]);
             array_push($container,$obj);
        }

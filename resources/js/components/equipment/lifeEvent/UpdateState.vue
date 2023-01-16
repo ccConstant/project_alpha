@@ -131,8 +131,8 @@ export default {
             current_state:'',
             current_startDate:'',
             radioOption :[
-                {id: 'Yes', value:true},
-                {id : 'No', value:false}
+                {id: 'Yes', value:true, text:'Yes'},
+                {id : 'No', value:false, text:'No'}
             ],
             new_eq:null,
             eq_idCard:[],
@@ -232,6 +232,7 @@ export default {
         isEmpty(object) {
             for (const property in object) {
                 return false;
+                
             }
             return true;
         },

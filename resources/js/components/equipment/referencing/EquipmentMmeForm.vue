@@ -15,19 +15,30 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
+            <div v-if="mme_id!=null && isInConsultMod"> Consult all the information about the MME <router-link  :to="{name:'url_mme_consult',params:{id:this.mme_id} }"> here </router-link></div>
+            <div v-if="mme_id!=null && isInModifMod"> Update all the information about the MME <router-link  :to="{name:'url_mme_update',params:{id:this.mme_id} }"> here </router-link></div>
+            <div v-if="mme_id==null"><AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated" :eq_id="this.equipment_id_add"/></div>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference" name="mme_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod" v-model="mme_internalReference" :info_text="infos_idCard[0].info_value" />
-            <div v-if="isInConsultMod!=true">
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
-            </div>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod" v-model="mme_name" :info_text="infos_idCard[2].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference" name="mme_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null" v-model="mme_internalReference" :info_text="infos_idCard[0].info_value" />
+                <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="External reference :" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null"  v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null" v-model="mme_name" :info_text="infos_idCard[2].info_value" />
             <InputTextForm v-if="this.mme_importFrom!== undefined " inputClassName="form-control w-50" name="mme_importFrom" label="Import From :" isDisabled v-model="mme_importFrom" />
                 <!--<InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.mme" name="mme_name" label="Mme :" :options="this.list_mme" :isDisabled="!!isInConsultedMod" :selctedOption="this.internalReference" :selectedDivName="this.divClass" v-model="internalReference" />-->
                 <!--If addSucces is equal to false, the buttons appear -->         
             </form>
-                <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="this.mme_validate" />
+            <div v-if="this.mme_id==null ">
+                <div v-if="modifMod==true">
+                    <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod" :savedAs="mme_validate" :AddinUpdate="true"/>
+                </div>
+                <div v-else>
+                    <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod" :savedAs="mme_validate"/>
+                </div>
+            </div>
+            <div v-else-if="this.mme_id!==null">
+                <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="mme_validate"/>
+            </div>
                 <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -44,6 +55,7 @@ import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../alert/SuccesAlert.vue'
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import InputTextWithOptionForm from '../../input/InputTextWithOptionForm.vue'
+import AddMMEAlreadyCreated from './AddMMEAlreadyCreated.vue'
 
 
 
@@ -58,6 +70,7 @@ export default {
         SucessAlert,
         InputTextWithOptionForm,
         InputTextAreaForm,
+        AddMMEAlreadyCreated,
 
 
     },
@@ -131,13 +144,13 @@ export default {
     data(){
         return{
             list_mme : [],
-           equipment_id_add:this.eq_id,
-            /*equipment_id_update:this.$route.params.id,
-          */
+            equipment_id_add:this.eq_id,
+            equipment_id_update:this.$route.params.id,
             mme_internalReference : this.internalReference,
             errors:{},
             addSucces:false,
             isInConsultMod:this.consultMod,
+            isInModifMod:this.modifMod,
             loaded:false,
             mme_validate:null,
             mme_internalReference : this.internalReference,
@@ -149,10 +162,12 @@ export default {
             info_mme_internalReference:'',
             mme_id: this.id,
             enum_sets:[],
+            mmeAlreadyCreated:null,
         }
     },
     /*All function inside the created option is called after the component has been mounted.*/
     created(){
+
         /*Ask for the controller different types of the dimension  */
         axios.get('/mme/sets')
             .then (response=> this.enum_sets=response.data) 
@@ -177,6 +192,13 @@ export default {
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
         addEquipmentMme(savedAs){
+             var id;
+            if(!this.modifMod){
+                id=this.equipment_id_add
+                //else the user is in the update menu, we allocate to the id the value of the id get in the url
+            }else{
+                id=this.equipment_id_update;
+            }
             if(!this.addSucces){
             
                 //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
@@ -204,12 +226,9 @@ export default {
                             this.addSucces=true
                         } 
                         this.mme_id=response.data;
-                        console.log(this.mme_id)
-                        console.log(response.data)
-                        var id;
                         //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
                         var urlLinkMmetoEq = (id) => `/mme/link_to_eq/${id}`;
-                        axios.post(urlLinkMmetoEq(this.equipment_id_add),{
+                        axios.post(urlLinkMmetoEq(id),{
                             'mme_internalReference' : this.mme_internalReference,
                         })
                         //If the mme is added succesfuly
@@ -230,6 +249,15 @@ export default {
             }
 
         },
+        addInfoMmeAlreadyCreated(value){
+            this.mme_internalReference=value.internalReference;
+            this.mme_externalReference=value.externalReference;
+            this.mme_name=value.name;
+            this.addSucces=true;
+            this.isInConsultMod=true;
+            this.mme_id=value.id;
+
+        },
 
         extract_mme_refs(mme_list){
             let refs=[] ; 
@@ -245,7 +273,6 @@ export default {
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
-                console.log(this.mme_id)
                 axios.post('/mme/verif',{
                     mme_internalReference : this.mme_internalReference, 
                     mme_externalReference : this.mme_externalReference,
@@ -291,7 +318,6 @@ export default {
         },
         //Function for deleting a dimension from the view and the database
         deleteComponent(){
-            console.log("coucou")
             //If the user is in update mode and the mme has been updated
             if(this.modifMod==true && this.mme_internalReference!==null){
                 console.log("supression");

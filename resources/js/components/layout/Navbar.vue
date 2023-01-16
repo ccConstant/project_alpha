@@ -3,7 +3,7 @@
 	<div>
 		<b-navbar type="dark" variant="dark">
 			<b-navbar-nav>
-				<b-navbar-brand href="/">Alpha</b-navbar-brand>
+				<b-navbar-brand href="/"><img src="/images/logo.png" class="logo_navbar" alt="Alpha Logo"></b-navbar-brand>
 				<!-- Navbar dropdowns -->
 				<b-nav-item-dropdown text="Equipment" right>
 					<b-dropdown-item href="/equipment/add">Add a new equipment</b-dropdown-item>
@@ -90,6 +90,11 @@ export default {
 		height:60px;
 		position:fixed;
 	}*/
+
+	.logo_navbar{
+		width: 80px;
+		height: 40px;
+	}
 	
 
 </style>

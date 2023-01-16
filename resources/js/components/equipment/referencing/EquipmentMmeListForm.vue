@@ -18,13 +18,13 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                 <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.mme" name="mme_internalReference" label="Mme Internal Reference :" :options="this.list_mme" :isDisabled="!!isInConsultedMod" :selctedOption="this.mme_internalReference" :selectedDivName="this.divClass" v-model="internalRef" />
-                <!--<InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.mme" name="mme_name" label="Mme :" :options="this.list_mme" :isDisabled="!!isInConsultedMod" :selctedOption="this.internalReference" :selectedDivName="this.divClass" v-model="internalReference" />-->
+                 <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.mme" name="mme_internalReference" label="Mme Internal Reference :" :options="this.list_mme" :isDisabled="!!isInConsultMod" :selctedOption="this.mme_internalReference" :selectedDivName="this.divClass" v-model="internalRef" />
+                <!--<InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.mme" name="mme_name" label="Mme :" :options="this.list_mme" :isDisabled="!!isInConsultMod" :selctedOption="this.internalReference" :selectedDivName="this.divClass" v-model="internalReference" />-->
                 <!--If addSucces is equal to false, the buttons appear -->         
+               <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
             </form>
             <div v-if="this.internalRef">
-                <SaveButtonForm @add="addEquipmentMme" :consultMod="this.isInConsultedMod" :modifMod="this.modifMod" :savedAs="this.mme_validate"/>
-                <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
+                <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="mme_validate" />
             </div>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -109,7 +109,7 @@ export default {
         enum_dim_unit : Different unites of dimension gets from the database
         errors: Object of errors in wich will be stores the different erreur occured when adding in database
         addSucces: Boolean who tell if this dimension has been added successfully
-        isInConsultedMod: data of the consultMod prop
+        isInConsultMod: data of the consultMod prop
     -----------------------------------------------------------*/
     data(){
         return{
@@ -120,9 +120,9 @@ export default {
             mme_internalReference : this.internalRef,
             errors:{},
             addSucces:false,
-            isInConsultedMod:this.consultMod,
+            isInConsultMod:this.consultMod,
             loaded:false,
-            mme_validate:null,
+            mme_validate:this.validate,
         }
     },
     /*All function inside the created option is called after the component has been mounted.*/
@@ -155,7 +155,7 @@ export default {
                     //If we the user is not in modifMod
                     if(!this.modifMod){
                         //The form pass in consulting mode and addSucces pass to True
-                        this.isInConsultedMod=true;
+                        this.isInConsultMod=true;
                         this.addSucces=true
                     }   
                 })
@@ -217,23 +217,24 @@ export default {
         clearError(event){
             delete this.errors[event.target.name];
         },
-        //Function for deleting a dimension from the view and the database
+        //Function for deleting a mme from the view in the database
         deleteComponent(){
+            console.log("coucou")
             //If the user is in update mode and the mme has been updated
-            if(this.modifMod==true){
-                /*console.log("supression");
+            if(this.modifMod==true && this.mme_internalReference!==null){
+                console.log("supression");
                 //Send a post request with the id of the dimension who will be deleted in the url
-                var consultUrl = (id) => `/equipment/delete/dim/${id}`;
-                axios.post(consultUrl(this.dim_id),{
-                    eq_id:this.equipment_id_update
-                })
+                //TO UPDATE
+                var consultUrl = (id) => `/mme/delete/link_to_eq/${id}`;
+                axios.get(consultUrl(this.mme_id),)
                 .then(response =>{
+                    this.errors={};
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteMme','')
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
-            */
+            
             }else{
                 this.$emit('deleteMme','')
             }

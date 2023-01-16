@@ -1,0 +1,67 @@
+<template>
+    <div>
+        <b-button v-b-modal.modal-mme_add_already_created >Add MME Already Created</b-button>
+        <b-modal id="modal-mme_add_already_created" title="Add MME already created" hide-footer>
+            <div>
+                <div v-if="mme_not_linked.length>0">
+                    <div v-for="option in mme_not_linked" :key="option.id">
+                        <input type="radio" name="radio-input" :value="option" :id="option" v-model="radio_value"/>
+                        {{ option.internalReference }}
+                    </div>
+                </div>
+                <div v-else>
+                    <p>Nothing to select</p>
+                </div>
+            </div>
+            <b-button class="mt-3" block @click="$bvModal.hide('modal-mme_add_already_created')">Close</b-button>
+            <b-button class="mt-3" block @click="chooseMME">Choose</b-button>
+        </b-modal>     
+    </div>
+</template>
+
+<script>
+export default {
+    props:{
+       eq_id:{
+            type:Number,
+       }
+    },
+    data(){
+        return{
+            mme_not_linked: [],
+            radio_value:'',
+        }
+    },
+    created(){
+        /*Ask for the controller different types of the dimension  */
+        axios.get('/mme/mmes_not_linked')
+            .then (response=> {
+                this.mme_not_linked=response.data ; 
+            })
+            .catch(error => console.log(error)) ;
+    },
+    methods: {
+        chooseMME(){
+            if(this.radio_value!=''){
+                var urlLinkMmetoEq = (id) => `/mme/link_to_eq/${id}`;
+                axios.post(urlLinkMmetoEq(this.eq_id),{
+                    'mme_internalReference' : this.radio_value,
+                });
+                this.$emit('choosedMME',this.radio_value)
+            }
+            this.$bvModal.hide('modal-mme_add_already_created')
+            
+        },
+    }
+
+}
+</script>
+
+<style lang="scss">
+    .modal-backdrop {
+        opacity:0.8; 
+    }
+
+    
+
+</style>

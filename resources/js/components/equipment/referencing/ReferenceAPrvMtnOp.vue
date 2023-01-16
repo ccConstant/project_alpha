@@ -19,7 +19,7 @@
             :periodicity="component.periodicity" :symbolPeriodicity="component.symbolPeriodicity" :reformMod="isInReformMod"
             :protocol="component.protocol" :divClass="component.className" :id="component.id" :import_id="component.import"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"
-            :reformDate="component.reformDate" :reformBy="component.reformBy"  :puttingIntoService="component.puttingIntoService"
+            :reformDate="component.reformDate" :reformBy="component.reformBy"  :puttingIntoService="component.puttingIntoService" :preventiveOperation="component.preventiveOperation"
             @deletePrvMtnOp="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -115,9 +115,7 @@ export default {
         },
         //Function for adding imported preventive maintenance operation form with his data
         addImportedComponent(prvMtnOp_number,prvMtnOp_description,prvMtnOp_periodicity,prvMtnOp_symbolPeriodicity,prvMtnOp_protocol,
-        prvMtnOp_className,prvMtnOp_validate,id,prvMtnOp_reformDate,prvMtnOp_reformBy, prvMtnOp_puttingIntoService) {
-            console.log("HELLO 6666")
-            console.log(prvMtnOp_puttingIntoService)
+        prvMtnOp_className,prvMtnOp_validate,id,prvMtnOp_reformDate,prvMtnOp_reformBy, prvMtnOp_puttingIntoService, prvMtnOp_preventiveOperation) {
             this.components.push({
                 comp:'EquipmentPrvMtnOpForm',
                 key : this.uniqueKey++,
@@ -133,6 +131,7 @@ export default {
                 reformDate:prvMtnOp_reformDate,
                 reformBy:prvMtnOp_reformBy,
                 puttingIntoService:prvMtnOp_puttingIntoService,
+                preventiveOperation:prvMtnOp_preventiveOperation,
             });
             console.log(this.components)
         },
@@ -153,7 +152,7 @@ export default {
                     console.log(prvMtnOp)
                     var className="importedPrvMtnOp"+prvMtnOp.id
                     this.addImportedComponent(prvMtnOp.prvMtnOp_number,prvMtnOp.prvMtnOp_description,prvMtnOp.prvMtnOp_periodicity,prvMtnOp.prvMtnOp_symbolPeriodicity,
-                        prvMtnOp.prvMtnOp_protocol,className,prvMtnOp.prvMtnOp_validate,prvMtnOp.id,prvMtnOp.prvMtnOp_reformDate,prvMtnOp.prvMtnOp_reformBy, prvMtnOp.prvMtnOp_puttingIntoService);
+                        prvMtnOp.prvMtnOp_protocol,className,prvMtnOp.prvMtnOp_validate,prvMtnOp.id,prvMtnOp.prvMtnOp_reformDate,prvMtnOp.prvMtnOp_reformBy, prvMtnOp.prvMtnOp_puttingIntoService, prvMtnOp.prvMtnOp_preventiveOperation);
                 }
             }
             this.prvMtnOps=null

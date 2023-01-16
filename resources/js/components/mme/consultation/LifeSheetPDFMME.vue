@@ -1,11 +1,17 @@
+<!--
+* Filename : LifeSheetPDFMME.vue
+* Creation date : 11 Jul 2022
+* Update date : 9 Jan 2022
+* The document allows us to create the life sheet of a mme and to export it in PDF.
+-->
+
 <template>
     <div v-if="loaded==true">
         <div id="page">
             <p>'</p>
-            <div class="top_infos">
+            <div class="mme_top_infos">
                 <div class="mme_pdf_logo ">
-                  <!--<img src="img" width="50" height="50" />-->
-                  <p class="text-primary" text-align="center"> ALPHA </p>
+                  <img src="/images/logo.png" alt="Alpha logo" class="logo"/>
                 </div>
 
                 <div class="mme_pdf_titre">
@@ -13,7 +19,7 @@
                 </div>
 
                 <div class="mme_pdf_index">
-                    <h2>Edition : MME LS-D {{mme_idCard.mme_version}}</h2>
+                    <h5>Version : MME LS-D {{mme_idCard.mme_version}}</h5>
                 </div>
                 <div class="mme_revued_by">
                     <p >Technical Review <b class="text-primary">{{ mme_idCard.mme_technicalVerifier_firstName}} {{mme_idCard.mme_technicalVerifier_lastName}} </b></p>
@@ -179,7 +185,7 @@
                             N°
                         </b-col>
                         <b-col cols="7" class="verif_puttingIntoService_pdf">
-                            For PIS ? 
+                            For PIS? 
                         </b-col >   
                         <b-col cols="2" class="verif_table_name">
                             Name of the verification
@@ -198,6 +204,9 @@
                         </b-col>    
                         <b-col cols="7" class="mme_verifAcceptanceAuthority_pdf">
                                     Verification Acceptance Authority
+                        </b-col >  
+                        <b-col cols="7" class="mme_verifReformed">
+                                Reformed?
                         </b-col >                     
                     </b-row>
                     <div v-for="(verif,index) in mme_verif " :key="index">
@@ -226,6 +235,9 @@
                             </b-col>  
                              <b-col  cols="1" class="mme_verifAcceptanceAuthority_pdf">
                                         <p class="text-primary">{{verif.verif_verifAcceptanceAuthority}} </p>
+                            </b-col>  
+                            <b-col  cols="1" class="mme_verifReformed">
+                                        <p class="text-primary">{{verif.verif_reformed}} </p>
                             </b-col>                     
                         </b-row>
                     </div>
@@ -248,14 +260,13 @@
 
 
         </div>
-        <button @click="generateReport" class="btn btn-primary">Generate</button>
+        <button @click="generateReport" class="btn btn-primary">Generate PDF</button>
     </div>  
 
 </template>
 
 <script>
 import html2PDF from 'jspdf-html2canvas';
-import img from '../../../../../public/images/logo.png' ; 
 export default { 
     data(){
         return{
@@ -320,10 +331,11 @@ export default {
     
         
         
-        var consultUrlVerif = (id) => `/verif/send/validated/${id}`;
+        var consultUrlVerif = (id) => `/verifs/send/lifesheet/${id}`;
         axios.get(consultUrlVerif(this.mme_id))
             .then (response=>{
                 this.mme_verif=response.data
+                console.log(response.data)
             })
             .catch(error => console.log(error)) ;
         
@@ -332,8 +344,6 @@ export default {
         axios.get(consultUrlPrctn(this.mme_id))
             .then (response=>{
                 this.mme_usg_prctn=response.data
-                console.log("coucou")
-                console.log(response.data)
                 this.loaded=true;
             })
             .catch(error => console.log(error)) ;
@@ -350,10 +360,19 @@ export default {
             .text-primary{
                 font-size : 20px ;
             }
-            .top_infos{
-               
+            .mme_top_infos{
                 position: absolute;
-                top: 0px;
+                margin-top: 0px;
+                margin-left:50px;
+
+                h5{
+                        margin-top :auto;
+                        width: auto;
+                        font-size:25px;
+                        text-align:center;
+                        font-weight: bold;
+
+                    }
                 .mme_pdf_logo{
                     border: solid 0.5px black;
                     margin: auto;
@@ -361,8 +380,10 @@ export default {
                     width: 200px;
                     height: 170px;
                     margin-left:100px ;
-                    margin-top: 100px;
-                    
+                    margin-top: 0px;
+                      .logo{
+                        margin-top:30px;
+                    }
                     
                 }
                 .mme_pdf_titre{
@@ -370,23 +391,23 @@ export default {
                     margin: auto;
                     position: absolute;
                     width: 642px;
-                    top: 100px;
+                    top: 0px;
                     left:300px;
                     height: 87px;
+                    text-align:center;
                    
                     
                     
                 }
                 .mme_fiche_de_vie_titre{
                     text-align: center;
-                    position: relative;
                 }
                 .mme_pdf_index{
                     border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
                     left: 942px;
-                    top: 100px;
+                    top: 0px;
                     height: 86px;
                     width: 200px;
                 }
@@ -396,7 +417,7 @@ export default {
                     position: absolute;
 
                     left :300px;
-                    top: 186px;
+                    top: 86px;
                     height: 84px;
                     width: 400px;
 
@@ -405,10 +426,8 @@ export default {
                     border: solid 0.5px black;
                     margin: auto;
                     position: absolute;
-
-
                     left :700px;
-                    top: 186px;
+                    top: 86px;
                     height: 84px;
                     width: 242px;
                 }
@@ -417,13 +436,9 @@ export default {
                     margin: auto;
                     position: absolute;
                     left :942px;
-                    top: 186px;
+                    top: 86px;
                     width: 200px;
                     height: 84px;
-                    h5{
-                        margin: 0 auto;
-                        width: auto;
-                    }
                 }
 
             }
@@ -431,8 +446,8 @@ export default {
                 position: relative;
                 margin-top: 240px;
                 margin-bottom: 60px;
+                margin-left: 150px;
                 .title_identification_pdf{
-                    margin-left: 100px;
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
@@ -445,7 +460,6 @@ export default {
                 
                 .mme_designation_type_pdf{
                     border: solid 1px black;
-                    margin-left: 100px;
                     width: 500px;
                     height: 60px;
                     margin-bottom: 20px;
@@ -462,7 +476,6 @@ export default {
                 }
                 .mme_constructor_pdf{
                     border: solid 1px black;
-                    margin-left: 100px;
                     width: 500px;
                     height: 60px;
                     float: left;
@@ -479,37 +492,37 @@ export default {
             .mme_usage_infos_pdf{
                 position: relative;
                 .title_usage_pdf{
-                   margin-left: 100px;
+                   margin-left: 150px;
                     width: 400px;
                     font-size : 20px;
                     font-weight: bold;
                     p{
-                        margin-top : 220px;
+                        margin-top : 200px;
                         margin-bottom : 0px ;
                     }
                 }
                 
 
                 .usg_table{
-                    margin-left: 100px;
+                    margin-left: 150px;
                     .mme_usage_measurement_type_pdf{
                         border: solid 1px black;
                         text-align: center;
-                        width:198.4px;
+                        width:245px;
                         height:auto;
                     }
 
                     .mme_usage_precision_pdf{
                         border: solid 1px black;
                         text-align: center;
-                        width:208.4px;
+                        width:200px;
                         height:auto;
                     }
 
                     .mme_usage_application_pdf{
                          border: solid 1px black;
                         text-align: center;
-                        width:208.4px;
+                        width:330px;
                         height:auto;
                     }
                     .mme_usage_id_pdf{
@@ -523,7 +536,7 @@ export default {
                     .mme_usage_metrologicalLevel_pdf{
                          border: solid 1px black;
                         text-align: center;
-                        width:208.4px;
+                        width:243px;
                         height:auto;
                     }
                 }
@@ -532,7 +545,7 @@ export default {
                 .mme_precaution_infos_pdf{
                 position: relative;
                 .title_precaution_pdf{
-                   margin-left: 100px;
+                   margin-left: 150px;
                     width: 400px;
                     font-size : 20px;
                     font-weight: bold;
@@ -544,7 +557,7 @@ export default {
                 
 
                 .prctn_table{
-                    margin-left: 100px;
+                    margin-left: 150px;
                     .mme_usg_prctn_id_pdf{
                          margin-left:10px;
                         border: solid 1px black;
@@ -564,7 +577,7 @@ export default {
             .mme_file_infos_pdf{
                 position: relative;
                 .title_file_pdf{
-                    margin-left: 100px;
+                    margin-left: 150px;
                     width: 400px;
                     font-size : 20px;
                     font-weight: bold;
@@ -575,7 +588,7 @@ export default {
                 }
                 .mme_file_assoc_pdf{
                     border: solid 1px black;
-                    margin-left: 100px;
+                    margin-left: 150px;
                     position: relative;
                     margin-bottom: 20px;
                     height: auto;
@@ -587,7 +600,7 @@ export default {
             .mme_carac_infos_pdf{
                 position: relative;
                 .title_carac_pdf{
-                    margin-left: 100px;
+                    margin-left: 150px;
                     width: 200px;
                     font-size : 20px;
                     font-weight: bold;
@@ -598,6 +611,7 @@ export default {
                 
                 .mme_set_pdf{
                     position: relative;
+                    
                     p{
                         ///margin-top: 3px;
                          margin-bottom:0px;
@@ -609,14 +623,14 @@ export default {
                         border: solid 1px black;
                         margin-bottom: 20px;
                         height: 40px;
-                        margin-left: 100px;
+                        margin-left: 150px;
                         width: 250px;
                     }
                 }
 
                 .mme_remark_pdf{
                     border: solid 1px black;
-                    margin-left: 100px;
+                    margin-left: 150px;
                     position: relative;
                     margin-bottom: 20px;
                     height: auto;
@@ -627,15 +641,16 @@ export default {
             .mme_verif_infos_pdf{
                 position: relative;
                 margin-top:10px ;
+                margin-bottom:-45px;
 
                 .title_verif_pdf{
-                    margin-left: 100px;
+                    margin-left: 150px;
                     width: 400px;
                     font-size : 20px;
                     font-weight: bold;
                 }
                 .verif_table{
-                    margin-left: 100px;
+                    margin-left: 150px;
                     .verif_table_number{
                         margin-left:10px;
                         border: solid 1px black;
@@ -658,13 +673,13 @@ export default {
                     .verif_table_nonComplianceLimit{
                         border: solid 1px black;
                         text-align: center;
-                        width:194.4px;
+                        width:166px;
                         height:auto;
                     }
                     .verif_table_expectedResult{
                         border: solid 1px black;
                         text-align: center;
-                        width : 174.4px;
+                        width : 140px;
                         height:auto;
                     }
                     .verif_table_requiredSkill{
@@ -675,7 +690,7 @@ export default {
                     }                  
                     .verif_table_periodicity{
                         border: solid 1px black;
-                        width:60px;
+                        width:65px;
                         text-align: center;
                         height:auto;
                     
@@ -683,33 +698,44 @@ export default {
                     .mme_verifAcceptanceAuthority_pdf{
                          border: solid 1px black;
                         text-align: center;
-                        width:194.4px;
+                        width:150px;
+                        height:auto;
+                    }
+                    .mme_verifReformed{
+                         border: solid 1px black;
+                        text-align: center;
+                        width:70px;
                         height:auto;
                     }
                 }
             }
-
             .recordTemplateRefPdf{
                 position: relative;
-                margin-top:10px ;
-                width: 1240px;
-                font-size : 20px ;
+                margin-top:60px ;
+                width: 1046px;
+                 height: auto;
+                font-size: 20px;
+                margin-left: 150px;
 
                 .table_recordTemplateRefPdf{
-                     margin-left: 100px;
+                    width:1046px;
+
                     .confidential_recordTemplateRefPdf{
                         border: solid 1px black;
                         background-color: lightgrey;
                         text-align: center;
+                        height: auto;
+                        font-size: 20px;
+                        font-style : italic;
                     }
                     .index_recordTemplateRefPdf{
                         background-color: lightgrey;
                         border: solid 1px black;
                         text-align: center;
+                        height: auto;
+                        font-size: 20px;
                     }
                 }
-
-
             }
         }
 

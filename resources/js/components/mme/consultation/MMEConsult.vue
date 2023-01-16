@@ -7,8 +7,8 @@
             <ErrorAlert ref="errorAlert"/>
             <SuccesAlert ref="successAlert"/>
             <h1>MME Consultation</h1>
-            <div v-if="mme_eq.length>0">
-                <p class="mme_linked"> The MME is linked to the equipment: {{this.mme_eq}}</p>
+            <div v-if="this.mme_eq.length>0">
+                <p class="mme_linked"> The MME is linked to the equipment: <router-link  :to="{name:'url_eq_consult',params:{id:this.mme_eq[0].eq_id} }"> {{this.mme_eq[0].eq_internalReference}} </router-link></p>
             </div>
             <ValidationButton @ValidatePressed="Validate" :mme_id="mme_id" :validationMethod="validationMethod" :Errors="errors"/>
             <div class="accordion">
@@ -96,7 +96,7 @@ export default {
             loaded:false,
             validationMethod:this.$route.query.method,
             errors:[],
-            mme_eq:null,
+            mme_eq:[],
         }
     },
     created(){
@@ -110,7 +110,6 @@ export default {
         axios.get(consultUrl(this.mme_id))
             .then (response => {
                 this.mme_eq=response.data;
-                console.log(response.data)
                 })
             .catch(error => console.log(error));
 
@@ -132,8 +131,6 @@ export default {
         var consultUrl = (id) => `/verifs/send/${id}`;
             axios.get(consultUrl(this.mme_id))
                 .then (response=> {
-                    console.log("hello")
-                    console.log(response.data)
                     this.mme_verifs=response.data
                 })
                 .catch(error => console.log(error)) ;
@@ -142,7 +139,6 @@ export default {
             axios.get(consultUrl(this.mme_id))
             .then (response=> {
                 this.mme_usages=response.data
-                console.log(response.data)
                 this.loaded=true})
             .catch(error => console.log(error)) ;
 

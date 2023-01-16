@@ -11,7 +11,7 @@
                     <InputPasswordForm :Errors="errors.connexion" v-model="user_password" name="user_password" label="Password :" inputClassName="form-control " divClassName="password" :info_text="infos_person[5].info_value"/>
                 </form>
                 <button type="button" @click="create_account()" class="save btn btn-primary login_button ">Login</button>
-
+                <div> You don't have any account? <router-link :to="{name:'url_sign_up',params:{} }">Please Sign Up</router-link></div>
             </div>
         </div>
 

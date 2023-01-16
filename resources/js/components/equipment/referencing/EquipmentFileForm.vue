@@ -130,6 +130,7 @@ export default {
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
         addEquipmentFile(savedAs){
+            console.log("addFile")
             if(!this.addSucces){
                 //Id of the equipment in which the file will be added
                 var id;
@@ -187,6 +188,7 @@ export default {
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
         updateEquipmentFile(savedAs){
+            console.log("updateFile")
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             axios.post('/file/verif',{

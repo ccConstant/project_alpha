@@ -10,7 +10,7 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[0].info_value" :Errors="errors.usg_measurementType" name="usg_measurementType" label="Measurement type :" :isDisabled="!!isInConsultedMod" v-model="usg_measurementType" />
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[1].info_value" :Errors="errors.usg_precision" name="usg_precision" label="Precision :" :isDisabled="!!isInConsultedMod" v-model="usg_precision" />
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_usage[2].info_value" :Errors="errors.usg_application" name="usg_application" label="Application :" :isDisabled="!!isInConsultedMod" v-model="usg_application" />
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_usage[4].info_value" selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Metrological level :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_usage[3].info_value" selectClassName="form-select w-50" name="usg_metrologicalLevel"  label="Metrological level :" :Errors="errors.usg_metrologicalLevel" :options="enum_metrologicalLevel" :selctedOption="this.usg_metrologicalLevel" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="usg_metrologicalLevel"/>
                 
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">

@@ -104,12 +104,12 @@
                     </h2>
                     <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
                         <div class="accordion-body">
-                            <ReferenceAPrvMtnOp  modifMod/>
+                            <ReferenceAPrvMtnOp  :importedPrvMtnOp="eq_prvMtnOp" modifMod/>
                         </div>
                     </div>
                 </div>
 
-                <div class="accordion-item" v-if="eq_mme.length>0">
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTen">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
                         Equipment Associated MME
@@ -136,9 +136,6 @@ import ReferenceAFile from '../referencing/ReferenceAFile.vue'
 import ReferenceAPrvMtnOp from '../referencing/ReferenceAPrvMtnOp.vue'
 import ReferenceARisk from '../referencing/ReferenceARisk.vue'
 import ReferenceAMme from '../referencing/ReferenceAMme.vue'
-
-
-
 
 
 
@@ -235,6 +232,7 @@ export default {
         var consultUrlMme = (id) => `/mme/send/${id}`;
             axios.get(consultUrlMme(this.eq_id))
                 .then (response=>{
+                    console.log(response.data)
                     this.eq_mme=response.data
                     this.loaded=true;
                 })

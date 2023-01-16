@@ -15,7 +15,7 @@
                 <!--Initializing of the radio type input with his props initialized in the parent compenant-->
                 <input type="radio" :label="label" name="radio-input" :value="option.value" :id="option.id" 
                  :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)" />
-                {{ option.id }}
+                {{ option.text }}
             </label>
         </div>
         <div v-if="hasError(this.Errors)" class="invalid-feedback">
@@ -30,7 +30,7 @@ export default {
     components : {
         InputInfo
     },
-       /*--------Declartion of the differents props:--------
+       /*--------Declaration of the differents props:--------
         options: Array of option values
         label : Label of this select who will appear on it
         isRequired : If this props is present user must select an option
@@ -73,10 +73,12 @@ export default {
     /*All function inside the mounted option is called after the component has been mounted.*/
     mounted(){
         //Here we put the checked attribute in the option corresponding with the prop checkedOption
-        var radio = document.querySelectorAll('input[type="radio"]');
+        var radio = document.getElementById('input[type="radio"]');
         for (var i = 0; i < radio.length; i++) {
             if(`${radio[i].value}` == `${this.checkedOption}`) {
                 radio[i].setAttribute("checked", "checked");
+                console.log(i)
+                console.log(radio[i]) ; 
             }
         }
     },

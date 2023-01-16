@@ -31,7 +31,7 @@ class MmeController extends Controller{
      */
 
     public function send_internalReferences_ids (){
-        $mmes= Mme::all() ;
+        $mmes= Mme::orderBy('mme_internalReference', 'asc')->get() ;
         $container=array() ; 
         foreach($mmes as $mme){
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
@@ -80,7 +80,11 @@ class MmeController extends Controller{
         $container=array() ; 
         foreach($mmes as $mme){
             $obj=([
-                'value' => $mme->mme_internalReference,
+                'internalReference' => $mme->mme_internalReference,
+                'externalReference'=> $mme->mme_externalReference,
+                'name' => $mme->mme_name,
+                'id' => $mme->id,
+
             ]) ; 
             array_push($container,$obj);
         }
@@ -97,7 +101,13 @@ class MmeController extends Controller{
         if ($mme->equipmentTemp_id!=NULL){
             $eqTemp=EquipmentTemp::findOrFail($mme->equipmentTemp_id) ; 
             $eq=Equipment::findOrFail($eqTemp->equipment_id);
-            return response()->json($eq->eq_internalReference) ;
+            $array=[];
+            $obj=([
+                'eq_internalReference'=> $eq->eq_internalReference,
+                'eq_id'  => $eq->id,
+            ]);
+            array_push($array,$obj);
+            return response()->json($array) ;
         }
         return response()->json(NULL);
     }
@@ -105,13 +115,23 @@ class MmeController extends Controller{
     /**
      * Function call by ?? with the route : /mme/link_to_eq/{id} (get)
      * Link a mme to an equipment in the data base
-     * @return \Illuminate\Http\Response
      */
     public function link_mme_to_equipment(Request $request, $id){
         $mme=Mme::where('mme_internalReference','=', $request->mme_internalReference) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $mme->update([
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
+        ]);
+    }
+
+    /**
+     * Function call by EquipmentMmeForm and EquipmentMmeListForm with the route : /mme/delete/link_to_eq/{id} (get)
+     * Link a mme to an equipment in the data base
+     */
+    public function delete_link_between_mme_and_equipment($id){
+        $mme=Mme::findOrFail($id);
+        $mme->update([
+            'equipmentTemp_id' => NULL,
         ]);
     }
 
@@ -152,6 +172,11 @@ class MmeController extends Controller{
             }
             $validate=$mostRecentlyMmeTmp->mmeTemp_validate ; 
             $remarks=$mostRecentlyMmeTmp->mmeTemp_remarks ;
+
+            $version=0 ; 
+            if ($mostRecentlyMmeTmp->mmeTemp_version<10){
+                $version="0".(String)$mostRecentlyMmeTmp->mmeTemp_version ; 
+            }
         }
         return response()->json([
             'mme_internalReference' => $mme->mme_internalReference,
@@ -162,7 +187,7 @@ class MmeController extends Controller{
             'mme_remarks'  => $remarks,
             'mme_set'  => $mme->mme_set,
             'mme_validate' => $validate,
-            'mme_version' => $mostRecentlyMmeTmp->mmeTemp_version,
+            'mme_version' => $version,
         ]);
     }
 

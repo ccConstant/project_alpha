@@ -91,25 +91,12 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingHeight">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                            Equipment Associated MME (Create a new MME )
+                            Equipment Associated MME 
                         </button>
                     </h2>
                     <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingHeight">
                         <div class="accordion-body">
                             <ReferenceAMme :eq_id="this.eq_id"/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingNine">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-                            Equipment Associated MME (Adding already created MMEs to an equipment )
-                        </button>
-                    </h2>
-                    <div id="collapseNine"  class="accordion-collapse collapse" aria-labelledby="headingNine">
-                        <div class="accordion-body">
-                            <ReferenceAMmeList :eq_id="this.eq_id"/>
                         </div>
                     </div>
                 </div>
@@ -129,7 +116,6 @@ import ReferenceAFile from './ReferenceAFile.vue'
 import ReferenceAPrvMtnOp from './ReferenceAPrvMtnOp.vue'
 import ReferenceARisk from './ReferenceARisk.vue'
 import ReferenceAMme from './ReferenceAMme.vue'
-import ReferenceAMmeList from './ReferenceAMmeList.vue'
 
 
 
@@ -146,7 +132,6 @@ export default {
     ReferenceAPrvMtnOp,
     ReferenceARisk,
     ReferenceAMme,
-    ReferenceAMmeList,
   },
   data(){
     return{

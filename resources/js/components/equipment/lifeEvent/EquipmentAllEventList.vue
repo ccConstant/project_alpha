@@ -4,28 +4,27 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" >
-            <b-button variant="primary" @click="generateReport" >Export PDF</b-button>
             <div class="container" id="page">
                 <p>'</p>
-                <div class="top_infos">
-                    <div class=" equipement_pdf_logo ">
-                    <p class="text-primary" text-align="center"> ALPHA </p>
+                <div class="le_eq_top_infos">
+                    <div class="le_eq_pdf_logo">
+                     <img src="/images/logo.png" alt="Alpha logo" class="le_eq_logo" >
                     </div>
 
-                    <div class="equipement_pdf_titre">
-                        <h2 id="equipement_life_event_titre">LIST OF REGISTERED LIFE EVENTS</h2>
+                    <div class="le_eq_pdf_titre">
+                        <h2 id="le_eq_titre">LIST OF REGISTERED LIFE EVENTS</h2>
                     </div>
 
-                    <div class="equipement_pdf_index">
-                        <h2>{{eq_internalReference}}_LS-R_{{this.chaine}}</h2>
+                    <div class="le_eq_pdf_index">
+                        <h5>{{eq_internalReference}}_LS-R_{{this.chaine}}</h5>
                     </div>
 
-                    <div class="eq_internalReference_pdf">
+                    <div class="le_eq_internalReference_pdf">
                         <p>Equipment internal reference:</p>
                         <h5 class="text-primary">{{eq_internalReference}}</h5>
                     </div>
                 </div>
-                <div class="accordion_all_event">
+                <div class="le_eq_accordion_all_event">
                     <div class="accordion-item" v-for="(list,index) in states " :key="index">
                         <h2 class="accordion-header" :id="'heading'+index">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+index" aria-expanded="true" :aria-controls="'collapse'+index">
@@ -100,12 +99,12 @@
                     </div>
                 </div>
 
-                <div class="recordTemplateRefPdf">
-                <div class="table_recordTemplateRefPdf">
-                     <div class="index_recordTemplateRefPdf">
-                        Record Template Ref :  REC-IWE03
+                <div class="le_eq_recordTemplateRefPdf">
+                <div class="le_eq_table_recordTemplateRefPdf">
+                     <div class="le_eq_index_recordTemplateRefPdf">
+                        Record Template Ref :  REC-IWE04
                     </div>
-                    <div class="confidential_recordTemplateRefPdf">
+                    <div class="le_eq_confidential_recordTemplateRefPdf">
                         This document contains CONFIDENTIAL information
                     </div>
                 </div>
@@ -113,6 +112,8 @@
             </div>
             
         </div>
+        <br>
+         <b-button variant="primary" @click="generateReport" >Export PDF</b-button>
     </div>
 </template>
 
@@ -148,10 +149,10 @@ export default {
                 imageType: 'image/jpeg',
                 imageQuality: 1,
                 margin: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
+                    top: 40,
+                    right: 10,
+                    bottom: 40,
+                    left: 10,
                 },
                 output: this.eq_internalReference+'_LS-R_'+this.chaine+'.pdf', 
             });
@@ -160,7 +161,7 @@ export default {
         Date(){
             var date = new Date();
             var month=date.getMonth()+1;
-            this.chaine=date.getFullYear()+'/'+month+'/'+date.getDate();
+            this.chaine=date.getFullYear()+'-'+month+'-'+date.getDate();
         }
         
     },
@@ -225,89 +226,102 @@ export default {
             font-size : 25px ;
         }
 
-        .recordTemplateRefPdf{
-            position: block;
-            width: 1200px;
-            margin-left:-100px;
-            
+        .le_eq_top_infos{
 
-            .table_recordTemplateRefPdf{
-                position:block;
-                left:-200px;
-                 width: 1120px;
-                margin-top:70px ;
-                margin-left:-100px;
-                .confidential_recordTemplateRefPdf{
-                    border: solid 1px black;
-                    background-color: lightgrey;
-                    text-align: center;
-                }
-                .index_recordTemplateRefPdf{
-                    background-color: lightgrey;
-                    border: solid 1px black;
-                    text-align: center;
-                }
-            }
-
-
-        }
-    }
-   .container{
-    display:block;
-    margin-top: 0px;
-   }
-    .top_infos{
-        margin-left:-70px;
-        .equipement_pdf_logo{
-            border: solid 0.5px black;
-            margin: auto;
-            position: absolute;
-            width: 200px;
-            height: 170px;
-            text-align:center;
-            //left:-100px;
-            
-            
-        }
-        .equipement_pdf_titre{
-            border: solid 0.5px black;
-            margin: auto;
-            position: absolute;
-            width: 642px;
-            top: 100px;
-            height: 87px;
-            text-align:center;
-        }
-        .equipement_life_event_titre{
-            text-align: center;
-            position: relative;
-        }
-        .equipement_pdf_index{
-            border: solid 0.5px black;
-            margin: auto;
-            position: absolute;
-            left: 942px;
-            top: 100px;
-            height: 86px;
-            width: 200px;
-            text-align:center
-        }
-        
-        .eq_internalReference_pdf{
-            border: solid 0.5px black;
-            margin: auto;
-            position: absolute;
-            left :942px;
-            top: 186px;
-            width: 200px;
-            height: 84px;
             h5{
-                margin: 0 auto;
-                width: auto;
+                    margin-top :auto;
+                    width: auto;
+                    font-size:25px;
+                    text-align:center;
+                    font-weight: bold;
             }
-            text-align:center;
+            position: absolute;
+            margin-top: 0px;
+            .le_eq_pdf_logo{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                width: 200px;
+                height: 170px;
+                margin-left:100px ;
+                margin-top: 0px;
+
+                .le_eq_logo{
+                        margin-top:30px;
+                    }
+                
+            }
+            .le_eq_pdf_titre{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                width: 642px;
+                top: 0px;
+                left:300px;
+                height: 87px;
+                text-align:center;
+            }
+            .le_eq_titre{
+                text-align: center;
+                position: relative;
+            }
+            .le_eq_pdf_index{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                left: 942px;
+                top: 0px;
+                height: 86px;
+                width: 200px;
+                text-align:center
+            }
+            
+            .le_eq_internalReference_pdf{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                left :942px;
+                top: 86px;
+                width: 200px;
+                height: 84px;
+                text-align:center;
+            }
         }
+
+        .le_eq_recordTemplateRefPdf{
+            position: block;
+            
+
+            .le_eq_table_recordTemplateRefPdf{
+                position:block;
+                 width: 1042px;
+                margin-top:70px ;
+                margin-left:100px;
+                .le_eq_confidential_recordTemplateRefPdf{
+                    border: solid 1px black;
+                    background-color: lightgrey;
+                    text-align: center;
+                    height: auto;
+                    font-size: 20px;
+                     font-style : italic;
+                }
+                .le_eq_index_recordTemplateRefPdf{
+                    background-color: lightgrey;
+                    border: solid 1px black;
+                    text-align: center;
+                    height: auto;
+                    font-size: 20px;
+                }
+            }
+
+
+        }
+    
+    .container{
+        display:block;
+        margin-top: 0px;
     }
+        
 
     .all_curative_ope{
         margin-left:20px ;
@@ -315,10 +329,13 @@ export default {
     .all_preventive_ope{
          margin-left:20px ;
     }
-    .accordion_all_event{
+    .le_eq_accordion_all_event{
         display:block ;
-        margin-top : 200px;
+        margin-top : 250px;
+        width:1042px;
+        margin-left:100px;
     }
+}
 
        
 

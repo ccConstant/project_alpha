@@ -275,11 +275,22 @@ class PreventiveMaintenanceOperationController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
         $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
        foreach ($prvMtnOps as $prvMtnOp) {
-            $riskExist=false ; 
+            $riskExist="no" ; 
             $risks=Risk::where('preventiveMaintenanceOperation_id', '=', $prvMtnOp->id)->get() ; 
             if (count($risks)>0){
-                $riskExist=true ; 
+                $riskExist="yes" ; 
             }
+
+            $puttinIntoService="no";
+            if ($prvMtnOp->prvMtnOp_puttingIntoService==true){
+                $puttinIntoService="yes";
+            }
+
+            $reformed="no";
+            if ($prvMtnOp->prvMtnOp_reformDate!=NULL){
+                $reformed="yes";
+            }
+
             $obj=([
                 "id" => $prvMtnOp->id,
                 "Number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -288,6 +299,8 @@ class PreventiveMaintenanceOperationController extends Controller
                 "Symbol" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
                 "Protocol" => $prvMtnOp->prvMtnOp_protocol,
                 "Risk" => $riskExist,
+                "PuttingIntoService"=>$puttinIntoService,
+                "Reformed"=>$reformed,
             ]);
             array_push($container,$obj);
        }

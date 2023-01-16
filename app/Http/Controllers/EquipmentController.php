@@ -42,7 +42,7 @@ class EquipmentController extends Controller{
      */
 
     public function send_internalReferences_ids (){
-        $equipments= Equipment::all() ;
+        $equipments= Equipment::orderBy('eq_internalReference', 'asc')->get();
         $container=array() ; 
         foreach($equipments as $equipment){
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
@@ -64,10 +64,13 @@ class EquipmentController extends Controller{
             if ($mostRecentlyEqTmp->technicalVerifier_id!=NULL){
                 $isAlreadyTechnicalValidated=true ; 
             }
+
         
             $obj=([
                 'id' => $equipment->id,
                 'eq_internalReference' => $equipment->eq_internalReference,
+                'eq_externalReference' => $equipment->eq_externalReference,
+                'eq_name' => $equipment->eq_name,
                 'eq_state' =>  $mostRecentlyState->state_name,
                 'state_id' => $mostRecentlyState->id,
                 'eqTemp_lifeSheetCreated' => $mostRecentlyEqTmp->eqTemp_lifeSheetCreated,
@@ -147,13 +150,18 @@ class EquipmentController extends Controller{
                 $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
                 $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
             }
+            $version=0 ; 
+            $number=(Integer)$mostRecentlyEqTmp->eqTemp_version ; 
+            if ($number<10){
+                $version="0".(String)$mostRecentlyEqTmp->eqTemp_version;
+            }
         }
         return response()->json([
             'eq_internalReference' => $equipment->eq_internalReference,
             'eq_externalReference' => $equipment->eq_externalReference,
             'eq_name' => $equipment->eq_name,
             'eq_type'=> $type,
-            'eq_version' => $mostRecentlyEqTmp->eqTemp_version,
+            'eq_version' => $version, 
             'eq_serialNumber' => $equipment->eq_serialNumber,
             'eq_constructor'  => $equipment->eq_constructor,
             'eq_mass'  => (string)$mass,
@@ -551,6 +559,55 @@ class EquipmentController extends Controller{
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ; 
                 foreach( $prvMtnOps as $prvMtnOp){
+                    
+                    $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ; 
+                    $ymd=explode('-', $dates[0]);
+                    $year=$ymd[0] ; 
+                    $month=$ymd[1] ;
+                    $day=$ymd[2] ;
+
+                    $time=explode(':', $dates[1]); 
+                    $hour=$time[0] ;
+                    $min=$time[1] ; 
+                    $sec=$time[2] ;
+                
+                    $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
+                    $endDate=Carbon::now('Europe/Paris'); 
+                    $endDate->addMonths(17);
+                    $AllnextDate=array() ;
+                    $dateForPush=Carbon::create($nextDate->year, $nextDate->month, $nextDate->day, $nextDate->hour, $nextDate->minute, $nextDate->second) ;
+                    $monthForPush=$dateForPush->month ;
+                    if (strlen($monthForPush)==1){
+                        $monthForPush="0".$monthForPush ;
+                    }
+                    array_push($AllnextDate,$monthForPush."-".$dateForPush->year) ;
+                    while($nextDate<$endDate){
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
+                            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
+                            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+                        
+                        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
+                            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+                         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
+                            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+                        }
+                        if ($nextDate<$endDate) {
+                            $dateForPush2=Carbon::create($nextDate->year, $nextDate->month, $nextDate->day, $nextDate->hour, $nextDate->minute, $nextDate->second) ;
+                             $monthForPush2=$dateForPush2->month ;
+                            if (strlen($monthForPush2)==1){
+                                $monthForPush2="0".$monthForPush2 ;
+                            }
+                            array_push($AllnextDate,$monthForPush2."-".$dateForPush2->year) ;
+                        }
+                    }
+
+
+
+                   
                     $opMtn=([
                         "id" => $prvMtnOp->id,
                         "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -559,7 +616,7 @@ class EquipmentController extends Controller{
                         "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
                         "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
                         "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
-                        "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                        "prvMtnOp_nextDate" => $AllnextDate,
                         "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
                         "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
                         
@@ -577,11 +634,126 @@ class EquipmentController extends Controller{
                     }
                 }
 
+                $Allperiode=array();
+                $startDate=Carbon::now('Europe/Paris');
+                $month=$startDate->month ;
+                if ($month==1){
+                    $month="Jan" ; 
+                }
+                if ($month==2){
+                    $month="Feb" ; 
+                }
+                if ($month==3){
+                    $month="Mar" ; 
+                }
+                if ($month==4){
+                    $month="Apr" ; 
+                }
+                if ($month==5){
+                    $month="May" ; 
+                }
+                if ($month==6){
+                    $month="Jun" ; 
+                }
+                if ($month==7){
+                    $month="Jul" ; 
+                }
+                if ($month==8){
+                    $month="Aug" ; 
+                }
+                if ($month==9){
+                    $month="Sep" ; 
+                }
+                if ($month==10){
+                    $month="Oct" ; 
+                }
+                if ($month==11){
+                    $month="Nov" ; 
+                }
+                if ($month==12){
+                    $month="Dec" ; 
+                }
+                $monthForId=$startDate->month ; 
+                $monthForId2=$startDate->month ;
+                if (strlen($monthForId)==1){
+                    $monthForId2="0".$monthForId ; 
+                }
+
+                $periode=([
+                    'month' => $month,
+                    'year' => $startDate->year,
+                    'id' => $monthForId2."-".$startDate->year,
+                ]);
+                
+
+                array_push($Allperiode,$periode);
+                for ($i=1; $i<18; $i++){
+                    $startDate->addMonth(1) ; 
+                    $year=$startDate->year;
+                    $month=$startDate->month;
+                    $monthInLetters="";
+                    if ($month==1){
+                        $monthInLetters="Jan" ; 
+                    }
+                    if ($month==2){
+                        $monthInLetters="Feb" ; 
+                    }
+                    if ($month==3){
+                        $monthInLetters="Mar" ; 
+                    }
+                    if ($month==4){
+                        $monthInLetters="Apr" ; 
+                    }
+                    if ($month==5){
+                        $monthInLetters="May" ; 
+                    }
+                    if ($month==6){
+                        $monthInLetters="Jun" ; 
+                    }
+                    if ($month==7){
+                        $monthInLetters="Jul" ; 
+                    }
+                    if ($month==8){
+                        $monthInLetters="Aug" ; 
+                    }
+                    if ($month==9){
+                        $monthInLetters="Sep" ; 
+                    }
+                    if ($month==10){
+                        $monthInLetters="Oct" ; 
+                    }
+                    if ($month==11){
+                        $monthInLetters="Nov" ; 
+                    }
+                    if ($month==12){
+                        $monthInLetters="Dec" ; 
+                    }
+
+                    $monthForId3=$startDate->month ; 
+                    $monthForId4=$startDate->month ;
+                    if (strlen($monthForId3)==1){
+                        $monthForId4="0".$monthForId3 ; 
+                    }
+
+                    $periode2=([
+                        'id' => $monthForId4."-".$startDate->year,
+                        "month" => $monthInLetters,
+                        "year" => $year,
+                    ]);
+                    array_push($Allperiode,$periode2);
+                }
+
+                
+
+
+
                 $eq = ([
                     "id" => $equipment->id,
                     "internalReference" => $equipment->eq_internalReference,
+                    "name" => $equipment->eq_name,
                     "preventive_maintenance_operations" => $containerOp,
                     "state_id" => $mostRecentlyState->id,
+                    "periode" => $Allperiode,
                 ]) ; 
 
                 array_push($container,$eq);
@@ -618,6 +790,7 @@ class EquipmentController extends Controller{
                             "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
                             "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
                             "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
+                            
                             "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
                             
                         ]);

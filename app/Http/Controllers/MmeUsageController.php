@@ -59,12 +59,17 @@ class MmeUsageController extends Controller
             $this->validate(
                 $request,
                 [
+                    'usg_measurementType' => 'max:255',
                     'usg_application' => 'required|min:3|max:255',
+                    'usg_precision' => 'max:255',
+
                 ],
                 [
                     'usg_application.required' => 'You must enter an application method for your usage ',
                     'usg_application.min' => 'You must enter at least three characters ',
                     'usg_application.max' => 'You must enter a maximum of 255 characters',
+                    'usg_measurementType.max' => 'You must enter a maximum of 255 characters',
+                    'usg_precision.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
