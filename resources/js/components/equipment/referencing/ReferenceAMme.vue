@@ -10,7 +10,7 @@
 -------------------------------------------------------------->
 <template>
     <div class="equipmentMme" >
-        <h2 class="titleForm">Equipment Mme(s)</h2>
+        <h2 class="titleForm">Equipment MME(s)</h2>
         <!--Adding to the vue EquipmentMmeForm by going through the components array with the v-for-->
         <!--ref="ask_mme_data" is used to call the child elements in this component-->
         <!--The emitted deleteMme is catched here and call the function getContent -->

@@ -165,6 +165,7 @@ export default {
             eq_risk:null,
             loaded:false,
             eq_mme:null,
+            eq_lifeSheetCreated:false,
         }
     },
 

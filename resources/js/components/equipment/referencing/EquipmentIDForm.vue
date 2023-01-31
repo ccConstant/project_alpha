@@ -20,9 +20,9 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference" name="eq_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod"  isRequired v-model="eq_internalReference" :info_text="infos_idCard[0].info_value"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference" name="eq_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  isRequired  v-model="eq_externalReference" :info_text="infos_idCard[1].info_value"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name" label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name"  :info_text="infos_idCard[2].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference" name="eq_internalReference" label="Unique ID" :isDisabled="!!isInConsultMod"  isRequired v-model="eq_internalReference" :info_text="infos_idCard[0].info_value"/>
+              <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name" label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name"  :info_text="infos_idCard[2].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference" name="eq_externalReference" label="Eq ref in Alpha Database :" :isDisabled="!!isInConsultMod"  isRequired  v-model="eq_externalReference" :info_text="infos_idCard[1].info_value"/>
             <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.eq_type"  name="eq_type" label="Type :" :options="enum_type" :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type" :info_text="infos_idCard[3].info_value"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_serialNumber" name="eq_serialNumber" label="Equipment serial Number :" :isDisabled="!!isInConsultMod" v-model="eq_serialNumber" :info_text="infos_idCard[4].info_value"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_constructor" name="eq_constructor" label="Equipment constructor :" :isDisabled="!!isInConsultMod" v-model="eq_constructor" :info_text="infos_idCard[5].info_value"/>
@@ -180,8 +180,8 @@ export default {
             eq_validate:this.validate,
             eq_importFrom:undefined,
             eq_mobilityOption :[
-                {id: 'Yes', value:true},
-                {id : 'No', value:false}
+                {id: 'eq_mobil', value:true, text:'Yes'},
+                {id : 'eq_mobil', value:false, text:'No'}
             ],
             isInConsultMod:this.consultMod,
             enum_type : [], 
@@ -367,6 +367,7 @@ export default {
         position:fixed;
         background-color:aqua;
         top:90px;
+        z-index:5;
     }
     form{
         margin: 20px;

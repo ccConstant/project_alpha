@@ -41,6 +41,7 @@ use App\Http\Controllers\EnumVerificationRequiredSkillController;
 use App\Http\Controllers\EnumPrecautionTypeController;
 use App\Http\Controllers\EnumUsageMetrologicalLevelController;
 use App\Http\Controllers\EnumVerifAcceptanceAuthorityController;
+use App\Http\Controllers\HistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/equipment/list/consult/{id}', function () {
+        return view('welcome');
+    });
+
+    Route::get('equipment/history/{id}', function () {
         return view('welcome');
     });
 
@@ -284,6 +289,7 @@ Route::post('/state/equipment/{id} ', [EquipmentController::class, 'add_equipmen
 
 Route::get('/send/state/equipment/{state_id} ', [EquipmentController::class, 'send_equipment_from_state'] ) ;
 
+Route::get('/send/equipment/planning/periode', [EquipmentController::class, 'send_periode_for_planning'] ) ;
 
 /* Dimension Form Routes */ 
 
@@ -476,6 +482,11 @@ Route::post('/mme/add/state/curMtnOp/', [CurativeMaintenanceOperationController:
 Route::post('/mme/update/state/curMtnOp/{id}', [CurativeMaintenanceOperationController::class,'update_curMtnOp_mme'])  ;
 
 Route::get('/mme_state/curMtnOp/send/{id}', [CurativeMaintenanceOperationController::class, 'send_curMtnOp_mme'])  ;
+
+
+/* History Form Routes */
+
+Route::post('/history/add/equipment/{id}', [HistoryController::class, 'add_history_for_eq'])  ;
 
 /* Enum Form Routes */ 
 

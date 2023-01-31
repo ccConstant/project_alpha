@@ -4,9 +4,9 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <br><br><!--Call of the different component with their props-->
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference" name="mme_internalReference" label="Alpha reference :" :isDisabled="!!isInConsultMod" v-model="mme_internalReference" :info_text="infos_idCard[0].info_value" />
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="External reference :" :isDisabled="!!isInConsultMod"  v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod" v-model="mme_name" :info_text="infos_idCard[2].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference" name="mme_internalReference" label="Unique ID :" :isDisabled="!!isInConsultMod" v-model="mme_internalReference" :info_text="infos_idCard[0].info_value" />
+               <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod" v-model="mme_name" :info_text="infos_idCard[2].info_value" />
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="MME ref in Alpha Database  :" :isDisabled="!!isInConsultMod"  v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_serialNumber" name="mme_serialNumber" label="MME serial Number :" :isDisabled="!!isInConsultMod" v-model="mme_serialNumber" :info_text="infos_idCard[3].info_value" />
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_constructor" name="mme_constructor" label="MME constructor :" :isDisabled="!!isInConsultMod" v-model="mme_constructor" :info_text="infos_idCard[4].info_value" />
             <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.mme_remarks" name="mme_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="mme_remarks" :info_text="infos_idCard[5].info_value"/>

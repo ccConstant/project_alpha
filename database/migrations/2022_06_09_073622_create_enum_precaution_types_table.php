@@ -3,7 +3,7 @@
 /*
 * Filename : 2022_06_09_073622_create_enum_precaution_types_table.php
 * Creation date : 9 Jun 2022
-* Update date : 9 Jun 2022
+* Update date : 31 Jan 2023
 * Role : This file is used to create the table "enum_precaution_types" in the data base. In this file, we can see the different
 * attribute of this table (id and value) and how they are defined (string, boolean, unique or not)
 */ 
@@ -16,7 +16,7 @@ class CreateEnumPrecautionTypesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     * Create the table enum_precaution_types in the data base
      * @return void
      */
     public function up()
@@ -30,7 +30,7 @@ class CreateEnumPrecautionTypesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
+     * Delete the table enum_precaution_types if it already exist
      * @return void
      */
     public function down()

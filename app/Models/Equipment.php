@@ -2,8 +2,8 @@
 
 /*
 * Filename : Equipment.php
-* Creation date : 29 Apr 2022
-* Update date : 9 May 2022
+* Creation date : 10 May 2022
+* Update date : 31 Jan 2023
 * This file define the model Equipment. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_062010_create_equipment_table.php" in Database>migrations." 
 * 

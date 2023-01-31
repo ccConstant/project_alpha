@@ -36,68 +36,86 @@
                         Name
                     </b-col>
                     <b-col cols="1" class="eq_planning_annual_prvMtnOp">
-                        Operations
+                        Operations planned
                     </b-col>
                     <b-col cols="1" class="eq_planning_annual_plannification">
                         Annual Planification 
                         <b-row>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[0].month}} {{eq[1].periode[0].year}}
+                                    {{periode[0].month}} {{periode[0].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[1].month}} {{eq[1].periode[1].year}}
+                                    {{periode[1].month}} {{periode[1].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[2].month}} {{eq[1].periode[2].year}}
+                                    {{periode[2].month}} {{periode[2].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[3].month}} {{eq[1].periode[3].year}}
+                                    {{periode[3].month}} {{periode[3].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[4].month}} {{eq[1].periode[4].year}}
+                                    {{periode[4].month}} {{periode[4].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[5].month}} {{eq[1].periode[5].year}}
+                                    {{periode[5].month}} {{periode[5].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[6].month}} {{eq[1].periode[6].year}}
+                                    {{periode[6].month}} {{periode[6].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[7].month}} {{eq[1].periode[7].year}}
+                                    {{periode[7].month}} {{periode[7].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[8].month}} {{eq[1].periode[8].year}}
+                                    {{periode[8].month}} {{periode[8].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[9].month}} {{eq[1].periode[9].year}}
+                                    {{periode[9].month}} {{periode[9].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[10].month}} {{eq[1].periode[10].year}}
+                                    {{periode[10].month}} {{periode[10].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[11].month}} {{eq[1].periode[11].year}}
+                                    {{periode[11].month}} {{periode[11].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[12].month}} {{eq[1].periode[12].year}}
+                                    {{periode[12].month}} {{periode[12].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[13].month}} {{eq[1].periode[13].year}}
+                                    {{periode[13].month}} {{periode[13].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[14].month}} {{eq[1].periode[14].year}}
+                                    {{periode[14].month}} {{periode[14].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[15].month}} {{eq[1].periode[15].year}}
+                                    {{periode[15].month}} {{periode[15].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[16].month}} {{eq[1].periode[16].year}}
+                                    {{periode[16].month}} {{periode[16].year}}
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
-                                    {{eq[1].periode[17].month}} {{eq[1].periode[17].year}}
+                                    {{periode[17].month}} {{periode[17].year}}
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date">
+                                    {{periode[18].month}} {{periode[18].year}}
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date">
+                                    {{periode[19].month}} {{periode[19].year}}
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date">
+                                    {{periode[20].month}} {{periode[20].year}}
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date">
+                                    {{periode[21].month}} {{periode[21].year}}
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date">
+                                    {{periode[22].month}} {{periode[22].year}}
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date">
+                                    {{periode[23].month}} {{periode[23].year}}
                             </b-col>
                         </b-row>
                     </b-col>
-                    <b-col cols="1" class="eq_planning_annual_periodicity">
+                    <b-col cols="1" class="eq_planning_annual_periodicity_title">
                         Freq.
                     </b-col>
                 </b-row>
@@ -116,92 +134,122 @@
                                         <p class="info">Operation {{eq_prvMtnOp.prvMtnOp_number}}</p>
                                 </b-col>
                                 
-                                <b-col v-if="maintenancePlanned(eq.periode[0].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[0].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[1].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">  
+                                <b-col v-if="maintenancePlanned(periode[1].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">  
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col  v-if="maintenancePlanned(eq.periode[2].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">   
+                                <b-col  v-if="maintenancePlanned(periode[2].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">   
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col  v-if="maintenancePlanned(eq.periode[3].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col  v-if="maintenancePlanned(periode[3].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[4].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">                                   
+                                <b-col v-if="maintenancePlanned(periode[4].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">                                   
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[5].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[5].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">      
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[6].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[6].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[7].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[7].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[8].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[8].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[9].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[9].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[10].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[10].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[11].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[11].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[12].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[12].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[13].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[13].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[14].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[14].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[15].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[15].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[16].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[16].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(eq.periode[17].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[17].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                </b-col>
+                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
+                                </b-col>
+
+                                <b-col v-if="maintenancePlanned(periode[18].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                </b-col>
+                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
+                                </b-col>
+
+                                <b-col v-if="maintenancePlanned(periode[19].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                </b-col>
+                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
+                                </b-col>
+
+                                <b-col v-if="maintenancePlanned(periode[20].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                </b-col>
+                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
+                                </b-col>
+
+                                <b-col v-if="maintenancePlanned(periode[21].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                </b-col>
+                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
+                                </b-col>
+
+                                <b-col v-if="maintenancePlanned(periode[22].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                </b-col>
+                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
+                                </b-col>
+
+                                <b-col v-if="maintenancePlanned(periode[23].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
@@ -279,6 +327,24 @@
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
                                     
                             </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date_value">
+                                    
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date_value">
+                                    
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date_value">
+                                    
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date_value">
+                                    
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date_value">
+                                    
+                            </b-col>
+                            <b-col cols="4" class="eq_planning_annual_plannification_date_value">
+                                    
+                            </b-col>
                             <b-col cols="1"  class="eq_planning_annual_periodicity">
                                 <p class="info"> / </p>
                             </b-col>                  
@@ -286,8 +352,8 @@
                     </div>    
                 </div>
             </div>
-         <button class="btn btn-primary" @click="generateReport" >Generate PDF</button>
         </div>
+         <button class="btn btn-primary" @click="generateReport" >Generate PDF</button>
     </div>
 </template>
 
@@ -299,6 +365,7 @@ export default {
             eq_id:this.$route.params.id,
             loaded:true,
             eq:[],
+            periode:[],
 
         }
     },
@@ -310,6 +377,8 @@ export default {
 
         maintenancePlanned(id_periode, AllnextDate){
             let res=false ; 
+            if (AllnextDate.length==0)
+                return res;
             AllnextDate.forEach(nextdate => {
                 if (nextdate == id_periode){
                     res=true;
@@ -353,7 +422,12 @@ export default {
             .then (response=>{
                 this.eq = response.data;
                 console.log(response.data);
-        })
+        });
+        axios.get('/send/equipment/planning/periode')
+        .then (response=>{
+                this.periode = response.data;
+                console.log(response.data);
+        });
 
 	},
 }
@@ -367,7 +441,7 @@ export default {
                 font-size : 10px ;
             }
             .info{
-                font-size : 10px ;
+                font-size : 8px ;
                 color:black;
             }
             .list_eq_top_infos{
@@ -475,54 +549,55 @@ export default {
             margin-left:30px;
             width:1300px;
             .eq_planning_annual_internalReference{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:125px;
+                width:100px;
                 height:auto;
-                font-size : 15px;
+                font-size : 10px;
                  color:#20bbd8
             }
                 .eq_planning_annual_name{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:125px;
+                width:85px;
                 height:auto;
-                font-size : 15px;
+                font-size : 10px;
                  color:#20bbd8
             }
             .eq_planning_annual_prvMtnOp{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:90px;
+                width:77px;
                 height:auto;
-                font-size : 15px;
+                font-size : 10px;
                  color:#20bbd8
             }
 
             .eq_planning_annual_plannification{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:866px;
+                width:1004.7px;
                 height:auto;
                 font-size : 15px;
                  color:#20bbd8
             }
 
             .eq_planning_annual_plannification_date{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:50px;
+                width:35px;
                 height:auto;
-                font-size : 10px;
+                font-size : 7px;
                 color:#20bbd8; 
                 display: inline-table;
-                margin-left:-2px;
+                margin-left:0px;
+                margin-top:1px;
             }
 
             .eq_planning_annual_plannification_date_value{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:48.02px;
+                width:41.85px;
                 height:auto;
                 font-size : 10px;
                 color:#20bbd8; 
@@ -531,9 +606,9 @@ export default {
             }
 
             .eq_planning_annual_plannification_date_value_color{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:48.02px;
+                width:41.85px;
                 height:auto;
                 font-size : 10px;
                 color:#20bbd8; 
@@ -548,12 +623,21 @@ export default {
 
 
             .eq_planning_annual_periodicity{
-                border: solid 1px black;
+                border: solid 0.5px black;
                 text-align: center;
-                width:50px;
+                width:40px;
                 font-size : 15px;
                 color:#20bbd8
-            }   
+            }  
+            
+            .eq_planning_annual_periodicity_title{
+                border: solid 0.5px black;
+                text-align: center;
+                width:40px;
+                font-size : 10px;
+                color:#20bbd8;
+                margin-left: 0px;
+            } 
         
         }
     }

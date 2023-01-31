@@ -38,7 +38,7 @@ export default {
     computed: {
         filterByTerm() {
             return this.imported_eq_ref.filter(option => {
-                return option.eq_internalReference.toLowerCase().startsWith(this.searchTerm);
+                return option.eq_internalReference.toLowerCase().startsWith(this.searchTerm.toLowerCase());
             });
         }
     },

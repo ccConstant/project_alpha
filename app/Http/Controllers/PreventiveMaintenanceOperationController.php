@@ -30,30 +30,46 @@ class PreventiveMaintenanceOperationController extends Controller
                 //-----CASE prvMtnOp->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his preventive maintenance operation, so he must enter all the attributes
         if ($request->prvMtnOp_validate=='validated'){
-            $this->validate(
-                $request,
-                [
-                    'prvMtnOp_description' => 'required|min:3|max:255',
-                    'prvMtnOp_periodicity' => 'required|min:1|max:4',
-                    'prvMtnOp_protocol' => 'required|min:3',
-                    'prvMtnOp_symbolPeriodicity' => 'required',
-                    'prvMtnOp_puttingIntoService' => 'required', 
-                ],
-                [
-                    'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
-                    'prvMtnOp_description.min' => 'You must enter at least three characters ',
-                    'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
-                    'prvMtnOp_periodicity.required' => 'You must enter a periodicity for your preventive maintenance operation',
-                    'prvMtnOp_periodicity.min' => 'You must enter at least one character ',
-                    'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
-                    'prvMtnOp_protocol.required' => 'You must enter a protocol for your preventive maintenance operation',
-                    'prvMtnOp_protocol.min' => 'You must enter at least three characters ',
-                    'prvMtnOp_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your preventive maintenance operation',
+            if (!$request->prvMtnOp_preventiveOperation){
+                $this->validate(
+                    $request,
+                    [
+                        'prvMtnOp_description' => 'required|min:3|max:255',
+                        'prvMtnOp_protocol' => 'required|min:3',
+                    ],
+                    [
+                        'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
+                        'prvMtnOp_description.min' => 'You must enter at least three characters ',
+                        'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
+                        'prvMtnOp_protocol.required' => 'You must enter a protocol for your preventive maintenance operation',
+                        'prvMtnOp_protocol.min' => 'You must enter at least three characters ',
+                    ]
+                );
 
-                
-                ]
-            );
+            }else{
+                $this->validate(
+                    $request,
+                    [
+                        'prvMtnOp_description' => 'required|min:3|max:255',
+                        'prvMtnOp_periodicity' => 'required|min:1|max:4',
+                        'prvMtnOp_protocol' => 'required|min:3',
+                        'prvMtnOp_symbolPeriodicity' => 'required',
+                    ],
+                    [
+                        'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
+                        'prvMtnOp_description.min' => 'You must enter at least three characters ',
+                        'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
+                        'prvMtnOp_periodicity.required' => 'You must enter a periodicity for your preventive maintenance operation',
+                        'prvMtnOp_periodicity.min' => 'You must enter at least one character ',
+                        'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
+                        'prvMtnOp_protocol.required' => 'You must enter a protocol for your preventive maintenance operation',
+                        'prvMtnOp_protocol.min' => 'You must enter at least three characters ',
+                        'prvMtnOp_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your preventive maintenance operation',
 
+                    
+                    ]
+                );
+            }
         }else{
              //-----CASE prvMtnOp->validate=drafted or prvMtnOp->validate=to be validate----//
             //if the user has choosen "drafted" or "to be validated" he have no obligations 
@@ -124,26 +140,28 @@ class PreventiveMaintenanceOperationController extends Controller
             }
             $max_number=$max_number+1 ;
         }
+
         $nextDate=NULL ; 
-       
-        $startDate=Carbon::now('Europe/Paris');
-        if ($request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL && $request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL ){
-            $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
-           
-            if ($request->prvMtnOp_symbolPeriodicity=='Y'){
-                $nextDate->addYears($request->prvMtnOp_periodicity) ; 
-            }
+        if ($request->prvMtnOp_preventiveOperation){
+            $startDate=Carbon::now('Europe/Paris');
+            if ($request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL && $request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL ){
+                $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
+            
+                if ($request->prvMtnOp_symbolPeriodicity=='Y'){
+                    $nextDate->addYears($request->prvMtnOp_periodicity) ; 
+                }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='M'){
-                $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
-            }
+                if ($request->prvMtnOp_symbolPeriodicity=='M'){
+                    $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
+                }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='D'){
-                $nextDate->addDays($request->prvMtnOp_periodicity) ; 
-            }
+                if ($request->prvMtnOp_symbolPeriodicity=='D'){
+                    $nextDate->addDays($request->prvMtnOp_periodicity) ; 
+                }
 
-            if ($request->prvMtnOp_symbolPeriodicity=='H'){
-                $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+                if ($request->prvMtnOp_symbolPeriodicity=='H'){
+                    $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+                }
             }
         }
         
@@ -158,11 +176,22 @@ class PreventiveMaintenanceOperationController extends Controller
             'prvMtnOp_nextDate' => $nextDate,
             'prvMtnOp_validate' => $request->prvMtnOp_validate,
             'prvMtnOp_puttingIntoService' => $request->prvMtnOp_puttingIntoService, 
+            'prvMtnOp_preventiveOperation' => $request->prvMtnOp_preventiveOperation,
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
         ]) ; 
             
         $prvMtnOp_id=$prvMtnOp->id;
         if ($mostRecentlyEqTmp!=NULL){
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
              //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add prvMtnOp
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
@@ -179,6 +208,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 $mostRecentlyEqTmp->update([
                  'eqTemp_version' => $version,
                  'eqTemp_date' => Carbon::now('Europe/Paris'),
+                 'eqTemp_lifeSheetCreated' => false,
                 ]);
             }
         }
@@ -197,6 +227,16 @@ class PreventiveMaintenanceOperationController extends Controller
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update prvMtnOp
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
@@ -214,6 +254,7 @@ class PreventiveMaintenanceOperationController extends Controller
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
             }
 
@@ -250,7 +291,6 @@ class PreventiveMaintenanceOperationController extends Controller
                     'prvMtnOp_nextDate' => $nextDate,
                 ]);
             }
-            //return response()->json($request->prvMtnOp_puttingIntoService);
             $oldPrvMtnOp->update([
                 'prvMtnOp_description' => $request->prvMtnOp_description,
                 'prvMtnOp_periodicity' => $request->prvMtnOp_periodicity,
@@ -258,6 +298,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 'prvMtnOp_protocol' => $request->prvMtnOp_protocol,
                 'prvMtnOp_validate' => $request->prvMtnOp_validate,
                 'prvMtnOp_puttingIntoService' => $request->prvMtnOp_puttingIntoService,
+                'prvMtnOp_preventiveOperation' => $request->prvMtnOp_preventiveOperation,
             ]) ;
 
         }
@@ -286,6 +327,11 @@ class PreventiveMaintenanceOperationController extends Controller
                 $puttinIntoService="yes";
             }
 
+            $preventiveOperation="no";
+            if ($prvMtnOp->prvMtnOp_preventiveOperation==true){
+                $preventiveOperation="yes";
+            }
+
             $reformed="no";
             if ($prvMtnOp->prvMtnOp_reformDate!=NULL){
                 $reformed="yes";
@@ -300,6 +346,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 "Protocol" => $prvMtnOp->prvMtnOp_protocol,
                 "Risk" => $riskExist,
                 "PuttingIntoService"=>$puttinIntoService,
+                "PreventiveOperation"=>$preventiveOperation,
                 "Reformed"=>$reformed,
             ]);
             array_push($container,$obj);
@@ -332,6 +379,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
                 "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
                 "prvMtnOp_puttingIntoService" => (boolean)$prvMtnOp->prvMtnOp_puttingIntoService,
+                "prvMtnOp_preventiveOperation" => (boolean)$prvMtnOp->prvMtnOp_preventiveOperation,
                 
             ]);
             array_push($container,$obj);
@@ -361,6 +409,7 @@ class PreventiveMaintenanceOperationController extends Controller
             "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
             "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
             "prvMtnOp_puttingIntoService" => (boolean)$prvMtnOp->prvMtnOp_puttingIntoService,
+            "prvMtnOp_preventiveOperation" => (boolean)$prvMtnOp->prvMtnOp_preventiveOperation,
             
         ]);
         array_push($container,$obj);
@@ -380,17 +429,19 @@ class PreventiveMaintenanceOperationController extends Controller
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
-            $OneWeekLater=$prvMtnOp->prvMtnOp_nextDate->addDays(7) ; 
-           if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
-                $obj=([
-                    "id" => $prvMtnOp->id,
-                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                    "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
-                ]);
-                array_push($container,$obj);
-           }
+            if ($prvMtnOp_preventiveOperation){
+                $OneWeekLater=$prvMtnOp->prvMtnOp_nextDate->addDays(7) ; 
+                if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
+                        $obj=([
+                            "id" => $prvMtnOp->id,
+                            "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                            "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                            "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                            "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                        ]);
+                        array_push($container,$obj);
+                }
+            }
        }
         return response()->json($container) ;
     }
@@ -408,17 +459,19 @@ class PreventiveMaintenanceOperationController extends Controller
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
-           if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $prvMtnOp->prvMtnOp_nextDate<$now ){
-                $obj=([
-                    "id" => $prvMtnOp->id,
-                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                    "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
-                ]);
-                array_push($container,$obj);
-           }
-       }
+            if ($prvMtnOp_preventiveOperation){
+                if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $prvMtnOp->prvMtnOp_nextDate<$now ){
+                        $obj=([
+                            "id" => $prvMtnOp->id,
+                            "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                            "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                            "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                            "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                        ]);
+                        array_push($container,$obj);
+                }
+            }
+        }
         return response()->json($container) ;
     }
 
@@ -436,14 +489,16 @@ class PreventiveMaintenanceOperationController extends Controller
 
        foreach ($prvMtnOps as $prvMtnOp) {
            if ($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL){
-                $obj=([
-                    "id" => $prvMtnOp->id,
-                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                    "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
-                ]);
-                array_push($container,$obj);
+                if ($prvMtnOp->prvMtnOp_preventiveOperation){
+                    $obj=([
+                        "id" => $prvMtnOp->id,
+                        "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                        "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                        "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                        "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                    ]);
+                    array_push($container,$obj);
+                }
            }
        }
         return response()->json($container) ;
@@ -459,6 +514,18 @@ class PreventiveMaintenanceOperationController extends Controller
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update prvMtnOp
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
@@ -475,6 +542,7 @@ class PreventiveMaintenanceOperationController extends Controller
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
             'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_lifeSheetCreated' => false,
             ]);
         }
         

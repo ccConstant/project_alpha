@@ -118,6 +118,20 @@ class SpecialProcessController extends Controller
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
+            
+            
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+            
+            
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update special process
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
@@ -135,6 +149,7 @@ class SpecialProcessController extends Controller
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
                 
                 // In the other case, we can modify the informations without problems

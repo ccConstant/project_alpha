@@ -261,7 +261,6 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    console.log("update dans la base")
                     console.log(this.dim_type,"\n",this.dim_name,"\n"
                     ,this.dim_value,"\n",this.dim_unit,"\n",savedAs,"\n",this.equipment_id_update,"\n",this.dim_id);
                     
@@ -278,6 +277,7 @@ export default {
                         dim_validate : savedAs
                     })
                     .then(response =>{
+                        console.log(response.data);
                         this.$refs.sucessAlert.showAlert(`Equipment dimension updated as ${savedAs} successfully`);
                         this.dim_validate=savedAs;
                     })

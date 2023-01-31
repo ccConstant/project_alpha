@@ -2,8 +2,8 @@
 
 /*
 * Filename : EquipmentTemp.php
-* Creation date : 29 Apr 2022
-* Update date : 10 May 2022
+* Creation date : 10 May 2022
+* Update date : 31 Jan 2023
 * This file define the model EquipmentTemp. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_062219_create_equipment_temps_table.php" in Database>migrations." 
 * 
@@ -14,7 +14,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Equipment ; 
-use App\Models\People; 
+use App\Models\User; 
 use App\Models\SpecialProcess; 
 use App\Models\Power;
 use App\Models\State;  
@@ -61,17 +61,17 @@ class EquipmentTemp extends Model{
 
     //Define the relation between an equipment_temp and the person who cheking it : an equipment_temp has only one qualityVerifier
     public function qualityVerifier(){
-        return $this->belongsTo(People::class, 'qualityVerifier_id') ; 
+        return $this->belongsTo(User::class, 'qualityVerifier_id') ; 
     }
 
     //Define the relation between an equipment_temp and the person who cheking it : an equipment_temp has only one technicalVerifier
     public function technicalVerifier(){
-        return $this->belongsTo(People::class, 'technicalVerifier_id') ; 
+        return $this->belongsTo(User::class, 'technicalVerifier_id') ; 
     }
 
     //Define the relation between an equipment_temp and the person who creating it : an equipment_temp has only one creator (person who makes the changes creating the equipment_temp)
     public function createdBy(){
-        return $this->belongsTo(People::class, 'createdBy_id') ; 
+        return $this->belongsTo(User::class, 'createdBy_id') ; 
     }
 
     //Define the relation between an equipment_temp and its special_process : an equipment_temp has only one special_process

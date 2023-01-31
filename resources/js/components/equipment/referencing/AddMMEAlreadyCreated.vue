@@ -43,11 +43,14 @@ export default {
     methods: {
         chooseMME(){
             if(this.radio_value!=''){
+                console.log("coucou"+this.radio_value.internalReference)
+                console.log(this.eq_id)
                 var urlLinkMmetoEq = (id) => `/mme/link_to_eq/${id}`;
                 axios.post(urlLinkMmetoEq(this.eq_id),{
-                    'mme_internalReference' : this.radio_value,
+                    'mme_internalReference' : this.radio_value.internalReference,
                 });
                 this.$emit('choosedMME',this.radio_value)
+                
             }
             this.$bvModal.hide('modal-mme_add_already_created')
             

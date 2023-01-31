@@ -570,6 +570,7 @@ class ComposerStaticInit69e144347499e3d08d8a0ab3a0e9b990
         'App\\Models\\Equipment' => __DIR__ . '/../..' . '/app/Models/Equipment.php',
         'App\\Models\\EquipmentTemp' => __DIR__ . '/../..' . '/app/Models/EquipmentTemp.php',
         'App\\Models\\File' => __DIR__ . '/../..' . '/app/Models/File.php',
+        'App\\Models\\History' => __DIR__ . '/../..' . '/app/Models/History.php',
         'App\\Models\\Information' => __DIR__ . '/../..' . '/app/Models/Information.php',
         'App\\Models\\Mme' => __DIR__ . '/../..' . '/app/Models/Mme.php',
         'App\\Models\\MmeState' => __DIR__ . '/../..' . '/app/Models/MmeState.php',

@@ -30,7 +30,6 @@ class DimensionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function add_dimension(Request $request){
-
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
 
@@ -74,25 +73,33 @@ class DimensionController extends Controller
         $dim_id=$dimension->id;
         $id_eq=intval($request->eq_id) ; 
         if ($mostRecentlyEqTmp!=NULL){
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
              //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add dimension
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
-                
-               //We need to increase the number of equipment temp linked to the equipment
+                //We need to increase the number of equipment temp linked to the equipment
                $version_eq=$equipment->eq_nbrVersion+1 ; 
                //Update of equipment
                $equipment->update([
                    'eq_nbrVersion' =>$version_eq,
                ]);
-               
                //We need to increase the version of the equipment temp (because we create a new equipment temp)
                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
                //update of equipment temp
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
             }
-            return response()->json($dim_id) ; 
         }
     }
 
@@ -104,7 +111,7 @@ class DimensionController extends Controller
 
         //-----CASE dim->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his dimension, so he must enter all the attributes
-        if ($request->dim_validate!='drafted'){
+        if ($request->dim_validate=='validated'){
             $this->validate(
                 $request,
                 [
@@ -291,6 +298,17 @@ class DimensionController extends Controller
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+            
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
@@ -306,6 +324,7 @@ class DimensionController extends Controller
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
                 
                 // In the other case, we can modify the informations without problems
@@ -333,6 +352,17 @@ class DimensionController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+       
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
             $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -347,6 +377,7 @@ class DimensionController extends Controller
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
             'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_lifeSheetCreated' => false,
             ]);
         }
         

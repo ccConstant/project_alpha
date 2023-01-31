@@ -70,6 +70,7 @@ return array(
     'App\\Models\\Equipment' => $baseDir . '/app/Models/Equipment.php',
     'App\\Models\\EquipmentTemp' => $baseDir . '/app/Models/EquipmentTemp.php',
     'App\\Models\\File' => $baseDir . '/app/Models/File.php',
+    'App\\Models\\History' => $baseDir . '/app/Models/History.php',
     'App\\Models\\Information' => $baseDir . '/app/Models/Information.php',
     'App\\Models\\Mme' => $baseDir . '/app/Models/Mme.php',
     'App\\Models\\MmeState' => $baseDir . '/app/Models/MmeState.php',

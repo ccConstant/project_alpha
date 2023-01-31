@@ -96,6 +96,16 @@ class FileController extends Controller
 
             $file_id=$file->id;
             
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
              //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add file
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
@@ -112,6 +122,7 @@ class FileController extends Controller
             $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
             ]);
             }
             return response()->json($file_id) ; 
@@ -132,6 +143,17 @@ class FileController extends Controller
         if ($mostRecentlyEqTmp!=NULL){
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update file 
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+            
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
@@ -147,6 +169,7 @@ class FileController extends Controller
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
             }
 
@@ -193,6 +216,17 @@ class FileController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
             $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -207,6 +241,7 @@ class FileController extends Controller
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
             'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_lifeSheetCreated' => false,
             ]);
         }
         $file=File::findOrFail($id);
@@ -276,6 +311,7 @@ class FileController extends Controller
         if ($mostRecentlyMmeTmp!=NULL){
             //We checked if the most recently mme temp is validate and if a life sheet has been already created.
             //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update file 
+            
             if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of mme temp linked to the mme

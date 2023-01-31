@@ -1,6 +1,7 @@
 <template>
     <div class="equipmentSpProc" >
         <h2 class="titleForm">Equipment Special Process</h2>
+        <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info!=null "/>
         <!--Adding to the vue EquipmentSpecProcForm by going through the components array with the v-for-->
         <!--ref="ask_spProc_data" is used to call the child elements in this component-->
         <!--The emitted deleteSpPRoc is catched here and call the function getContent -->
@@ -25,12 +26,14 @@
 /*Importation of the others Components who will be used here*/
 import EquipmentSpecProcForm from './EquipmentSpecProcForm.vue'
 import ImportationAlert from '../../alert/ImportationAlert.vue'
+import InputInfo from '../../input/InputInfo.vue'
 
 export default {
     /*--------Declartion of the others Components:--------*/
     components:{
         EquipmentSpecProcForm,
-        ImportationAlert
+        ImportationAlert,
+        InputInfo
 
     },
     /*--------Declartion of the differents props:--------
@@ -59,7 +62,7 @@ export default {
         import_id:{
             type:Number,
             default:null
-        }
+        },
     },
     /*--------Declartion of the differents returned data:--------
     components: Array in which will be added the data of a component 
@@ -77,7 +80,8 @@ export default {
         count:0,
         isInConsultMod:this.consultMod,
         isInModifMod:this.modifMod,
-        data_eq_id:this.eq_id
+        data_eq_id:this.eq_id,
+        title_info : null,
       };
     },
     methods: {
@@ -122,6 +126,12 @@ export default {
                 .catch(error => console.log(error)) ;
         }
 
+        axios.get('/info/send/specialProcess')
+        .then (response=> {
+            this.title_info=response.data[3];
+            }) 
+        .catch(error => console.log(error)) ;
+
     },
     /*All function inside the created option is called after the component has been mounted.*/
     mounted(){
@@ -143,5 +153,13 @@ export default {
 </script>
 
 <style>
+
+.info_title{
+    position:relative ;
+}
+
+.title{
+    display: inline-block;
+}
 
 </style>

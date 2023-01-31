@@ -259,12 +259,15 @@ export default {
                 axios.post(validVerifUrl(this.eq_id),{
                     })
                     .then(response =>{
+                        console.log(this.validationMethod)
+                        console.log(this.$userId.id)
                         var techVeriftUrl = (id) => `/equipment/validation/${id}`;
                         axios.post(techVeriftUrl(this.eq_id),{
                             reason:this.validationMethod,
                             enteredBy_id:this.$userId.id
                         })
                         .then(response =>{
+                            console.log(this.validationMethod+" made succesfully")
                             this.$refs.successAlert.showAlert(`${this.validationMethod} made succesfully`);
                             this.$router.replace({ name: "url_eq_list"}) 
                         })

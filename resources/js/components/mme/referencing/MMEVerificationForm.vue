@@ -177,8 +177,8 @@ export default {
                 {value:'H'},
             ],
             existOption :[
-                {id: 'Yes', value:true},
-                {id : 'No', value:false}
+                {id: 'Yes', value:true, text:'Yes'},
+                {id : 'No', value:false, text:'No'}
             ],
             enum_verifAcceptanceAuthority: [],
             enum_requiredSkill:[],

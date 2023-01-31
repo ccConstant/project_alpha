@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="eq_internalReference_pdf">
-                    <p>Equipment internal reference:</p>
+                    <p>Equipment unique ID :</p>
                     <h5 class="text-primary">{{eq_idCard.eq_internalReference}}</h5>
                 </div>
                 
@@ -746,7 +746,7 @@ export default {
 
             .eq_carac_infos_pdf{
                 position: relative;
-                 margin-left: 150px;
+                margin-left: 150px;
                 .title_carac_pdf{
                     width: 200px;
                     font-size : 20px;
@@ -762,7 +762,6 @@ export default {
                     height: auto;
                     width: 1042px;   
                     margin-bottom: 30px;
-                     margin-left: 150px;
                     .eq_power_type_pdf{
                         
                         position: relative;

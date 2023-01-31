@@ -3,9 +3,9 @@
 /*
 * Filename : EnumUsageMetrologicalLevel.php
 * Creation date : 8 Jun 2022
-* Update date : 8 Jun 2022
+* Update date : 31 Jan 2023
 * This file define the model EnumUsageMetrologicalLevel. We can see more details about this model (like his attributes) in the 
-* migration file named "2022_06_08_120123_create_enum_usage_verif_acceptance_authorities_table.php" in Database>migrations." 
+* migration file named "2022_06_08_120123_create_enum_usage_metrological_levels_table.php" in Database>migrations." 
 * 
 */ 
 

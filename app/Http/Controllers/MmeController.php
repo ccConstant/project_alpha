@@ -20,6 +20,7 @@ use App\Models\MmeTemp;
 use App\Models\EquipmentTemp;
 use App\Models\Equipment;
 use App\Models\MmeState;
+use App\Models\User;
 use Carbon\Carbon;
 
 class MmeController extends Controller{
@@ -177,6 +178,22 @@ class MmeController extends Controller{
             if ($mostRecentlyMmeTmp->mmeTemp_version<10){
                 $version="0".(String)$mostRecentlyMmeTmp->mmeTemp_version ; 
             }
+
+            $technicalVerifier_firstName=NULL;
+            $technicalVerifier_lastName=NULL;
+            $qualityVerifier_firstName=NULL;
+            $qualityVerifier_lastName=NULL;
+
+            if ($mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
+                $technicalVerifier=User::findOrFail($mostRecentlyMmeTmp->technicalVerifier_id) ; 
+                $technicalVerifier_firstName=$technicalVerifier->user_firstName;
+                $technicalVerifier_lastName=$technicalVerifier->user_lastName;
+            }
+            if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL){
+                $qualityVerifier=User::findOrFail($mostRecentlyMmeTmp->qualityVerifier_id) ; 
+                $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
+                $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+            }
         }
         return response()->json([
             'mme_internalReference' => $mme->mme_internalReference,
@@ -188,6 +205,10 @@ class MmeController extends Controller{
             'mme_set'  => $mme->mme_set,
             'mme_validate' => $validate,
             'mme_version' => $version,
+            'mme_technicalVerifier_firstName' => $technicalVerifier_firstName,
+            'mme_technicalVerifier_lastName' => $technicalVerifier_lastName,
+            'mme_qualityVerifier_firstName' => $qualityVerifier_firstName,
+            'mme_qualityVerifier_lastName' => $qualityVerifier_lastName,
         ]);
     }
 

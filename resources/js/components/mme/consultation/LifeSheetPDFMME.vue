@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="mme_internalReference_pdf">
-                    <p>MME internal reference:</p>
+                    <p>MME unique ID:</p>
                     <h5 class="text-primary">{{mme_idCard.mme_internalReference}}</h5>
                 </div>
                 

@@ -91,6 +91,11 @@ const router = new VueRouter({
         path:'/equipment/maintenance/calendar',
         name: 'url_maintenance_calendar',
         component:require('./components/equipment/calendar/AnnualEquipmentCalendar.vue').default
+    },
+    ,{
+        path:'/equipment/history/:id(\\d+)',
+        name: 'url_equipment_history',
+        component:require('./components/equipment/consultation/EquipmentVersionHistory.vue').default
 
     },{
         path:'/equipment/lifesheet_pdf/:id(\\d+)',

@@ -17,7 +17,8 @@
         <div v-else>
             <div v-if="mme_id!=null && isInConsultMod"> Consult all the information about the MME <router-link  :to="{name:'url_mme_consult',params:{id:this.mme_id} }"> here </router-link></div>
             <div v-if="mme_id!=null && isInModifMod"> Update all the information about the MME <router-link  :to="{name:'url_mme_update',params:{id:this.mme_id} }"> here </router-link></div>
-            <div v-if="mme_id==null"><AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated" :eq_id="this.equipment_id_add"/></div>
+            <div v-if="mme_id==null && this.equipment_id_add!=null"><AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated" :eq_id="this.equipment_id_add"/></div>
+             <div v-if="mme_id==null && this.equipment_id_update!=null"><AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated" :eq_id="this.equipment_id_update"/></div>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->

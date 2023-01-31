@@ -67,18 +67,18 @@ export default {
     },
     data(){
         return{
-            returnedText_info:this.info_text
+            returnedText_info:this.info_text,
         }
     },
     /*All function inside the mounted option is called after the component has been mounted.*/
     mounted(){
         //Here we put the checked attribute in the option corresponding with the prop checkedOption
-        var radio = document.getElementById('input[type="radio"]');
+        var radio = document.getElementsByName('radio-input');
         for (var i = 0; i < radio.length; i++) {
-            if(`${radio[i].value}` == `${this.checkedOption}`) {
+            console.log ("id : "+radio[i].id + " " + this.options[0].id) ; 
+            console.log("value : "+radio[i])
+            if (`${radio[i].id}`==`${this.options[0].id}`&& `${radio[i].value}` == `${this.checkedOption}`) {
                 radio[i].setAttribute("checked", "checked");
-                console.log(i)
-                console.log(radio[i]) ; 
             }
         }
     },

@@ -141,15 +141,10 @@ export default {
         },
         //Function for adding to the vue the imported preventive maintenance operation
         importPrvMtnOp(){
-            console.log("hello3")
             if(this.prvMtnOps.length==0 && !this.isInModifMod){
-                console.log("hello4")
                 this.$refs.importAlert.showAlert();
             }else{
-                console.log("hello5")
-                console.log(this.prvMtnOps)
                 for (const prvMtnOp of this.prvMtnOps) {
-                    console.log(prvMtnOp)
                     var className="importedPrvMtnOp"+prvMtnOp.id
                     this.addImportedComponent(prvMtnOp.prvMtnOp_number,prvMtnOp.prvMtnOp_description,prvMtnOp.prvMtnOp_periodicity,prvMtnOp.prvMtnOp_symbolPeriodicity,
                         prvMtnOp.prvMtnOp_protocol,className,prvMtnOp.prvMtnOp_validate,prvMtnOp.id,prvMtnOp.prvMtnOp_reformDate,prvMtnOp.prvMtnOp_reformBy, prvMtnOp.prvMtnOp_puttingIntoService, prvMtnOp.prvMtnOp_preventiveOperation);

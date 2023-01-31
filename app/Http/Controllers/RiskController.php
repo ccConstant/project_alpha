@@ -57,6 +57,17 @@ class RiskController extends Controller
          $risk_id=$risk->id;
          $id_eq=intval($request->eq_id) ; 
          if ($mostRecentlyEqTmp!=NULL){
+
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add risk
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
@@ -73,6 +84,7 @@ class RiskController extends Controller
                 $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                 ]);
             }
          }
@@ -99,6 +111,16 @@ class RiskController extends Controller
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update risk
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
@@ -116,6 +138,7 @@ class RiskController extends Controller
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
                 
                 // In the other case, we can modify the informations without problems
@@ -196,6 +219,16 @@ class RiskController extends Controller
          $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ;
          $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
          if ($mostRecentlyEqTmp!=NULL){
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add risk
            if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                
@@ -212,6 +245,7 @@ class RiskController extends Controller
               $mostRecentlyEqTmp->update([
                'eqTemp_version' => $version,
                'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
               ]);
            }
             return response()->json($risk_id) ; 
@@ -239,6 +273,16 @@ class RiskController extends Controller
          $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ;
          $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp!=NULL){
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update risk
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
@@ -256,6 +300,7 @@ class RiskController extends Controller
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
                 
                 // In the other case, we can modify the informations without problems
@@ -396,6 +441,18 @@ class RiskController extends Controller
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
@@ -412,6 +469,7 @@ class RiskController extends Controller
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
             'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_lifeSheetCreated' => false,
             ]);
         }
         

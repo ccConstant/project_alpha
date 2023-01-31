@@ -24,20 +24,20 @@
                 <div v-if="isInConsultedMod==true && this.prvMtnOp_number!==null || this.modifMod==true && this.prvMtnOp_number!==null">
                     <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.prvMtnOp_number" name="prvMtnOp_number" label="Number :" :stepOfInput="1" v-model="prvMtnOp_number" isDisabled :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
-                <!--<div>
-                    <b-form-group label="Does the preventive maintenance operation is realized during putting into service?">
-                        <b-form-radio v-model="prvMtnOp_puttingIntoService" name="yes_PIS" value="true">Yes</b-form-radio>
-                        <b-form-radio v-model="prvMtnOp_puttingIntoService" name="no_PIS" value="false">No</b-form-radio>
+                <div> {{infos_prvMtnOp[6].info_value}}
+                    <b-form-group>
+                    <b-form-radio-group v-model="prvMtnOp_puttingIntoService" :options="existOptionPIS" >
+                    </b-form-radio-group>
                     </b-form-group>
                 </div>
-                <div>
-                    <b-form-group label="Does the preventive maintenance operation is realized regularly?" :info_text="infos_prvMtnOp[6].info_value">
-                        <b-form-radio v-model="prvMtnOp_preventiveOperation" name="yes_PO" value="true">Yes</b-form-radio>
-                        <b-form-radio v-model="prvMtnOp_preventiveOperation" name="no_PO" value="false">No</b-form-radio>
+                <div> {{infos_prvMtnOp[7].info_value}}
+                    <b-form-group>
+                     <b-form-radio-group v-model="prvMtnOp_preventiveOperation" :options="existOptionPO" >
+                    </b-form-radio-group>
                     </b-form-group>
-                </div>-->
-                 <RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized during putting into service? :" :info_text="infos_prvMtnOp[6].info_value" :options="existOptionPIS" :Errors="errors.prvMtnOp_puttingIntoService"  :checkedOption="this.prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_puttingIntoService"/>
-                 <RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized regularly? :" :info_text="infos_prvMtnOp[3].info_value" :options="existOptionPO" :Errors="errors.prvMtnOp_preventiveOperation"  :checkedOption="this.prvMtnOp_preventiveOperation" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_preventiveOperation"/>
+                </div>
+                 <!--<RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized during putting into service? :" :info_text="infos_prvMtnOp[6].info_value" :options="existOptionPIS" :Errors="errors.prvMtnOp_puttingIntoService"  :checkedOption="this.prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_puttingIntoService"/>
+                 <RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized regularly? :" :info_text="infos_prvMtnOp[3].info_value" :options="existOptionPO" :Errors="errors.prvMtnOp_preventiveOperation"  :checkedOption="this.prvMtnOp_preventiveOperation" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_preventiveOperation"/>-->
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" :info_text="infos_prvMtnOp[1].info_value"/>
@@ -235,8 +235,8 @@ export default {
                 {id : 'PIS', value:false, text:'No'}
             ],
             existOptionPO :[
-                {id: 'yes_PO', value:true, text:'Yes'},
-                {id : 'no_PO', value:false, text:'No'}
+                {id: 'PO', value:true, text:'Yes'},
+                {id : 'PO', value:false, text:'No'}
             ],
             importedOpRisk:[],
             errors:{},
@@ -245,7 +245,9 @@ export default {
             loaded:false,
             isInReformMod:this.reformMod,
             infos_prvMtnOp:[],
-            loaded:false
+            loaded:false,
+            true:true,
+            false:false,
 
         }
     },
@@ -280,6 +282,9 @@ export default {
                     this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
+                    console.log("verif ok")
+                    console.log("PIS"+this.prvMtnOp_puttingIntoService) 
+                    console.log("PO"+this.prvMtnOp_preventiveOperation)
                     axios.post('/equipment/add/prvMtnOp',{
                         prvMtnOp_description:this.prvMtnOp_description,
                         prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),

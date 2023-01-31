@@ -29,7 +29,6 @@ Class CreateEquipmentTempsTable extends Migration{
             $table->enum('eqTemp_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->timestamps();
             $table->boolean('eqTemp_lifeSheetCreated') ->default(false) ; 
-            //$table->foreignId('equipment_id')->constrained() ; 
             $table->double('eqTemp_mass') -> nullable() ; 
             $table->text('eqTemp_remarks') -> nullable();
             $table->boolean('eqTemp_mobility') ->nullable() ; 

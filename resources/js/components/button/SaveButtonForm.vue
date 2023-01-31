@@ -85,7 +85,7 @@
                 <div v-if="savedAs=='validated' ">
                     <div v-if="this.lifesheet_created==true">
                         <div class="save_button_draft_tbv" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
-                            <button class="save btn btn-info" type="button"  value="drafted" @click="update($event)" >save as draft</button>
+                            <button class="save btn btn-info" type="button"  value="drafted" @click="$bvModal.show(`modal-approved-${_uid}`)" >save as draft</button>
                             <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
                             <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                         </div>
@@ -107,6 +107,11 @@
                             <button class="save btn btn-info" type="button" disabled>validate</button>
                         </div>
                     </div>
+                    <b-modal :id="`modal-approved-${_uid}`"  @ok="update($event)">
+                        <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
+                        <Input v-model="this.reason" placeholder="Reason for the update" />
+                        <p> le message est : {{this.reason}}</p>
+                    </b-modal>
                 </div>
                 <div v-else>
                     <div v-if="is_op_data!=true && is_state_data!=true">
@@ -208,7 +213,7 @@ export default {
         is_state:{
             type:Boolean,
             default:false
-        }
+        },
     },
     data(){
         return{
@@ -220,9 +225,19 @@ export default {
             updateDescriptiveLifeSheetDataSignedRight:this.$userId.user_updateDescriptiveLifeSheetDataSignedRight,
             lifesheet_created:this.$route.query.signed,
             is_op_data:this.is_op,
-            is_state_data:this.is_state
+            is_state_data:this.is_state,
+            reason:""
 
         }
+    },
+    created(){
+        console.log("save button signed")
+        console.log(this.$route.query.signed)
+        console.log("save as")
+        console.log(this.savedAs)
+        console.log("modif mod")
+        console.log(this.modifMod)
+
     },
     methods:{
         addDraft(){
@@ -235,12 +250,15 @@ export default {
             this.$emit('add',"validated")
         },
         update(e){
+            console.log("update")
+            console.log(this.reason)
             this.$emit('update',e.target.value)
         },
         hasError(errors){
             return(errors.length>0);
         }
     }
+
 
 }
 </script>

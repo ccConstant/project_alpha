@@ -3,7 +3,7 @@
 /*
 * Filename : EnumVerificationRequiredSkill.php
 * Creation date : 7 Jun 2022
-* Update date : 7 Jun 2022
+* Update date : 31 Jan 2023
 * This file define the model EnumVerificationRequiredSkill. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_06_07_164554_create_enum_verification_required_skills_table.php" in Database>migrations." 
 * 

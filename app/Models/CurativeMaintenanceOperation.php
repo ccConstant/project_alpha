@@ -2,8 +2,8 @@
 
 /*
 * Filename : CurativeMaintenanceOperation.php
-* Creation date : 9 May 2022
-* Update date : 9 May 2022
+* Creation date : 10 May 2022
+* Update date : 30 Jan 2023
 * This file define the model CurativeMaintenanceOperation. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_062350_create_curative_maintenance_operations_table.php" in Database>migrations." 
 * 
@@ -15,7 +15,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\State ; 
-use App\Models\People ; 
+use App\Models\User ; 
 
 class CurativeMaintenanceOperation extends Model
 {
@@ -29,23 +29,23 @@ class CurativeMaintenanceOperation extends Model
     return $this->belongsTo(State::class) ; 
     }
 
-    //Define the relation between a curative_maintenance_operation and the person who cheking it : an curative maintenance operation has only one technicalVerifier
+    //Define the relation between a curative_maintenance_operation and the person who cheking it : an curative maintenance operation has only one qualityVerifier
     public function qualityVerifier(){
-        return $this->belongsTo(People::class, 'qualityVerifier_id') ; 
+        return $this->belongsTo(User::class, 'qualityVerifier_id') ; 
     }
 
     //Define the relation between  a curative_maintenance_operation and the person who cheking it : a curative maintenance operation has only one technicalVerifier
     public function technicalVerifier(){
-        return $this->belongsTo(People::class, 'technicalVerifier_id') ; 
+        return $this->belongsTo(User::class, 'technicalVerifier_id') ; 
     }
 
     //Define the relation between a curative maintenance operation and the person realizing it 
     public function RealizedBy(){
-        return $this->belongsTo(People::class, 'createdBy_id') ; 
+        return $this->belongsTo(User::class, 'realizedBy_id') ; 
     }
 
     //Define the relation between a curative maintenance operation and the person entering it 
     public function EnteredBy(){
-        return $this->belongsTo(People::class, 'createdBy_id') ; 
+        return $this->belongsTo(User::class, 'createdBy_id') ; 
     }
 }

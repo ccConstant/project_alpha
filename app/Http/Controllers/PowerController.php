@@ -143,6 +143,17 @@ class PowerController extends Controller
         $power_id=$power->id;
         $id_eq=intval($request->eq_id) ; 
         if ($mostRecentlyEqTmp!=NULL){
+
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add power
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
                 
@@ -159,6 +170,7 @@ class PowerController extends Controller
                 $mostRecentlyEqTmp->update([
                  'eqTemp_version' => $version,
                  'eqTemp_date' => Carbon::now('Europe/Paris'),
+                 'eqTemp_lifeSheetCreated' => false,
                 ]);
             }
             return response()->json($power_id) ; 
@@ -186,6 +198,17 @@ class PowerController extends Controller
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
+
+            if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL){
+                $mostRecentlyEqTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyEqTmp->technicalVerifier_id!=NULL){
+                $mostRecentlyEqTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update power
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
@@ -203,6 +226,7 @@ class PowerController extends Controller
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
                ]);
                 
                 // In the other case, we can modify the informations without problems
@@ -263,6 +287,16 @@ class PowerController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
             $version_eq=$equipment->eq_nbrVersion+1 ; 
@@ -275,8 +309,9 @@ class PowerController extends Controller
             $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
             //update of equipment temp
             $mostRecentlyEqTmp->update([
-            'eqTemp_version' => $version,
-            'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_version' => $version,
+                'eqTemp_date' => Carbon::now('Europe/Paris'),
+                'eqTemp_lifeSheetCreated' => false,
             ]);
         }
         $power=Power::findOrFail($id);

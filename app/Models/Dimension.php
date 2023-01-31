@@ -3,7 +3,7 @@
 /*
 * Filename : Dimension.php
 * Creation date : 9 May 2022
-* Update date : 9 May 2022
+* Update date : 30 Jan 2023
 * This file define the model Dimension. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_064313_create_dimensions_table.php" in Database>migrations." 
 * 
@@ -40,7 +40,7 @@ class Dimension extends Model
         return $this->belongsTo(EnumDimensionUnit::class, 'enumDimensionUnit_id') ; 
     }
 
-    //Define the relation between an equipment_temp and its dimensions : a dimension can correspond to many equipment temps
+    //Define the relation between an equipment_temp and its dimensions : a dimension can correspond to only one equipment temps
     public function equipment_temps(){
         return $this->belongsTo(EquipmentTemp::class, 'equipmentTemp_id') ; 
     }

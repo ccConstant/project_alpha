@@ -300,6 +300,7 @@ export default {
 <style lang="scss">
     .titleForm{
         padding-left: 10px;
+        display: inline-block;
     }
     form{
         margin: 20px;

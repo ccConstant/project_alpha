@@ -18,7 +18,7 @@
 					<a href="#" @click="warningUpdate(list.id,list.alreadyValidatedTechnical,list.alreadyValidatedQuality)">Update</a>
 					<a v-if="list.alreadyValidatedTechnical===false" href="#" @click="technicalValidation(list.id)">Technical validation</a>
 					<a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
-					<a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Signed</a>
+					<a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Approved</a>
 					<a @click="reformMME(list.id)" href="#">Reform</a>
 					<router-link  :to="{name:'mme_url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
 				</div>
