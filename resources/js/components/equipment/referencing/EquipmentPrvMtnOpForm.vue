@@ -1,6 +1,6 @@
 <!--File name : EquipmentPrvMtnOpForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 17 May 2022-->
+<!--Update date : 2 Feb 2023-->
 <!--Vue Component of the Form of the equipment preventive maintenance operation who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -255,7 +255,7 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addEquipmentPrvMtnOp(savedAs){
+        addEquipmentPrvMtnOp(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the equipment in which the preventive maintenance operation will be added
                 var id;
@@ -266,6 +266,7 @@ export default {
                 }else{
                     id=this.equipment_id_update;
                 }
+
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
                 console.log(this.prvMtnOp_periodicity)
@@ -282,9 +283,6 @@ export default {
                     this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
-                    console.log("verif ok")
-                    console.log("PIS"+this.prvMtnOp_puttingIntoService) 
-                    console.log("PO"+this.prvMtnOp_preventiveOperation)
                     axios.post('/equipment/add/prvMtnOp',{
                         prvMtnOp_description:this.prvMtnOp_description,
                         prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),
@@ -298,7 +296,13 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
-                        console.log(response)
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -325,11 +329,12 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateEquipmentPrvMtnOp(savedAs){
+        updateEquipmentPrvMtnOp(savedAs, reason, lifesheet_created){
+            
+            
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
-            console.log("update dans la base");
-             console.log(this.prvMtnOp_puttingIntoService)
+    
             axios.post('/prvMtnOp/verif',{
                     prvMtnOp_description:this.prvMtnOp_description,
                     prvMtnOp_periodicity:parseInt(this.prvMtnOp_periodicity),
@@ -357,6 +362,14 @@ export default {
                         prvMtnOp_preventiveOperation:this.prvMtnOp_preventiveOperation,
                     })
                     .then(response =>{
+                        var id=this.equipment_id_update;
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
                         console.log(response.data)
                         this.prvMtnOp_validate=savedAs;})
                     //If the controller sends errors we put it in the errors object 
@@ -374,7 +387,7 @@ export default {
             delete this.errors["prvMtnOp_preventiveOperation"]
         },
         //Function for deleting a preventive maintenance operation from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
             //Emit to the parent component that we want to delete this component
             
             //If the user is in update mode and the preventive maintenance operation exist in the database
@@ -384,6 +397,14 @@ export default {
                     eq_id:this.equipment_id_update,
                 })
                 .then(response =>{
+                    var id=this.equipment_id_update
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the delete
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/equipment/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                    }
                     //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
                     this.$emit('deletePrvMtnOp','')
                 })

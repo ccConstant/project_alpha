@@ -1,6 +1,6 @@
 <!--File name : EquipmentDimForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 17 May 2022-->
+<!--Update date : 2 Feb 2023-->
 <!--Vue Component of the Form of the equipment dimension who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -184,7 +184,7 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addEquipmentDim(savedAs){
+        addEquipmentDim(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the equipment in which the dimensions will be added
                 var id;
@@ -206,9 +206,6 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    console.log("ajout dans la base")
-                    console.log(this.dim_type,"\n",this.dim_name,"\n"
-                    ,this.dim_value,"\n",this.dim_unit,"\n",savedAs,"\n ID:",id);
                     /*If all the verif passed, a new post this time to add the dimension in the data base
                     Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                     axios.post('/equipment/add/dim',{
@@ -222,6 +219,13 @@ export default {
                     })
                     //If the dimension is added succesfuly
                     .then(response =>{
+                         //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
                         this.$refs.sucessAlert.showAlert(`Equipment dimension saved as ${savedAs} successfully`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
@@ -249,7 +253,10 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateEquipmentDim(savedAs){
+        updateEquipmentDim(savedAs, reason, lifesheet_created){
+            
+            
+            
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             axios.post('/dimension/verif',{
@@ -277,6 +284,14 @@ export default {
                         dim_validate : savedAs
                     })
                     .then(response =>{
+                        var id=this.equipment_id_update;
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
                         console.log(response.data);
                         this.$refs.sucessAlert.showAlert(`Equipment dimension updated as ${savedAs} successfully`);
                         this.dim_validate=savedAs;
@@ -292,7 +307,7 @@ export default {
             delete this.errors[event.target.name];
         },
         //Function for deleting a dimension from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
             //If the user is in update mode and the dimension exist in the database
             if(this.modifMod==true && this.dim_id!==null){
                 console.log("supression");
@@ -302,6 +317,14 @@ export default {
                     eq_id:this.equipment_id_update
                 })
                 .then(response =>{
+                    var id=this.equipment_id_update
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the delete
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/equipment/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                    }
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteDim','')
                 })

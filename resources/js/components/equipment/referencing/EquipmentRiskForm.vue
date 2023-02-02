@@ -1,6 +1,6 @@
 <!--File name : EquipmentRiskForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 17 May 2022-->
+<!--Update date : 2 Feb 2023-->
 <!--Vue Component of the Form of the equipment risk who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -164,7 +164,7 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addEquipmentRisk(savedAs){
+        addEquipmentRisk(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the equipment in which the risk will be added
                 var id;
@@ -175,6 +175,7 @@ export default {
                 }else{
                     id=this.equipment_id_update;
                 }
+
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
                 axios.post('/risk/verif',{
@@ -203,6 +204,13 @@ export default {
                         })
                         //If the risk is added succesfuly
                         .then(response =>{
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/equipment/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                            }
                             //If we the user is not in modifMod
                             if(!this.modifMod){
                                 //The form pass in consulting mode and addSucces pass to True
@@ -235,6 +243,14 @@ export default {
                         })
                         //If the risk is added succesfuly
                         .then(response =>{
+                            var id=this.equipment_id_update;
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/equipment/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                            }
                             //If we the user is not in modifMod
                             if(!this.modifMod){
                                 //The form pass in consulting mode and addSucces pass to True
@@ -261,7 +277,7 @@ export default {
                 /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateEquipmentRisk(savedAs){
+        updateEquipmentRisk(savedAs, reason, lifesheet_created){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             axios.post('/risk/verif',{
@@ -273,9 +289,6 @@ export default {
                 .then(response =>{
                     this.errors={};
                     if(this.riskForEq==true){
-                        console.log("update dans la base eq");
-                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
-                        "eq_id:",this.equipment_id_update,"\n","validate:",savedAs);
                         
                         /*If all the verif passed, a new post this time to add the risk in the data base
                             Type, name, value, unit, validate option and id of the equipment is sended to the controller
@@ -288,14 +301,20 @@ export default {
                             risk_validate :savedAs,
                             eq_id:this.equipment_id_update,
                         })
-                        .then(response =>{this.risk_validate=savedAs;})
+                        .then(response =>{
+                            this.risk_validate=savedAs;
+                            var id=this.equipment_id_update;
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/equipment/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                            }
+                        })
                         //If the controller sends errors we put it in the errors object 
                         .catch(error => this.errors=error.response.data.errors) ;
                     }else{
-                        console.log("update dans la base opé mtn ");
-                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
-                        "eq_id:",this.equipment_id_update,"\n","validate:",savedAs,"\n","Ope id",this.prvMtnOp_id);
-                        
                         /*If all the verif passed, a new post this time to add the risk in the data base
                             Type, name, value, unit, validate option and id of the equipment is sended to the controller
                             In the post url the id correspond to the id of the risk who will be update*/
@@ -308,7 +327,17 @@ export default {
                             prvMtnOp_id:this.prvMtnOp_id,
                             eq_id:this.equipment_id_update,
                         })
-                        .then(response =>{this.risk_validate=savedAs;})
+                        .then(response =>{
+                            this.risk_validate=savedAs;
+                            var id=this.equipment_id_update;
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/equipment/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                            }
+                        })
                         //If the controller sends errors we put it in the errors object 
                         .catch(error => this.errors=error.response.data.errors) ;
 
@@ -323,7 +352,7 @@ export default {
             delete this.errors[event.target.name];
         },
         //Function for deleting a risk from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
 
             //If the user is in update mode and the risk exist in the database
             if(this.modifMod==true && this.risk_id!==null){
@@ -334,6 +363,14 @@ export default {
                     eq_id:this.equipment_id_update
                 })
                 .then(response =>{
+                    var id=this.equipment_id_update;
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the delete
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/equipment/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                    }
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteRisk','')
                 })

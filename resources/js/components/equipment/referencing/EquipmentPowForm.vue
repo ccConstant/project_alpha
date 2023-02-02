@@ -1,6 +1,6 @@
 <!--File name : EquipmentPowForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 17 May 2022-->
+<!--Update date : 2 Feb 2023-->
 <!--Vue Component of the Form of the equipment power who call all the input component-->
 
 
@@ -196,10 +196,11 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addEquipmentPow(savedAs){
+        addEquipmentPow(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the equipment in which the power will be added
                 var id;
+
                 //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
                 if(!this.modifMod){
                         id=this.equipment_id_add
@@ -207,6 +208,7 @@ export default {
                 }else{
                     id=this.equipment_id_update;
                 }
+
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit, consumption unit, consumption value and validate option is sended to the controller*/
                 axios.post('/power/verif',{
@@ -235,6 +237,13 @@ export default {
                     })
                     //If the power is added succesfuly
                     .then(response =>{
+                         //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
                         console.log(response);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
@@ -258,7 +267,8 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateEquipmentPow(savedAs){
+        updateEquipmentPow(savedAs, reason, lifesheet_created){
+            
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit, consumption unit, consumption value and validate option is sended to the controller*/
             axios.post('/power/verif',{
@@ -287,7 +297,17 @@ export default {
                         eq_id:this.equipment_id_update,
                         pow_validate : savedAs
                     })
-                    .then(response =>{this.pow_validate=savedAs;})
+                    .then(response =>{
+                        this.pow_validate=savedAs;
+                        var id=this.equipment_id_update;
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
+                    })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
@@ -299,7 +319,7 @@ export default {
             delete this.errors[event.target.name];
         },
         //Function for deleting a power from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
 
             if(this.modifMod==true && this.pow_id!==null){
                 console.log("supression");
@@ -309,6 +329,14 @@ export default {
                     eq_id:this.equipment_id_update
                 })
                 .then(response =>{
+                    var id=this.equipment_id_update
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the delete
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/equipment/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                    }
                     this.$emit('deletePow','');
                     //If the user is in update mode and the power exist in the database
                 })

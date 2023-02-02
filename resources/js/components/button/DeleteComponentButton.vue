@@ -19,8 +19,12 @@
                 <p class="enum_add_right_red"> You dont have the right to delete a signed element.</p>
             </div>
             <div v-else>
-                <b-button v-if="this.consultMod==false" variant="danger" @click="$bvModal.show(`modal-delete_component-${_uid}`)" >Delete</b-button>
+                <b-button v-if="this.consultMod==false" variant="danger" @click="$bvModal.show(`modal-delete-approved${_uid}`)" >Delete</b-button>
             </div>
+            <b-modal :id="`modal-delete-approved${_uid}`"  @ok="deleteConfirmation">
+                <p class="my-4">Are you sure you want to delete this approved data? You will have to sign all the data again </p>
+                <input v-model="reason" placeholder="Reason for the delete" />
+            </b-modal>
         </div>
         <b-modal :id="`modal-delete_component-${_uid}`"  @ok="deleteConfirmation">
             <p class="my-4">Are you sure you want to delete 
@@ -51,7 +55,7 @@ export default {
     },
     methods:{
         deleteConfirmation(){
-            this.$emit('deleteOk',"")
+            this.$emit('deleteOk', this.reason, this.lifesheet_created);
         },
         hasError(errors){
             return(errors.length>0);
@@ -63,6 +67,7 @@ export default {
             deleteDataNotValidatedLinkedToEqOrMmeRight:this.$userId.user_deleteDataNotValidatedLinkedToEqOrMmeRight,
             deleteDataSignedLinkedToEqOrMmeRight:this.$userId.user_deleteDataSignedLinkedToEqOrMmeRight,
             lifesheet_created:this.$route.query.signed,
+            reason:''
         }
         
     }

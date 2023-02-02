@@ -38,10 +38,24 @@
                         </div>
                         <div v-else-if="this.lifesheet_created==true">
                             <div v-if="updateDescriptiveLifeSheetDataSignedRight==true" class="save_button_draft_tbv">
-                                <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
-                                <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
-                                <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
+                                <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-drafted${_uid}`)" >save as draft</b-button>
+                                <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-to-be-validated${_uid}`)" >save as to be validated</b-button>
+                                <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-validated${_uid}`)" >save as validated</b-button>
+                                
+                                <b-modal :id="`modal-approved-add-to-be-validated${_uid}`"  @ok="addToBeValidated()">
+                                <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
+                                <input v-model="reason" placeholder="Reason for the update" />
+                                </b-modal>
+                                <b-modal :id="`modal-approved-add-drafted${_uid}`"  @ok="addDraft()">
+                                    <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
+                                    <input v-model="reason" placeholder="Reason for the update" />
+                                </b-modal>
+                                <b-modal :id="`modal-approved-add-validated${_uid}`"  @ok="addValidated()">
+                                    <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
+                                    <input v-model="reason" placeholder="Reason for the update" />
+                                </b-modal>
                             </div>
+                            
                             <div v-else>
                                 <b-button variant="primary" disabled>save as draft</b-button>
                                 <b-button variant="primary"  disabled>save as to be validated</b-button>
@@ -82,12 +96,12 @@
             </div>
         <!--Else if the form is in a modif mode we call this div with update option-->
             <div v-else-if="modifMod">
-                <div v-if="savedAs=='validated' ">
+                <div v-if="savedAs=='validated'">
                     <div v-if="this.lifesheet_created==true">
                         <div class="save_button_draft_tbv" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
-                            <button class="save btn btn-info" type="button"  value="drafted" @click="$bvModal.show(`modal-approved-${_uid}`)" >save as draft</button>
-                            <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
-                            <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
+                            <button class="save btn btn-info" type="button"  disabled>save as draft</button>
+                            <button class="save btn btn-info" type="button" disabled>to be validated</button>
+                            <button class="save btn btn-info" type="button" @click="$bvModal.show(`modal-approved-validated${_uid}`)" >validate</button>
                         </div>
                         <div v-else class="save_button_validated">
                             <button class="save btn btn-info" type="button"  disabled >save as draft</button>
@@ -97,8 +111,8 @@
                     </div>
                     <div v-else>
                         <div class="save_button_draft_tbv">
-                            <button class="save btn btn-info" disabled type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                            <button class="save btn btn-info" disabled type="button" value="to_be_validated" @click="update($event)" >to be validated</button>   
+                            <button class="save btn btn-info" disabled type="button"  value="drafted" >save as draft</button>
+                            <button class="save btn btn-info" disabled type="button" value="to_be_validated" >to be validated</button>   
                         </div>
                         <div v-if="user_updateDataValidatedButNotSignedRight==true" class="save_button_validated"  >
                             <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
@@ -107,10 +121,9 @@
                             <button class="save btn btn-info" type="button" disabled>validate</button>
                         </div>
                     </div>
-                    <b-modal :id="`modal-approved-${_uid}`"  @ok="update($event)">
+                    <b-modal :id="`modal-approved-validated${_uid}`"  @ok="updateValidated()">
                         <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                        <Input v-model="this.reason" placeholder="Reason for the update" />
-                        <p> le message est : {{this.reason}}</p>
+                        <input v-model="reason" placeholder="Reason for the update" />
                     </b-modal>
                 </div>
                 <div v-else>
@@ -133,15 +146,28 @@
                         </div>
                         <div v-else-if="this.lifesheet_created==true">
                             <div class="save_button_update" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
-                                <button class="save btn btn-info" type="button"  value="drafted" @click="update($event)" >save as draft</button>
-                                <button class="save btn btn-info" type="button" value="to_be_validated" @click="update($event)" >to be validated</button>
-                                <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
+                                <button class="save btn btn-info" type="button"  value="drafted" @click="$bvModal.show(`modal-approved-drafted${_uid}`)" >save as draft</button>
+                                <button class="save btn btn-info" type="button" value="to_be_validated" @click="$bvModal.show(`modal-approved-to-be-validated${_uid}`)" >to be validated</button>
+                                <button class="save btn btn-info" type="button" value="validated" @click="$bvModal.show(`modal-approved-validated${_uid}`)" >validate</button>
                             </div>
                             <div v-else class="save_button_validated">
                                 <button class="save btn btn-info" type="button"  disabled >save as draft</button>
                                 <button class="save btn btn-info" type="button" disabled >to be validated</button>
                                 <button class="save btn btn-info" type="button" disabled >validate</button>
                             </div>
+
+                            <b-modal :id="`modal-approved-to-be-validated${_uid}`"  @ok="updateToBeValidated()">
+                                <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
+                                <input v-model="reason" placeholder="Reason for the update" />
+                            </b-modal>
+                            <b-modal :id="`modal-approved-drafted${_uid}`"  @ok="updateDrafted()">
+                                <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
+                                <input v-model="reason" placeholder="Reason for the update" />
+                            </b-modal>
+                            <b-modal :id="`modal-approved-validated${_uid}`"  @ok="updateValidated()">
+                                <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
+                                <input v-model="reason" placeholder="Reason for the update" />
+                            </b-modal>
                         </div>
 
                     </div>
@@ -231,29 +257,39 @@ export default {
         }
     },
     created(){
-        console.log("save button signed")
-        console.log(this.$route.query.signed)
-        console.log("save as")
-        console.log(this.savedAs)
-        console.log("modif mod")
-        console.log(this.modifMod)
-
+            console.log("coucou")
     },
     methods:{
+        //for approved data
         addDraft(){
-            this.$emit('add',"drafted")
+            this.$emit('add',"drafted", this.reason, this.lifesheet_created)
         },
         addToBeValidated(){
-            this.$emit('add',"to_be_validated")
+            this.$emit('add',"to_be_validated", this.reason, this.lifesheet_created)
         },
         addValidated(){
-            this.$emit('add',"validated")
+            this.$emit('add',"validated", this.reason, this.lifesheet_created)
+        },
+        updateValidated(){
+            this.$emit('update','validated', this.reason, this.lifesheet_created)
+        },
+        updateToBeValidated(){
+            this.$emit('update','to_be_validated', this.reason, this.lifesheet_created)
+        },
+        updateDrafted(){
+            this.$emit('update','drafted', this.reason, this.lifesheet_created)
+        },
+
+        add(e){
+            this.$emit('add',e.target.value)
         },
         update(e){
-            console.log("update")
-            console.log(this.reason)
             this.$emit('update',e.target.value)
         },
+
+        
+
+        
         hasError(errors){
             return(errors.length>0);
         }

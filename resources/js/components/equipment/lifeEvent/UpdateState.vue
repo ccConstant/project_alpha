@@ -192,6 +192,7 @@ export default {
         },
         /*Sending to the controller all the information about the equipment so that it can be updated to the database */ 
         updateEquipmentState(savedAs){
+                console.log("update")
                 axios.post('/state/verif',{
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,

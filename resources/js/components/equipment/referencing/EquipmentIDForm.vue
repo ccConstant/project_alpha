@@ -1,6 +1,6 @@
 <!--File name : EquipmentIDForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 10 May 2022-->
+<!--Update date : 2 Feb 2023-->
 <!--Vue Component of the Id card of the equipment who call all the input component and send the data to the controllers-->
 
 <!----------Props of other component who can be called:--------
@@ -296,7 +296,7 @@ export default {
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated to the database */ 
-        updateEquipment(savedAs){
+        updateEquipment(savedAs, reason, lifesheet_created){
                     axios.post('/equipment/verif',{
                     eq_internalReference : this.eq_internalReference, 
                     eq_externalReference : this.eq_externalReference,
@@ -332,6 +332,14 @@ export default {
                             eq_validate : savedAs,
                         })
                         .then(response => {
+                            var id=this.eq_id
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/equipment/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                            }
                             this.$refs.sucessAlert.showAlert(`ID card updated as ${savedAs} successfully`);
                             this.eq_validate=savedAs;
 

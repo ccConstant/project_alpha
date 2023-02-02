@@ -1,6 +1,6 @@
 <!--File name : EquipmentSpecProcForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 17 May 2022-->
+<!--Update date : 2 Feb 2023-->
 <!--Vue Component of the Form of the equipment special process who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -196,9 +196,11 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateEquipmentSpProc(savedAs){
+        updateEquipmentSpProc(savedAs, reason, lifesheet_created){
+            
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
+           
             axios.post('/spProc/verif',{
                     spProc_remarksOrPrecaution : this.spProc_remarksOrPrecaution,
                     spProc_exist : this.spProc_exist,
@@ -216,10 +218,19 @@ export default {
                         spProc_exist : this.spProc_exist,
                         spProc_name: this.spProc_name,
                         spProc_validate :savedAs,
-                        spProc_validate :savedAs,
                         eq_id:this.equipment_id_update
                     })
-                    .then(response =>{this.spProc_validate=savedAs;})
+                    .then(response =>{
+                        this.spProc_validate=savedAs;
+                        var id=this.equipment_id_update;
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
+                    })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })

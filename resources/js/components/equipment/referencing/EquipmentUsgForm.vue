@@ -1,6 +1,6 @@
 <!--File name : EquipmentUsgForm.vue-->
 <!--Creation date : 18 May 2022-->
-<!--Update date : 18 May 2022-->
+<!--Update date : 2 Feb 2023-->
 <!--Vue Component of the Form of the usage  who call all the input component-->
 <template>
     <div :class="divClass" @keydown="clearError">
@@ -152,7 +152,7 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addEquipmentUsg(savedAs){
+        addEquipmentUsg(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the equipment in which the usage will be added
                 var id;
@@ -163,6 +163,7 @@ export default {
                 }else{
                     id=this.equipment_id_update;
                 }
+
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
                 axios.post('/usage/verif',{
@@ -183,6 +184,14 @@ export default {
                     })
                     //If the usage is added succesfuly
                     .then(response =>{
+
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -203,10 +212,12 @@ export default {
             }
 
         },
+        
+
                 /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateEquipmentUsg(savedAs){
+        updateEquipmentUsg(savedAs, reason, lifesheet_created){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             axios.post('/usage/verif',{
@@ -228,7 +239,17 @@ export default {
                         eq_id:this.equipment_id_update,
 
                     })
-                    .then(response =>{this.usg_validate=savedAs;})
+                    .then(response =>{
+                        this.usg_validate=savedAs;
+                        var id=this.equipment_id_update;
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                        }
+                    })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
@@ -240,8 +261,7 @@ export default {
             delete this.errors[event.target.name];
         },
         //Function for deleting a usage from the view and the database
-        deleteComponent(){
-
+        deleteComponent(reason, lifesheet_created){
             //If the user is in update mode and the usage exist in the database
             if(this.modifMod==true && this.usg_id!==null){
                 //Send a post request with the id of the usage who will be deleted in the url
@@ -250,6 +270,14 @@ export default {
                     eq_id:this.equipment_id_update
                 })
                 .then(response =>{
+                    var id=this.equipment_id_update
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the delete
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/equipment/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                    }
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteUsg','')
                 })

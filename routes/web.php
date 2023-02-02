@@ -488,6 +488,8 @@ Route::get('/mme_state/curMtnOp/send/{id}', [CurativeMaintenanceOperationControl
 
 Route::post('/history/add/equipment/{id}', [HistoryController::class, 'add_history_for_eq'])  ;
 
+Route::get('/history/send/equipment/{id}', [HistoryController::class, 'send_history_for_eq'])  ;
+
 /* Enum Form Routes */ 
 
 

@@ -26,6 +26,7 @@ use App\Models\File ;
 use App\Models\Mme ;  
 use App\Models\EnumEquipmentMassUnit ; 
 use App\Models\EnumEquipmentType ; 
+use App\Models\History ; 
 
 class EquipmentTemp extends Model{
     use HasFactory;
@@ -37,6 +38,11 @@ class EquipmentTemp extends Model{
     //Define the relation between an equipment_temp and its files : an equipment_temp can have many files
      public function files(){
         return $this->hasMany(File::class) ; 
+    }
+
+    //Define the relation between an equipment_temp and its histories : an equipment_temp can have many histories
+    public function histories(){
+        return $this->hasMany(History::class) ; 
     }
 
     //Define the relation between an equipment_temp and its mme : an equipment_temp can have many mme
