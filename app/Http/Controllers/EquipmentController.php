@@ -366,14 +366,6 @@ class EquipmentController extends Controller{
                                 ]
                             ], 429);
                         }
-
-                        if($equipment->eq_mobility!=$request->eq_mobility){
-                            return response()->json([
-                                'errors' => [
-                                    'eq_mobility' => ["You can't modify the mobility because a life sheet has already been created"]
-                                ]
-                            ], 429);
-                        }
                     }
                 }
                 
@@ -494,7 +486,6 @@ class EquipmentController extends Controller{
         //If the equipment temp is validated and a life sheet has been already created, we need to create another equipment temp (that's mean another life sheet version)
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated===true && ($type_id != $mostRecentlyEqTmp->enumType_id || $request->eq_mass != $mostRecentlyEqTmp->eqTemp_mass || $massUnit_id != $mostRecentlyEqTmp->enumMassUnit_id || $request->eq_remarks!=$mostRecentlyEqTmp->eqTemp_remarks || $request->eq_mobility!=$mostRecentlyEqTmp->eqTemp_mobility)){
             //We need to increase the number of equipment temp linked to the equipment
-           return response()->json($mostRecentlyEqTmp) ;
             $version_eq=$equipment->eq_nbrVersion+1 ; 
             //Update of equipment
             $equipment->update([
@@ -538,7 +529,7 @@ class EquipmentController extends Controller{
                 'enumMassUnit_id' => $massUnit_id,
                 'eqTemp_mass' => $request->eq_mass,
                 'eqTemp_remarks' => $request->eq_remarks,
-                'eq_mobility' => $request->eq_mobility,
+                'eqTemp_mobility' => $request->eq_mobility,
                 'enumType_id' => $type_id,
             ]);
         }

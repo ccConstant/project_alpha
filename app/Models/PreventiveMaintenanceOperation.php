@@ -3,7 +3,7 @@
 /*
 * Filename : PreventiveMaintenanceOperation.php
 * Creation date : 10 May 2022
-* Update date : 10 May 2022
+* Update date : 8 Feb 2023
 * This file define the model PreventiveMaintenanceOperation. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_062625_create_preventive_maintenance_operations_table.php" in Database>migrations." 
 * 
@@ -35,7 +35,7 @@ class PreventiveMaintenanceOperation extends Model
         return $this->hasMany(PreventiveMaintenanceOperationRealized::class) ; 
     }
 
-    //Define the relation between an equipment_temp and its preventive maintenance operations : a preventive maintenance operations can correspond to many equipments temps
+    //Define the relation between an equipment_temp and its preventive maintenance operations : a preventive maintenance operations can correspond to only one equipments temp
     public function equipment_temps(){
         return $this->belongsTo(EquipmentTemp::class, 'equipmentTemp_id') ; 
     }

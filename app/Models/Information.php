@@ -3,9 +3,9 @@
 /*
 * Filename : Information.php
 * Creation date : 9 Jun 2022
-* Update date : 9 Jun 2022
+* Update date : 8 Feb 2023
 * This file define the model Information. We can see more details about this model (like his attributes) in the 
-* migration file named "2022_06_09_080030_create_informations_table.php" in Database>migrations." 
+* migration file named "2022_06_09_142337_create_information_table.php" in Database>migrations." 
 * 
 */ 
 

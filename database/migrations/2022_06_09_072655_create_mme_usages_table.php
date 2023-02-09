@@ -3,9 +3,9 @@
 /*
 * Filename : 2022_06_09_072655_create_mme_usages_table.php
 * Creation date : 9 Jun 2022
-* Update date : 9 Jun 2022
+* Update date : 8 Feb 2023
 * Role : This file is used to create the table "mme_usages" in the data base. In this file, we can see the different
-* attribute of this table (id and value) and how they are defined (string, boolean, unique or not)
+* attribute of this table (precision, application...) and how they are defined (string, boolean, unique or not)
 */ 
 
 use Illuminate\Database\Migrations\Migration;
@@ -16,7 +16,7 @@ class CreateMmeUsagesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     * Create the table mme_usages in the data base
      * @return void
      */
     public function up()
@@ -39,7 +39,7 @@ class CreateMmeUsagesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
+     * Delete the table mme_usages if it already exist
      * @return void
      */
     public function down()

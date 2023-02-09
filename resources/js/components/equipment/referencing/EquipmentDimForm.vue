@@ -18,11 +18,11 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.dim_type" name="dim_type" label="Dimension Type :" :options="enum_dim_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.dim_type" :selectedDivName="this.divClass" v-model="dim_type" :info_text="infos_dimension[0].info_value"/>
-                <InputSelectForm @clearSelectError='clearSelectError' name="dim_name" label="Dimension name :" :Errors="errors.dim_name" :options="enum_dim_name" :selctedOption="this.dim_name" selectClassName="form-select w-50"   :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_name" :info_text="infos_dimension[1].info_value"/>
+                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.dim_type" name="dim_type" label="Dimension Type :" :options="enum_dim_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.dim_type" :selectedDivName="this.divClass" v-model="dim_type" :info_text="infos_dimension[0].info_value" :id_actual="dimensionType"/>
+                <InputSelectForm @clearSelectError='clearSelectError' name="dim_name" label="Dimension name :" :Errors="errors.dim_name" :options="enum_dim_name" :selctedOption="this.dim_name" selectClassName="form-select w-50"   :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_name" :info_text="infos_dimension[1].info_value" :id_actual="dimensionName"/>
                 <div class="input-group">
                     <InputTextForm  inputClassName="form-control" :Errors="errors.dim_value" name="dim_value" label="Dimension value :" v-model="dim_value" :isDisabled="!!isInConsultedMod" :info_text="infos_dimension[2].info_value"/>
-                    <InputSelectForm @clearSelectError='clearSelectError'  name="dim_unit"  label="Unit :" :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_unit" :info_text="infos_dimension[3].info_value"/>
+                    <InputSelectForm @clearSelectError='clearSelectError'  name="dim_unit"  label="Unit :" :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="dim_unit" :info_text="infos_dimension[3].info_value" :id_actual="dimensionUnit"/>
                 </div>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
@@ -152,7 +152,11 @@ export default {
             addSucces:false,
             isInConsultedMod:this.consultMod,
             infos_dimension:[],
-            loaded:false
+            loaded:false,
+            dimensionName:"DimensionName",
+            dimensionType:"DimensionType",
+            dimensionUnit:"DimensionUnit",
+
         }
     },
     /*All function inside the created option is called after the component has been mounted.*/
@@ -258,7 +262,7 @@ export default {
             
             
             /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+            Type, name, value, unit and validate option is sended to the controller*/
             axios.post('/dimension/verif',{
                     dim_type : this.dim_type,
                     dim_name : this.dim_name,

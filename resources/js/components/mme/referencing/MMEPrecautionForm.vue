@@ -7,7 +7,7 @@
         <div v-else>
             <form class="container"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_prctn[0].info_value" selectClassName="form-select w-50" :Errors="errors.prctn_type" name="prctn_type" label="Precaution type :" :options="enum_prctn_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.prctn_type" :selectedDivName="this.divClass" v-model="prctn_type"/>
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_prctn[0].info_value" selectClassName="form-select w-50" :Errors="errors.prctn_type" name="prctn_type" label="Precaution type :" :options="enum_prctn_type" :isDisabled="!!isInConsultedMod" :selctedOption="this.prctn_type" :selectedDivName="this.divClass" v-model="prctn_type" :id_actual="precautionType"/>
                 <InputTextAreaForm inputClassName="form-control w-50"  :info_text="infos_prctn[1].info_value" :Errors="errors.prctn_description" name="prctn_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prctn_description" />
                 <!--If addSucces is equal to false, the buttons appear -->
 
@@ -92,7 +92,8 @@ export default {
             addSucces:false,
             isInConsultedMod:this.consultMod,
             loaded:false,
-            infos_prctn:[]
+            infos_prctn:[],
+            precautionType:"PrecautionType",
             
         }
         

@@ -3,7 +3,7 @@
 /*
 * Filename : State.php
 * Creation date : 9 May 2022
-* Update date : 10 May 2022
+* Update date : 8 Feb 2023
 * This file define the model State. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_061849_create_states_table.php" in Database>migrations." 
 * 
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Equipment ; 
 use App\Models\CurativeMaintenanceOperation ; 
 use App\Models\PreventiveMaintenanceOperationRealized ;
-use App\Models\People ; 
+use App\Models\User ; 
 use App\Models\EquipmentTemp ;  
 
 class State extends Model
@@ -44,7 +44,7 @@ class State extends Model
 
     //Define the relation between a state and the person who reformed the equipment during the state 
     public function reformedBy(){
-        return $this->hasOne(People::class, 'reformedBy_id') ; 
+        return $this->hasOne(User::class, 'reformedBy_id') ; 
     }
 
     //Define the relation between an equipment_temp and its state : a state can correspond to many equipment temps

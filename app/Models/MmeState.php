@@ -3,9 +3,9 @@
 /*
 * Filename : MmeState.php
 * Creation date : 7 Jun 2022
-* Update date : 7 Jun 2022
+* Update date : 8 Feb 2023
 * This file define the model State. We can see more details about this model (like his attributes) in the 
-* migration file named "2022_06_07_1400027_create_mme_states_table.php".
+* migration file named "2022_05_10_062315_create_mme_states_table.php".
 * 
 */ 
 

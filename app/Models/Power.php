@@ -3,7 +3,7 @@
 /*
 * Filename : Power.php
 * Creation date : 9 May 2022
-* Update date : 9 May 2022
+* Update date : 8 Feb 2023
 * This file define the model Power. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_063017_create_powers_table.php" in Database>migrations." 
 * 
@@ -29,8 +29,8 @@ class Power extends Model
         return $this->belongsTo(EnumPowerType::class, 'enumPowerType_id') ; 
     }
 
-    //Define the relation between an equipment_temp and its powers : a power can correspond to many equipment temps
+    //Define the relation between an equipment_temp and its powers : a power can correspond to only one equipment temp
     public function equipment_temps(){
-        return $this->belongsToMany(EquipmentTemp::class, 'equipmentTemp_id') ; 
+        return $this->belongsTo(EquipmentTemp::class, 'equipmentTemp_id') ; 
     }
 }

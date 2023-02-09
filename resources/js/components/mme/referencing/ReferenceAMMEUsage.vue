@@ -5,7 +5,7 @@
             :is="component.comp" :measurementType="component.measurementType" :precision="component.precision" :application="component.application"
             :reformMod="isInReformMod" :divClass="component.className" :id="component.id" :import_id="component.import"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :mme_id="data_mme_id"
-            :reformDate="component.reformDate" :reformBy="component.reformBy"  
+            :reformDate="component.reformDate" :reformBy="component.reformBy" :metrologicalLevel="component.metrologicalLevel"  
             @deleteUsage="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">

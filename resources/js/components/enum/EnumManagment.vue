@@ -110,7 +110,7 @@
                     </h2>
                     <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
                         <div class="accordion-body">
-                            <EnumElement error_name='enum_verifAcceptanceAuthority' :enumList="enum_verifAcceptanceAuthority" title="MME Verification acceptance authority" url="/usage/enum/verifAcceptanceAuthority/" />
+                            <EnumElement error_name='enum_verifAcceptanceAuthority' :enumList="enum_verifAcceptanceAuthority" title="MME Verification acceptance authority" url="/verification/enum/verifAcceptanceAuthority/" />
                         </div>
                     </div>
                 </div>
@@ -207,7 +207,7 @@ export default {
             }) 
             .catch(error => console.log(error)) ;
 
-        axios.get('/usage/enum/verifAcceptanceAuthority')
+        axios.get('/verification/enum/verifAcceptanceAuthority')
             .then (response=>{
                 console.log(response.data)
                 this.enum_verifAcceptanceAuthority=response.data;

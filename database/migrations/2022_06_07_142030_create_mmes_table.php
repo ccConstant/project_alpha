@@ -1,9 +1,9 @@
 <?php
 
 /*
-* Filename : 2022_06_07_142255_create_mmes_table.php
+* Filename : 2022_06_07_142030_create_mmes_table.php
 * Creation date : 7 Jun 2022
-* Update date : 7 Jun 2022
+* Update date : 8 Feb 2023
 * Role : This file is used to create the table "mme" in the data base. In this file, we can see the different
 * attribute of this table (internReference, externReference..) and how they are defined (string, boolean, unique or not)
 */ 
@@ -16,7 +16,7 @@ class CreateMmesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     * Create the table mmes in the data base
      * @return void
      */
     public function up()
@@ -40,7 +40,7 @@ class CreateMmesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
+     * Delete the table mmes if it already exist
      * @return void
      */
     public function down()

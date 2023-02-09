@@ -22,7 +22,7 @@
          :required="!!isRequired" v-on:input="updateValue($event.target.value)">
             <option value="" selected>---Select---</option>
             <!--Options of the select, the for loop here is used to initialize them with an array of the differents value-->
-            <option v-for="(type,index) in options " :key="index"  :value="type.value">
+            <option v-for="(type,index) in options " :key="index" :id="type.id_enum" :value="type.value">
                 {{type.value}}
             </option>
         </select>
@@ -66,6 +66,9 @@ export default {
             type : Boolean,
             default :false
         },
+        id_actual:{
+            type : String,
+        },
         value:{
             type :String
         },
@@ -104,35 +107,40 @@ export default {
     data(){
         return{
             returnedText_info:this.info_text,
+            id_group: this.id_actual
         }
     },
     /*All function inside the updated option is called each time the value is changed*/
-    updated(){
+    /*updated(){
         //Here we put the selected attribute in the option corresponding with the prop selctedOption
         if(this.selectedDivName!=undefined){
             var selectedDiv = document.getElementsByClassName(this.selectedDivName)
             var option =selectedDiv[0].getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
-                if(option[i].value == this.selctedOption) {
+                console.log("id 33")
+                console.log(option[i].id)
+                if(option[i].value == this.selctedOption && option[i].id == "RequiredSkill") {
                     option[i].setAttribute("selected", "selected");
                 }
             }
         }else{
             var option = document.getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
-                if(option[i].value == this.selctedOption) {
+                  console.log("id 33")
+                console.log(option[i].id)
+                if(option[i].value == this.selctedOption && option[i].id == "RequiredSkill") {
                     option[i].setAttribute("selected", "selected");
                 }
             }
         }
         
-    },
+    },*/
     mounted(){
         if(this.selectedDivName!=undefined){
             var selectedDiv = document.getElementsByClassName(this.selectedDivName)
             var option =selectedDiv[0].getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
-                if(option[i].value == this.selctedOption) {
+                if(option[i].value == this.selctedOption && option[i].id == this.id_group) {
                     option[i].setAttribute("selected", "selected");
                     
                 }
@@ -140,12 +148,12 @@ export default {
         }else{
             var option = document.getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
-                if(option[i].value == this.selctedOption) {
+                if(option[i].value == this.selctedOption && option[i].id == this.id_group) {
                     option[i].setAttribute("selected", "selected");
                 }
             }
         }
-        /**/
+        
     },
     /*--------Declartion of the differents methods:--------
     updateValue: Emit to the parent component the value of the input

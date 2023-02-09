@@ -38,6 +38,7 @@
 
                 </div>       
             </form>
+            <SucessAlert ref="sucessAlert"/>
         </div>
         
     </div>
@@ -49,13 +50,15 @@
 import InputTextForm from '../../input/InputTextForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
 
 export default {
     /*--------Declartion of the others Components:--------*/
     components : {
         InputTextForm,
         SaveButtonForm,
-        DeleteComponentButton
+        DeleteComponentButton,
+        SucessAlert
 
     },
     /*--------Declartion of the differents props:--------

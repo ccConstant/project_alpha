@@ -14,8 +14,49 @@
                 <InputTextForm  inputClassName="form-control w-50" :info_text="infos_verif[2].info_value" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[3].info_value" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[4].info_value" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[5].info_value" selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill"/>
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[6].info_value" selectClassName="form-select w-50"  name="verif_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.verif_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.verif_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_verifAcceptanceAuthority"/>
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[5].info_value" selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill" :id_actual="RequiredSkill"/>
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[6].info_value" selectClassName="form-select w-50"  name="verif_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.verif_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.verif_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_verifAcceptanceAuthority" :id_actual="VerifAcceptanceAuthority"/>-->
+                <!--<div v-if="!isInConsultedMod">
+                    <div class="selectForm">
+                         <p> Required Skill :</p>
+                        <select v-model="verif_requiredSkill">
+                            <option v-for="(option,index) in enum_requiredSkill" :key="index" v-bind:value="option.value">
+                                {{ option.value }}
+                            </option>
+                        </select>
+                        <span>Selected: {{ verif_requiredSkill }}</span>
+                    </div>
+
+                    <div class="selectForm">
+                         <p> Verif acceptance authority :</p>
+                        <select v-model="verif_verifAcceptanceAuthority">
+                            <option v-for="(option,index) in enum_verifAcceptanceAuthority" :key="index" v-bind:value="option.value">
+                                {{ option.value }}
+                            </option>
+                        </select>
+                        <span>Selected: {{ verif_verifAcceptanceAuthority }}</span>
+                    </div>
+                </div>
+                <div v-else>
+                    <p> Required Skill :</p>
+                    <div class="selectForm">
+                        <select disabled v-model="verif_requiredSkill">
+                            <option v-for="(option,index) in enum_requiredSkill" :key="index" v-bind:value="option.value">
+                                {{ option.value }}
+                            </option>
+                        </select>
+                        <span>Selected: {{ verif_requiredSkill }}</span>
+                    </div>
+                    <p> Verif acceptance authority :</p>
+                    <div class="selectForm">
+                        <select disabled v-model="verif_verifAcceptanceAuthority">
+                            <option v-for="(option,index) in enum_verifAcceptanceAuthority" :key="index" v-bind:value="option.value">
+                                {{ option.value }}
+                            </option>
+                        </select>
+                        <span>Selected: {{ verif_verifAcceptanceAuthority }}</span>
+                    </div>
+                </div>-->
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control " :info_text="infos_verif[7].info_value" :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
                     <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[8].info_value"  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
@@ -188,7 +229,9 @@ export default {
             loaded:false,
             isInReformMod:this.reformMod,
             infos_verif:[],
-            loaded:false
+            loaded:false,
+            RequiredSkill:"RequiredSkill",
+            VerifAcceptanceAuthority:"VerifAcceptanceAuthority",
 
         }
     },
@@ -197,10 +240,11 @@ export default {
         axios.get('/verification/enum/requiredSkill')
             .then (response=>{
                 this.enum_requiredSkill=response.data;
+                console.log(this.enum_requiredSkill)
             } ) 
             .catch(error => console.log(error)) ;
         /*Ask for the controller different required skill  */
-        axios.get('/usage/enum/verifAcceptanceAuthority')
+        axios.get('/verification/enum/verifAcceptanceAuthority')
             .then (response=>{
                 this.enum_verifAcceptanceAuthority=response.data;
             } ) 
@@ -411,11 +455,23 @@ export default {
         height: 3px;
         background: #D4D4D4;
     }
+    p{
+        margin-top : 15px;
+        margin-bottom:0px;
+    }
     .titleForm{
         padding-left: 10px;
     }
     form{
         margin: 20px;
         margin-bottom: 100px;
+    }
+    .selectForm{
+        margin-bottom:30px;
+        margin-top:0px;
+        select{
+            width:350px;
+            background-color: #D3D3D3;
+        }
     }
 </style>

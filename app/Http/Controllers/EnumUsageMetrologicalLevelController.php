@@ -3,7 +3,7 @@
 /*
 * Filename : EnumUsageMetrologicalLevelController.php 
 * Creation date : 21 Jun 2022
-* Update date : 21 Jun 2022
+* Update date : 9 Feb 2023
 * This file is used to link the view files and the database that concern the enumUsageMetrologicalLevel table. 
 * For example : send the fields of the enum, add a new field...
 */ 
@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
 use App\Models\MmeUsage;
 use App\Models\EnumUsageMetrologicalLevel;
+use App\Models\MmeTemp;
 
 class EnumUsageMetrologicalLevelController extends Controller
 {
@@ -26,7 +27,16 @@ class EnumUsageMetrologicalLevelController extends Controller
 
     public function send_enum_metrologicalLevel (){
         $enums_metrologicalLevel=DB::table('enum_usage_metrological_levels')->orderBy('value', 'asc')->get() ;   
-        return response()->json($enums_metrologicalLevel) ; 
+        $enums=array() ;
+        foreach($enums_metrologicalLevel as $enum_metrologicalLevel){
+            $enum=([
+                "value" => $enum_metrologicalLevel->value,
+                "id" => $enum_metrologicalLevel->id,
+                "id_enum" => "MetrologicalLevel",
+            ]);
+            array_push($enums, $enum) ;
+        }
+        return response()->json($enums) ; 
     }
 
     /**
@@ -50,14 +60,13 @@ class EnumUsageMetrologicalLevelController extends Controller
     }
 
     /**
-     * Function call by EnumManagement.vue with the route : /usage/enum/metrologicalLevel/update/{id} (post)
-    * Add a new field for the metrological level enum in the data base
-    * The id parameter correspond to the id of the EnumUsageMetrologicalLevel we want to update
+     * Function call by EnumManagement.vue with the route : /usage/enum/metrologicalLevel/verif/{id} (post)
+    * Verify if we can update the usage metrologicalLevel enum in the data base
+    * The id parameter correspond to the id of the enumMetrologicalLevel we want to update
      */
-
-    public function update_enum_metrologicalLevel (Request $request, $id){
-        $enum_metrologicalLevel=EnumUsageMetrologicalLevel::findOrFail($id) ; 
+    public function verif_enum_metrologicalLevel(Request $request, $id){
         $enum_already_exist=EnumUsageMetrologicalLevel::where('value', '=', $request->value)->where('id','<>', $id)->get();
+        $enum=EnumUsageMetrologicalLevel::findOrfail($id) ;
         if (count($enum_already_exist)!=0 ){
             return response()->json([
                 'errors' => [
@@ -65,10 +74,70 @@ class EnumUsageMetrologicalLevelController extends Controller
                 ]
             ], 429);
         }
-        
-        $enum_metrologicalLevel->update([
+        return response()->json($id) ;
+    }
+
+    /**
+    * Function call by EnumManagement.vue with the route : /usage/enum/metrologicalLevel/analyze/{id} (post)
+    * Analyze the MME connected to the usage metrological level enum we want to update
+    * The id parameter correspond to the id of the enumMetrologicalLevel we want to update
+     */
+    public function analyze_enum_metrologicalLevel(Request $request, $id){
+        $usages=MmeUsage::where('enumUsageMetrologicalLevel_id', '=', $id)->get() ;
+        $mmes=array() ; 
+        $validated_mme=array() ;
+        foreach($usages as $usage){
+            $mme_temp=$usage->mme_temps ;
+            $mme=([
+                "mmeTemp_id" => $mme_temp->id,
+                "name" => $mme_temp->mme->mme_name,
+                "internalReference" => $mme_temp->mme->mme_internalReference,
+            ]);
+            if($mme_temp->mmeTemp_lifeSheetCreated==1){
+                array_push($validated_mme, $mme) ;
+            }else{
+                array_push($mmes, $mme) ;
+            }
+            
+        }
+        $final=([
+            "id" => $id,
+            "mmes" => $mmes,
+            "validated_mme" => $validated_mme,
+        ]);
+
+        return response()->json($final) ;
+    }
+
+
+    /**
+     * Function call by EnumManagement.vue with the route : /usage/enum/metrologicalLevel/update/{id} (post)
+    * Update the verification verifAcceptanceAuthority enum in the data base
+    * The id parameter correspond to the id of the enumVerifAcceptanceAuthority we want to update
+     */
+
+    public function update_enum_metrologicalLevel (Request $request, $id){
+        $enum=EnumUsageMetrologicalLevel::findOrFail($id) ; 
+        $enum->update([
             'value' => $request->value, 
-        ]); 
+        ]);
+        foreach ($request->validated_mme as $mme){
+            $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
+            $mme=$mme_temp->mme ;
+            $version=$mme->mme_nbrVersion+1;
+            $mme->update([
+                'mme_nbrVersion' => $version
+            ]);
+            $mme_temp->update([
+                'mmeTemp_lifeSheetCreated' => 0, 
+                'qualityVerifier_id' => NULL,
+                'technicalVerifier_id' => NULL,
+                'mmeTemp_version' => $version,
+            ]);
+        }
+
+
+
     }
 
     /**

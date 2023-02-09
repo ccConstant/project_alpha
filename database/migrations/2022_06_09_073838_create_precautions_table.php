@@ -3,7 +3,7 @@
 /*
 * Filename : 2022_06_09_073838_create_precautions_table.php
 * Creation date : 9 Jun 2022
-* Update date : 9 Jun 2022
+* Update date : 8 Feb 2023
 * Role : This file is used to create the table "precautions" in the data base. In this file, we can see the different
 * attribute of this table (id, description..) and how they are defined (string, boolean, unique or not)
 */ 
@@ -16,7 +16,7 @@ class CreatePrecautionsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     * Create the table precautions in the data base
      * @return void
      */
     public function up()
@@ -35,7 +35,7 @@ class CreatePrecautionsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
+     * Delete the table precautions if it already exist
      * @return void
      */
     public function down()

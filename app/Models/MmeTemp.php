@@ -2,8 +2,8 @@
 
 /*
 * Filename : MmeTemp.php
-* Creation date : 7 Jun 2022
-* Update date : 7 Jun 2022
+* Creation date : 21 Jun 2022
+* Update date : 8 Feb 2023
 * This file define the model MmeTemp. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_06_07_144940_create_mme_temps_table.php" in Database>migrations." 
 * 
@@ -14,6 +14,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\MmeState;
+use App\Models\Mme ;
+use App\Models\User ;
+use App\Models\File ;
+use App\Models\Verification ; 
+use App\Models\MmeUsage ;
 
 class MmeTemp extends Model
 {
@@ -35,17 +40,17 @@ class MmeTemp extends Model
 
      //Define the relation between an mme_temp and the person who cheking it : an mme_temp has only one qualityVerifier
      public function qualityVerifier(){
-         return $this->belongsTo(People::class, 'qualityVerifier_id') ; 
+         return $this->belongsTo(User::class, 'qualityVerifier_id') ; 
      }
  
      //Define the relation between an mme_temp and the person who cheking it : an mme_temp has only one technicalVerifier
      public function technicalVerifier(){
-         return $this->belongsTo(People::class, 'technicalVerifier_id') ; 
+         return $this->belongsTo(User::class, 'technicalVerifier_id') ; 
      }
  
      //Define the relation between an mme_temp and the person who creating it : an mme_temp has only one creator (person who makes the changes creating the mme_temp)
      public function createdBy(){
-         return $this->belongsTo(People::class, 'createdBy_id') ; 
+         return $this->belongsTo(User::class, 'createdBy_id') ; 
      }
  
      //Define the relation between an mme_temp and its states : an mme_temp can have many states

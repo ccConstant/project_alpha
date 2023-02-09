@@ -75,8 +75,6 @@ export default {
         //Here we put the checked attribute in the option corresponding with the prop checkedOption
         var radio = document.getElementsByName('radio-input');
         for (var i = 0; i < radio.length; i++) {
-            console.log ("id : "+radio[i].id + " " + this.options[0].id) ; 
-            console.log("value : "+radio[i])
             if (`${radio[i].id}`==`${this.options[0].id}`&& `${radio[i].value}` == `${this.checkedOption}`) {
                 radio[i].setAttribute("checked", "checked");
             }

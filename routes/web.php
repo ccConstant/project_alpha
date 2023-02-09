@@ -501,6 +501,10 @@ Route::post('/equipment/enum/type/add', [EnumEquipmentTypeController::class, 'ad
 
 Route::post('/equipment/enum/type/update/{id}', [EnumEquipmentTypeController::class, 'update_enum_type'] ) ;
 
+Route::post('/equipment/enum/type/verif/{id}', [EnumEquipmentTypeController::class, 'verif_enum_type'] ) ;
+
+Route::post('/equipment/enum/type/analyze/{id}', [EnumEquipmentTypeController::class, 'analyze_enum_type'] ) ;
+
 Route::get('/equipment/enum/massUnit', [EnumEquipmentMassUnitController::class, 'send_enum_massUnit'] ) ;
 
 Route::post('/equipment/enum/massUnit/delete/{id}', [EnumEquipmentMassUnitController::class, 'delete_enum_massUnit'] ) ;
@@ -508,6 +512,11 @@ Route::post('/equipment/enum/massUnit/delete/{id}', [EnumEquipmentMassUnitContro
 Route::post('/equipment/enum/massUnit/add', [EnumEquipmentMassUnitController::class, 'add_enum_massUnit'] ) ;
 
 Route::post('/equipment/enum/massUnit/update/{id}', [EnumEquipmentMassUnitController::class, 'update_enum_massUnit'] ) ;
+
+Route::post('/equipment/enum/massUnit/verif/{id}', [EnumEquipmentMassUnitController::class, 'verif_enum_massUnit'] ) ;
+
+Route::post('/equipment/enum/massUnit/analyze/{id}', [EnumEquipmentMassUnitController::class, 'analyze_enum_massUnit'] ) ;
+
 
 Route::get('/dimension/enum/type', [EnumDimensionTypeController::class, 'send_enum_type'] ) ;
 
@@ -517,6 +526,10 @@ Route::post('/dimension/enum/type/add', [EnumDimensionTypeController::class, 'ad
 
 Route::post('/dimension/enum/type/update/{id}', [EnumDimensionTypeController::class, 'update_enum_type'] ) ;
 
+Route::post('dimension/enum/type/verif/{id}', [EnumDimensionTypeController::class, 'verif_enum_type'] ) ;
+
+Route::post('dimension/enum/type/analyze/{id}', [EnumDimensionTypeController::class, 'analyze_enum_type'] ) ;
+
 Route::get('/dimension/enum/name', [EnumDimensionNameController::class, 'send_enum_name'] ) ;
 
 Route::post('/dimension/enum/name/delete/{id}', [EnumDimensionNameController::class, 'delete_enum_name'] ) ;
@@ -524,6 +537,10 @@ Route::post('/dimension/enum/name/delete/{id}', [EnumDimensionNameController::cl
 Route::post('/dimension/enum/name/add', [EnumDimensionNameController::class, 'add_enum_name'] ) ;
 
 Route::post('/dimension/enum/name/update/{id}', [EnumDimensionNameController::class, 'update_enum_name'] ) ;
+
+Route::post('dimension/enum/name/verif/{id}', [EnumDimensionNameController::class, 'verif_enum_name'] ) ;
+
+Route::post('dimension/enum/name/analyze/{id}', [EnumDimensionNameController::class, 'analyze_enum_name'] ) ;
 
 Route::get('/dimension/enum/unit', [EnumDimensionUnitController::class, 'send_enum_unit'] ) ;
 
@@ -533,21 +550,33 @@ Route::post('/dimension/enum/unit/add', [EnumDimensionUnitController::class, 'ad
 
 Route::post('/dimension/enum/unit/update/{id}', [EnumDimensionUnitController::class, 'update_enum_unit'] ) ;
 
+Route::post('dimension/enum/unit/verif/{id}', [EnumDimensionUnitController::class, 'verif_enum_unit'] ) ;
+
+Route::post('dimension/enum/unit/analyze/{id}', [EnumDimensionUnitController::class, 'analyze_enum_unit'] ) ;
+
 Route::get('/power/enum/type', [EnumPowerTypeController::class, 'send_enum_type'])  ;
 
 Route::post('/power/enum/type/delete/{id}', [EnumPowerTypeController::class, 'delete_enum_type'] ) ;
 
 Route::post('/power/enum/type/add', [EnumPowerTypeController::class, 'add_enum_type'] ) ;
 
+Route::post('power/enum/type/verif/{id}', [EnumPowerTypeController::class, 'verif_enum_type'] ) ;
+
+Route::post('power/enum/type/analyze/{id}', [EnumPowerTypeController::class, 'analyze_enum_type'] ) ;
+
 Route::post('/power/enum/type/update/{id}', [EnumPowerTypeController::class, 'update_enum_type'] ) ;
 
-Route::get('/risk/enum/riskfor', [EnumRiskForController::class, 'send_enum_riskfor'] ) ;
+Route::get('/risk/enum/riskfor', [EnumRiskForController::class, 'send_enum_riskFor'] ) ;
 
-Route::post('/risk/enum/riskfor/delete/{id}', [EnumRiskForController::class, 'delete_enum_riskfor'] ) ;
+Route::post('/risk/enum/riskfor/delete/{id}', [EnumRiskForController::class, 'delete_enum_riskFor'] ) ;
 
-Route::post('/risk/enum/riskfor/add', [EnumRiskForController::class, 'add_enum_riskfor'] ) ;
+Route::post('/risk/enum/riskfor/add', [EnumRiskForController::class, 'add_enum_riskFor'] ) ;
 
-Route::post('/risk/enum/riskfor/update/{id}', [EnumRiskForController::class, 'update_enum_riskfor'] ) ;
+Route::post('/risk/enum/riskfor/update/{id}', [EnumRiskForController::class, 'update_enum_riskFor'] ) ;
+
+Route::post('risk/enum/riskfor/verif/{id}', [EnumRiskForController::class, 'verif_enum_riskFor'] ) ;
+
+Route::post('risk/enum/riskfor/analyze/{id}', [EnumRiskForController::class, 'analyze_enum_riskFor'] ) ;
 
 Route::get('/state/enum/name', [EnumStateNameController::class, 'send_enum_name'] ) ;
 
@@ -565,11 +594,31 @@ Route::post('/verification/enum/requiredSkill/add', [EnumVerificationRequiredSki
 
 Route::post('/verification/enum/requiredSkill/update/{id}', [EnumVerificationRequiredSkillController::class, 'update_enum_requiredSkill'] ) ;
 
+Route::post('verification/enum/requiredSkill/verif/{id}', [EnumVerificationRequiredSkillController::class, 'verif_enum_requiredSkill'] ) ;
+
+Route::post('verification/enum/requiredSkill/analyze/{id}', [EnumVerificationRequiredSkillController::class, 'analyze_enum_requiredSkill'] ) ;
+
+Route::get('/verification/enum/verifAcceptanceAuthority', [EnumVerifAcceptanceAuthorityController::class, 'send_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('/verification/enum/verifAcceptanceAuthority/delete/{id}', [EnumVerifAcceptanceAuthorityController::class, 'delete_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('/verification/enum/verifAcceptanceAuthority/add', [EnumVerifAcceptanceAuthorityController::class, 'add_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('/verification/enum/verifAcceptanceAuthority/update/{id}', [EnumVerifAcceptanceAuthorityController::class, 'update_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('verification/enum/verifAcceptanceAuthority/verif/{id}', [EnumVerifAcceptanceAuthorityController::class, 'verif_enum_verifAcceptanceAuthority'] ) ;
+
+Route::post('verification/enum/verifAcceptanceAuthority/analyze/{id}', [EnumVerifAcceptanceAuthorityController::class, 'analyze_enum_verifAcceptanceAuthority'] ) ;
+
 Route::get('/precaution/enum/type', [EnumPrecautionTypeController::class, 'send_enum_type'] ) ;
 
 Route::post('/precaution/enum/type/delete/{id}', [EnumPrecautionTypeController::class, 'delete_enum_type'] ) ;
 
 Route::post('/precaution/enum/type/add', [EnumPrecautionTypeController::class, 'add_enum_type'] ) ;
+
+Route::post('precaution/enum/type/verif/{id}', [EnumPrecautionTypeController::class, 'verif_enum_type'] ) ;
+
+Route::post('precaution/enum/type/analyze/{id}', [EnumPrecautionTypeController::class, 'analyze_enum_type'] ) ;
 
 Route::post('/precaution/enum/type/update/{id}', [EnumPrecautionTypeController::class, 'update_enum_type'] ) ;
 
@@ -581,13 +630,10 @@ Route::post('/usage/enum/metrologicalLevel/add', [EnumUsageMetrologicalLevelCont
 
 Route::post('/usage/enum/metrologicalLevel/update/{id}', [EnumUsageMetrologicalLevelController::class, 'update_enum_metrologicalLevel'] ) ;
 
-Route::get('/usage/enum/verifAcceptanceAuthority', [EnumVerifAcceptanceAuthorityController::class, 'send_enum_verifAcceptanceAuthority'] ) ;
+Route::post('usage/enum/metrologicalLevel/verif/{id}', [EnumUsageMetrologicalLevelController::class, 'verif_enum_metrologicalLevel'] ) ;
 
-Route::post('/usage/enum/verifAcceptanceAuthority/delete/{id}', [EnumVerifAcceptanceAuthorityController::class, 'delete_enum_verifAcceptanceAuthority'] ) ;
+Route::post('usage/enum/metrologicalLevel/analyze/{id}', [EnumUsageMetrologicalLevelController::class, 'analyze_enum_metrologicalLevel'] ) ;
 
-Route::post('/usage/enum/verifAcceptanceAuthority/add', [EnumVerifAcceptanceAuthorityController::class, 'add_enum_verifAcceptanceAuthority'] ) ;
-
-Route::post('/usage/enum/verifAcceptanceAuthority/update/{id}', [EnumVerifAcceptanceAuthorityController::class, 'update_enum_verifAcceptanceAuthority'] ) ;
 
 
 

@@ -1,5 +1,14 @@
 <?php
 
+/*
+* Filename : User.php
+* Creation date : 9 Jun 2022
+* Update date : 8 Feb 2023
+* This file define the model User. We can see more details about this model (like his attributes) in the 
+* migration file named "2014_10_12_000000_create_users_table.php" in Database>migrations." 
+* 
+*/ 
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -26,6 +35,8 @@ class User extends Authenticatable
         'user_startDate',
         'user_endDate',
         'user_pseudo',
+
+        //Right level general 
         'user_menuUserAcessRight',
         'user_resetUserPasswordRight',
         'user_updateDataInDraftRight',
@@ -35,24 +46,31 @@ class User extends Authenticatable
         'user_updateDescriptiveLifeSheetDataSignedRight',
         'user_makeQualityValidationRight',
         'user_makeTechnicalValidationRight',
-        'user_makeEqRespValidationRight',
-        'user_makeEqOpValidationRight',
-        'user_updateEnumRight',
-        'user_deleteEnumRight',
-        'user_addEnumRight',
         'user_deleteDataNotValidatedLinkedToEqOrMmeRight',
         'user_deleteDataValidatedLinkedToEqOrMmeRight',
         'user_deleteDataSignedLinkedToEqOrMmeRight',
         'user_deleteEqOrMmeRight',
+        'user_makeReformRight',
+        'user_declareNewStateRight',
+
+        //right level for enum and information
+        'user_updateEnumRight',
+        'user_deleteEnumRight',
+        'user_addEnumRight',
         'user_updateInformationRight',
+
+        //right level for equipment
+        'user_makeEqOpValidationRight',
         'user_personTrainedToGeneralPrinciplesOfEqManagementRight',
         'user_formationEqDate',
+        'user_makeEqRespValidationRight',
+
+        //right level for mme
         'user_personTrainedToGeneralPrinciplesOfMMEManagementRight',
         'user_formationMmeDate',
-        'user_declareNewStateRight',
-        'user_makeReformRight',
-        'user_makeMmeRespValidationRight',
         'user_makeMmeOpValidationRight',
+        'user_makeMmeRespValidationRight',
+      
     ];
 
     /**

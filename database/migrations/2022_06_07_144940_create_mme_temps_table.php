@@ -3,7 +3,7 @@
 /*
 * Filename : 2022_06_07_144940_create_mme_temps_table.php
 * Creation date : 7 Jun 2022
-* Update date : 7 Jun 2022
+* Update date : 8 Feb 2023
 * Role : This file is used to create the table "mme_temps" in the data base. In this file, we can see the different
 * attribute of this table (version, date, validate..) and how they are defined (string, boolean, unique or not)
 */ 
@@ -16,7 +16,7 @@ class CreateMmeTempsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     * Create the table mme_temps in the data base
      * @return void
      */
     public function up()
@@ -42,7 +42,7 @@ class CreateMmeTempsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
+     * Delete the table mme_temps if it already exist
      * @return void
      */
     public function down()

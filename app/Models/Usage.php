@@ -3,7 +3,7 @@
 /*
 * Filename : Usage.php
 * Creation date : 9 May 2022
-* Update date : 9 May 2022
+* Update date : 8 Feb 2023
 * This file define the model Usage. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_05_10_063905_create_usages_table.php" in Database>migrations." 
 * 
@@ -22,7 +22,7 @@ class Usage extends Model
      //Data which can be added, updated or deleted by us in the data base.
      protected $fillable = ['usg_type', 'usg_precaution', 'usg_startDate', 'usg_reformDate', 'usg_validate', 'equipmentTemp_id'] ; 
 
-     //Define the relation between an equipment_temp and its usages : a usage can correspond to many equipment temps
+     //Define the relation between an equipment_temp and its usages : a usage can correspond to only one equipment temps
     public function equipment_temps(){
         return $this->belongsTo(EquipmentTemp::class, 'equipmentTemp_id') ; 
     }

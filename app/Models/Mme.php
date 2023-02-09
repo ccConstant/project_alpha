@@ -2,10 +2,10 @@
 
 /*
 * Filename : Mme.php
-* Creation date : 7 Jun 2022
-* Update date : 7 Jun 2022
+* Creation date : 21 Jun 2022
+* Update date : 8 Feb 2023
 * This file define the model Mme. We can see more details about this model (like his attributes) in the 
-* migration file named "2022_06_07_142255_create_mme_table.php" in Database>migrations." 
+* migration file named "2022_06_07_142030_create_mmes_table.php" in Database>migrations." 
 * 
 */ 
 
@@ -14,6 +14,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\MmeState;
+use App\Models\MmeTemp ;
+use App\Models\EquipmentTemp ;
 
 class Mme extends Model
 {
@@ -32,8 +34,8 @@ class Mme extends Model
         return $this->belongsTo(MmeState::class, 'state_id') ; 
     }
 
-     //Define the relation between an equipment_temp and its mmes : a mme can correspond to only one mme
-     public function equipment_temps(){
+     //Define the relation between an equipment_temp and its mmes : a mme can correspond to only one equipment temp
+     public function equipment_temp(){
         return $this->belongsTo(EquipmentTemp::class, 'equipmentTemp_id') ; 
     }
 

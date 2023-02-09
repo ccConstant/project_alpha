@@ -19,7 +19,7 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError" >
                 <!--Call of the different component with their props-->
-                <InputSelectForm  @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.pow_type" name="pow_type" label="Power Type :" :options="enum_pow_type" :isDisabled="!!isInConsultedMod" :selctedOption="pow_type" :selectedDivName="divClass" v-model="pow_type" :info_text="infos_power[0].info_value"/>
+                <InputSelectForm  @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.pow_type" name="pow_type" label="Power Type :" :options="enum_pow_type" :isDisabled="!!isInConsultedMod" :selctedOption="pow_type" :selectedDivName="divClass" v-model="pow_type" :info_text="infos_power[0].info_value" :id_actual="powerType"/>
                 <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.pow_name" name="pow_name" label="Power Name " :options="pow_names" v-model="pow_name" :isDisabled="!!isInConsultedMod" :info_text="infos_power[1].info_value" />
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control" :Errors="errors.pow_value" name="pow_value" label="Power value :" :stepOfInput="0.01" v-model="pow_value" :isDisabled="!!isInConsultedMod" :info_text="infos_power[2].info_value"/>
@@ -170,7 +170,8 @@ export default {
             addSucces:false,
             isInConsultedMod:this.consultMod,
             infos_power:[],
-            loaded:false
+            loaded:false,
+            powerType:"PowerType"
         }
     },
     /*All function inside the created option is called after the component has been mounted.*/
