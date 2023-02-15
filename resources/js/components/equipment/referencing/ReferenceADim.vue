@@ -10,7 +10,8 @@
 -------------------------------------------------------------->
 <template>
     <div class="equipmentDim" >
-        <h2 class="titleForm">Equipment Dimension(s)</h2>
+        <h2 class="titleForm">Equipment Characteristic(s)</h2>
+         <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info!=null "/>
         <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
         <!--ref="ask_dim_data" is used to call the child elements in this component-->
         <!--The emitted deleteDim is catched here and call the function getContent -->
@@ -41,13 +42,17 @@
 import EquipmentDimForm from './EquipmentDimForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import ImportationAlert from '../../alert/ImportationAlert.vue'
+import InputInfo from '../../input/InputInfo.vue'
+
 
 export default {
     /*--------Declartion of the others Components:--------*/
     components:{
         EquipmentDimForm,
         SaveButtonForm,
-        ImportationAlert
+        ImportationAlert,
+        InputInfo
+
 
     },
     /*--------Declartion of the differents props:--------
@@ -95,7 +100,8 @@ export default {
         isInConsultMod:this.consultMod,
         isInModifMod:this.modifMod,
         data_eq_id:this.eq_id,
-        all_dim_validate:[]
+        all_dim_validate:[],
+        title_info : null,
       };
     },
     methods: {
@@ -177,6 +183,12 @@ export default {
     
         }
 
+        axios.get('/info/send/dimension')
+        .then (response=> {
+            this.title_info=response.data[4];
+            }) 
+        .catch(error => console.log(error)) ;
+
     },
     /*All function inside the created option is called after the component has been mounted.*/
     mounted(){
@@ -191,5 +203,13 @@ export default {
 </script>
 
 <style>
+
+.info_title{
+    position:relative ;
+}
+
+.title{
+    display: inline-block;
+}
 
 </style>

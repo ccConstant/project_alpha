@@ -257,9 +257,10 @@ export default {
         }
     },
     created(){
-            console.log("coucou")
+        console.log("signed"+this.$route.query.signed)
     },
     methods:{
+
         //for approved data
         addDraft(){
             this.$emit('add',"drafted", this.reason, this.lifesheet_created)

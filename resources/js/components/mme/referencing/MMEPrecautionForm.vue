@@ -28,6 +28,7 @@
                     <DeleteComponentButton :validationMode="prctn_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
                 </div>       
             </form>
+            <SucessAlert ref="sucessAlert"/>
         </div>
     </div>
 </template>
@@ -38,12 +39,15 @@ import InputSelectForm from '../../input/InputSelectForm.vue'
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
+
 export default {
     components : {
         InputSelectForm,
         InputTextAreaForm,
         SaveButtonForm,
-        DeleteComponentButton
+        DeleteComponentButton,
+        SucessAlert
     },
     props:{
         type:{
@@ -117,7 +121,7 @@ export default {
                 /*Sending to the controller all the information about the mme so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addMMEPrctn(savedAs){
+        addMMEPrctn(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the mme in which the precaution will be added
                 var id;
@@ -130,8 +134,6 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
-                console.log(savedAs)
-                console.log(this.prctn_type)
                 axios.post('/precaution/verif',{
                     prctn_type:this.prctn_type,
                     prctn_description:this.prctn_description,
@@ -150,6 +152,15 @@ export default {
                     })
                     //If the precaution is added succesfuly
                     .then(response =>{
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/mme/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                             window.location.reload();
+                        }
+                        this.$refs.sucessAlert.showAlert(`Usage precaution added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -174,7 +185,7 @@ export default {
         /*Sending to the controller all the information about the precaution so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validate or validated  */ 
-        updateMMEPrctn(savedAs){
+        updateMMEPrctn(savedAs, reason, lifesheet_created){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
 
@@ -197,7 +208,19 @@ export default {
                             usage_id:this.usg_id,
                             mme_id:this.mme_id_update,
                         })
-                        .then(response =>{this.prctn_validate=savedAs;})
+                        .then(response =>{
+                            var id=this.mme_id_update
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/mme/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                                 window.location.reload();
+                            }
+                            this.prctn_validate=savedAs;
+                            this.$refs.sucessAlert.showAlert(`Usage precaution updated successfully and saved as ${savedAs}`);
+                        })
                         //If the controller sends errors we put it in the errors object 
                         .catch(error => this.errors=error.response.data.errors) ;
 
@@ -211,11 +234,12 @@ export default {
             delete this.errors[event.target.name];
         },
                 //Function for deleting a precaution from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
 
             //If the user is in update mode and the precaution exist in the database
             if(this.modifMod==true && this.prctn_id!==null){
                 console.log("supression");
+                console.log(this.mme_id_update)
                 //Send a post request with the id of the precaution who will be deleted in the url
                 var consultUrl = (id) => `/precaution/delete/${id}`;
                 axios.post(consultUrl(this.prctn_id),{
@@ -224,12 +248,23 @@ export default {
                 .then(response =>{
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deletePrctn','')
+                    var id=this.mme_id_update
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the update
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/mme/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                         window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`Usage precaution deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }else{
                 this.$emit('deletePrctn','')
+                 this.$refs.sucessAlert.showAlert(`Empty Usage precaution deleted successfully`);
 
             }
             

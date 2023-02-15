@@ -162,6 +162,10 @@ const router = new VueRouter({
         name: 'url_mme_life_event_update_state',
         component:require('./components/mme/lifeEvent/UpdateMMEState.vue').default
     },{
+        path:'/mme/history/:id(\\d+)',
+        name: 'url_mme_history',
+        component:require('./components/mme/consultation/MMEVersionHistory.vue').default
+    },{
         path:'/mme/life_event/reference/:id(\\d+)/:state_id(\\d+)',
         name: 'url_mme_life_event_reference',
         component:require('./components/mme/lifeEvent/ReferenceAMMELifeEvent.vue').default
@@ -181,7 +185,7 @@ const router = new VueRouter({
     },{
         path:'/mme/maintenance/calendar',
         name: 'url_mme_maintenance_calendar',
-        component:require('./components/mme/calendar/MMEMaintenanceCalendar.vue').default
+        component:require('./components/mme/calendar/AnnualMMECalendar.vue').default
     },{
         path:'/mme/lifesheet_pdf/:id(\\d+)',
         name: 'mme_url_lifesheet_pdf',

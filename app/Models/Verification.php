@@ -3,7 +3,7 @@
 /*
 * Filename : Verification.php
 * Creation date : 8 Jun 2022
-* Update date : 8 Feb 2023
+* Update date : 15 Feb 2023
 * This file define the model Verification. We can see more details about this model (like his attributes) in the 
 * migration file named "2022_06_08_062325_create_verifications_table.php" in Database>migrations." 
 * 
@@ -22,7 +22,7 @@ class Verification extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['verif_number','verif_name', 'verif_expectedResult', 'verif_nonComplianceLimit', 'verif_periodicity','verif_symbolPeriodicity', 'enumRequiredSkill_id', 'enumVerifAcceptanceAuthority_id','verif_description',  'verif_puttingIntoService', 'verif_protocol', 'verif_startDate', 'verif_nextDate', 'verif_reformDate', 'verif_validate', 'mmeTemp_id' ];
+    protected $fillable = ['verif_number','verif_name', 'verif_expectedResult', 'verif_nonComplianceLimit', 'verif_periodicity','verif_symbolPeriodicity', 'enumRequiredSkill_id', 'enumVerifAcceptanceAuthority_id','verif_description',  'verif_puttingIntoService', 'verif_protocol', 'verif_startDate', 'verif_nextDate', 'verif_reformDate', 'verif_validate', 'mmeTemp_id', 'verif_preventiveOperation' ];
 
 
     //Define the relation between a verification and a verification realized :  like a verification can be realized many times, a verification has many verification realized

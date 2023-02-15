@@ -3,7 +3,7 @@
 /*
 * Filename : FileController.php 
 * Creation date : 17 May 2022
-* Update date : 17 May 2022
+* Update date : 9 Feb 2023
 * This file is used to link the view files and the database that concern the file table. 
 * For example : add a file for an equipment in the data base, update a file, delete it...
 */ 
@@ -141,8 +141,6 @@ class FileController extends Controller
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
-            //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update file 
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
                 $mostRecentlyEqTmp->update([
                     'qualityVerifier_id' => NULL,
@@ -154,6 +152,8 @@ class FileController extends Controller
                 ]);
             }
             
+            //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update file 
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of equipment temp linked to the equipment
@@ -274,6 +274,17 @@ class FileController extends Controller
             ]) ; 
 
             $file_id=$file->id;
+
+            if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
             
              //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add file
             if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
@@ -291,6 +302,7 @@ class FileController extends Controller
             $mostRecentlyMmeTmp->update([
                 'mmeTemp_version' => $version,
                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                'mmeTemp_lifeSheetCreated' => false,
             ]);
             }
             return response()->json($file_id) ; 
@@ -309,9 +321,21 @@ class FileController extends Controller
         //We search the most recently mme temp of the mme 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
         if ($mostRecentlyMmeTmp!=NULL){
+
+            if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+
             //We checked if the most recently mme temp is validate and if a life sheet has been already created.
             //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update file 
-            
+        
             if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
             
                 //We need to increase the number of mme temp linked to the mme
@@ -321,12 +345,11 @@ class FileController extends Controller
                     'mme_nbrVersion' =>$version_mme,
                 ]);
                 
-               //We need to increase the version of the mme temp (because we create a new mme temp)
-                $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
                  //update of mme temp
-               $mostRecentlyEqTmp->update([
-                'mmeTemp_version' => $version,
+               $mostRecentlyMmeTmp->update([
+                'mmeTemp_version' => $version_mme,
                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                'mmeTemp_lifeSheetCreated' => false,
                ]);
             }
 
@@ -371,6 +394,17 @@ class FileController extends Controller
         $mme=Mme::findOrfail($request->mme_id) ; 
         //We search the most recently mme temp of the mme 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+
+        if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
         //We checked if the most recently mme temp is validate and if a life sheet has been already created.
         //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
@@ -387,6 +421,7 @@ class FileController extends Controller
             $mostRecentlyMmeTmp->update([
             'mmeTemp_version' => $version,
             'mmeTemp_date' => Carbon::now('Europe/Paris'),
+            'mmeTemp_lifeSheetCreated' => false,
             ]);
         }
         $file=File::findOrFail($id);

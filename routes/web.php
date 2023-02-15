@@ -85,6 +85,10 @@ Route::middleware('auth')->group(function () {
         return view('welcome');
     });
 
+    Route::get('mme/history/{id}', function () {
+        return view('welcome');
+    });
+
     Route::get('/equipment/list/update/{id}', function () {
         return view('welcome');
     });
@@ -489,6 +493,11 @@ Route::get('/mme_state/curMtnOp/send/{id}', [CurativeMaintenanceOperationControl
 Route::post('/history/add/equipment/{id}', [HistoryController::class, 'add_history_for_eq'])  ;
 
 Route::get('/history/send/equipment/{id}', [HistoryController::class, 'send_history_for_eq'])  ;
+
+Route::post('/history/add/mme/{id}', [HistoryController::class, 'add_history_for_mme'])  ;
+
+Route::get('/history/send/mme/{id}', [HistoryController::class, 'send_history_for_mme'])  ;
+
 
 /* Enum Form Routes */ 
 

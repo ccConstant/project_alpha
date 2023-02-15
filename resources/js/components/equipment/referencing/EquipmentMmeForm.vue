@@ -6,7 +6,6 @@
 <!----------Props of other component who can be called:--------
     See details in related Vue Component
         InputTextForm : name, label, isRequired, value, info_text, isDisabled, inputClassName, Errors
-        InputSelectForm : name, label, isRequired, value, info_text,  isDisabled, options, selectClassName, selectedOption
         SaveButtonForm : name, label, isRequired, value, info_text,  isDisabled, options, selectClassName, selectedOption
 -------------------------------------------------------------->
 <template>
@@ -26,7 +25,6 @@
                 <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference" name="mme_externalReference" label="External reference :" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null"  v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name" label="MME name :" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null" v-model="mme_name" :info_text="infos_idCard[2].info_value" />
             <InputTextForm v-if="this.mme_importFrom!== undefined " inputClassName="form-control w-50" name="mme_importFrom" label="Import From :" isDisabled v-model="mme_importFrom" />
-                <!--<InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50" :Errors="errors.mme" name="mme_name" label="Mme :" :options="this.list_mme" :isDisabled="!!isInConsultedMod" :selctedOption="this.internalReference" :selectedDivName="this.divClass" v-model="internalReference" />-->
                 <!--If addSucces is equal to false, the buttons appear -->         
             </form>
             <div v-if="this.mme_id==null ">
@@ -49,7 +47,6 @@
 
 <script>
 /*Importation of the others Components who will be used here*/
-import InputSelectForm from '../../input/InputSelectForm.vue'
 import InputTextForm from '../../input/InputTextForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
@@ -64,7 +61,6 @@ import AddMMEAlreadyCreated from './AddMMEAlreadyCreated.vue'
 export default {
     /*--------Declartion of the others Components:--------*/
     components : {
-        InputSelectForm,
         InputTextForm,
         SaveButtonForm,
         DeleteComponentButton,

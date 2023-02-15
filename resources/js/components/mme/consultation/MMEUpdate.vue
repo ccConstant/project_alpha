@@ -88,6 +88,7 @@ export default {
         var consultUrl = (id) => `/mme/${id}`;
         axios.get(consultUrl(this.mme_id))
             .then (response =>{
+                console.log(response.data)
                 this.mme_idCard=response.data
                 this.$router.push({ name: "url_mme_update", params: {id:this.mme_id}, query: {signed:response.data.mme_lifeSheetCreated }}).catch(()=>{});
                 if(response.data.mme_lifeSheetCreated==true && 

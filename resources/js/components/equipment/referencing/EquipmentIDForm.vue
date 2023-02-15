@@ -1,6 +1,6 @@
 <!--File name : EquipmentIDForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 2 Feb 2023-->
+<!--Update date : 14 Feb 2023-->
 <!--Vue Component of the Id card of the equipment who call all the input component and send the data to the controllers-->
 
 <!----------Props of other component who can be called:--------
@@ -41,10 +41,6 @@
                 </div>
             </div>
             <SucessAlert ref="sucessAlert"/>
-
-            
-            
-
         </form>
     </div>
 </template>
@@ -65,7 +61,7 @@ import SucessAlert from '../../alert/SuccesAlert.vue'
 
 
 export default {
-    /*--------Declartion of the others Components:--------*/
+    /*--------Declaration of the others Components:--------*/
     components : {
         InputTextForm,
         InputSelectForm,
@@ -77,7 +73,7 @@ export default {
         ImportationModal,
         SucessAlert
     },
-    /*--------Declartion of the differents props:--------
+    /*--------Declaration of the differents props:--------
         internalReference : Internal reference given by the data base we will put this data in the corresponding field as default value
         externalReference : External reference given by the data base we will put this data in the corresponding field as default value
         name : Name given by the data base we will put this data in the corresponding field as default value
@@ -149,7 +145,7 @@ export default {
     },
     data(){
         return{
-    /*--------Declartion of the differents returned data:--------
+    /*--------Declaration of the differents returned data:--------
         eq_internalReference: Internal reference of the equipment who  will be apear in the field and updated dynamically
         eq_externalReference: External reference of the equipment who  will be apear in the field and updated dynamically
         eq_name: Name of the equipment who  will be apear in the field and updated dynamically
@@ -197,21 +193,25 @@ export default {
             equipmentType:"EquipmentType",
         }
     },
+
     /*All function inside the created option is called after the component has been created.*/
     created(){
         /*Ask for the controller different type option */
         axios.get('/equipment/enum/type')
             .then (response=> this.enum_type=response.data) 
             .catch(error => console.log(error)) ;
-        /*Ask for the controller different type option */
+
+        /*Ask for the controller different mass unit option */
         axios.get('/equipment/enum/massUnit')
-            .then (response=> this.enum_massUnit=response.data) 
+            .then (response=> this.enum_massUnit=response.data)
             .catch(error => console.log(error)) ; 
+
         /*Ask for the controller other equipments sets */
         axios.get('/equipment/sets')
             .then (response=> this.enum_sets=response.data) 
             .catch(error => console.log(error)) ; 
 
+        /*Ask for the controller the information about the equipment */
         axios.get('/info/send/eqIdCard')
             .then (response=> {
                 this.infos_idCard=response.data;
@@ -220,11 +220,13 @@ export default {
             .catch(error => console.log(error)) ;
     },
 
-    /*--------Declartion of the differents methods:--------*/
+    /*--------Declaration of the differents methods:--------*/
     methods: {
         /*Sending to the controller all the information about the equipment so that it can be added to the database */ 
         addEquipment(savedAs){
             if(!this.addSucces){
+
+                //We begin by checking if the data entered by the user are correct
                  axios.post('/equipment/verif',{
                     eq_internalReference : this.eq_internalReference, 
                     eq_externalReference : this.eq_externalReference,
@@ -240,9 +242,11 @@ export default {
                     eq_validate : savedAs,
                     reason:'add'
                 })
+                //If the data are correct, we send them to the controller for add them in the data base 
                 .then(response =>{
                         this.errors={};
                         if(this.state_id!==null){
+                            //case where the equipment is added from the state page
                             var consultUrl = (state_id) => `/state/equipment/${state_id}`;
                             axios.post(consultUrl(this.state_id),{
                                 eq_internalReference : this.eq_internalReference, 
@@ -258,8 +262,9 @@ export default {
                                 eq_set : this.eq_set,
                                 eq_validate : savedAs,
                             })
+                            //If the data have been added in the database, we show a success message
                             .then(response =>{
-                                    this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
+                                    this.$refs.sucessAlert.showAlert(`Equipment ID card added successfully and saved as ${savedAs}`);
                                     this.addSucces=true; 
                                     this.isInConsultMod=true;
                                     this.eq_id=response.data;
@@ -268,7 +273,7 @@ export default {
                             .catch(error => this.errors=error.response.data.errors) ; 
 
                         }else{
-                            
+                            //case the equipment is added from the equipment page
                             axios.post('/equipment/add',{
                                 eq_internalReference : this.eq_internalReference, 
                                 eq_externalReference : this.eq_externalReference,
@@ -284,8 +289,9 @@ export default {
                                 eq_validate : savedAs,
                                 createdBy_id:this.$userId.id
                             })
+                            //If the data have been added in the database, we show a success message
                             .then(response =>{
-                                    this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
+                                    this.$refs.sucessAlert.showAlert(`Equipment ID card added successfully and saved as ${savedAs}`);
                                     this.addSucces=true; 
                                     this.isInConsultMod=true;
                                     this.eq_id=response.data;
@@ -299,6 +305,7 @@ export default {
         },
         /*Sending to the controller all the information about the equipment so that it can be updated to the database */ 
         updateEquipment(savedAs, reason, lifesheet_created){
+                     //We begin by checking if the data entered by the user are correct
                     axios.post('/equipment/verif',{
                     eq_internalReference : this.eq_internalReference, 
                     eq_externalReference : this.eq_externalReference,
@@ -316,6 +323,7 @@ export default {
 
                     reason:'update'
                 })
+                //If the data are correct, we send them to the controller for update data in the data base
                 .then(response =>{
                         this.errors={};
                         var consultUrl = (id) => `/equipment/update/${id}`;
@@ -341,9 +349,12 @@ export default {
                                 axios.post(`/history/add/equipment/${id}`,{
                                     history_reasonUpdate :reason, 
                                 });
+                                 window.location.reload();
                             }
-                            this.$refs.sucessAlert.showAlert(`ID card updated as ${savedAs} successfully`);
+                            //If the data have been updated in the database, we show a success message
+                             this.$refs.sucessAlert.showAlert(`Equipment ID card updated successfully and saved as ${savedAs}`);
                             this.eq_validate=savedAs;
+
 
                             })
                         .catch(error => this.errors=error.response.data.errors) ; 

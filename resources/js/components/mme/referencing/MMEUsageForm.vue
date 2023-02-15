@@ -39,6 +39,7 @@
 
                 </div>       
             </form>
+            <SucessAlert ref="sucessAlert"/>
             <div v-if="this.usg_id!==null && modifMod==false & consultMod==false && import_id==null " >
                 <ReferenceAMMEPrecaution :mme_id="this.mme_id" :usg_id="this.usg_id"/>
             </div>
@@ -64,6 +65,8 @@ import InputSelectForm from '../../input/InputSelectForm.vue'
 import ReferenceAMMEPrecaution from './ReferenceAMMEPrecaution.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import ReformComponentButton from '../../button/ReformComponentButton.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
+
 
 export default {
     /*--------Declartion of the others Components:--------*/
@@ -74,7 +77,8 @@ export default {
         ReferenceAMMEPrecaution,
         DeleteComponentButton,
         ReformComponentButton,
-        ErrorAlert
+        ErrorAlert,
+        SucessAlert
 
 
     },
@@ -160,7 +164,6 @@ export default {
         axios.get('/usage/enum/metrologicalLevel')
             .then (response=>{
                 this.enum_metrologicalLevel=response.data;
-                console.log(response.data)
                
             } ) 
             .catch(error => console.log(error)) ;
@@ -171,13 +174,11 @@ export default {
             axios.get(consultUrl(this.usg_id))
                 .then (response=> {
                     this.importedUsgPrecaution=response.data;
-                    console.log(this.importedUsgPrecaution)
                     })
                 .catch(error => console.log(error)) ; 
         }
         axios.get('/info/send/mme_usage')
             .then (response=> {
-                console.log(response.data)
                 this.infos_usage=response.data;
                 this.loaded=true;
                 }) 
@@ -187,7 +188,7 @@ export default {
         /*Sending to the controller all the information about the   mme so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addMmeUsage(savedAs){
+        addMmeUsage(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the Mme in which the preventive maintenance operation will be added
                 var id;
@@ -211,13 +212,6 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    console.log(this.usg_measurementType)
-                    console.log(this.usg_precision)
-                    console.log(this.usg_metrologicalLevel)
-                    console.log(this.usg_application)
-                    console.log(savedAs)
-                    console.log(id)
-
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the mme is sended to the controller*/
                     axios.post('/mme/add/usg',{
@@ -231,8 +225,15 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
-                        
-                        console.log(response)
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/mme/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                             window.location.reload();
+                        }
+                        this.$refs.sucessAlert.showAlert(`MME Usage added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -259,11 +260,10 @@ export default {
         /*Sending to the controller all the information about the mme so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateMmeUsage(savedAs){
+        updateMmeUsage(savedAs, reason, lifesheet_created){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             console.log("update dans la base");
-            console.log(this.usg_metrologicalLevel)
             axios.post('/mme_usage/verif',{
                     usg_measurementType:this.usg_measurementType,
                     usg_precision:this.usg_precision,
@@ -285,7 +285,19 @@ export default {
                         usg_validate :savedAs,
                         mme_id:this.mme_id_update,
                     })
-                    .then(response =>{this.usg_validate=savedAs;})
+                    .then(response =>{
+                        var id=this.mme_id_update
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/mme/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                             window.location.reload();
+                        }
+                        this.usg_validate=savedAs;
+                        this.$refs.sucessAlert.showAlert(`MME Usage updated successfully and saved as ${savedAs}`);
+                    })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
@@ -297,7 +309,7 @@ export default {
             delete this.errors[event.target.name];
         },
                 //Function for deleting a preventive maintenance operation from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
             //Emit to the parent component that we want to delete this component
             
             //If the user is in update mode and the preventive maintenance operation exist in the database
@@ -309,12 +321,23 @@ export default {
                 .then(response =>{
                     //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
                     this.$emit('deleteUsage','')
+                    var id=this.mme_id_update
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the update
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/mme/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                         window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`MME Usage deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }else{
                 this.$emit('deleteUsage','')
+                this.$refs.sucessAlert.showAlert(`Empty MME Usage deleted successfully`);
 
             }
             

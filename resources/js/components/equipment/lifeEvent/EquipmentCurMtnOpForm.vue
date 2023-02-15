@@ -33,6 +33,7 @@
                     </div>
                 </div>  
             </form>
+             <SuccesAlert ref="succesAlert"/>
         </div>
     </div>
 </template>
@@ -41,22 +42,22 @@
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import InputTextForm from '../../input/InputTextForm.vue'
 import InputNumberForm from '../../input/InputNumberForm.vue'
-import InputSelectForm from '../../input/InputSelectForm.vue'
 import InputDateForm from '../../input/InputDateForm.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import SuccesAlert from '../../alert/SuccesAlert.vue'
 import moment from 'moment'
 export default {
     components : {
         InputTextAreaForm,
-        InputSelectForm,
         InputDateForm,
         RadioGroupForm,
         InputTextForm,
         InputNumberForm,
         SaveButtonForm,
-        DeleteComponentButton
+        DeleteComponentButton,
+        SuccesAlert
     },
      /*--------Declartion of the differents props:--------
         number : 
@@ -207,6 +208,7 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
+                         this.$refs.succesAlert.showAlert(`Equipment curative maintenance operation added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -264,7 +266,10 @@ export default {
                         state_id:this.equipment_state_id
 
                     })
-                    .then(response =>{this.curMtnOp_validate=savedAs;})
+                    .then(response =>{
+                        this.curMtnOp_validate=savedAs;
+                         this.$refs.succesAlert.showAlert(`Equipment curative maintenance operation updated successfully and saved as ${savedAs}`);
+                    })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
@@ -287,6 +292,7 @@ export default {
                 .then(response =>{
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteCurMtnOp','')
+                     this.$refs.succesAlert.showAlert(`Equipment curative maintenance operation deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;

@@ -3,7 +3,7 @@
 /*
 * Filename : EquipmentController.php 
 * Creation date : 27 Apr 2022
-* Update date : 17 May 2022
+* Update date : 9 Feb 2023
 * This file is used to link the view files and the database that concern the equipment table. 
 * For example : add the identity card of an equipment in the database, update the identity card, delete the identity card... 
 */ 
@@ -480,6 +480,17 @@ class EquipmentController extends Controller{
         if ($request->eq_type!=''){
             $type= EnumEquipmentType::where('value', '=', $request->eq_type)->first() ;
             $type_id=$type->id ; 
+        }
+
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
         }
 
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.

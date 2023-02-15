@@ -229,8 +229,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                              window.location.reload();
                         }
-                        this.$refs.sucessAlert.showAlert(`Equipment dimension saved as ${savedAs} successfully`);
+                        this.$refs.sucessAlert.showAlert(`Equipment dimension added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -258,8 +259,6 @@ export default {
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
         updateEquipmentDim(savedAs, reason, lifesheet_created){
-            
-            
             
             /*First post to verify if all the fields are filled correctly
             Type, name, value, unit and validate option is sended to the controller*/
@@ -295,9 +294,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                              window.location.reload();
                         }
-                        console.log(response.data);
-                        this.$refs.sucessAlert.showAlert(`Equipment dimension updated as ${savedAs} successfully`);
+                        this.$refs.sucessAlert.showAlert(`Equipment dimension updated successfully and saved as ${savedAs}`);
                         this.dim_validate=savedAs;
                     })
                     //If the controller sends errors we put it in the errors object 
@@ -328,7 +327,9 @@ export default {
                         axios.post(`/history/add/equipment/${id}`,{
                             history_reasonUpdate :reason, 
                         });
+                         window.location.reload();
                     }
+                    this.$refs.sucessAlert.showAlert(`Equipment dimension deleted successfully`);
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteDim','')
                 })
@@ -337,6 +338,7 @@ export default {
 
             }else{
                 this.$emit('deleteDim','')
+                this.$refs.sucessAlert.showAlert(`Empty Equipment dimension deleted successfully`);
             }
             
         },

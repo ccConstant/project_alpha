@@ -1,6 +1,6 @@
 <!--File name : EquipmentPrvMtnOpForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 2 Feb 2023-->
+<!--Update date : 13 Feb 2023-->
 <!--Vue Component of the Form of the equipment preventive maintenance operation who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -41,7 +41,7 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" :info_text="infos_prvMtnOp[1].info_value"/>
-                    <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
+                    <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :id_actual="SymbolPeriodicity" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol" name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>
                 <!--If addSucces is equal to false, the buttons appear -->
@@ -73,6 +73,7 @@
 
                 </div>       
             </form>
+             <SucessAlert ref="sucessAlert"/>
             <div v-if="this.prvMtnOp_id!==null && modifMod==false & consultMod==false && import_id==null " >
                 <ReferenceARisk :eq_id="this.eq_id" :prvMtnOp_id="this.prvMtnOp_id" :riskForEq="false"/>
             </div>
@@ -100,7 +101,7 @@ import ReferenceARisk from './ReferenceARisk.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import ReformComponentButton from '../../button/ReformComponentButton.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
-
+import SucessAlert from '../../alert/SuccesAlert.vue'
 
 
 export default {
@@ -116,6 +117,7 @@ export default {
         ReformComponentButton,
         ErrorAlert,
         RadioGroupForm,
+        SucessAlert
 
 
     },
@@ -225,10 +227,10 @@ export default {
             equipment_id_add:this.eq_id,
             equipment_id_update:this.$route.params.id,
             enum_periodicity_symbol: [
-                {value:'Y'},
-                {value:'M'},
-                {value:'D'},
-                {value:'H'},
+                {id_enum:"SymbolPeriodicity",value:'Y'},
+                {id_enum:"SymbolPeriodicity",value:'M'},
+                {id_enum:"SymbolPeriodicity",value:'D'},
+                {id_enum:"SymbolPeriodicity",value:'H'},
             ],
             existOptionPIS :[
                 {id: 'PIS', value:true, text:'Yes'},
@@ -248,6 +250,7 @@ export default {
             loaded:false,
             true:true,
             false:false,
+            SymbolPeriodicity:"SymbolPeriodicity",
 
         }
     },
@@ -302,7 +305,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                             window.location.reload();
                         }
+                        this.$refs.sucessAlert.showAlert(`Equipment preventive maintenance operation added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -369,8 +374,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                             window.location.reload();
                         }
-                        console.log(response.data)
+                         this.$refs.sucessAlert.showAlert(`Equipment preventive maintenance operation updated successfully and saved as ${savedAs}`);
                         this.prvMtnOp_validate=savedAs;})
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
@@ -404,15 +410,18 @@ export default {
                         axios.post(`/history/add/equipment/${id}`,{
                             history_reasonUpdate :reason, 
                         });
+                          window.location.reload();
                     }
                     //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
                     this.$emit('deletePrvMtnOp','')
+                     this.$refs.sucessAlert.showAlert(`Equipment preventive maintenance operation deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }else{
                 this.$emit('deletePrvMtnOp','')
+                 this.$refs.sucessAlert.showAlert(`Empty Equipment preventive maintenance operation deleted successfully`);
 
             }
             

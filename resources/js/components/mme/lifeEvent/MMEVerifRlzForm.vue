@@ -52,7 +52,6 @@
 <script>
 import InputTextForm from '../../input/InputTextForm.vue'
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
-import InputSelectForm from '../../input/InputSelectForm.vue'
 import InputDateForm from '../../input/InputDateForm.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
@@ -61,7 +60,6 @@ import VerifChooseModal from './VerifChooseModal.vue'
 import moment from 'moment'
 export default {
         components : {
-        InputSelectForm,
         InputDateForm,
         RadioGroupForm,
         InputTextForm,

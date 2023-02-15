@@ -8,7 +8,7 @@
 				</div>
 
 				<div class="equipement_pdf_titre">
-					<h2 id="equipement_fiche_de_vie_titre">EQUIPMENT LIFE SHEET DESCRIPTIVE PART</h2>
+					<h2 id="equipement_fiche_de_vie_titre">EQUIPMENT HISTORY</h2>
 				</div>
 
 				<div class="equipement_pdf_index">

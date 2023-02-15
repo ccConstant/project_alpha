@@ -5,7 +5,7 @@
         </div>
         <div v-if="loaded==true">
             <ErrorAlert ref="errorAlert"/>
-            <SuccesAlert ref="succesAlert"/>
+           <SuccesAlert ref="succesAlert"/>
             <form class="container state-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
                 <div v-if="isInModifMod">
@@ -20,10 +20,10 @@
                     </div>
                 </div>
                 <div v-if="state_id!==undefined || isInConsultMod==true">
-                    <InputSelectForm selectClassName="form-select w-50" :info_text="infos_state[0].info_value" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name" />
+                    <InputSelectForm selectClassName="form-select w-50" :info_text="infos_state[0].info_value" :id_actual="StateName"  :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name" />
                 </div>
                 <div v-else>
-                    <InputSelectForm selectClassName="form-select w-50" :info_text="infos_state[0].info_value" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name"  :selctedOption="state_name" v-model="state_name" />
+                    <InputSelectForm selectClassName="form-select w-50" :info_text="infos_state[0].info_value"  :id_actual="StateName" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name"  :selctedOption="state_name" v-model="state_name" />
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_state[1].info_value" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="state_remarks" />
                 <div class="input-group">
@@ -104,16 +104,16 @@ export default {
             state_validate:'',
             state_isOk:null,
             enum_state_name :[
-                {value:"Waiting_for_referencing"},
-                {value:"Waiting_to_be_in_use"},
-                {value:"In_use"},
-                {value:"Under_verification"},
-                {value:"In_quarantine"},
-                {value:"Under_repair"},
-                {value:"Broken"},
-                {value:"Downgraded"},
-                {value:"Reformed"},
-                {value:"Lost"},
+                {id_enum:"StateName",value:"Waiting_for_referencing"},
+                {id_enum:"StateName",value:"Waiting_to_be_in_use"},
+                {id_enum:"StateName",value:"In_use"},
+                {id_enum:"StateName",value:"Under_verification"},
+                {id_enum:"StateName",value:"In_quarantine"},
+                {id_enum:"StateName",value:"Under_repair"},
+                {id_enum:"StateName",value:"Broken"},
+                {id_enum:"StateName",value:"Downgraded"},
+                {id_enum:"StateName",value:"Reformed"},
+                {id_enum:"StateName",value:"Lost"},
             ],
             isOkOptions :[
                 {id: 'Yes', value:true},
@@ -136,6 +136,7 @@ export default {
             new_mme:null,
             mme_idCard:[],
             infos_state:[],
+            StateName:"StateName"
             
 
         }
@@ -162,7 +163,8 @@ export default {
                     user_id:this.$userId.id
                 })
                 .then(response =>{
-                    
+                        console.log("verif ok")
+                        console.log(this.mme_id)
                         this.errors={}
                         axios.post('/mme/add/state',{
                             state_name:this.state_name,
@@ -175,12 +177,12 @@ export default {
 
                         })
                         .then(response =>{
-                            console.log(response.data)
-                                this.$refs.succesAlert.showAlert("State changed succesfully");
-                                this.$router.replace({ name: "url_mme_life_event" })
-                                this.addSucces=true;
-                                this.isInConsultMod=true;
-                                this.state_validate=savedAs
+                            console.log("add ok")
+                            this.$refs.succesAlert.showAlert(`MME state added successfully and saved as ${savedAs}`);
+                            this.$router.replace({ name: "url_mme_life_event" })
+                            this.addSucces=true;
+                            this.isInConsultMod=true;
+                            this.state_validate=savedAs
                                 
                             })
                         .catch(error => this.errors=error.response.data.errors) ; 
@@ -214,7 +216,11 @@ export default {
                             mme_id:this.mme_id
 
                         })
-                        .then(response => {this.state_validate=savedAs})
+                        .then(response => {
+                            this.state_validate=savedAs
+                            this.$refs.succesAlert.showAlert(`MME state updated successfully and saved as ${savedAs}`);
+                            
+                        })
                         .catch(error => this.errors=error.response.data.errors) ; 
                     })
                 .catch(error => this.errors=error.response.data.errors) ;

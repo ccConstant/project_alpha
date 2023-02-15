@@ -10,62 +10,31 @@
                 <div v-if="isInConsultedMod==true && this.verif_number!==null || this.modifMod==true && this.verif_number!==null">
                     <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.verif_number" name="verif_number" label="Number :" :stepOfInput="1" v-model="verif_number" isDisabled />
                 </div>
-                <RadioGroupForm @clearRadioError="clearRadioError" label="Does the verification is realized during putting into service? :" :options="existOption" :Errors="errors.verif_puttingIntoService"  :info_text="infos_verif[0].info_value" :checkedOption="this.verif_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="verif_puttingIntoService"/>
-                <InputTextForm  inputClassName="form-control w-50" :info_text="infos_verif[2].info_value" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[3].info_value" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[4].info_value" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[5].info_value" selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill" :id_actual="RequiredSkill"/>
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[6].info_value" selectClassName="form-select w-50"  name="verif_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.verif_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.verif_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_verifAcceptanceAuthority" :id_actual="VerifAcceptanceAuthority"/>-->
-                <!--<div v-if="!isInConsultedMod">
-                    <div class="selectForm">
-                         <p> Required Skill :</p>
-                        <select v-model="verif_requiredSkill">
-                            <option v-for="(option,index) in enum_requiredSkill" :key="index" v-bind:value="option.value">
-                                {{ option.value }}
-                            </option>
-                        </select>
-                        <span>Selected: {{ verif_requiredSkill }}</span>
-                    </div>
-
-                    <div class="selectForm">
-                         <p> Verif acceptance authority :</p>
-                        <select v-model="verif_verifAcceptanceAuthority">
-                            <option v-for="(option,index) in enum_verifAcceptanceAuthority" :key="index" v-bind:value="option.value">
-                                {{ option.value }}
-                            </option>
-                        </select>
-                        <span>Selected: {{ verif_verifAcceptanceAuthority }}</span>
-                    </div>
+                <!--<RadioGroupForm @clearRadioError="clearRadioError" label="Does the verification is realized during putting into service? :" :options="existOptionVerif" :Errors="errors.verif_puttingIntoService"  :info_text="infos_verif[0].info_value" :checkedOption="verif_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="verif_puttingIntoService"/>-->
+                <div> {{infos_verif[0].info_value}}
+                    <b-form-group>
+                    <b-form-radio-group v-model="verif_puttingIntoService" :options="existOptionPIS" >
+                    </b-form-radio-group>
+                    </b-form-group>
                 </div>
-                <div v-else>
-                    <p> Required Skill :</p>
-                    <div class="selectForm">
-                        <select disabled v-model="verif_requiredSkill">
-                            <option v-for="(option,index) in enum_requiredSkill" :key="index" v-bind:value="option.value">
-                                {{ option.value }}
-                            </option>
-                        </select>
-                        <span>Selected: {{ verif_requiredSkill }}</span>
-                    </div>
-                    <p> Verif acceptance authority :</p>
-                    <div class="selectForm">
-                        <select disabled v-model="verif_verifAcceptanceAuthority">
-                            <option v-for="(option,index) in enum_verifAcceptanceAuthority" :key="index" v-bind:value="option.value">
-                                {{ option.value }}
-                            </option>
-                        </select>
-                        <span>Selected: {{ verif_verifAcceptanceAuthority }}</span>
-                    </div>
-                </div>-->
+                <div> {{infos_verif[1].info_value}}
+                    <b-form-group>
+                     <b-form-radio-group v-model="verif_preventiveOperation" :options="existOptionPO" >
+                    </b-form-radio-group>
+                    </b-form-group>
+                </div>
+                <InputTextForm  inputClassName="form-control w-50" :info_text="infos_verif[3].info_value" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[4].info_value" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[5].info_value" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[6].info_value" selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill" :id_actual="RequiredSkill"/>
+                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[7].info_value" selectClassName="form-select w-50"  name="verif_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.verif_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.verif_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_verifAcceptanceAuthority" :id_actual="VerifAcceptanceAuthority"/>
+                
                 <div class="input-group">
-                    <InputNumberForm  inputClassName="form-control " :info_text="infos_verif[7].info_value" :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
-                    <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[8].info_value"  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
+                    <InputNumberForm  inputClassName="form-control " :info_text="infos_verif[8].info_value" :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
+                    <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[9].info_value"  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :id_actual="SymbolPeriodicity"  :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
                 </div>
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[9].info_value" :Errors="errors.verif_description" name="verif_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="verif_description" />
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[10].info_value" :Errors="errors.verif_protocol" name="verif_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="verif_protocol" />
-               
-               
-               
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[10].info_value" :Errors="errors.verif_description" name="verif_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="verif_description" />
+                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[11].info_value" :Errors="errors.verif_protocol" name="verif_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="verif_protocol" />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addMmeVerif is called function else the updateMmeVerif function is called -->
@@ -92,6 +61,7 @@
                     </div>
                 </div>       
             </form>
+            <SucessAlert ref="sucessAlert"/>
             <ErrorAlert ref="errorAlert"/>
         </div>
 
@@ -108,6 +78,8 @@ import InputNumberForm from '../../input/InputNumberForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import ReformComponentButton from '../../button/ReformComponentButton.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
+
 export default {
     /*--------Declartion of the others Components:--------*/
     components : {
@@ -119,7 +91,8 @@ export default {
         InputNumberForm,
         DeleteComponentButton,
         ReformComponentButton,
-        ErrorAlert
+        ErrorAlert,
+        SucessAlert
     },
     props:{
         verifAcceptanceAuthority:{
@@ -188,7 +161,11 @@ export default {
         },
         puttingIntoService:{
             type:Boolean,
-            default:false
+            default:true,
+        },
+        preventiveOperation:{
+            type:Boolean,
+            default:true,
         }
 
     },
@@ -198,6 +175,7 @@ export default {
             verif_number:this.number,
             verif_name:this.name,
             verif_puttingIntoService:this.puttingIntoService,
+            verif_preventiveOperation:this.preventiveOperation,
             verif_expectedResult:this.expectedResult,
             verif_nonComplianceLimit:this.nonComplianceLimit,
             verif_description:this.description,
@@ -212,14 +190,18 @@ export default {
             mme_id_add:this.mme_id,
             mme_id_update:this.$route.params.id,
             enum_periodicity_symbol: [
-                {value:'Y'},
-                {value:'M'},
-                {value:'D'},
-                {value:'H'},
+                {id_enum:"SymbolPeriodicity",value:'Y'},
+                {id_enum:"SymbolPeriodicity",value:'M'},
+                {id_enum:"SymbolPeriodicity",value:'D'},
+                {id_enum:"SymbolPeriodicity",value:'H'},
             ],
-            existOption :[
-                {id: 'Yes', value:true, text:'Yes'},
-                {id : 'No', value:false, text:'No'}
+            existOptionPO :[
+                {id: 'PO', value:true, text:'Yes'},
+                {id : 'PO', value:false, text:'No'}
+            ],
+            existOptionPIS :[
+                {id: 'PIS', value:true, text:'Yes'},
+                {id : 'PIS', value:false, text:'No'}
             ],
             enum_verifAcceptanceAuthority: [],
             enum_requiredSkill:[],
@@ -232,6 +214,7 @@ export default {
             loaded:false,
             RequiredSkill:"RequiredSkill",
             VerifAcceptanceAuthority:"VerifAcceptanceAuthority",
+            SymbolPeriodicity:"SymbolPeriodicity",
 
         }
     },
@@ -240,7 +223,6 @@ export default {
         axios.get('/verification/enum/requiredSkill')
             .then (response=>{
                 this.enum_requiredSkill=response.data;
-                console.log(this.enum_requiredSkill)
             } ) 
             .catch(error => console.log(error)) ;
         /*Ask for the controller different required skill  */
@@ -260,7 +242,7 @@ export default {
         /*Sending to the controller all the information about the Mme so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addMmeVerif(savedAs){
+        addMmeVerif(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
                 //Id of the Mme in which the preventive maintenance operation will be added
                 var id;
@@ -286,18 +268,9 @@ export default {
                     verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
                     verif_validate :savedAs,
                     verif_puttingIntoService:this.verif_puttingIntoService,
+                    verif_preventiveOperation:this.verif_preventiveOperation,
                 })
                 .then(response =>{
-                    console.log(this.verif_name)
-                    console.log(this.verif_description)
-                    console.log(this.verif_expectedResult)
-                    console.log(this.verif_nonComplianceLimit)
-                    console.log(this.verif_periodicity)
-                    console.log(this.verif_symbolPeriodicity)
-                    console.log(this.verif_protocol)
-                    console.log(savedAs)
-                    console.log(id)
-
                     this.errors={};
                     /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
                     Type, name, value, unit, validate option and id of the mme is sended to the controller*/
@@ -314,11 +287,20 @@ export default {
                         verif_validate :savedAs,
                         mme_id:id,
                         verif_puttingIntoService:this.verif_puttingIntoService,
+                        verif_preventiveOperation:this.verif_preventiveOperation,
                 
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
-                        console.log(response)
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/mme/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                             window.location.reload();
+                        }
+                         this.$refs.sucessAlert.showAlert(`MME verification added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -345,7 +327,7 @@ export default {
                 /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateMmeVerif(savedAs){
+        updateMmeVerif(savedAs, reason, lifesheet_created){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             console.log("update dans la base");
@@ -361,6 +343,7 @@ export default {
                     verif_validate :savedAs,
                     verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
                     verif_puttingIntoService:this.verif_puttingIntoService,
+                    verif_preventiveOperation:this.verif_preventiveOperation,
                 })
                 .then(response =>{
                     this.errors={};
@@ -381,8 +364,22 @@ export default {
                         mme_id:this.mme_id_update,
                         verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
                         verif_puttingIntoService:this.verif_puttingIntoService,
+                        verif_preventiveOperation:this.verif_preventiveOperation,
                     })
-                    .then(response =>{this.verif_validate=savedAs;})
+                    .then(response =>{
+                        var id=this.mme_id_update
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/mme/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                             window.location.reload();
+                        }
+                        this.verif_validate=savedAs;
+                         this.$refs.sucessAlert.showAlert(`MME verification updated successfully and saved as ${savedAs}`);
+                        
+                    })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
@@ -397,7 +394,7 @@ export default {
             delete this.errors["verif_puttingIntoService"]
         },
          //Function for deleting a preventive maintenance operation from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
             //Emit to the parent component that we want to delete this component
             
             //If the user is in update mode and the preventive maintenance operation exist in the database
@@ -409,12 +406,23 @@ export default {
                 .then(response =>{
                     //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
                     this.$emit('deleteVerif','')
+                    var id=this.mme_id_update
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the update
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/mme/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                         window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`MME verification deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }else{
                 this.$emit('deleteVerif','')
+                this.$refs.sucessAlert.showAlert(`Empty MME verification deleted successfully`);
 
             }
             

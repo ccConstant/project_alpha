@@ -132,6 +132,7 @@ export default {
             axios.get(consultUrl(this.mme_id))
                 .then (response=> {
                     this.mme_verifs=response.data
+                    console.log(response.data)
                 })
                 .catch(error => console.log(error)) ;
 

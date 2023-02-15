@@ -3,7 +3,7 @@
 /*
 * Filename : MmeUsageController.php 
 * Creation date : 21 Jun 2022
-* Update date : 21 Jun 2022
+* Update date : 9 Feb 2023
 * This file is used to link the view files and the database that concern the mme usage table. 
 * For example : add a usage for an mme in the data base, update a mme usage, delete it...
 */ 
@@ -110,6 +110,19 @@ class MmeUsageController extends Controller
         $usg_id=$usg->id;
         $id_mme=intval($request->mme_id) ; 
         if ($mostRecentlyMmeTmp!=NULL){
+
+
+            if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+
               //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add usage
               if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
                 
@@ -126,8 +139,9 @@ class MmeUsageController extends Controller
                 $mostRecentlyMmeTmp->update([
                  'mmeTemp_version' => $version,
                  'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                 'mmeTemp_lifeSheetCreated' => false,
                 ]);
-             }
+            }
             return response()->json($usg_id) ; 
         }
     }
@@ -152,6 +166,18 @@ class MmeUsageController extends Controller
         //We search the most recently mme temp of the mme 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
         if ($mostRecentlyMmeTmp!=NULL){
+
+            if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+
             //We checked if the most recently mme temp is validate and if a life sheet has been already created.
             //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add usage
             if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
@@ -169,6 +195,7 @@ class MmeUsageController extends Controller
                $mostRecentlyMmeTmp->update([
                 'mmeTemp_version' => $version,
                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                'mmeTemp_lifeSheetCreated' => false,
                ]);
                 
                 // In the other case, we can modify the informations without problems
@@ -276,6 +303,18 @@ class MmeUsageController extends Controller
         $mme=Mme::findOrfail($request->mme_id) ; 
         //We search the most recently mme temp of the mme 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        
+        if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        
         //We checked if the most recently mme temp is validate and if a life sheet has been already created.
         //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
@@ -292,6 +331,7 @@ class MmeUsageController extends Controller
             $mostRecentlyMmeTmp->update([
             'mmeTemp_version' => $version,
             'mmeTemp_date' => Carbon::now('Europe/Paris'),
+            'mmeTemp_lifeSheetCreated' => false,
             ]);
         }
         $usage=MmeUsage::findOrFail($id);

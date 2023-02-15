@@ -17,7 +17,7 @@
                                 <h3>Recorded Preventive maintenance operation</h3>
                                 <li class="list-group-item" v-for="(prvMtnOpRlz,index) in eq_prvMtnOpRlz " :key="index"  >
                                     <div>
-                                        Operation Numner : {{prvMtnOpRlz.prvMtnOp_number}} <br>
+                                        Operation Number : {{prvMtnOpRlz.prvMtnOp_number}} <br>
                                         Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
                                         Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
                                         Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
@@ -63,8 +63,8 @@
                                 <h3>Recorded Curative maintenance operation</h3>
                                 <li class="list-group-item" v-for="(curMtnOp,index) in eq_curMtnOp " :key="index"  >
                                     <div>
-                                        Operation Numner : {{curMtnOp.curMtnOp_number}} <br>
-                                        Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
+                                        Operation Number : {{curMtnOp.curMtnOp_number}} <br>
+                                        Report Number : {{curMtnOp.curMtnOp_reportNumber}} <br>
                                         Description : {{curMtnOp.curMtnOp_description}} <br>
                                         Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
                                         End date : {{curMtnOp.curMtnOp_endDate}} <br>

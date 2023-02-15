@@ -3,7 +3,7 @@
 /*
 * Filename : EnumPrecautionTypeController.php 
 * Creation date : 21 Jun 2022
-* Update date : 9 Feb 2023
+* Update date : 14 Feb 2023
 * This file is used to link the view files and the database that concern the enumPrecautionType table. 
 * For example : send the fields of the enum, add a new field...
 */ 
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\Precaution;
 use App\Models\EnumPrecautionType;
 use App\Models\MmeTemp;
+use App\Http\Controllers\HistoryController;
 
 class EnumPrecautionTypeController extends Controller{
      /**
@@ -132,6 +133,7 @@ class EnumPrecautionTypeController extends Controller{
         foreach ($request->validated_mme as $mme){
             $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
             $mme=$mme_temp->mme ;
+            
             $version=$mme->mme_nbrVersion+1;
             $mme->update([
                 'mme_nbrVersion' => $version
@@ -142,6 +144,11 @@ class EnumPrecautionTypeController extends Controller{
                 'technicalVerifier_id' => NULL,
                 'mmeTemp_version' => $version,
             ]);
+
+            //We created a new enregistrement of history for explain the reason of the enum updates
+            $HistoryController= new HistoryController() ; 
+            $HistoryController->add_history_for_mme($mme->id, $request) ; 
+
         }
 
 

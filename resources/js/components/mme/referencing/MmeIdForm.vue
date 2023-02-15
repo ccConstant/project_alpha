@@ -147,7 +147,7 @@ export default {
                                 mme_validate : savedAs,
                             })
                             .then(response =>{
-                                    this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
+                                    this.$refs.sucessAlert.showAlert(`ID card added successfully and saved as ${savedAs}`);
                                     this.addSucces=true; 
                                     this.isInConsultMod=true;
                                     this.mme_id=response.data;
@@ -168,7 +168,7 @@ export default {
                                 createdBy_id:this.$userId.id
                             })
                             .then(response =>{
-                                    this.$refs.sucessAlert.showAlert(`ID card saved as ${savedAs} successfully`);
+                                    this.$refs.sucessAlert.showAlert(`ID card added successfully and saved as ${savedAs}`);
                                     this.addSucces=true; 
                                     this.isInConsultMod=true;
                                     this.mme_id=response.data;
@@ -181,7 +181,7 @@ export default {
             }
         },
         /*Sending to the controller all the information about the mme so that it can be updated to the database */ 
-        updateMME(savedAs){
+        updateMME(savedAs, reason, lifesheet_created){
                     axios.post('/mme/verif',{
                     mme_internalReference : this.mme_internalReference, 
                     mme_externalReference : this.mme_externalReference,
@@ -208,7 +208,17 @@ export default {
                             mme_validate : savedAs,
                         })
                         .then(response => {
-                            this.$refs.sucessAlert.showAlert(`ID card updated as ${savedAs} successfully`);
+                            var id=this.mme_id;
+                            console.log("lifesheet_created :"+ this.lifesheet_created)
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/mme/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                                 window.location.reload();
+                            }
+                            this.$refs.sucessAlert.showAlert(`ID card updated successfully and saved as ${savedAs}`);
                             this.mme_validate=savedAs;
 
                             })

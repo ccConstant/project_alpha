@@ -35,6 +35,7 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
+                            <InfoElement title="Title" :info_content="infos_dimension[4].info_value" :info_id="infos_dimension[0].id"/>
                             <InfoElement title="Type" :info_content="infos_dimension[0].info_value" :info_id="infos_dimension[0].id"/>
                             <InfoElement title="Name" :info_content="infos_dimension[1].info_value" :info_id="infos_dimension[1].id"/>
                             <InfoElement title="Unit" :info_content="infos_dimension[2].info_value" :info_id="infos_dimension[2].id"/>
@@ -269,17 +270,18 @@
                     <div id="collapseFifteen" class="accordion-collapse collapse" aria-labelledby="headingFifteen">
                         <div class="accordion-body">
                             <InfoElement title="Putting Into Service" :info_content="infos_mme_verif[0].info_value" :info_id="infos_mme_verif[0].id"/>
-                            <InfoElement title="Number" :info_content="infos_mme_verif[1].info_value" :info_id="infos_mme_verif[1].id"/>
-                            <InfoElement title="Name" :info_content="infos_mme_verif[2].info_value" :info_id="infos_mme_verif[2].id"/>
-                            <InfoElement title="Expected Result" :info_content="infos_mme_verif[3].info_value" :info_id="infos_mme_verif[3].id"/>
-                            <InfoElement title="Non compliance limit" :info_content="infos_mme_verif[4].info_value" :info_id="infos_mme_verif[4].id"/>
-                            <InfoElement title="Required skill" :info_content="infos_mme_verif[5].info_value" :info_id="infos_mme_verif[5].id"/>
-                            <InfoElement title="Verification acceptance authority" :info_content="infos_mme_verif[6].info_value" :info_id="infos_mme_verif[6].id"/>
-                            <InfoElement title="Periodicty" :info_content="infos_mme_verif[7].info_value" :info_id="infos_mme_verif[7].id"/>
-                            <InfoElement title="Symbol periodicity" :info_content="infos_mme_verif[8].info_value" :info_id="infos_mme_verif[8].id"/>
-                             <InfoElement title="Description" :info_content="infos_mme_verif[9].info_value" :info_id="infos_mme_verif[9].id"/>
-                            <InfoElement title="Protocol" :info_content="infos_mme_verif[10].info_value" :info_id="infos_mme_verif[10].id"/>
-                            <InfoElement title="Reform date" :info_content="infos_mme_verif[11].info_value" :info_id="infos_mme_verif[11].id"/>
+                              <InfoElement title="Preventive Operation" :info_content="infos_mme_verif[1].info_value" :info_id="infos_mme_verif[1].id"/>
+                            <InfoElement title="Number" :info_content="infos_mme_verif[2].info_value" :info_id="infos_mme_verif[2].id"/>
+                            <InfoElement title="Name" :info_content="infos_mme_verif[3].info_value" :info_id="infos_mme_verif[3].id"/>
+                            <InfoElement title="Expected Result" :info_content="infos_mme_verif[4].info_value" :info_id="infos_mme_verif[4].id"/>
+                            <InfoElement title="Non compliance limit" :info_content="infos_mme_verif[5].info_value" :info_id="infos_mme_verif[5].id"/>
+                            <InfoElement title="Required skill" :info_content="infos_mme_verif[6].info_value" :info_id="infos_mme_verif[6].id"/>
+                            <InfoElement title="Verification acceptance authority" :info_content="infos_mme_verif[7].info_value" :info_id="infos_mme_verif[7].id"/>
+                            <InfoElement title="Periodicty" :info_content="infos_mme_verif[8].info_value" :info_id="infos_mme_verif[8].id"/>
+                            <InfoElement title="Symbol periodicity" :info_content="infos_mme_verif[9].info_value" :info_id="infos_mme_verif[9].id"/>
+                             <InfoElement title="Description" :info_content="infos_mme_verif[10].info_value" :info_id="infos_mme_verif[10].id"/>
+                            <InfoElement title="Protocol" :info_content="infos_mme_verif[11].info_value" :info_id="infos_mme_verif[11].id"/>
+                            <InfoElement title="Reform date" :info_content="infos_mme_verif[12].info_value" :info_id="infos_mme_verif[12].id"/>
 
                         </div>
                     </div>

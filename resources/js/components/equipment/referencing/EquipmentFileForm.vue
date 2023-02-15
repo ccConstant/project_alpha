@@ -1,6 +1,6 @@
 <!--File name : EquipmentFileForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 2 Feb 2023-->
+<!--Update date : 13 Feb 2023-->
 <!--Vue Component of the Form of the equipment file who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -170,7 +170,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                             window.location.reload();
                         }
+                        this.$refs.sucessAlert.showAlert(`Equipment file added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -228,7 +230,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                             window.location.reload();
                         }
+                        this.$refs.sucessAlert.showAlert(`Equipment file updated successfully and saved as ${savedAs}`);
                     })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
@@ -258,15 +262,18 @@ export default {
                         axios.post(`/history/add/equipment/${id}`,{
                             history_reasonUpdate :reason, 
                         });
+                         window.location.reload();
                     }
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteFile','')
+                    this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }else{
                 this.$emit('deleteFile','')
+                this.$refs.sucessAlert.showAlert(`Empty Equipment file deleted successfully`);
             }
             
         }

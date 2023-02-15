@@ -1,5 +1,12 @@
 <?php
 
+/*
+* Filename : Handler.php
+* Creation date : 31 May 2022
+* Update date : 31 May 2022
+* This file was automatically created by laravel
+*/ 
+
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;

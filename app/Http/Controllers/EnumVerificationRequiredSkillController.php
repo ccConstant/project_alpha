@@ -3,7 +3,7 @@
 /*
 * Filename : EnumVerificationRequiredSkillController.php 
 * Creation date : 21 Jun 2022
-* Update date : 9 Feb 2023
+* Update date : 14 Feb 2023
 * This file is used to link the view files and the database that concern the EnumVerificationRequiredSkill table. 
 * For example : send the fields of the enum, add a new field...
 */ 
@@ -15,6 +15,7 @@ use App\Models\Verification;
 use App\Models\EnumVerificationRequiredSkill;
 use App\Models\MmeTemp;
 use Illuminate\Support\Facades\DB ; 
+use App\Http\Controllers\HistoryController;
 
 class EnumVerificationRequiredSkillController extends Controller
 {
@@ -123,7 +124,8 @@ class EnumVerificationRequiredSkillController extends Controller
         ]);
         foreach ($request->validated_mme as $mme){
             $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
-            $mme=$mme_temp->mme ;
+            $mme=$mme_temp->mme ; 
+ 
             $version=$mme->mme_nbrVersion+1;
             $mme->update([
                 'mme_nbrVersion' => $version
@@ -134,6 +136,10 @@ class EnumVerificationRequiredSkillController extends Controller
                 'technicalVerifier_id' => NULL,
                 'mmeTemp_version' => $version,
             ]);
+
+            //We created a new enregistrement of history for explain the reason of the enum updates
+            $HistoryController= new HistoryController() ; 
+            $HistoryController->add_history_for_mme($mme->id, $request) ;
         }
 
 

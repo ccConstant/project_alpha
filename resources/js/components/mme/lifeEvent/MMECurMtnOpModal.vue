@@ -30,7 +30,7 @@
 
         <b-modal :id="`modal-curMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
             <MmeCurMtnOpForm modifMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id" 
-            :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
+            :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate" :description="curMtnOp_description" :endDate="curMtnOp_endDate"
             :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
         </b-modal>
 

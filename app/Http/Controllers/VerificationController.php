@@ -2,8 +2,8 @@
 
 /*
 * Filename : VerificationController.php 
-* Creation date : 15 June 2022
-* Update date : 15 June 2022
+* Creation date : 15 Jun 2022
+* Update date : 15 Feb 2023
 * This file is used to link the view files and the database that concern the verification table. 
 * For example : add a verification for an mme in the data base, update it, delete it...
 */ 
@@ -33,65 +33,121 @@ class VerificationController extends Controller
         //-----CASE verif->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his verification, so he must enter all the attributes
         if ($request->verif_validate=='validated'){
-            $this->validate(
-                $request,
-                [
-                    'verif_name' => 'required|min:3|max:100',
-                    'verif_description' => 'required|min:3|max:255',
-                    'verif_periodicity' => 'required|min:1|max:4',
-                    'verif_expectedResult' => 'required|min:3|max:100',
-                    'verif_nonComplianceLimit' => 'required|min:3|max:50',
-                    'verif_protocol' => 'required|min:3|max:255',
-                    'verif_symbolPeriodicity' => 'required',
-                    'verif_puttingIntoService' => 'required',
-                ],
-                [
-                    'verif_puttingIntoService.required' => 'You must enter if the verification is realized during the comissioning',
-                    'verif_name.required' => 'You must enter a name for your verification',
-                    'verif_name.min' => 'You must enter at least three characters ',
-                    'verif_name.max' => 'You must enter a maximum of 100 characters',
+            if (!$request->verif_preventiveOperation){
+                $this->validate(
+                    $request,
+                    [
+                        'verif_name' => 'required|min:3|max:100',
+                        'verif_description' => 'required|min:3|max:255',
+                        'verif_expectedResult' => 'required|min:3|max:100',
+                        'verif_nonComplianceLimit' => 'required|min:3|max:50',
+                        'verif_protocol' => 'required|min:3|max:255',
+                        'verif_puttingIntoService' => 'required',
+                        'verif_preventiveOperation' => 'required',
+                    ],
+                    [
+                        'verif_puttingIntoService.required' => 'You must enter if the verification is realized during the comissioning',
+                        'verif_preventiveOperation.required' => 'You must enter if the verification is realized regularly?',
+                        'verif_name.required' => 'You must enter a name for your verification',
+                        'verif_name.min' => 'You must enter at least three characters ',
+                        'verif_name.max' => 'You must enter a maximum of 100 characters',
 
-                    'verif_description.required' => 'You must enter a description for verification',
-                    'verif_description.min' => 'You must enter at least three characters ',
-                    'verif_description.max' => 'You must enter a maximum of 255 characters',
+                        'verif_description.required' => 'You must enter a description for verification',
+                        'verif_description.min' => 'You must enter at least three characters ',
+                        'verif_description.max' => 'You must enter a maximum of 255 characters',
 
-                    'verif_periodicity.required' => 'You must enter a periodicity for your verification',
-                    'verif_periodicity.min' => 'You must enter at least one character ',
-                    'verif_periodicity.max' => 'You must enter a maximum of 4 characters',
+                        'verif_expectedResult.required' => 'You must enter an expectedResult for your verification',
+                        'verif_expectedResult.min' => 'You must enter at least three character ',
+                        'verif_expectedResult.max' => 'You must enter a maximum of 100 characters',
 
-                    'verif_expectedResult.required' => 'You must enter an expectedResult for your verification',
-                    'verif_expectedResult.min' => 'You must enter at least three character ',
-                    'verif_expectedResult.max' => 'You must enter a maximum of 100 characters',
+                        'verif_nonComplianceLimit.required' => 'You must enter a nonComplianceLimit for your verification',
+                        'verif_nonComplianceLimit.min' => 'You must enter at least three character ',
+                        'verif_nonComplianceLimit.max' => 'You must enter a maximum of 50 characters',
 
-                    'verif_nonComplianceLimit.required' => 'You must enter a nonComplianceLimit for your verification',
-                    'verif_nonComplianceLimit.min' => 'You must enter at least three character ',
-                    'verif_nonComplianceLimit.max' => 'You must enter a maximum of 50 characters',
-
-                    'verif_protocol.required' => 'You must enter a protocol for your verification',
-                    'verif_protocol.min' => 'You must enter at least three characters ',
-                    'verif_protocol.max' => 'You must enter a maximum of 255 characters ',
-
-                    'verif_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your verification',
-                ]
-            );
-
-            //verification about verif_requiredSkill, if no one value is selected we need to alert the user
-            if ($request->verif_requiredSkill=='' || $request->verif_requiredSkill==NULL){
-                return response()->json([
-                    'errors' => [
-                        'verif_requiredSkill' => ["You must choose a required skill"]
+                        'verif_protocol.required' => 'You must enter a protocol for your verification',
+                        'verif_protocol.min' => 'You must enter at least three characters ',
+                        'verif_protocol.max' => 'You must enter a maximum of 255 characters ',
                     ]
-                ], 429);
-            }
-            //verification about verif_verifAcceptanceAuthority, if no one value is selected we need to alert the user
-            if ($request->verif_verifAcceptanceAuthority=='' || $request->verif_verifAcceptanceAuthority==NULL ){
-                return response()->json([
-                    'errors' => [
-                        'verif_verifAcceptanceAuthority' => ["You must choose a verif acceptance authority"]
-                    ]
-                ], 429);
-            }
+                );
 
+                //verification about verif_requiredSkill, if no one value is selected we need to alert the user
+                if ($request->verif_requiredSkill=='' || $request->verif_requiredSkill==NULL){
+                    return response()->json([
+                        'errors' => [
+                            'verif_requiredSkill' => ["You must choose a required skill"]
+                        ]
+                    ], 429);
+                }
+                //verification about verif_verifAcceptanceAuthority, if no one value is selected we need to alert the user
+                if ($request->verif_verifAcceptanceAuthority=='' || $request->verif_verifAcceptanceAuthority==NULL ){
+                    return response()->json([
+                        'errors' => [
+                            'verif_verifAcceptanceAuthority' => ["You must choose a verif acceptance authority"]
+                        ]
+                    ], 429);
+                }
+            }else{
+                $this->validate(
+                    $request,
+                    [
+                        'verif_name' => 'required|min:3|max:100',
+                        'verif_description' => 'required|min:3|max:255',
+                        'verif_periodicity' => 'required|min:1|max:4',
+                        'verif_expectedResult' => 'required|min:3|max:100',
+                        'verif_nonComplianceLimit' => 'required|min:3|max:50',
+                        'verif_protocol' => 'required|min:3|max:255',
+                        'verif_symbolPeriodicity' => 'required',
+                        'verif_puttingIntoService' => 'required',
+                        'verif_preventiveOperation' => 'required',
+                    ],
+                    [
+                        'verif_puttingIntoService.required' => 'You must enter if the verification is realized during the comissioning',
+                        'verif_preventiveOperation.required' => 'You must enter if the verification is realized regularly?',
+                        'verif_name.required' => 'You must enter a name for your verification',
+                        'verif_name.min' => 'You must enter at least three characters ',
+                        'verif_name.max' => 'You must enter a maximum of 100 characters',
+
+                        'verif_description.required' => 'You must enter a description for verification',
+                        'verif_description.min' => 'You must enter at least three characters ',
+                        'verif_description.max' => 'You must enter a maximum of 255 characters',
+
+                        'verif_periodicity.required' => 'You must enter a periodicity for your verification',
+                        'verif_periodicity.min' => 'You must enter at least one character ',
+                        'verif_periodicity.max' => 'You must enter a maximum of 4 characters',
+
+                        'verif_expectedResult.required' => 'You must enter an expectedResult for your verification',
+                        'verif_expectedResult.min' => 'You must enter at least three character ',
+                        'verif_expectedResult.max' => 'You must enter a maximum of 100 characters',
+
+                        'verif_nonComplianceLimit.required' => 'You must enter a nonComplianceLimit for your verification',
+                        'verif_nonComplianceLimit.min' => 'You must enter at least three character ',
+                        'verif_nonComplianceLimit.max' => 'You must enter a maximum of 50 characters',
+
+                        'verif_protocol.required' => 'You must enter a protocol for your verification',
+                        'verif_protocol.min' => 'You must enter at least three characters ',
+                        'verif_protocol.max' => 'You must enter a maximum of 255 characters ',
+
+                        'verif_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your verification',
+                    ]
+                );
+
+                //verification about verif_requiredSkill, if no one value is selected we need to alert the user
+                if ($request->verif_requiredSkill=='' || $request->verif_requiredSkill==NULL){
+                    return response()->json([
+                        'errors' => [
+                            'verif_requiredSkill' => ["You must choose a required skill"]
+                        ]
+                    ], 429);
+                }
+                //verification about verif_verifAcceptanceAuthority, if no one value is selected we need to alert the user
+                if ($request->verif_verifAcceptanceAuthority=='' || $request->verif_verifAcceptanceAuthority==NULL ){
+                    return response()->json([
+                        'errors' => [
+                            'verif_verifAcceptanceAuthority' => ["You must choose a verif acceptance authority"]
+                        ]
+                    ], 429);
+                }
+            }
         }else{
              //-----CASE verif->validate=drafted or verif->validate=to be validate----//
             //if the user has choosen "drafted" or "to be validated" he have no obligations 
@@ -189,25 +245,26 @@ class VerificationController extends Controller
             $max_number=$max_number+1 ;
         }
         $nextDate=NULL ; 
-       
-        $startDate=Carbon::now('Europe/Paris');
-        if ($request->verif_symbolPeriodicity!='' && $request->verif_symbolPeriodicity!=NULL && $request->verif_periodicity!='' && $request->verif_periodicity!=NULL ){
-            $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
-           
-            if ($request->verif_symbolPeriodicity=='Y'){
-                $nextDate->addYears($request->verif_periodicity) ; 
-            }
+        if ($request->verif_preventiveOperation){
+            $startDate=Carbon::now('Europe/Paris');
+            if ($request->verif_symbolPeriodicity!='' && $request->verif_symbolPeriodicity!=NULL && $request->verif_periodicity!='' && $request->verif_periodicity!=NULL ){
+                $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
+            
+                if ($request->verif_symbolPeriodicity=='Y'){
+                    $nextDate->addYears($request->verif_periodicity) ; 
+                }
 
-            if ($request->verif_symbolPeriodicity=='M'){
-                $nextDate->addMonths($request->verif_periodicity) ; 
-            }
+                if ($request->verif_symbolPeriodicity=='M'){
+                    $nextDate->addMonths($request->verif_periodicity) ; 
+                }
 
-            if ($request->verif_symbolPeriodicity=='D'){
-                $nextDate->addDays($request->verif_periodicity) ; 
-            }
+                if ($request->verif_symbolPeriodicity=='D'){
+                    $nextDate->addDays($request->verif_periodicity) ; 
+                }
 
-            if ($request->verif_symbolPeriodicity=='H'){
-                $nextDate->addHours($request->verif_periodicity) ; 
+                if ($request->verif_symbolPeriodicity=='H'){
+                    $nextDate->addHours($request->verif_periodicity) ; 
+                }
             }
         }
         
@@ -228,7 +285,19 @@ class VerificationController extends Controller
             'enumVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
             'verif_puttingIntoService' => $request->verif_puttingIntoService,
+            'verif_preventiveOperation' => $request->verif_preventiveOperation,
         ]) ; 
+
+        if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
     
         $verif_id=$verif->id;
         if ($mostRecentlyMmeTmp!=NULL){
@@ -248,10 +317,11 @@ class VerificationController extends Controller
                 $mostRecentlyMmeTmp->update([
                  'mmeTemp_version' => $version,
                  'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                 'mmeTemp_lifeSheetCreated' => false,
                 ]);
             }
         }
-        //return response()->json($verif_id) ; 
+        return response()->json($verif_id) ; 
     }
 
 
@@ -284,6 +354,18 @@ class VerificationController extends Controller
         //We search the most recently mme temp of the mme 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
         if ($mostRecentlyMmeTmp!=NULL){
+
+            if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+
             //We checked if the most recently mme temp is validate and if a life sheet has been already created.
            //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update verification
             if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
@@ -301,42 +383,45 @@ class VerificationController extends Controller
                $mostRecentlyMmeTmp->update([
                 'mmeTemp_version' => $version,
                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                'mmeTemp_lifeSheetCreated' => false,
                ]);
             }
 
-            if ($request->verif_periodicity!=NULL && $request->verif_symbolPeriodicity!=NULL && ($oldVerif->verif_periodicity!=$request->verif_periodicity || $oldVerif->verif_symbolPeriodicity!=$request->verif_symbolPeriodicity)){
-                
-                $dates=explode(' ', $oldVerif->verif_startDate) ; 
-                $ymd=explode('-', $dates[0]);
-                $year=$ymd[0] ; 
-                $month=$ymd[1] ;
-                $day=$ymd[2] ;
+            if ($request->verif_preventiveOperation){
+                if ($request->verif_periodicity!=NULL && $request->verif_symbolPeriodicity!=NULL && ($oldVerif->verif_periodicity!=$request->verif_periodicity || $oldVerif->verif_symbolPeriodicity!=$request->verif_symbolPeriodicity)){
+                    
+                    $dates=explode(' ', $oldVerif->verif_startDate) ; 
+                    $ymd=explode('-', $dates[0]);
+                    $year=$ymd[0] ; 
+                    $month=$ymd[1] ;
+                    $day=$ymd[2] ;
 
-                $time=explode(':', $dates[1]); 
-                $hour=$time[0] ;
-                $min=$time[1] ; 
-                $sec=$time[2] ;
-                
-                $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
+                    $time=explode(':', $dates[1]); 
+                    $hour=$time[0] ;
+                    $min=$time[1] ; 
+                    $sec=$time[2] ;
+                    
+                    $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
 
-                if ($request->verif_symbolPeriodicity=='Y'){
-                    $nextDate->addYears($request->verif_periodicity) ; 
+                    if ($request->verif_symbolPeriodicity=='Y'){
+                        $nextDate->addYears($request->verif_periodicity) ; 
+                    }
+        
+                    if ($request->verif_symbolPeriodicity=='M'){
+                        $nextDate->addMonths($request->verif_periodicity) ; 
+                    }
+                    
+                    if ($request->verif_symbolPeriodicity=='D'){
+                        $nextDate->addDays($request->verif_periodicity) ; 
+                        return response()->json($nextDate) ;
+                    }
+                    if ($request->verif_symbolPeriodicity=='H'){
+                        $nextDate->addHours($request->verif_periodicity) ; 
+                    }
+                    $oldVerif->update([
+                        'verif_nextDate' => $nextDate,
+                    ]);
                 }
-    
-                if ($request->verif_symbolPeriodicity=='M'){
-                    $nextDate->addMonths($request->verif_periodicity) ; 
-                }
-                
-                if ($request->verif_symbolPeriodicity=='D'){
-                    $nextDate->addDays($request->verif_periodicity) ; 
-                    return response()->json($nextDate) ;
-                }
-                 if ($request->verif_symbolPeriodicity=='H'){
-                    $nextDate->addHours($request->verif_periodicity) ; 
-                }
-                 $oldVerif->update([
-                    'verif_nextDate' => $nextDate,
-                ]);
             }
             
             $oldVerif->update([
@@ -352,6 +437,7 @@ class VerificationController extends Controller
                 'mmeTemp_id' => $mostRecentlyMmeTmp->id,
                 'enumVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
                 'verif_puttingIntoService' => $request->verif_puttingIntoService,
+                'verif_preventiveOperation' => $request->verif_preventiveOperation,
             ]) ;
 
         }
@@ -388,6 +474,13 @@ class VerificationController extends Controller
                 $verifPuttingIntoService = 'No' ; 
             }
 
+            $verifPreventiveOperation = NULL ; 
+            if ($verif->verif_preventiveOperation==1){
+                $verifPreventiveOperation = 'Yes' ; 
+            }else{
+                $verifPreventiveOperation = 'No' ; 
+            }
+
             $reformed="no" ; 
             if ($verif->verif_reformDate!=NULL){
                 $reformed="yes" ; 
@@ -410,6 +503,7 @@ class VerificationController extends Controller
                 'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
                 'verif_validate' => $verif->verif_validate,
                 'verif_puttingIntoService'=> $verifPuttingIntoService,
+                'verif_preventiveOperation'=> $verifPreventiveOperation,
                 'verif_reformed' => $reformed,
             ]);
             array_push($container,$obj);
@@ -459,6 +553,7 @@ class VerificationController extends Controller
                 'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
                 'verif_validate' => $verif->verif_validate,
                 'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
+                'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
             ]);
             array_push($container,$obj);
        }
@@ -503,6 +598,7 @@ class VerificationController extends Controller
             'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
             'verif_validate' => $verif->verif_validate,
             'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
+            'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
             
         ]);
         array_push($container,$obj);
@@ -552,6 +648,7 @@ class VerificationController extends Controller
                     'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
                     'verif_validate' => $verif->verif_validate,
                     'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
+                    'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
                 ]);
                 array_push($container,$obj);
            }
@@ -568,6 +665,18 @@ class VerificationController extends Controller
         $mme=Mme::findOrfail($request->mme_id) ; 
         //We search the most recently mme temp of the mme 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        
+        if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        
         //We checked if the most recently mme temp is validate and if a life sheet has been already created.
         //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update verification
         if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
@@ -584,6 +693,7 @@ class VerificationController extends Controller
             $mostRecentlyMmeTmp->update([
             'mmeTemp_version' => $version,
             'mmeTemp_date' => Carbon::now('Europe/Paris'),
+            'mmeTemp_lifeSheetCreated' => false,
             ]);
         }
         

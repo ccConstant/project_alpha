@@ -12,7 +12,7 @@
             :protocol="component.protocol" :divClass="component.className" :id="component.id" :requiredSkill="component.requiredSkill"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :mme_id="data_mme_id"
             :reformDate="component.reformDate" :reformBy="component.reformBy"
-            :puttingIntoService="component.puttingIntoService"
+            :puttingIntoService="component.puttingIntoService" :preventiveOperation="component.preventiveOperation"
             @deleteVerif="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -103,7 +103,7 @@ export default {
         //Function for adding imported preventive maintenance operation form with his data
         addImportedComponent(verif_number,verif_name,verif_nonComplianceLimit,verif_expectedResult,verif_description,verif_periodicity,
         verif_symbolPeriodicity,verif_requiredSkill,verif_verifAcceptanceAuthority,verif_protocol,
-        verif_className,verif_validate,id,verif_reformDate,verif_reformBy, verif_puttingIntoService) {
+        verif_className,verif_validate,id,verif_reformDate,verif_reformBy, verif_puttingIntoService, verif_preventiveOperation) {
             this.components.push({
                 comp:'MMEVerificationForm',
                 key : this.uniqueKey++,
@@ -123,6 +123,7 @@ export default {
                 reformDate:verif_reformDate,
                 reformBy:verif_reformBy,
                 puttingIntoService:verif_puttingIntoService,
+                preventiveOperation:verif_preventiveOperation
             });
         },
         //Suppresion of a preventive maintenance operation component from the vue
@@ -138,7 +139,7 @@ export default {
                     var className="importedVerif"+verif.id
                     this.addImportedComponent(verif.verif_number, verif.verif_name, verif.verif_nonComplianceLimit, verif.verif_expectedResult, verif.verif_description, verif.verif_periodicity,
         verif.verif_symbolPeriodicity,verif.verif_requiredSkill,verif.verif_verifAcceptanceAuthority,verif.verif_protocol,
-        verif.verif_className,verif.verif_validate,verif.id,verif.verif_reformDate,verif.verif_reformBy, verif.verif_puttingIntoService);
+        verif.verif_className,verif.verif_validate,verif.id,verif.verif_reformDate,verif.verif_reformBy, verif.verif_puttingIntoService, verif.verif_preventiveOperation);
                 }
             }
             this.verifs=null
@@ -176,7 +177,9 @@ export default {
             //Make a get request to ask to the controller the preventive maintenance operation corresponding to the id of the equipment with which data will be imported
             var consultUrl = (id) => `/verifs/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then (response=> this.verifs=response.data)
+                .then (response=> 
+                this.verifs=response.data,
+                console.log(response.data))
                 .catch(error => console.log(error)) ;
         }
 

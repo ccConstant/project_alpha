@@ -3,7 +3,7 @@
 /*
 * Filename : 2022_06_08_062325_create_verifications_table.php
 * Creation date : 8 Jun 2022
-* Update date : 8 Feb 2023
+* Update date : 15 Feb 2023
 * Role : This file is used to create the table "verifications" in the data base. In this file, we can see the different
 * attribute of this table (number, description, periodicity...) and how they are defined (string, boolean, unique or not)
 */ 
@@ -23,6 +23,7 @@ class CreateVerificationsTable extends Migration
     {
         Schema::create('verifications', function (Blueprint $table) {
             $table->id();
+            $table->boolean('verif_preventiveOperation')->nullable();
             $table->boolean('verif_puttingIntoService')->nullable();
             $table->unsignedTinyInteger('verif_number')  ; 
             $table->string('verif_name')  ; 

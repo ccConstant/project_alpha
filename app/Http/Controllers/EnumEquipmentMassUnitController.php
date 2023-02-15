@@ -3,7 +3,7 @@
 /*
 * Filename : EnumEquipmentMassUnitController.php 
 * Creation date : 24 May 2022
-* Update date : 9 Feb 2023
+* Update date : 14 Feb 2023
 * This file is used to link the view files and the database that concern the enumEquipmentMassUnit table. 
 * For example : send the fields of the enum, add a new field...
 */ 
@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\Equipment;
 use App\Models\EquipmentTemp;
 use App\Models\EnumEquipmentMassUnit;
+use App\Http\Controllers\HistoryController;
 
 
 class EnumEquipmentMassUnitController extends Controller
@@ -124,6 +125,7 @@ class EnumEquipmentMassUnitController extends Controller
         foreach ($request->validated_eq as $eq){
             $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ; 
             $eq=$equipment_temp->equipment ;
+            
             $version=$eq->eq_nbrVersion+1;
             $eq->update([
                 'eq_nbrVersion' => $version
@@ -134,6 +136,10 @@ class EnumEquipmentMassUnitController extends Controller
                 'technicalVerifier_id' => NULL,
                 'eqTemp_version' => $version,
             ]);
+
+            //We created a new enregistrement of history for explain the reason of the enum updates
+            $HistoryController= new HistoryController() ; 
+            $HistoryController->add_history_for_eq($eq->id, $request) ; 
         }
 
     }

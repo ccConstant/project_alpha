@@ -19,10 +19,10 @@
                     </div>
                 </div>
                 <div v-if="state_id!==undefined || isInConsultMod==true">
-                    <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name" :info_text="infos_state[0].info_value"/>
+                    <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  :id_actual="StateName" name="state_name" label="State name :" :options="enum_state_name" isDisabled :selctedOption="state_name" v-model="state_name" :info_text="infos_state[0].info_value"/>
                 </div>
                 <div v-else>
-                    <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  name="state_name" label="State name :" :options="enum_state_name"  :selctedOption="state_name" v-model="state_name" :info_text="infos_state[0].info_value"/>
+                    <InputSelectForm selectClassName="form-select w-50" :Errors="errors.state_name"  :id_actual="StateName" name="state_name" label="State name :" :options="enum_state_name"  :selctedOption="state_name" v-model="state_name" :info_text="infos_state[0].info_value"/>
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.state_remarks" name="state_remarks" label="Remarks :" :isDisabled="!!isInConsultMod" v-model="state_remarks" :info_text="infos_state[1].info_value"/>
                 <div class="input-group">
@@ -32,6 +32,7 @@
                 <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" :info_text="infos_state[3].info_value"/> 
                 <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
+            <SuccesAlert ref="succesAlert"/>
 
 
             <div v-if="state_name=='Downgraded'">
@@ -70,6 +71,8 @@ import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import moment from 'moment'
 import EquipmentIDForm from '../referencing/EquipmentIDForm.vue'
 import ErrorAlert from '../../alert/ErrorAlert.vue'
+import SuccesAlert from '../../alert/SuccesAlert.vue'
+
 
 
 export default {
@@ -81,7 +84,8 @@ export default {
         InputTextForm,
         SaveButtonForm,
         EquipmentIDForm,
-        ErrorAlert
+        ErrorAlert,
+        SuccesAlert
     },
     props:{
         consultMod:{
@@ -105,16 +109,16 @@ export default {
             state_validate:'',
             state_isOk:null,
             enum_state_name :[
-                {value:"Waiting_for_referencing"},
-                {value:"Waiting_for_installation"},
-                {value:"In_use"},
-                {value:"Under_maintenance"},
-                {value:"On_hold"},
-                {value:"Under_repair"},
-                {value:"Broken"},
-                {value:"Downgraded"},
-                {value:"Reformed"},
-                {value:"Lost"},
+                {id_enum:'StateName',value:"Waiting_for_referencing"},
+                {id_enum:'StateName',value:"Waiting_for_installation"},
+                {id_enum:'StateName',value:"In_use"},
+                {id_enum:'StateName',value:"Under_maintenance"},
+                {id_enum:'StateName',value:"On_hold"},
+                {id_enum:'StateName',value:"Under_repair"},
+                {id_enum:'StateName',value:"Broken"},
+                {id_enum:'StateName',value:"Downgraded"},
+                {id_enum:'StateName',value:"Reformed"},
+                {id_enum:'StateName',value:"Lost"},
             ],
             isOkOptions :[
                 {id: 'Yes', value:true},
@@ -137,6 +141,7 @@ export default {
             new_eq:null,
             eq_idCard:[],
             infos_state:[],
+            StateName:"StateName"
             
 
         }
@@ -179,7 +184,9 @@ export default {
 
                         })
                         .then(response =>{
+                            this.$refs.succesAlert.showAlert(`Equipment state added successfully and saved as ${savedAs}`);
                             console.log(response.data)
+                                this.$router.replace({ name: "url_life_event" })
                                 this.addSucces=true;
                                 this.isInConsultMod=true;
                                 this.state_validate=savedAs
@@ -217,7 +224,10 @@ export default {
                             eq_id:this.eq_id
 
                         })
-                        .then(response => {this.state_validate=savedAs})
+                        .then(response => {
+                            this.$refs.succesAlert.showAlert(`Equipment state updated successfully and saved as ${savedAs}`);
+                            this.state_validate=savedAs
+                            })
                         .catch(error => this.errors=error.response.data.errors) ; 
                     })
                 .catch(error => this.errors=error.response.data.errors) ;
@@ -254,6 +264,7 @@ export default {
                 .then (response=>{
                     console.log(response.data)
                     this.state_name=response.data[0].state_name;
+                    console.log(this.state_name)
                     this.state_remarks=response.data[0].state_remarks;
                     this.selected_startDate=response.data[0].state_startDate;
                     this.state_isOk=response.data[0].state_isOk;

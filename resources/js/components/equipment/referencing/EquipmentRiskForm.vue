@@ -1,6 +1,6 @@
 <!--File name : EquipmentRiskForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 2 Feb 2023-->
+<!--Update date : 13 Feb 2023-->
 <!--Vue Component of the Form of the equipment risk who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -40,6 +40,7 @@
                     <DeleteComponentButton :validationMode="risk_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
                 </div>       
             </form>
+            <SucessAlert ref="sucessAlert"/>
         </div>
     </div>
 </template>
@@ -50,6 +51,7 @@ import InputSelectForm from '../../input/InputSelectForm.vue'
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
 
 export default {
         /*--------Declartion of the others Components:--------*/
@@ -57,7 +59,8 @@ export default {
         InputSelectForm,
         InputTextAreaForm,
         SaveButtonForm,
-        DeleteComponentButton
+        DeleteComponentButton,
+        SucessAlert
 
 
     },
@@ -189,10 +192,6 @@ export default {
                     this.errors={};
                     //Si ajoout equipement
                     if(this.riskForEq==true){
-                        console.log("ajout dans la base equipement")
-                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
-                        "eq_id:",id,"\n","validate:",savedAs)
-
                         /*If all the verif passed, a new post this time to add the risk in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                         axios.post('/equipment/add/risk',{
@@ -211,7 +210,9 @@ export default {
                                 axios.post(`/history/add/equipment/${id}`,{
                                     history_reasonUpdate :reason, 
                                 });
+                                 window.location.reload();
                             }
+                            this.$refs.sucessAlert.showAlert(`Equipment risk added successfully and saved as ${savedAs}`);
                             //If we the user is not in modifMod
                             if(!this.modifMod){
                                 //The form pass in consulting mode and addSucces pass to True
@@ -227,9 +228,6 @@ export default {
                         //If the controller sends errors we put it in the errors object 
                         .catch(error => this.errors=error.response.data.errors) ;
                     }else{
-                        console.log("ajout dans la base ope mtn prv");
-                        console.log("risk for:",this.risk_for,"\n","remark :",this.risk_remarks,"\n","way of control",this.risk_wayOfControl,"\n",
-                        "eq_id:",id,"\n","validate:",savedAs,"\n","Ope id",this.prvMtnOp_id);
                         /*If all the verif passed, a new post this time to add the risk in the data base
                         Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
                         
@@ -251,7 +249,9 @@ export default {
                                 axios.post(`/history/add/equipment/${id}`,{
                                     history_reasonUpdate :reason, 
                                 });
+                                 window.location.reload();
                             }
+                            this.$refs.sucessAlert.showAlert(`Preventive maintenance operation risk added successfully and saved as ${savedAs}`);
                             //If we the user is not in modifMod
                             if(!this.modifMod){
                                 //The form pass in consulting mode and addSucces pass to True
@@ -311,7 +311,9 @@ export default {
                                 axios.post(`/history/add/equipment/${id}`,{
                                     history_reasonUpdate :reason, 
                                 });
+                                 window.location.reload();
                             }
+                             this.$refs.sucessAlert.showAlert(`Equipment risk updated successfully and saved as ${savedAs}`);
                         })
                         //If the controller sends errors we put it in the errors object 
                         .catch(error => this.errors=error.response.data.errors) ;
@@ -337,7 +339,9 @@ export default {
                                 axios.post(`/history/add/equipment/${id}`,{
                                     history_reasonUpdate :reason, 
                                 });
+                                 window.location.reload();
                             }
+                             this.$refs.sucessAlert.showAlert(`Preventive maintenance operation risk updated successfully and saved as ${savedAs}`);
                         })
                         //If the controller sends errors we put it in the errors object 
                         .catch(error => this.errors=error.response.data.errors) ;
@@ -371,15 +375,18 @@ export default {
                         axios.post(`/history/add/equipment/${id}`,{
                             history_reasonUpdate :reason, 
                         });
+                        window.location.reload();
                     }
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteRisk','')
+                     this.$refs.sucessAlert.showAlert(`Risk deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }else{
                 this.$emit('deleteRisk','')
+                 this.$refs.sucessAlert.showAlert(`Empty risk deleted successfully`);
 
             }
             

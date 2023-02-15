@@ -1,6 +1,6 @@
 <!--File name : EquipmentSpecProcForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 2 Feb 2023-->
+<!--Update date : 13 Feb 2023-->
 <!--Vue Component of the Form of the equipment special process who call all the input component-->
 
 <!----------Props of other component who can be called:--------
@@ -38,6 +38,7 @@
                     </div>
                 </div>       
             </form>
+            <SucessAlert ref="sucessAlert"/>
         </div>
     </div>
 </template>
@@ -48,13 +49,17 @@ import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import InputTextForm from '../../input/InputTextForm.vue'
 import RadioGroupForm from '../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
+
+
 export default {
     /*--------Declartion of the others Components:--------*/
     components : {
         RadioGroupForm,
         InputTextAreaForm,
         SaveButtonForm,
-        InputTextForm
+        InputTextForm,
+        SucessAlert
 
     },
     /*--------Declartion of the differents props:--------
@@ -173,6 +178,7 @@ export default {
                     })
                     //If the special process is added succesfuly
                     .then(response =>{
+                        this.$refs.sucessAlert.showAlert(`Equipment special process added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -229,7 +235,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                             window.location.reload();
                         }
+                        this.$refs.sucessAlert.showAlert(`Equipment special process updated successfully and saved as ${savedAs}`);
                     })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;

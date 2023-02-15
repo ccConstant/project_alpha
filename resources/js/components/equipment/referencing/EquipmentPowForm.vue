@@ -1,6 +1,6 @@
 <!--File name : EquipmentPowForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 2 Feb 2023-->
+<!--Update date : 13 Feb 2023-->
 <!--Vue Component of the Form of the equipment power who call all the input component-->
 
 
@@ -48,6 +48,7 @@
                     
                 </div>
             </form>
+            <SucessAlert ref="sucessAlert"/>
         </div>
     </div>
 </template>
@@ -60,6 +61,7 @@ import InputTextForm from '../../input/InputTextForm.vue'
 import InputTextWithOptionForm from '../../input/InputTextWithOptionForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
 
 
 export default {
@@ -70,7 +72,8 @@ export default {
         SaveButtonForm,
         InputTextForm,
         InputTextWithOptionForm,
-        DeleteComponentButton
+        DeleteComponentButton,
+        SucessAlert
 
 
     },
@@ -244,8 +247,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                              window.location.reload();
                         }
-                        console.log(response);
+                        this.$refs.sucessAlert.showAlert(`Equipment power added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -307,7 +311,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                             window.location.reload();
                         }
+                        this.$refs.sucessAlert.showAlert(`Equipment power updated succesfully and saved as ${savedAs}`);
                     })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
@@ -337,8 +343,10 @@ export default {
                         axios.post(`/history/add/equipment/${id}`,{
                             history_reasonUpdate :reason, 
                         });
+                        window.location.reload();
                     }
                     this.$emit('deletePow','');
+                    this.$refs.sucessAlert.showAlert(`Equipment power deleted successfully`);
                     //If the user is in update mode and the power exist in the database
                 })
                 //If the controller sends errors we put it in the errors object 
@@ -346,6 +354,7 @@ export default {
 
             }else{
                 this.$emit('deletePow','');
+                this.$refs.sucessAlert.showAlert(`Empty Equipment power deleted successfully`);
             }
         },
         clearSelectError(value){

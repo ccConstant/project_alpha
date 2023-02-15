@@ -62,6 +62,21 @@ class PrecautionController extends Controller
             $type= EnumPrecautionType::where('value', '=', $request->prctn_type)->first() ;
             $type_id=$type->id ; 
         }
+
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
+
+        if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+
         //Creation of a new precaution
         $prctn=Precaution::create([
             'prctn_description' => $request->prctn_description,
@@ -69,6 +84,27 @@ class PrecautionController extends Controller
             'prctn_validate' => $request->prctn_validate,
             'mmeUsage_id' => $usage->id,
         ]) ; 
+
+
+        //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add precaution
+        if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
+                
+            //We need to increase the number of mme temp linked to the mme
+            $version_mme=$mme->mme_nbrVersion+1 ; 
+            //Update of mme
+            $mme->update([
+                'mme_nbrVersion' =>$version_mme,
+            ]);
+            
+            //We need to increase the version of the mme temp (because we create a new mme temp)
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            //update of mme temp
+            $mostRecentlyMmeTmp->update([
+             'mmeTemp_version' => $version,
+             'mmeTemp_date' => Carbon::now('Europe/Paris'),
+             'mmeTemp_lifeSheetCreated' => false,
+            ]);
+        }
         return response()->json($prctn->id) ;
     }
 
@@ -113,13 +149,51 @@ class PrecautionController extends Controller
             $type_id=$type->id ; 
         }
 
-        
-        //Creation of a new equipment temp
-        $precaution->update([
-            'prctn_description' => $request->prctn_description,
-            'enumPrecautionType_id' => $type_id,
-            'prctn_validate' => $request->prctn_validate,
-        ]);
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        //We search the most recently mme temp of the mme 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        if ($mostRecentlyMmeTmp!=NULL){
+
+            if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'qualityVerifier_id' => NULL,
+                ]);
+            }
+            if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+                $mostRecentlyMmeTmp->update([
+                    'technicalVerifier_id' => NULL,
+                ]);
+            }
+
+            //We checked if the most recently mme temp is validate and if a life sheet has been already created.
+            //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add usage
+            if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
+            
+                //We need to increase the number of mme temp linked to the mme
+                $version_mme=$mme->mme_nbrVersion+1 ; 
+                //Update of mme
+                $mme->update([
+                    'mme_nbrVersion' =>$version_mme,
+                ]);
+
+                //We need to increase the version of the mme temp (because we create a new mme temp)
+               $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+               //update of mme temp
+               $mostRecentlyMmeTmp->update([
+                'mmeTemp_version' => $version,
+                'mmeTemp_date' => Carbon::now('Europe/Paris'),
+                'mmeTemp_lifeSheetCreated' => false,
+               ]);
+                
+                // In the other case, we can modify the informations without problems
+            }
+            $precaution->update([
+                'prctn_description' => $request->prctn_description,
+                'enumPrecautionType_id' => $type_id,
+                'prctn_validate' => $request->prctn_validate,
+            ]);
+            
+        }
     }
 
 
@@ -129,7 +203,41 @@ class PrecautionController extends Controller
      * The id parameter is the id of the precaution in which we want to delete
      * */
 
-    public function delete_precaution($id){
+    public function delete_precaution(Request $request, $id){
+        $mme=Mme::findOrfail($request->mme_id) ; 
+        //We search the most recently mme temp of the mme 
+        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
+        
+        if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyMmeTmp->technicalVerifier_id!=null){
+            $mostRecentlyMmeTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        
+        //We checked if the most recently mme temp is validate and if a life sheet has been already created.
+        //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
+            //We need to increase the number of mme temp linked to the mme
+            $version_mme=$mme->mme_nbrVersion+1 ; 
+            //Update of mme
+            $mme->update([
+                'mme_nbrVersion' =>$version_mme,
+            ]);
+
+            //We need to increase the version of the mme temp (because we create a new mme temp)
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            //update of mme temp
+            $mostRecentlyMmeTmp->update([
+            'mmeTemp_version' => $version,
+            'mmeTemp_date' => Carbon::now('Europe/Paris'),
+            'mmeTemp_lifeSheetCreated' => false,
+            ]);
+        }
         $precaution=Precaution::findOrFail($id) ; 
         $precaution->delete() ; 
     }

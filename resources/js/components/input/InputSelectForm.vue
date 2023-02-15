@@ -147,6 +147,7 @@ export default {
             }
         }else{
             var option = document.getElementsByTagName('option');
+               console.log("coucou2")
             for (var i = 0; i < option.length; i++) {
                 if(option[i].value == this.selctedOption && option[i].id == this.id_group) {
                     option[i].setAttribute("selected", "selected");

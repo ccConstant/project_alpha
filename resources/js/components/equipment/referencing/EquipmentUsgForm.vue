@@ -1,6 +1,6 @@
 <!--File name : EquipmentUsgForm.vue-->
 <!--Creation date : 18 May 2022-->
-<!--Update date : 2 Feb 2023-->
+<!--Update date : 13 Feb 2023-->
 <!--Vue Component of the Form of the usage  who call all the input component-->
 <template>
     <div :class="divClass" @keydown="clearError">
@@ -39,6 +39,7 @@
                     </div>
                 </div>  
             </form>
+            <SucessAlert ref="sucessAlert"/>
             <ErrorAlert ref="errorAlert"/>
             
         </div>
@@ -52,6 +53,8 @@ import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import ReformComponentButton from '../../button/ReformComponentButton.vue'
+import SucessAlert from '../../alert/SuccesAlert.vue'
+
 
 
 export default {
@@ -60,7 +63,9 @@ export default {
         SaveButtonForm,
         DeleteComponentButton,
         ReformComponentButton,
-        ErrorAlert
+        ErrorAlert,
+        SucessAlert
+
 
 
     },
@@ -191,7 +196,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                              window.location.reload();
                         }
+                        this.$refs.sucessAlert.showAlert(`Equipment usage added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -248,7 +255,9 @@ export default {
                             axios.post(`/history/add/equipment/${id}`,{
                                 history_reasonUpdate :reason, 
                             });
+                              window.location.reload();
                         }
+                                                this.$refs.sucessAlert.showAlert(`Equipment usage updated successfully and saved as ${savedAs}`);
                     })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
@@ -277,14 +286,17 @@ export default {
                         axios.post(`/history/add/equipment/${id}`,{
                             history_reasonUpdate :reason, 
                         });
+                         window.location.reload();
                     }
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteUsg','')
+                                            this.$refs.sucessAlert.showAlert(`Equipment usage deleted successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
             }else{
                 this.$emit('deleteUsg','')
+                this.$refs.sucessAlert.showAlert(`Empty Equipment usage deleted successfully`);
 
             }
             
