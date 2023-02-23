@@ -29,13 +29,13 @@
 
             <div class="mme_planning_annual_table">
                 <b-row>
-                    <b-col cols="1" class="mme_planning_annual_internalReference">
+                    <b-col cols="1" class="mme_planning_annual_internalReference_title">
                         Internal Reference
                     </b-col>
-                    <b-col cols="1" class="mme_planning_annual_name">
+                    <b-col cols="1" class="mme_planning_annual_name_title">
                         Name
                     </b-col>
-                    <b-col cols="1" class="mme_planning_annual_verif">
+                    <b-col cols="1" class="mme_planning_annual_verif_title">
                         Operations planned
                     </b-col>
                     <b-col cols="1" class="mme_planning_annual_plannification">
@@ -616,11 +616,6 @@ export default {
                 margin-left:0px;
                 background-color: #20bbd8;
             }
-            
-
-
-
-
 
             .mme_planning_annual_periodicity{
                 border: solid 0.5px black;
@@ -628,7 +623,35 @@ export default {
                 width:40px;
                 font-size : 15px;
                 color:#20bbd8
-            }  
+            } 
+            
+            .mme_planning_annual_internalReference_title{
+                border: solid 0.5px black;
+                text-align: center;
+                width:100px;
+                height:49.5px;
+                font-size : 10px;
+                color:#20bbd8 ; 
+                line-height: 25px;
+            }
+                .mme_planning_annual_name_title{
+                border: solid 0.5px black;
+                text-align: center;
+                width:85px;
+                height:49.5px;
+                font-size : 10px;
+                color:#20bbd8;
+                line-height: 50px;
+            }
+            .mme_planning_annual_verif_title{
+                border: solid 0.5px black;
+                text-align: center;
+                width:77px;
+                height:49.5px;
+                font-size : 10px;
+                color:#20bbd8 ; 
+                line-height: 25px;
+            }
             
             .mme_planning_annual_periodicity_title{
                 border: solid 0.5px black;
@@ -637,6 +660,8 @@ export default {
                 font-size : 10px;
                 color:#20bbd8;
                 margin-left: 0px;
+                height:49.5px;
+                line-height: 50px;
             } 
         
         }

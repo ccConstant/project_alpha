@@ -18,11 +18,11 @@
         <!--Inputinfo component is called here, we send to him the help test initialized in a parent component if he is not equal to null-->
         <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
         <!--Initializing of the select with his props initialized in the parent compenant-->     
-        <select @change="clearError" :class="[selectClassName, hasError(this.Errors)?'is-invalid':'']" :name="name" :disabled="!!isDisabled"
+        <select  v-model="this.slct" @change="clearError" :class="[selectClassName, hasError(this.Errors)?'is-invalid':'']" :name="name" :disabled="!!isDisabled"
          :required="!!isRequired" v-on:input="updateValue($event.target.value)">
             <option value="" selected>---Select---</option>
             <!--Options of the select, the for loop here is used to initialize them with an array of the differents value-->
-            <option v-for="(type,index) in options " :key="index" :id="type.id_enum" :value="type.value">
+             <option v-for="(type,index) in options " :key="index" :id="type.id_enum" bind:value="type.value" :value="type.value">
                 {{type.value}}
             </option>
         </select>
@@ -84,7 +84,8 @@ export default {
             default:"form-select"
         },
         selctedOption:{
-            type:String
+            type:String,
+            default:''
         },
         isDisabled:{
             type : Boolean,
@@ -99,6 +100,7 @@ export default {
             default: () => ([])
         }
         
+        
     },
     /*--------Declartion of the differents returned data:--------
     returnedText_info: Help text who will be send to the InputInfo Component here we initialize
@@ -107,8 +109,16 @@ export default {
     data(){
         return{
             returnedText_info:this.info_text,
-            id_group: this.id_actual
+            id_group: this.id_actual,
+            nbr: this.number,
+            name2:this.name,
+            slct:this.selctedOption,
         }
+    },
+    created(){
+        console.log("option")
+        console.log(this.options[0].value)
+        //console.log(this.selctedOption)
     },
     /*All function inside the updated option is called each time the value is changed*/
     /*updated(){
@@ -135,11 +145,13 @@ export default {
         }
         
     },*/
-    mounted(){
+    /*mounted(){
         if(this.selectedDivName!=undefined){
             var selectedDiv = document.getElementsByClassName(this.selectedDivName)
             var option =selectedDiv[0].getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
+                console.log("nbr")
+                console.log(option.nbr)
                 if(option[i].value == this.selctedOption && option[i].id == this.id_group) {
                     option[i].setAttribute("selected", "selected");
                     
@@ -155,7 +167,7 @@ export default {
             }
         }
         
-    },
+    },*/
     /*--------Declartion of the differents methods:--------
     updateValue: Emit to the parent component the value of the input
     ---------------------------------------------------*/

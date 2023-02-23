@@ -3,7 +3,7 @@
 /*
 * Filename : EquipmentController.php 
 * Creation date : 27 Apr 2022
-* Update date : 9 Feb 2023
+* Update date :22 Feb 2023
 * This file is used to link the view files and the database that concern the equipment table. 
 * For example : add the identity card of an equipment in the database, update the identity card, delete the identity card... 
 */ 
@@ -575,7 +575,7 @@ class EquipmentController extends Controller{
                     
                         $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
                         $endDate=Carbon::now('Europe/Paris'); 
-                        $endDate->addMonths(23);
+                        $endDate->addMonths(24);
                         $dateForPush=Carbon::create($nextDate->year, $nextDate->month, $nextDate->day, $nextDate->hour, $nextDate->minute, $nextDate->second) ;
                         $monthForPush=$dateForPush->month ;
                         if (strlen($monthForPush)==1){
@@ -1131,10 +1131,10 @@ class EquipmentController extends Controller{
      * The id parameter is the id of the equipment in which we want to reform/delete
      * */
 
-    public function delete_equipment($id){
+    public function delete_equipment($request){
 
-        $equipment=Equipment::findOrFail($id) ; 
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $equipment=Equipment::findOrFail($request->eq_id) ; 
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
 
         $powers=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
         foreach ($powers as $power){
@@ -1168,11 +1168,10 @@ class EquipmentController extends Controller{
             ]) ;
             $specialProcess->delete() ;
         }
-
-        $mmes=Mme::where('equipmentTemp_id', '=', $id)->get();
+        $mmes=Mme::where('equipmentTemp_id', '=', $request->eq_id)->get();
         foreach ($mmes as $mme){
             $MmeController= new MmeController() ; 
-            $MmeController->delete_mme($mme->id);
+            $MmeController->delete_mme($mme->id, $request) ;
         }
     }
 

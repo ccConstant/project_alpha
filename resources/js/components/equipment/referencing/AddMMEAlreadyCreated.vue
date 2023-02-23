@@ -15,7 +15,12 @@
             </div>
             <b-button class="mt-3" block @click="$bvModal.hide('modal-mme_add_already_created')">Close</b-button>
             <b-button class="mt-3" block @click="chooseMME">Choose</b-button>
-        </b-modal>     
+        </b-modal>  
+
+        <b-modal :id="`modal-approved${_uid}`"  @ok="dataAppear()">
+            <p class="my-4">Are you sure you want to add this mme to this approved data? You will have to sign them again </p>
+            <input v-model="reason" placeholder="Reason for the update" />
+        </b-modal>   
     </div>
 </template>
 
@@ -24,15 +29,18 @@ export default {
     props:{
        eq_id:{
             type:Number,
-       }
+       },
     },
     data(){
         return{
             mme_not_linked: [],
             radio_value:'',
+            reason:'',
+            lifesheet_created:this.$route.query.signed,
         }
     },
     created(){
+        console.log(this.lifesheet_created)
         /*Ask for the controller different types of the dimension  */
         axios.get('/mme/mmes_not_linked')
             .then (response=> {
@@ -49,12 +57,17 @@ export default {
                 axios.post(urlLinkMmetoEq(this.eq_id),{
                     'mme_internalReference' : this.radio_value.internalReference,
                 });
-                this.$emit('choosedMME',this.radio_value)
-                
+                if (this.lifesheet_created==true){
+                    this.$bvModal.show(`modal-approved${this._uid}`)
+                }else{
+                    this.$emit('choosedMME',this.radio_value, this.reason, this.lifesheet_created)
+                }
             }
-            this.$bvModal.hide('modal-mme_add_already_created')
-            
+            this.$bvModal.hide('modal-mme_add_already_created')  
         },
+        dataAppear(){
+            this.$emit('choosedMME',this.radio_value, this.reason, this.lifesheet_created)
+        }
     }
 
 }

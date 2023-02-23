@@ -4,8 +4,8 @@
 /*
 * Filename : 2022_05_10_063905_create_usages_table.php
 * Creation date : 9 May 2022
-* Update date : 10 May 2022
-* Role : This file is used to create the table "usages" in the data base. In this file, we can see the different
+* Update date : 15 Feb 2023
+* This file is used to create the table "usages" in the data base. In this file, we can see the different
 * attribute of this table (type, precaution...) and how they are defined (string, boolean, unique or not)
 */ 
 

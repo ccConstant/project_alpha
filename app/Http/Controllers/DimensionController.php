@@ -128,29 +128,72 @@ class DimensionController extends Controller
 
             //verification about dim_type, if no one value is selected we need to alert the user
             if ($request->dim_type=='' || $request->dim_type==NULL ){
-                return response()->json([
-                    'errors' => [
-                        'dim_type' => ["You must choose a type for your dimension"]
-                    ]
-                ], 429);
+                //verification about dim_name, if no one value is selected we need to alert the user
+                if ($request->dim_name=='' || $request->dim_name==NULL){
+                     //verification about dim_unit, if no one value is selected we need to alert the user
+                    if ($request->dim_unit=='' || $request->dim_unit==NULL ){
+                        return response()->json([
+                            'errors' => [
+                                'dim_name' => ["You must choose a name for your dimension"],
+                                'dim_type' => ["You must choose a type for your dimension"],
+                                'dim_unit' => ["You must choose a unit for your dimension"]
+                            ]
+                        ], 429);
+                    }else{
+                        return response()->json([
+                            'errors' => [
+                                'dim_name' => ["You must choose a name for your dimension"],
+                                'dim_type' => ["You must choose a type for your dimension"]
+                            ]
+                        ], 429);
+                    }
+                        
+                }else{
+                    if ($request->dim_unit=='' || $request->dim_unit==NULL ){
+                        return response()->json([
+                            'errors' => [
+                                'dim_type' => ["You must choose a type for your dimension"],
+                                'dim_unit' => ["You must choose a unit for your dimension"]
+                            ]
+                        ], 429);
+                    }else{
+                        return response()->json([
+                            'errors' => [
+                                'dim_type' => ["You must choose a type for your dimension"]
+                            ]
+                        ], 429);
+
+                    }
+                }
+            }else{
+                if ($request->dim_name=='' || $request->dim_name==NULL){
+                    //verification about dim_unit, if no one value is selected we need to alert the user
+                   if ($request->dim_unit=='' || $request->dim_unit==NULL ){
+                       return response()->json([
+                           'errors' => [
+                               'dim_name' => ["You must choose a name for your dimension"],
+                               'dim_unit' => ["You must choose a unit for your dimension"]
+                           ]
+                       ], 429);
+                   }else{
+                       return response()->json([
+                           'errors' => [
+                               'dim_name' => ["You must choose a name for your dimension"]
+                           ]
+                       ], 429);
+                   }
+                       
+               }else{
+                   if ($request->dim_unit=='' || $request->dim_unit==NULL ){
+                       return response()->json([
+                           'errors' => [
+                               'dim_unit' => ["You must choose a unit for your dimension"]
+                           ]
+                       ], 429);
+                    }
+                } 
             }
 
-            //verification about dim_name, if no one value is selected we need to alert the user
-            if ($request->dim_name=='' || $request->dim_name==NULL){
-                return response()->json([
-                    'errors' => [
-                        'dim_name' => ["You must choose a name for your dimension"]
-                    ]
-                ], 429);
-            }
-            //verification about dim_unit, if no one value is selected we need to alert the user
-            if ($request->dim_unit=='' || $request->dim_unit==NULL ){
-                return response()->json([
-                    'errors' => [
-                        'dim_unit' => ["You must choose a unit for your dimension"]
-                    ]
-                ], 429);
-            }
         }else{
              //-----CASE dim->validate=drafted or dim->validate=to be validate----//
             //if the user has choosen "drafted" or "to be validated" he have no obligations 

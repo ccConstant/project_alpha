@@ -96,7 +96,8 @@ export default {
     },
     props:{
         verifAcceptanceAuthority:{
-            type:String
+            type:String,
+            default:''
         },
         number:{
             type:String,
@@ -121,7 +122,8 @@ export default {
             type:String
         },
         requiredSkill:{
-            type:String
+            type:String,
+            default:''
         },
         protocol:{
             type:String

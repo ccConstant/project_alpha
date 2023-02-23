@@ -3,7 +3,7 @@
 /*
 * Filename : MmeController.php 
 * Creation date : 14 Jun 2022
-* Update date : 14 Feb 2023
+* Update date : 22 Feb 2023
 * This file is used to link the view files and the database that concern the mme table. 
 * For example : add the identity card of an mme in the database, update the identity card, delete the identity card... 
 */ 
@@ -38,7 +38,14 @@ class MmeController extends Controller{
         foreach($mmes as $mme){
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
             $states=$mostRecentlyMmeTmp->states;
-            $mostRecentlyState=MmeState::orderBy('created_at', 'desc')->first();
+            $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ; 
+                $date2=$mostRecentlyState->created_at;
+               if ($date>=$date2){
+                     $mostRecentlyState=$state ; 
+                }
+            }
             $isAlreadyQualityValidated=false ; 
             if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL){
                 $isAlreadyQualityValidated=true ; 
@@ -117,17 +124,80 @@ class MmeController extends Controller{
         $mme->update([
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
         ]);
+        $equipment=Equipment::findOrFail($id);
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+           //update of equipment temp
+           $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_lifeSheetCreated' => false,
+           ]);
+        }
     }
 
     /**
      * Function call by EquipmentMmeForm and EquipmentMmeListForm with the route : /mme/delete/link_to_eq/{id} (get)
      * Link a mme to an equipment in the data base
      */
-    public function delete_link_between_mme_and_equipment($id){
+    public function delete_link_between_mme_to_equipment($id, Request $request){
         $mme=Mme::findOrFail($id);
         $mme->update([
             'equipmentTemp_id' => NULL,
         ]);
+        $equipment=Equipment::findOrFail($request->eq_id);
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+           //update of equipment temp
+           $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_lifeSheetCreated' => false,
+           ]);
+        }
     }
 
 
@@ -534,60 +604,6 @@ class MmeController extends Controller{
         }
     }
 
-     /**
-     * Function call by MmeMaintenanceCalendar.vue when the form is submitted with the route : /mme/verif/planning (post)
-     * Send all the mmes validated in the data base with the verifications linked
-     * @return \Illuminate\Http\Response
-     * */
-    /*public function send_mme_verif_for_planning(){
-        $mmes=Mme::all() ;
-        $container=array() ; 
-        $containerVerif=array() ;
-        foreach($mmes as $mme){
-            $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
-            $states=$mostRecentlyMmeTmp->states;
-            $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
-            foreach($states as $state){
-                $date=$state->created_at ; 
-                $date2=$mostRecentlyState->created_at;
-               if ($date>=$date2){
-                     $mostRecentlyState=$state ; 
-                }
-            }
-            if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mmeTemp_id', "=", $mostRecentlyMmeTmp->id)->get() ;
-                foreach( $verifs as $verif){
-                    $verif=([
-                        "id" => $verif->id,
-                        "verif_number" => (string)$verif->verif_number,
-                        "verif_description" => $verif->verif_description,
-                        "verif_periodicity" => (string)$verif->verif_periodicity,
-                        "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
-                        "verif_protocol" => $verif->verif_protocol,
-                        "verif_startDate" => $verif->verif_startDate,
-                        "verif_nextDate" => $verif->verif_nextDate,
-                        "verif_reformDate" => $verif->verif_reformDate,
-                        "verif_validate" => $verif->verif_validate,
-                        
-                    ]);
-                    array_push($containerVerif,$verif);
-                }
-                
-                $mme = ([
-                    "id" => $mme->id,
-                    "internalReference" => $mme->mme_internalReference,
-                    "verifications" => $containerVerif,
-                    "state_id" => $mostRecentlyState->id,
-                ]) ; 
-
-                array_push($container,$mme);
-
-
-            }
-        }
-        return response()->json($container) ;
-    }*/
-
 
 
     /**
@@ -619,7 +635,7 @@ class MmeController extends Controller{
                     
                         $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
                         $endDate=Carbon::now('Europe/Paris'); 
-                        $endDate->addMonths(23);
+                        $endDate->addMonths(24);
                         $dateForPush=Carbon::create($nextDate->year, $nextDate->month, $nextDate->day, $nextDate->hour, $nextDate->minute, $nextDate->second) ;
                         $monthForPush=$dateForPush->month ;
                         if (strlen($monthForPush)==1){
@@ -819,7 +835,7 @@ class MmeController extends Controller{
      * The id parameter is the id of the mme in which we want to reform/delete
      * */
 
-    public function delete_mme($id){
+    public function delete_mme($id, Request $request){
         $mme=Mme::findOrFail($id) ; 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $mme->update([
@@ -838,6 +854,39 @@ class MmeController extends Controller{
             }
             $usage->delete() ;
         }
+        $equipment=Equipment::findOrFail($request->eq_id);
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
+        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
+        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
+        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'qualityVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
+            $mostRecentlyEqTmp->update([
+                'technicalVerifier_id' => NULL,
+            ]);
+        }
+        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
+            
+            //We need to increase the number of equipment temp linked to the equipment
+            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            //Update of equipment
+            $equipment->update([
+                'eq_nbrVersion' =>$version_eq,
+            ]);
+
+            //We need to increase the version of the equipment temp (because we create a new equipment temp)
+           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+           //update of equipment temp
+           $mostRecentlyEqTmp->update([
+            'eqTemp_version' => $version,
+            'eqTemp_date' => Carbon::now('Europe/Paris'),
+            'eqTemp_lifeSheetCreated' => false,
+           ]);
+        }
+
     }
 
     /**

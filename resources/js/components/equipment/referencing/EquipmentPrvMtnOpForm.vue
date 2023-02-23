@@ -41,7 +41,7 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description" name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
                 <div class="input-group">
                     <InputNumberForm  inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity" name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1" v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod" :info_text="infos_prvMtnOp[1].info_value"/>
-                    <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :id_actual="SymbolPeriodicity" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
+                    <InputSelectForm @clearSelectError='clearSelectError'  name="prvMtnOp_symbolPeriodicity"  label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity" :options="enum_periodicity_symbol" :number="this.prvMtnOp_id" :id_actual="SymbolPeriodicity" :selctedOption="this.prvMtnOp_symbolPeriodicity" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
                 </div>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol" name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>
                 <!--If addSucces is equal to false, the buttons appear -->
@@ -227,10 +227,10 @@ export default {
             equipment_id_add:this.eq_id,
             equipment_id_update:this.$route.params.id,
             enum_periodicity_symbol: [
-                {id_enum:"SymbolPeriodicity",value:'Y'},
-                {id_enum:"SymbolPeriodicity",value:'M'},
-                {id_enum:"SymbolPeriodicity",value:'D'},
-                {id_enum:"SymbolPeriodicity",value:'H'},
+                {id_enum:"SymbolPeriodicity",value:'Y', number:this.prvMtnOp_id},
+                {id_enum:"SymbolPeriodicity",value:'M',number:this.prvMtnOp_id},
+                {id_enum:"SymbolPeriodicity",value:'D',number:this.prvMtnOp_id},
+                {id_enum:"SymbolPeriodicity",value:'H',number:this.prvMtnOp_id},
             ],
             existOptionPIS :[
                 {id: 'PIS', value:true, text:'Yes'},

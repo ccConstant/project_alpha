@@ -285,7 +285,7 @@ class StateController extends Controller
 
         if ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed"){
             $EquipmentController= new EquipmentController() ; 
-            $EquipmentController->delete_equipment($request->eq_id) ; 
+            $EquipmentController->delete_equipment($request) ; 
        }
         
         $state_id=$state->id;
@@ -294,7 +294,7 @@ class StateController extends Controller
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         $state->equipment_temps()->attach($mostRecentlyEqTmp) ;
 
-        return response()->json($state_id) ; 
+        return response()->json($state_id) ;
     }
 
 

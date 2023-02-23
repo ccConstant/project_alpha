@@ -3,8 +3,8 @@
 /*
 * Filename : 2022_06_21_132054_create_pivot_mme_temp_state_table.php
 * Creation date : 21 Jun 2022
-* Update date : 21 Jun 2022
-* Role : This file is used to create the table "pivot_mme_temp_state" in the data base. In this file, we can see the different
+* Update date : 15 Feb 2023
+* This file is used to create the table "pivot_mme_temp_state" in the data base. In this file, we can see the different
 * attribute of this table (two foreign key for link state table and mme_temp table) and how they are defined (string, boolean, unique or not)
 */ 
 

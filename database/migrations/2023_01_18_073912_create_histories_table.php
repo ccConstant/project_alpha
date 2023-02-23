@@ -3,8 +3,8 @@
 /*
 * Filename : 2023_01_18_073912_create_histories_table.php
 * Creation date : 18 Jan 2023
-* Update date : 18 Jan 2023
-* Role : This file is used to create the table "histories" in the data base. In this file, we can see the different
+* Update date : 15 Feb 2023
+* This file is used to create the table "histories" in the data base. In this file, we can see the different
 * attribute of this table (numVersion, mme_id, equipment_id...) and how they are defined (string, boolean, unique or not)
 */ 
 

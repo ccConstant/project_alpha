@@ -3,8 +3,8 @@
 /*
 * Filename : 2022_06_08_064359_create_verification_realizeds_table.php
 * Creation date : 8 Jun 2022
-* Update date : 8 Feb 2023
-* Role : This file is used to create the table "verification_realizeds" in the data base. In this file, we can see the different
+* Update date : 15 Feb 2023
+* This file is used to create the table "verification_realizeds" in the data base. In this file, we can see the different
 * attribute of this table (reportNumber, startDate, endDate...) and how they are defined (string, boolean, unique or not)
 */ 
 

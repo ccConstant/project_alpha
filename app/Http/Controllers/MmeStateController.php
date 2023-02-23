@@ -58,6 +58,14 @@ class MmeStateController extends Controller
             ], 429);
         }
 
+        if ($request->state_startDate==NULL ){
+            return response()->json([
+                'errors' => [
+                    'state_startDate' => ["You must entered a start date for your state"]
+                ]
+            ], 429);
+        }
+
         $oneMonthAgo=Carbon::now()->subMonth(1) ; 
         if ($request->state_startDate!=NULL && $request->state_startDate<$oneMonthAgo){
             return response()->json([

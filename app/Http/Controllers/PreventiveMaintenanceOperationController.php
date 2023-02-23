@@ -3,7 +3,7 @@
 /*
 * Filename : PreventiveMaintenanceOperationController.php 
 * Creation date : 17 May 2022
-* Update date : 17 May 2022
+* Update date : 22 Feb 2023
 * This file is used to link the view files and the database that concern the preventiveMaintenanceOperation table. 
 * For example : add a preventiveMaintenanceOperation for an equipment in the data base, update it, delete it...
 */ 
@@ -258,7 +258,7 @@ class PreventiveMaintenanceOperationController extends Controller
                ]);
             }
 
-            if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity)){
+            if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity || $oldPrvMtnOp->prvMtnOp_preventiveOperation!=$request->prvMtnOp_preventiveOperation)){
                 
                 $dates=explode(' ', $oldPrvMtnOp->prvMtnOp_startDate) ; 
                 $ymd=explode('-', $dates[0]);

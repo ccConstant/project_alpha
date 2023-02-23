@@ -16,7 +16,7 @@
         <div v-else>
             <div v-if="mme_id!=null && isInConsultMod"> Consult all the information about the MME <router-link  :to="{name:'url_mme_consult',params:{id:this.mme_id} }"> here </router-link></div>
             <div v-if="mme_id!=null && isInModifMod"> Update all the information about the MME <router-link  :to="{name:'url_mme_update',params:{id:this.mme_id} }"> here </router-link></div>
-            <div v-if="mme_id==null && this.equipment_id_add!=null"><AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated" :eq_id="this.equipment_id_add"/></div>
+            <div v-if="mme_id==null && this.equipment_id_add!=null"><AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated" :eq_id="this.equipment_id_add" /></div>
              <div v-if="mme_id==null && this.equipment_id_update!=null"><AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated" :eq_id="this.equipment_id_update"/></div>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container"  @keydown="clearError">
@@ -35,10 +35,11 @@
                     <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod" :savedAs="mme_validate"/>
                 </div>
             </div>
-            <div v-else-if="this.mme_id!==null">
+            <div v-else-if="this.mme_id!==null && !this.mmeAlreadyCreated">
                 <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="mme_validate"/>
             </div>
                 <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
+                <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod" @deleteOk="unlinkComponent" :unlink="this.unlink_true"/>
             <SucessAlert ref="sucessAlert"/>
         </div>
 
@@ -121,6 +122,7 @@ export default {
         }
 
 
+
     },
     /*--------Declartion of the differents returned data:--------
         dim_type: Type of the dimension who  will be apear in the field and updated dynamically
@@ -159,7 +161,8 @@ export default {
             info_mme_internalReference:'',
             mme_id: this.id,
             enum_sets:[],
-            mmeAlreadyCreated:null,
+            mmeAlreadyCreated:false,
+            unlink_true:true,
         }
     },
     /*All function inside the created option is called after the component has been mounted.*/
@@ -188,7 +191,7 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be added to the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        addEquipmentMme(savedAs){
+        addEquipmentMme(savedAs, reason, lifesheet_created){
              var id;
             if(!this.modifMod){
                 id=this.equipment_id_add
@@ -230,7 +233,17 @@ export default {
                         })
                         //If the mme is added succesfuly
                         .then(response =>{
+                            //We test if a life sheet have been already created
+                            //If it's the case we create a new enregistrement of history for saved the reason of the update
+                            if (lifesheet_created==true){
+                                axios.post(`/history/add/equipment/${id}`,{
+                                    history_reasonUpdate :reason, 
+                                });
+                                window.location.reload();
+                            }
                             this.$refs.sucessAlert.showAlert(`Equipment mme saved as ${savedAs} successfully`);
+                            
+                            
                             //If we the user is not in modifMod
                             if(!this.modifMod){
                                 //The form pass in consulting mode and addSucces pass to True
@@ -246,13 +259,33 @@ export default {
             }
 
         },
-        addInfoMmeAlreadyCreated(value){
+        addInfoMmeAlreadyCreated(value, reason, lifesheet_created){
             this.mme_internalReference=value.internalReference;
             this.mme_externalReference=value.externalReference;
             this.mme_name=value.name;
             this.addSucces=true;
             this.isInConsultMod=true;
             this.mme_id=value.id;
+            this.mmeAlreadyCreated=true;
+            
+            var id;
+            //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
+            if(!this.modifMod){
+                id=this.equipment_id_add
+            //else the user is in the update menu, we allocate to the id the value of the id get in the url
+            }else{
+                id=this.equipment_id_update;
+            }
+            
+            //We test if a life sheet have been already created
+            //If it's the case we create a new enregistrement of history for saved the reason of the update
+            if (lifesheet_created==true){
+                axios.post(`/history/add/equipment/${id}`,{
+                    history_reasonUpdate :reason, 
+                });
+                window.location.reload();
+            }
+            this.$refs.sucessAlert.showAlert(`Equipment mme linked successfully`);
 
         },
 
@@ -266,7 +299,7 @@ export default {
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         Params : 
             savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateEquipmentMme(savedAs){
+        updateEquipmentMme(savedAs, reason, lifesheet_created){
             /*First post to verify if all the fields are filled correctly
                 Type, name, value, unit and validate option is sended to the controller*/
             //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
@@ -289,6 +322,15 @@ export default {
                     })
                     //If the mme is added succesfuly
                     .then(response =>{
+                        var id=this.equipment_id_update;
+                        //We test if a life sheet have been already created
+                        //If it's the case we create a new enregistrement of history for saved the reason of the update
+                        if (lifesheet_created==true){
+                            axios.post(`/history/add/equipment/${id}`,{
+                                history_reasonUpdate :reason, 
+                            });
+                              window.location.reload();
+                        }
                         this.errors={};
                         //If we the user is not in modifMod
                         if(!this.modifMod){
@@ -314,20 +356,29 @@ export default {
             delete this.errors[event.target.name];
         },
         //Function for deleting a dimension from the view and the database
-        deleteComponent(){
+        deleteComponent(reason, lifesheet_created){
             //If the user is in update mode and the mme has been updated
             if(this.modifMod==true && this.mme_internalReference!==null){
                 console.log("supression");
                 //Send a post request with the id of the dimension who will be deleted in the url
                 var consultUrl = (id) => `/mme/delete/${id}`;
                 axios.post(consultUrl(this.mme_id),{
-                    mme_id:this.mme_id,
-                    reason:'equipment'
+                    eq_id : this.equipment_id_update,
                 })
                 .then(response =>{
+                    var id=this.equipment_id_update;
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the update
+                    if (lifesheet_created==true){
+                        axios.post(`/history/add/equipment/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                            window.location.reload();
+                    }
                     this.errors={};
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteMme','')
+                    this.$refs.sucessAlert.showAlert(`Equipment mme delete successfully`);
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
@@ -335,7 +386,41 @@ export default {
             }else{
                 this.$emit('deleteMme','')
             }
+        },
+
+        //Function for unlink a dimension from the view and the database
+        unlinkComponent(reason, lifesheet_created){
+            //If the user is in update mode and the mme has been updated
+            console.log(this.mme_internalReference)
+            if(this.modifMod==true && this.mme_internalReference!==null){
+                console.log("supression");
+                //Send a post request with the id of the dimension who will be deleted in the url
+                console.log(this.mme_id)
+                var consultUrl = (id) => `/mme/delete/link_to_eq/${id}`;
+                axios.post(consultUrl(this.mme_id),{
+                    eq_id:this.equipment_id_update,
+                })
+                .then(response =>{
+                    var id=this.equipment_id_update;
+                    //We test if a life sheet have been already created
+                    //If it's the case we create a new enregistrement of history for saved the reason of the update
+                   if (lifesheet_created==true){
+                       axios.post(`/history/add/equipment/${id}`,{
+                            history_reasonUpdate :reason, 
+                        });
+                        window.location.reload();
+                    }
+                    this.errors={};
+                    //Emit to the parent component that we want to delete this component
+                    this.$emit('deleteMme','')
+                    this.$refs.sucessAlert.showAlert(`Equipment mme unlink successfully`);
+                })
+                //If the controller sends errors we put it in the errors object 
+                .catch(error => this.errors=error.response.data.errors) ;
             
+            }else{
+                this.$emit('deleteMme','')
+            }
         },
         clearSelectError(value){
             delete this.errors[value];

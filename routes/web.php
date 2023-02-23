@@ -287,7 +287,7 @@ Route::post('/equipment/verifValidation/{id}', [EquipmentController::class, 'ver
 
 Route::post('/equipment/validation/{id}', [EquipmentController::class, 'validation'] ) ;
 
-Route::post('/equipment/delete/{id}', [EquipmentController::class, 'delete_equipment'] ) ;
+Route::post('/equipment/delete/', [EquipmentController::class, 'delete_equipment'] ) ;
 
 Route::post('/state/equipment/{id} ', [EquipmentController::class, 'add_equipment_from_state'] ) ;
 
@@ -772,7 +772,7 @@ Route::get('/mme/eq_linked/{id}', [MmeController::class, 'send_eq_linked_mme'] )
 
 Route::post('/mme/link_to_eq/{id}', [MmeController::class, 'link_mme_to_equipment'] ) ;
 
-Route::get('/mme/delete/link_to_eq/{id}', [MmeController::class, 'delete_link_mme_to_equipment'] ) ;
+Route::post('/mme/delete/link_to_eq/{id}', [MmeController::class, 'delete_link_between_mme_to_equipment'] ) ;
 
 Route::get('/mmes/same_set/{set}', [MmeController::class, 'send_mmes_same_set'])  ;
 

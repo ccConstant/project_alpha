@@ -3,7 +3,7 @@
 /*
 * Filename : VerificationController.php 
 * Creation date : 15 Jun 2022
-* Update date : 15 Feb 2023
+* Update date : 22 Feb 2023
 * This file is used to link the view files and the database that concern the verification table. 
 * For example : add a verification for an mme in the data base, update it, delete it...
 */ 
@@ -388,7 +388,7 @@ class VerificationController extends Controller
             }
 
             if ($request->verif_preventiveOperation){
-                if ($request->verif_periodicity!=NULL && $request->verif_symbolPeriodicity!=NULL && ($oldVerif->verif_periodicity!=$request->verif_periodicity || $oldVerif->verif_symbolPeriodicity!=$request->verif_symbolPeriodicity)){
+                if ($request->verif_periodicity!=NULL && $request->verif_symbolPeriodicity!=NULL && ($oldVerif->verif_periodicity!=$request->verif_periodicity || $oldVerif->verif_symbolPeriodicity!=$request->verif_symbolPeriodicity || $oldVerif->verif_preventiveOperation!=$request->verif_preventiveOperation)){
                     
                     $dates=explode(' ', $oldVerif->verif_startDate) ; 
                     $ymd=explode('-', $dates[0]);

@@ -124,13 +124,13 @@
                     <div v-if="eq.preventive_maintenance_operations.length!=0">
                         <div v-for="(eq_prvMtnOp,index2) in eq.preventive_maintenance_operations" :key="index2">
                             <b-row>
-                                <b-col cols="1" class="eq_planning_annual_internalReference">
+                                <b-col cols="1" class="eq_planning_annual_internalReference_value">
                                 <p class="info"> {{eq.internalReference}} </p>
                                 </b-col>
-                                <b-col cols="1" class="eq_planning_annual_name">
+                                <b-col cols="1" class="eq_planning_annual_name_value">
                                     <p class="info">{{eq.name}}</p>
                                 </b-col>
-                                <b-col cols="1" class="eq_planning_annual_prvMtnOp">
+                                <b-col cols="1" class="eq_planning_annual_prvMtnOp_value">
                                         <p class="info">Operation {{eq_prvMtnOp.prvMtnOp_number}}</p>
                                 </b-col>
                                 
@@ -548,15 +548,44 @@ export default {
             margin-top:200px;
             margin-left:30px;
             width:1300px;
+
             .eq_planning_annual_internalReference{
+                border: solid 0.5px black;
+                text-align: center;
+                width:100px;
+                height:49.5px;
+                font-size : 10px;
+                color:#20bbd8 ; 
+                line-height: 25px;
+            }
+                .eq_planning_annual_name{
+                border: solid 0.5px black;
+                text-align: center;
+                width:85px;
+                height:49.5px;
+                font-size : 10px;
+                color:#20bbd8;
+                line-height: 50px;
+            }
+            .eq_planning_annual_prvMtnOp{
+                border: solid 0.5px black;
+                text-align: center;
+                width:77px;
+                height:49.5px;
+                font-size : 10px;
+                color:#20bbd8;
+                line-height: 25px;
+            }
+
+            .eq_planning_annual_internalReference_value{
                 border: solid 0.5px black;
                 text-align: center;
                 width:100px;
                 height:auto;
                 font-size : 10px;
-                 color:#20bbd8
+                color:#20bbd8 ; 
             }
-                .eq_planning_annual_name{
+                .eq_planning_annual_name_value{
                 border: solid 0.5px black;
                 text-align: center;
                 width:85px;
@@ -564,7 +593,7 @@ export default {
                 font-size : 10px;
                  color:#20bbd8
             }
-            .eq_planning_annual_prvMtnOp{
+            .eq_planning_annual_prvMtnOp_value{
                 border: solid 0.5px black;
                 text-align: center;
                 width:77px;
@@ -637,6 +666,8 @@ export default {
                 font-size : 10px;
                 color:#20bbd8;
                 margin-left: 0px;
+                line-height: 50px;
+                height:49.5px;
             } 
         
         }

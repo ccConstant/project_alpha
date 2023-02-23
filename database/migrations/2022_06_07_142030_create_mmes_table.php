@@ -3,8 +3,8 @@
 /*
 * Filename : 2022_06_07_142030_create_mmes_table.php
 * Creation date : 7 Jun 2022
-* Update date : 8 Feb 2023
-* Role : This file is used to create the table "mme" in the data base. In this file, we can see the different
+* Update date : 15 Feb 2023
+* This file is used to create the table "mme" in the data base. In this file, we can see the different
 * attribute of this table (internReference, externReference..) and how they are defined (string, boolean, unique or not)
 */ 
 
