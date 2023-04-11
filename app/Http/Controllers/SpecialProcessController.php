@@ -37,12 +37,13 @@ class SpecialProcessController extends Controller
                 $this->validate(
                     $request,
                     [
-                        'spProc_remarksOrPrecaution' => 'required|min:3',
+                        'spProc_remarksOrPrecaution' => 'required|min:3|max:255',
                         'spProc_name' => 'required|min:1|max:50',
                     ],
                     [
                         'spProc_remarksOrPrecaution.required' => 'You must enter a remark or a precaution for your special process',
                         'spProc_remarksOrPrecaution.min' =>'You must enter at least three characters ',
+                        'spProc_remarksOrPrecaution.max' => 'You must enter a maximum of 255 characters',
                         'spProc_name.required' => 'You must enter a name for your special process',
                         'spProc_name.min' =>'You must enter at least one character ',
                         'spProc_name.max' => 'You must enter a maximum of 50 characters',

@@ -35,7 +35,8 @@ class PreventiveMaintenanceOperationController extends Controller
                     $request,
                     [
                         'prvMtnOp_description' => 'required|min:3|max:255',
-                        'prvMtnOp_protocol' => 'required|min:3',
+                        'prvMtnOp_protocol' => 'required|min:3|max:255',
+                        'prvMtnOp_periodicity' => 'max:4',
                     ],
                     [
                         'prvMtnOp_description.required' => 'You must enter a description for your preventive maintenance operation',
@@ -43,6 +44,8 @@ class PreventiveMaintenanceOperationController extends Controller
                         'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
                         'prvMtnOp_protocol.required' => 'You must enter a protocol for your preventive maintenance operation',
                         'prvMtnOp_protocol.min' => 'You must enter at least three characters ',
+                        'prvMtnOp_protocol.max' => 'You must enter a maximum of 255 characters',
+                        'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
                     ]
                 );
 

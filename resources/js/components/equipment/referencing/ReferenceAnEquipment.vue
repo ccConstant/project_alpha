@@ -1,3 +1,8 @@
+<!--File name :ReferenceAnEquipment.vue-->
+<!--Creation date : 12 Jul 2022-->
+<!--Update date : 5 Apr 2023-->
+<!--Vue Component related to the mme of the who call all the input component and send the data to the controllers-->
+
 <template>
     <div>
         <EquipmentIDForm @EqID="put_equipment_id" @importFromEqID="put_import_id"/>
@@ -5,8 +10,9 @@
             <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Equipment Characteristic(s)
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Equipment Characteristic(s)
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
@@ -15,10 +21,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" >
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Power source(s)
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Equipment Power source(s)
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
@@ -29,8 +36,9 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Equipment Special Procces
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Equipment Special Procces
                         </button>
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
@@ -41,8 +49,9 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFour">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                        Equipment Usage
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            Equipment Usage
                         </button>
                     </h2>
                     <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
@@ -51,9 +60,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" >
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFive">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                             Equipment File
                         </button>
                     </h2>
@@ -63,9 +73,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" >
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="headingSix">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                             Equipment's due Risk(s)
                         </button>
                     </h2>
@@ -78,11 +89,12 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingSeven">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                             Equipment Preventive maintenance operation
                         </button>
                     </h2>
-                    <div id="collapseSeven"  class="accordion-collapse collapse" aria-labelledby="headingSeven">
+                    <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven">
                         <div class="accordion-body">
                             <ReferenceAPrvMtnOp :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
@@ -90,11 +102,12 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingHeight">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                            Equipment Associated MME 
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                            Equipment Associated MME
                         </button>
                     </h2>
-                    <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingHeight">
+                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingHeight">
                         <div class="accordion-body">
                             <ReferenceAMme :eq_id="this.eq_id"/>
                         </div>
@@ -118,37 +131,35 @@ import ReferenceARisk from './ReferenceARisk.vue'
 import ReferenceAMme from './ReferenceAMme.vue'
 
 
-
-
 export default {
-  components: {
-    EquipmentIDForm,
-    EquipmentDimForm,
-    ReferenceADim,
-    ReferenceAPow,
-    ReferenceASpecProc,
-    ReferenceAUsage,
-    ReferenceAFile,
-    ReferenceAPrvMtnOp,
-    ReferenceARisk,
-    ReferenceAMme,
-  },
-  data(){
-    return{
-      //Id de l'equipement qui vien detre crée
-      eq_id:null,
-      //Id de l'equiepement depuis lequel importer
-      importation_id:null
-    }
-  },
-  methods:{
-    put_equipment_id(value){
-      this.eq_id=value;
+    components: {
+        EquipmentIDForm,
+        EquipmentDimForm,
+        ReferenceADim,
+        ReferenceAPow,
+        ReferenceASpecProc,
+        ReferenceAUsage,
+        ReferenceAFile,
+        ReferenceAPrvMtnOp,
+        ReferenceARisk,
+        ReferenceAMme,
     },
-    put_import_id(value){
-      this.importation_id=value;
+    data() {
+        return {
+            /*ID of the equipment created*/
+            eq_id: null,
+            /*ID of the equipment imported*/
+            importation_id: null
+        }
+    },
+    methods: {
+        put_equipment_id(value) {
+            this.eq_id = value;
+        },
+        put_import_id(value) {
+            this.importation_id = value;
+        }
     }
-  }
 }
 </script>
 

@@ -258,7 +258,7 @@ class CurativeMaintenanceOperationController extends Controller
                 $request,
                 [
                     'curMtnOp_reportNumber' => 'required|min:3|max:255',
-                    'curMtnOp_description' => 'required|min:3',
+                    'curMtnOp_description' => 'required|min:3|max:50',
                 ],
                 [
                     'curMtnOp_reportNumber.required' => 'You must enter a report number for the curative maintenance operation ',
@@ -266,6 +266,7 @@ class CurativeMaintenanceOperationController extends Controller
                     'curMtnOp_reportNumber.max' => 'You must enter a maximum of 255 characters',
                     'curMtnOp_description.required' => 'You must enter a description for the curative maintenance operation ',
                     'curMtnOp_description.min' => 'You must enter at least three characters ',
+                    'curMtnOp_description.max' => 'You must enter a maximum of 50 characters ',
                 ]
             );
 
@@ -346,6 +347,7 @@ class CurativeMaintenanceOperationController extends Controller
                 [
                     'curMtnOp_description.required' => 'You must enter a description for the curative maintenance operation ',
                     'curMtnOp_description.min' => 'You must enter at least three characters ',
+                    'curMtnOp_description.max' => 'You must enter a maximum of 50 characters ',
                     'curMtnOp_reportNumber.max' => 'You must enter a maximum of 255 characters',
                 ]
             );

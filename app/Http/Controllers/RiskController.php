@@ -395,14 +395,16 @@ class RiskController extends Controller
             $this->validate(
                 $request,
                 [
-                    'risk_remarks' => 'required|min:3',
-                    'risk_wayOfControl' => 'required|min:3',
+                    'risk_remarks' => 'required|min:3|max:255',
+                    'risk_wayOfControl' => 'required|min:3|max:255',
                 ],
                 [
                     'risk_remarks.required' => 'You must enter a remark for your risk ',
                     'risk_remarks.min' => 'You must enter at least three characters ',
+                    'risk_remarks.max' => 'You must enter less than 255 characters ',
                     'risk_wayOfControl.required' => 'You must enter a way of control for your risk',
                     'risk_wayOfControl.min' => 'You must enter at least three characters ',
+                    'risk_wayOfControl.max' => 'You must enter less than 255 characters ',
                 ]
             );
 
@@ -421,11 +423,15 @@ class RiskController extends Controller
             $this->validate(
                 $request,
                 [
-                    'risk_remarks' => 'required|min:3',
+                    'risk_remarks' => 'required|min:3|max:255',
+                    'risk_wayOfControl' => 'max:255',
                 ],
                 [
                     'risk_remarks.required' => 'You must enter a remark for your risk ',
                     'risk_remarks.min' => 'You must enter at least three characters ',
+                    'risk_remarks.max' => 'You must enter less than 255 characters ',
+                    'risk_wayOfControl.max' => 'You must enter less than 255 characters ',
+
                 ]
             );
         }

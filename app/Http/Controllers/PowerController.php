@@ -56,7 +56,7 @@ class PowerController extends Controller
                 ],
                 [
                     'pow_name.required' => 'You must enter a name for the power ',
-                    'pow_name.min' => 'You must enter at least one characters ',
+                    'pow_name.min' => 'You must enter at least three characters ',
                     'pow_name.max' => 'You must enter a maximum of 25 characters',
                     'pow_value.required' => 'You must enter a value for the power ',
                     'pow_value.min' => 'You must enter at least one character ',
@@ -89,7 +89,7 @@ class PowerController extends Controller
             $this->validate(
                 $request,
                 [
-                    'pow_name' => 'required|min:3|max:50',
+                    'pow_name' => 'required|min:3|max:25',
                     'pow_value' => 'max:25',
                     'pow_unit' => 'max:25',
                     'pow_consumptionValue' => 'max:25',
@@ -98,7 +98,7 @@ class PowerController extends Controller
                 [
                     'pow_name.required' => 'You must enter a name for the power ',
                     'pow_name.min' => 'You must enter at least three characters ',
-                    'pow_name.max' => 'You must enter a maximum of 50 characters',
+                    'pow_name.max' => 'You must enter a maximum of 25 characters',
                     'pow_value.max' => 'You must enter a maximum of 25 characters',
                     'pow_unit.max' => 'You must enter a maximum of 25 characters',
                     'pow_consumptionValue.max' => 'You must enter a maximum of 25 characters',
