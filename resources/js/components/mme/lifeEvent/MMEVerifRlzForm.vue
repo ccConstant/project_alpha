@@ -46,6 +46,7 @@
 
             </form>
         </div>
+        <SuccesAlert ref="succesAlert"/>
     </div>
 </template>
 
@@ -58,6 +59,7 @@ import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import VerifChooseModal from './VerifChooseModal.vue'
 import moment from 'moment'
+import SuccesAlert from '../../alert/SuccesAlert.vue'
 export default {
         components : {
         InputDateForm,
@@ -66,7 +68,8 @@ export default {
         InputTextAreaForm,
         SaveButtonForm,
         DeleteComponentButton,
-        VerifChooseModal
+        VerifChooseModal,
+        SuccesAlert
     },
     props:{
         number:{
@@ -238,6 +241,7 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
+                        this.$refs.succesAlert.showAlert(`MME verification realized added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -295,7 +299,9 @@ export default {
                         verif_id:this.verif_id
 
                     })
-                    .then(response =>{this.verifRlz_validate=savedAs;})
+                    .then(response =>{
+                        this.$refs.succesAlert.showAlert(`MME verification realized updated successfully and saved as ${savedAs}`);
+                        this.verifRlz_validate=savedAs;})
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })

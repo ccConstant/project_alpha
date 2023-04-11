@@ -124,7 +124,10 @@ Route::middleware('auth')->group(function () {
         return view('welcome');
     });
 
-    Route::get('/equipment/maintenance/calendar', function () {
+    Route::get('/equipment/annual/planning', function () {
+        return view('welcome');
+    });
+    Route::get('/equipment/monthly/planning', function () {
         return view('welcome');
     });
 
@@ -198,7 +201,10 @@ Route::middleware('auth')->group(function () {
         return view('welcome');
     });
 
-    Route::get('/mme/maintenance/calendar', function () {
+    Route::get('/mme/annual/planning', function () {
+        return view('welcome');
+    });
+    Route::get('/mme/monthly/planning', function () {
         return view('welcome');
     });
 
@@ -278,6 +284,8 @@ Route::get('/equipments/same_set/{set}', [EquipmentController::class, 'send_equi
 Route::get('/equipment/{id}', [EquipmentController::class, 'send_equipment'] )->whereNumber('id') ;
 
 Route::get('/equipment/prvMtnOp/planning', [EquipmentController::class, 'send_eq_prvMtnOp_for_planning'] ) ;
+
+Route::get('/equipment/prvMtnOp/planning_monthly', [EquipmentController::class, 'send_eq_prvMtnOp_for_monthly_planning'] ) ;
 
 Route::get('/equipment/prvMtnOp/revisionDatePassed', [EquipmentController::class, 'send_eq_prvMtnOp_revisionDatePassed'] ) ;
 
@@ -779,6 +787,8 @@ Route::get('/mmes/same_set/{set}', [MmeController::class, 'send_mmes_same_set'])
 Route::get('/mme/{id}', [MmeController::class, 'send_mme'] )->whereNumber('id') ;
 
 Route::get('/mme/verif/planning', [MmeController::class, 'send_mme_verif_for_planning'] ) ;
+
+Route::get('/mme/verif/planning_monthly', [MmeController::class, 'send_mme_verif_for_monthly_planning'] ) ;
 
 Route::post('/mme/verifValidation/{id}', [MmeController::class, 'verif_validation'] ) ;
 

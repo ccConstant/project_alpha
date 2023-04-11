@@ -3,7 +3,7 @@
         <b-modal id="modal-event_details" @hidden="resetModal" title="Details" hide-footer>
              <ErrorAlert ref="errorAlert"/>
             <div>
-                <div v-for="option in prvMtnOps" :key="option.id">
+                <div v-for="option in prvMtnOp" :key="option.id">
                     <div>
                         <b-card>
                             <h3>{{option.eq_internalReference}}</h3>
@@ -11,7 +11,8 @@
                                 Operation number: {{option.prvMtnOp_number}}<br>
                                 Description : {{option.prvMtnOp_description}}<br>
                                 Protocol : {{option.prvMtnOp_protocol}}<br>
-                                Operation date : {{option.prvMtnOp_nextDate}}
+                                Operation date : {{option.prvMtnOp_nextDate}}<br>
+                                Periodicity : {{option.prvMtnOp_periodicity}} {{option.prvMtnOp_symbolPeriodicity}}
                             </p>
                             <div v-if="makeEqOpValidationRight==true">
                                 <b-button variant="primary" @click="redirect_to_preventive(option.eq_id,option.state_id)">Record it</b-button>
@@ -38,7 +39,7 @@ export default {
         ErrorAlert,
     },
     props:{
-        prvMtnOps:{
+        prvMtnOp:{
             type:Array
         }
         

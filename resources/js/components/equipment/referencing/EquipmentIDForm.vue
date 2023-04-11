@@ -14,6 +14,7 @@
         SaveButton : modifMod, consultMod, saveAll, savedAs
         ImportationModal
 -------------------------------------------------------------->
+
 <template>
     <div class="equipmentID" v-if="loaded==true">
         <h2 class="titleForm1">EQ ID : {{eq_internalReference}}</h2>

@@ -1,15 +1,26 @@
 <?php
 
+/*
+* Filename : DimensionTest.php
+* Creation date : 31 May 2022
+* Update date : 22 Mar 2023
+* This file contains all the tests abut the dimension table. 
+* Coverage : 100%
+*/ 
+
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Equipment;
+use App\Models\EquipmentTemp;
 use App\Models\Dimension;
 use App\Models\EnumDimensionName;
 use App\Models\EnumDimensionUnit;
 use App\Models\EnumDimensionType;
+use App\Models\EnumEquipmentType;
+use App\Models\EnumEquipmentMassUnit;
 use Illuminate\Database\Eloquent\Collection ;
 use Laravel\Dusk\Browser;
 
@@ -840,23 +851,9 @@ class DimensionTest extends TestCase
         ]);
     }
 
-    /**
-     * Test Conception Number : 19
-     * Create a new equipment with the set "Set1" and import the dimension of the equipment with the same set			
-     * Type : N/A  Name : N/A  Value : N/A Unit : N/A
-     * Expected result : The dimension is correctly imported with the right data (type : external, name : length, value : 29, unit : mm) 
-     * Dimension Data for all import tests: it's necessary to create an equipment with a dimension with theses values for the following test	
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
-     * Eq set : Set1 
-     * @return void
-     */
-
-    public function test_import_dim(){
-    }
 
     /**
-     * Test Conception Number : 20
+     * Test Conception Number : 21
      * Update successfully a dimension as drafted with only a value	
      * Type : /  Name : /  Value : 47 Unit : /
      * Expected result : The dimension is correctly updated in data base 
@@ -979,7 +976,7 @@ class DimensionTest extends TestCase
     }
 
     /**
-     * Test Conception Number : 21
+     * Test Conception Number : 22
      * Update successfully a dimension as drafted with a type, name value and a unit	
      * Type : Internal  Name : Width  Value : 18 Unit : cm
      * Expected result : The dimension is correctly updated in data base 
@@ -1126,7 +1123,7 @@ class DimensionTest extends TestCase
     }
 
     /**
-     * Test Conception Number : 22
+     * Test Conception Number : 25
      * Update successfully a dimension as to be validated with only a value	
      * Type : /  Name : /  Value : 8930 Unit : /
      * Expected result : The dimension is correctly updated in data base 
@@ -1249,7 +1246,7 @@ class DimensionTest extends TestCase
     }
 
     /**
-     * Test Conception Number : 21
+     * Test Conception Number : 26
      * Update successfully a dimension as drafted with a type, name value and a unit	
      * Type : Internal  Name : Width  Value : 18 Unit : cm
      * Expected result : The dimension is correctly updated in data base 
@@ -1319,7 +1316,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/dimension/verif', [
             'dim_type' => 'External',
             'dim_name' => 'Length',
-            'dim_validate' => 'drafted',
+            'dim_validate' => 'to_be_validated',
             'dim_value'=> '29',
             'dim_unit' => 'mm'
         ]);
@@ -1327,7 +1324,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/equipment/add/dim', [
             'dim_type' => 'External',
             'dim_name' => 'Length',
-            'dim_validate' => 'drafted',
+            'dim_validate' => 'to_be_validated',
             'dim_value'=> '29',
             'dim_unit' => 'mm',
             'eq_id' => Equipment::all()->last()->id,
@@ -1339,7 +1336,7 @@ class DimensionTest extends TestCase
             'dim_value' => 29,
             'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id-1,
             'equipmentTemp_id' => Equipment::all()->last()->id,
-            'dim_validate' => 'drafted',
+            'dim_validate' => 'to_be_validated',
         ]);
         $this->assertDatabaseHas('enum_dimension_types', [
             'value' => 'External',
@@ -1369,7 +1366,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/dimension/verif', [
             'dim_type' => 'Internal',
             'dim_name' => 'Width',
-            'dim_validate' => 'drafted',
+            'dim_validate' => 'to_be_validated',
             'dim_value'=> '18',
             'dim_unit' => 'cm'
         ]);
@@ -1378,7 +1375,7 @@ class DimensionTest extends TestCase
         $response=$this->post($url, [
             'dim_type' => 'Internal',
             'dim_name' => 'Width',
-            'dim_validate' => 'drafted',
+            'dim_validate' => 'to_be_validated',
             'dim_value'=> '18',
             'dim_unit' => 'cm',
             'eq_id' => Equipment::all()->last()->id,
@@ -1390,7 +1387,1845 @@ class DimensionTest extends TestCase
             'dim_value' => 18,
             'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
             'equipmentTemp_id' => Equipment::all()->last()->id,
-            'dim_validate' => 'drafted',
+            'dim_validate' => 'to_be_validated',
+        ]);
+
+    }
+
+    /**
+     * Test Conception Number : 36
+     * Update successfully a dimension as validated 	
+     * Type : Internal  Name : Width  Value : 18 Unit : cm
+     * Expected result : The dimension is correctly updated in data base 
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Eq External Ref / Eq Internal Ref : Example1 
+     * Eq set : /
+     * @return void
+     */
+
+     public function test_update_dim_validated_correctValues(){
+
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+2, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Width',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+2, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'cm',
+        ]);
+        $this->assertCount($countDimUnit+2, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id-1,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id-1,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id-1,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'Internal',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Width',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'cm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '18',
+            'dim_unit' => 'cm'
+        ]);
+        $response->assertStatus(200);
+        $url='/equipment/update/dim/'.Dimension::all()->last()->id;
+        $response=$this->post($url, [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '18',
+            'dim_unit' => 'cm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 18,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+
+    }
+
+    /**
+     * Test Conception Number : 37
+     * Update dimension type of a validated equipment successfully 	
+     * Type : Internal  Name : Length  Value : 29 Unit : mm
+     * Expected result : The dimension type is correctly updated in the database, the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Eq External Ref / Eq Internal Ref : Example1 
+     * Eq set : /
+     * @return void
+     */
+
+     public function test_updateType_dim_validated(){
+        
+        $countUser=User::all()->count();
+        $response=$this->post('register', [
+            'user_firstName' => 'Test',
+            'user_lastName' => 'Test',
+            'user_pseudo' => 'Test',
+            'user_password' => 'TestTestTest',
+            'user_confirmation_password' => 'TestTestTest',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countUser+1, User::all());
+
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+2, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+1, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id-1,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'Internal',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+        $countEqType=EnumEquipmentType::all()->count();
+        $response=$this->post('/equipment/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+
+        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+        $response=$this->post('/equipment/enum/massUnit/add', [
+            'value' => 'g',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+
+
+        $response=$this->post('/equipment/update/'.Equipment::all()->last()->id, [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'internal',
+           /* 'eqTemp_lifeSheetCreated' => true,
+            'qualityVerifier_id' => '1',
+            'technicalVerifier_id' => '1',*/
+        ]);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => 1,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => 1,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => true,
+            'qualityVerifier_id' => 1,
+            'technicalVerifier_id' => 1,
+            'eqTemp_validate' => 'validated',
+            'equipment_id' => Equipment::all()->last()->id,
+
+        ]);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+        ]);
+        $response->assertStatus(200);
+        $url='/equipment/update/dim/'.Dimension::all()->last()->id;
+        $response=$this->post($url, [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 2,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 2,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
+        ]);
+
+    }
+
+
+    /**
+     * Test Conception Number : 38
+     * Update dimension name of a validated equipment successfully 	
+     * Type : External  Name : Width  Value : 29 Unit : mm
+     * Expected result : The dimension name is correctly updated in the database, the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Eq External Ref / Eq Internal Ref : Example1 
+     * Eq set : /
+     * @return void
+     */
+
+     public function test_updateName_dim_validated(){
+        
+        $countUser=User::all()->count();
+        $response=$this->post('register', [
+            'user_firstName' => 'Test',
+            'user_lastName' => 'Test',
+            'user_pseudo' => 'Test',
+            'user_password' => 'TestTestTest',
+            'user_confirmation_password' => 'TestTestTest',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countUser+1, User::all());
+
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+1, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Width',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+2, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id-1,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Width',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+        $countEqType=EnumEquipmentType::all()->count();
+        $response=$this->post('/equipment/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+
+        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+        $response=$this->post('/equipment/enum/massUnit/add', [
+            'value' => 'g',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+
+
+        $response=$this->post('/equipment/update/'.Equipment::all()->last()->id, [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'internal',
+        ]);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => true,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
+            'eqTemp_validate' => 'validated',
+            'equipment_id' => Equipment::all()->last()->id,
+
+        ]);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+        ]);
+        $response->assertStatus(200);
+        $url='/equipment/update/dim/'.Dimension::all()->last()->id;
+        $response=$this->post($url, [
+            'dim_type' => 'External',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 2,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 2,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
+        ]);
+
+    }
+
+    /**
+     * Test Conception Number : 39
+     * Update dimension value of a validated equipment successfully 	
+     * Type : External  Name : Length  Value : 30 Unit : mm
+     * Expected result : The dimension value is correctly updated in the database,  the version number of the equipment has been incremented, the reason for the update is required and correctly saved, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Eq External Ref / Eq Internal Ref : Example1 
+     * Eq set : /
+     * @return void
+     */
+
+     public function test_updateValue_dim_validated(){
+        
+        $countUser=User::all()->count();
+        $response=$this->post('register', [
+            'user_firstName' => 'Test',
+            'user_lastName' => 'Test',
+            'user_pseudo' => 'Test',
+            'user_password' => 'TestTestTest',
+            'user_confirmation_password' => 'TestTestTest',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countUser+1, User::all());
+
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+1, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+1, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+        $countEqType=EnumEquipmentType::all()->count();
+        $response=$this->post('/equipment/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+
+        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+        $response=$this->post('/equipment/enum/massUnit/add', [
+            'value' => 'g',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+
+
+        $response=$this->post('/equipment/update/'.Equipment::all()->last()->id, [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'internal',
+        ]);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => true,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
+            'eqTemp_validate' => 'validated',
+            'equipment_id' => Equipment::all()->last()->id,
+
+        ]);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '30',
+            'dim_unit' => 'mm',
+        ]);
+        $response->assertStatus(200);
+        $url='/equipment/update/dim/'.Dimension::all()->last()->id;
+        $response=$this->post($url, [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '30',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 30,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 2,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 2,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
+        ]);
+
+    }
+
+
+    /**
+     * Test Conception Number : 40
+     * Update dimension unit of a validated equipment successfully 		
+     * Type : External  Name : Length  Value : 29 Unit : cm
+     * Expected result : The dimension value is correctly updated in the database, the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Eq External Ref / Eq Internal Ref : Example1 
+     * Eq set : /
+     * @return void
+     */
+
+     public function test_updateUnit_dim_validated(){
+        
+        $countUser=User::all()->count();
+        $response=$this->post('register', [
+            'user_firstName' => 'Test',
+            'user_lastName' => 'Test',
+            'user_pseudo' => 'Test',
+            'user_password' => 'TestTestTest',
+            'user_confirmation_password' => 'TestTestTest',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countUser+1, User::all());
+
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+1, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+1, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'cm',
+        ]);
+        $this->assertCount($countDimUnit+2, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id-1,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'cm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+        $countEqType=EnumEquipmentType::all()->count();
+        $response=$this->post('/equipment/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+
+        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+        $response=$this->post('/equipment/enum/massUnit/add', [
+            'value' => 'g',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+
+
+        $response=$this->post('/equipment/update/'.Equipment::all()->last()->id, [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'internal',
+        ]);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => true,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
+            'eqTemp_validate' => 'validated',
+            'equipment_id' => Equipment::all()->last()->id,
+
+        ]);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'cm',
+        ]);
+        $response->assertStatus(200);
+        $url='/equipment/update/dim/'.Dimension::all()->last()->id;
+        $response=$this->post($url, [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'cm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 2,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 2,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
+        ]);
+
+    }
+
+    /**
+     * Test Conception Number : 54
+     * Add successfully a new dimension in validated for a validated equipment  	
+     * Type : External  Name : Width  Value : 41 Unit : km
+     * Expected result :The dimension is correctly saved in the database,  the version number of the equipment has been incremented, the reason for the update is required and correctly saved, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
+     * @return void
+     */
+
+     public function test_addFromUpdate_dim(){
+        
+        $countUser=User::all()->count();
+        $response=$this->post('register', [
+            'user_firstName' => 'Test',
+            'user_lastName' => 'Test',
+            'user_pseudo' => 'Test',
+            'user_password' => 'TestTestTest',
+            'user_confirmation_password' => 'TestTestTest',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countUser+1, User::all());
+
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+1, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Width',
+        ]);
+        
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+1, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'km',
+        ]);
+        $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
+
+        $countEqType=EnumEquipmentType::all()->count();
+        $response=$this->post('/equipment/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+
+        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+        $response=$this->post('/equipment/enum/massUnit/add', [
+            'value' => 'g',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+
+
+        $response=$this->post('/equipment/verif/', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+
+
+
+        $response=$this->post('/equipment/update/'.Equipment::all()->last()->id, [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => true,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
+            'eqTemp_validate' => 'validated',
+            'equipment_id' => Equipment::all()->last()->id,
+        ]);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '41',
+            'dim_unit' => 'km'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '41',
+            'dim_unit' => 'km',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 41,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Width',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'km',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+       
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 2,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 2,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
+        ]);
+
+    }
+
+    /**
+     * Test Conception Number : 55
+     * Consult the dimension of an equipment 		 	
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * External	Length	29	mm
+     * Internal Width	41	cm
+     * Expected result :The equipment has two dimensions with the value : External - length - 29 - mm and Internal - width - 41 - cm 
+     * @return void
+     */
+
+     public function test_consult_dim(){
+        
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+2, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Width',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+2, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'cm',
+        ]);
+        $this->assertCount($countDimUnit+2, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '41',
+            'dim_unit' => 'cm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '41',
+            'dim_unit' => 'cm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+
+        $this->assertCount($countDim+2, Dimension::all());
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id-1,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id-1,
+            'dim_value' => '29',
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id-1,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => '41',
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'Internal',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Width',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'cm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
+        ]);
+
+        $response=$this->get('/dimension/send/'.Equipment::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                "id" => Dimension::all()->last()->id-1,
+                "dim_value" => 29,
+                "dim_name" => "Length",
+                "dim_type" => "External",
+                "dim_unit"=> "mm",
+                "dim_validate" => "validated",
+            ],
+            '1' => [
+                "id" => Dimension::all()->last()->id,
+                "dim_value" => 41,
+                "dim_name" => "Width",
+                "dim_type" => "Internal",
+                "dim_unit"=> "cm",
+                "dim_validate" => "validated",
+            ],
+        ]);
+    }
+
+     /**
+     * Test Conception Number : 56
+     * Consult by type the dimension of an equipment		 	
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * External	Length	29	mm
+     * Internal Width	41	cm
+     * Expected result :The equipment has two dimensions with the value : External - length - 29 - mm and Internal - width - 41 - cm sorted by type 
+     * @return void
+     */
+
+     public function test_consultByType_dim(){
+        
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+2, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Width',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+2, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'cm',
+        ]);
+        $this->assertCount($countDimUnit+2, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '41',
+            'dim_unit' => 'cm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'Internal',
+            'dim_name' => 'Width',
+            'dim_validate' => 'validated',
+            'dim_value'=> '41',
+            'dim_unit' => 'cm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+
+        $this->assertCount($countDim+2, Dimension::all());
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id-1,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id-1,
+            'dim_value' => '29',
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id-1,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => '41',
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'Internal',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Width',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id-1
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'cm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
+        ]);
+
+        $response=$this->get('/dimension/send/ByType/'.Equipment::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                "type" => 'External' ,
+                "dimensions" => [
+                    '0' => [
+                        "id" => Dimension::all()->last()->id-1,
+                        "dim_value" => 29,
+                        "dim_name" => "Length",
+                        "dim_type" => "External",
+                        "dim_unit"=> "mm",
+                        "dim_validate" => "validated",
+                    ]
+                ]
+            ],
+            '1' => [
+                "type" => 'Internal' ,
+                "dimensions" => [
+                    '0' => [
+                        "id" => Dimension::all()->last()->id,
+                        "dim_value" => 41,
+                        "dim_name" => "Width",
+                        "dim_type" => "Internal",
+                        "dim_unit"=> "cm",
+                        "dim_validate" => "validated",
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+     /**
+     * Test Conception Number : 57
+     * Delete the dimension previously created	
+     * Expected result :The dimension is correctly saved in the database,  the version number of the equipment has been incremented, the reason for the update is required and correctly saved, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * @return void
+     */
+
+     public function test_delete_dim(){
+        
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+1, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+1, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => 29,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/equipment/delete/dim/'.Dimension::all()->last()->id, [
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim-1, Dimension::all());
+       
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+        ]);
+
+
+    }
+
+    /**
+     * Test Conception Number : 58
+     * Delete the dimension previously created of an validated equipment	 	
+     * Type : External  Name : Width  Value : 41 Unit : km
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Expected result :TThe dimension has been deleted successfully and the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
+     * @return void
+     */
+
+     public function test_delete_dimFromValidatedEq(){
+        
+        $countUser=User::all()->count();
+        $response=$this->post('register', [
+            'user_firstName' => 'Test',
+            'user_lastName' => 'Test',
+            'user_pseudo' => 'Test',
+            'user_password' => 'TestTestTest',
+            'user_confirmation_password' => 'TestTestTest',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countUser+1, User::all());
+
+        $countEq=Equipment::all()->count();
+        $response=$this->post('/equipment/verif', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'reason' => 'add',
+            'eq_validate' => 'drafted'
+
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEq+1, Equipment::all());
+
+        $countDimType=EnumDimensionType::all()->count();
+        $response=$this->post('/dimension/enum/type/add', [
+            'value' => 'External',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDimType+1, EnumDimensionType::all());
+
+        $countDimName=EnumDimensionName::all()->count();
+        $response=$this->post('/dimension/enum/name/add', [
+            'value' => 'Length',
+        ]);
+        
+        $response->assertStatus(200);
+        $this->assertCount($countDimName+1, EnumDimensionName::all());
+
+        $countDimUnit=EnumDimensionUnit::all()->count();
+        $response=$this->post('/dimension/enum/unit/add', [
+            'value' => 'mm',
+        ]);
+        $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
+
+        $countEqType=EnumEquipmentType::all()->count();
+        $response=$this->post('/equipment/enum/type/add', [
+            'value' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+
+        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+        $response=$this->post('/equipment/enum/massUnit/add', [
+            'value' => 'g',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+
+
+        $response=$this->post('/equipment/verif/', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+
+
+
+        $response=$this->post('/equipment/update/'.Equipment::all()->last()->id, [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+            'eq_massUnit' => 'g',
+            'eq_mass' => 12,
+            'eq_remarks' => 'Test',
+            'eq_mobility' => true,
+            'eq_type' => 'Internal',
+        ]);
+        $response->assertStatus(200);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/dimension/verif', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm'
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/dim', [
+            'dim_type' => 'External',
+            'dim_name' => 'Length',
+            'dim_validate' => 'validated',
+            'dim_value'=> '29',
+            'dim_unit' => 'mm',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => EnumDimensionType::all()->last()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->last()->id,
+            'dim_value' => '29',
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->last()->id,
+            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'dim_validate' => 'validated',
+        ]);
+        $this->assertDatabaseHas('enum_dimension_types', [
+            'value' => 'External',
+            'id'=> EnumDimensionType::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_names', [
+            'value' => 'Length',
+            'id'=> EnumDimensionName::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'mm',
+            'id'=> EnumDimensionUnit::all()->last()->id
+        ]);
+
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 1,
+        ]);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => true,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
+            'eqTemp_validate' => 'validated',
+            'equipment_id' => Equipment::all()->last()->id,
+        ]);
+
+        $countDim=Dimension::all()->count();
+        $response=$this->post('/equipment/delete/dim/'.Dimension::all()->last()->id, [
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim-1, Dimension::all());
+
+
+        $this->assertDatabaseHas('equipment', [
+            'eq_nbrVersion' => 2,
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_version' => 2,
+            'eqTemp_lifeSheetCreated' => false,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+
         ]);
 
     }
@@ -1411,4 +3246,6 @@ class DimensionTest extends TestCase
     
 
 }
+
+?>
 

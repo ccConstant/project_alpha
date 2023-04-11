@@ -17,7 +17,7 @@ class LoginTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/sign_up')
-                    ->assertPathIs('/sign_up');
+                    ->assertVue('SignUp');
         });
     }
 }

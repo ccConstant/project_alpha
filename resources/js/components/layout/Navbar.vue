@@ -9,14 +9,16 @@
 					<b-dropdown-item href="/equipment/add">Add a new equipment</b-dropdown-item>
 					<b-dropdown-item href="/equipment/list">List of all equipment</b-dropdown-item>
 					<b-dropdown-item href="/equipment/life_event">Life Event</b-dropdown-item>
-					<b-dropdown-item href="/equipment/maintenance/calendar">Maintenance</b-dropdown-item>
+					<b-dropdown-item href="/equipment/annual/planning">Annual planning</b-dropdown-item>
+					<b-dropdown-item href="/equipment/monthly/planning">Monthly planning</b-dropdown-item>
 				</b-nav-item-dropdown>
 
 				<b-nav-item-dropdown text="MME" right>
 					<b-dropdown-item href="/mme/add">Add a new MME</b-dropdown-item>
 					<b-dropdown-item href="/mme/list">List of all MME</b-dropdown-item>
 					<b-dropdown-item href="/mme/life_event">Life Event</b-dropdown-item>
-					<b-dropdown-item href="/mme/maintenance/calendar">Maintenance</b-dropdown-item>
+					<b-dropdown-item href="/mme/annual/planning">Annual planning</b-dropdown-item>
+					<b-dropdown-item href="/mme/monthly/planning">Monthly planning</b-dropdown-item>
 					
 				</b-nav-item-dropdown>
 

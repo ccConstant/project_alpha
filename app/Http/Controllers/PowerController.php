@@ -47,7 +47,7 @@ class PowerController extends Controller
             $this->validate(
                 $request,
                 [
-                    'pow_name' => 'required|min:1|max:25',
+                    'pow_name' => 'required|min:3|max:25',
                     'pow_value' => 'required|min:1|max:25',
                     'pow_unit' => 'required|min:1|max:25',
                     'pow_consumptionValue' => 'required|min:1|max:25',

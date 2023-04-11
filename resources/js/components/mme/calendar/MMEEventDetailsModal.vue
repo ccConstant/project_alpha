@@ -3,7 +3,7 @@
         <ErrorAlert ref="errorAlert"/>
         <b-modal id="modal-event_details" @hidden="resetModal" title="Details" hide-footer>
             <div>
-                <div v-for="option in verifs" :key="option.id">
+                <div v-for="option in verif" :key="option.id">
                     <div>
                         <b-card>
                             <h3>{{option.mme_internalReference}}</h3>
@@ -39,7 +39,7 @@ export default {
 
     },
     props:{
-        verifs:{
+        verif:{
             type:Array
         }
     },
@@ -59,6 +59,7 @@ export default {
             if(this.$userId.user_makeMmeOpValidationRight!=true){
                 this.$refs.errorAlert.showAlert("You don't have the right");
             }
+            console.log("mme_id : "+mme_id)
             var consultUrl = (state_id) => `/mme_state/verif/beforeReferenceVerif/${state_id}`;
             axios.post(consultUrl(state_id),{
                 mme_id:mme_id

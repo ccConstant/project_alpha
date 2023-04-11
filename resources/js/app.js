@@ -88,15 +88,13 @@ const router = new VueRouter({
         component:require('./components/equipment/lifeEvent/UpdateALifeEvent.vue').default
 
     },{
-        path:'/equipment/maintenance/calendar',
-        name: 'url_maintenance_calendar',
-        component:require('./components/equipment/calendar/AnnualEquipmentCalendar.vue').default
-    },
-    ,{
-        path:'/equipment/history/:id(\\d+)',
-        name: 'url_equipment_history',
-        component:require('./components/equipment/consultation/EquipmentVersionHistory.vue').default
-
+        path:'/equipment/annual/planning',
+        name: 'url_annual_planning',
+        component:require('./components/equipment/calendar/AnnualEquipmentPlanning.vue').default
+    },{
+        path:'/equipment/monthly/planning',
+        name: 'url_monthly_planning',
+        component:require('./components/equipment/calendar/MonthlyEquipmentPlanning.vue').default
     },{
         path:'/equipment/lifesheet_pdf/:id(\\d+)',
         name: 'url_lifesheet_pdf',
@@ -162,10 +160,6 @@ const router = new VueRouter({
         name: 'url_mme_life_event_update_state',
         component:require('./components/mme/lifeEvent/UpdateMMEState.vue').default
     },{
-        path:'/mme/history/:id(\\d+)',
-        name: 'url_mme_history',
-        component:require('./components/mme/consultation/MMEVersionHistory.vue').default
-    },{
         path:'/mme/life_event/reference/:id(\\d+)/:state_id(\\d+)',
         name: 'url_mme_life_event_reference',
         component:require('./components/mme/lifeEvent/ReferenceAMMELifeEvent.vue').default
@@ -183,10 +177,15 @@ const router = new VueRouter({
         component:require('./components/mme/lifeEvent/UpdateAMMELifeEvent.vue').default
 
     },{
-        path:'/mme/maintenance/calendar',
-        name: 'url_mme_maintenance_calendar',
-        component:require('./components/mme/calendar/AnnualMMECalendar.vue').default
+        path:'/mme/annual/planning',
+        name: 'url_mme_annual_planning',
+        component:require('./components/mme/calendar/AnnualMMEPlanning.vue').default
     },{
+        path:'/mme/monthly/planning',
+        name: 'url_mme_monthly_planning',
+        component:require('./components/mme/calendar/MonthlyMMEPlanning.vue').default
+    },
+    {
         path:'/mme/lifesheet_pdf/:id(\\d+)',
         name: 'mme_url_lifesheet_pdf',
         component:require('./components/mme/consultation/LifeSheetPDFMME.vue').default

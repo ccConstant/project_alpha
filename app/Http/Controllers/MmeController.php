@@ -3,7 +3,7 @@
 /*
 * Filename : MmeController.php 
 * Creation date : 14 Jun 2022
-* Update date : 22 Feb 2023
+* Update date : 7 Mar 2023
 * This file is used to link the view files and the database that concern the mme table. 
 * For example : add the identity card of an mme in the database, update the identity card, delete the identity card... 
 */ 
@@ -825,6 +825,63 @@ class MmeController extends Controller{
 
             $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
+    }
+
+    /**
+     * Function call by MonthlyMMEPlanning.vue with the route : /mme/verif/planning (post)??
+     * Send all the mmes validated in the data base with the verifications linked
+     * @return \Illuminate\Http\Response
+     * */
+    public function send_mme_verif_for_monthly_planning(){
+        $mmes=Mme::all() ;
+        $containerVerif=array() ; 
+        foreach($mmes as $mme){
+            $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
+            if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
+                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->where('verif_reformDate','=',NULL)->where('verif_preventiveOperation','=', true)->get() ; 
+                foreach( $verifs as $verif){
+                    $now=Carbon::now('Europe/Paris');
+                    $oneMonthLater=Carbon::now('Europe/Paris');
+                    $oneMonthLater->addMonths(1);
+                    $dates=explode(' ', $verif->verif_nextDate) ; 
+                    $ymd=explode('-', $dates[0]);
+                    $year_nextDate=$ymd[0] ; 
+                    $month_nextDate=$ymd[1] ;
+                    $day_nextDate=$ymd[2] ;
+                    $nextDate=$day_nextDate." ".$month_nextDate." ".$year_nextDate;
+                    $nextDateCarbon=Carbon::create($year_nextDate, $month_nextDate, $day_nextDate, 0, 0, 0) ;
+                    $states=$mostRecentlyMmeTmp->states;
+                    $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
+                    foreach($states as $state){
+                        $date=$state->created_at ; 
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ; 
+                        }
+                    }
+                    
+                    if ($verif->verif_validate=="validated" && $nextDateCarbon>=$now && $nextDateCarbon<=$oneMonthLater){
+                        $verification=([
+                            "id" => $verif->id,
+                            "Number" => (string)$verif->verif_number,
+                            "Description" => $verif->verif_description,
+                            "verif_periodicity" => (string)$verif->verif_periodicity,
+                            "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
+                            "nextDate" => $nextDate,
+                            "Protocol" => $verif->verif_protocol,
+                            "Internal_Ref" => $mme->mme_internalReference,
+                            "Name" => $mme->mme_name,
+                            "mme_id" => $mme->id,
+                            "state_id" => $mostRecentlyState->id,
+                            "verif_expectedResult" => $verif->verif_expectedResult,
+                            "verif_nonComplianceLimit" => $verif->verif_nonComplianceLimit,
+                        ]);
+                        array_push($containerVerif,$verification);
+                    }
+                }
+            }
+        }
+        return response()->json($containerVerif) ;
     }
 
 

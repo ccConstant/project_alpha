@@ -3,7 +3,7 @@
 /*
 * Filename : EquipmentController.php 
 * Creation date : 27 Apr 2022
-* Update date :22 Feb 2023
+* Update date :7 Mar 2023
 * This file is used to link the view files and the database that concern the equipment table. 
 * For example : add the identity card of an equipment in the database, update the identity card, delete the identity card... 
 */ 
@@ -192,7 +192,7 @@ class EquipmentController extends Controller{
 
 
     /**
-     * Function call by EquipmentIDForm.vue when the form is submitted for check data with the route : /equipment/add (post)
+     * Function call by EquipmentIDForm.vue when the form is submitted for check data with the route : /equipment/verif (post)
      * Check the informations entered in the form and send the errors if it exists
      * @return \Illuminate\Http\Response
      */
@@ -547,7 +547,7 @@ class EquipmentController extends Controller{
     }
 
     /**
-     * Function call by EquipmentMaintenanceCalendar.vue when the form is submitted with the route : /equipment/prvMtnOp/planning (post)
+     * Function call by AnnualEquipmentPlanning.vue with the route : /equipment/prvMtnOp/planning (post)
      * Send all the equipments validated in the data base with the preventive maintenance operations linked
      * @return \Illuminate\Http\Response
      * */
@@ -657,6 +657,62 @@ class EquipmentController extends Controller{
             }
         }
         return response()->json($container) ;
+    }
+
+
+    /**
+     * Function call by MonthlyEquipmentPlanning.vue with the route : /equipment/prvMtnOp/planning (post)??
+     * Send all the equipments validated in the data base with the preventive maintenance operations linked
+     * @return \Illuminate\Http\Response
+     * */
+    public function send_eq_prvMtnOp_for_monthly_planning(){
+        $equipments=Equipment::all() ;
+        $containerOp=array() ; 
+        foreach($equipments as $equipment){
+            $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
+            if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
+                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ; 
+                foreach( $prvMtnOps as $prvMtnOp){
+                    $now=Carbon::now('Europe/Paris');
+                    $oneMonthLater=Carbon::now('Europe/Paris');
+                    $oneMonthLater->addMonths(1);
+                    $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ; 
+                    $ymd=explode('-', $dates[0]);
+                    $year_nextDate=$ymd[0] ; 
+                    $month_nextDate=$ymd[1] ;
+                    $day_nextDate=$ymd[2] ;
+                    $nextDate=$day_nextDate." ".$month_nextDate." ".$year_nextDate;
+                    $nextDateCarbon=Carbon::create($year_nextDate, $month_nextDate, $day_nextDate, 0, 0, 0) ;
+                    $states=$mostRecentlyEqTmp->states;
+                    $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+                    foreach($states as $state){
+                        $date=$state->created_at ; 
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ; 
+                        }
+                    }
+                    
+                    if ($prvMtnOp->prvMtnOp_validate=="validated" && $prvMtnOp->prvMtnOp_preventiveOperation==true && $nextDateCarbon>=$now && $nextDateCarbon<=$oneMonthLater){
+                        $opMtn=([
+                            "id" => $prvMtnOp->id,
+                            "Number" => (string)$prvMtnOp->prvMtnOp_number,
+                            "Description" => $prvMtnOp->prvMtnOp_description,
+                            "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
+                            "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
+                            "nextDate" => $nextDate,
+                            "Protocol" => $prvMtnOp->prvMtnOp_protocol,
+                            "Internal_Ref" => $equipment->eq_internalReference,
+                            "Name" => $equipment->eq_name,
+                            "eq_id" => $equipment->id,
+                            "state_id" => $mostRecentlyState->id,
+                        ]);
+                        array_push($containerOp,$opMtn);
+                    }
+                }
+            }
+        }
+        return response()->json($containerOp) ;
     }
 
     /**

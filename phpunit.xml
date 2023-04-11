@@ -14,8 +14,7 @@
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>
-            <directory suffix=".php">./app</directory>
-            <directory suffix=".vue">./resources</directory>
+            <directory suffix=".php">./app/Http/Controllers</directory>
         </include>
         <exclude>
             <file>./app/Http/Middleware/Authenticate.php</file>

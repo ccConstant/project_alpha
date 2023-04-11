@@ -20,7 +20,6 @@
 					<a v-if="list.alreadyValidatedQuality===false" href="#" @click="qualityValidation(list.id)">Quality validation</a>
 					<a v-if="list.alreadyValidatedTechnical===true && list.alreadyValidatedQuality===true">Statut : Approved</a>
 					<a @click="reformEquipment(list.id)" href="#">Reform</a>
-					<router-link :to="{name:'url_equipment_history',params:{id: list.id} }">History</router-link>
 					<router-link  :to="{name:'url_lifesheet_pdf',params:{id: list.id} }">Generate PDF</router-link>
 				</div>
 			</li>

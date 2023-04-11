@@ -351,7 +351,7 @@
                 </div>
             </div>
 
-             <div class="eq_recordTemplateRefPdf">
+            <div class="eq_recordTemplateRefPdf">
                 <div class="eq_table_recordTemplateRefPdf">
                      <div class="eq_index_recordTemplateRefPdf">
                         Record Template Ref :  REC-IWE01
@@ -362,11 +362,60 @@
                 </div>
              </div>
 
+            <div class="eq_history_pdf">
+				<div class="title_history_pdf">
+					History Version
+				</div>
+				<div class="history_table">
+					<b-row>
+						<b-col cols="1" class="history_table_versionFrom">
+							Version before update
+						</b-col>
+						<b-col cols="1" class="history_table_reason">
+							Reason for the update of version
+						</b-col>
+						<b-col cols="1" class="history_table_versionTo">
+							Version after update
+						</b-col>
+						<b-col cols="4"  class="history_table_Date">
+							Date of the update
+						</b-col>                  
+					</b-row>
+					<div v-for="(history,index) in eq_history " :key="index">
+						<b-row>
+							<b-col cols="1" class="history_table_versionFrom">
+								<p class="text-primary"> {{history.history_numVersion}} </p>
+							</b-col>
+							<b-col cols="1" class="history_table_reason">
+								<p class="text-primary">{{history.history_reasonUpdate}}</p>
+							</b-col>
+							<b-col cols="4" class="history_table_versionTo">
+								<p class="text-primary">{{history.history_numVersion+1}}</p>
+							</b-col>
+							<b-col cols="4"  class="history_table_Date">
+								<p class="text-primary"> {{history.history_date}}</p>
+							</b-col>                 
+						</b-row>
+					</div>
+				</div>
+			</div>
 
 
-        </div>
-        <button class="btn btn-primary" @click="addMargin" >Generate PDF</button>
-    </div>  
+			<div class="eq_historyRecordTemplateRefPdf">
+			<div class="eqHistory_table_recordTemplateRefPdf">
+					<div class="eqHistory_index_recordTemplateRefPdf">
+					Record Template Ref :  REC-IWE01
+				</div>
+				<div class="eqHistory_confidential_recordTemplateRefPdf">
+					This document contains CONFIDENTIAL information
+				</div>
+			</div>
+			</div>
+		</div>
+		<button class="btn btn-primary" @click="generateReport()" >Generate PDF</button>
+	</div>  
+
+</div>  
 
 </template>
 
@@ -387,6 +436,7 @@ export default {
             eq_prvMtnOp_risk:null,
             eq_mme:[],
             loaded:false,
+            eq_history:null,
         }
     },
 
@@ -539,9 +589,16 @@ export default {
                 console.log("coucou")
                 console.log(response.data)
                 this.eq_mme=response.data
-                this.loaded=true;
             })
             .catch(error => console.log(error)) ;
+
+        var consultUrl= (id) => `/history/send/equipment/${id}`;
+		axios.get(consultUrl(this.eq_id))
+			.then (response => {
+				this.eq_history=response.data;
+				this.loaded=true;
+			})
+			.catch(error => console.log(error));
     }
 }
 </script>
@@ -1038,6 +1095,70 @@ export default {
                     font-style : italic;
                 }
                 .eq_index_recordTemplateRefPdf{
+                    background-color: lightgrey;
+                    border: solid 1px black;
+                    text-align: center;
+                    height: auto;
+                    font-size: 20px;
+                }
+            }
+        }
+
+        .eq_history_pdf{
+            position: relative;
+            margin-top:10px ;
+            width : 1112px;
+			margin-top : 50px;
+            
+            .title_history_pdf{
+                width: 400px;
+                font-size : 20px;
+                font-weight: bold;
+                margin-left:150px;
+            }
+            .history_table{
+                margin-left:163px;
+                width:1042px;
+                .history_table_versionFrom{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:150px;
+                }
+                    .history_table_reason{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:540px;
+                }
+                .history_table_versionTo{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:150px;
+                }
+                .history_table_Date{
+                    border: solid 1px black;
+                    text-align: center;
+                    width:200px;
+                }                    
+            }
+        }
+
+        .eq_historyRecordTemplateRefPdf{
+            position: relative;
+            left:150px;
+            margin-top:10px ;
+            width: 1042px;
+            
+
+            .eqHistory_table_recordTemplateRefPdf{
+                .eqHistory_confidential_recordTemplateRefPdf{
+                    border: solid 1px black;
+                    background-color: lightgrey;
+                    text-align: center;
+                    height: auto;
+                    font-size: 20px;
+                    font-style : italic;
+                }
+                .eqHistory_index_recordTemplateRefPdf{
                     background-color: lightgrey;
                     border: solid 1px black;
                     text-align: center;

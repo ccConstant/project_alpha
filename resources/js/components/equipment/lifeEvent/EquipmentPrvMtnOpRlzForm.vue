@@ -43,6 +43,7 @@
 
             </form>
         </div>
+        <SuccesAlert ref="succesAlert"/>
     </div>
 </template>
 
@@ -54,6 +55,7 @@ import RadioGroupForm from '../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
 import PrvMtnOpChooseModal from './PrvMtnOpChooseModal.vue'
+import SuccesAlert from '../../alert/SuccesAlert.vue'
 import moment from 'moment'
 export default {
     components : {
@@ -63,7 +65,8 @@ export default {
         InputTextAreaForm,
         SaveButtonForm,
         DeleteComponentButton,
-        PrvMtnOpChooseModal
+        PrvMtnOpChooseModal,
+        SuccesAlert
     },
          /*--------Declartion of the differents props:--------
         number : 
@@ -218,6 +221,7 @@ export default {
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
+                        this.$refs.succesAlert.showAlert(`Equipment preventive maintenance operation realized added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
@@ -274,7 +278,10 @@ export default {
                         prvMtnOp_id:this.prvMtnOp_id
 
                     })
-                    .then(response =>{this.prvMtnOpRlz_validate=savedAs;})
+                    .then(response =>{
+                        this.prvMtnOpRlz_validate=savedAs;
+                        this.$refs.succesAlert.showAlert(`Equipment preventive maintenance operation realized updated successfully and saved as ${savedAs}`);
+                        })
                     //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
@@ -316,6 +323,8 @@ export default {
     },
     created(){
         if(this.isInConsultMod==false && this.isInModifMod==false){
+            console.log("creation");
+            console.log(this.eq_id);
             var consultUrl = (id) => `/prvMtnOp/send/validated/${id}`;
             axios.get(consultUrl(this.eq_id))
                 .then (response =>{

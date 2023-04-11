@@ -3,7 +3,7 @@
 /*
 * Filename : PreventiveMaintenanceOperationController.php 
 * Creation date : 17 May 2022
-* Update date : 22 Feb 2023
+* Update date : 7 Mar 2023
 * This file is used to link the view files and the database that concern the preventiveMaintenanceOperation table. 
 * For example : add a preventiveMaintenanceOperation for an equipment in the data base, update it, delete it...
 */ 
@@ -485,7 +485,7 @@ class PreventiveMaintenanceOperationController extends Controller
     public function send_prvMtnOp_from_eq_validated($id) {
         $container=array() ; 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ; 
 
        foreach ($prvMtnOps as $prvMtnOp) {
            if ($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL){
