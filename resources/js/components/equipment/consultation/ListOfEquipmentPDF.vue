@@ -1,3 +1,7 @@
+<!--File name : ListOfEquipmentPDF.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component to generate a pdf version of the equipment list-->
 
 <template>
     <div v-if="loaded==true">
@@ -15,7 +19,7 @@
                 <div class="list_eq_pdf_index">
                     <h5> </h5>
                 </div>
-                
+
 
             </div>
             <div class="eq_infos_pdf">
@@ -32,7 +36,7 @@
                         </b-col >
                         <b-col cols="4" class="eq_table_state">
                             Actual State
-                        </b-col>                 
+                        </b-col>
                     </b-row>
                     <div v-for="(eq,index) in list_eq " :key="index">
                         <b-row>
@@ -47,10 +51,10 @@
                             </b-col>
                             <b-col cols="4"  class="eq_table_state">
                                <p class="text-primary"> {{eq.eq_state}}</p>
-                            </b-col>               
+                            </b-col>
                         </b-row>
-                    
-                    
+
+
                     </div>
                 </div>
             </div>
@@ -61,7 +65,7 @@
 
 <script>
 import html2PDF from 'jspdf-html2canvas';
-export default { 
+export default {
     data(){
         return{
             eq_id:this.$route.params.id,
@@ -71,9 +75,9 @@ export default {
     },
 
     components: {
-        
+
     },
-    methods: { 
+    methods: {
 
         generateReport () {
             let page = document.getElementById('page');
@@ -96,11 +100,11 @@ export default {
                     bottom: 40,
                     left: 10,
                 },
-                output: 'listOfAllEquipmentUsedByAlph.pdf', 
+                output: 'listOfAllEquipmentUsedByAlph.pdf',
             });
         },
 
-        
+
     },
     created(){
         axios.get('/equipment/equipments')
@@ -142,11 +146,11 @@ export default {
                     height: 170px;
                     margin-left:100px ;
                     margin-top: 00px;
-                    
+
                     .logo{
                         margin-top:30px;
                     }
-                    
+
                 }
                 .list_eq_pdf_titre{
                     border: solid 0.5px black;
@@ -157,9 +161,9 @@ export default {
                     left:300px;
                     height: 87px;
                     text-align:center;
-                   
-                    
-                    
+
+
+
                 }
                 .list_eq_fiche_de_vie_titre{
                     text-align: center;
@@ -173,7 +177,7 @@ export default {
                     top: 0px;
                     height: 86px;
                     width: 200px;
-                    
+
                 }
                 .equipment_revued_by{
                     border: solid 0.5px black;
@@ -208,13 +212,13 @@ export default {
                 }
 
             }
-            
-            
+
+
         .eq_infos_pdf{
             position: relative;
             margin-top:300px ;
             width : 1112px;
-            
+
             .title_eq_pdf{
                 width: 400px;
                 font-size : 20px;
@@ -247,14 +251,14 @@ export default {
                     text-align: center;
                     width:242px;
                     height:auto;
-                }                    
+                }
             }
         }
     }
 
-        
-        
 
-    
+
+
+
 
 </style>

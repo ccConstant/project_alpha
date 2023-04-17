@@ -1,3 +1,8 @@
+<!--File name : UpdateAMMELifeEvent.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to update a life event linked to one MME-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -17,12 +22,12 @@
                                 <h3>Recorded verifications</h3>
                                 <li class="list-group-item" v-for="(verifRlz,index) in mme_verifRlz " :key="index"  >
                                     <div>
-                                        Operation Numner : {{verifRlz.verif_number}} <br>
+                                        Operation Number : {{verifRlz.verif_number}} <br>
                                         Expected Result : {{verifRlz.verif_expectedResult}} <br>
                                         Non Compliance Limit : {{verifRlz.verif_nonComplianceLimit}} <br>
                                         Description : {{verifRlz.verif_description}} <br>
                                         Protocol : {{verifRlz.verif_protocol}} <br>
-                                        Report Numner : {{verifRlz.verifRlz_reportNumber}} <br>
+                                        Report Number : {{verifRlz.verifRlz_reportNumber}} <br>
                                     </div>
                                     <div v-if="verifRlz.verifRlz_isPassed==true">
                                         Passed : Yes
@@ -48,8 +53,8 @@
                                     <div v-else>
                                         Approved by : - <br>
                                     </div>
-                                    
-                                    <MMEVerifModal :verif_id="verifRlz.verif_id" :verif_number="verifRlz.verif_number" 
+
+                                    <MMEVerifModal :verif_id="verifRlz.verif_id" :verif_number="verifRlz.verif_number"
                                     :verif_description="verifRlz.verif_description" :verif_protocol="verifRlz.verif_protocol"
                                     :verif_nonComplianceLimit="verifRlz.verif_nonComplianceLimit" :verif_expectedResult="verifRlz.verif_expectedResult"
                                     :verifRlz_isPassed="verifRlz.verifRlz_isPassed" :verifRlz_id="verifRlz.id" :verifRlz_reportNumber="verifRlz.verifRlz_reportNumber"
@@ -74,8 +79,8 @@
                                 <h3>Recorded Curative maintenance operation</h3>
                                 <li class="list-group-item" v-for="(curMtnOp,index) in mme_curMtnOp " :key="index"  >
                                     <div>
-                                        Operation Numner : {{curMtnOp.curMtnOp_number}} <br>
-                                        Report Numner : {{curMtnOp.curMtnOp_reportNumber}} <br>
+                                        Operation Number : {{curMtnOp.curMtnOp_number}} <br>
+                                        Report Number : {{curMtnOp.curMtnOp_reportNumber}} <br>
                                         Description : {{curMtnOp.curMtnOp_description}} <br>
                                         Start Date : {{curMtnOp.curMtnOp_startDate}} <br>
                                         End date : {{curMtnOp.curMtnOp_endDate}} <br>
@@ -100,7 +105,7 @@
                                     <div v-else>
                                         Technical verifier : - <br>
                                     </div>
-                                    
+
                                     <MMECurMtnOpModal :curMtnOp_id="curMtnOp.id" :curMtnOp_reportNumber="curMtnOp.curMtnOp_reportNumber"
                                     :curMtnOp_startDate="curMtnOp.curMtnOp_startDate" :curMtnOp_endDate="curMtnOp.curMtnOp_endDate"
                                     :curMtnOp_description="curMtnOp.curMtnOp_description"
@@ -122,10 +127,8 @@ import MMEVerifModal from './MMEVerifModal.vue'
 import MMECurMtnOpModal from './MMECurMtnOpModal.vue'
 
 
-
 export default {
     components:{
-
         MMEVerifModal,
         MMECurMtnOpModal
     },
@@ -140,7 +143,7 @@ export default {
         }
     },
     created(){
-        var consultUrlPrvMtnOpRlz = (id) => `/mme_state/verifRlz/send/${id}`;
+        const consultUrlPrvMtnOpRlz = (id) => `/mme_state/verifRlz/send/${id}`;
         axios.get(consultUrlPrvMtnOpRlz(this.state_id))
             .then (response=>{
                 console.log(response.data)
@@ -148,7 +151,7 @@ export default {
             })
             .catch(error => console.log(error)) ;
 
-        var consultUrlCurMtnOp = (id) => `/mme_state/curMtnOp/send/${id}`;
+        const consultUrlCurMtnOp = (id) => `/mme_state/curMtnOp/send/${id}`;
         axios.get(consultUrlCurMtnOp(this.state_id))
             .then (response=>{
                 console.log(response.data)
@@ -156,16 +159,12 @@ export default {
                 this.loaded=true
             })
             .catch(error => console.log(error)) ;
-
-
     },
     methods:{
         reloadPage(){
             window.location.reload();
         }
     }
-
-
 }
 </script>
 

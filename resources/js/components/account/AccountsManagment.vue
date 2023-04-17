@@ -1,3 +1,8 @@
+<!--File name : AccountManagement.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the account management part-->
+
 <template>
 	<div class="account_managment">
         <div v-if="loaded==false" >
@@ -6,7 +11,7 @@
         <div v-else>
         	<ErrorAlert ref="errorAlert"/>
         	<SuccesAlert ref="succesAlert"/>
-			
+
 			<b-container class="user_table_container" fluid="xl">
 				<b-row>
 					<b-col class="right_title">Right </b-col>
@@ -16,9 +21,9 @@
 
 					<b-row>
 					<div class="w-100 row_right_tab"></div>
-					<b-col class="right_section"> User Management </b-col>  
+					<b-col class="right_section"> User Management </b-col>
 					</b-row>
-					
+
 
 					<AccountManagmentElement right_title="Acces to user managment" key_letter="R" :users="pageOfItems" right_name="user_menuUserAcessRight"/>
 					<AccountManagmentElement right_title="Reset user password" key_letter="D" :users="pageOfItems" right_name="user_resetUserPasswordRight"/>
@@ -31,7 +36,7 @@
 					<AccountManagmentElement right_title="Update data validated but not signed" key_letter="E" :users="pageOfItems" right_name="user_updateDataValidatedButNotSignedRight" />
 					<AccountManagmentElement right_title="Update descriptive LifeSheet of signed data" key_letter="F" :users="pageOfItems" right_name="user_updateDescriptiveLifeSheetDataSignedRight"/>
 					<AccountManagmentElement right_title="Validate other data" key_letter="G" :users="pageOfItems" right_name="user_validateOtherDataRight"/>
-					
+
 					<b-row><div class="w-100 row_right_tab"></div>
 					<b-col class="right_section"> Data Validation </b-col>  </b-row>
 
@@ -58,17 +63,17 @@
 					<b-col class="right_section"> Dictionnary management </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Update information" key_letter="S" :users="pageOfItems" right_name="user_updateInformationRight"/>
-					
+
 
 					<b-row><div class="w-100 row_right_tab"></div>
 					<b-col class="right_section"> Formation management </b-col>  </b-row>
 
 					<AccountManagmentElement right_title="Person trained to general principles of equipment managment" :training="true" training_type="equipment" right_date='user_formationEqDate' key_letter="B" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfEqManagementRight"/>
 					<AccountManagmentElement right_title="Person trained to general principles of MME managment"  :training="true" training_type="mme" right_date='user_formationMmeDate' key_letter="C" :users="pageOfItems" right_name="user_personTrainedToGeneralPrinciplesOfMMEManagementRight"/>
-	
+
 					<b-row><div class="w-100 row_right_tab"></div>
 					<b-col class="right_section"> Life Event Management </b-col>  </b-row>
-					
+
 					<AccountManagmentElement right_title="state management" key_letter="V" :users="pageOfItems" right_name="user_declareNewStateRight"/>
 					<AccountManagmentElement right_title="Approve an equipment maintenance record" key_letter="W" :users="pageOfItems" right_name="user_makeEqRespValidationRight"/>
 					<AccountManagmentElement right_title="Make equipment operation validation" key_letter="A"  :users="pageOfItems" right_name="user_makeEqOpValidationRight"/>
@@ -99,7 +104,7 @@
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_password" name="user_password" label="Change the current password :" v-model="modal_password"/>
 						<InputPasswordForm  inputClassName="form-control" :Errors="errors.user_confirmation_password" name="user_confirmation_password" label="Confirm the password :" v-model="modal_confirmation_password"/>
 					</form>
-                    
+
 				</div>
 			</b-modal>
 
@@ -144,7 +149,7 @@ export default {
 			user_formationMmeDate:'',
 			selected_formationMmeDate:null,
 			modal_confirmation_password:'',
-			errors:[],									
+			errors:[],
 
 		}
 	},
@@ -157,21 +162,20 @@ export default {
             this.users=response.data;
 			for (var i=0;i<this.users.length;i++) {
                 if(this.users[i].user_formationEqDate!=null){
-                    this.users[i].user_formationEqDate=moment(this.users[i].user_formationEqDate).format('D MMM YYYY'); 
+                    this.users[i].user_formationEqDate=moment(this.users[i].user_formationEqDate).format('D MMM YYYY');
                 }
 				if(this.users[i].user_formationMmeDate!=null){
-                    this.users[i].user_formationMmeDate=moment(this.users[i].user_formationMmeDate).format('D MMM YYYY'); 
+                    this.users[i].user_formationMmeDate=moment(this.users[i].user_formationMmeDate).format('D MMM YYYY');
                 }
             }
             this.loaded=true;
 			console.log(response.data)
-		}) 
+		})
         .catch(error => console.log(error)) ;
 	},
 
 	methods:{
 		onChangePage(pageOfItems) {
-			// update page of items
 			this.pageOfItems = pageOfItems;
 
 		},
@@ -192,7 +196,7 @@ export default {
 			if(this.modal_password!='' && this.$userId.user_resetUserPasswordRight==false){
 				this.$refs.errorAlert.showAlert("You don't have the right to change an other user password");
 				return;
-			}	
+			}
 			var postUrlUpdate = (id) => `/user/update/infos/${id}`;
 			axios.post(postUrlUpdate(this.modal_id),{
 					user_initials:this.modal_initials,
@@ -206,7 +210,7 @@ export default {
 					//id of user who change the info
 					user_id:this.$userId.id
 			})
-			.then(response =>{           
+			.then(response =>{
 				// Hide the modal manually
 				console.log("updated")
 				this.$bvModal.hide(bvModalEvent.target.id);
@@ -238,13 +242,13 @@ export default {
 
 	updated(){
         if(this.selected_endDate!==null){
-            this.user_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.user_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
 		if(this.selected_formationEqDate!==null){
-            this.user_formationEqDate=moment(this.selected_formationEqDate).format('D MMM YYYY'); 
+            this.user_formationEqDate=moment(this.selected_formationEqDate).format('D MMM YYYY');
         }
 		if(this.selected_formationMmeDate!==null){
-            this.user_formationMmeDate=moment(this.selected_formationMmeDate).format('D MMM YYYY'); 
+            this.user_formationMmeDate=moment(this.selected_formationMmeDate).format('D MMM YYYY');
         }
 		for(const user of this.pageOfItems){
 			if(user.user_makeEqOpValidationRight==true){
@@ -352,10 +356,10 @@ export default {
 		}
 		.row_right_tab{
 			border: solid 1px lightgray;
-		
+
 		}
 	}
-	
+
 
 
 </style>

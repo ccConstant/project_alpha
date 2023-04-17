@@ -1,3 +1,8 @@
+<!--File name : UpdateState.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to update a state-->
+
 <template>
     <div :class="divClass">
         <div v-if="loaded==false">
@@ -15,7 +20,6 @@
                     <div v-if="isInConsultMod==false">
                         <InputTextForm  inputClassName="form-control w-50" name="current_state" label="Current state :" :isDisabled="true"   v-model="current_state" :info_text="infos_state[0].info_value"/>
                         <InputTextForm  inputClassName="form-control w-50" name="current_startDate" label="Current state start Date :" :isDisabled="true"   v-model="current_startDate" :info_text="infos_state[2].info_value" />
-
                     </div>
                 </div>
                 <div v-if="state_id!==undefined || isInConsultMod==true">
@@ -29,12 +33,10 @@
                     <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate" :info_text="infos_state[2].info_value"/>
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate" />
                 </div>
-                <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" :info_text="infos_state[3].info_value"/> 
+                <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" :info_text="infos_state[3].info_value"/>
                 <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
             <SuccesAlert ref="succesAlert"/>
-
-
             <div v-if="state_name=='Downgraded'">
                 <div v-if="state_validate=='validated'">
                     <div v-if="!isEmpty(eq_idCard)">
@@ -57,7 +59,6 @@
 
         </div>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-
     </div>
 </template>
 
@@ -127,7 +128,6 @@ export default {
             isInConsultMod:this.consultMod,
             eq_id:this.$route.params.id,
             state_id:this.$route.params.state_id,
-            isInConsultMod:this.consultMod,
             isInModifMod:this.modifMod,
             errors:{},
             addSucces:false,
@@ -142,14 +142,12 @@ export default {
             eq_idCard:[],
             infos_state:[],
             StateName:"StateName"
-            
-
         }
     },
     updated() {
         if(this.selected_startDate!==null){
-            this.state_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
-        };
+            this.state_startDate=moment(this.selected_startDate).format('D MMM YYYY');
+        }
     },
     methods:{
         addEquipmentState(savedAs){
@@ -168,7 +166,6 @@ export default {
                     eq_id:this.eq_id,
                     reason:'add',
                     user_id:this.$userId.id
-
                 })
                 .then(response =>{
                         console.log(response.data)
@@ -190,14 +187,14 @@ export default {
                                 this.addSucces=true;
                                 this.isInConsultMod=true;
                                 this.state_validate=savedAs
-                                
+
                             })
-                        .catch(error => this.errors=error.response.data.errors) ; 
+                        .catch(error => this.errors=error.response.data.errors) ;
                     })
-                .catch(error => this.errors=error.response.data.errors) ; 
+                .catch(error => this.errors=error.response.data.errors) ;
             }
         },
-        /*Sending to the controller all the information about the equipment so that it can be updated to the database */ 
+        /*Sending to the controller all the information about the state to check if all the fields are correctly filled */
         updateEquipmentState(savedAs){
                 console.log("update")
                 axios.post('/state/verif',{
@@ -209,31 +206,28 @@ export default {
                     state_id:this.state_id,
                     eq_id:this.eq_id,
                     reason:'update'
-                    
-
                 })
                 .then(response =>{
                         this.errors={}
-                        var consultUrl = (id) => `/equipment/update/state/${id}`;
-                        axios.post(consultUrl(this.state_id),{
+                    /* If the check does not produce error, we can update the value of the state */
+                    const consultUrl = (id) => `/equipment/update/state/${id}`;
+                    axios.post(consultUrl(this.state_id),{
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,
                             state_startDate:this.selected_startDate,
                             state_isOk:this.state_isOk,
                             state_validate:savedAs,
                             eq_id:this.eq_id
-
                         })
                         .then(response => {
                             this.$refs.succesAlert.showAlert(`Equipment state updated successfully and saved as ${savedAs}`);
                             this.state_validate=savedAs
                             })
-                        .catch(error => this.errors=error.response.data.errors) ; 
+                        .catch(error => this.errors=error.response.data.errors) ;
                     })
                 .catch(error => this.errors=error.response.data.errors) ;
         },
-        
-        /*Clear all the error of the targeted field*/
+        /*Clears all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
         },
@@ -243,7 +237,6 @@ export default {
         isEmpty(object) {
             for (const property in object) {
                 return false;
-                
             }
             return true;
         },
@@ -258,8 +251,8 @@ export default {
             if(this.isInConsultMod==false){
                 this.isInModifMod=true;
             }
-            
-            var UrlState = (id) => `/state/send/${id}`;
+
+            const UrlState = (id) => `/state/send/${id}`;
             axios.get(UrlState(this.state_id))
                 .then (response=>{
                     console.log(response.data)
@@ -270,7 +263,7 @@ export default {
                     this.state_isOk=response.data[0].state_isOk;
                     this.state_validate=response.data[0].state_validate;
                     if(this.state_name=="Downgraded"){
-                        var consultUrl = (state_id) => `/send/state/equipment/${state_id}`;
+                        const consultUrl = (state_id) => `/send/state/equipment/${state_id}`;
                         axios.get(consultUrl(this.state_id))
                             .then (response => {this.eq_idCard=response.data;console.log(response.data)})
                             .catch(error => console.log(error));
@@ -278,28 +271,23 @@ export default {
 
                 })
                 .catch(error => console.log(error)) ;
-            
+
         }else{
-            var UrlState = (id) => `/state/send/${id}`;
+            const UrlState = (id) => `/state/send/${id}`;
             axios.get(UrlState(this.$route.query.currentState))
                 .then (response=>{
                     console.log(response.data)
                     this.current_state=response.data[0].state_name;
                     this.current_startDate=moment(response.data[0].state_startDate).format('D MMM YYYY');
-
                 })
                 .catch(error => console.log(error)) ;
-
         }
-
         axios.get('/info/send/state')
             .then (response=> {
                 this.infos_state=response.data;
                 this.loaded=true;
-            }) 
+            })
             .catch(error => console.log(error)) ;
-        
-
     }
 }
 </script>
@@ -309,8 +297,8 @@ export default {
         .date-selector{
             width: 44px;
             margin-top:8px
-        }    
+        }
     }
-    
+
 
 </style>

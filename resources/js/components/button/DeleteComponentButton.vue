@@ -1,3 +1,8 @@
+<!--File name : DeleteComponentButton.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the delete button-->
+
 <template>
     <div v-if="unlink_value==false">
         <div v-if="lifesheet_created!=true">
@@ -27,7 +32,7 @@
             </b-modal>
         </div>
         <b-modal :id="`modal-delete_component-${_uid}`"  @ok="deleteConfirmation">
-            <p class="my-4">Are you sure you want to delete 
+            <p class="my-4">Are you sure you want to delete
                 if the information is imported it can no longer be re-imported
             </p>
         </b-modal>
@@ -63,7 +68,7 @@
             </b-modal>
         </div>
         <b-modal :id="`modal-delete_component-${_uid}`"  @ok="deleteConfirmation">
-            <p class="my-4">Are you sure you want to unlink 
+            <p class="my-4">Are you sure you want to unlink
                 if the information is imported it can no longer be re-imported
             </p>
         </b-modal>
@@ -71,7 +76,7 @@
             <p>{{this.Errors[0]}}</p>
         </div>
     </div>
-    
+
 </template>
 
 <script>
@@ -110,7 +115,7 @@ export default {
             reason:'',
             unlink_value:this.unlink
         }
-        
+
     }
 
 }

@@ -1,5 +1,10 @@
+<!--File name : MMEVerifModal.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to make a modal for actions on a verification who affect a MME-->
+
 <template>
-  <div class="op_verifRlz_modal_comp">   
+  <div class="op_verifRlz_modal_comp">
         <ErrorAlert ref="errorAlert"/>
         <SuccesAlert ref="succesAlert"/>
 
@@ -24,10 +29,10 @@
         <div v-if="this.$userId.user_makeMmeRespValidationRight==false">
             <p class="text-danger"> You don't have the right to approve a record</p>
         </div>
-        
+
 
         <b-modal :id="`modal-verifManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
-            <MMEVerifRlzForm modifMod  :mme_id="mme_id" :state_id="state_id" :id="verifRlz_id" :verif_id_prop="verif_id" :verif_number_prop="verif_number" 
+            <MMEVerifRlzForm modifMod  :mme_id="mme_id" :state_id="state_id" :id="verifRlz_id" :verif_id_prop="verif_id" :verif_number_prop="verif_number"
             :verif_expectedResult_prop="verif_expectedResult" :verif_nonComplianceLimit_prop="verif_nonComplianceLimit"
             :verif_description_prop="verif_description" :verif_protocol_prop="verif_protocol" :isPassed="verifRlz_isPassed"
             :reportNumber="verifRlz_reportNumber" :startDate="verifRlz_startDate"  :endDate="verifRlz_endDate"
@@ -35,7 +40,7 @@
         </b-modal>
 
         <b-modal :id="`modal-verifManagmentApprove-${_uid}`" title="Approve the record" @ok="handleOkApprove" @hidden="resetModal">
-            <MMEVerifRlzForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="verifRlz_id" :verif_id_prop="verif_id" :verif_number_prop="verif_number" 
+            <MMEVerifRlzForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="verifRlz_id" :verif_id_prop="verif_id" :verif_number_prop="verif_number"
             :verif_description_prop="verif_description" :verif_protocol_prop="verif_protocol" :isPassed="verifRlz_isPassed"
             :verif_expectedResult_prop="verif_expectedResult" :verif_nonComplianceLimit_prop="verif_nonComplianceLimit"
             :reportNumber="verifRlz_reportNumber" :startDate="verifRlz_startDate"  :endDate="verifRlz_endDate"
@@ -46,7 +51,7 @@
         </b-modal>
 
         <b-modal :id="`modal-verifManagmentRealize-${_uid}`" title="Realize the record" @ok="handleOkRealize" @hidden="resetModal">
-            <MMEVerifRlzForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="verifRlz_id" :verif_id_prop="verif_id" :verif_number_prop="verif_number" 
+            <MMEVerifRlzForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="verifRlz_id" :verif_id_prop="verif_id" :verif_number_prop="verif_number"
             :verif_description_prop="verif_description" :verif_protocol_prop="verif_protocol" :isPassed="verifRlz_isPassed"
             :verif_expectedResult_prop="verif_expectedResult" :verif_nonComplianceLimit_prop="verif_nonComplianceLimit"
             :reportNumber="verifRlz_reportNumber" :startDate="verifRlz_startDate"  :endDate="verifRlz_endDate"
@@ -74,7 +79,7 @@ export default {
         ErrorAlert,
         SuccesAlert
     },
-        props:{
+    props:{
         mme_id:{
             type:Number
         },
@@ -134,11 +139,9 @@ export default {
     },
     methods:{
         closeModal(modal){
-
             this.$bvModal.hide(modal);
             this.resetModal();
             this.$emit('okReload','')
-            
         },
         handleOkUpdate(){
             this.$emit('okReload','')
@@ -151,13 +154,13 @@ export default {
         handleOkApprove(bvModalEvent){
             // Prevent modal from closing
             bvModalEvent.preventDefault()
-            var postUrlAdd = (id) => `/verifRlz/approve/${id}`;
+            const postUrlAdd = (id) => `/verifRlz/approve/${id}`;
             axios.post(postUrlAdd(this.verifRlz_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.compId
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.$refs.succesAlert.showAlert("Succesfully aprouved");
                 this.closeModal(bvModalEvent.target.id);
             })
@@ -167,18 +170,18 @@ export default {
         handleOkRealize(bvModalEvent){
             // Trigger submit handler
             bvModalEvent.preventDefault()
-            var postUrlAdd = (id) => `/verifRlz/realize/${id}`;
+            const postUrlAdd = (id) => `/verifRlz/realize/${id}`;
             axios.post(postUrlAdd(this.verifRlz_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.compId
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.$refs.succesAlert.showAlert("Succesfully realized");
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
-            
+
         }
     }
 

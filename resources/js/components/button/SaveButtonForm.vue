@@ -1,3 +1,8 @@
+<!--File name : SaveButtonForm.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the save button for the different forms-->
+
 <template>
     <div class="save_button">
         <div v-if="!reformMod">
@@ -41,7 +46,7 @@
                                 <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-drafted${_uid}`)" >save as draft</b-button>
                                 <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-to-be-validated${_uid}`)" >save as to be validated</b-button>
                                 <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-validated${_uid}`)" >save as validated</b-button>
-                                
+
                                 <b-modal :id="`modal-approved-add-to-be-validated${_uid}`"  @ok="addToBeValidated()">
                                 <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
                                 <input v-model="reason" placeholder="Reason for the update" />
@@ -55,7 +60,7 @@
                                     <input v-model="reason" placeholder="Reason for the update" />
                                 </b-modal>
                             </div>
-                            
+
                             <div v-else>
                                 <b-button variant="primary" disabled>save as draft</b-button>
                                 <b-button variant="primary"  disabled>save as to be validated</b-button>
@@ -90,7 +95,7 @@
                 </div>
                 <div v-else>
                     <p v-if="this.saveAll==false">Saved as : {{savedAs}}</p>
-                 
+
 
                 </div>
             </div>
@@ -112,7 +117,7 @@
                     <div v-else>
                         <div class="save_button_draft_tbv">
                             <button class="save btn btn-info" disabled type="button"  value="drafted" >save as draft</button>
-                            <button class="save btn btn-info" disabled type="button" value="to_be_validated" >to be validated</button>   
+                            <button class="save btn btn-info" disabled type="button" value="to_be_validated" >to be validated</button>
                         </div>
                         <div v-if="user_updateDataValidatedButNotSignedRight==true" class="save_button_validated"  >
                             <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
@@ -189,7 +194,7 @@
                         <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                     </div>
 
-                    
+
                 </div>
                     <div v-if="saveAll!==true">
                         <p >Actually saved as : {{savedAs}}</p>
@@ -197,7 +202,7 @@
                         <p class="text-danger" v-if="updateDataInDraftRight==false  && lifesheet_created==false">You don't have the right to save as draft or as to be validated</p>
                         <p class="text-danger" v-if="user_updateDataValidatedButNotSignedRight == false && lifesheet_created==false">You don't have the right to save as validated  </p>
                         <p class="text-danger" v-if="makeEqOpValidationRight == false && is_op_data==true">You don't have the right to record an operation </p>
-                    </div>    
+                    </div>
             </div>
             <div v-if="hasError(this.Errors)" class="error_savebutton">
                 <p>{{this.Errors[0]}}</p>
@@ -260,8 +265,6 @@ export default {
         console.log("signed"+this.$route.query.signed)
     },
     methods:{
-
-        //for approved data
         addDraft(){
             this.$emit('add',"drafted", this.reason, this.lifesheet_created)
         },
@@ -288,9 +291,9 @@ export default {
             this.$emit('update',e.target.value)
         },
 
-        
 
-        
+
+
         hasError(errors){
             return(errors.length>0);
         }

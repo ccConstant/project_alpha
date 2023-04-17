@@ -1,3 +1,8 @@
+<!--File name : MonthlyEquipmentPlanning.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the monthly planning of maintenances-->
+
 <template>
     <div class="eq_maintenance_page">
         <div v-if="loaded==false" >
@@ -31,21 +36,21 @@
                 <div class="planning_table">
                     <b-row>
                         <b-col cols="1" class="planning_table_internalReference">
-                            Internal Reference 
+                            Internal Reference
                         </b-col>
                         <b-col cols="1" class="planning_table_name">
                             Name
                         </b-col>
                         <b-col cols="4" class="planning_table_number">
-                           OP Number 
+                           OP Number
                         </b-col>
                         <b-col cols="4"  class="planning_table_nextDate">
                             OP NextDate
-                        </b-col>                 
+                        </b-col>
                     </b-row>
                     <div v-for="(prvMtnOp,index) in eq_nextMonth " :key="index">
                         <b-row>
-                            <b-col cols="1"   class="planning_table_internalReference"> 
+                            <b-col cols="1"   class="planning_table_internalReference">
                                  <p class="text-primary">{{prvMtnOp.Internal_Ref}}</p>
                             </b-col>
                             <b-col cols="4" class="planning_table_name">
@@ -53,10 +58,10 @@
                             </b-col>
                             <b-col cols="4"  class="planning_table_number">
                                <p class="text-primary" @click="handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)"> {{prvMtnOp.Number}}</p>
-                            </b-col>  
+                            </b-col>
                             <b-col cols="4"  class="planning_table_nextDate">
                                 <p class="text-primary"> {{prvMtnOp.nextDate}}</p>
-                            </b-col>             
+                            </b-col>
                         </b-row>
                     </div>
                 </div>
@@ -158,7 +163,7 @@ export default {
             this.eq_nextMonth=response.data;
             this.loaded=true;
         })
-        
+
     }
 
 }
@@ -177,7 +182,7 @@ export default {
         border-radius: 15px;
         background-color:lightcoral ;
         margin-right: 10px;
-       
+
             h2{
                 text-align:center ;
                 color:red;
@@ -194,11 +199,11 @@ export default {
                 text-align:center ;
                 color:grey;
             }
-        }  
+        }
         .eq_list_pagination{
             display: block;
             margin-right: 10px;
-        } 
+        }
     }
 
     .calendar_container{
@@ -211,7 +216,7 @@ export default {
             position: relative;
             margin-top:10px ;
             width : 1112px;
-            
+
             .title_planning_pdf{
                 width: 400px;
                 font-size : 20px;
@@ -222,21 +227,21 @@ export default {
                 margin-left:163px;
                 width:1042px;
                 .planning_table_internalReference{
-                    border: none ; 
+                    border: none ;
                     text-align: center;
                     width:200px;
                 }
-                    
+
                 .planning_table_name{
-                    border: none ; 
+                    border: none ;
                     text-align: center;
                     width:200px;
                 }
                 .planning_table_number{
-                    border: none ; 
+                    border: none ;
                     text-align: center;
                     width: 200px;
-                }                    
+                }
                 .planning_table_nextDate{
                     border: none;
                     text-align: center;

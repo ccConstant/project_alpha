@@ -1,3 +1,8 @@
+<!--File name : MMEConsult.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to consult a IDCard of a MME-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -21,7 +26,7 @@
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
                         <MmeIdForm :internalReference="mme_idCard.mme_internalReference" :externalReference="mme_idCard.mme_externalReference"
-                            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor" 
+                            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor"
                             :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
                             consultMod/>
                         </div>
@@ -164,12 +169,12 @@ export default {
                         })
                         .then(response =>{
                             this.$refs.successAlert.showAlert(`${this.validationMethod} made succesfully`);
-                            this.$router.replace({ name: "url_mme_list"}) 
+                            this.$router.replace({ name: "url_mme_list"})
                         })
-                        //If the controller sends errors we put it in the errors object 
+                        //If the controller sends errors we put it in the errors object
                         .catch(error => this.errors=error.response.data.errors) ;
                     ;})
-                    //If the controller sends errors we put it in the errors object 
+                    //If the controller sends errors we put it in the errors object
                 .catch(error =>{
                     this.errors=error.response.data.errors
                 });
@@ -186,7 +191,7 @@ export default {
         display: block;
         margin : auto;
         margin-bottom: 15px;
-        
+
     };
 
     .quality_validate_button{

@@ -1,3 +1,8 @@
+<!--File name : ReferenceAnMME.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to reference an imported MME in another MME-->
+
 <template>
   <div>
         <MmeIdForm @MMEID="put_mme_id" @importFromMMEID="put_import_id"/>
@@ -61,9 +66,9 @@ export default {
     },
     data(){
         return{
-            //Id de l'mme qui vien detre crée
+            //ID of the MME to reference
             mme_id:null,
-            //Id de l'mme depuis lequel importer
+            //ID of the imported MME to reference
             importation_id:null
         }
     },
@@ -75,7 +80,6 @@ export default {
             this.importation_id=value;
         }
     }
-
 }
 </script>
 

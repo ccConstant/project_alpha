@@ -1,3 +1,8 @@
+<!--File name : MonthlyMMEPlanning.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to show the monthly planning of maintenance linked to the different MME-->
+
 <template>
     <div class="eq_maintenance_page">
         <div v-if="loaded==false" >
@@ -31,21 +36,21 @@
                 <div class="planning_table">
                     <b-row>
                         <b-col cols="1" class="planning_table_internalReference">
-                            Internal Reference 
+                            Internal Reference
                         </b-col>
                         <b-col cols="1" class="planning_table_name">
                             Name
                         </b-col>
                         <b-col cols="4" class="planning_table_number">
-                           VERIF Number 
+                           VERIF Number
                         </b-col>
                         <b-col cols="4"  class="planning_table_nextDate">
                             VERIF NextDate
-                        </b-col>                 
+                        </b-col>
                     </b-row>
                     <div v-for="(verif,index) in mme_nextMonth " :key="index">
                         <b-row>
-                            <b-col cols="1"   class="planning_table_internalReference"> 
+                            <b-col cols="1"   class="planning_table_internalReference">
                                  <p class="text-primary">{{verif.Internal_Ref}}</p>
                             </b-col>
                             <b-col cols="4" class="planning_table_name">
@@ -53,17 +58,15 @@
                             </b-col>
                             <b-col cols="4"  class="planning_table_number">
                                <p class="text-primary" @click="handleListClick(verif.mme_id,verif.Internal_Ref,verif.state_id,verif.Number, verif.Description, verif.Protocol, verif.nextDate, verif.verif_periodicity, verif.verif_symbolPeriodicity, verif.verif_expectedResult, verif.verif_nonComplianceLimit)"> {{verif.Number}}</p>
-                            </b-col>  
+                            </b-col>
                             <b-col cols="4"  class="planning_table_nextDate">
                                 <p class="text-primary"> {{verif.nextDate}}</p>
-                            </b-col>             
+                            </b-col>
                         </b-row>
                     </div>
                 </div>
             </div>
             <MMEEventDetailsModal ref="event_details" :verif="verif" @modalClosed="modalClosed"></MMEEventDetailsModal>
-
-
         </div>
     </div>
 </template>
@@ -72,7 +75,7 @@
 
 
 
-import '@fullcalendar/core/vdom' // solves problem with Vite
+import '@fullcalendar/core/vdom' // solves a problem with Vite
 import FullCalendar from '@fullcalendar/vue'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -142,7 +145,7 @@ export default {
             this.mme_nextMonth=response.data;
             this.loaded=true;
         })
-        
+
     }
 
 }
@@ -155,13 +158,12 @@ export default {
         margin-left:10px ;
         width: auto;
         .remindOpeLate_container{
-        width: 100%;
-        height: auto;
-        border:solid 1px lightcoral;
-        border-radius: 15px;
-        background-color:lightcoral ;
-        margin-right: 10px;
-       
+            width: 100%;
+            height: auto;
+            border:solid 1px lightcoral;
+            border-radius: 15px;
+            background-color:lightcoral ;
+            margin-right: 10px;
             h2{
                 text-align:center ;
                 color:red;
@@ -178,60 +180,50 @@ export default {
                 text-align:center ;
                 color:grey;
             }
-        }  
+        }
         .eq_list_pagination{
             display: block;
             margin-right: 10px;
-        } 
+        }
     }
-
     .calendar_container{
-    margin-top :50px;
-    margin-left: 100px ;
-
+        margin-top :50px;
+        margin-left: 100px ;
     }
-
     .eq_planning_pdf{
-            position: relative;
-            margin-top:10px ;
-            width : 1112px;
-            
-            .title_planning_pdf{
-                width: 400px;
-                font-size : 20px;
-                font-weight: bold;
-                margin-left:150px;
+        position: relative;
+        margin-top:10px ;
+        width : 1112px;
+        .title_planning_pdf{
+            width: 400px;
+            font-size : 20px;
+            font-weight: bold;
+            margin-left:150px;
+        }
+        .planning_table{
+            margin-left:163px;
+            width:1042px;
+            .planning_table_internalReference{
+                border: none ;
+                text-align: center;
+                width:200px;
             }
-            .planning_table{
-                margin-left:163px;
-                width:1042px;
-                .planning_table_internalReference{
-                    border: none ; 
-                    text-align: center;
-                    width:200px;
-                }
-                    
-                .planning_table_name{
-                    border: none ; 
-                    text-align: center;
-                    width:200px;
-                }
-                .planning_table_number{
-                    border: none ; 
-                    text-align: center;
-                    width: 200px;
-                }                    
-                .planning_table_nextDate{
-                    border: none;
-                    text-align: center;
-                    width : 300px;
-                }
+            .planning_table_name{
+                border: none ;
+                text-align: center;
+                width:200px;
+            }
+            .planning_table_number{
+                border: none ;
+                text-align: center;
+                width: 200px;
+            }
+            .planning_table_nextDate{
+                border: none;
+                text-align: center;
+                width : 300px;
             }
         }
-
+    }
 }
-
-
-
-
 </style>

@@ -1,3 +1,8 @@
+<!--File name : EquipmentConsult.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the consultation of equipments-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -195,7 +200,7 @@ export default {
         axios.get(consultUrlDim(this.eq_id))
             .then (response=> this.eq_dimensions=response.data)
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlPow = (id) => `/power/send/${id}`;
         axios.get(consultUrlPow(this.eq_id))
             .then (response=> this.eq_powers=response.data)
@@ -211,7 +216,7 @@ export default {
                 }
             })
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlUsg = (id) => `/usage/send/${id}`;
         axios.get(consultUrlUsg(this.eq_id))
             .then (response=>this.eq_usg=response.data)
@@ -228,7 +233,7 @@ export default {
             console.log(response.data),
             this.eq_prvMtnOp=response.data})
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlRisk = (id) => `/equipment/risk/send/${id}`;
         axios.get(consultUrlRisk(this.eq_id))
             .then (response=>{
@@ -246,7 +251,7 @@ export default {
                     this.loaded=true;
                 })
                 .catch(error => console.log(error)) ;
-        
+
     },
     methods:{
         Validate(){
@@ -269,12 +274,12 @@ export default {
                         .then(response =>{
                             console.log(this.validationMethod+" made succesfully")
                             this.$refs.successAlert.showAlert(`${this.validationMethod} made succesfully`);
-                            this.$router.replace({ name: "url_eq_list"}) 
+                            this.$router.replace({ name: "url_eq_list"})
                         })
-                        //If the controller sends errors we put it in the errors object 
+                        //If the controller sends errors we put it in the errors object
                         .catch(error => this.errors=error.response.data.errors) ;
                     ;})
-                    //If the controller sends errors we put it in the errors object 
+                    //If the controller sends errors we put it in the errors object
                 .catch(error =>{
                     this.errors=error.response.data.errors
                 });
@@ -282,8 +287,8 @@ export default {
 
         }
     }
-        
-        
+
+
 }
 
 
@@ -294,7 +299,7 @@ export default {
         display: block;
         margin : auto;
         margin-bottom: 15px;
-        
+
     };
 
     .quality_validate_button{

@@ -1,3 +1,8 @@
+<!--File name : EquipmentCurMtnOpForm.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to show the form of a curative maintenance operation-->
+
 <template>
     <div :class="divClass">
         <div v-if="loaded==false">
@@ -20,7 +25,7 @@
                     <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  isRequired v-model="selected_endDate"/>
                 </div>
                 <div v-if="this.addSucces==false ">
-                    <!--If this preventive maintenance operation doesn't have a id the addEquipmentCurMtnOp is called function else the updateEquipmentCurMtnOp function is called -->
+                    <!--If this curative maintenance operation doesn't have a id the addEquipmentCurMtnOp is called function else the updateEquipmentCurMtnOp function is called -->
                     <div v-if="this.curMtnOp_id==null ">
                         <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate" @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
                     </div>
@@ -31,7 +36,7 @@
                     <div v-if="isInModifMod==true">
                         <DeleteComponentButton :Errors="errors.curMtnOp_delete"  :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
                     </div>
-                </div>  
+                </div>
             </form>
              <SuccesAlert ref="succesAlert"/>
         </div>
@@ -59,16 +64,15 @@ export default {
         DeleteComponentButton,
         SuccesAlert
     },
-     /*--------Declartion of the differents props:--------
-        number : 
-        description : 
+     /*--------Declaration of the differents props:--------
+        number :
+        description : the description of the curative maintenance operation
         validate: Validation option of the curative maintenance operation
-        consultMod: If this props is present the form is in consult mode we disable all the field
-        modifMod: If this props is present the form is in modif mode we disable save button and show update button
+        consultMod: If this props is set on true the form is in consult mode, and we disable all the field
+        modifMod: If this props is present the form is in modification mode we replace the add buttons with the similar update button
         divClass: Class name of this curative maintenance operation form
-        id: Id of an already created curative maintenance operation 
-        eq_id: Id of the equipment in which the curative maintenance operation will be added
-        
+        id: ID of an already created curative maintenance operation
+        eq_id: ID of the equipment in which the curative maintenance operation will be added
     ---------------------------------------------------*/
     props:{
         number:{
@@ -139,46 +143,49 @@ export default {
     },
     mounted() {
         if(this.selected_startDate!==null){
-            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     updated() {
         if(this.selected_startDate!==null){
-            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     created(){
+        /* We ask the controller for the curative maintenance operation list */
         axios.get('/info/send/curativeMaintenanceOperation')
         .then (response=> {
             this.infos_curMtnOp=response.data;
             this.loaded=true;
-            }) 
+            })
         .catch(error => console.log(error)) ;
     },
     methods:{
-        /*Sending to the controller all the information about the equipment so that it can be added to the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        /*Sending to the controller all the information about the curative maintenance operation,
+            so that it can be added to the database
+        Params :
+            savedAs : Value of the validation option : drafted, to_be_validated or validated  */
         addEquipmentCurMtnOp(savedAs){
             console.log("add")
             if(!this.addSucces){
-                //Id of the equipment in which the preventive maintenance operation will be added
-                var id;
-                //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
+                //ID of the equipment where the curative maintenance operation will be linked
+                let id;
+                //If the user is not in the modification mode, we set the id with the value of the data equipment_id_add
                 if(!this.modifMod){
                         id=this.equipment_id_add
-                //else the user is in the update menu, we allocate to the id the value of the id get in the url
+                //else if the user is in modification mode, we set the id with the value of equipment_id_update
                 }else{
                     id=this.equipment_id_update;
                 }
                 /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+                The report number, description, start and end dates, validate options of the curative maintenance operation, the id of the linked equipment and the id of his state
+                are sent to the controller */
                 axios.post('/curMtnOp/verif',{
                     curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                     curMtnOp_description:this.curMtnOp_description,
@@ -192,8 +199,9 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                    Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
+                    /*In case of the whole fields are correctly filled we make a new post this time to add the curative maintenance operation in the data base
+                    The report number, description, start and end dates, validate options of the curative maintenance operation, the id of the linked equipment and the id of his state
+                    are sent to the controller */
                     axios.post('/equipment/add/state/curMtnOp',{
                         curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                         curMtnOp_description:this.curMtnOp_description,
@@ -204,40 +212,39 @@ export default {
                         state_id:this.equipment_state_id,
                         enteredBy_id:this.$userId.id
 
-                
+
                     })
-                    //If the preventive maintenance operation is added succesfuly
+                    //If the curative maintenance operation is added successfully
                     .then(response =>{
                          this.$refs.succesAlert.showAlert(`Equipment curative maintenance operation added successfully and saved as ${savedAs}`);
-                        //If we the user is not in modifMod
+                        //If the user is not in modification mode, we add a new curative maintenance operation
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
                             this.isInConsultMod=true;
                             this.addSucces=true
                                 this.$emit('addSucces','');
-                            
+
                         }
-                        //the id of the preventive maintenance operation take the value of the newlly created id
+                        //the id of the curative maintenance operation take the value of the newlly created id
                         this.curMtnOp_id=response.data;
-                        //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
+                        //The validate option of this curative maintenance operation take the value of savedAs
                         this.curMtnOp_validate=savedAs;
-                        
+
                     })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
-                ;})
-                //If the controller sends errors we put it in the errors object 
+                })
                 .catch(error => this.errors=error.response.data.errors) ;
             }
-
         },
-        /*Sending to the controller all the information about the equipment so that it can be updated in the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        /*Sending to the controller all the information about the curative maintenance operation,
+            so that it can be updated in the database
+        Params :
+            savedAs : Value of the validation option : drafted, to_be_validated or validated  */
         updateEquipmentCurMtnOp(savedAs){
             console.log("update")
             /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+                The report number, description, start and end dates, validate options of the curative maintenance operation, the id of the linked equipment and the id of his state
+                are sent to the controller */
             axios.post('/curMtnOp/verif',{
                     curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                     curMtnOp_description:this.curMtnOp_description,
@@ -250,11 +257,14 @@ export default {
                     reason:'update'
                 })
                 .then(response =>{
+/*
                     console.log("update dans la base");
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                        Type, name, value, unit, validate option and id of the equipment is sended to the controller
-                        In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
-                    var consultUrl = (id) => `/equipment/update/state/curMtnOp/${id}`;
+*/
+                    /*in case of the whole fields are correctly filled, we make a new post this time to add the curative maintenance operation in the data base
+                        The report number, description, start and end dates, validate options of the curative maintenance operation, the id of the linked equipment and the id of his state
+                        are sent to the controller
+                        In the post url the id correspond to the id of the curative maintenance operation who will be update*/
+                    const consultUrl = (id) => `/equipment/update/state/curMtnOp/${id}`;
                     axios.post(consultUrl(this.curMtnOp_id),{
                         curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                         curMtnOp_description:this.curMtnOp_description,
@@ -262,7 +272,6 @@ export default {
                         curMtnOp_endDate:this.selected_endDate,
                         curMtnOp_validate :savedAs,
                         eq_id:this.equipment_id_update,
-                        curMtnOp_validate :savedAs,
                         state_id:this.equipment_state_id
 
                     })
@@ -270,35 +279,32 @@ export default {
                         this.curMtnOp_validate=savedAs;
                          this.$refs.succesAlert.showAlert(`Equipment curative maintenance operation updated successfully and saved as ${savedAs}`);
                     })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
         },
-                        /*Clear all the error of the targeted field*/
+        /*Clear all the errors of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
         },
-        //Function for deleting a preventive maintenance operation from the view and the database
+        //Function for deleting a curative maintenance operation from the view and the database
         deleteComponent(){
-            //If the user is in update mode and the preventive maintenance operation exist in the database
+            //If the user is in update mode and the curative maintenance operation exist in the database
             if(this.modifMod==true && this.curMtnOp_id!==null){
-                //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
-                var consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
+                //Send a post-request with the id of the curative maintenance operation who will be deleted in the url
+                const consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
                 axios.post(consultUrl(this.curMtnOp_id),{
                     eq_id:this.equipment_id_update,
                 })
                 .then(response =>{
-                    //Emit to the parent component that we want to delete this component
+                    //Emit to the parent component that we want to delete this curative maintenance operation
                     this.$emit('deleteCurMtnOp','')
                      this.$refs.succesAlert.showAlert(`Equipment curative maintenance operation deleted successfully`);
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }
-            
+
         }
     }
 

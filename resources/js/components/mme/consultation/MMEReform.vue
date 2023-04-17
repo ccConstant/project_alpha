@@ -1,24 +1,21 @@
+<!--File name : MMEReform.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to show a MME reformed-->
+
 <template>
-    <div>       
+    <div>
         <div v-if="loaded==false" >
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" class="mme_consultation">
             <MmeIdForm :internalReference="mme_idCard.mme_internalReference" :externalReference="mme_idCard.mme_externalReference"
-            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor" 
+            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor"
             :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
             consultMod/>
-            <ReferenceAMMEVerif v-if="mme_verifs.length>0" :importedVerif="mme_verifs" consultMod :reformMod="true"/>  
-            <ReferenceAMMEUsage v-if="mme_usages.length>0" :importedUsage="mme_usages" consultMod :reformMod="true"/>  
-
-        </div>                     
-                        
-                        
-                        
-                        
-                        
-
-                        
+            <ReferenceAMMEVerif v-if="mme_verifs.length>0" :importedVerif="mme_verifs" consultMod :reformMod="true"/>
+            <ReferenceAMMEUsage v-if="mme_usages.length>0" :importedUsage="mme_usages" consultMod :reformMod="true"/>
+        </div>
     </div>
 </template>
 
@@ -48,32 +45,27 @@ export default {
         if( this.$userId.user_makeReformRight!=true){
             this.$router.replace({ name: "home" })
         }
-        var consultUrl = (id) => `/mme/${id}`;
+        let consultUrl = (id) => `/mme/${id}`;
         axios.get(consultUrl(this.mme_id))
             .then (response => {
                 this.mme_idCard=response.data;
             })
             .catch(error => console.log(error));
 
-        var consultUrl = (id) => `/verifs/send/${id}`;
-            axios.get(consultUrl(this.mme_id))
+        consultUrl = (id) => `/verifs/send/${id}`;
+        axios.get(consultUrl(this.mme_id))
                 .then (response=> {
                     this.mme_verifs=response.data
                 })
                 .catch(error => console.log(error)) ;
-    
-        var consultUrl = (id) => `/mme_usage/send/${id}`;
+
+        consultUrl = (id) => `/mme_usage/send/${id}`;
             axios.get(consultUrl(this.mme_id))
             .then (response=> {
                 this.mme_usages=response.data
                 this.loaded=true
-            })
-            .catch(error => console.log(error)) ;
-
-
-        
-    }  
-
+            }).catch(error => console.log(error)) ;
+    }
 }
 </script>
 

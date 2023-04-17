@@ -1,3 +1,8 @@
+<!--File name : ListOfMME.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to show a list of the different MME in the menu-->
+
 <template>
 	<div class="listOfMme">
 		<div v-if="loaded==false" >
@@ -28,7 +33,7 @@
 		<jw-pagination class="mme_list_pagination" :pageSize=10 :items="filterByTerm" @changePage="onChangePage"></jw-pagination>
 		</div>
 		<b-modal :id="`modal-updateWarning-${_uid}`"  @ok="warningUpdate(mme_id,technical,quality,true)">
-			<p class="my-4">Your mme has a validated life sheet, If you update your mme you will have to 
+			<p class="my-4">Your mme has a validated life sheet, If you update your mme you will have to
 			revalidate </p>
 		</b-modal>
 
@@ -75,7 +80,7 @@ export default {
 			}else{
 				this.$router.replace({ name: "url_mme_consult", params: {id:id}, query: {method:"technical" } })
 			}
-			
+
 		},
 		qualityValidation(id){
 			if( this.$userId.user_makeQualityValidationRight!=true){
@@ -90,7 +95,7 @@ export default {
 			}else{
 				this.$router.replace({ name: "url_mme_reform", params: {id:id}})
 			}
-			
+
 		},
 		warningUpdate(id,technical,quality,redirect){
 			this.mme_id=id;
@@ -106,9 +111,9 @@ export default {
 					this.$refs.errorAlert.showAlert("You don't have the right");
 				}else{
 					this.$router.replace({ name: "url_mme_update", params: {id}})
-				}	
-				
-			} 
+				}
+
+			}
 		},
 		onChangePage(pageOfItems) {
 				console.log(pageOfItems)

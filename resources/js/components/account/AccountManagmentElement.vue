@@ -1,3 +1,8 @@
+<!--File name : AccountManagementElement.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the account management part-->
+
 <template>
     <div class="row row_right">
         <ErrorAlert ref="errorAlert"/>
@@ -6,11 +11,11 @@
         <b-col class="col_right_tab" v-for="(user) in users" :key="key_letter+user.id">
             <div class="check_formed">
                 <input type="checkbox" :id="right_name+user.id" :class="[right_name, 'right_checkbox']" :name="right_name" :value="user.id" @click="send_right_change($event,user.id,right_name)">
-                
-  
+
+
             </div>
 
-                
+
 
         </b-col>
     </div>
@@ -65,13 +70,12 @@ export default {
                 user_id:this.$userId.id
             })
             .then(response =>{console.log(response.data)})
-            //If the controller sends errors we put it in the errors object 
             .catch(error => {
                 this.$refs.errorAlert.showAlert(error.response.data.errors.user);
                 e.target.checked="checked";
             });
         },
-        
+
         formationOk(user_id){
             if(this.training_type=='equipment'){
                 this.formationEqOk(user_id)
@@ -85,7 +89,7 @@ export default {
             axios.get(getUrlFormationOk(user_id))
             .then (response=> {
                 this.eq_formation_isOk_res=response.data;
-            }) 
+            })
             .catch(error =>{}) ;
             return false;
         },
@@ -94,13 +98,13 @@ export default {
             axios.get(getUrlFormationOk(user_id))
             .then (response=> {
                 this.mme_formation_isOk_res=response.data;
-            }) 
+            })
             .catch(error =>{}) ;
             return false;
         }
 
     },
-   
+
 
 
 }
@@ -119,16 +123,16 @@ export default {
         border-left: solid 1px lightgrey;
     }
     .check_formed{
-        
+
         text-align: center;
         .right_checkbox{
             margin: auto;
             display: block;
-            
+
         }
         .formed{
             display: block;
-            
+
         }
     }
 

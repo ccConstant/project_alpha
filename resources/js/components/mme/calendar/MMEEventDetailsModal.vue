@@ -1,3 +1,8 @@
+<!--File name : MMEEventDetailsModal.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to generate a modal to show detail about an event linked to a MME-->
+
 <template>
     <div>
         <ErrorAlert ref="errorAlert"/>
@@ -21,13 +26,12 @@
                             <div v-else>
                                 <b-button variant="primary" disabled >Record it</b-button>
                             </div>
-                            
                         </b-card>
                     </div>
                 </div>
             </div>
             <b-button class="mt-3" block @click="closeAndClear()">Close</b-button>
-        </b-modal>     
+        </b-modal>
     </div>
 </template>
 
@@ -36,7 +40,6 @@ import ErrorAlert from '../../alert/ErrorAlert.vue'
 export default {
     components:{
         ErrorAlert
-
     },
     props:{
         verif:{
@@ -60,29 +63,24 @@ export default {
                 this.$refs.errorAlert.showAlert("You don't have the right");
             }
             console.log("mme_id : "+mme_id)
-            var consultUrl = (state_id) => `/mme_state/verif/beforeReferenceVerif/${state_id}`;
+            const consultUrl = (state_id) => `/mme_state/verif/beforeReferenceVerif/${state_id}`;
             axios.post(consultUrl(state_id),{
                 mme_id:mme_id
-            })
-            .then(response =>{
-                this.$router.push({ name: "url_mme_life_event_reference", params: {id:mme_id,state_id:state_id }, query: {type:"verif"}})
-            ;})
-            //If the controller sends errors we put it in the errors object 
-            .catch(error => {
+            }).then(response =>{
+                this.$router.push({ name: "url_mme_life_event_reference", params: {id:mme_id,state_id:state_id }, query: {type:"verif"}});
+            }).catch(error => {
                 this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
             });
-            
         }
     }
-
 }
 </script>
 
 <style lang="scss">
     .modal-backdrop {
-        opacity:0.8; 
+        opacity:0.8;
     }
 
-    
+
 
 </style>

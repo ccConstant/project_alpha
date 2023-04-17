@@ -1,12 +1,17 @@
+<!--File name : MMECurMtnOpModal.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to generate a modal, this modal is used to to display all of the information about a curative maintenance operation-->
+
 <template>
-    <div class="op_cur_modal_comp"> 
+    <div class="op_cur_modal_comp">
         <div class="cur_button" v-if="this.$userId.user_makeMmeOpValidationRight==true">
             <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
         </div>
         <div class="cur_button" v-else>
             <b-button  disabled variant="primary">Update</b-button>
-        </div>  
-        
+        </div>
+
         <div class="cur_button" v-if="this.$userId.user_makeMmeOpValidationRight==true">
                 <b-button v-if="realizedBy_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
         </div>
@@ -29,14 +34,14 @@
         </div>
 
         <b-modal :id="`modal-curMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
-            <MmeCurMtnOpForm modifMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id" 
+            <MmeCurMtnOpForm modifMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate" :description="curMtnOp_description" :endDate="curMtnOp_endDate"
             :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
         </b-modal>
 
-        
+
         <b-modal :id="`modal-curMtnOpManagmentRealize-${_uid}`" title="Realize the record" @ok="handleOkRealize" @hidden="resetModal">
-            <MmeCurMtnOpForm modifMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id" 
+            <MmeCurMtnOpForm modifMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to realize</h4>
@@ -45,7 +50,7 @@
         </b-modal>
 
         <b-modal :id="`modal-curMtnOpManagmentQuality-${_uid}`" title="Quality Check" @ok="handleOkQuality" @hidden="resetModal">
-            <MmeCurMtnOpForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id" 
+            <MmeCurMtnOpForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to make the quality check</h4>
@@ -54,7 +59,7 @@
         </b-modal>
 
         <b-modal :id="`modal-curMtnOpManagmentTechnical-${_uid}`" title="Technical Check" @ok="handleOkTechnical" @hidden="resetModal">
-            <MmeCurMtnOpForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id" 
+            <MmeCurMtnOpForm consultMod  :mme_id="mme_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to make the Technical check</h4>
@@ -108,7 +113,6 @@ export default {
         technicalVerifier_lastName:{
             type:String
         },
-
     },
     data(){
         return{
@@ -127,20 +131,20 @@ export default {
             this.$emit('okReload','')
         },
         resetModal(){
-            this.user_pseudo='',
+            this.user_pseudo=''
             this.user_password=''
         },
         handleOkRealize(bvModalEvent){
             // Prevent modal from closing
             bvModalEvent.preventDefault()
             // Trigger submit handler
-            var postUrlAdd = (id) => `/curMtnOp/realize/${id}`;
+            const postUrlAdd = (id) => `/curMtnOp/realize/${id}`;
             axios.post(postUrlAdd(this.curMtnOp_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.$userId.id
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
@@ -148,37 +152,33 @@ export default {
         handleOkQuality(bvModalEvent){
             // Prevent modal from closing
             bvModalEvent.preventDefault()
-            
-            var postUrlAdd = (id) => `/curMtnOp/qualityVerifier/${id}`;
+            const postUrlAdd = (id) => `/curMtnOp/qualityVerifier/${id}`;
             axios.post(postUrlAdd(this.curMtnOp_id),{
-                    user_pseudo:this.user_pseudo,
-                    user_password:this.user_password,
-                    user_id:this.$userId.id
-                })
-                .then(response =>{ 
-                    this.closeModal(bvModalEvent.target.id);
-                })
-                .catch(error =>{this.errors=error.response.data.errors});
-            
+                user_pseudo:this.user_pseudo,
+                user_password:this.user_password,
+                user_id:this.$userId.id
+            })
+            .then(response =>{
+                this.closeModal(bvModalEvent.target.id);
+            })
+            .catch(error =>{this.errors=error.response.data.errors});
         },
         handleOkTechnical(bvModalEvent){
             // Prevent modal from closing
             bvModalEvent.preventDefault()
             // Trigger submit handler
-            var postUrlAdd = (id) => `/curMtnOp/technicalVerifier/${id}`;
+            const postUrlAdd = (id) => `/curMtnOp/technicalVerifier/${id}`;
             axios.post(postUrlAdd(this.curMtnOp_id),{
-                    user_pseudo:this.user_pseudo,
-                    user_password:this.user_password,
-                    user_id:this.$userId.id
+                user_pseudo:this.user_pseudo,
+                user_password:this.user_password,
+                user_id:this.$userId.id
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
         }
-
     }
-
 }
 </script>
 

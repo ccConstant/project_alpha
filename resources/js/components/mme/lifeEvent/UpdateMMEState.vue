@@ -1,3 +1,8 @@
+<!--File name : UpdateMMEState.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to update the state of a specific MME-->
+
 <template>
     <div :class="divClass">
         <div v-if="loaded==false">
@@ -30,7 +35,7 @@
                     <InputTextForm  inputClassName="form-control" :info_text="infos_state[2].info_value" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate" />
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate" />
                 </div>
-                <RadioGroupForm label="is Ok?:" :info_text="infos_state[4].info_value" :options="isOkOptions"  :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" /> 
+                <RadioGroupForm label="is Ok?:" :info_text="infos_state[4].info_value" :options="isOkOptions"  :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" />
                 <SaveButtonForm :is_state="true" :Errors="errors.mme_delete" v-if="this.addSucces==false" @add="addMmeState" @update="updateMmeState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
 
@@ -39,7 +44,7 @@
                 <div v-if="state_validate=='validated'">
                     <div v-if="!isEmpty(mme_idCard)">
                         <MmeIdForm :internalReference="mme_idCard.mme_internalReference" :externalReference="mme_idCard.mme_externalReference"
-                            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor" 
+                            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor"
                             :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
                             consultMod />
                     </div>
@@ -47,7 +52,7 @@
                         <RadioGroupForm label="Do you want to reference a new mme ?:" :options="radioOption" v-model="new_mme"/>
                         <MmeIdForm :disableImport="true" v-if="new_mme==true" :state_id="state_id"
                         :internalReference="mme_idCard.mme_internalReference" :externalReference="mme_idCard.mme_externalReference"
-                        :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor" 
+                        :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor"
                         :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"/>
                     </div>
                 </div>
@@ -117,12 +122,11 @@ export default {
             ],
             isOkOptions :[
                 {id: 'Yes', value:true},
-                {id : 'No', value:false}
+                {id: 'No', value:false}
             ],
             isInConsultMod:this.consultMod,
             mme_id:this.$route.params.id,
             state_id:this.$route.params.state_id,
-            isInConsultMod:this.consultMod,
             isInModifMod:this.modifMod,
             errors:{},
             addSucces:false,
@@ -131,25 +135,23 @@ export default {
             current_startDate:'',
             radioOption :[
                 {id: 'Yes', value:true},
-                {id : 'No', value:false}
+                {id: 'No', value:false}
             ],
             new_mme:null,
             mme_idCard:[],
             infos_state:[],
             StateName:"StateName"
-            
-
         }
     },
     updated() {
         if(this.selected_startDate!==null){
-            this.state_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
-        };
+            this.state_startDate=moment(this.selected_startDate).format('D MMM YYYY');
+        }
     },
     methods:{
         addMmeState(savedAs){
             if (this.state_name=="Reformed" || this.state_name=="Broken" || this.state_name=="Downgraded"){
-                
+
             }
             if(!this.addSucces){
                 axios.post('/mme_state/verif',{
@@ -183,14 +185,14 @@ export default {
                             this.addSucces=true;
                             this.isInConsultMod=true;
                             this.state_validate=savedAs
-                                
+
                             })
-                        .catch(error => this.errors=error.response.data.errors) ; 
+                        .catch(error => this.errors=error.response.data.errors) ;
                     })
-                .catch(error => this.errors=error.response.data.errors) ; 
+                .catch(error => this.errors=error.response.data.errors) ;
             }
         },
-        /*Sending to the controller all the information about the mme so that it can be updated to the database */ 
+        /*Sending to the controller all the information about the mme state to check if all the fields are correctly filled, if it's okay, we can update the database */
         updateMmeState(savedAs){
              axios.post('/mme_state/verif',{
                     state_name:this.state_name,
@@ -201,12 +203,12 @@ export default {
                     state_id:this.state_id,
                     mme_id:this.mme_id,
                     reason:'update'
-                    
+
 
                 })
                 .then(response =>{
                         this.errors={}
-                        var consultUrl = (id) => `/mme/update/state/${id}`;
+                        const consultUrl = (id) => `/mme/update/state/${id}`;
                         axios.post(consultUrl(this.state_id),{
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,
@@ -219,13 +221,13 @@ export default {
                         .then(response => {
                             this.state_validate=savedAs
                             this.$refs.succesAlert.showAlert(`MME state updated successfully and saved as ${savedAs}`);
-                            
+
                         })
-                        .catch(error => this.errors=error.response.data.errors) ; 
+                        .catch(error => this.errors=error.response.data.errors) ;
                     })
                 .catch(error => this.errors=error.response.data.errors) ;
         },
-        /*Clear all the error of the targeted field*/
+        /*Clears all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
         },
@@ -241,10 +243,9 @@ export default {
         warningDelete(id,refernece){
             this.$bvModal.show(`modal-deleteWarning-${this._uid}`);
         },
-       
+
     },
     created(){
-        /*Ask for the controller other mme sets */
         if(this.$userId.user_declareNewStateRight!=true){
             this.$router.push({ name: "home"})
             return;
@@ -255,8 +256,8 @@ export default {
             if(this.isInConsultMod==false){
                 this.isInModifMod=true;
             }
-            
-            var UrlState = (id) => `/mme_state/send/${id}`;
+
+            const UrlState = (id) => `/mme_state/send/${id}`;
             axios.get(UrlState(this.state_id))
                 .then (response=>{
                     this.state_name=response.data[0].state_name;
@@ -265,7 +266,7 @@ export default {
                     this.state_isOk=response.data[0].state_isOk;
                     this.state_validate=response.data[0].state_validate;
                     if(this.state_name=="Downgraded"){
-                        var consultUrl = (state_id) => `/send/mme_state/mme/${state_id}`;
+                        const consultUrl = (state_id) => `/send/mme_state/mme/${state_id}`;
                         axios.get(consultUrl(this.state_id))
                             .then (response => {
                                 this.mme_idCard=response.data;
@@ -279,10 +280,10 @@ export default {
 
                 })
                .catch(error => this.errors=error.response.data.errors) ;
-            
+
         }else{
-            
-            var UrlState = (id) => `/mme_state/send/${id}`;
+
+            const UrlState = (id) => `/mme_state/send/${id}`;
             axios.get(UrlState(this.$route.query.currentState))
                 .then (response=>{
                     console.log(response.data)
@@ -298,7 +299,7 @@ export default {
             .then (response=> {
                 this.infos_state=response.data;
                 this.loaded=true;
-            }) 
+            })
             .catch(error => console.log(error)) ;
     }
 }
@@ -309,8 +310,8 @@ export default {
         .date-selector{
             width: 44px;
             margin-top:8px
-        }    
+        }
     }
-    
+
 
 </style>

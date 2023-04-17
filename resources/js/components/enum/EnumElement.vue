@@ -1,3 +1,8 @@
+<!--File name : EnumElement.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to show and update a list of elements-->
+
 <template>
     <div v-if="enums">
         <h2 class="enumTitle">{{this.title}}</h2>
@@ -8,22 +13,18 @@
                 <div class="enum_name">
                     {{element.value}}
                 </div>
-
                 <div class="enum_update" v-if="update_enum_right==true">
                      <a  href=# v-b-modal="`modal-updateEnum-${_uid}`" @click="sendEnumInfo(element)">Update</a>
                 </div>
                 <div class="enum_update" v-else>
                     <a  @click="showRightAlert" >Update</a>
                 </div>
-
-
                 <div class="enum_delete" v-if="delete_enum_right==true">
                     <a  href=# v-b-modal="`modal-deleteEnum-${_uid}`" @click="sendEnumInfo(element)">Delete</a>
                 </div>
                 <div class="enum_delete" v-else>
                     <a @click="showRightAlert" >Delete</a>
                 </div>
-
             </li>
         </ul>
         <div>
@@ -31,11 +32,9 @@
                 <b-button  @click="$bvModal.show(`modal-addEnum-${_uid}`)" variant="primary">Add a new enum</b-button>
             </div>
             <div v-else>
-                <b-button disabled variant="primary">Add a new enum</b-button> 
+                <b-button disabled variant="primary">Add a new enum</b-button>
                 <p class="enum_add_right_red"> You dont have the right to add a new enum.</p>
             </div>
-            
-
             <b-modal :id="`modal-addEnum-${_uid}`"  ref="modal" :title="`Submit Your ${title} Enum`" @show="resetModal" @hidden="resetModal" @ok="handleOkAdd">
                 <form ref="form" @submit.stop.prevent="handleSubmitAdd">
                     <b-form-group label="Enum" label-for="enum-input" invalid-feedback="Enum is required" :state="enumState">
@@ -43,7 +42,6 @@
                     </b-form-group>
                 </form>
             </b-modal>
-
             <b-modal :id="`modal-updateEnum-${_uid}`"  ref="modal" :title="`Update Your ${title} Enum`" @show="resetModal" @hidden="resetModal" @ok="handleOkUpdate">
                 <form ref="form" @submit.stop.prevent="handleSubmitVerifUpdate">
                     <b-form-group label="Enum" label-for="enum-input" invalid-feedback="Enum is required" :state="enumState">
@@ -51,20 +49,18 @@
                     </b-form-group>
                 </form>
             </b-modal>
-
         <b-modal :id="`modal-deleteEnum-${_uid}`"  @ok="deleteConfirmation">
             <p class="my-4">Are you sure you want to delete {{returnedEnum}} from {{this.title}} enum ?</p>
         </b-modal>
-
         <b-modal :id="`modal-enum-update-approved-${_uid}`" @ok="handleSubmitUpdate()"  >
-            <div v-if="equipments_concerned!=null && approved_equipments!=null"> 
+            <div v-if="equipments_concerned!=null && approved_equipments!=null">
                 <div v-if="equipments_concerned.length!=0" class="my-4">
                 <p>Are you sure you want to update this Enum? The following not signed equipments will be concerned : </p>
                 <p v-for="(element,index) in this.equipments_concerned" :key="index">
                     Internal Reference : {{element.internalReference}}, Name : {{element.name}}
                 </p>
                 </div>
-                <div v-if="approved_equipments.length!=0" class="my-4"> 
+                <div v-if="approved_equipments.length!=0" class="my-4">
                 <p>You will have to re validate the following equipments : </p>
                 <p v-for="(element2,index2) in this.approved_equipments" :key="index2">
                     Internal Reference : {{element2.internalReference}}, Name : {{element2.name}}
@@ -72,8 +68,7 @@
                  <InputTextForm  inputClassName="form-control" :Errors="errors.history_reason" name="reason" label="Reason" v-model="reason" />
                 </div>
             </div>
-
-            <div v-else-if="mmes_concerned!=null && approved_mmes!=null"> 
+            <div v-else-if="mmes_concerned!=null && approved_mmes!=null">
                  <div v-if="mmes_concerned.length!=0" class="my-4">
                 <p>Are you sure you want to update this Enum? The following not signed mmes will be concerned :  </p>
                 <p v-for="(element,index) in this.mmes_concerned" :key="index">
@@ -88,15 +83,13 @@
                 <InputTextForm  inputClassName="form-control" :Errors="errors.history_reason" name="reason" label="Reason" v-model="reason" />
                 </div>
             </div>
-
-           
         </b-modal>
 
 
         </div>
 
     </div>
-    
+
 </template>
 
 <script>
@@ -143,7 +136,7 @@ export default {
             showDismissibleAlert: false,
             returnedText_info:this.info_text,
             delete_enum_right:this.$userId.user_deleteEnumRight,
-            add_enum_right:this.$userId.user_addEnumRight, 
+            add_enum_right:this.$userId.user_addEnumRight,
             update_enum_right:this.$userId.user_updateEnumRight,
             approved_equipments:null,
             approved_mmes:null,
@@ -152,8 +145,6 @@ export default {
             enumId:'',
             reason:'',
             errors:{},
-
-
         }
     },
     methods: {
@@ -177,7 +168,7 @@ export default {
             if (!this.checkFormValidity()) {
                 return
             }
-            var postUrlAdd = (url) => `${url}add`;
+            const postUrlAdd = (url) => `${url}add`;
             axios.post(postUrlAdd(this.url),{
                     value:this.returnedEnum,
                 })
@@ -202,18 +193,18 @@ export default {
             if (!this.checkFormValidity()) {
                 return
             }
-            var postUrlAdd = (url,id) => `${url}verif/${id}`;
+            const postUrlAdd = (url,id) => `${url}verif/${id}`;
             axios.post(postUrlAdd(this.url,this.sendedEnumId),{
                     value:this.returnedEnum,
                 })
-                .then(response =>{ 
+                .then(response =>{
                     console.log("verif ok")
                     this.sendedEnumId=response.data
-                    var postUrlAnalyze = (url,id) => `${url}analyze/${id}`;
+                    const postUrlAnalyze = (url,id) => `${url}analyze/${id}`;
                     axios.post(postUrlAnalyze(this.url,this.sendedEnumId),{
                             value:this.returnedEnum,
                     })
-                    .then(response =>{ 
+                    .then(response =>{
                         console.log(response.data);
                         if (response.data.validated_eq!=null){
                             console.log("cas1")
@@ -230,7 +221,7 @@ export default {
                              console.log("cas4")
                             this.mmes_concerned=response.data.mmes;
                         }
-                        this.enumId=response.data.id; 
+                        this.enumId=response.data.id;
                         this.$bvModal.show(`modal-enum-update-approved-${this.compId}`);
                         console.log(response.data)
                     })
@@ -247,14 +238,14 @@ export default {
         },
 
         handleSubmitUpdate(){
-            var postUrlUpdate = (url,id) => `${url}update/${id}`;
+            const postUrlUpdate = (url, id) => `${url}update/${id}`;
             axios.post(postUrlUpdate(this.url,this.enumId),{
                     value:this.returnedEnum,
                     validated_eq:this.approved_equipments,
                     validated_mme:this.approved_mmes,
                     history_reasonUpdate:this.reason,
             })
-                .then(response =>{ 
+                .then(response =>{
                     console.log(response.data)
                     window.location.reload();
                     this.enumId=null;
@@ -266,7 +257,7 @@ export default {
                 })
         },
         deleteConfirmation(){
-            var postUrlAdd = (url,id) => `${url}delete/${id}`;
+            const postUrlAdd = (url, id) => `${url}delete/${id}`;
             axios.post(postUrlAdd(this.url,this.sendedEnumId),{
             })
             .then(response =>{ window.location.reload();})
@@ -274,7 +265,6 @@ export default {
             this.$nextTick(() => {
                 this.sendedEnumId=null;
             })
-
         },
         sendEnumInfo(element){
             this.returnedEnum=element.value;
@@ -289,12 +279,7 @@ export default {
         showRightAlert(){
             this.$refs.errorAlert.showAlert("You don't have the right")
         }
-
-        
-
     }
-    
-
 }
 </script>
 

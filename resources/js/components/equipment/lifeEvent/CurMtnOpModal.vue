@@ -1,12 +1,17 @@
+<!--File name : CurMtnOpModal.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to show the modal for the current maintenance-->
+
 <template>
-    <div class="op_cur_modal_comp"> 
+    <div class="op_cur_modal_comp">
         <div class="cur_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
             <b-button  @click="$bvModal.show(`modal-curMtnOpManagmentUpdate-${_uid}`)" variant="primary">Update</b-button>
         </div>
         <div class="cur_button" v-else>
             <b-button  disabled variant="primary">Update</b-button>
-        </div>  
-        
+        </div>
+
         <div class="cur_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
              <b-button v-if="realizedBy_lastName==null" @click="$bvModal.show(`modal-curMtnOpManagmentRealize-${_uid}`)" variant="primary">I realized it</b-button>
         </div>
@@ -29,14 +34,14 @@
         </div>
 
         <b-modal :id="`modal-curMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
-            <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
+            <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :description="curMtnOp_description" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
         </b-modal>
 
-        
+
         <b-modal :id="`modal-curMtnOpManagmentRealize-${_uid}`" title="Realize the record" @ok="handleOkRealize" @hidden="resetModal">
-            <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
+            <EquipmentCurMtnOpForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to realize</h4>
@@ -45,7 +50,7 @@
         </b-modal>
 
         <b-modal :id="`modal-curMtnOpManagmentQuality-${_uid}`" title="Quality Check" @ok="handleOkQuality" @hidden="resetModal">
-            <EquipmentCurMtnOpForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
+            <EquipmentCurMtnOpForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to make the quality check</h4>
@@ -54,7 +59,7 @@
         </b-modal>
 
         <b-modal :id="`modal-curMtnOpManagmentTechnical-${_uid}`" title="Technical Check" @ok="handleOkTechnical" @hidden="resetModal">
-            <EquipmentCurMtnOpForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id" 
+            <EquipmentCurMtnOpForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="curMtnOp_id"
             :reportNumber="curMtnOp_reportNumber" :startDate="curMtnOp_startDate"  :endDate="curMtnOp_endDate"
             :description="curMtnOp_description" :validate="curMtnOp_validate" @deleteCurMtnOp="closeModal()"/>
             <h4>Please enter your Username and your password to make the Technical check</h4>
@@ -120,7 +125,7 @@ export default {
             this.$emit('okReload','')
         },
         resetModal(){
-            this.user_pseudo='',
+            this.user_pseudo='';
             this.user_password=''
         },
         handleOkRealize(bvModalEvent){
@@ -133,7 +138,7 @@ export default {
                     user_password:this.user_password,
                     user_id:this.$userId.id
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
@@ -142,18 +147,18 @@ export default {
         handleOkQuality(bvModalEvent){
             // Prevent modal from closing
             bvModalEvent.preventDefault()
-            
+
             var postUrlAdd = (id) => `/curMtnOp/qualityVerifier/${id}`;
             axios.post(postUrlAdd(this.curMtnOp_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.$userId.id
                 })
-                .then(response =>{ 
+                .then(response =>{
                     this.closeModal(bvModalEvent.target.id);
                 })
                 .catch(error =>{this.errors=error.response.data.errors});
-            
+
         },
 
         handleOkTechnical(bvModalEvent){
@@ -166,7 +171,7 @@ export default {
                     user_password:this.user_password,
                     user_id:this.$userId.id
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});

@@ -1,3 +1,8 @@
+<!--File name : FooterAlpha.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component of the website footer-->
+
 <template>
   <footer>
 		<div class="container">
@@ -16,7 +21,7 @@
 					<p class="h6">© Alpha</p>
 				</div>
 				<hr>
-			</div>	
+			</div>
 		</div>
 	</footer>
 </template>

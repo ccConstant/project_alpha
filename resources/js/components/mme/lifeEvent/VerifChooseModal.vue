@@ -1,3 +1,8 @@
+<!--File name : VerifChooseModal.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to choose a verification to realize with a modal-->
+
 <template>
     <div>
         <div v-if="verifs.length>0">
@@ -21,7 +26,6 @@
                                 Description : {{option.verif_description}}<br>
                                 Protocol : {{option.verif_protocol}}<br>
                                 Next Date : {{option.verif_nextDate}}
-
                             </p>
                             </b-card>
                         </b-collapse>
@@ -30,7 +34,7 @@
             </div>
             <b-button class="mt-3" block @click="$bvModal.hide('modal-1')">Close</b-button>
             <b-button class="mt-3" block @click="chooseMme">Choose</b-button>
-        </b-modal>     
+        </b-modal>
     </div>
 </template>
 
@@ -52,25 +56,20 @@ export default {
         chooseMme(){
             if(this.radio_value!=''){
                 this.$emit('choosedOpe',this.radio_value)
-
             }
             this.$bvModal.hide('modal-1')
         }
     },
     created(){
-        for (var i=0;i<this.verifs_data.length;i++) {
+        for (let i = 0; i < this.verifs_data.length; i++) {
             this.verifs_data[i].verif_nextDate=moment(this.verifs_data[i].verif_nextDate).format('D MMM YYYY ');
         }
-    }    
-
+    }
 }
 </script>
 
 <style lang="scss">
     .modal-backdrop {
-        opacity:0.8; 
+        opacity:0.8;
     }
-
-    
-
 </style>

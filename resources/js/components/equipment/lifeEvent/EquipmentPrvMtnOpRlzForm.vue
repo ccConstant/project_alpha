@@ -1,3 +1,8 @@
+<!--File name : EquipmentPrvMtnOpRlz.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to show the form of a preventive maintenance already realized-->
+
 <template>
     <div :class="divClass">
         <div v-if="loaded==false">
@@ -14,7 +19,7 @@
                 </div>
 
 
-                
+
                 <InputTextForm inputClassName="form-control w-50" :Errors="errors.prvMtnOpRlz_reportNumber" name="prvMtnOpRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="prvMtnOpRlz_reportNumber" :info_text="infos_prvMtnOpRlz[0].info_value"/>
                 <div class="input-group">
                     <InputTextForm inputClassName="form-control" :placeholer="'Operation date :'+prvMtnOp_startDate_placeholer" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
@@ -37,7 +42,7 @@
                         <div v-if="isInModifMod==true">
                             <DeleteComponentButton :Errors="errors.prvMtnOpRlz_delete" :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
                         </div>
-                    </div>  
+                    </div>
 
                 </div>
 
@@ -68,11 +73,22 @@ export default {
         PrvMtnOpChooseModal,
         SuccesAlert
     },
-         /*--------Declartion of the differents props:--------
-        number : 
-        description : 
-
-        
+         /*--------Declaration of the differents props:--------
+        number: Unused prop
+        reportNumber: The number of the report linked to the preventive maintenance operation realized
+        startDate: The date when begin the current preventive maintenance operation realized
+        endDate: The date when will finish the preventive maintenance operation realized
+        validate: It can be "drafted", "to_be_validated" or "validated"
+        consultMod: Set at true if the form is in consultation mode, in case we set all the component at disabled, and we hide the save button
+        modifMod: Set at true if the form is in modification mode, else it is in add mode
+        divClass: The class of the preventive maintenance operation
+        id: The identification number of the preventive maintenance operation realized
+        eq_id: The identification number of the affected equipment by the preventive maintenance operation realized
+        state_id: The identification number of the state of the affected equipment by the preventive maintenance operation realized
+        prvMtnOp_number_prop: The number the preventive maintenance operation
+        prvMtnOp_description_prop: The description of the preventive maintenance operation
+        prvMtnOp_protocol_prop: The protocol applicable during the preventive maintenance operation
+        prvMtnOp_id_prop: The id of the preventive maintenance operation
     ---------------------------------------------------*/
     props:{
         number:{
@@ -161,30 +177,30 @@ export default {
     },
     mounted() {
         if(this.selected_startDate!==null){
-            this.prvMtnOpRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.prvMtnOpRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.prvMtnOpRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.prvMtnOpRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     updated() {
         if(this.selected_startDate!==null){
-            this.prvMtnOpRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.prvMtnOpRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.prvMtnOpRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.prvMtnOpRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
 
     methods:{
         /*Sending to the controller all the information about the equipment so that it can be added to the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        Params:
+            savedAs: Value of the validation option: drafted, to_be_validated or validated */
         addEquipmentPrvMtnOpRlz(savedAs){
             if(!this.addSucces){
-                //Id of the equipment in which the preventive maintenance operation will be added
-                var id;
-                //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data equipment_id_add 
+                //ID of the equipment affected by the preventive maintenance operation
+                let id;
+                //If the user is not in the modification mode, we allocate to the id the value of the id get with the data equipment_id_add
                 if(!this.modifMod){
                         id=this.equipment_id_add
                 //else the user is in the update menu, we allocate to the id the value of the id get in the url
@@ -192,8 +208,8 @@ export default {
                     id=this.equipment_id_update;
                 }
                 /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
-                console.log("REport number:",this.prvMtnOpRlz_reportNumber,"\n","validate :",savedAs,"\nEQ ID: ",id,"\nState id:",this.equipment_state_id,"\nprvmtnOp:",this.prvMtnOp_id)
+                The reportNumber, the start and end date, validate enum, the id of the state, the id of the affected equipment and the id of maintenance operation are sent to the controller*/
+                // console.log("Report number:",this.prvMtnOpRlz_reportNumber,"\n","validate :",savedAs,"\nEQ ID: ",id,"\nState id:",this.equipment_state_id,"\nprvmtnOp:",this.prvMtnOp_id)
                 axios.post('/prvMtnOpRlz/verif',{
                     prvMtnOpRlz_reportNumber:this.prvMtnOpRlz_reportNumber,
                     prvMtnOpRlz_startDate:this.selected_startDate,
@@ -206,8 +222,9 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                    Type, name, value, unit, validate option and id of the equipment is sended to the controller*/
+                    /*If all the verification passed, a new post this time to add the preventive maintenance operation in the database
+                    The reportNumber, the start and end date, validate enum, the id of the state, the id of the affected equipment
+                    and the id of maintenance operation are sent to the controller*/
                     axios.post('/equipment/add/state/prvMtnOpRlz',{
                         prvMtnOpRlz_reportNumber:this.prvMtnOpRlz_reportNumber,
                         prvMtnOpRlz_startDate:this.selected_startDate,
@@ -217,7 +234,7 @@ export default {
                         state_id:this.equipment_state_id,
                         prvMtnOp_id:this.prvMtnOp_id,
                         enteredBy_id:this.$userId.id
-                
+
                     })
                     //If the preventive maintenance operation is added succesfuly
                     .then(response =>{
@@ -228,28 +245,26 @@ export default {
                             this.isInConsultMod=true;
                             this.addSucces=true
                                 this.$emit('addSucces','');
-                            
+
                         }
                         //the id of the preventive maintenance operation take the value of the newlly created id
                         this.prvMtnOpRlz_id=response.data;
                         //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
                         this.prvMtnOpRlz_validate=savedAs;
-                        
+
                     })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
-                ;})
-                //If the controller sends errors we put it in the errors object 
+                })
                 .catch(error => this.errors=error.response.data.errors) ;
             }
 
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        Params :
+            savedAs : Value of the validation option : drafted, to_be_validated or validated  */
         updateEquipmentPrvMtnOpRlz(savedAs){
             /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+               The reportNumber, the start and end date, validate enum, the id of the state, the id of the affected equipment and the id of maintenance operation are sent to the controller*/
             axios.post('/prvMtnOpRlz/verif',{
                     prvMtnOpRlz_reportNumber:this.prvMtnOpRlz_reportNumber,
                     prvMtnOpRlz_startDate:this.selected_startDate,
@@ -263,9 +278,9 @@ export default {
                 })
                 .then(response =>{
                     console.log("update dans la base");
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                        Type, name, value, unit, validate option and id of the equipment is sended to the controller
-                        In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
+                    /*If all the verification passed, a new post this time to add the preventive maintenance operation in the data base
+                    The reportNumber, the start and end date, validate enum, the id of the state, the id of the affected equipment and the id of maintenance operation are sent to the controller
+                    In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
                     var consultUrl = (id) => `/equipment/update/state/prvMtnOpRlz/${id}`;
                     axios.post(consultUrl(this.prvMtnOpRlz_id),{
                         prvMtnOpRlz_reportNumber:this.prvMtnOpRlz_reportNumber,
@@ -273,7 +288,6 @@ export default {
                         prvMtnOpRlz_endDate:this.selected_endDate,
                         prvMtnOpRlz_validate :savedAs,
                         eq_id:this.equipment_id_update,
-                        prvMtnOpRlz_validate :savedAs,
                         state_id:this.equipment_state_id,
                         prvMtnOp_id:this.prvMtnOp_id
 
@@ -282,10 +296,8 @@ export default {
                         this.prvMtnOpRlz_validate=savedAs;
                         this.$refs.succesAlert.showAlert(`Equipment preventive maintenance operation realized updated successfully and saved as ${savedAs}`);
                         })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
         },
         /*Clear all the error of the targeted field*/
@@ -294,12 +306,12 @@ export default {
         },
         //Function for deleting a preventive maintenance operation from the view and the database
         deleteComponent(){
-            
+
             //If the user is in update mode and the preventive maintenance operation exist in the database
             if(this.modifMod==true && this.prvMtnOpRlz_id!==null){
                 console.log("supression");
-                //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
-                var consultUrl = (id) => `/state/delete/prvMtnOpRlz/${id}`;
+                //Send a post-request with the id of the preventive maintenance operation who will be deleted in the url
+                const consultUrl = (id) => `/state/delete/prvMtnOpRlz/${id}`;
                 axios.post(consultUrl(this.prvMtnOpRlz_id),{
                     eq_id:this.equipment_id_update,
                 })
@@ -307,11 +319,11 @@ export default {
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deletePrvMtnOpRlz','')
                 })
-                //If the controller sends errors we put it in the errors object 
+                //If the controller sends errors we put it in the errors object
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }
-            
+
         },
         choosedOpe(value){
             this.prvMtnOp_number=value.prvMtnOp_number;
@@ -325,7 +337,7 @@ export default {
         if(this.isInConsultMod==false && this.isInModifMod==false){
             console.log("creation");
             console.log(this.eq_id);
-            var consultUrl = (id) => `/prvMtnOp/send/validated/${id}`;
+            const consultUrl = (id) => `/prvMtnOp/send/validated/${id}`;
             axios.get(consultUrl(this.eq_id))
                 .then (response =>{
                     this.prvMtnOps=response.data;
@@ -336,14 +348,14 @@ export default {
         axios.get('/info/send/preventiveMaintenanceOperation')
         .then (response=> {
             this.infos_prvMtnOp=response.data;
-        }) 
+        })
         .catch(error => console.log(error)) ;
 
         axios.get('/info/send/preventiveMaintenanceOperationRealized')
             .then (response=> {
                 this.infos_prvMtnOpRlz=response.data;
                 this.loaded=true;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
     }

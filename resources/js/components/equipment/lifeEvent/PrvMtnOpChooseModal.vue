@@ -1,3 +1,8 @@
+<!--File name : PrvMtnOpChooseModal.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to make the modal to choose the preventive maintenance operation to realize-->
+
 <template>
     <div>
         <div v-if="prvMtnOps.length>0">
@@ -28,7 +33,7 @@
             </div>
             <b-button class="mt-3" block @click="$bvModal.hide('modal-1')">Close</b-button>
             <b-button class="mt-3" block @click="chooseEquipment">Choose</b-button>
-        </b-modal>     
+        </b-modal>
     </div>
 </template>
 
@@ -59,16 +64,16 @@ export default {
         for (var i=0;i<this.prvMtnOps_data.length;i++) {
             this.prvMtnOps_data[i].prvMtnOp_nextDate=moment(this.prvMtnOps_data[i].prvMtnOp_nextDate).format('D MMM YYYY ');
         }
-    }    
+    }
 
 }
 </script>
 
 <style lang="scss">
     .modal-backdrop {
-        opacity:0.8; 
+        opacity:0.8;
     }
 
-    
+
 
 </style>

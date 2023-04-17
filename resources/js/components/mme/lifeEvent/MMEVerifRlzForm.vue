@@ -1,3 +1,8 @@
+<!--File name : MMEVerifRlzForm.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to generate a form, this form is used to add a verification realized-->
+
 <template>
       <div :class="divClass">
         <div v-if="loaded==false">
@@ -15,8 +20,6 @@
                     <InputTextAreaForm :info_text="infos_verif[8].info_value" inputClassName="form-control w-50" name="verif_protocol" label="Protocol :" isDisabled   v-model="verif_protocol"/>
                 </div>
 
-
-                
                 <InputTextForm :info_text="infos_verifRlz[0].info_value" inputClassName="form-control w-50" :Errors="errors.verifRlz_reportNumber" name="verifRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  v-model="verifRlz_reportNumber"/>
                 <div class="input-group">
                     <InputTextForm :info_text="infos_verifRlz[1].info_value" inputClassName="form-control" :placeholer="'Operation date :'+verif_startDate_placeholer" :Errors="errors.verifRlz_startDate" name="verifRlz_startDate" label="Start date :" :isDisabled="true" v-model="verifRlz_startDate" />
@@ -29,7 +32,7 @@
                 <RadioGroupForm :info_text="infos_verifRlz[3].info_value" label="is Passed?:"  :options="isPassedOption" :Errors="errors.verifRlz_isPassed" :checkedOption="verifRlz_isPassed" :isDisabled="!!isInConsultMod" v-model="verifRlz_isPassed"/> 
                 <div v-if="this.verif_id!==null">
                     <div v-if="this.addSucces==false">
-                        <!--If this preventive maintenance operation doesn't have a id the addMmeVerifRlz is called function else the updateMmeVerifRlz function is called -->
+                        <!--If this verification doesn't have a id the addMmeVerifRlz is called function else the updateMmeVerifRlz function is called -->
                         <div v-if="this.verifRlz_id==null ">
                             <SaveButtonForm :is_op="true" :Errors="errors.verifRlz_validate" @add="addMmeVerifRlz" @update="updateMmeVerifRlz" :consultMod="this.isInConsultMod" :savedAs="verifRlz_validate"/>
                         </div>
@@ -41,9 +44,7 @@
                             <DeleteComponentButton :Errors="errors.verifRlz_delete" :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
                         </div>
                     </div>  
-
                 </div>
-
             </form>
         </div>
         <SuccesAlert ref="succesAlert"/>
@@ -138,7 +139,6 @@ export default {
             type:Number,
             default:null
         }
-
     },
     data(){
         return{
@@ -191,27 +191,27 @@ export default {
         }
     },
     methods:{
-        /*Sending to the controller all the information about the mme so that it can be added to the database
+        /*Sending to the controller all the information about the verification so that it can be added to the database
         Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+            savedAs : Value of the validation option : drafted, to_be_validated or validated  */ 
         addMmeVerifRlz(savedAs){
             if(!this.addSucces){
-                //Id of the mme in which the preventive maintenance operation will be added
-                var id;
-                //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data mme_id_add 
+                //Id of the mme in which the verification will be added
+                let id;
+                //If the user is not in the modification mode, we set the id with the value of mme_id_add 
                 if(!this.modifMod){
                         id=this.mme_id_add
-                //else the user is in the update menu, we allocate to the id the value of the id get in the url
+                //else the user is in the update menu, we set the id with the value of mme_id_update
                 }else{
                     id=this.mme_id_update;
                 }
-                /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
-                console.log(this.verif_id)
+				
+				console.log(this.verif_id)
                 console.log(this.mme_state_id)
                 console.log(savedAs)
-
-
+				
+                /*First post to verify if all the fields are filled correctly
+                The reportNumber, startDate, endDate, isPassed, validate options, the id of the mme affected, the id of his state and the id of the verification are sent to the controller*/			
                 axios.post('/verifRlz/verif',{
                     verifRlz_reportNumber:this.verifRlz_reportNumber,
                     verifRlz_startDate:this.selected_startDate,
@@ -225,8 +225,9 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                    Type, name, value, unit, validate option and id of the mmme is sended to the controller*/
+                    /*If all of the fields are correctly filled, a new post this time to add the verification in the data base
+                    The reportNumber, the startDate, endDate, isPassed value, validate options, the id of the mme affected, the id of his current state, the id of verification and the user who entered it
+					All of this information are sent to the controller*/
                     axios.post('/mme/add/mme_state/verifRlz',{
                         verifRlz_reportNumber:this.verifRlz_reportNumber,
                         verifRlz_startDate:this.selected_startDate,
@@ -236,10 +237,9 @@ export default {
                         mme_id:id,
                         state_id:this.mme_state_id,
                         verif_id:this.verif_id,
-                        enteredBy_id:this.$userId.id
-                
+                        enteredBy_id:this.$userId.id   
                     })
-                    //If the preventive maintenance operation is added succesfuly
+                    //If the verification is added succesfuly
                     .then(response =>{
                         this.$refs.succesAlert.showAlert(`MME verification realized added successfully and saved as ${savedAs}`);
                         //If we the user is not in modifMod
@@ -248,28 +248,23 @@ export default {
                             this.isInConsultMod=true;
                             this.addSucces=true
                                 this.$emit('addSucces','');
-                            
                         }
-                        //the id of the preventive maintenance operation take the value of the newlly created id
+                        //the id of the verification take the value of the newly created id
                         this.verifRlz_id=response.data;
-                        //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
+                        //The validate option of this verification take the value of savedAs
                         this.verifRlz_validate=savedAs;
-                        
                     })
-                    //If the controller sends errors we put it in the errors object 
-                    .catch(error => this.errors=error.response.data.errors) ;
-                ;})
-                //If the controller sends errors we put it in the errors object 
+                    .catch(error => this.errors=error.response.data.errors);
+                })
                 .catch(error => this.errors=error.response.data.errors) ;
             }
-
         },
         /*Sending to the controller all the information about the mme so that it can be updated in the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        Params: 
+            savedAs: Value of the validation option: drafted, to_be_validated or validated  */ 
         updateMmeVerifRlz(savedAs){
             /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+                The reportNumber, startDate, endDate, isPassed, validate options, the id of the affected mme, the id of his current state, and the id of the verification are sent to the controller*/
             axios.post('/verifRlz/verif',{
                     verifRlz_reportNumber:this.verifRlz_reportNumber,
                     verifRlz_startDate:this.selected_startDate,
@@ -284,10 +279,11 @@ export default {
                 })
                 .then(response =>{
                     console.log("update dans la base");
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                        Type, name, value, unit, validate option and id of the mme is sended to the controller
-                        In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
-                    var consultUrl = (id) => `/mme/update/mme_state/verifRlz/${id}`;
+                    /*If all of the fields are correctly filled, a new post this time to add the verification in the data base
+                    The reportNumber, the startDate, endDate, isPassed value, validate options, the id of the mme affected, the id of his current state, the id of verification and the user who entered it
+					All of this information are sent to the controller
+					In the post url the id correspond to the id of the verification who will be updated*/
+                    const consultUrl = (id) => `/mme/update/mme_state/verifRlz/${id}`;
                     axios.post(consultUrl(this.verifRlz_id),{
                         verifRlz_reportNumber:this.verifRlz_reportNumber,
                         verifRlz_startDate:this.selected_startDate,
@@ -297,29 +293,25 @@ export default {
                         mme_id:this.mme_id_update,
                         state_id:this.mme_state_id,
                         verif_id:this.verif_id
-
                     })
                     .then(response =>{
                         this.$refs.succesAlert.showAlert(`MME verification realized updated successfully and saved as ${savedAs}`);
                         this.verifRlz_validate=savedAs;})
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
         },
-                /*Clear all the error of the targeted field*/
+		/*Clear all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
         },
-        //Function for deleting a preventive maintenance operation from the view and the database
+        //Function for deleting a verification from the view and the database
         deleteComponent(){
-            
-            //If the user is in update mode and the preventive maintenance operation exist in the database
+            //If the user is in update mode and the verification exist in the database
             if(this.modifMod==true && this.verifRlz_id!==null){
                 console.log("supression");
-                //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
-                var consultUrl = (id) => `/mme_state/delete/verifRlz/${id}`;
+                //Send a post-request with the id of the verification who will be deleted in the url
+                const consultUrl = (id) => `/mme_state/delete/verifRlz/${id}`;
                 axios.post(consultUrl(this.verifRlz_id),{
                     mme_id:this.mme_id_update,
                 })
@@ -329,9 +321,7 @@ export default {
                 })
                 //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
-
             }
-            
         },
         choosedOpe(value){
             this.verif_number=value.verif_number;
@@ -345,7 +335,7 @@ export default {
     },
     created(){
         if(this.isInConsultMod==false && this.isInModifMod==false){
-            var consultUrl = (id) => `/verif/send/validated/${id}`;
+            const consultUrl = (id) => `/verif/send/validated/${id}`;
             axios.get(consultUrl(this.mme_id))
                 .then (response =>{
                     this.verifs=response.data;
@@ -353,24 +343,19 @@ export default {
                     })
                 .catch(error => console.log(error));
         }
-
         axios.get('/info/send/verif')
             .then (response=> {
                 this.infos_verif=response.data;
 
                 }) 
             .catch(error => console.log(error)) ;
-
         axios.get('/info/send/verifRlz')
             .then (response=> {
                 this.loaded=true;
                 this.infos_verifRlz=response.data;
                 }) 
             .catch(error => console.log(error)) ;
-
     }
-
-
 }
 </script>
 

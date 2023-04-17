@@ -1,3 +1,8 @@
+<!--File name : ReferenceAPrvMtnOpRlz.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to reference a preventive maintenance operation already realized-->
+
 <template>
     <div class="equipmentprvMtnOpRlz" >
         <h2 class="titleForm">Equipment Preventive Maintenance Operation</h2>
@@ -12,17 +17,16 @@
             :prvMtnOp_description_prop="component.prvMtnOp_description" :prvMtnOp_number_prop="component.prvMtnOp_number" :prvMtnOp_protocol_prop="component.prvMtnOp_protocol"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"
             @deletePrvMtnOpRlz="getContent(key)" @addSucces="addSucces()" />
-    
+
         <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
     </div>
 </template>
 
 <script>
-/*Importation of the others Components who will be used here*/
 import EquipmentPrvMtnOpRlzForm from './EquipmentPrvMtnOpRlzForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 export default {
-/*--------Declartion of the others Components:--------*/
+/*--------Declaration of the others Components:--------*/
     components:{
         EquipmentPrvMtnOpRlzForm,
         SaveButtonForm,
@@ -60,7 +64,7 @@ export default {
         }
     },
     methods:{
-   
+
         addComponent() {
             this.components.push({
                 comp:'EquipmentPrvMtnOpRlzForm',
@@ -87,21 +91,21 @@ export default {
                 prvMtnOp_protocol:prvMtnOp_protocol
             });
         },
-        //Suppresion of a preventive maintenance operation component from the vue
+        //Suppression of a preventive maintenance operation component from the vue
         getContent(key) {
             this.components.splice(key, 1);
         },
         //Function for adding to the vue the imported preventive maintenance operation
         importPrvMtnOpRlz(){
             for (const prvMtnOpRlz of this.prvMtnOpsRlz) {
-                var className="importedPrvMtnOpRlz"+prvMtnOpRlz.id
+                const className = "importedPrvMtnOpRlz" + prvMtnOpRlz.id;
                 this.addImportedComponent(prvMtnOpRlz.prvMtnOpRlz_number,prvMtnOpRlz.prvMtnOpRlz_reportNumber,prvMtnOpRlz.prvMtnOpRlz_startDate,
                     prvMtnOpRlz.prvMtnOpRlz_endDate,prvMtnOpRlz.prvMtnOpRlz_validate,className,prvMtnOpRlz.id,
                     prvMtnOpRlz.prvMtnOp_id,prvMtnOpRlz.prvMtnOp_description,prvMtnOpRlz.prvMtnOp_number,prvMtnOpRlz.prvMtnOp_protocol);
             }
             this.prvMtnOpsRlz=null
         },
-                //Function for saving all the data in one time
+        //Function for saving all the data in one time
         saveAll(savedAs){
             for(const component of this.$refs.ask_prvMtnOpRlz_data){
                 //If the user is in modification mode
@@ -111,26 +115,22 @@ export default {
                         //AddequipmentPrvMtnOpRlz is used
                         component.addEquipmentPrvMtnOpRlz(savedAs);
                     }else
-                    //Else if the preventive maintenance operation have an id and addSucces is equal to true 
+                    //Else if the preventive maintenance operation has an id and addSucces, is equal to true
                     if(component.prvMtnOpRlz_id!=null || component.addSucces==true){
-                        //updateEquipmentPrvMtnOpRlz is used
                         component.updateEquipmentPrvMtnOpRlz(savedAs);
                     }
                 }else{
                     //Else If the user is not in modification mode
                     component.addEquipmentPrvMtnOpRlz(savedAs);
                 }
-                
-
             }
         },
         addSucces(){
             this.$emit('addSucces','')
         }
     },
-    /*All function inside the created option is called after the component has been mounted.*/
     mounted(){
-        //If the user is in consultation or modification mode preventive maintenance operation will be added to the vue automatically
+        //If the user is in consultation or modification mode, preventive maintenance operation will be added to the vue automatically
         if(this.consultMod || this.modifMod ){
             this.importPrvMtnOpRlz();
         }else{

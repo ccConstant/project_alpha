@@ -1,3 +1,8 @@
+<!--File name : MmeCurMtnOpForm.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to generate a form, this form will be used to create a new curative maintenance operation on a MME-->
+
 <template>
     <div :class="divClass">
         <div v-if="loaded==false">
@@ -20,7 +25,7 @@
                     <InputDateForm :info_text="infos_curMtnOp[4].info_value" inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  v-model="selected_endDate"/>
                 </div>
                 <div v-if="this.addSucces==false ">
-                    <!--If this preventive maintenance operation doesn't have a id the addMmeCurMtnOp is called function else the updateMmeCurMtnOp function is called -->
+                    <!--If this curative maintenance operation doesn't have a id the addMmeCurMtnOp is called function else the updateMmeCurMtnOp function is called -->
                     <div v-if="this.curMtnOp_id==null ">
                         <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate" @add="addMmeCurMtnOp" @update="updateMmeCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
                     </div>
@@ -31,7 +36,7 @@
                     <div v-if="isInModifMod==true">
                         <DeleteComponentButton :Errors="errors.curMtnOp_delete"  :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
                     </div>
-                </div>  
+                </div>
             </form>
             <SuccesAlert ref="succesAlert"/>
         </div>
@@ -128,18 +133,18 @@ export default {
     },
     mounted() {
         if(this.selected_startDate!==null){
-            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     updated() {
         if(this.selected_startDate!==null){
-            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     created(){
@@ -147,26 +152,26 @@ export default {
             .then (response=> {
                 this.infos_curMtnOp=response.data;
                 this.loaded=true;
-                }) 
+                })
             .catch(error => console.log(error)) ;
     },
     methods:{
         /*Sending to the controller all the information about the mme so that it can be added to the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        Params:
+            savedAs: Value of the validation option: drafted, to_be_validated or validated  */
         addMmeCurMtnOp(savedAs){
             if(!this.addSucces){
-                //Id of the mme in which the preventive maintenance operation will be added
-                var id;
-                //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data mme_id_add 
+                //ID of the mme in which the curative maintenance operation will be added
+                let id;
+                //If the user is not in modification mode, we set the id with the value of mme_id_add
                 if(!this.modifMod){
                         id=this.mme_id_add
                 //else the user is in the update menu, we allocate to the id the value of the id get in the url
                 }else{
                     id=this.mme_id_update;
                 }
-                /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+                /*The First post to verify if all the fields are filled correctly
+                The report number, description, start date, end date, validate option, id of the mme affected and the id of the current state are sent to the controller */
                 axios.post('/mme/curMtnOp/verif',{
                     curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                     curMtnOp_description:this.curMtnOp_description,
@@ -179,8 +184,8 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                    Type, name, value, unit, validate option and id of the mme is sended to the controller*/
+                    /*If all the verification passed, a new post this time to add the curative maintenance operation in the database
+                    The report number, description, start date, end date, validate option, id of the mme affected and the id of the current state are sent to the controller */
                     axios.post('/mme/add/state/curMtnOp',{
                         curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                         curMtnOp_description:this.curMtnOp_description,
@@ -190,40 +195,36 @@ export default {
                         mme_id:id,
                         state_id:this.mme_state_id,
                         enteredBy_id:this.$userId.id
-
-                
                     })
-                    //If the preventive maintenance operation is added succesfuly
+                    //If the curative maintenance operation is added successfully
                     .then(response =>{
                         this.$refs.succesAlert.showAlert(`MME curative maintenance operation added successfully and saved as ${savedAs}`);
-                        //If we the user is not in modifMod
+                        //If we have the user is not in modifMod
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
                             this.isInConsultMod=true;
                             this.addSucces=true
                                 this.$emit('addSucces','');
-                            
                         }
-                        //the id of the preventive maintenance operation take the value of the newlly created id
+                        //the id of the curative maintenance operation take the value of the newly created id
                         this.curMtnOp_id=response.data;
-                        //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
+                        //The validate option of this curative maintenance operation takes the value of savedAs
                         this.curMtnOp_validate=savedAs;
-                        
+
                     })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 ;})
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
             }
         },
         /*Sending to the controller all the information about the mme so that it can be updated in the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        Params:
+            savedAs: Value of the validation option: drafted, to_be_validated or validated  */
         updateMmeCurMtnOp(savedAs){
             console.log("update")
-            /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+            /*The First post to verify if all the fields are filled correctly
+                The report number, description, start date, end date, validate option, id of the mme affected and the id of the current state are sent to the controller
+             */
             axios.post('/mme/curMtnOp/verif',{
                     curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                     curMtnOp_description:this.curMtnOp_description,
@@ -237,10 +238,10 @@ export default {
                 })
                 .then(response =>{
                     console.log("update dans la base");
-                    /*If all the verif passed, a new post this time to add the preventive maintenance operation in the data base
-                        Type, name, value, unit, validate option and id of the mme is sended to the controller
-                        In the post url the id correspond to the id of the preventive maintenance operation who will be update*/
-                    var consultUrl = (id) => `/mme/update/state/curMtnOp/${id}`;
+                    /*If all the verification passed, a new post this time to add the curative maintenance operation in the database
+                    The report number, description, start date, end date, validate option, id of the mme affected and the id of the current state are sent to the controller
+                        In the post url the id correspond to the id of the curative maintenance operation who will be updated*/
+                    const consultUrl = (id) => `/mme/update/state/curMtnOp/${id}`;
                     axios.post(consultUrl(this.curMtnOp_id),{
                         curMtnOp_reportNumber:this.curMtnOp_reportNumber,
                         curMtnOp_description:this.curMtnOp_description,
@@ -248,30 +249,26 @@ export default {
                         curMtnOp_endDate:this.selected_endDate,
                         curMtnOp_validate :savedAs,
                         mme_id:this.mme_id_update,
-                        curMtnOp_validate :savedAs,
                         state_id:this.mme_state_id
-
                     })
                     .then(response =>{
                         this.curMtnOp_validate=savedAs;
                         this.$refs.succesAlert.showAlert(`MME curative maintenance operation updated successfully and saved as ${savedAs}`);
                     })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
         },
-        /*Clear all the error of the targeted field*/
+        /*Clears all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
         },
-        //Function for deleting a preventive maintenance operation from the view and the database
+        //Function for deleting a curative maintenance operation from the view and the database
         deleteComponent(){
-            //If the user is in update mode and the preventive maintenance operation exist in the database
+            //If the user is in update mode and the curative maintenance operation exists in the database
             if(this.modifMod==true && this.curMtnOp_id!==null){
-                //Send a post request with the id of the preventive maintenance operation who will be deleted in the url
-                var consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
+                //Send a post-request with the id of the curative maintenance operation who will be deleted in the url
+                const consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
                 axios.post(consultUrl(this.curMtnOp_id),{
                     mme_id:this.mme_id_update,
                 })
@@ -280,11 +277,8 @@ export default {
                     this.$emit('deleteCurMtnOp','')
                     this.$refs.succesAlert.showAlert(`MME curative maintenance operation deleted successfully`);
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
-
             }
-            
         }
     }
 }

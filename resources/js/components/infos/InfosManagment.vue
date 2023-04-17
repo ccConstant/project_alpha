@@ -1,3 +1,8 @@
+<!--File name : InfosManagement.vue-->
+<!--Creation date : 12 Jul 2022-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of a text area called in the different forms-->
+
 <template>
     <div class="infoManagment">
         <div v-if="loaded==false" >
@@ -334,10 +339,6 @@
                         </div>
                     </div>
                 </div>
-
-                
-                
-
             </div>
         </div>
     </div>
@@ -381,116 +382,116 @@ export default {
             axios.get('/info/send/eqIdCard')
             .then (response=> {
                 this.infos_idCard=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/dimension')
             .then (response=> {
                 this.infos_dimension=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/power')
             .then (response=> {
                 this.infos_power=response.data;
-                
-            }) 
+
+            })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/specialProcess')
             .then (response=> {
                 this.infos_spProc=response.data;
-            }) 
+            })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/usage')
             .then (response=> {
                 this.infos_usage=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/file')
             .then (response=> {
                 this.infos_file=response.data;
-            }) 
+            })
             .catch(error => console.log(error)) ;
 
 
             axios.get('/info/send/preventiveMaintenanceOperation')
             .then (response=> {
                 this.infos_prvMtnOp=response.data;
-            }) 
+            })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/risk')
             .then (response=> {
                 this.infos_risk=response.data;
-            }) 
+            })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/state')
             .then (response=> {
                 this.infos_state=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
            axios.get('/info/send/preventiveMaintenanceOperationRealized')
             .then (response=> {
                 this.infos_prvMtnOpRlz=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
            axios.get('/info/send/curativeMaintenanceOperation')
             .then (response=> {
                 this.infos_curMtnOp=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
            axios.get('/info/send/person')
             .then (response=> {
                 console.log(response.data)
                 this.infos_person=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
 
             axios.get('/info/send/mme')
             .then (response=> {
                 console.log(response.data)
                 this.infos_mme_idCard=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
             axios.get('/info/send/mme_state')
             .then (response=> {
                 console.log(response.data)
                 this.infos_mme_state=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
             axios.get('/info/send/verif')
             .then (response=> {
                 console.log(response.data)
                 this.infos_mme_verif=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
             axios.get('/info/send/verifRlz')
             .then (response=> {
                 console.log(response.data)
                 this.infos_mme_verifRlz=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
             axios.get('/info/send/mme_usage')
             .then (response=> {
                 console.log(response.data)
                 this.infos_mme_usg=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
             axios.get('/info/send/mme_precaution')
             .then (response=> {
                 console.log(response.data)
                 this.infos_mme_prctn=response.data;
                 this.loaded=true;
-                }) 
+                })
             .catch(error => console.log(error)) ;
-            
+
     }
 }
 </script>

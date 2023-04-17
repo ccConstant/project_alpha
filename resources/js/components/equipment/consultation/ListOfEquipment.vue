@@ -1,3 +1,8 @@
+<!--File name : ListOfEquipment.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the list of equipment menu-->
+
 <template>
 	<div class="listOfEquipment">
 		<div v-if="loaded==false" >
@@ -28,11 +33,11 @@
 		<jw-pagination class="eq_list_pagination" :pageSize=10 :items="filterByTerm" @changePage="onChangePage"></jw-pagination>
 		</div>
 		<b-modal :id="`modal-updateWarning-${_uid}`"  @ok="warningUpdate(eq_id,technical,quality,true)">
-			<p class="my-4">Your equipment has a validated life sheet, If you update your equipment you will have to 
+			<p class="my-4">Your equipment has a validated life sheet, If you update your equipment you will have to
 			revalidate </p>
 		</b-modal>
 		<div class="router-link"><router-link :to="{name:'url_eq_list_pdf',params:{} }"> <button class="btn btn-primary">GO TO PDF</button> </router-link></div>
-		
+
 	</div>
 
 </template>
@@ -78,7 +83,7 @@ export default {
 			}else{
 				this.$router.replace({ name: "url_eq_consult", params: {id:id}, query: {method:"technical" } })
 			}
-			
+
 		},
 		qualityValidation(id){
 			if( this.$userId.user_makeQualityValidationRight!=true){
@@ -93,7 +98,7 @@ export default {
 			}else{
 				this.$router.replace({ name: "url_eq_reform", params: {id:id}})
 			}
-			
+
 		},
 		warningUpdate(id,technical,quality,redirect){
 			this.eq_id=id;
@@ -108,12 +113,12 @@ export default {
 				if(this.$userId.user_updateDescriptiveLifeSheetDataSignedRight==false && this.$userId.user_deleteDataSignedLinkedToEqOrMmeRight==false ){
 					this.$refs.errorAlert.showAlert("You don't have the right");
 				}else{
-				
-				
+
+
 					this.$router.replace({ name: "url_eq_update", params: {id}})
-				}	
-				
-			} 
+				}
+
+			}
 		},
 		onChangePage(pageOfItems) {
 				console.log(pageOfItems)

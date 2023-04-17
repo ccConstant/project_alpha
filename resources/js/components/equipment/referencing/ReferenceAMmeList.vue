@@ -1,7 +1,7 @@
 <!--File name :ReferenceAMmeList.vue-->
 <!--Creation date : 12 Jul 2022-->
-<!--Update date : 5 Apr 2023-->
-<!--Vue Component related to the mme of the who call all the input component and send the data to the controllers-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to reference a MME list in the equipment-->
 
 <template>
     <div class="equipmentMme">

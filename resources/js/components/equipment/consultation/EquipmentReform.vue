@@ -1,3 +1,8 @@
+<!--File name : EquipmentReform.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the reform of equipment-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -11,11 +16,6 @@
                 consultMod/>
             <ReferenceAUsage v-if="eq_usg.length>0" :importedUsg="eq_usg" consultMod :reformMod="true"/>
             <ReferenceAPrvMtnOp v-if="eq_prvMtnOp.length>0" :importedPrvMtnOp="eq_prvMtnOp" consultMod :reformMod="true"/>
-
-            
-            
-
-
         </div>
     </div>
 </template>
@@ -71,8 +71,8 @@ export default {
                 this.loaded=true;
             })
             .catch(error => console.log(error)) ;
-        
-    }  
+
+    }
 }
 
 

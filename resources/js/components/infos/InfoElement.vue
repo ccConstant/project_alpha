@@ -59,17 +59,15 @@ export default {
                 return
             }
             console.log(this.returnedInfo)
-            var postUrlAdd = (id) => `info/update/${id}`;
+            const postUrlAdd = (id) => `info/update/${id}`;
             axios.post(postUrlAdd(this.info_id),{
                     info_value:this.returnedInfo
                 })
-                .then(response =>{ 
+                .then(response =>{
                     this.info_content_data=this.returnedInfo
                     this.$bvModal.hide(`modal-updateInfo-${this.compId}`);
                 })
                 .catch(error =>{});
-            // Hide the modal manually
-
         },
     }
 

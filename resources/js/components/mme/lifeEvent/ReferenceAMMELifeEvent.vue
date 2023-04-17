@@ -1,3 +1,8 @@
+<!--File name : ReferenceAMMELifeEvent.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to reference a life event in the current MME, it use the ReferenceAMMEVerifRlz and ReferenceAMMECurMtnOp to reference each one respectively-->
+
 <template>
     <div>
         <ReferenceAMMECurMtnOp v-if="operation_type=='curative'" @addSucces="addSucces()" :mme_id="this.mme_id" :state_id="this.state_id"/>
@@ -19,7 +24,6 @@ export default {
     },
     data(){
         return{
-        //Id de l'mme qui vien detre crée
             mme_id:parseInt(this.$route.params.id),
             state_id:parseInt(this.$route.params.state_id),
             isInConsultMod:false,

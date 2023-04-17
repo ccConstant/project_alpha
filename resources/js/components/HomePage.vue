@@ -1,3 +1,8 @@
+<!--File name : HomePage.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component of the main page of the website-->
+
 <template>
     <div>
 		<br><br><br><br><br><br>

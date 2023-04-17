@@ -1,7 +1,7 @@
 <!--File name :ReferenceAPow.vue-->
 <!--Creation date : 17 May 2022-->
-<!--Update date : 5 Apr 2023-->
-<!--Vue Component related to the power of the equipment who call all the input component and send the data to the controllers-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to reference a power in the equipment-->
 
 <template>
     <div class="equipmentPow">

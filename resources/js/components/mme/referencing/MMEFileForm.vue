@@ -1,3 +1,8 @@
+<!--File name : MMEFileForm.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to add a file to the MME documentation-->
+
 <template>
     <div :class="divClass">
         <div v-if="loaded==false" >
@@ -26,7 +31,7 @@
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :validationMode="file_validate" :consultMod="this.isInConsultedMod" @deleteOk="deleteComponent"/>
 
-                </div>       
+                </div>
             </form>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -34,7 +39,7 @@
 </template>
 
 <script>
-/*Importation of the others Components who will be used here*/
+/*Importation of the other Components who will be used here*/
 import InputTextForm from '../../input/InputTextForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../button/DeleteComponentButton.vue'
@@ -46,7 +51,6 @@ export default {
         SaveButtonForm,
         DeleteComponentButton,
         SucessAlert
-
     },
     props:{
         name:{
@@ -76,7 +80,6 @@ export default {
         mme_id:{
             type:Number
         }
-
     },
     data(){
         return{
@@ -95,13 +98,15 @@ export default {
     },
     methods:{
         /*Sending to the controller all the information about the mme so that it can be added to the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
+        Params:
+            savedAs: Value of the validation option: drafted, to_be_validated or validated
+            reason: Reason of the update
+            lifesheet_created: If we have already a lifesheet created for this file */
         addMmeFile(savedAs, reason, lifesheet_created){
             if(!this.addSucces){
-                //Id of the mme in which the file will be added
-                var id;
-                //If the user is in the not in the update menu, we allocate to the id the value of the id get with the data mme_id_add 
+                //ID of the mme in which the file will be added
+                let id;
+                //If the user is not in the modification mode, we set the id with the value of mme_id_add
                 if(!this.modifMod){
                         id=this.mme_id_add
                 //else the user is in the update menu, we allocate to the id the value of the id get in the url
@@ -109,7 +114,7 @@ export default {
                     id=this.mme_id_update;
                 }
                 /*First post to verify if all the fields are filled correctly
-                Name, location and validate option is sended to the controller*/
+                Name, location and validate option are sent to the controller*/
                 axios.post('/file/verif',{
                     file_name : this.file_name,
                     file_location : this.file_location,
@@ -117,54 +122,49 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    /*If all the verif passed, a new post this time to add the file in the data base
-                    Type, name, value, unit, validate option and id of the mme is sended to the controller*/
+                    /*If all the verification passed, a new post this time to add the file in the database
+                    The name, location of the file, validate options and id of the MME linked are sent to the controller*/
                     axios.post('/mme/add/file',{
                         file_name : this.file_name,
                         file_location : this.file_location,
                         file_validate :savedAs,
                         mme_id:id
-                
+
                     })
-                    //If the file is added succesfuly
+                    //If the file is added successfully
                     .then(response =>{
-                        //We test if a life sheet have been already created
+                        //We test if a life sheet has been already created
                         //If it's the case we create a new enregistrement of history for saved the reason of the update
                         if (lifesheet_created==true){
                             axios.post(`/history/add/mme/${id}`,{
-                                history_reasonUpdate :reason, 
+                                history_reasonUpdate :reason,
                             });
                              window.location.reload();
                         }
-                        //If we the user is not in modifMod
+                        //If the user is not in modification mode
                         if(!this.modifMod){
                             //The form pass in consulting mode and addSucces pass to True
                             this.isInConsultedMod=true;
                             this.addSucces=true
                         }
-                        //the id of the file take the value of the newlly created id
+                        //the id of the file take the value of the newly created id
                         this.file_id=response.data;
-                        //The validate option of this file take the value of savedAs(Params of the function)
+                        //The validate option of this file takes the value of savedAs
                         this.file_validate=savedAs;
                         this.$refs.sucessAlert.showAlert(`MME file added successfully and saved as ${savedAs}`);
                     })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
-                ;})
-                //If the controller sends errors we put it in the errors object 
+                })
                 .catch(error => this.errors=error.response.data.errors) ;
-
-
-
             }
 
         },
         /*Sending to the controller all the information about the mme so that it can be updated in the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validater or validated  */ 
-        updateMmeFile(savedAs, reason, lifesheet_created){  
-            /*First post to verify if all the fields are filled correctly
-                Type, name, value, unit and validate option is sended to the controller*/
+        Params:
+            savedAs: Value of the validation option: drafted, to_be_validateD or validated
+            reason: Reason of this update
+            lifesheet_created: If a lifesheet already exist for this file*/
+        updateMmeFile(savedAs, reason, lifesheet_created){
             axios.post('/file/verif',{
                     file_name : this.file_name,
                     file_location : this.file_location,
@@ -172,11 +172,10 @@ export default {
                 })
                 .then(response =>{
                     this.errors={};
-                    
-                    /*If all the verif passed, a new post this time to add the file in the data base
-                        Type, name, value, unit, validate option and id of the mme is sended to the controller
-                        In the post url the id correspond to the id of the file who will be update*/
-                    var consultUrl = (id) => `/mme/update/file/${id}`;
+                    /*If all the check passed, a new post this time to add the file in the database
+                        The name, location, validate option and id of the MME affected are sent to the controller
+                        In the post url the id correspond to the id of the file who will be updated*/
+                    const consultUrl = (id) => `/mme/update/file/${id}`;
                     axios.post(consultUrl(this.file_id),{
                     file_name : this.file_name,
                     file_location : this.file_location,
@@ -184,25 +183,23 @@ export default {
                         file_validate : savedAs
                     })
                     .then(response =>{
-                        var id=this.mme_id_update
-                        //We test if a life sheet have been already created
+                        const id = this.mme_id_update;
+                        //We test if a life sheet has been already created
                         //If it's the case we create a new enregistrement of history for saved the reason of the update
                         if (lifesheet_created==true){
                             axios.post(`/history/add/mme/${id}`,{
-                                history_reasonUpdate :reason, 
+                                history_reasonUpdate :reason,
                             });
                              window.location.reload();
                         }
                         this.file_validate=savedAs;
                         this.$refs.sucessAlert.showAlert(`MME file updated successfully and saved as ${savedAs}`);
                     })
-                    //If the controller sends errors we put it in the errors object 
                     .catch(error => this.errors=error.response.data.errors) ;
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
         },
-        /*Clear all the error of the targeted field*/
+        /*Clears all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
         },
@@ -211,18 +208,18 @@ export default {
             //If the user is in update mode and the file exist in the database
             if(this.modifMod==true && this.file_id!==null){
                 console.log("supression");
-                //Send a post request with the id of the file who will be deleted in the url
-                var consultUrl = (id) => `/mme/delete/file/${id}`;
+                //Send a post-request with the id of the file who will be deleted in the url
+                const consultUrl = (id) => `/mme/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id),{
                     mme_id:this.mme_id_update
                 })
                 .then(response =>{
-                     var id=this.mme_id_update
-                        //We test if a life sheet have been already created
+                    const id = this.mme_id_update;
+                    //We test if a life sheet has been already created
                         //If it's the case we create a new enregistrement of history for saved the reason of the update
                         if (lifesheet_created==true){
                             axios.post(`/history/add/mme/${id}`,{
-                                history_reasonUpdate :reason, 
+                                history_reasonUpdate :reason,
                             });
                              window.location.reload();
                         }
@@ -230,14 +227,13 @@ export default {
                     this.$emit('deleteFile','')
                     this.$refs.sucessAlert.showAlert(`MME file deleted successfully`);
                 })
-                //If the controller sends errors we put it in the errors object 
                 .catch(error => this.errors=error.response.data.errors) ;
 
             }else{
                 this.$emit('deleteFile','')
                 this.$refs.sucessAlert.showAlert(`Empty MME file deleted successfully`);
             }
-            
+
         }
     },
     created(){
@@ -245,7 +241,7 @@ export default {
         .then (response=> {
             this.infos_file=response.data;
             this.loaded=true;
-        }) 
+        })
         .catch(error => console.log(error)) ;
     }
 

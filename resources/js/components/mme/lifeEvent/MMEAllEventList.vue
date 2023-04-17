@@ -1,3 +1,7 @@
+<!--File name : MMEAllEventList.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to show all the event linked to one specific MME, we can export this screen in PDF-->
 
 <template>
     <div>
@@ -79,10 +83,10 @@
                                             End date : {{verifRlz.verifRlz_endDate}}<br>
                                             Saved as : {{verifRlz.verifRlz_validate}} <br>
                                             Entered by : {{verifRlz.enteredBy_lastName}} {{verifRlz.enteredBy_firstName}}  the {{verifRlz.verifRlz_entryDate}} <br>
-                      
+
                                         </div>
                                         <div v-if="verifRlz.approvedBy_lastName!=null">
-                                            Approved by :  {{verifRlz.approvedBy_lastName}} {{verifRlz.approvedBy_firstName}} 
+                                            Approved by :  {{verifRlz.approvedBy_lastName}} {{verifRlz.approvedBy_firstName}}
                                         </div>
                                         <div v-else>
                                             Approved by : - <br>
@@ -105,7 +109,7 @@
                 </div>
              </div>
             </div>
-            
+
         </div>
         <br>
          <b-button variant="primary" @click="generateReport" >Export PDF</b-button>
@@ -125,7 +129,7 @@ export default {
         }
     },
     methods:{
-        
+
         generateReport () {
             let page = document.getElementById('page');
             html2PDF(page, {
@@ -147,7 +151,7 @@ export default {
                     bottom: 40,
                     left: 10,
                 },
-                output: this.mme_internalReference+'_LS-R_'+this.chaine+'.pdf', 
+                output: this.mme_internalReference+'_LS-R_'+this.chaine+'.pdf',
             });
         },
 
@@ -156,7 +160,7 @@ export default {
             var month=date.getMonth()+1;
             this.chaine=date.getFullYear()+'-'+month+'-'+date.getDate();
         }
-        
+
     },
     created(){
         var UrlState = (id)=> `/mme_states/send/${id}`;
@@ -169,23 +173,23 @@ export default {
                     if(this.mme_states[i].state_endDate===null){
                         this.mme_states[i].state_endDate="-"
                     }else{
-                        this.mme_states[i].state_endDate=moment(this.mme_states[i].state_endDate).format('D MMM YYYY'); 
+                        this.mme_states[i].state_endDate=moment(this.mme_states[i].state_endDate).format('D MMM YYYY');
                     }
                     for(var j=0;j<this.mme_states[i].curMtnOp.length;j++){
-                        this.mme_states[i].curMtnOp[j].curMtnOp_startDate=moment(this.mme_states[i].curMtnOp[j].curMtnOp_startDate).format('D MMM YYYY'); 
+                        this.mme_states[i].curMtnOp[j].curMtnOp_startDate=moment(this.mme_states[i].curMtnOp[j].curMtnOp_startDate).format('D MMM YYYY');
                         if(this.mme_states[i].curMtnOp[j].curMtnOp_endDate===null){
                             this.mme_states[i].curMtnOp[j].curMtnOp_endDate="-"
                         }else{
-                            this.mme_states[i].curMtnOp[j].curMtnOp_endDate=moment(this.mme_states[i].curMtnOp[j].curMtnOp_endDate).format('D MMM YYYY'); 
+                            this.mme_states[i].curMtnOp[j].curMtnOp_endDate=moment(this.mme_states[i].curMtnOp[j].curMtnOp_endDate).format('D MMM YYYY');
                         }
                     }
-                    
+
                     for(var k=0;k<this.mme_states[i].verifRlz.length;k++){
-                        this.mme_states[i].verifRlz[k].verifRlz_startDate=moment(this.mme_states[i].verifRlz[k].verifRlz_startDate).format('D MMM YYYY'); 
+                        this.mme_states[i].verifRlz[k].verifRlz_startDate=moment(this.mme_states[i].verifRlz[k].verifRlz_startDate).format('D MMM YYYY');
                         if(this.mme_states[i].verifRlz[k].verifRlz_endDate===null){
                             this.mme_states[i].verifRlz[k].verifRlz_endDate="-"
                         }else{
-                            this.mme_states[i].verifRlz[k].verifRlz_endDate=moment(this.mme_states[i].verifRlz[k].verifRlz_endDate).format('D MMM YYYY'); 
+                            this.mme_states[i].verifRlz[k].verifRlz_endDate=moment(this.mme_states[i].verifRlz[k].verifRlz_endDate).format('D MMM YYYY');
                         }
                     }
                 }
@@ -200,7 +204,7 @@ export default {
             })
             .catch(error => console.log(error)) ;
 
-        
+
     },
     mounted(){
         this.Date();
@@ -241,7 +245,7 @@ export default {
                 .le_mme_logo{
                         margin-top:30px;
                     }
-                
+
             }
             .le_mme_pdf_titre{
                 border: solid 0.5px black;
@@ -267,7 +271,7 @@ export default {
                 width: 200px;
                 text-align:center
             }
-            
+
             .le_mme_internalReference_pdf{
                 border: solid 0.5px black;
                 margin: auto;
@@ -282,7 +286,7 @@ export default {
 
         .le_mme_recordTemplateRefPdf{
             position: block;
-            
+
 
             .le_mme_table_recordTemplateRefPdf{
                 position:block;
@@ -308,12 +312,12 @@ export default {
 
 
         }
-    
+
     .container{
         display:block;
         margin-top: 0px;
     }
-        
+
 
     .all_curative_ope{
         margin-left:20px ;
@@ -329,6 +333,6 @@ export default {
     }
 }
 
-       
+
 
 </style>

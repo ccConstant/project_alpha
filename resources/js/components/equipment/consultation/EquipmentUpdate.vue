@@ -1,3 +1,8 @@
+<!--File name : EquipmentUpdate.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the update of equipment-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -176,7 +181,7 @@ export default {
             .then (response =>{
                 this.eq_idCard=response.data
                 this.$router.push({ name: "url_eq_update", params: {id:this.eq_id}, query: {signed:response.data.eq_lifeSheetCreated }}).catch(()=>{});
-                if(response.data.eq_lifeSheetCreated==true && 
+                if(response.data.eq_lifeSheetCreated==true &&
                 (this.$userId.user_updateDescriptiveLifeSheetDataSignedRight!=true &&
                 this.$userId.user_deleteDataSignedLinkedToEqOrMmeRight!=true) ){
                     this.eq_lifeSheetCreated=response.data.eq_lifeSheetCreated;
@@ -189,7 +194,7 @@ export default {
         axios.get(consultUrlDim(this.eq_id))
             .then (response=> this.eq_dimensions=response.data)
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlPow = (id) => `/power/send/${id}`;
         axios.get(consultUrlPow(this.eq_id))
             .then (response=> this.eq_powers=response.data)
@@ -205,7 +210,7 @@ export default {
                 }
             })
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlUsg = (id) => `/usage/send/${id}`;
         axios.get(consultUrlUsg(this.eq_id))
             .then (response=>this.eq_usg=response.data)
@@ -239,8 +244,8 @@ export default {
                 })
                 .catch(error => console.log(error)) ;
         }
-        
-        
+
+
 }
 
 

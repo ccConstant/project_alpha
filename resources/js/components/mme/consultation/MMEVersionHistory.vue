@@ -1,3 +1,8 @@
+<!--File name : MMEVersionHistory.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to display the version history for a specific MME, we can export this page in PDF-->
+
 <template>
     <div v-if="loaded==true" >
 		<div id="page">
@@ -26,8 +31,7 @@
 					<p>MME unique ID :</p>
 					<h5 class="text-primary">{{mme_idCard.mme_internalReference}}</h5>
 				</div>
-			</div>	
-
+			</div>
 
 			<div class="mme_history_pdf">
 				<div class="title_history_pdf">
@@ -46,7 +50,7 @@
 						</b-col>
 						<b-col cols="4"  class="history_table_Date">
 							Date of the update
-						</b-col>                  
+						</b-col>
 					</b-row>
 					<div v-for="(history,index) in mme_history " :key="index">
 						<b-row>
@@ -61,12 +65,11 @@
 							</b-col>
 							<b-col cols="4"  class="history_table_Date">
 								<p class="text-primary"> {{history.history_date}}</p>
-							</b-col>                 
+							</b-col>
 						</b-row>
 					</div>
 				</div>
 			</div>
-
 
 			<div class="mme_historyRecordTemplateRefPdf">
 			<div class="mmeHistory_table_recordTemplateRefPdf">
@@ -80,8 +83,7 @@
 			</div>
 		</div>
 		<button class="btn btn-primary" @click="generateReport()" >Generate PDF</button>
-	</div>  
-
+	</div>
 </template>
 
 <script>
@@ -97,7 +99,7 @@ export default {
 	},
   	created(){
         //we need to load the reason of the version upgrade only
-		var consultUrl = (id) => `/mme/${id}`;
+		let consultUrl = (id) => `/mme/${id}`;
         axios.get(consultUrl(this.mme_id))
             .then (response => {
                 this.mme_idCard=response.data;
@@ -105,17 +107,15 @@ export default {
             })
             .catch(error => console.log(error));
 
-		var consultUrl= (id) => `/history/send/mme/${id}`;
-		axios.get(consultUrl(this.mme_id))
+        consultUrl = (id) => `/history/send/mme/${id}`;
+        axios.get(consultUrl(this.mme_id))
 			.then (response => {
 				this.mme_history=response.data;
 				this.loaded=true;
 			})
 			.catch(error => console.log(error));
 	},
-
 	methods:{
-	
 		generateReport () {
             let page = document.getElementById('page');
             html2PDF(page, {
@@ -137,118 +137,99 @@ export default {
                     bottom: 40,
                     left: 10,
                 },
-                output: this.mme_idCard.mme_internalReference+'_LS-D'+'_V'+this.mme_idCard.mme_version+'.pdf', 
+                output: this.mme_idCard.mme_internalReference+'_LS-D'+'_V'+this.mme_idCard.mme_version+'.pdf',
             });
         },
 	}
-
-
-
-
 }
 </script>
 
 <style lang="scss">
-        #page{
-            width:1329px;
-            font-size : 10px ;
-            .text-primary{
-                font-size : 20px ;
+    #page{
+        width:1329px;
+        font-size : 10px ;
+        .text-primary{
+            font-size : 20px ;
+        }
+        .mme_top_infos{
+            position: absolute;
+            margin-top: 0px;
+            margin-left:50px;
+            h5{
+                margin-top :auto;
+                width: auto;
+                font-size:10px;
+                text-align:center;
+                font-weight: bold;
             }
-            .mme_top_infos{
+            .mme_pdf_logo{
+                border: solid 0.5px black;
+                margin: auto;
                 position: absolute;
-                margin-top: 0px;
-                margin-left:50px;
-
-                h5{
-                        margin-top :auto;
-                        width: auto;
-                        font-size:10px;
-                        text-align:center;
-                        font-weight: bold;
-                    }
-
-                .mme_pdf_logo{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    width: 200px;
-                    height: 170px;
-                    margin-left:100px ;
-                    margin-top: 00px;
-                    
-                    .logo{
-                        margin-top:30px;
-                    }
-                    
+                width: 200px;
+                height: 170px;
+                margin-left:100px ;
+                margin-top: 00px;
+                .logo{
+                    margin-top:30px;
                 }
-                .mme_pdf_titre{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    width: 642px;
-                    top: 00px;
-                    left:300px;
-                    height: 87px;
-                    text-align:center;
-                   
-                    
-                    
-                }
-                .mme_fiche_de_vie_titre{
-                    text-align: center;
-                    position: relative;
-                }
-                .mme_pdf_index{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    left: 942px;
-                    top: 0px;
-                    height: auto;
-                    width: 200px;
-                    
-                }
-                .mme_revued_by{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-
-                    left :300px;
-                    top: 86px;
-                    height: 84px;
-                    width: 400px;
-
-                }
-                .mme_approuved_by{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-
-
-                    left :700px;
-                    top: 86px;
-                    height: 84px;
-                    width: 242px;
-                }
-                .mme_internalReference_pdf{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    left :942px;
-                    top: 86px;
-                    width: 200px;
-                    height: 84px;
-                }
-
             }
-            
+            .mme_pdf_titre{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                width: 642px;
+                top: 00px;
+                left:300px;
+                height: 87px;
+                text-align:center;
+            }
+            .mme_fiche_de_vie_titre{
+                text-align: center;
+                position: relative;
+            }
+            .mme_pdf_index{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                left: 942px;
+                top: 0px;
+                height: auto;
+                width: 200px;
+            }
+            .mme_revued_by{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                left :300px;
+                top: 86px;
+                height: 84px;
+                width: 400px;
+            }
+            .mme_approuved_by{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                left :700px;
+                top: 86px;
+                height: 84px;
+                width: 242px;
+            }
+            .mme_internalReference_pdf{
+                border: solid 0.5px black;
+                margin: auto;
+                position: absolute;
+                left :942px;
+                top: 86px;
+                width: 200px;
+                height: 84px;
+            }
+        }
         .mme_history_pdf{
             position: relative;
             margin-top:10px ;
             width : 1112px;
-			margin-top : 250px;
-            
+            margin-top : 250px;
             .title_history_pdf{
                 width: 400px;
                 font-size : 20px;
@@ -263,7 +244,7 @@ export default {
                     text-align: center;
                     width:150px;
                 }
-                    .history_table_reason{
+                .history_table_reason{
                     border: solid 1px black;
                     text-align: center;
                     width:540px;
@@ -277,17 +258,14 @@ export default {
                     border: solid 1px black;
                     text-align: center;
                     width:200px;
-                }                    
+                }
             }
         }
-
         .mme_historyRecordTemplateRefPdf{
             position: relative;
             left:150px;
             margin-top:10px ;
             width: 1042px;
-            
-
             .mmeHistory_table_recordTemplateRefPdf{
                 .mmeHistory_confidential_recordTemplateRefPdf{
                     border: solid 1px black;
@@ -307,10 +285,4 @@ export default {
             }
         }
     }
-
-        
-        
-
-    
-
 </style>

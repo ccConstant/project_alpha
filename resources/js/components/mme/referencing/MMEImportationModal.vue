@@ -1,3 +1,8 @@
+<!--File name : MMEImportationModal.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to make an importation from another MME IDCard-->
+
 <template>
     <div>
         <b-button v-b-modal.modal-mme_add_import @click="importFromDB">Import From</b-button>
@@ -17,7 +22,7 @@
             </div>
             <b-button class="mt-3" block @click="$bvModal.hide('modal-mme_add_import')">Close</b-button>
             <b-button class="mt-3" block @click="chooseMME">Choose</b-button>
-        </b-modal>     
+        </b-modal>
     </div>
 </template>
 
@@ -49,13 +54,13 @@ export default {
                 this.$emit('choosedMME',this.radio_value)
             }
             this.$bvModal.hide('modal-mme_add_import')
-            
+
         },
         importFromDB(){
             if(this.set!=null){
-                var importUrl = (set) => `/mmes/same_set/${set}`;
+                const importUrl = (set) => `/mmes/same_set/${set}`;
                 axios.get(importUrl(this.set))
-                .then (response=> this.imported_mme_ref=response.data) 
+                .then (response=> this.imported_mme_ref=response.data)
                 .catch(error => console.log(error)) ;
             }
 
@@ -67,9 +72,9 @@ export default {
 
 <style lang="scss">
     .modal-backdrop {
-        opacity:0.8; 
+        opacity:0.8;
     }
 
-    
+
 
 </style>

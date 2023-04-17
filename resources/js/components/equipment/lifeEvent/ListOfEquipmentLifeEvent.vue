@@ -1,3 +1,8 @@
+<!--File name : ListOfEquipmentLifeEvent.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to show the list of the equipment in the life event menu-->
+
 <template>
   <div class="listOfEquipmentLifeEvent">
       <div v-if="loaded==false" >
@@ -52,21 +57,20 @@ export default {
     }
   },
   methods:{
-    verifBeforeAddState(eq_id,state_id){       
+    verifBeforeAddState(eq_id,state_id){
         if(this.$userId.user_declareNewStateRight!=true){
           this.$refs.errorAlert.showAlert("You don't have the right");
         }else{
-          var consultUrl = (id) => `/state/verif/beforeChangingState/${id}`;
+          const consultUrl = (id) => `/state/verif/beforeChangingState/${id}`;
           axios.post(consultUrl(state_id),{
           })
           .then(response =>{
-              this.$router.replace({ name: "url_life_event_change_state", params: {id:eq_id}, query: {currentState: state_id } })
-          ;})
-          //If the controller sends errors we put it in the errors object 
+              this.$router.replace({ name: "url_life_event_change_state", params: {id:eq_id}, query: {currentState: state_id } });
+          })
           .catch(error => {
             console.log(error.response.data.errors)
             this.$refs.errorAlert.showAlert(error.response.data.errors.state_verif);
-          }) ;
+          });
         }
 
     },
@@ -75,14 +79,13 @@ export default {
           this.$refs.errorAlert.showAlert("You don't have the right");
           return;
         }
-        var consultUrl = (state_id) => `/state/verif/beforeReferenceCurOp/${state_id}`;
+        const consultUrl = (state_id) => `/state/verif/beforeReferenceCurOp/${state_id}`;
         axios.post(consultUrl(state_id),{
           eq_id:eq_id_to_send
         })
         .then(response =>{
-            this.$router.push({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }, query: {type:"curative"}})
-        ;})
-        //If the controller sends errors we put it in the errors object 
+            this.$router.push({ name: "url_life_event_reference", params: {id:eq_id_to_send,state_id:state_id }, query: {type:"curative"}});
+        })
         .catch(error => {
           this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
         });
@@ -108,7 +111,7 @@ export default {
 
         }
     },
-    
+
   },
   computed: {
       filterByTerm() {
@@ -117,7 +120,7 @@ export default {
           });
       }
   },
-  
+
 
   created(){
       axios.get('/equipment/equipments')
@@ -126,10 +129,10 @@ export default {
             this.loaded=true;
           })
           .catch(error => console.log(error));
-      
+
   },
-  
-  
+
+
 
 
 }

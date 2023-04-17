@@ -1,3 +1,8 @@
+<!--File name : MMEIdForm.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to edit or add an IDCard for a MME-->
+
 <template>
       <div class="mmeID" v-if="loaded==true">
         <h2 class="titleForm1">MME ID : {{mme_internalReference}}</h2>
@@ -24,7 +29,7 @@
 </template>
 
 <script>
-/*Importation of the others Components who will be used here*/
+
 import InputTextForm from '../../input/InputTextForm.vue'
 import InputTextAreaForm from '../../input/InputTextAreaForm.vue'
 import InputNumberForm from '../../input/InputNumberForm.vue'
@@ -105,24 +110,24 @@ export default {
             loaded:false
         }
     },
-    /*All function inside the created option is called after the component has been created.*/
+    /*All functions inside the created option are called after the component has been created.*/
     created(){
         axios.get('/mme/sets')
-            .then (response=> this.enum_sets=response.data) 
-            .catch(error => console.log(error)) ; 
+            .then (response=> this.enum_sets=response.data)
+            .catch(error => console.log(error)) ;
 
         axios.get('/info/send/mme')
             .then (response=> {
                 this.infos_idCard=response.data;
                 this.loaded=true;
-                }) 
+                })
             .catch(error => console.log(error)) ;
     },
     methods:{
         addMME(savedAs){
             if(!this.addSucces){
                  axios.post('/mme/verif',{
-                    mme_internalReference : this.mme_internalReference, 
+                    mme_internalReference : this.mme_internalReference,
                     mme_externalReference : this.mme_externalReference,
                     mme_name : this.mme_name,
                     mme_serialNumber : this.mme_serialNumber,
@@ -135,9 +140,9 @@ export default {
                 .then(response =>{
                         this.errors={};
                         if(this.state_id!==null){
-                            var consultUrl = (state_id) => `/state/mme/${state_id}`;
+                            const consultUrl = (state_id) => `/state/mme/${state_id}`;
                             axios.post(consultUrl(this.state_id),{
-                                mme_internalReference : this.mme_internalReference, 
+                                mme_internalReference : this.mme_internalReference,
                                 mme_externalReference : this.mme_externalReference,
                                 mme_name : this.mme_name,
                                 mme_serialNumber : this.mme_serialNumber,
@@ -148,16 +153,16 @@ export default {
                             })
                             .then(response =>{
                                     this.$refs.sucessAlert.showAlert(`ID card added successfully and saved as ${savedAs}`);
-                                    this.addSucces=true; 
+                                    this.addSucces=true;
                                     this.isInConsultMod=true;
                                     this.mme_id=response.data;
                                     this.$emit('MMEID',this.mme_id);
                                 })
-                            .catch(error => this.errors=error.response.data.errors) ; 
+                            .catch(error => this.errors=error.response.data.errors) ;
 
                         }else{
                             axios.post('/mme/add',{
-                                mme_internalReference : this.mme_internalReference, 
+                                mme_internalReference : this.mme_internalReference,
                                 mme_externalReference : this.mme_externalReference,
                                 mme_name : this.mme_name,
                                 mme_serialNumber : this.mme_serialNumber,
@@ -169,21 +174,21 @@ export default {
                             })
                             .then(response =>{
                                     this.$refs.sucessAlert.showAlert(`ID card added successfully and saved as ${savedAs}`);
-                                    this.addSucces=true; 
+                                    this.addSucces=true;
                                     this.isInConsultMod=true;
                                     this.mme_id=response.data;
                                     this.$emit('MMEID',this.mme_id);
                                 })
-                            .catch(error => this.errors=error.response.data.errors) ; 
+                            .catch(error => this.errors=error.response.data.errors) ;
                         }
                     })
-                .catch(error => this.errors=error.response.data.errors) ; 
+                .catch(error => this.errors=error.response.data.errors) ;
             }
         },
-        /*Sending to the controller all the information about the mme so that it can be updated to the database */ 
+        /*Sending to the controller all the information about the mme so that it can be updated to the database */
         updateMME(savedAs, reason, lifesheet_created){
                     axios.post('/mme/verif',{
-                    mme_internalReference : this.mme_internalReference, 
+                    mme_internalReference : this.mme_internalReference,
                     mme_externalReference : this.mme_externalReference,
                     mme_name : this.mme_name,
                     mme_serialNumber : this.mme_serialNumber,
@@ -196,9 +201,9 @@ export default {
                 })
                 .then(response =>{
                         this.errors={};
-                        var consultUrl = (id) => `/mme/update/${id}`;
+                        const consultUrl = (id) => `/mme/update/${id}`;
                         axios.post(consultUrl(this.mme_id),{
-                            mme_internalReference : this.mme_internalReference, 
+                            mme_internalReference : this.mme_internalReference,
                             mme_externalReference : this.mme_externalReference,
                             mme_name : this.mme_name,
                             mme_serialNumber : this.mme_serialNumber,
@@ -208,13 +213,13 @@ export default {
                             mme_validate : savedAs,
                         })
                         .then(response => {
-                            var id=this.mme_id;
+                            const id=this.mme_id;
                             console.log("lifesheet_created :"+ this.lifesheet_created)
-                            //We test if a life sheet have been already created
+                            //We test if a life sheet has been already created
                             //If it's the case we create a new enregistrement of history for saved the reason of the update
                             if (lifesheet_created==true){
                                 axios.post(`/history/add/mme/${id}`,{
-                                    history_reasonUpdate :reason, 
+                                    history_reasonUpdate :reason,
                                 });
                                  window.location.reload();
                             }
@@ -222,11 +227,11 @@ export default {
                             this.mme_validate=savedAs;
 
                             })
-                        .catch(error => this.errors=error.response.data.errors) ; 
+                        .catch(error => this.errors=error.response.data.errors) ;
                     })
                 .catch(error => this.errors=error.response.data.errors) ;
         },
-        /*Clear all the error of the targeted field*/
+        /*Clears all the error of the targeted field*/
         clearError(event){
             delete this.errors[event.target.name];
         },
@@ -239,7 +244,7 @@ export default {
         },
         clearAllError(){
             console.log("ERROR:",this.errors)
-            
+
         }
     }
 

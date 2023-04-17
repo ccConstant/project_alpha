@@ -2,6 +2,7 @@
 <!--Creation date : 27 Apr 2022-->
 <!--Update date : 09 May 2022-->
 <!--Vue Component of a radio group called in the different forms-->
+
 <template>
     <div>
         <!--Label of the radio group-->
@@ -12,8 +13,8 @@
         <div class="radio-button-group" :class="[hasError(this.Errors)?'is-invalid':'']">
             <!--Label of options, the for loop here is used to initialize them with an array of the differents value-->
             <label v-for="(option,index) in options " :key="index">
-                <!--Initializing of the radio type input with his props initialized in the parent compenant-->
-                <input type="radio" :label="label" name="radio-input" :value="option.value" :id="option.id" 
+                <!--Initializing of the radio type input with his props initialized in the parent component-->
+                <input type="radio" :label="label" name="radio-input" :value="option.value" :id="option.id"
                  :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)" />
                 {{ option.text }}
             </label>
@@ -33,9 +34,9 @@ export default {
        /*--------Declaration of the differents props:--------
         options: Array of option values
         label : Label of this select who will appear on it
-        isRequired : If this props is present user must select an option
-        checkedOption: Value of the checked option initialized with the data base or by the user 
-        isDisabled: : If this props is present the field is shaded and user can't write nothing inside 
+        isRequired : If this props is present, user must select an option
+        checkedOption: Value of the checked option initialized with the database or by the user
+        isDisabled: : If this props is present the field is shaded and user can't write nothing inside
     ---------------------------------------------------*/
     props: {
         options: {
@@ -70,10 +71,9 @@ export default {
             returnedText_info:this.info_text,
         }
     },
-    /*All function inside the mounted option is called after the component has been mounted.*/
     mounted(){
         //Here we put the checked attribute in the option corresponding with the prop checkedOption
-        var radio = document.getElementsByName('radio-input');
+        const radio = document.getElementsByName('radio-input');
         for (var i = 0; i < radio.length; i++) {
             if (`${radio[i].id}`==`${this.options[0].id}`&& `${radio[i].value}` == `${this.checkedOption}`) {
                 radio[i].setAttribute("checked", "checked");

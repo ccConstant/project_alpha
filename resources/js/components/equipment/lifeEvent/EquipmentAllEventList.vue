@@ -1,3 +1,8 @@
+<!--File name : EquipmentAllEventList.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to show the different event for an equipment-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -110,7 +115,7 @@
                 </div>
              </div>
             </div>
-            
+
         </div>
         <br>
          <b-button variant="primary" @click="generateReport" >Export PDF</b-button>
@@ -132,7 +137,7 @@ export default {
         }
     },
     methods:{
-        
+
         generateReport () {
             let page = document.getElementById('page');
             html2PDF(page, {
@@ -154,7 +159,7 @@ export default {
                     bottom: 40,
                     left: 10,
                 },
-                output: this.eq_internalReference+'_LS-R_'+this.chaine+'.pdf', 
+                output: this.eq_internalReference+'_LS-R_'+this.chaine+'.pdf',
             });
         },
 
@@ -163,7 +168,7 @@ export default {
             var month=date.getMonth()+1;
             this.chaine=date.getFullYear()+'-'+month+'-'+date.getDate();
         }
-        
+
     },
     created(){
         var UrlState = (id)=> `/states/send/${id}`;
@@ -176,25 +181,25 @@ export default {
                     if(this.states[i].state_endDate===null){
                         this.states[i].state_endDate="-"
                     }else{
-                        this.states[i].state_endDate=moment(this.states[i].state_endDate).format('D MMM YYYY'); 
+                        this.states[i].state_endDate=moment(this.states[i].state_endDate).format('D MMM YYYY');
                     }
                     for(var j=0;j<this.states[i].curMtnOp.length;j++){
-                        this.states[i].curMtnOp[j].curMtnOp_startDate=moment(this.states[i].curMtnOp[j].curMtnOp_startDate).format('D MMM YYYY'); 
+                        this.states[i].curMtnOp[j].curMtnOp_startDate=moment(this.states[i].curMtnOp[j].curMtnOp_startDate).format('D MMM YYYY');
                         if(this.states[i].curMtnOp[j].curMtnOp_endDate===null){
                             this.states[i].curMtnOp[j].curMtnOp_endDate="-"
                         }else{
-                            this.states[i].curMtnOp[j].curMtnOp_endDate=moment(this.states[i].curMtnOp[j].curMtnOp_endDate).format('D MMM YYYY'); 
+                            this.states[i].curMtnOp[j].curMtnOp_endDate=moment(this.states[i].curMtnOp[j].curMtnOp_endDate).format('D MMM YYYY');
                         }
                     }
-                    
+
                     for(var k=0;k<this.states[i].prvMtnOpRlz.length;k++){
-                        this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_startDate=moment(this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_startDate).format('D MMM YYYY'); 
+                        this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_startDate=moment(this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_startDate).format('D MMM YYYY');
                         if(this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_endDate===null){
                             this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_endDate="-"
                         }else{
-                            this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_endDate=moment(this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_endDate).format('D MMM YYYY'); 
+                            this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_endDate=moment(this.states[i].prvMtnOpRlz[k].prvMtnOpRlz_endDate).format('D MMM YYYY');
                         }
-                    } 
+                    }
                 }
                 this.loaded=true;
                 this.states.sort(function compare(a, b) {
@@ -205,10 +210,10 @@ export default {
                     return 0;
                 });
             })
-    
+
             .catch(error => console.log(error)) ;
 
-        
+
     },
     mounted(){
         this.Date();
@@ -249,7 +254,7 @@ export default {
                 .le_eq_logo{
                         margin-top:30px;
                     }
-                
+
             }
             .le_eq_pdf_titre{
                 border: solid 0.5px black;
@@ -275,7 +280,7 @@ export default {
                 width: 200px;
                 text-align:center
             }
-            
+
             .le_eq_internalReference_pdf{
                 border: solid 0.5px black;
                 margin: auto;
@@ -290,7 +295,7 @@ export default {
 
         .le_eq_recordTemplateRefPdf{
             position: block;
-            
+
 
             .le_eq_table_recordTemplateRefPdf{
                 position:block;
@@ -316,12 +321,12 @@ export default {
 
 
         }
-    
+
     .container{
         display:block;
         margin-top: 0px;
     }
-        
+
 
     .all_curative_ope{
         margin-left:20px ;
@@ -337,6 +342,6 @@ export default {
     }
 }
 
-       
+
 
 </style>

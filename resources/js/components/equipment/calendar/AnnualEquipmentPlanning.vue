@@ -1,3 +1,8 @@
+<!--File name : AnnualEquipmentPlanning.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the annual maintenance of equipment-->
+
 <template>
     <div v-if="loaded==true">
         <div id="page">
@@ -39,7 +44,7 @@
                         Operations planned
                     </b-col>
                     <b-col cols="1" class="eq_planning_annual_plannification">
-                        Annual Planification 
+                        Annual Planification
                         <b-row>
                             <b-col cols="4" class="eq_planning_annual_plannification_date">
                                     {{periode[0].month}} {{periode[0].year}}
@@ -133,18 +138,18 @@
                                 <b-col cols="1" class="eq_planning_annual_prvMtnOp_value">
                                         <p class="info">Operation {{eq_prvMtnOp.prvMtnOp_number}}</p>
                                 </b-col>
-                                
+
                                 <b-col v-if="maintenancePlanned(periode[0].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[1].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">  
+                                <b-col v-if="maintenancePlanned(periode[1].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col  v-if="maintenancePlanned(periode[2].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">   
+                                <b-col  v-if="maintenancePlanned(periode[2].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
@@ -154,14 +159,14 @@
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[4].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">                                   
+                                <b-col v-if="maintenancePlanned(periode[4].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
                                 <b-col v-if="maintenancePlanned(periode[5].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
                                 </b-col>
-                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">      
+                                <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
                                 <b-col v-if="maintenancePlanned(periode[6].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
@@ -254,11 +259,11 @@
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                        
-            
+
+
                                 <b-col cols="1"  class="eq_planning_annual_periodicity">
                                 <p class="info"> {{eq_prvMtnOp.prvMtnOp_periodicity}} {{eq_prvMtnOp.prvMtnOp_symbolPeriodicity}}</p>
-                                </b-col>                  
+                                </b-col>
                             </b-row>
                         </div>
                     </div>
@@ -274,82 +279,82 @@
                                     <p class="info">No Operation</p>
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="4" class="eq_planning_annual_plannification_date_value">
-                                    
+
                             </b-col>
                             <b-col cols="1"  class="eq_planning_annual_periodicity">
                                 <p class="info"> / </p>
-                            </b-col>                  
+                            </b-col>
                         </b-row>
-                    </div>    
+                    </div>
                 </div>
             </div>
         </div>
@@ -359,7 +364,7 @@
 
 <script>
 import html2PDF from 'jspdf-html2canvas';
-export default { 
+export default {
     data(){
         return{
             eq_id:this.$route.params.id,
@@ -371,12 +376,12 @@ export default {
     },
 
     components: {
-        
+
     },
-    methods: { 
+    methods: {
 
         maintenancePlanned(id_periode, AllnextDate){
-            let res=false ; 
+            let res=false ;
             if (AllnextDate.length==0)
                 return res;
             AllnextDate.forEach(nextdate => {
@@ -409,13 +414,13 @@ export default {
                     bottom: 20,
                     left: 10,
                 },
-                output: 'AnnualEquipmentCalendar.pdf', 
+                output: 'AnnualEquipmentCalendar.pdf',
             });
         },
 
 
 
-        
+
     },
     created(){
         axios.get('/equipment/prvMtnOp/planning')
@@ -465,11 +470,11 @@ export default {
                     height: 170px;
                     margin-left:50px ;
                     margin-top: 0px;
-                    
+
                     .logo{
                         margin-top:30px;
                     }
-                    
+
                 }
                 .list_eq_pdf_titre{
                     border: solid 0.5px black;
@@ -480,9 +485,9 @@ export default {
                     left:250px;
                     height: 87px;
                     text-align:center;
-                   
-                    
-                    
+
+
+
                 }
                 .list_eq_fiche_de_vie_titre{
                     text-align: center;
@@ -496,7 +501,7 @@ export default {
                     top: 0px;
                     height: 86px;
                     width: 200px;
-                    
+
                 }
                 .equipment_revued_by{
                     border: solid 0.5px black;
@@ -529,13 +534,13 @@ export default {
                 }
 
             }
-            
-            
+
+
     .eq_infos_pdf{
         position: relative;
         margin-top:300px ;
         width : 1112px;
-        
+
         .title_eq_pdf{
             width: 400px;
             font-size : 20px;
@@ -555,7 +560,7 @@ export default {
                 width:100px;
                 height:49.5px;
                 font-size : 10px;
-                color:#20bbd8 ; 
+                color:#20bbd8 ;
                 line-height: 25px;
             }
                 .eq_planning_annual_name{
@@ -583,7 +588,7 @@ export default {
                 width:100px;
                 height:auto;
                 font-size : 10px;
-                color:#20bbd8 ; 
+                color:#20bbd8 ;
             }
                 .eq_planning_annual_name_value{
                 border: solid 0.5px black;
@@ -617,7 +622,7 @@ export default {
                 width:35px;
                 height:auto;
                 font-size : 7px;
-                color:#20bbd8; 
+                color:#20bbd8;
                 display: inline-table;
                 margin-left:0px;
                 margin-top:1px;
@@ -629,7 +634,7 @@ export default {
                 width:41.85px;
                 height:auto;
                 font-size : 10px;
-                color:#20bbd8; 
+                color:#20bbd8;
                 display: inline-table;
                 margin-left:0px;
             }
@@ -640,12 +645,12 @@ export default {
                 width:41.85px;
                 height:auto;
                 font-size : 10px;
-                color:#20bbd8; 
+                color:#20bbd8;
                 display: inline-table;
                 margin-left:0px;
                 background-color: #20bbd8;
             }
-            
+
 
 
 
@@ -657,8 +662,8 @@ export default {
                 width:40px;
                 font-size : 15px;
                 color:#20bbd8
-            }  
-            
+            }
+
             .eq_planning_annual_periodicity_title{
                 border: solid 0.5px black;
                 text-align: center;
@@ -668,14 +673,14 @@ export default {
                 margin-left: 0px;
                 line-height: 50px;
                 height:49.5px;
-            } 
-        
+            }
+
         }
     }
 
-        
-        
 
-    
+
+
+
 
 </style>

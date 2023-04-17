@@ -1,3 +1,8 @@
+<!--File name : UpdateALifeEvent.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to update a life event-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -20,7 +25,7 @@
                                         Operation Number : {{prvMtnOpRlz.prvMtnOp_number}} <br>
                                         Description : {{prvMtnOpRlz.prvMtnOp_description}} <br>
                                         Protocol : {{prvMtnOpRlz.prvMtnOp_protocol}} <br>
-                                        Report Numner : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
+                                        Report Number : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}} <br>
                                         Start Date : {{prvMtnOpRlz.prvMtnOpRlz_startDate}} <br>
                                         End date : {{prvMtnOpRlz.prvMtnOpRlz_endDate}} <br>
                                         Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}} <br>
@@ -38,8 +43,7 @@
                                     <div v-else>
                                         Approved by : - <br>
                                     </div>
-                                    
-                                    <PrvMtnOpRlzManagmentModal :prvMtnOp_id="prvMtnOpRlz.prvMtnOp_id" :prvMtnOp_number="prvMtnOpRlz.prvMtnOp_number" 
+                                    <PrvMtnOpRlzManagmentModal :prvMtnOp_id="prvMtnOpRlz.prvMtnOp_id" :prvMtnOp_number="prvMtnOpRlz.prvMtnOp_number"
                                     :prvMtnOp_description="prvMtnOpRlz.prvMtnOp_description" :prvMtnOp_protocol="prvMtnOpRlz.prvMtnOp_protocol"
                                     :prvMtnOpRlz_id="prvMtnOpRlz.id" :prvMtnOpRlz_reportNumber="prvMtnOpRlz.prvMtnOpRlz_reportNumber"
                                     :prvMtnOpRlz_startDate="prvMtnOpRlz.prvMtnOpRlz_startDate" :prvMtnOpRlz_endDate="prvMtnOpRlz.prvMtnOpRlz_endDate"
@@ -89,7 +93,6 @@
                                     <div v-else>
                                         Technical verifier : - <br>
                                     </div>
-                                    
                                     <CurMtnOpModal :curMtnOp_id="curMtnOp.id" :curMtnOp_reportNumber="curMtnOp.curMtnOp_reportNumber"
                                     :curMtnOp_startDate="curMtnOp.curMtnOp_startDate" :curMtnOp_endDate="curMtnOp.curMtnOp_endDate"
                                     :curMtnOp_description="curMtnOp.curMtnOp_description"
@@ -132,7 +135,7 @@ export default {
         }
     },
     created(){
-        var consultUrlPrvMtnOpRlz = (id) => `/state/prvMtnOpRlz/send/${id}`;
+        const consultUrlPrvMtnOpRlz = (id) => `/state/prvMtnOpRlz/send/${id}`;
         axios.get(consultUrlPrvMtnOpRlz(this.state_id))
             .then (response=>{
                 console.log(response.data)
@@ -140,7 +143,7 @@ export default {
             })
             .catch(error => console.log(error)) ;
 
-        var consultUrlCurMtnOp = (id) => `/state/curMtnOp/send/${id}`;
+        const consultUrlCurMtnOp = (id) => `/state/curMtnOp/send/${id}`;
         axios.get(consultUrlCurMtnOp(this.state_id))
             .then (response=>{
                 console.log(response.data)
@@ -148,8 +151,6 @@ export default {
                 this.loaded=true
             })
             .catch(error => console.log(error)) ;
-
-
     },
     methods:{
         reloadPage(){

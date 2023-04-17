@@ -1,10 +1,15 @@
+<!--File name : EnumManagement.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to show the different categories of enumerates-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div class="enumManagment" v-if="loaded==true">
-            <h1>ENUM MANAGMENT</h1>
+            <h1>ENUM MANAGEMENT</h1>
             <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
@@ -166,67 +171,67 @@ export default {
         }
     },
     created(){
-        if(this.$userId.user_addEnumRight!=true &&
-            this.$userId.user_deleteEnumRight!=true &&
-            this.$userId.user_updateEnumRight!=true ){
+        if( this.$userId.user_addEnumRight!=true
+        &&  this.$userId.user_deleteEnumRight!=true
+        &&  this.$userId.user_updateEnumRight!=true ){
                 this.$router.replace({ name: "home" })
         }
-        /*Ask for the controller different equipment type option */
+        /*Ask for the controller the different equipment type option */
         axios.get('/equipment/enum/type')
-            .then (response=> this.enum_eq_type=response.data) 
+            .then (response=> this.enum_eq_type=response.data)
             .catch(error => console.log(error)) ;
-        /*Ask for the controller different equipment mass unit option */
+        /*Ask for the controller the different equipment mass unit option */
         axios.get('/equipment/enum/massUnit')
-            .then (response=> this.enum_eq_massUnit=response.data) 
-            .catch(error => console.log(error)) ; 
-        /*Ask for the controller different types of the dimension  */
+            .then (response=> this.enum_eq_massUnit=response.data)
+            .catch(error => console.log(error)) ;
+        /*Ask for the controller the different types of the dimension  */
         axios.get('/dimension/enum/type')
-            .then (response=> this.enum_dim_type=response.data) 
+            .then (response=> this.enum_dim_type=response.data)
             .catch(error => console.log(error)) ;
-        /*Ask for the controller different names of the dimension  */
+        /*Ask for the controller the different names of the dimension  */
         axios.get('/dimension/enum/name')
-            .then (response=> this.enum_dim_name=response.data) 
+            .then (response=> this.enum_dim_name=response.data)
             .catch(error => console.log(error)) ;
-         /*Ask for the controller different unites of the dimension  */
+         /*Ask for the controller the different unites of the dimension  */
         axios.get('/dimension/enum/unit')
-            .then (response=> this.enum_dim_unit=response.data) 
+            .then (response=> this.enum_dim_unit=response.data)
             .catch(error => console.log(error)) ;
-        /*Ask for the controller different types of the power  */
+        /*Ask for the controller the different types of the power  */
         axios.get('/power/enum/type')
-            .then (response=> this.enum_pow_type=response.data) 
+            .then (response=> this.enum_pow_type=response.data)
             .catch(error => console.log(error)) ;
+        /*Ask for the controller the different risk  */
         axios.get('/risk/enum/riskfor')
             .then (response=>{
                 this.enum_risk_for=response.data
-            }) 
+            })
             .catch(error => console.log(error)) ;
+        /*Ask for the controller the different required skills for verification  */
         axios.get('/verification/enum/requiredSkill')
             .then (response=>{
                 console.log(response.data)
                 this.enum_requiredSkill=response.data
-            }) 
+            })
             .catch(error => console.log(error)) ;
-
         axios.get('/verification/enum/verifAcceptanceAuthority')
             .then (response=>{
                 console.log(response.data)
                 this.enum_verifAcceptanceAuthority=response.data;
-            } ) 
+            } )
             .catch(error => console.log(error)) ;
         axios.get('/usage/enum/metrologicalLevel')
             .then (response=>{
                 this.enum_metrologicalLevel=response.data;
-            } ) 
+            } )
             .catch(error => console.log(error)) ;
-
+        /*Ask for the controller the different types of precautions  */
         axios.get('/precaution/enum/type')
             .then (response=> {
                 this.enum_prctn_type=response.data;
                 this.loaded=true;
-            }) 
+            })
             .catch(error => console.log(error)) ;
     }
-
 }
 </script>
 

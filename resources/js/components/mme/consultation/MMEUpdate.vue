@@ -1,3 +1,8 @@
+<!--File name : MMEUpdate.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to update the IDCard of a MME-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -15,7 +20,7 @@
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <MmeIdForm :internalReference="mme_idCard.mme_internalReference" :externalReference="mme_idCard.mme_externalReference"
-                            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor" 
+                            :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor"
                             :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
                             modifMod/>
                         </div>
@@ -85,43 +90,39 @@ export default {
         }
     },
     created(){
-        var consultUrl = (id) => `/mme/${id}`;
+        let consultUrl = (id) => `/mme/${id}`;
         axios.get(consultUrl(this.mme_id))
             .then (response =>{
                 console.log(response.data)
                 this.mme_idCard=response.data
                 this.$router.push({ name: "url_mme_update", params: {id:this.mme_id}, query: {signed:response.data.mme_lifeSheetCreated }}).catch(()=>{});
-                if(response.data.mme_lifeSheetCreated==true && 
+                if(response.data.mme_lifeSheetCreated==true &&
                 (this.$userId.user_updateDescriptiveLifeSheetDataSignedRight!=true &&
                 this.$userId.user_deleteDataSignedLinkedTommeOrMmeRight!=true) ){
                     this.mme_lifeSheetCreated=response.data.mme_lifeSheetCreated;
                     this.$router.push({ name: "home"})
                 }
-            })
-            .catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        consultUrl = (id) => `/file/send/mme/${id}`;
+        axios.get(consultUrl(this.mme_id))
+            .then (response=> {
+                this.mme_files=response.data
+            }).catch(error => console.log(error)) ;
 
-        var consultUrl = (id) => `/file/send/mme/${id}`;
-            axios.get(consultUrl(this.mme_id))
-                .then (response=> {
-                    this.mme_files=response.data
-                })
-                .catch(error => console.log(error)) ;
+        consultUrl = (id) => `/verifs/send/${id}`;
+        axios.get(consultUrl(this.mme_id))
+            .then (response=> {
+                this.mme_verifs=response.data
+            }).catch(error => console.log(error)) ;
 
-        var consultUrl = (id) => `/verifs/send/${id}`;
-            axios.get(consultUrl(this.mme_id))
-                .then (response=> {
-                    this.mme_verifs=response.data})
-                .catch(error => console.log(error)) ;
-
-        var consultUrl = (id) => `/mme_usage/send/${id}`;
-            axios.get(consultUrl(this.mme_id))
+        consultUrl = (id) => `/mme_usage/send/${id}`;
+        axios.get(consultUrl(this.mme_id))
             .then (response=> {
                 this.mme_usages=response.data
                 console.log(response.data)
-                this.loaded=true})
-            .catch(error => console.log(error)) ;
+                this.loaded=true
+            }).catch(error => console.log(error)) ;
     }
-
 }
 </script>
 

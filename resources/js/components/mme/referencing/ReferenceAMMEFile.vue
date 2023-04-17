@@ -1,9 +1,14 @@
+<!--File name : ReferenceAMMEFile.vue-->
+<!--Creation date : 27 Apr 2022-->
+<!--Update date : 13 Apr 2023-->
+<!--Vue Component used to reference a file from another MME-->
+
 <template>
     <div class="mmeFile" >
         <h2 class="titleForm">MME File</h2>
         <!--Adding to the vue MMEFileForm by going through the components array with the v-for-->
         <!--ref="ask_file_data" is used to call the child elements in this component-->
-        <!--The emitted deleteFile is catched here and call the function getContent -->
+        <!--The emitted deleteFile is caught here and call the function getContent -->
         <MMEFileForm ref="ask_file_data" v-for="(component, key) in components" :key="component.key"
             :is="component.comp" :name="component.fileName" :location="component.location"
             :divClass="component.className" :id="component.id"
@@ -13,21 +18,21 @@
         <div v-if="!this.consultMod">
             <!--Add another file button appear -->
             <button v-on:click="addComponent">Add</button>
-            <!--If file array is not empty and if the user is not in modifacion mode -->
+            <!--If file array is not empty and if the user is not in modification mode -->
             <div v-if="this.files!==null">
                 <!--The importation button appear -->
                 <button v-if="!modifMod " v-on:click="importFile">import</button>
             </div>
         </div>
         <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
-        <ImportationAlert ref="importAlert"/>   
+        <ImportationAlert ref="importAlert"/>
     </div>
-  
+
 </template>
 
 
 <script>
-/*Importation of the others Components who will be used here*/
+/*Importation of the other Components who will be used here*/
 import MMEFileForm from './MMEFileForm.vue'
 import SaveButtonForm from '../../button/SaveButtonForm.vue'
 import ImportationAlert from '../../alert/ImportationAlert.vue'
@@ -70,14 +75,14 @@ export default {
       };
     },
     methods:{
-        //Function for adding a new empty file form 
+        //Function for adding a new empty file form
         addComponent() {
             this.components.push({
                 comp:'MMEFileForm',
                 key : this.uniqueKey++,
             });
         },
-        //Function for adding imported file form with his data
+        //Function for adding an imported file form with his data
         addImportedComponent(file_name,file_location,file_validate,file_className,id) {
             this.components.push({
                 comp:'MMEFileForm',
@@ -89,7 +94,7 @@ export default {
                 id:id
             });
         },
-        //Suppresion of a file component from the vue
+        //Suppression of a file component from the vue
         getContent(key) {
             this.components.splice(key, 1);
         },
@@ -110,12 +115,12 @@ export default {
             for(const component of this.$refs.ask_file_data){
                 //If the user is in modification mode
                 if(this.modifMod==true){
-                    //If the file doesn't have an id
+                    //If the file doesn't have, an id
                     if(component.file_id==null ){
                         //addMmeFile is used
                         component.addMmeFile(savedAs);
                     }else
-                    //Else if the file have an id and addSucces is equal to true 
+                    //Else if the file has an id and addSucces is equal to true
                     if(component.file_id!=null || component.addSucces==true){
                         //updateMmeFile is used
                         if(component.file_validate!=="validated"){
@@ -129,25 +134,21 @@ export default {
             }
         }
     },
-    /*All function inside the created option is called after the component has been created.*/
     created(){
-        //If the user choose an importation mme
+        //If the user chooses an imported mme
         if(this.import_id!==null){
             console.log(this.import_id)
-            //Make a get request to ask to the controller the file corresponding to the id of the mme with which data will be imported
-            var consultUrl = (id) => `/file/send/mme/${id}`;
+            //Make a get request to ask the controller the file corresponding to the id of the mme with which data will be imported
+            const consultUrl = (id) => `/file/send/mme/${id}`;
             axios.get(consultUrl(this.import_id))
                 .then (response=> {
                     this.files=response.data
                     console.log(response.data)})
                 .catch(error => console.log(error)) ;
-
         }
-
     },
-    /*All function inside the created option is called after the component has been mounted.*/
     mounted(){
-        //If the user is in consultation or modification mode dimensions will be added to the vue automatically
+        //If the user is in consultation or modification mode, the file will be added to the vue automatically
         if(this.consultMod || this.modifMod ){
             this.importFile();
         }

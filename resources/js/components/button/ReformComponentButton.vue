@@ -1,3 +1,8 @@
+<!--File name : ReformComponentButton.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the reform button-->
+
 <template>
     <div>
         <div v-if="reformDate==null">
@@ -7,7 +12,7 @@
             <div v-else>
                 <b-button class="reformButton" v-if="this.reformMod==true" variant="danger" disabled >Reform</b-button>
                 <p class="text-danger">
-                  You don't have the right to Reform  
+                  You don't have the right to Reform
                 </p>
             </div>
 
@@ -40,7 +45,7 @@
         </div>
 
     </div>
-    
+
 </template>
 
 <script>
@@ -79,7 +84,7 @@ export default {
     },
     updated(){
         if(this.selected_endDate!==null){
-            this.endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     methods:{

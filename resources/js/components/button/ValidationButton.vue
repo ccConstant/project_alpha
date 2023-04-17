@@ -1,3 +1,8 @@
+<!--File name : ValidationButton.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the validation button-->
+
 <template>
     <div>
         <div v-if="validationMethod=='technical'">
@@ -9,7 +14,7 @@
         <div v-if="hasError(Errors)===true" class="error_eq_lifesheet_validation">
             <div v-for="(error, index) in this.Errors" :key="index">
                 <p>{{error.validation}}</p>
-            </div> 
+            </div>
         </div>
     </div>
 
@@ -33,7 +38,7 @@ export default {
         hasError(errors){
             console.log((errors.length>0))
             return(errors.length>0);
-            
+
         },
         Validate(){
             this.$emit("ValidatePressed",'')

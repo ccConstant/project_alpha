@@ -1,5 +1,10 @@
+<!--File name : PrvMtnOpRlzManagementModal.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component to make the modal used to manage the different preventive maintenance operation already realized-->
+
 <template>
-    <div class="op_prvrlz_modal_comp">   
+    <div class="op_prvrlz_modal_comp">
         <ErrorAlert ref="errorAlert"/>
 
         <div class="prvrlz_button" v-if="this.$userId.user_makeEqOpValidationRight==true">
@@ -23,17 +28,17 @@
         <div v-if="this.$userId.user_makeEqOpValidationRight==false">
             <p class="text-danger"> You don't have the right to approve a record</p>
         </div>
-        
+
 
         <b-modal :id="`modal-prvMtnOpManagmentUpdate-${_uid}`" title="Update the record" @ok="handleOkUpdate">
-            <EquipmentPrvMtnOpRlzForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
+            <EquipmentPrvMtnOpRlzForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number"
             :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
             :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
             :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
         </b-modal>
 
         <b-modal :id="`modal-prvMtnOpManagmentApprove-${_uid}`" title="Approve the record" @ok="handleOkApprove" @hidden="resetModal">
-            <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
+            <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number"
             :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
             :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
             :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
@@ -43,7 +48,7 @@
         </b-modal>
 
         <b-modal :id="`modal-prvMtnOpManagmentRealize-${_uid}`" title="Realize the record" @ok="handleOkRealize" @hidden="resetModal">
-            <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number" 
+            <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number"
             :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
             :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
             :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
@@ -108,8 +113,6 @@ export default {
         realizedBy_lastName:{
             type:String
         },
-        
-
     },
     data(){
         return{
@@ -125,7 +128,7 @@ export default {
             this.$bvModal.hide(modal);
             this.resetModal();
             this.$emit('okReload','')
-            
+
         },
         handleOkUpdate(){
             this.$emit('okReload','')
@@ -139,13 +142,13 @@ export default {
             // Prevent modal from closing
             bvModalEvent.preventDefault()
             console.log()
-            var postUrlAdd = (id) => `/prvMtnOpRlz/approve/${id}`;
+            const postUrlAdd = (id) => `/prvMtnOpRlz/approve/${id}`;
             axios.post(postUrlAdd(this.prvMtnOpRlz_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.compId
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
@@ -154,17 +157,17 @@ export default {
         handleOkRealize(bvModalEvent){
             // Trigger submit handler
             bvModalEvent.preventDefault()
-            var postUrlAdd = (id) => `/prvMtnOpRlz/realize/${id}`;
+            const postUrlAdd = (id) => `/prvMtnOpRlz/realize/${id}`;
             axios.post(postUrlAdd(this.prvMtnOpRlz_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.compId
             })
-            .then(response =>{ 
+            .then(response =>{
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
-            
+
         }
     }
 

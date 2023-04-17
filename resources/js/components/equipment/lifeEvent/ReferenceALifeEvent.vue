@@ -1,11 +1,14 @@
+<!--File name : ReferenceALifeEvent.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to reference a life event, it use ReferenceACurMtnOp and ReferenceAPrvMtnOpRlz-->
+
 <template>
     <div>
         <ReferenceACurMtnOp v-if="operation_type=='curative'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
         <ReferenceAPrvMtnOpRlz v-if="operation_type=='preventive'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
-
         <div v-if="isInConsultMod==true">
             <button type="button" @click="referenceAnother()">Reference another operation</button>
-
         </div>
     </div>
 </template>
@@ -18,11 +21,10 @@ export default {
     components: {
         ReferenceACurMtnOp,
         ReferenceAPrvMtnOpRlz,
-        
+
     },
     data(){
         return{
-        //Id de l'equipement qui vien detre crée
             eq_id:parseInt(this.$route.params.id),
             state_id:parseInt(this.$route.params.state_id),
             selected_reference:'',
@@ -38,17 +40,12 @@ export default {
             window.location.reload();
         }
     }
-
 }
 </script>
 
 <style lang="scss">
- 
     .date-selector{
         width: 44px;
         margin-top:8px
-    }    
-    
-    
-
+    }
 </style>

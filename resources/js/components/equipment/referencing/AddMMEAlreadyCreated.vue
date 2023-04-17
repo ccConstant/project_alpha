@@ -1,7 +1,7 @@
 <!--File name : AddMMEAlreadyCreated.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 4 Apr 2023-->
-<!--Vue Component of the Form of the equipment dimension who call all the input component-->
+<!--Update date : 12 Apr 2023-->
+<!--Vue Component used to link a MME already created to the equipment-->
 
 <template>
     <div>

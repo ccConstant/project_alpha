@@ -1,3 +1,8 @@
+<!--File name : SignIn.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the connection menu-->
+
 <template>
   <div>
         <div v-if="loaded==false" >
@@ -45,7 +50,6 @@ export default {
                 user_password:this.user_password
 
             })
-            //If the dimension is added succesfuly
             .then(response =>{window.location.href = "/"})
             .catch(error =>this.errors=error.response.data.errors);
         },
@@ -58,7 +62,7 @@ export default {
         .then (response=> {
             this.infos_person=response.data;
             this.loaded=true;
-            }) 
+            })
         .catch(error => console.log(error)) ;
     }
 

@@ -1,3 +1,8 @@
+<!--File name : MyAccount.vue-->
+<!--Creation date : 10 Jan 2023-->
+<!--Update date : 11 Apr 2023-->
+<!--Vue Component of the account management part-->
+
 <template>
     <div>
         <div v-if="loaded==false" >
@@ -10,7 +15,7 @@
                 <form class="myaccount_form" @keydown="clearError">
                     <InputTextForm :Errors="errors.user_firstName " v-model="user_firstName" name="user_firstName" label="Change my first name :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[0].info_value"/>
                     <InputTextForm :Errors="errors.user_lastName " v-model="user_lastName" name="user_lastName" label="Change my last name :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[1].info_value"/>
-                    <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Change my username :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[4].info_value"/>                    
+                    <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Change my username :" inputClassName="form-control " divClassName="user_text_field" :info_text="infos_person[4].info_value"/>
                     <div class="input-group">
                         <InputTextForm :inputClassName="['form-control', !this.formation_eq_ok?'is-invalid':'']" :Errors="errors.user_eq_formation_date" name="user_eq_formation_date" label="Trained to general principles of equipment management since:" :isDisabled="true" divClassName="user_text_field" v-model="user_eq_formation_date"/>
                         <InputDateForm  inputClassName="form-control date-selector" name="selected_eq_formation_date"  isRequired v-model="selected_eq_formation_date"/>
@@ -70,7 +75,7 @@ export default {
             formation_eq_ok:true,
             formation_mme_ok:true
 
-            
+
         }
     },
     methods:{
@@ -91,7 +96,7 @@ export default {
 
 
 			})
-			.then(response =>{           
+			.then(response =>{
                 this.$refs.successAlert.showAlert('Account information updated successfully');
                 window.location.reload();
 			})
@@ -106,14 +111,14 @@ export default {
         axios.get('/info/send/person')
         .then (response=> {
             this.infos_person=response.data;
-            }) 
+            })
         .catch(error => console.log(error)) ;
 
         var getUrlFormationOk = (id) => ` /user/get/formationEqOk/${id}`;
         axios.get(getUrlFormationOk(this.$userId.id))
         .then (response=> {
             this.formation_eq_ok=response.data;
-            }) 
+            })
         .catch(error => console.log(error)) ;
 
         var getUrlFormationOk = (id) => ` /user/get/formationMmeOk/${id}`;
@@ -121,15 +126,15 @@ export default {
         .then (response=> {
             this.formation_mme_ok=response.data;
             this.loaded=true;
-            }) 
+            })
         .catch(error => console.log(error)) ;
     },
     updated() {
         if(this.selected_eq_formation_date!==null){
-            this.user_eq_formation_date=moment(this.selected_eq_formation_date).format('D MMM YYYY'); 
+            this.user_eq_formation_date=moment(this.selected_eq_formation_date).format('D MMM YYYY');
         };
         if(this.selected_mme_formation_date!==null){
-            this.user_mme_formation_date=moment(this.selected_mme_formation_date).format('D MMM YYYY'); 
+            this.user_mme_formation_date=moment(this.selected_mme_formation_date).format('D MMM YYYY');
         };
     },
 
@@ -170,11 +175,11 @@ export default {
                 margin-right:auto;
             }
             .input-group{
-                
+
                 .user_text_field{
                     width:660px;
                 }
-                
+
             }
             .train_alert{
                 margin-left:130px ;
