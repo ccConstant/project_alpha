@@ -1,7 +1,7 @@
 <!--File name : InfosManagement.vue-->
 <!--Creation date : 12 Jul 2022-->
 <!--Update date : 11 Apr 2023-->
-<!--Vue Component of a text area called in the different forms-->
+<!--Vue Component with all infos called in the info menu-->
 
 <template>
     <div class="infoManagment">

@@ -1,3 +1,9 @@
+<!--File name : InfosElement.vue-->
+<!--Creation date : 12 Jul 2022-->
+<!--Update date : 17 Apr 2023-->
+<!--Vue Component representing an info called in the different forms-->
+
+
 <template>
     <div class="info_element">
             <li class="list-group-item" >
@@ -77,3 +83,6 @@ export default {
 <style>
 
 </style>
+
+
+

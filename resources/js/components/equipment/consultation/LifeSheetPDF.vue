@@ -413,9 +413,7 @@
 			</div>
 		</div>
 		<button class="btn btn-primary" @click="generateReport()" >Generate PDF</button>
-	</div>  
-
-</div>  
+	</div>   
 
 </template>
 
