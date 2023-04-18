@@ -53,13 +53,8 @@
 
                         </div>
                     </div>
-                    <div class="eq_designation_type_pdf">
-                        <p>
-                            Designation and type : <b class="text-primary"> {{ eq_idCard.eq_name}} {{ eq_idCard.eq_type}} </b>
-                        </p>
-                        <p>
-                            
-                        </p>
+                    <div class="eq_serialNumber_pdf">
+                        <p>Serial Number : <b class="text-primary">{{eq_idCard.eq_serialNumber}}</b></p>
                     </div>
                     <div class="eq_externalReference_pdf">
                         <p>
@@ -69,8 +64,13 @@
                     <div class="eq_constructor_pdf">
                         <p>Constructor: <b class="text-primary">{{eq_idCard.eq_constructor}}</b></p>
                     </div>
-                    <div class="eq_serialNumber_pdf">
-                        <p>Serial Number : <b class="text-primary">{{eq_idCard.eq_serialNumber}}</b></p>
+                    <div class="eq_designation_type_pdf">
+                        <p>
+                            Designation and type : <b class="text-primary"> {{ eq_idCard.eq_name}} - {{ eq_idCard.eq_type}} </b>
+                        </p>
+                        <p>
+                            
+                        </p>
                     </div>
             </div>
 
@@ -350,17 +350,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="eq_recordTemplateRefPdf">
-                <div class="eq_table_recordTemplateRefPdf">
-                     <div class="eq_index_recordTemplateRefPdf">
-                        Record Template Ref :  REC-IWE01
-                    </div>
-                    <div class="eq_confidential_recordTemplateRefPdf">
-                        This document contains CONFIDENTIAL information
-                    </div>
-                </div>
-             </div>
 
             <div class="eq_history_pdf">
 				<div class="title_history_pdf">
@@ -670,7 +659,7 @@ export default {
                     left :300px;
                     top: 86px;
                     height: 84px;
-                    width: 400px;
+                    width: 321px;
 
                 }
                 .equipment_approuved_by{
@@ -679,10 +668,10 @@ export default {
                     position: absolute;
 
 
-                    left :700px;
+                    left :621px;
                     top: 86px;
                     height: 84px;
-                    width: 242px;
+                    width: 321px;
                 }
                 .eq_internalReference_pdf{
                     border: solid 0.5px black;
@@ -720,9 +709,10 @@ export default {
                 .eq_designation_type_pdf{
                     border: solid 1px black;
                     width: 500px;
-                    height: 60px;
+                    height: auto;
                     margin-bottom: 20px;
                     float: left;
+                    margin-left: 42px;
                     
                 }
                 .eq_externalReference_pdf{
@@ -741,7 +731,6 @@ export default {
                 }
                 .eq_serialNumber_pdf{
                     border: solid 1px black;
-                    margin-left: 42px;
                     width: 500px;
                     height: 60px;
                     float: left; 
@@ -893,7 +882,7 @@ export default {
                         .eq_dimension_name_value_pdf{
                             border: solid 1px black;
                             position: relative;
-                            height: 40px;
+                            height: auto;
                             width: 340px;
                             margin-right: 10px;   
                             

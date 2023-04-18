@@ -806,7 +806,7 @@ class UserController extends Controller{
                     'user_initials.required' => 'You must enter the initials ',
                     'user_initials.string' => 'Your firstName must be of type string',
                     'user_initials.max' => 'You must enter a maximum of 4 characters',
-                    'user_initials.min' => 'You must enter a at least 2 characters',
+                    'user_initials.min' => 'You must enter at least 2 characters',
                 ]);
 
                 //We check if user_initials is already used in the data base
@@ -1027,7 +1027,7 @@ class UserController extends Controller{
             ],[        
                 'user_pseudo.required' => 'You must enter a pseudo ',
                 'user_pseudo.string' => 'Your pseudo must be of type string',
-                'user_pseudo.max' => 'You must enter a maximum of 255 characters',
+                'user_pseudo.max' => 'You must enter a maximum of 50 characters',
                 'user_pseudo.min' => 'You must enter at least 2 characters',
             ]);
 

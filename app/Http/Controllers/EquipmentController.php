@@ -671,7 +671,7 @@ class EquipmentController extends Controller{
         foreach($equipments as $equipment){
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
-                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ; 
+                $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->where('prvMtnOp_preventiveOperation','=',1)->get() ; 
                 foreach( $prvMtnOps as $prvMtnOp){
                     $now=Carbon::now('Europe/Paris');
                     $oneMonthLater=Carbon::now('Europe/Paris');
@@ -693,7 +693,7 @@ class EquipmentController extends Controller{
                         }
                     }
                     
-                    if ($prvMtnOp->prvMtnOp_validate=="validated" && $prvMtnOp->prvMtnOp_preventiveOperation==true && $nextDateCarbon>=$now && $nextDateCarbon<=$oneMonthLater){
+                    if ($prvMtnOp->prvMtnOp_validate=="validated" && $nextDateCarbon>=$now && $nextDateCarbon<=$oneMonthLater){
                         $opMtn=([
                             "id" => $prvMtnOp->id,
                             "Number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -908,34 +908,36 @@ class EquipmentController extends Controller{
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;    
                 $today=Carbon::now('Europe/London') ;
                 foreach( $prvMtnOps as $prvMtnOp){
-                    $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ; 
-                    $ymd=explode('-', $dates[0]);
-                    $year=$ymd[0] ; 
-                    $month=$ymd[1] ;
-                    $day=$ymd[2] ;
+                    if ($prvMtnOp->prvMtnOp_preventiveOperation){
+                        $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ; 
+                        $ymd=explode('-', $dates[0]);
+                        $year=$ymd[0] ; 
+                        $month=$ymd[1] ;
+                        $day=$ymd[2] ;
 
-                    $time=explode(':', $dates[1]); 
-                    $hour=$time[0] ;
-                    $min=$time[1] ; 
-                    $sec=$time[2] ;
-                
-                    $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
-                    $OneWeekLater=$nextDate->addDays(7) ; 
-                    if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
-                        $opMtn=([
-                            "id" => $prvMtnOp->id,
-                            "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
-                            "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
-                            "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
-                            "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-                            "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                            "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
-                            "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
-                            "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
-                            "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
-                            
-                        ]);
-                        array_push($containerOp,$opMtn);
+                        $time=explode(':', $dates[1]); 
+                        $hour=$time[0] ;
+                        $min=$time[1] ; 
+                        $sec=$time[2] ;
+                    
+                        $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
+                        $OneWeekLater=$nextDate->addDays(7) ; 
+                        if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
+                            $opMtn=([
+                                "id" => $prvMtnOp->id,
+                                "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                                "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                                "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
+                                "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
+                                "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
+                                "prvMtnOp_startDate" => $prvMtnOp->prvMtnOp_startDate,
+                                "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                                "prvMtnOp_reformDate" => $prvMtnOp->prvMtnOp_reformDate,
+                                "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
+                                
+                            ]);
+                            array_push($containerOp,$opMtn);
+                        }
                     }
                 }
                 $states=$mostRecentlyEqTmp->states;

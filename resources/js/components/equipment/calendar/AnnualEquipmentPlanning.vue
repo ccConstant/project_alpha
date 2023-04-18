@@ -552,7 +552,7 @@ export default {
     .eq_planning_annual_table{
             margin-top:200px;
             margin-left:30px;
-            width:1300px;
+            width:1380px;
 
             .eq_planning_annual_internalReference{
                 border: solid 0.5px black;
@@ -568,16 +568,16 @@ export default {
                 text-align: center;
                 width:85px;
                 height:49.5px;
-                font-size : 10px;
+                font-size : 8px;
                 color:#20bbd8;
-                line-height: 50px;
+                line-height: 25px;
             }
             .eq_planning_annual_prvMtnOp{
                 border: solid 0.5px black;
                 text-align: center;
-                width:77px;
+                width:75px;
                 height:49.5px;
-                font-size : 10px;
+                font-size : 8px;
                 color:#20bbd8;
                 line-height: 25px;
             }
@@ -587,7 +587,7 @@ export default {
                 text-align: center;
                 width:100px;
                 height:auto;
-                font-size : 10px;
+                font-size : 9px;
                 color:#20bbd8 ;
             }
                 .eq_planning_annual_name_value{
@@ -595,22 +595,22 @@ export default {
                 text-align: center;
                 width:85px;
                 height:auto;
-                font-size : 10px;
-                 color:#20bbd8
+                font-size : 9px;
+                color:#20bbd8;
             }
             .eq_planning_annual_prvMtnOp_value{
                 border: solid 0.5px black;
                 text-align: center;
-                width:77px;
+                width:75px;
                 height:auto;
-                font-size : 10px;
-                 color:#20bbd8
+                font-size : 9px;
+                color:#20bbd8;       
             }
 
             .eq_planning_annual_plannification{
                 border: solid 0.5px black;
                 text-align: center;
-                width:1004.7px;
+                width:1007px;
                 height:auto;
                 font-size : 15px;
                  color:#20bbd8
@@ -631,9 +631,9 @@ export default {
             .eq_planning_annual_plannification_date_value{
                 border: solid 0.5px black;
                 text-align: center;
-                width:41.85px;
+                width:41.95px;
                 height:auto;
-                font-size : 10px;
+                font-size : 7px;
                 color:#20bbd8;
                 display: inline-table;
                 margin-left:0px;
@@ -642,7 +642,7 @@ export default {
             .eq_planning_annual_plannification_date_value_color{
                 border: solid 0.5px black;
                 text-align: center;
-                width:41.85px;
+                width:41.95px;
                 height:auto;
                 font-size : 10px;
                 color:#20bbd8;
