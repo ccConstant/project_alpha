@@ -233,7 +233,7 @@ export default {
                                     });
                                     window.location.reload();
                                 }
-                                this.$refs.SuccessAlert.showAlert(`Equipment dimension added successfully and saved as ${savedAs}`);
+                                this.$refs.successAlert.showAlert(`Equipment dimension added successfully and saved as ${savedAs}`);
                                 /*If the user is not in modification mode*/
                                 if (!this.modifMod) {
                                     /*The form pass in consulting mode and addSuccess pass to True*/
@@ -292,7 +292,7 @@ export default {
                                 });
                                 window.location.reload();
                             }
-                            this.$refs.SuccessAlert.showAlert(`Equipment dimension updated successfully and saved as ${savedAs}`);
+                            this.$refs.successAlert.showAlert(`Equipment dimension updated successfully and saved as ${savedAs}`);
                             this.dim_validate = savedAs;
                         })
                         /*If the controller sends errors, we put it in the error object*/
@@ -324,7 +324,7 @@ export default {
                             });
                             window.location.reload();
                         }
-                        this.$refs.SuccessAlert.showAlert(`Equipment dimension deleted successfully`);
+                        this.$refs.successAlert.showAlert(`Equipment dimension deleted successfully`);
                         /*Emit to the parent component that we want to delete this component*/
                         this.$emit('deleteDim', '')
                     })
@@ -332,7 +332,7 @@ export default {
                     .catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteDim', '')
-                this.$refs.SuccessAlert.showAlert(`Empty Equipment dimension deleted successfully`);
+                this.$refs.successAlert.showAlert(`Empty Equipment dimension deleted successfully`);
             }
         },
         clearSelectError(value) {
