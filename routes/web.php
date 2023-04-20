@@ -1,46 +1,49 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EquipmentController ; 
-use App\Http\Controllers\DimensionController ; 
-use App\Http\Controllers\PowerController ; 
-use App\Http\Controllers\SpecialProcessController ; 
-use App\Http\Controllers\UsageController ; 
+use App\Http\Controllers\SW01\EquipmentController ; 
+
+
+
+use App\Http\Controllers\SW01\DimensionController ; 
+use App\Http\Controllers\SW01\PowerController ; 
+use App\Http\Controllers\SW01\SpecialProcessController ; 
+use App\Http\Controllers\SW01\UsageController ; 
 use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\RiskController ; 
-use App\Http\Controllers\StateController ; 
-use App\Http\Controllers\PreventiveMaintenanceOperationController ;
-use App\Http\Controllers\CurativeMaintenanceOperationController ;
-use App\Http\Controllers\PreventiveMaintenanceOperationRealizedController ;
-use App\Http\Controllers\EnumEquipmentTypeController ; 
-use App\Http\Controllers\EnumEquipmentMassUnitController ; 
-use App\Http\Controllers\EnumPowerTypeController ; 
-use App\Http\Controllers\EnumStateNameController ; 
-use App\Http\Controllers\EnumRiskForController ; 
-use App\Http\Controllers\EnumDimensionTypeController ; 
-use App\Http\Controllers\EnumDimensionNameController ; 
-use App\Http\Controllers\EnumDimensionUnitController ; 
+use App\Http\Controllers\SW01\RiskController ; 
+use App\Http\Controllers\SW01\StateController ; 
+use App\Http\Controllers\SW01\PreventiveMaintenanceOperationController ;
+use App\Http\Controllers\SW01\CurativeMaintenanceOperationController ;
+use App\Http\Controllers\SW01\PreventiveMaintenanceOperationRealizedController ;
+use App\Http\Controllers\SW01\EnumEquipmentTypeController ; 
+use App\Http\Controllers\SW01\EnumEquipmentMassUnitController ; 
+use App\Http\Controllers\SW01\EnumPowerTypeController ; 
+use App\Http\Controllers\SW01\EnumStateNameController ; 
+use App\Http\Controllers\SW01\EnumRiskForController ; 
+use App\Http\Controllers\SW01\EnumDimensionTypeController ; 
+use App\Http\Controllers\SW01\EnumDimensionNameController ; 
+use App\Http\Controllers\SW01\EnumDimensionUnitController ; 
 use App\Http\Controllers\InformationController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\SW01\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\SW01\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\SW01\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\SW01\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\SW01\Auth\NewPasswordController;
+use App\Http\Controllers\SW01\Auth\PasswordResetLinkController;
+use App\Http\Controllers\SW01\Auth\RegisteredUserController;
+use App\Http\Controllers\SW01\Auth\VerifyEmailController;
 use App\Http\Controllers\UserController ; 
-use App\Http\Controllers\MmeController ; 
-use App\Http\Controllers\MmeTempController ; 
-use App\Http\Controllers\VerificationController ; 
-use App\Http\Controllers\VerificationRealizedController ; 
-use App\Http\Controllers\MmeUsageController ; 
-use App\Http\Controllers\MmeStateController ; 
-use App\Http\Controllers\PrecautionController ; 
-use App\Http\Controllers\EnumVerificationRequiredSkillController;
-use App\Http\Controllers\EnumPrecautionTypeController;
-use App\Http\Controllers\EnumUsageMetrologicalLevelController;
-use App\Http\Controllers\EnumVerifAcceptanceAuthorityController;
+use App\Http\Controllers\SW01\MmeController ; 
+use App\Http\Controllers\SW01\MmeTempController ; 
+use App\Http\Controllers\SW01\VerificationController ; 
+use App\Http\Controllers\SW01\VerificationRealizedController ; 
+use App\Http\Controllers\SW01\MmeUsageController ; 
+use App\Http\Controllers\SW01\MmeStateController ; 
+use App\Http\Controllers\SW01\PrecautionController ; 
+use App\Http\Controllers\SW01\EnumVerificationRequiredSkillController;
+use App\Http\Controllers\SW01\EnumPrecautionTypeController;
+use App\Http\Controllers\SW01\EnumUsageMetrologicalLevelController;
+use App\Http\Controllers\SW01\EnumVerifAcceptanceAuthorityController;
 use App\Http\Controllers\HistoryController;
 
 /*

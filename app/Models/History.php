@@ -13,8 +13,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\EquipmentTemp ;
-use App\Models\MmeTemp ; 
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\MmeTemp ; 
 
 class History extends Model
 {

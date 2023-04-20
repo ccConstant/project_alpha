@@ -13,10 +13,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ; 
-use App\Models\EquipmentTemp ; 
-use App\Models\Equipment ; 
-use App\Models\MmeTemp ; 
-use App\Models\Mme ; 
+use App\Models\SW01\EquipmentTemp ; 
+use App\Models\SW01\Equipment ; 
+use App\Models\SW01\MmeTemp ; 
+use App\Models\SW01\Mme ; 
 use App\Models\File ; 
 use Carbon\Carbon;
 

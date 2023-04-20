@@ -40,74 +40,74 @@ const router = new VueRouter({
     }, {
         path:'/equipment/add',
         name: 'url_eq_add',
-        component:require('./components/equipment/referencing/ReferenceAnEquipment.vue').default
+        component:require('./components/SW01/equipment/referencing/ReferenceAnEquipment.vue').default
     },{
         path:'/equipment/list/consult/:id(\\d+)',
         name: 'url_eq_consult',
-        component:require('./components/equipment/consultation/EquipmentConsult.vue').default
+        component:require('./components/SW01/equipment/consultation/EquipmentConsult.vue').default
     },{
         path:'/equipment/list/update/:id(\\d+)',
         name: 'url_eq_update',
-        component:require('./components/equipment/consultation/EquipmentUpdate.vue').default
+        component:require('./components/SW01/equipment/consultation/EquipmentUpdate.vue').default
     },{
         path:'/equipment/list',
         name: 'url_eq_list',
-        component:require('./components/equipment/consultation/ListOfEquipment.vue').default
+        component:require('./components/SW01/equipment/consultation/ListOfEquipment.vue').default
     }, 
     {
         path:'/equipment/list/PDF',
         name: 'url_eq_list_pdf',
-        component:require('./components/equipment/consultation/ListOfEquipmentPDF.vue').default
+        component:require('./components/SW01/equipment/consultation/ListOfEquipmentPDF.vue').default
     },{
         path:'/enum',
         name: 'url_enum',
-        component:require('./components/enum/EnumManagment.vue').default
+        component:require('./components/SW01/enum/EnumManagment.vue').default
     },{
         path:'/equipment/life_event',
         name: 'url_life_event',
-        component:require('./components/equipment/lifeEvent/ListOfEquipmentLifeEvent.vue').default
+        component:require('./components/SW01/equipment/lifeEvent/ListOfEquipmentLifeEvent.vue').default
     },{
         path:'/equipment/life_event/state/:id(\\d+)/:state_id(\\d+)',
         name: 'url_life_event_update_state',
-        component:require('./components/equipment/lifeEvent/UpdateState.vue').default
+        component:require('./components/SW01/equipment/lifeEvent/UpdateState.vue').default
     },{
         path:'/equipment/life_event/state/:id(\\d+)',
         name: 'url_life_event_change_state',
-        component:require('./components/equipment/lifeEvent/UpdateState.vue').default
+        component:require('./components/SW01/equipment/lifeEvent/UpdateState.vue').default
     },{
         path:'/equipment/life_event/all/:id(\\d+)',
         name: 'url_life_event_all',
-        component:require('./components/equipment/lifeEvent/EquipmentAllEventList.vue').default
+        component:require('./components/SW01/equipment/lifeEvent/EquipmentAllEventList.vue').default
     },{
         path:'/equipment/life_event/reference/:id(\\d+)/:state_id(\\d+)',
         name: 'url_life_event_reference',
-        component:require('./components/equipment/lifeEvent/ReferenceALifeEvent.vue').default
+        component:require('./components/SW01/equipment/lifeEvent/ReferenceALifeEvent.vue').default
     },{
         path:'/equipment/life_event/update/:id(\\d+)/:state_id(\\d+)',
         name: 'url_life_event_update',
-        component:require('./components/equipment/lifeEvent/UpdateALifeEvent.vue').default
+        component:require('./components/SW01/equipment/lifeEvent/UpdateALifeEvent.vue').default
 
     },{
         path:'/equipment/annual/planning',
         name: 'url_annual_planning',
-        component:require('./components/equipment/calendar/AnnualEquipmentPlanning.vue').default
+        component:require('./components/SW01/equipment/calendar/AnnualEquipmentPlanning.vue').default
     },{
         path:'/equipment/monthly/planning',
         name: 'url_monthly_planning',
-        component:require('./components/equipment/calendar/MonthlyEquipmentPlanning.vue').default
+        component:require('./components/SW01/equipment/calendar/MonthlyEquipmentPlanning.vue').default
     },{
         path:'/equipment/lifesheet_pdf/:id(\\d+)',
         name: 'url_lifesheet_pdf',
-        component:require('./components/equipment/consultation/LifeSheetPDF.vue').default
+        component:require('./components/SW01/equipment/consultation/LifeSheetPDF.vue').default
     },{
         path:'/equipment/reform/:id(\\d+)',
         name: 'url_eq_reform',
-        component:require('./components/equipment/consultation/EquipmentReform.vue').default
+        component:require('./components/SW01/equipment/consultation/EquipmentReform.vue').default
 
     },{
         path:'/infos',
         name: 'url_infos',
-        component:require('./components/infos/InfosManagment.vue').default
+        component:require('./components/SW01/infos/InfosManagment.vue').default
 
     },{
         path:'/accounts',
@@ -133,62 +133,62 @@ const router = new VueRouter({
         //MME path
         path:'/mme/add',
         name: 'url_mme_add',
-        component:require('./components/mme/referencing/ReferenceAnMME.vue').default
+        component:require('./components/SW01/mme/referencing/ReferenceAnMME.vue').default
     },{
         path:'/mme/list',
         name: 'url_mme_list',
-        component:require('./components/mme/consultation/ListOfMME.vue').default
+        component:require('./components/SW01/mme/consultation/ListOfMME.vue').default
     },{
         path:'/mme/list/consult/:id(\\d+)',
         name: 'url_mme_consult',
-        component:require('./components/mme/consultation/MMEConsult.vue').default
+        component:require('./components/SW01/mme/consultation/MMEConsult.vue').default
     },{
         path:'/mme/list/update/:id(\\d+)',
         name: 'url_mme_update',
-        component:require('./components/mme/consultation/MMEUpdate.vue').default
+        component:require('./components/SW01/mme/consultation/MMEUpdate.vue').default
     },{
         path:'/mme/reform/:id(\\d+)',
         name: 'url_mme_reform',
-        component:require('./components/mme/consultation/MMEReform.vue').default
+        component:require('./components/SW01/mme/consultation/MMEReform.vue').default
 
     },{
         path:'/mme/life_event',
         name: 'url_mme_life_event',
-        component:require('./components/mme/lifeEvent/ListOfMMELifeEvent.vue').default
+        component:require('./components/SW01/mme/lifeEvent/ListOfMMELifeEvent.vue').default
     },{
         path:'/mme/life_event/state/:id(\\d+)/:state_id(\\d+)',
         name: 'url_mme_life_event_update_state',
-        component:require('./components/mme/lifeEvent/UpdateMMEState.vue').default
+        component:require('./components/SW01/mme/lifeEvent/UpdateMMEState.vue').default
     },{
         path:'/mme/life_event/reference/:id(\\d+)/:state_id(\\d+)',
         name: 'url_mme_life_event_reference',
-        component:require('./components/mme/lifeEvent/ReferenceAMMELifeEvent.vue').default
+        component:require('./components/SW01/mme/lifeEvent/ReferenceAMMELifeEvent.vue').default
     },{
         path:'/mme/life_event/state/:id(\\d+)',
         name: 'url_mme_life_event_change_state',
-        component:require('./components/mme/lifeEvent/UpdateMMEState.vue').default
+        component:require('./components/SW01/mme/lifeEvent/UpdateMMEState.vue').default
     },{
         path:'/mme/life_event/all/:id(\\d+)',
         name: 'url_mme_life_event_all',
-        component:require('./components/mme/lifeEvent/MMEAllEventList.vue').default
+        component:require('./components/SW01/mme/lifeEvent/MMEAllEventList.vue').default
     },{
         path:'/mme/life_event/update/:id(\\d+)/:state_id(\\d+)',
         name: 'url_mme_life_event_update',
-        component:require('./components/mme/lifeEvent/UpdateAMMELifeEvent.vue').default
+        component:require('./components/SW01/mme/lifeEvent/UpdateAMMELifeEvent.vue').default
 
     },{
         path:'/mme/annual/planning',
         name: 'url_mme_annual_planning',
-        component:require('./components/mme/calendar/AnnualMMEPlanning.vue').default
+        component:require('./components/SW01/mme/calendar/AnnualMMEPlanning.vue').default
     },{
         path:'/mme/monthly/planning',
         name: 'url_mme_monthly_planning',
-        component:require('./components/mme/calendar/MonthlyMMEPlanning.vue').default
+        component:require('./components/SW01/mme/calendar/MonthlyMMEPlanning.vue').default
     },
     {
         path:'/mme/lifesheet_pdf/:id(\\d+)',
         name: 'mme_url_lifesheet_pdf',
-        component:require('./components/mme/consultation/LifeSheetPDFMME.vue').default
+        component:require('./components/SW01/mme/consultation/LifeSheetPDFMME.vue').default
     },{
         path:'*',
     }]
@@ -198,7 +198,7 @@ const router = new VueRouter({
 
 
 Vue.component('navbar_alpha', require('./components/layout/Navbar.vue').default);
-Vue.component('equipmentid', require('./components/equipment/referencing/EquipmentIDForm.vue').default);
+Vue.component('equipmentid', require('./components/SW01/equipment/referencing/EquipmentIDForm.vue').default);
 
 
 const app = new Vue({

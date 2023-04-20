@@ -13,11 +13,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Mme;
-use App\Models\Equipment;
-use App\Models\EquipmentTemp;
+use App\Models\SW01\Mme;
+use App\Models\SW01\Equipment;
+use App\Models\SW01\EquipmentTemp;
 use App\Models\History ; 
-use App\Models\MmeTemp ; 
+use App\Models\SW01\MmeTemp ; 
 use Carbon\Carbon;
 class HistoryController extends Controller
 {
