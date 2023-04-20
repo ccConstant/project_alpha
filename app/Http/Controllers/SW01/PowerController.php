@@ -65,7 +65,7 @@ class PowerController extends Controller
                     'pow_unit.required' => 'You must enter a unit for the power ',
                     'pow_unit.min' => 'You must enter at least one character ',
                     'pow_unit.max' => 'You must enter a maximum of 25 characters',
-                    'pow_consumptionValue.required' => 'You must enter a value for the consuption of the power ',
+                    'pow_consumptionValue.required' => 'You must enter a value for the consumption of the power ',
                     'pow_consumptionValue.min' => 'You must enter at least 1 characters ',
                     'pow_consumptionValue.max' => 'You must enter a maximum of 25 characters',
                     'pow_consumptionUnit.required' => 'You must enter a unit for the consumption of the power ',

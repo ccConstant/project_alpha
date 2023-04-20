@@ -804,7 +804,7 @@ class UserController extends Controller{
                     'user_initials' => ['required', 'string', 'max:4', 'min:2'],
                 ],[
                     'user_initials.required' => 'You must enter the initials ',
-                    'user_initials.string' => 'Your firstName must be of type string',
+                    'user_initials.string' => 'Your initials must be of type string',
                     'user_initials.max' => 'You must enter a maximum of 4 characters',
                     'user_initials.min' => 'You must enter at least 2 characters',
                 ]);
@@ -942,7 +942,7 @@ class UserController extends Controller{
                 'user_firstName.required' => 'You must enter your firstname ',
                 'user_firstName.string' => 'Your firstName must be of type string',
                 'user_firstName.max' => 'You must enter a maximum of 50 characters',
-                'user_firstName.min' => 'You must enter a at least 2 characters',
+                'user_firstName.min' => 'You must enter at least 2 characters',
             ]);
 
             $user->update([
@@ -957,7 +957,7 @@ class UserController extends Controller{
                 'user_lastName.required' => 'You must enter your lastName ',
                 'user_lastName.string' => 'Your lastName must be of type string',
                 'user_lastName.max' => 'You must enter a maximum of 50 characters',
-                'user_lastName.min' => 'You must enter a at least 2 characters',
+                'user_lastName.min' => 'You must enter at least 2 characters',
             ]);
             $user->update([
                 'user_lastName' => $request->user_lastName,
