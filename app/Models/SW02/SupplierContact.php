@@ -12,16 +12,17 @@ namespace App\Models\SW02;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SW02\Supplier;
 
 class SupplierContact extends Model
 {
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['supplierContact_name', 'supplierContact_function', 'supplierContact_phoneNumber', 'supplierContact_email', 'supplier_id', 'supplierContact_validate', 'supplierContact_principal'];
+    protected $fillable = ['supplrContact_name', 'supplrContact_function', 'supplrContact_phoneNumber', 'supplrContact_email', 'supplr_id', 'supplrContact_validate', 'supplrContact_principal'];
 
     //Define the relation between a supplier and its supplierContacts: a supplier can have many supplierContacts
     public function supplier(){
-        return $this->belongsTo(Supplier::class, 'supplier_id') ;
+        return $this->belongsTo(Supplier::class, 'supplr_id') ;
     }
 }

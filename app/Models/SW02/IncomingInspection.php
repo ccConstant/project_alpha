@@ -11,36 +11,40 @@ namespace App\Models\SW02;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SW02\ConsFamily;
+use App\Models\SW02\CompFamily;
+use App\Models\SW02\RawFamily;
+use App\Models\User;
 
 class IncomingInspection extends Model
 {
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['incmInsp_remarks', 'incmInsp_partMaterialComplianceCertificate', 'incmInsp_rawMaterialCertificate', 'incmInsp_qualityApproverId', 'incmInsp_technicalReviewerId', 'incmInsp_signatureDate', 'incmInsp_consFam_id', 'incmInsp_compFam_id', 'incmInsp_rawFam_id', 'incmInsp_validate'];
+    protected $fillable = ['incmgInsp_remarks', 'incmgInsp_partMaterialComplianceCertificate', 'incmgInsp_rawMaterialCertificate', 'incmgInsp_qualityApproverId', 'incmgInsp_technicalReviewerId', 'incmgInsp_signatureDate', 'incmgInsp_consFam_id', 'incmgInsp_compFam_id', 'incmgInsp_rawFam_id', 'incmgInsp_validate'];
 
     //Define the relation between a consFamily and its incomingInspection: an incomingInspection can correspond to only one consFamily
     public function cons_family(){
-        return $this->belongsTo(ConsFamily::class, 'incmInsp_consFam_id') ;
+        return $this->belongsTo(ConsFamily::class, 'incmgInsp_consFam_id') ;
     }
 
     //Define the relation between a compFamily and its incomingInspection: an incomingInspection can correspond to only one compFamily
     public function comp_family(){
-        return $this->belongsTo(CompFamily::class, 'incmInsp_compFam_id') ;
+        return $this->belongsTo(CompFamily::class, 'incmgInsp_compFam_id') ;
     }
 
     //Define the relation between a rawFamily and its incomingInspection: an incomingInspection can correspond to only one rawFamily
     public function raw_family(){
-        return $this->belongsTo(RawFamily::class, 'incmInsp_rawFam_id') ;
+        return $this->belongsTo(RawFamily::class, 'incmgInsp_rawFam_id') ;
     }
 
     //Define the relation between a incomingInspection and the user who reviewed it: an incomingInspection has only one technicalReviewer
     public function technical_reviewer(){
-        return $this->belongsTo(User::class, 'incmInsp_technicalReviewerId') ;
+        return $this->belongsTo(User::class, 'incmgInsp_technicalReviewerId') ;
     }
 
     //Define the relation between a incomingInspection and the user who approved it: an incomingInspection has only one qualityApprover
     public function quality_approver(){
-        return $this->belongsTo(User::class, 'incmInsp_qualityApproverId') ;
+        return $this->belongsTo(User::class, 'incmgInsp_qualityApproverId') ;
     }
 }

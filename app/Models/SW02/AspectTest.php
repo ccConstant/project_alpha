@@ -12,16 +12,17 @@ namespace App\Models\SW02;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SW02\IncomingInspection;
 
 class AspectTest extends Model
 {
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['aspTest_severityLevel', 'aspTest_levelOfControl', 'aspTest_expectedAspect', 'incmInsp_id', 'aspTest_name'];
+    protected $fillable = ['aspTest_severityLevel', 'aspTest_levelOfControl', 'aspTest_expectedAspect', 'incmgInsp_id', 'aspTest_name'];
 
     //Define the relation between an aspectTest and its inspection: an aspectTest has only one inspection
     public function inspection(){
-        return $this->belongsTo(IncomingInspection::class, 'incmInsp_id') ;
+        return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
     }
 }

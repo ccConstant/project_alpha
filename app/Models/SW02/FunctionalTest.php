@@ -12,16 +12,17 @@ namespace App\Models\SW02;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SW02\IncomingInspection;
 
 class FunctionalTest extends Model
 {
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['funcTest_severityLevel', 'funcTest_levelOfControl', 'funcTest_expectedMethod', 'funcTest_expectedValue', 'incmInsp_id', 'funcTest_name', 'funcTest_unitValue'];
+    protected $fillable = ['funcTest_severityLevel', 'funcTest_levelOfControl', 'funcTest_expectedMethod', 'funcTest_expectedValue', 'incmgInsp_id', 'funcTest_name', 'funcTest_unitValue'];
 
     //Define the relation between a functionalTest and its inspection: a functionalTest has only one inspection
     public function inspection(){
-        return $this->belongsTo(IncomingInspection::class, 'incmInsp_id') ;
+        return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
     }
 }

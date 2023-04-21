@@ -12,16 +12,17 @@ namespace App\Models\SW02;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SW02\IncomingInspection;
 
 class DimensionalTest extends Model
 {
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['dimTest_severityLevel', 'dimTest_levelOfControl', 'dimTest_expectedMethod', 'dimTest_expectedValue', 'incmInsp_id', 'dimTest_name', 'dimTest_unitValue'];
+    protected $fillable = ['dimTest_severityLevel', 'dimTest_levelOfControl', 'dimTest_expectedMethod', 'dimTest_expectedValue', 'incmgInsp_id', 'dimTest_name', 'dimTest_unitValue'];
 
     //Define the relation between a dimensionalTest and its inspection: a dimensionalTest has only one inspection
     public function inspection(){
-        return $this->belongsTo(IncomingInspection::class, 'incmInsp_id') ;
+        return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
     }
 }

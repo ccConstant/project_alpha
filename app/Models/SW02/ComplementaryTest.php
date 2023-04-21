@@ -12,16 +12,17 @@ namespace App\Models\SW02;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SW02\IncomingInspection;
 
 class ComplementaryTest extends Model
 {
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['compTest_name', 'compTest_unitValue', 'compTest_expectedValue', 'compTest_severityLevel', 'compTest_levelOfControl', 'compTest_expectedMethod', 'incmInsp_id'];
+    protected $fillable = ['compTest_name', 'compTest_unitValue', 'compTest_expectedValue', 'compTest_severityLevel', 'compTest_levelOfControl', 'compTest_expectedMethod', 'incmgInsp_id'];
 
     //Define the relation between a complementaryTest and its inspection: a complementaryTest has only one inspection
     public function inspection(){
-        return $this->belongsTo(IncomingInspection::class, 'incmInsp_id') ;
+        return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
     }
 }

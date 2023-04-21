@@ -12,16 +12,17 @@ namespace App\Models\SW02;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SW02\IncomingInspection;
 
 class DocumentaryControl extends Model
 {
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['docControl_name', 'docControl_reference', 'docControl_materialCertifSpe', 'incmInsp_id', 'docControl_FDS'];
+    protected $fillable = ['docControl_name', 'docControl_reference', 'docControl_materialCertifSpe', 'incmgInsp_id', 'docControl_FDS'];
 
     //Define the relation between a documentaryControl and its inspection: a documentaryControl has only one inspection
     public function inspection(){
-        return $this->belongsTo(IncomingInspection::class, 'incmInsp_id') ;
+        return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
     }
 }
