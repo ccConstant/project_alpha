@@ -53,7 +53,7 @@ class CompFamily extends Model
 
     //Define the relation between a compFamily and its criticality : a compFamily has only one criticality
     public function criticality(){
-        return $this->belongsTo(Criticality::class, 'compCrit_id') ; 
+        return $this->HasOne(Criticality::class) ;
     }
 
 }

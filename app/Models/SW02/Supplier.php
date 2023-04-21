@@ -43,4 +43,6 @@ class Supplier extends Model
     public function technical_reviewer(){
         return $this->belongsTo(User::class, 'supplr_technicalReviewer_id') ;
     }
+
+    
 }

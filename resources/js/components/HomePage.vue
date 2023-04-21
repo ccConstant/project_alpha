@@ -13,7 +13,8 @@
         <br><br><br><br><br><br><br><br><br>
         <br>
         <br>
-        <p> Software Version : 2.1.1  (last update 2 Sep 2022)</p>
+        <p> SW01 Version : 0.0.0  (last update Apr 2023)</p>
+		<p> SW03 Version : 0.0.0  (last update Apr 2023)</p>
 	</div>
 </template>
 

@@ -38,6 +38,10 @@ const router = new VueRouter({
         name: 'home',
         component:require('./components/HomePage.vue').default
     }, {
+        path:'/SW01',
+        name: 'SW01',
+        component:require('./components/SW01/HomePageSW01.vue').default
+    },{
         path:'/equipment/add',
         name: 'url_eq_add',
         component:require('./components/SW01/equipment/referencing/ReferenceAnEquipment.vue').default
@@ -196,8 +200,8 @@ const router = new VueRouter({
 });
 
 
-
-Vue.component('navbar_alpha', require('./components/layout/Navbar.vue').default);
+Vue.component('navbar', require('./components/layout/Navbar.vue').default);
+Vue.component('navbar_alpha', require('./components/layout/NavbarSW01.vue').default);
 Vue.component('equipmentid', require('./components/SW01/equipment/referencing/EquipmentIDForm.vue').default);
 
 

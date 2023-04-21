@@ -63,6 +63,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/SW01', function () {
+    return view('welcomeSW01');
+});
+
+
+
 Route::get('/dashboard', function () {
     return view('welcome');
 })->middleware(['auth'])->name('dashboard');
@@ -72,6 +78,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/equipment/add', function () {
         return view('welcome');
     });
+    
 
     Route::get('/equipment/list', function () {
         return view('welcome');
