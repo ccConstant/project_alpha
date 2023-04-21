@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW02\ConsFamilyMember;
 use App\Models\User;
+use App\Models\SW02\EnumStorageCondition;
+use App\Models\SW02\PurchaseSpecification;
+use App\Models\SW02\IncomingInspection;
+use App\Models\SW02\Supplier;
 
 class ConsFamily extends Model
 {
@@ -37,4 +41,30 @@ class ConsFamily extends Model
      public function technical_reviewer(){
         return $this->belongsTo(User::class, 'consFam_technicalReviewerId') ; 
     }
+
+     //Define the relation between an EnumStorageCondition and its consFamily : a consFamily can correspond to many EnumStorageCondition
+     public function storage_condition(){
+        return $this->belongsToMany(EnumStorageCondition::class, 'pivot_cons_fam_sto_cond', 'consFam_id', 'storageCondition_id') ; 
+    }
+
+    //Define the relation between a consFamily and its purchaseSpecifications : a purchaseSpecifications can correspond to only one consFamily
+    public function purchase_specifications(){
+        return $this->hasMany(PurchaseSpecification::class) ; 
+    }
+
+    //Define the relation between a consFamily and its purchaseSpecifications : a purchaseSpecifications can correspond to only one consFamily
+    public function incoming_inspection(){
+        return $this->hasMany(IncomingInspection::class) ; 
+    }
+
+     //Define the relation between a supplier and its consFamily : a consFamily can correspond to many suppliers
+     public function suppliers(){
+        return $this->belongsToMany(Supplier::class, 'pivot_cons_fam_supplr', 'consFam_id', 'supplr_id') ; 
+    }
+
+    
+
+
+
+
 }

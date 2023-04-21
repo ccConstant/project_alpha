@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\SW02\CompFamilyMember;
 use App\Models\User;
 use App\Models\SW02\EnumStorageCondition;
+use App\Models\SW02\Supplier;
 
 class CompFamily extends Model
 {
@@ -41,8 +42,18 @@ class CompFamily extends Model
     }
 
      //Define the relation between an EnumStorageCondition and its compFamily : a compFamily can correspond to many EnumStorageCondition
-     public function storage_condition(){
+     public function storage_conditions(){
         return $this->belongsToMany(EnumStorageCondition::class, 'pivot_comp_fam_sto_cond', 'compFam_id', 'storageCondition_id') ; 
+    }
+
+     //Define the relation between a supplier and its compFamily : a compFamily can correspond to many suppliers
+     public function suppliers(){
+        return $this->belongsToMany(Supplier::class, 'pivot_comp_fam_supplr', 'compFam_id', 'supplr_id') ; 
+    }
+
+    //Define the relation between a compFamily and its criticality : a compFamily has only one criticality
+    public function criticality(){
+        return $this->belongsTo(Criticality::class, 'compCrit_id') ; 
     }
 
 }

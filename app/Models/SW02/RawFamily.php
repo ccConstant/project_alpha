@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\RawFamilyMember;
 use App\Models\User;
+use App\Models\SW02\EnumStorageCondition;
+use App\Models\SW02\Supplier;
 
 class RawFamily extends Model
 {
@@ -36,5 +38,15 @@ class RawFamily extends Model
      //Define the relation between a rawFamily and the user who reviewed it : a rawFamily has only one technicalReviewer
      public function technical_reviewer(){
         return $this->belongsTo(User::class, 'rawFam_technicalReviewerId') ; 
+    }
+
+     //Define the relation between an EnumStorageCondition and its rawFamily : a rawFamily can correspond to many EnumStorageCondition
+     public function storage_conditions(){
+        return $this->belongsToMany(EnumStorageCondition::class, 'pivot_raw_fam_sto_cond', 'rawFam_id', 'storageCondition_id') ; 
+    }
+
+     //Define the relation between a supplier and its rawFamily : a rawFamily can correspond to many suppliers
+     public function suppliers(){
+        return $this->belongsToMany(Supplier::class, 'pivot_raw_fam_supplr', 'rawFam_id', 'supplr_id') ; 
     }
 }
