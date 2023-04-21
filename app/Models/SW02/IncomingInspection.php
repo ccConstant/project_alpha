@@ -47,4 +47,29 @@ class IncomingInspection extends Model
     public function quality_approver(){
         return $this->belongsTo(User::class, 'incmgInsp_qualityApproverId') ;
     }
+
+    //Define the relation between an incomingInspection and the documentaryControl: an incomingInspection can have multiple documentaryControl
+    public function documentary_control(){
+        return $this->hasMany(DocumentaryControl::class);
+    }
+
+    //Define the relation between an incomingInspection and the aspectTest: an incomingInspection can have multiple aspectTest
+    public function aspect_test(){
+        return $this->hasMany(AspectTest::class);
+    }
+
+    //Define the relation between an incomingInspection and the dimensionalTest: an incomingInspection can have multiple dimensionalTest
+    public function dimensional_test(){
+        return $this->hasMany(DimensionalTest::class);
+    }
+
+    //Define the relation between an incomingInspection and the functionalTest: an incomingInspection can have multiple functionalTest
+    public function functional_test(){
+        return $this->hasMany(DimensionalTest::class);
+    }
+
+    //Define the relation between an incomingInspection and the complementaryTest: an incomingInspection can have multiple complementaryTest
+    public function complementary_test(){
+        return $this->hasMany(DimensionalTest::class);
+    }
 }

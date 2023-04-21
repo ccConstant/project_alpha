@@ -44,5 +44,13 @@ class Supplier extends Model
         return $this->belongsTo(User::class, 'supplr_technicalReviewer_id') ;
     }
 
-    
+    // Define the relation between a supplier and his address: a supplier can have multiple address
+    public function supplr_adr() {
+        return $this->hasMany(SupplierAdr::class);
+    }
+
+    // Define the relation between a supplier and his contacts: a supplier can have multiple contacts
+    public function supplr_contact() {
+        return $this->hasMany(SupplierContact::class);
+    }
 }

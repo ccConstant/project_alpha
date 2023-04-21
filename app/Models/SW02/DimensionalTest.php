@@ -10,6 +10,7 @@
 
 namespace App\Models\SW02;
 
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW02\IncomingInspection;
@@ -22,7 +23,12 @@ class DimensionalTest extends Model
     protected $fillable = ['dimTest_severityLevel', 'dimTest_levelOfControl', 'dimTest_expectedMethod', 'dimTest_expectedValue', 'incmgInsp_id', 'dimTest_name', 'dimTest_unitValue'];
 
     //Define the relation between a dimensionalTest and its inspection: a dimensionalTest has only one inspection
-    public function inspection(){
+    public function incomingInspection(){
         return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
+    }
+
+    //Define the relation between a dimensionalTest and his files: a dimensionalTest has many files
+    public function files(){
+        return $this->hasMany(File::class, 'dimTest_id') ;
     }
 }

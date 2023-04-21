@@ -1,23 +1,25 @@
 <?php
 
 /*
-* Filename : HistoryController.php 
+* Filename : HistoryController.php
 * Creation date : 18 Jan 2023
 * Update date : 14 Feb 2023
-* This file is used to link the view files and the database that concern the history table. 
+* This file is used to link the view files and the database that concern the history table.
 * For example : add the history of an equipment or of a mme in the database, send this history to the view, etc.
-*/ 
+*/
 
 
 
 namespace App\Http\Controllers;
 
+use Carbon\CarbonTimeZone;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use App\Models\SW01\Mme;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
-use App\Models\History ; 
-use App\Models\SW01\MmeTemp ; 
+use App\Models\History ;
+use App\Models\SW01\MmeTemp ;
 use Carbon\Carbon;
 class HistoryController extends Controller
 {
@@ -32,10 +34,10 @@ class HistoryController extends Controller
         $version=$eq->eq_nbrVersion-1 ;
         $history=History::create([
             'history_numVersion' => $version,
-            'history_reasonUpdate' => $request->history_reasonUpdate, 
+            'history_reasonUpdate' => $request->history_reasonUpdate,
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
             'mmeTemp_id' => NULL,
-        ]) ; 
+        ]) ;
 
     }
 
@@ -48,17 +50,17 @@ class HistoryController extends Controller
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id_mme)->orderBy('created_at', 'desc')->first();
         $history=History::create([
             'history_numVersion' => $mme->mme_nbrVersion-1,
-            'history_reasonUpdate' => $request->history_reasonUpdate, 
+            'history_reasonUpdate' => $request->history_reasonUpdate,
             'equipmentTemp_id' => NULL,
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
-        ]) ; 
+        ]) ;
 
     }
 
     /**
      * Function call by EquipmentVersionHistory.vue with the route : /history/send/equipment/{id}
      * Get equipment history corresponding to the equipment id in the data base for print it in the vue
-     * The id parameter corresponds to the id of the equipment from which we want the history 
+     * The id parameter corresponds to the id of the equipment from which we want the history
      * @return \Illuminate\Http\Response
      */
 
@@ -70,53 +72,12 @@ class HistoryController extends Controller
         }
         $containerHistory=array() ;
         foreach($histories as $history){
-            $date=$history->created_at ; 
-            $day=$date->day;
-            $month=$date->month ; 
-            $year=$date->year;
-            $monthInLetters="" ; 
-            if ($month==1){
-                $monthInLetters="Jan" ; 
-            }
-            if ($month==2){
-                $monthInLetters="Feb" ; 
-            }
-            if ($month==3){
-                $monthInLetters="Mar" ; 
-            }
-            if ($month==4){
-                $monthInLetters="Apr" ; 
-            }
-            if ($month==5){
-                $monthInLetters="May" ; 
-            }
-            if ($month==6){
-                $monthInLetters="Jun" ; 
-            }
-            if ($month==7){
-                $monthInLetters="Jul" ; 
-            }
-            if ($month==8){
-                $monthInLetters="Aug" ; 
-            }
-            if ($month==9){
-                $monthInLetters="Sep" ; 
-            }
-            if ($month==10){
-                $monthInLetters="Oct" ; 
-            }
-            if ($month==11){
-                $monthInLetters="Nov" ; 
-            }
-            if ($month==12){
-                $monthInLetters="Dec" ; 
-            }
-            $date2=$day." ".$monthInLetters." ".$year ;
+            $date = Carbon::createFromDate($history->created_at->year, $history->created_at->month, $history->created_at->day);
             $historyObj=([
                 "id" => $history->id,
                 "history_numVersion" => $history->history_numVersion,
                 "history_reasonUpdate" => $history->history_reasonUpdate,
-                "history_date" => $date2,
+                "history_date" => $date->format('d M o')
             ]);
             array_push($containerHistory,$historyObj);
         }
@@ -126,7 +87,7 @@ class HistoryController extends Controller
     /**
      * Function call by MMEVersionHistory.vue with the route : /history/send/mme/{id}
      * Get mme history corresponding to the mme id in the data base for print it in the vue
-     * The id parameter corresponds to the id of the mme from which we want the history 
+     * The id parameter corresponds to the id of the mme from which we want the history
      * @return \Illuminate\Http\Response
      */
 
@@ -138,53 +99,12 @@ class HistoryController extends Controller
         }
         $containerHistory=array() ;
         foreach($histories as $history){
-            $date=$history->created_at ; 
-            $day=$date->day;
-            $month=$date->month ; 
-            $year=$date->year;
-            $monthInLetters="" ; 
-            if ($month==1){
-                $monthInLetters="Jan" ; 
-            }
-            if ($month==2){
-                $monthInLetters="Feb" ; 
-            }
-            if ($month==3){
-                $monthInLetters="Mar" ; 
-            }
-            if ($month==4){
-                $monthInLetters="Apr" ; 
-            }
-            if ($month==5){
-                $monthInLetters="May" ; 
-            }
-            if ($month==6){
-                $monthInLetters="Jun" ; 
-            }
-            if ($month==7){
-                $monthInLetters="Jul" ; 
-            }
-            if ($month==8){
-                $monthInLetters="Aug" ; 
-            }
-            if ($month==9){
-                $monthInLetters="Sep" ; 
-            }
-            if ($month==10){
-                $monthInLetters="Oct" ; 
-            }
-            if ($month==11){
-                $monthInLetters="Nov" ; 
-            }
-            if ($month==12){
-                $monthInLetters="Dec" ; 
-            }
-            $date2=$day." ".$monthInLetters." ".$year ;
+            $date = Carbon::createFromDate($history->created_at->year, $history->created_at->month, $history->created_at->day);
             $historyObj=([
                 "id" => $history->id,
                 "history_numVersion" => $history->history_numVersion,
                 "history_reasonUpdate" => $history->history_reasonUpdate,
-                "history_date" => $date2,
+                "history_date" => $date->format('d M o')
             ]);
             array_push($containerHistory,$historyObj);
         }

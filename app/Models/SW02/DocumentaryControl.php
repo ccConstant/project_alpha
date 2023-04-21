@@ -10,6 +10,7 @@
 
 namespace App\Models\SW02;
 
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW02\IncomingInspection;
@@ -22,7 +23,12 @@ class DocumentaryControl extends Model
     protected $fillable = ['docControl_name', 'docControl_reference', 'docControl_materialCertifSpe', 'incmgInsp_id', 'docControl_FDS'];
 
     //Define the relation between a documentaryControl and its inspection: a documentaryControl has only one inspection
-    public function inspection(){
+    public function incomingInspection(){
         return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
+    }
+
+    //Define the relation between a documentaryControl and his files: a documentaryControl has many files
+    public function files(){
+        return $this->hasMany(File::class, 'docControl_id') ;
     }
 }
