@@ -10,6 +10,7 @@
 
 namespace App\Models\SW02;
 
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW02\IncomingInspection;
@@ -22,7 +23,12 @@ class AspectTest extends Model
     protected $fillable = ['aspTest_severityLevel', 'aspTest_levelOfControl', 'aspTest_expectedAspect', 'incmgInsp_id', 'aspTest_name'];
 
     //Define the relation between an aspectTest and its inspection: an aspectTest has only one inspection
-    public function inspection(){
+    public function incomingInspection(){
         return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
+    }
+
+    //Define the relation between an aspectTest and his files: an aspectTest has many files
+    public function files(){
+        return $this->hasMany(File::class, 'aspTest_id') ;
     }
 }

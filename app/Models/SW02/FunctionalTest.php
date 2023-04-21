@@ -10,6 +10,7 @@
 
 namespace App\Models\SW02;
 
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW02\IncomingInspection;
@@ -22,7 +23,12 @@ class FunctionalTest extends Model
     protected $fillable = ['funcTest_severityLevel', 'funcTest_levelOfControl', 'funcTest_expectedMethod', 'funcTest_expectedValue', 'incmgInsp_id', 'funcTest_name', 'funcTest_unitValue'];
 
     //Define the relation between a functionalTest and its inspection: a functionalTest has only one inspection
-    public function inspection(){
+    public function incomingInspection(){
         return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
+    }
+
+    //Define the relation between a functionalTest and his files: a functionalTest has many files
+    public function files(){
+        return $this->hasMany(File::class, 'funcTest_id') ;
     }
 }

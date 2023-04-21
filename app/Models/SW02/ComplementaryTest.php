@@ -10,6 +10,7 @@
 
 namespace App\Models\SW02;
 
+use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW02\IncomingInspection;
@@ -22,7 +23,12 @@ class ComplementaryTest extends Model
     protected $fillable = ['compTest_name', 'compTest_unitValue', 'compTest_expectedValue', 'compTest_severityLevel', 'compTest_levelOfControl', 'compTest_expectedMethod', 'incmgInsp_id'];
 
     //Define the relation between a complementaryTest and its inspection: a complementaryTest has only one inspection
-    public function inspection(){
+    public function incomingInspection(){
         return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;
+    }
+
+    //Define the relation between a complementaryTest and his files: a complementaryTest has many files
+    public function files(){
+        return $this->hasMany(File::class, 'compTest_id') ;
     }
 }
