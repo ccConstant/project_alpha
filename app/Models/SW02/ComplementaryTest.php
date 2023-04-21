@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * Filename: ComplementaryTest.php
+ * Creation date: 20 Apr 2023
+ * Update date: 20 Apr 2023
+ * This file defines the model ComplementaryTest. We can see more details about this model (like his attributes) in the
+ * migration file named "2023_04_20_123220_create_complementary_tests_table.php"
+ */
+
+namespace App\Models\SW02;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ComplementaryTest extends Model
+{
+    use HasFactory;
+
+    //Data which can be added, updated or deleted by us in the database.
+    protected $fillable = ['compTest_name', 'compTest_unitValue', 'compTest_expectedValue', 'compTest_severityLevel', 'compTest_levelOfControl', 'compTest_expectedMethod', 'incmInsp_id'];
+
+    //Define the relation between a complementaryTest and its inspection: a complementaryTest has only one inspection
+    public function inspection(){
+        return $this->belongsTo(IncomingInspection::class, 'incmInsp_id') ;
+    }
+}
