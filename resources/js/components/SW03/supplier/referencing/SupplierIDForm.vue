@@ -4,6 +4,7 @@
 <!--Vue Component of the Id card of the supplier who call all the input component and send the data to the controllers-->
 
 <template>
+
     <div class="supplierID">
         <h2>Supplier's Form</h2>
         <h2 class="titleForm1">Supplier ID</h2>
@@ -20,7 +21,7 @@
                 :min="min"
                 :max="max"
             />
-            <InputNumberForm
+           <!-- <InputNumberForm
                 :name="'SupplierReceptionNumber'"
                 :label="'Reception Number'"
                 :value="supplr_receptionNumber"
@@ -334,6 +335,7 @@ export default {
     /*--------Declaration of the different methods:--------*/
     methods: {
         addSupplier(savedAs) {
+            console.log("addSupplier"+this.supplr_name)
 
         },
         updateSupplier(savedAs, reason, lifeSheetExist) {

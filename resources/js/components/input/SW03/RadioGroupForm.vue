@@ -16,11 +16,10 @@
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>
-            <b-form-radio
+            <b-form-radio>
                 v-for="(option) in options"
                 :v-model="data"
                 :value="option.value"
-            >
                 {{ option.text }}
             </b-form-radio>
         </b-form-radio-group>
@@ -28,7 +27,7 @@
 </template>
 
 <script>
-import InputInfo from './InputInfo.vue'
+import InputInfo from '../InputInfo.vue'
 export default {
     components : {
         InputInfo

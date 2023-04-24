@@ -3,6 +3,7 @@
 <!--Update date : 12 Apr 2023-->
 <!--Vue Component of an input type text called in the different forms-->
 
+
 <template>
     <div :class="divClassName">
         <!--Initializing of the number type input with his props initialized in the parent component-->
@@ -10,20 +11,23 @@
             :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"
             :name="name"
             type="text"
+            label-for="input-1"
             :disabled="isDisabled"
-            :placeholder="placeholer" v-on:input="updateValue($event.target.value)"
+            :placeholder="placeholer"
             :invalid-feedback="invalidFeedBack"
             :state="state"
         >
-            <label slot="label" :for="name">
+            <!--<label slot="label" :for="name">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
-            </label>
+            </label>-->
             <b-form-input
                 v-model="data"
+                v-on:input="updateValue(data)"
                 :state="state"
                 trim
             ></b-form-input>
+            {{data}}
         </b-form-group>
         <!--If this field has an error this div appear with the error described inside -->
         <div v-if="hasError(this.Errors)" class="invalid-feedback">
@@ -35,7 +39,7 @@
 
 <script>
 /*Importation of the other Components who will be used here*/
-import InputInfo from './InputInfo.vue'
+import InputInfo from '../InputInfo.vue'
 export default {
     /*--------Declaration of the others Components:--------*/
     components : {
@@ -113,6 +117,7 @@ export default {
     ---------------------------------------------------*/
     methods: {
         updateValue: function (value) {
+            console.log("coucou4")
             this.$emit('input', value)
         },
         hasError(errors){
