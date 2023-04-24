@@ -1,20 +1,20 @@
 <?php
 
 /*
-* Filename: Supplier.php
+* Filename: SupplierController.php
 * Creation date: 20 Apr 2023
 * Update date: 20 Apr 2023
-* This file defines the model Supplier. We can see more details about this model (like his attributes) in the
+* This file defines the model SupplierController. We can see more details about this model (like his attributes) in the
 * migration file named "2023_04_20_110425_create_suppliers_table.php"
 */
 
-namespace App\Models\SW02;
+namespace App\Models\SW03;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\SW02\CompFamily;
-use App\Models\SW02\ConsFamily;
-use App\Models\SW02\RawFamily;
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
+use App\Models\SW03\RawFamily;
 use App\Models\User;
 
 class Supplier extends Model

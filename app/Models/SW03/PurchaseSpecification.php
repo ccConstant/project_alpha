@@ -9,15 +9,15 @@
 *
 */
 
-namespace App\Models\SW02;
+namespace App\Models\SW03;
 
 use App\Models\File;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\SW02\RawFamily;
-use App\Models\SW02\ConsFamily;
-use App\Models\SW02\CompFamily;
+use App\Models\SW03\RawFamily;
+use App\Models\SW03\ConsFamily;
+use App\Models\SW03\CompFamily;
 
 class PurchaseSpecification extends Model
 {

@@ -67,8 +67,8 @@ Route::get('/SW01', function () {
     return view('welcomeSW01');
 });
 
-Route::get('/SW02', function () {
-    return view('welcomeSW02');
+Route::get('/SW03', function () {
+    return view('welcomeSW03');
 });
 
 
@@ -79,31 +79,31 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/equipment/add', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
 
     Route::get('/equipment/list', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
     Route::get('/equipment/list/PDF', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/list/consult/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('equipment/history/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('mme/history/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/list/update/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/enum', function () {
@@ -111,45 +111,45 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/equipment/life_event', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/life_event/state/{id}/{state_id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/life_event/state/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/life_event/all/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
     Route::get('/equipment/life_event/all/consult/{id}/{state_id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/life_event/reference/{id}/{state_id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/life_event/update/{id}/{state_id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/annual/planning', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
     Route::get('/equipment/monthly/planning', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/lifesheet_pdf/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/equipment/reform/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/infos', function () {
@@ -165,72 +165,72 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/mme/add', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/list/consult/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/list/update/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/reform/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/list/consult/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/list/update/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/reform/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/list', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/life_event', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/life_event/reference/{id}/{state_id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/life_event/state/{id}/{state_id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
     Route::get('/mme/life_event/state/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
     Route::get('/mme/life_event/all/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/annual/planning', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
     Route::get('/mme/monthly/planning', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/life_event/update/{id}/{state_id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/mme/lifesheet_pdf/{id}', function () {
-        return view('welcome');
+        return view('welcomeSW01');
     });
 
     Route::get('/supplier/add', function () {
-        return view('welcome');
+        return view('welcomeSW03');
     });
 });
 
@@ -910,4 +910,8 @@ Route::post('/precaution/delete/{id}', [PrecautionController::class, 'delete_pre
 Route::get('/precaution/send/{id}', [PrecautionController::class, 'send_precautions'])  ;
 
 Route::get('/prctn/send/pdf/{id} ', [PrecautionController::class, 'send_precautions_pdf'])  ;
+
+//SW03
+//SupplierController
+
 

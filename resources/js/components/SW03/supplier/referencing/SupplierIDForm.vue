@@ -8,99 +8,128 @@
         <h2>Supplier's Form</h2>
         <h2 class="titleForm1">Supplier ID</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-        <form class="container" @keydown="">
+        <b-form class="container" @keydown="">
             <InputTextForm
                 :name="'SupplierName'"
                 :label="'Name'"
+                :value="supplr_name"
                 :isRequired="true"
-                :value="Name"
-                :info_text="'Supplier Name'"
-                :inputClassName="'form-control w-50'"
+                :info_text="'SupplierController Name'"
+                :inputClassName="null"
                 :Errors="errors['SupplierName']"
+                :min="min"
+                :max="max"
             />
             <InputNumberForm
                 :name="'SupplierReceptionNumber'"
                 :label="'Reception Number'"
-                :value="ReceptionNumber"
-                :info_text="'Supplier Reception Number'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_receptionNumber"
+                :info_text="'SupplierController Reception Number'"
+                :inputClassName="null"
                 :Errors="errors['SupplierReceptionNumber']"
             />
             <InputTextForm
                 :name="'AgreementNumber'"
                 :label="'Agreement Number'"
-                :value="AgreementNumber"
-                :info_text="'Supplier Agreement Number'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_agreementNumber"
+                :info_text="'SupplierController Agreement Number'"
+                :inputClassName="null"
                 :Errors="errors['AgreementNumber']"
             />
             <InputTextForm
-                :name="'QualityCertificationNumber'"
-                :label="'Quality Certification Number'"
-                :value="QualityCertificationNumber"
-                :info_text="'Supplier Quality Certification Number'"
-                :inputClassName="'form-control w-50'"
-                :Errors="errors['QualityCertificationNumber']"
+                :name="'QualityCertificateNumber'"
+                :label="'Quality Certificate Number'"
+                :value="supplr_qualityCertificationNumber"
+                :info_text="'SupplierController Quality Certificate Number'"
+                :inputClassName="null"
+                :Errors="errors['QualityCertificateNumber']"
             />
             <InputTextForm
                 :name="'SIRET'"
                 :label="'SIRET'"
-                :value="siret"
-                :info_text="'Supplier SIRET'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_siret"
+                :info_text="'SupplierController SIRET'"
+                :inputClassName="null"
                 :Errors="errors['SIRET']"
             />
             <InputTextForm
                 :name="'VATNumber'"
                 :label="'VAT Number'"
-                :value="VatNumber"
-                :info_text="'Supplier VAT Number'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_VatNumber"
+                :info_text="'SupplierController VAT Number'"
+                :inputClassName="null"
                 :Errors="errors['VATNumber']"
             />
             <InputTextForm
                 :name="'WebSite'"
                 :label="'Web Site'"
-                :value="WebSite"
-                :info_text="'Supplier Web Site'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_webSite"
+                :info_text="'SupplierController Web Site'"
+                :inputClassName="null"
                 :Errors="errors['WebSite']"
             />
             <InputTextForm
                 :name="'Activity(ies)'"
                 :label="'Activity(ies)'"
-                :value="Activity"
-                :info_text="'Supplier Activity(ies)'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_activity"
+                :info_text="'SupplierController Activity(ies)'"
+                :inputClassName="null"
                 :Errors="errors['Activity(ies)']"
             />
             <RadioGroupForm
-                :options="[{value: true, label: 'Yes'}, {value: false, label: 'No'}]"
+                :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                 :name="'Real ?'"
                 :label="'Real'"
-                :value="Real"
-                :info_text="'Supplier is real or not ?'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_real"
+                :info_text="'SupplierController is real or not ?'"
+                :inputClassName="null"
                 :Errors="errors['Real']"
+                :checked-option="true"
             />
             <RadioGroupForm
-                :options="[{value: true, label: 'Yes'}, {value: false, label: 'No'}]"
+                :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                 :name="'Critical ?'"
                 :label="'Critical'"
-                :value="Critical"
-                :info_text="'Supplier is critical or not ?'"
-                :inputClassName="'form-control w-50'"
+                :value="supplr_critical"
+                :info_text="'SupplierController is critical or not ?'"
+                :inputClassName="null"
                 :Errors="errors['Critical']"
+                :checked-option="false"
             />
-            <RadioGroupForm
-                :options="[{value: true, label: 'Yes'}, {value: false, label: 'No'}]"
+            <InputTextForm
+                :name="'Form ID'"
+                :label="'Form ID'"
+                :value="supplr_formId"
+                :info_text="'SupplierController\'s Form ID'"
+                :input-class-name="null"
+                :Errors="errors['FormID']"
+            />
+            <InputTextForm
+                :name="'Specific Instructions'"
+                :label="'Specific Instruction'"
+                :value="supplr_specificsInstructions"
+                :info_text="'Specific Instructions'"
+                :input-class-name="null"
+                :Errors="errors['SpecInstr']"
+            />
+            <InputTextForm
+                :name="'End Link to Folder'"
+                :label="'End Link to Folder'"
+                :value="supplr_endLinkToFolder"
+                :info_text="'End Link to Folder'"
+                :input-class-name="null"
+                :Errors="errors['endLink']"
+            />
+<!--            <RadioGroupForm
+                :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                 :name="'Active ?'"
                 :label="'Active'"
                 :value="Active"
-                :info_text="'Supplier is active or not ?'"
-                :inputClassName="'form-control w-50'"
+                :info_text="'SupplierController is active or not ?'"
+                :inputClassName="null"
                 :Errors="errors['Active']"
-            />
+                :checked-option="false"
+            />-->
 
             <SaveButtonForm
                 ref="saveButton"
@@ -109,18 +138,18 @@
                 @update="updateSupplier"
                 :consultMod="this.isInConsultMod"
                 :modifMod="this.isInEditMod"
-                :savedAs="supplr_validate"/>
-        </form>
+                :savedAs="validate"/>
+        </b-form>
     </div>
 </template>
 
 <script>
-import InputTextForm from '../../../input/InputTextForm.vue'
+import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import InputTextAreaForm from '../../../input/InputTextAreaForm.vue'
 import InputSelectForm from '../../../input/InputSelectForm.vue'
-import InputNumberForm from '../../../input/InputNumberForm.vue'
+import InputNumberForm from '../../../input/SW03/InputNumberForm.vue'
 import InputTextWithOptionForm from '../../../input/InputTextWithOptionForm.vue'
-import RadioGroupForm from '../../../input/RadioGroupForm.vue'
+import RadioGroupForm from '../../../input/SW03/RadioGroupForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import SuccessAlert from '../../../alert/SuccesAlert.vue'
 
@@ -238,6 +267,14 @@ export default {
             type: Boolean,
             default: false
         },
+        min : {
+            type: Number,
+            default: 3
+        },
+        max : {
+            type: Number,
+            default: 255
+        }
     },
     data() {
         return {

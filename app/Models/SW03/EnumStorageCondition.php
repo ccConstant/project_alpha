@@ -4,16 +4,16 @@
 * Filename : EnumStorageCondition.php
 * Creation date : 20 Apr 2023
 * Update date : 20 Apr 2023
-* This file define the model EnumStorageCondition. We can see more details about this model (like his attributes) in the 
-* migration file named "2023_04_20_093809_create_enum_storage_conditions_table.php" 
-* 
-*/ 
+* This file define the model EnumStorageCondition. We can see more details about this model (like his attributes) in the
+* migration file named "2023_04_20_093809_create_enum_storage_conditions_table.php"
+*
+*/
 
-namespace App\Models\SW02;
+namespace App\Models\SW03;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\SW02\CompFamily;
+use App\Models\SW03\CompFamily;
 
 class EnumStorageCondition extends Model
 {
@@ -24,16 +24,16 @@ class EnumStorageCondition extends Model
 
     //Define the relation between an EnumStorageCondition and its compFamily : an EnumStorageCondition can have many compFamily
     public function compFamily(){
-        return $this->belongsToMany(CompFamily::class, 'pivot_comp_fam_sto_cond', 'storageCondition_id', 'compFam_id') ; 
+        return $this->belongsToMany(CompFamily::class, 'pivot_comp_fam_sto_cond', 'storageCondition_id', 'compFam_id') ;
     }
 
     //Define the relation between an EnumStorageCondition and its compFamily : an EnumStorageCondition can have many consFamily
     public function consFamily(){
-        return $this->belongsToMany(ConsFamily::class, 'pivot_cons_fam_sto_cond', 'storageCondition_id', 'consFam_id') ; 
+        return $this->belongsToMany(ConsFamily::class, 'pivot_cons_fam_sto_cond', 'storageCondition_id', 'consFam_id') ;
     }
 
     //Define the relation between an EnumStorageCondition and its rawFamily : an EnumStorageCondition can have many rawFamily
     public function rawFamily(){
-        return $this->belongsToMany(RawFamily::class, 'pivot_raw_fam_sto_cond', 'storageCondition_id', 'rawFam_id') ; 
+        return $this->belongsToMany(RawFamily::class, 'pivot_raw_fam_sto_cond', 'storageCondition_id', 'rawFam_id') ;
     }
 }

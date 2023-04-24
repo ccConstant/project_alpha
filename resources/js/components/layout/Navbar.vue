@@ -11,7 +11,7 @@
 				<!-- Navbar dropdowns -->
                 <!-- For the SW01 drop-down menu -->
 				<b-navbar-brand href="/SW01">SW01</b-navbar-brand>
-				<b-navbar-brand href="/SW02">SW02</b-navbar-brand>
+				<b-navbar-brand href="/SW03">SW03</b-navbar-brand>
 <!--                &lt;!&ndash; For the MME drop-down menu &ndash;&gt;
 				<b-nav-item-dropdown text="MME" right>
 					<b-dropdown-item href="/mme/add">Add a new MME</b-dropdown-item>

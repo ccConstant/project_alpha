@@ -11,12 +11,12 @@
 
 namespace App\Models;
 
-use App\Models\SW02\AspectTest;
-use App\Models\SW02\ComplementaryTest;
-use App\Models\SW02\DimensionalTest;
-use App\Models\SW02\DocumentaryControl;
-use App\Models\SW02\FunctionalTest;
-use App\Models\SW02\PurchaseSpecification;
+use App\Models\SW03\AspectTest;
+use App\Models\SW03\ComplementaryTest;
+use App\Models\SW03\DimensionalTest;
+use App\Models\SW03\DocumentaryControl;
+use App\Models\SW03\FunctionalTest;
+use App\Models\SW03\PurchaseSpecification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW01\EquipmentTemp ;

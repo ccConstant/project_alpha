@@ -8,11 +8,11 @@
  * migration file named "2023_04_20_121202_create_supplier_adrs_table.php"
  */
 
-namespace App\Models\SW02;
+namespace App\Models\SW03;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\SW02\Supplier;
+use App\Models\SW03\Supplier;
 
 class SupplierAdr extends Model
 {

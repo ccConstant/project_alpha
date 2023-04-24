@@ -4,19 +4,19 @@
 * Filename : RawFamily.php
 * Creation date : 20 Apr 2023
 * Update date : 20 Apr 2023
-* This file define the model RawFamily. We can see more details about this model (like his attributes) in the 
-* migration file named "2023_04_20_083002_create_raw_families_table.php" 
-* 
-*/ 
+* This file define the model RawFamily. We can see more details about this model (like his attributes) in the
+* migration file named "2023_04_20_083002_create_raw_families_table.php"
+*
+*/
 
-namespace App\Models\SW02;
+namespace App\Models\SW03;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\RawFamilyMember;
 use App\Models\User;
-use App\Models\SW02\EnumStorageCondition;
-use App\Models\SW02\Supplier;
+use App\Models\SW03\EnumStorageCondition;
+use App\Models\SW03\Supplier;
 
 class RawFamily extends Model
 {
@@ -27,26 +27,26 @@ class RawFamily extends Model
 
     //Define the relation between a rawFamily and its rawFamilyMember : a rawFamilyMember can correspond to only one rawFamily
     public function raw_family_member(){
-        return $this->hasMany(RawFamilyMember::class) ; 
+        return $this->hasMany(RawFamilyMember::class) ;
     }
 
     //Define the relation between a rawFamily and the user who approved it : a rawFamily has only one qualityApprover
     public function quality_approver(){
-        return $this->belongsTo(User::class, 'rawFam_qualityApproverId') ; 
+        return $this->belongsTo(User::class, 'rawFam_qualityApproverId') ;
     }
 
      //Define the relation between a rawFamily and the user who reviewed it : a rawFamily has only one technicalReviewer
      public function technical_reviewer(){
-        return $this->belongsTo(User::class, 'rawFam_technicalReviewerId') ; 
+        return $this->belongsTo(User::class, 'rawFam_technicalReviewerId') ;
     }
 
      //Define the relation between an EnumStorageCondition and its rawFamily : a rawFamily can correspond to many EnumStorageCondition
      public function storage_conditions(){
-        return $this->belongsToMany(EnumStorageCondition::class, 'pivot_raw_fam_sto_cond', 'rawFam_id', 'storageCondition_id') ; 
+        return $this->belongsToMany(EnumStorageCondition::class, 'pivot_raw_fam_sto_cond', 'rawFam_id', 'storageCondition_id') ;
     }
 
      //Define the relation between a supplier and its rawFamily : a rawFamily can correspond to many suppliers
      public function suppliers(){
-        return $this->belongsToMany(Supplier::class, 'pivot_raw_fam_supplr', 'rawFam_id', 'supplr_id') ; 
+        return $this->belongsToMany(Supplier::class, 'pivot_raw_fam_supplr', 'rawFam_id', 'supplr_id') ;
     }
 }

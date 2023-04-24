@@ -8,12 +8,12 @@
  * migration file named "2023_04_20_122132_create_functional_tests_table.php"
  */
 
-namespace App\Models\SW02;
+namespace App\Models\SW03;
 
 use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\SW02\IncomingInspection;
+use App\Models\SW03\IncomingInspection;
 
 class FunctionalTest extends Model
 {
