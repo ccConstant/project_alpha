@@ -233,3 +233,5 @@ Vue.component('equipmentid', require('./components/SW01/equipment/referencing/Eq
 const app = new Vue({
     router
 }).$mount('#app');
+
+
