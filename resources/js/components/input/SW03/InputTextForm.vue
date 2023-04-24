@@ -13,9 +13,10 @@
             type="text"
             label-for="input-1"
             :disabled="isDisabled"
-            :placeholder="placeholer"
+            :placeholder="placeholer" v-on:input="updateValue($event.target.value)"
             :invalid-feedback="invalidFeedBack"
             :state="state"
+            :placeholder="placeholer"
         >
             <!--<label slot="label" :for="name">
                 {{label}}
@@ -25,6 +26,7 @@
                 v-model="data"
                 v-on:input="updateValue(data)"
                 :state="state"
+                v-on:input="updateValue(data)"
                 trim
             ></b-form-input>
             {{data}}
@@ -40,6 +42,7 @@
 <script>
 /*Importation of the other Components who will be used here*/
 import InputInfo from '../InputInfo.vue'
+import {data} from "autoprefixer";
 export default {
     /*--------Declaration of the others Components:--------*/
     components : {
@@ -117,7 +120,6 @@ export default {
     ---------------------------------------------------*/
     methods: {
         updateValue: function (value) {
-            console.log("coucou4")
             this.$emit('input', value)
         },
         hasError(errors){

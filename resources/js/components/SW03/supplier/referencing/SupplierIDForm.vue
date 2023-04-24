@@ -11,20 +11,20 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <b-form class="container" @keydown="">
             <InputTextForm
-                :name="'SupplierName'"
-                :label="'Name'"
-                :value="supplr_name"
-                :isRequired="true"
-                :info_text="'SupplierController Name'"
                 :inputClassName="null"
-                :Errors="errors['SupplierName']"
+                :Errors="errors.supplier_name"
+                name="supplr_name" label="Supplier Name"
+                :isDisabled="isInConsultMod"
+                isRequired
+                v-model="supplr_name"
+                :info_text="'SupplierControllerName'"
                 :min="min"
                 :max="max"
             />
-           <!-- <InputNumberForm
+            <InputNumberForm
                 :name="'SupplierReceptionNumber'"
                 :label="'Reception Number'"
-                :value="supplr_receptionNumber"
+                v-model="supplr_receptionNumber"
                 :info_text="'SupplierController Reception Number'"
                 :inputClassName="null"
                 :Errors="errors['SupplierReceptionNumber']"
@@ -32,7 +32,7 @@
             <InputTextForm
                 :name="'AgreementNumber'"
                 :label="'Agreement Number'"
-                :value="supplr_agreementNumber"
+                v-model="supplr_agreementNumber"
                 :info_text="'SupplierController Agreement Number'"
                 :inputClassName="null"
                 :Errors="errors['AgreementNumber']"
@@ -40,7 +40,7 @@
             <InputTextForm
                 :name="'QualityCertificateNumber'"
                 :label="'Quality Certificate Number'"
-                :value="supplr_qualityCertificationNumber"
+                v-model="supplr_qualityCertificateNumber"
                 :info_text="'SupplierController Quality Certificate Number'"
                 :inputClassName="null"
                 :Errors="errors['QualityCertificateNumber']"
@@ -48,7 +48,7 @@
             <InputTextForm
                 :name="'SIRET'"
                 :label="'SIRET'"
-                :value="supplr_siret"
+                v-model="supplr_siret"
                 :info_text="'SupplierController SIRET'"
                 :inputClassName="null"
                 :Errors="errors['SIRET']"
@@ -56,7 +56,7 @@
             <InputTextForm
                 :name="'VATNumber'"
                 :label="'VAT Number'"
-                :value="supplr_VatNumber"
+                v-model="supplr_VatNumber"
                 :info_text="'SupplierController VAT Number'"
                 :inputClassName="null"
                 :Errors="errors['VATNumber']"
@@ -64,7 +64,7 @@
             <InputTextForm
                 :name="'WebSite'"
                 :label="'Web Site'"
-                :value="supplr_webSite"
+                v-model="supplr_webSite"
                 :info_text="'SupplierController Web Site'"
                 :inputClassName="null"
                 :Errors="errors['WebSite']"
@@ -72,7 +72,7 @@
             <InputTextForm
                 :name="'Activity(ies)'"
                 :label="'Activity(ies)'"
-                :value="supplr_activity"
+                v-model="supplr_activity"
                 :info_text="'SupplierController Activity(ies)'"
                 :inputClassName="null"
                 :Errors="errors['Activity(ies)']"
@@ -100,7 +100,7 @@
             <InputTextForm
                 :name="'Form ID'"
                 :label="'Form ID'"
-                :value="supplr_formId"
+                v-model="supplr_formId"
                 :info_text="'SupplierController\'s Form ID'"
                 :input-class-name="null"
                 :Errors="errors['FormID']"
@@ -108,7 +108,7 @@
             <InputTextForm
                 :name="'Specific Instructions'"
                 :label="'Specific Instruction'"
-                :value="supplr_specificsInstructions"
+                v-model="supplr_specificsInstructions"
                 :info_text="'Specific Instructions'"
                 :input-class-name="null"
                 :Errors="errors['SpecInstr']"
@@ -116,7 +116,7 @@
             <InputTextForm
                 :name="'End Link to Folder'"
                 :label="'End Link to Folder'"
-                :value="supplr_endLinkToFolder"
+                v-model="supplr_endLinkToFolder"
                 :info_text="'End Link to Folder'"
                 :input-class-name="null"
                 :Errors="errors['endLink']"
@@ -175,7 +175,7 @@ export default {
         compFam_id: ID of the component family delivered by the supplier
         rawFam_id: ID of the raw material family delivered by the supplier
         agreementNumber: Agreement number of the supplier
-        qualityCertificationNumber: Quality certification number of the supplier
+        qualityCertificateNumber: Quality certification number of the supplier
         specificsInstructions: Specifics instructions for the supplier
         technicalReviewer: Technical reviewer of the supplier's sheet
         validate: Validation of the supplier's sheet
@@ -214,7 +214,7 @@ export default {
         agreementNumber : {
             type: String
         },
-        qualityCertificationNumber : {
+        qualityCertificateNumber : {
             type: String
         },
         specificsInstructions : {
@@ -288,7 +288,7 @@ export default {
                 compFam_id: ID of the component family delivered by the supplier
                 rawFam_id: ID of the raw material family delivered by the supplier
                 agreementNumber: Agreement number of the supplier
-                qualityCertificationNumber: Quality certification number of the supplier
+                qualityCertificateNumber: Quality certification number of the supplier
                 specificsInstructions: Specifics instructions for the supplier
                 technicalReviewer: Technical reviewer of the supplier's sheet
                 validate: Validation of the supplier's sheet
@@ -310,7 +310,7 @@ export default {
             supplr_compFam_id: this.compFam_id,
             supplr_rawFam_id: this.rawFam_id,
             supplr_agreementNumber: this.agreementNumber,
-            supplr_qualityCertificationNumber: this.qualityCertificationNumber,
+            supplr_qualityCertificateNumber: this.qualityCertificateNumber,
             supplr_specificsInstructions: this.specificsInstructions,
             supplr_technicalReviewer: this.technicalReviewer,
             supplr_validate: this.validate,
@@ -335,7 +335,6 @@ export default {
     /*--------Declaration of the different methods:--------*/
     methods: {
         addSupplier(savedAs) {
-            console.log("addSupplier"+this.supplr_name)
 
         },
         updateSupplier(savedAs, reason, lifeSheetExist) {
