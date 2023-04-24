@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SW03\SupplierController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SW01\EquipmentController ;
 
@@ -913,5 +914,7 @@ Route::get('/prctn/send/pdf/{id} ', [PrecautionController::class, 'send_precauti
 
 //SW03
 //SupplierController
+Route::post('/supplier/verif', [SupplierController::class, 'verif_supplier']);
+Route::post('/supplier/add', [SupplierController::class, 'add_supplier']);
 
 

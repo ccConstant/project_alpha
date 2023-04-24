@@ -21,6 +21,7 @@
                 type="number"
                 v-model="data"
                 :state="state"
+                v-on:input="updateValue(data)"
             ></b-form-input>
         </b-form-group>
         <!--If this field has an error this div appear with the error described inside -->
@@ -31,7 +32,7 @@
 </template>
 
 <script>
-import InputInfo from './InputInfo.vue'
+import InputInfo from '../InputInfo.vue'
 export default {
     /*--------Declaration of the others Components:--------*/
     components : {

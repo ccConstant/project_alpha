@@ -10,20 +10,19 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <b-form class="container" @keydown="">
             <InputTextForm
-                :name="'SupplierName'"
-                :label="'Name'"
-                :value="supplr_name"
-                :isRequired="true"
-                :info_text="'SupplierController Name'"
                 :inputClassName="null"
-                :Errors="errors['SupplierName']"
+                :Errors="errors.supplier_name"
+                name="supplr_name" label="Supplier Name"
+                :isDisabled="isInConsultMod"
+                isRequired
+                v-model="supplr_name"
+                :info_text="'SupplierControllerName'"
                 :min="min"
-                :max="max"
-            />
+                :max="max"/>
             <InputNumberForm
                 :name="'SupplierReceptionNumber'"
                 :label="'Reception Number'"
-                :value="supplr_receptionNumber"
+                v-model="supplr_receptionNumber"
                 :info_text="'SupplierController Reception Number'"
                 :inputClassName="null"
                 :Errors="errors['SupplierReceptionNumber']"
@@ -31,7 +30,7 @@
             <InputTextForm
                 :name="'AgreementNumber'"
                 :label="'Agreement Number'"
-                :value="supplr_agreementNumber"
+                v-model="supplr_agreementNumber"
                 :info_text="'SupplierController Agreement Number'"
                 :inputClassName="null"
                 :Errors="errors['AgreementNumber']"
@@ -39,7 +38,7 @@
             <InputTextForm
                 :name="'QualityCertificateNumber'"
                 :label="'Quality Certificate Number'"
-                :value="supplr_qualityCertificationNumber"
+                v-model="supplr_qualityCertificateNumber"
                 :info_text="'SupplierController Quality Certificate Number'"
                 :inputClassName="null"
                 :Errors="errors['QualityCertificateNumber']"
@@ -47,7 +46,7 @@
             <InputTextForm
                 :name="'SIRET'"
                 :label="'SIRET'"
-                :value="supplr_siret"
+                v-model="supplr_siret"
                 :info_text="'SupplierController SIRET'"
                 :inputClassName="null"
                 :Errors="errors['SIRET']"
@@ -55,7 +54,7 @@
             <InputTextForm
                 :name="'VATNumber'"
                 :label="'VAT Number'"
-                :value="supplr_VatNumber"
+                v-model="supplr_VatNumber"
                 :info_text="'SupplierController VAT Number'"
                 :inputClassName="null"
                 :Errors="errors['VATNumber']"
@@ -63,7 +62,7 @@
             <InputTextForm
                 :name="'WebSite'"
                 :label="'Web Site'"
-                :value="supplr_webSite"
+                v-model="supplr_webSite"
                 :info_text="'SupplierController Web Site'"
                 :inputClassName="null"
                 :Errors="errors['WebSite']"
@@ -71,7 +70,7 @@
             <InputTextForm
                 :name="'Activity(ies)'"
                 :label="'Activity(ies)'"
-                :value="supplr_activity"
+                v-model="supplr_activity"
                 :info_text="'SupplierController Activity(ies)'"
                 :inputClassName="null"
                 :Errors="errors['Activity(ies)']"
@@ -99,7 +98,7 @@
             <InputTextForm
                 :name="'Form ID'"
                 :label="'Form ID'"
-                :value="supplr_formId"
+                v-model="supplr_formId"
                 :info_text="'SupplierController\'s Form ID'"
                 :input-class-name="null"
                 :Errors="errors['FormID']"
@@ -107,7 +106,7 @@
             <InputTextForm
                 :name="'Specific Instructions'"
                 :label="'Specific Instruction'"
-                :value="supplr_specificsInstructions"
+                v-model="supplr_specificsInstructions"
                 :info_text="'Specific Instructions'"
                 :input-class-name="null"
                 :Errors="errors['SpecInstr']"
@@ -115,7 +114,7 @@
             <InputTextForm
                 :name="'End Link to Folder'"
                 :label="'End Link to Folder'"
-                :value="supplr_endLinkToFolder"
+                v-model="supplr_endLinkToFolder"
                 :info_text="'End Link to Folder'"
                 :input-class-name="null"
                 :Errors="errors['endLink']"
@@ -174,7 +173,7 @@ export default {
         compFam_id: ID of the component family delivered by the supplier
         rawFam_id: ID of the raw material family delivered by the supplier
         agreementNumber: Agreement number of the supplier
-        qualityCertificationNumber: Quality certification number of the supplier
+        qualityCertificateNumber: Quality certification number of the supplier
         specificsInstructions: Specifics instructions for the supplier
         technicalReviewer: Technical reviewer of the supplier's sheet
         validate: Validation of the supplier's sheet
@@ -213,7 +212,7 @@ export default {
         agreementNumber : {
             type: String
         },
-        qualityCertificationNumber : {
+        qualityCertificateNumber : {
             type: String
         },
         specificsInstructions : {
@@ -287,7 +286,7 @@ export default {
                 compFam_id: ID of the component family delivered by the supplier
                 rawFam_id: ID of the raw material family delivered by the supplier
                 agreementNumber: Agreement number of the supplier
-                qualityCertificationNumber: Quality certification number of the supplier
+                qualityCertificateNumber: Quality certification number of the supplier
                 specificsInstructions: Specifics instructions for the supplier
                 technicalReviewer: Technical reviewer of the supplier's sheet
                 validate: Validation of the supplier's sheet
@@ -309,7 +308,7 @@ export default {
             supplr_compFam_id: this.compFam_id,
             supplr_rawFam_id: this.rawFam_id,
             supplr_agreementNumber: this.agreementNumber,
-            supplr_qualityCertificationNumber: this.qualityCertificationNumber,
+            supplr_qualityCertificateNumber: this.qualityCertificateNumber,
             supplr_specificsInstructions: this.specificsInstructions,
             supplr_technicalReviewer: this.technicalReviewer,
             supplr_validate: this.validate,
@@ -334,7 +333,79 @@ export default {
     /*--------Declaration of the different methods:--------*/
     methods: {
         addSupplier(savedAs) {
-
+            if (!this.addSuccess) {
+                console.log("supplr_validate: " + savedAs)
+                console.log("supplr_name: " + this.supplr_name)
+                console.log("supplr_receptionNumber: " + this.supplr_receptionNumber)
+                console.log("supplr_formId: " + this.supplr_formId)
+                console.log("supplr_consFam_id: " + this.supplr_consFam_id)
+                console.log("supplr_compFam_id: " + this.supplr_compFam_id)
+                console.log("supplr_rawFam_id: " + this.supplr_rawFam_id)
+                console.log("supplr_agreementNumber: " + this.supplr_agreementNumber)
+                console.log("supplr_qualityCertificateNumber: " + this.supplr_qualityCertificateNumber)
+                console.log("supplr_specificsInstructions: " + this.supplr_specificsInstructions)
+                console.log("supplr_siret: " + this.supplr_siret)
+                console.log("supplr_website: " + this.supplr_webSite)
+                console.log("supplr_activity: " + this.supplr_activity)
+                console.log("supplr_real: " + this.supplr_real)
+                console.log("supplr_VatNumber: " + this.supplr_VatNumber)
+                console.log("supplr_critical: " + this.supplr_critical)
+                console.log("supplr_endLinkToFolder: " + this.supplr_endLinkToFolder)
+                console.log("supplr_active: " + this.supplr_active)
+                axios.post('/supplier/verif', {
+                    supplr_validate: savedAs,
+                    supplr_name: this.supplr_name,
+                    supplr_receptionNumber: this.supplr_receptionNumber,
+                    supplr_formId: this.supplr_formId,
+                    supplr_consFam_id: this.supplr_consFam_id,
+                    supplr_compFam_id: this.supplr_compFam_id,
+                    supplr_rawFam_id: this.supplr_rawFam_id,
+                    supplr_agreementNumber: this.supplr_agreementNumber,
+                    supplr_qualityCertificateNumber: this.supplr_qualityCertificateNumber,
+                    supplr_specificsInstructions: this.supplr_specificsInstructions,
+                    supplr_siret: this.supplr_siret,
+                    supplr_website: this.supplr_webSite,
+                    supplr_activity: this.supplr_activity,
+                    supplr_real: this.supplr_real,
+                    supplr_VATnumber: this.supplr_VatNumber,
+                    supplr_critical: this.supplr_critical,
+                    supplr_endLinkToFolder: this.supplr_endLinkToFolder,
+                    supplr_active: this.supplr_active
+                }).then(response => {
+                    console.log("coucou")
+                    this.errors = {};
+                    axios.post('/supplier/add', {
+                        supplr_validate: savedAs,
+                        supplr_name: this.supplr_name,
+                        supplr_receptionNumber: this.supplr_receptionNumber,
+                        supplr_formId: this.supplr_formId,
+                        supplr_consFam_id: this.supplr_consFam_id,
+                        supplr_compFam_id: this.supplr_compFam_id,
+                        supplr_rawFam_id: this.supplr_rawFam_id,
+                        supplr_agreementNumber: this.supplr_agreementNumber,
+                        supplr_qualityCertificateNumber: this.supplr_qualityCertificateNumber,
+                        supplr_specificsInstructions: this.supplr_specificsInstructions,
+                        supplr_siret: this.supplr_siret,
+                        supplr_website: this.supplr_webSite,
+                        supplr_activity: this.supplr_activity,
+                        supplr_real: this.supplr_real,
+                        supplr_VATnumber: this.supplr_VatNumber,
+                        supplr_critical: this.supplr_critical,
+                        supplr_endLinkToFolder: this.supplr_endLinkToFolder,
+                        supplr_active: this.supplr_active
+                    }).then(response => {
+                        this.addSuccess = true;
+                        this.$refs.SuccessAlert.showAlert('The supplier\'s ID card is added successfully and saved as ' + savedAs);
+                        this.isInConsultMode = true;
+                        this.supplr_id = response.data;
+                        this.$emit('SupplierID', this.supplr_id);
+                    }).catch(error => {
+                        this.errors = error.response.data.errors
+                    })
+                }).catch(error => {
+                    this.errors = error.response.data.errors
+                })
+            }
         },
         updateSupplier(savedAs, reason, lifeSheetExist) {
 

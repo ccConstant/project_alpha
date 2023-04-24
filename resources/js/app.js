@@ -41,9 +41,9 @@ const router = new VueRouter({
         name: 'SW01',
         component: require('./components/SW01/HomePageSW01.vue').default
     }, {
-        path: '/SW02',
-        name: 'SW02',
-        component: require('./components/SW02/HomePageSW02.vue').default
+        path: '/SW03',
+        name: 'SW03',
+        component: require('./components/SW03/HomePageSW03.vue').default
     }, {
         path: '/equipment/add',
         name: 'url_eq_add',
@@ -188,35 +188,7 @@ const router = new VueRouter({
     }, {
         path: '/supplier/add',
         name: 'supplier_url_add',
-        component: require('./components/SW02/supplier/referencing/ReferenceASupplier.vue').default
-    }, {
-        path: '/supplier/list',
-        name: 'supplier_url_list',
-        component: require('./components/SW02/supplier/consultation/ListOfSupplier.vue').default
-    }, {
-        path: '/supplier/list/consult/:id(\\d+)',
-        name: 'supplier_url_consult',
-        component: require('./components/SW02/supplier/consultation/SupplierConsult.vue').default
-    }, {
-        path: '/supplier/list/update/:id(\\d+)',
-        name: 'supplier_url_update',
-        component: require('./components/SW02/supplier/consultation/SupplierUpdate.vue').default
-    }, {
-        path: '/article/add',
-        name: 'article_url_add',
-        component: require('./components/SW02/article/referencing/ReferenceAnArticle.vue').default
-    }, {
-        path: '/article/list',
-        name: 'article_url_list',
-        component: require('./components/SW02/article/consultation/ListOfArticle.vue').default
-    }, {
-        path: '/article/list/consult/:id(\\d+)',
-        name: 'article_url_consult',
-        component: require('./components/SW02/article/consultation/ArticleConsult.vue').default
-    }, {
-        path: '/article/list/update/:id(\\d+)',
-        name: 'article_url_update',
-        component: require('./components/SW02/article/consultation/ArticleUpdate.vue').default
+        component: require('./components/SW03/supplier/referencing/ReferenceASupplier.vue').default
     }, {
         path: '*',
     }]
@@ -226,7 +198,7 @@ const router = new VueRouter({
 
 Vue.component('navbar', require('./components/layout/Navbar.vue').default);
 Vue.component('navbar_sw01', require('./components/layout/NavbarSW01.vue').default);
-Vue.component('navbar_sw02', require('./components/layout/NavbarSW02.vue').default);
+Vue.component('navbar_sw03', require('./components/layout/NavbarSW03.vue').default);
 Vue.component('equipmentid', require('./components/SW01/equipment/referencing/EquipmentIDForm.vue').default);
 
 

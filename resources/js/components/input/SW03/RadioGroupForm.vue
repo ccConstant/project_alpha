@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import InputInfo from './InputInfo.vue'
+import InputInfo from '../InputInfo.vue'
 export default {
     components : {
         InputInfo
