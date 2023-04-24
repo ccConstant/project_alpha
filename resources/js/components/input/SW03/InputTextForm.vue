@@ -13,10 +13,9 @@
             type="text"
             label-for="input-1"
             :disabled="isDisabled"
-            :placeholder="placeholer" v-on:input="updateValue($event.target.value)"
+            :placeholder="placeholer"
             :invalid-feedback="invalidFeedBack"
             :state="state"
-            :placeholder="placeholer"
         >
             <!--<label slot="label" :for="name">
                 {{label}}
@@ -26,7 +25,6 @@
                 v-model="data"
                 v-on:input="updateValue(data)"
                 :state="state"
-                v-on:input="updateValue(data)"
                 trim
             ></b-form-input>
             {{data}}

@@ -40,7 +40,6 @@
 <script>
 import SupplierIDForm from "./SupplierIDForm.vue";
 import ReferenceAnAddress from "./ReferenceAnAddress.vue";
-import ReferenceADim from "../../../SW01/equipment/referencing/ReferenceADim.vue";
 import ReferenceAContact from "./ReferenceAContact.vue";
 
 
