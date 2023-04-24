@@ -1,19 +1,18 @@
 <?php
 
-/*
-* Filename : UserController.php 
-* Creation date : 14 Jun 2022
-* Update date : 14 Jun 2022
-* This file is used to link the view files and the database that concern the user table. 
-* For example : send the informations about users..
-*/ 
-
+ /*
+ * Filename : UserController.php
+ * Creation date : 14 Jun 2022
+ * Update date : 14 Jun 2022
+ * This file is used to link the view files and the database that concern the user table.
+ * For example : send the informations about users..
+ */
 
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User ; 
+use App\Models\User ;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
@@ -28,7 +27,7 @@ class UserController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function send_users(){
-        $users=User::all() ; 
+        $users=User::all() ;
         $container_userInfo=array() ;
         foreach($users as $user){
             if ($user->user_endDate==NULL){
@@ -80,7 +79,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the menuUserAcessRight
      */
     public function update_menuUserAcessRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -108,7 +107,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the resetUserPasswordRight
      */
     public function update_resetUserPasswordRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($userResponsable->user_resetUserPasswordRight){
             if ($user->id!=$userResponsable->id){
@@ -144,7 +143,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the updateDataInDraftRight
      */
     public function update_updateDataInDraftRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -172,7 +171,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the validateDescriptiveLifeSheetDataRight
      */
     public function update_validateDescriptiveLifeSheetDataRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -200,7 +199,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the validateOtherDataRight
      */
     public function update_validateOtherDataRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -228,7 +227,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the updateDataValidatedButNotSignedRight
      */
     public function update_updateDataValidatedButNotSignedRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -256,7 +255,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the updateDescriptiveLifeSheetDataSignedRight
      */
     public function update_updateDescriptiveLifeSheetDataSignedRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -284,7 +283,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the makeQualityValidationRight
      */
     public function update_makeQualityValidationRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -312,7 +311,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the makeTechnicalValidationRight
      */
     public function update_makeTechnicalValidationRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -340,7 +339,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the makeEqOpValidationRight
      */
     public function update_makeEqOpValidationRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -368,7 +367,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the makeMmeOpValidationRight
      */
     public function update_makeMmeOpValidationRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -389,14 +388,14 @@ class UserController extends Controller{
             ], 429);
         }
     }
-    
+
     /**
      * Function call by AccountManagementElement.vue with the route : /user/update_right/updateEnumRight/{id} (post)
      * Update the right updateEnum of the user which the id is passed in parameter
      * The id parameter correspond to the id of the user we want to change the updateEnumRight
      */
     public function update_updateEnumRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -424,7 +423,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the deleteEnumRight
      */
     public function update_deleteEnumRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -452,7 +451,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the addEnumRight
      */
     public function update_addEnumRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -480,7 +479,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the deleteDataNotValidatedLinkedToEqOrMmeRight
      */
     public function update_deleteDataNotValidatedLinkedToEqOrMmeRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -508,7 +507,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the deleteDataValidatedLinkedToEqOrMmeRight
      */
     public function update_deleteDataValidatedLinkedToEqOrMmeRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -536,7 +535,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the deleteDataSignedLinkedToEqOrMmeRight
      */
     public function update_deleteDataSignedLinkedToEqOrMmeRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -564,7 +563,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the deleteEqOrMmeRight
      */
     public function update_deleteEqOrMmeRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -592,7 +591,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the updateInformationRight
      */
     public function update_updateInformationRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -620,7 +619,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the personTrainedToGeneralPrinciplesOfEqManagementRight
      */
     public function update_personTrainedToGeneralPrinciplesOfEqManagementRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -648,7 +647,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the personTrainedToGeneralPrinciplesOfMMEManagementRight
      */
     public function update_personTrainedToGeneralPrinciplesOfMMEManagementRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -676,7 +675,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the makeEqRespValidationRight
      */
     public function update_makeEqRespValidationRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -704,7 +703,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the makeEqRespValidationRight
      */
     public function update_makeMmeRespValidationRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -732,7 +731,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the makeReformRight
      */
     public function update_makeReformRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -760,7 +759,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the declareNewStateRight
      */
     public function update_declareNewStateRight($id, Request $request){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -788,7 +787,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the informations
      */
     public function update_info(Request $request, $id){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         $userResponsable=User::findOrFail($request->user_id) ;
         if ($user->id!=$userResponsable->id){
             if ($user->user_pseudo=="admin"){
@@ -810,7 +809,7 @@ class UserController extends Controller{
                 ]);
 
                 //We check if user_initials is already used in the data base
-                $users=User::where('user_initials', '=', $request->user_initials)->where('id', '<>', $id)->get() ; 
+                $users=User::where('user_initials', '=', $request->user_initials)->where('id', '<>', $id)->get() ;
                 if (count($users)>0){
                     return response()->json([
                         'errors' => [
@@ -893,14 +892,14 @@ class UserController extends Controller{
 
             if ($request->user_password!=NULL || $request->user_confirmation_password){
                 $request->validate([
-                'user_password' => ['required', Rules\Password::defaults()], 
-                'user_confirmation_password' => ['required', Rules\Password::defaults()], 
+                'user_password' => ['required', Rules\Password::defaults()],
+                'user_confirmation_password' => ['required', Rules\Password::defaults()],
                 ],[
                     'user_password.required' => 'You must enter a password',
                     'user_password.string' => 'Your password must be of type string',
                     'user_password.max' => 'You must enter a maximum of 255 characters',
                     'user_password.min' => 'You must enter at least 8 characters',
-        
+
                     'user_confirmation_password.required' => 'You must confirm your password',
                     'user_confirmation_password.string' => 'Your password must be of type string',
                     'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
@@ -914,7 +913,7 @@ class UserController extends Controller{
                         ]
                     ], 429);
                 }
-                
+
                 $user->update([
                     'password' => Hash::make($request->user_password),
                 ]);
@@ -934,7 +933,7 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to change the informations
      */
     public function update_myAccount(Request $request, $id){
-        $user=User::findOrFail($id) ; 
+        $user=User::findOrFail($id) ;
         if ($request->user_firstName!=NULL){
             $request->validate([
                 'user_firstName' => ['required', 'string', 'min:2', 'max:50'],
@@ -966,14 +965,14 @@ class UserController extends Controller{
 
         if ($request->user_password!=NULL){
             $request->validate([
-               'user_password' => ['required', Rules\Password::defaults()], 
-               'user_confirmation_password' => ['required', Rules\Password::defaults()], 
-            ],[    
+               'user_password' => ['required', Rules\Password::defaults()],
+               'user_confirmation_password' => ['required', Rules\Password::defaults()],
+            ],[
                 'user_password.required' => 'You must enter a password',
                 'user_password.string' => 'Your password must be of type string',
                 'user_password.max' => 'You must enter a maximum of 255 characters',
                 'user_password.min' => 'You must enter at least 8 characters',
-        
+
                 'user_confirmation_password.required' => 'You must confirm your password',
                 'user_confirmation_password.string' => 'Your password must be of type string',
                 'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
@@ -995,20 +994,20 @@ class UserController extends Controller{
 
         if ($request->user_confirmation_password!=NULL){
             $request->validate([
-                'user_password' => ['required', Rules\Password::defaults()], 
-                'user_confirmation_password' => ['required', Rules\Password::defaults()], 
-             ],[    
+                'user_password' => ['required', Rules\Password::defaults()],
+                'user_confirmation_password' => ['required', Rules\Password::defaults()],
+             ],[
                  'user_password.required' => 'You must enter a password',
                  'user_password.string' => 'Your password must be of type string',
                  'user_password.max' => 'You must enter a maximum of 255 characters',
                  'user_password.min' => 'You must enter at least 8 characters',
-         
+
                  'user_confirmation_password.required' => 'You must confirm your password',
                  'user_confirmation_password.string' => 'Your password must be of type string',
                  'user_confirmation_password.max' => 'You must enter a maximum of 255 characters',
                  'user_confirmation_password.min' => 'You must enter at least 8 characters',
              ]);
- 
+
             if ($request->user_confirmation_password!==$request->user_password){
                  return response()->json([
                      'errors' => [
@@ -1024,7 +1023,7 @@ class UserController extends Controller{
         if ($request->user_pseudo!=NULL){
             $request->validate([
                 'user_pseudo' => ['required', 'string', 'max:50', 'min:2'],
-            ],[        
+            ],[
                 'user_pseudo.required' => 'You must enter a pseudo ',
                 'user_pseudo.string' => 'Your pseudo must be of type string',
                 'user_pseudo.max' => 'You must enter a maximum of 50 characters',
@@ -1032,7 +1031,7 @@ class UserController extends Controller{
             ]);
 
             //We check if user_pseudo is already used in the data base
-            $users=User::where('user_pseudo', '=', $request->user_pseudo)->where('id','<>',$id)->get() ; 
+            $users=User::where('user_pseudo', '=', $request->user_pseudo)->where('id','<>',$id)->get() ;
             if (count($users)>0){
                 return response()->json([
                     'errors' => [
@@ -1081,44 +1080,44 @@ class UserController extends Controller{
      * The id parameter correspond to the id of the user we want to know if the equipment formation date is already available
      */
     public function formationEqOk($id){
-        $user=User::findOrFail($id) ; 
-        $now=Carbon::now() ; 
+        $user=User::findOrFail($id) ;
+        $now=Carbon::now() ;
         if ($user->user_formationEqDate!=NULL){
             $ymd=explode('-', $user->user_formationEqDate);
-            $year=$ymd[0] ; 
+            $year=$ymd[0] ;
             $month=$ymd[1] ;
             $day=$ymd[2] ;
-        
+
             $formationEqDate=Carbon::create($year, $month, $day, 0,0,0);
-            $OneYearLater=$formationEqDate->addYear(1) ; 
+            $OneYearLater=$formationEqDate->addYear(1) ;
             if ($OneYearLater<$now){
-                return response()->json(false) ; 
+                return response()->json(false) ;
             }else{
-                return response()->json(true) ; 
+                return response()->json(true) ;
             }
         }else{
-            return response()->json(false) ;  
+            return response()->json(false) ;
         }
     }
 
     public function formationMmeOk($id){
-        $user=User::findOrFail($id) ; 
-        $now=Carbon::now() ; 
+        $user=User::findOrFail($id) ;
+        $now=Carbon::now() ;
         if ($user->user_formationMmeDate!=NULL){
             $ymd=explode('-', $user->user_formationMmeDate);
-            $year=$ymd[0] ; 
+            $year=$ymd[0] ;
             $month=$ymd[1] ;
             $day=$ymd[2] ;
-        
+
             $formationMmeDate=Carbon::create($year, $month, $day, 0,0,0);
-            $OneYearLater=$formationMmeDate->addYear(1) ; 
+            $OneYearLater=$formationMmeDate->addYear(1) ;
             if ($OneYearLater<$now){
-                return response()->json(false) ; 
+                return response()->json(false) ;
             }else{
-                return response()->json(true) ; 
+                return response()->json(true) ;
             }
         }else{
-            return response()->json(false) ;  
+            return response()->json(false) ;
         }
     }
 }

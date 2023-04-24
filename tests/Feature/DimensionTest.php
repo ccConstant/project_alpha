@@ -4,23 +4,23 @@
 * Filename : DimensionTest.php
 * Creation date : 31 May 2022
 * Update date : 22 Mar 2023
-* This file contains all the tests abut the dimension table. 
+* This file contains all the tests about the dimension table.
 * Coverage : 100%
-*/ 
+*/
 
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\Equipment;
-use App\Models\EquipmentTemp;
-use App\Models\Dimension;
-use App\Models\EnumDimensionName;
-use App\Models\EnumDimensionUnit;
-use App\Models\EnumDimensionType;
-use App\Models\EnumEquipmentType;
-use App\Models\EnumEquipmentMassUnit;
+use App\Models\SW01\Equipment;
+use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\Dimension;
+use App\Models\SW01\EnumDimensionName;
+use App\Models\SW01\EnumDimensionUnit;
+use App\Models\SW01\EnumDimensionType;
+use App\Models\SW01\EnumEquipmentType;
+use App\Models\SW01\EnumEquipmentMassUnit;
 use Illuminate\Database\Eloquent\Collection ;
 use Laravel\Dusk\Browser;
 
@@ -31,8 +31,8 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 1
-     * Saved a dimension as drafted from add menu with no value	
-     * Type : /  Name : /  Value : / Unit : / 
+     * Saved a dimension as drafted from add menu with no value
+     * Type : /  Name : /  Value : / Unit : /
      * Expected result : Receiving an error "You must enter a value for your dimension"
      * @return void
      */
@@ -49,8 +49,8 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 2
-     * Saved a dimension as drafted from add menu with a too long value	
-     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : / 
+     * Saved a dimension as drafted from add menu with a too long value
+     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : /
      * Expected result : Receiving an error "You must enter a maximum of 50 characters"
      * @return void
      */
@@ -69,9 +69,9 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 3
-     * Saved successfully a dimension as drafted from add menu 	
-     * Type : /  Name : /  Value : 47 Unit : / 
-     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment 
+     * Saved successfully a dimension as drafted from add menu
+     * Type : /  Name : /  Value : 47 Unit : /
+     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment
      * @return void
      */
     public function test_add_dim_drafted_addMenu_CorrectValue(){
@@ -119,9 +119,9 @@ class DimensionTest extends TestCase
 
      /**
      * Test Conception Number : 4
-     * Saved successfully a dimension as drafted from add menu 		
-     * Type : External  Name : Length  Value : 18 Unit : mm 
-     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment 
+     * Saved successfully a dimension as drafted from add menu
+     * Type : External  Name : Length  Value : 18 Unit : mm
+     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment
      * @return void
      */
     public function test_add_dim_drafted_addMenu_CorrectValues(){
@@ -210,13 +210,13 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 5
-     * Saved a dimension as to be validated from add menu with no value	
-     * Type : /  Name : /  Value : / Unit : / 
+     * Saved a dimension as to be validated from add menu with no value
+     * Type : /  Name : /  Value : / Unit : /
      * Expected result : Receiving an error "You must enter a value for your dimension"
      * @return void
      */
     public function test_add_dim_toBeValidated_addMenu_NoValue(){
-       
+
         $countDim=Dimension::all()->count();
         $response=$this->post('/dimension/verif', [
             'dim_validate' => 'to_be_validated'
@@ -229,8 +229,8 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 6
-     * Saved a dimension as to be validated from add menu with a too long value	
-     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : / 
+     * Saved a dimension as to be validated from add menu with a too long value
+     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : /
      * Expected result : Receiving an error "You must enter a maximum of 50 characters"
      * @return void
      */
@@ -248,9 +248,9 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 7
-     * Saved successfully a dimension as to be validated from add menu 	
-     * Type : /  Name : /  Value : 47 Unit : / 
-     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment 
+     * Saved successfully a dimension as to be validated from add menu
+     * Type : /  Name : /  Value : 47 Unit : /
+     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment
      * @return void
      */
     public function test_add_dim_toBeValidated_addMenu_CorrectValue(){
@@ -298,9 +298,9 @@ class DimensionTest extends TestCase
 
      /**
      * Test Conception Number : 8
-     * Saved successfully a dimension as to be validated from add menu 		
-     * Type : External  Name : Length  Value : 18 Unit : mm 
-     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment 
+     * Saved successfully a dimension as to be validated from add menu
+     * Type : External  Name : Length  Value : 18 Unit : mm
+     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment
      * @return void
      */
     public function test_add_dim_toBeValidated_addMenu_CorrectValues(){
@@ -385,8 +385,8 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 9
-     * Saved a dimension as validated from add menu with no value	
-     * Type : /  Name : /  Value : / Unit : / 
+     * Saved a dimension as validated from add menu with no value
+     * Type : /  Name : /  Value : / Unit : /
      * Expected result : Receiving an error "You must enter a value for your dimension"
      * @return void
      */
@@ -403,8 +403,8 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 10
-     * Saved a dimension as validated from add menu with a too long value	
-     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : / 
+     * Saved a dimension as validated from add menu with a too long value
+     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : /
      * Expected result : Receiving an error "You must enter a maximum of 50 characters"
      * @return void
      */
@@ -422,9 +422,9 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 11
-     * Saved a dimension as validated  from add menu with a correct value but no type, no name and no unit	
-     * Type : /  Name : /  Value : 32 Unit : / 
-     * Expected result : Receiving errors "You must choose a type for your dimension", "You must choose a name for your dimension", "You must choose a unit for your dimension" 
+     * Saved a dimension as validated  from add menu with a correct value but no type, no name and no unit
+     * Type : /  Name : /  Value : 32 Unit : /
+     * Expected result : Receiving errors "You must choose a type for your dimension", "You must choose a name for your dimension", "You must choose a unit for your dimension"
      * @return void
      */
     public function test_add_dim_validated_addMenu_CorrectValueOnly(){
@@ -461,7 +461,7 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 12
-     * Saved a dimension as validated  from add menu with a correct value but no type and no name	
+     * Saved a dimension as validated  from add menu with a correct value but no type and no name
      * Type : /  Name : /  Value : 18 Unit : mm
      * Expected result : Receiving errors "You must choose a type for your dimension", "You must choose a name for your dimension"
      * @return void
@@ -508,9 +508,9 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 13
-     * Saved a dimension as validated  from add menu with a correct value but no type and no unit	
+     * Saved a dimension as validated  from add menu with a correct value but no type and no unit
      * Type : /  Name : Length  Value : 18 Unit : /
-     * Expected result : Receiving errors "You must choose a type for your dimension","You must choose a unit for your dimension" 
+     * Expected result : Receiving errors "You must choose a type for your dimension","You must choose a unit for your dimension"
      * @return void
      */
     public function test_add_dim_validated_addMenu_CorrectValueName(){
@@ -555,9 +555,9 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 14
-     * Saved a dimension as validated  from add menu with a correct value but no type	
+     * Saved a dimension as validated  from add menu with a correct value but no type
      * Type : /  Name : Length  Value : 18 Unit : mm
-     * Expected result : Receiving errors "You must choose a type for your dimension", 
+     * Expected result : Receiving errors "You must choose a type for your dimension",
      * @return void
      */
     public function test_add_dim_validated_addMenu_CorrectValueNameUnit(){
@@ -609,13 +609,13 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 15
-     * Saved a dimension as validated  from add menu with a correct value but no name and no unit	
+     * Saved a dimension as validated  from add menu with a correct value but no name and no unit
      * Type : External  Name : /  Value : 18 Unit : /
-     * Expected result : Receiving errors "You must choose a name for your dimension", "You must choose a unit for your dimension" 
+     * Expected result : Receiving errors "You must choose a name for your dimension", "You must choose a unit for your dimension"
      * @return void
      */
     public function test_add_dim_validated_addMenu_CorrectValueType(){
-       
+
         $countEq=Equipment::all()->count();
         $response=$this->post('/equipment/verif', [
             'eq_internalReference' => 'Test',
@@ -657,7 +657,7 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 16
-     * Saved a dimension as validated  from add menu with a correct value but no name  	
+     * Saved a dimension as validated  from add menu with a correct value but no name
      * Type : External  Name : /  Value : 18 Unit : mm
      * Expected result : Receiving errors "You must choose a name for your dimension"
      * @return void
@@ -711,7 +711,7 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 17
-     * Saved a dimension as validated  from add menu with a correct value but no unit	
+     * Saved a dimension as validated  from add menu with a correct value but no unit
      * Type : External  Name : Length  Value : 18 Unit : /
      * Expected result : Receiving errors "You must choose a unit for your dimension"
      * @return void
@@ -765,9 +765,9 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 18
-     * Saved successfully a dimension as validated from add menu 		
-     * Type : External  Name : Length  Value : 18 Unit : mm 
-     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment 
+     * Saved successfully a dimension as validated from add menu
+     * Type : External  Name : Length  Value : 18 Unit : mm
+     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment
      * @return void
      */
     public function test_add_dim_validated_addMenu_CorrectValues(){
@@ -854,12 +854,12 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 21
-     * Update successfully a dimension as drafted with only a value	
+     * Update successfully a dimension as drafted with only a value
      * Type : /  Name : /  Value : 47 Unit : /
-     * Expected result : The dimension is correctly updated in data base 
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Expected result : The dimension is correctly updated in data base
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
@@ -977,18 +977,18 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 22
-     * Update successfully a dimension as drafted with a type, name value and a unit	
+     * Update successfully a dimension as drafted with a type, name value and a unit
      * Type : Internal  Name : Width  Value : 18 Unit : cm
-     * Expected result : The dimension is correctly updated in data base 
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Expected result : The dimension is correctly updated in data base
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
 
     public function test_update_dim_drafted_correctValues(){
-        
+
         $countEq=Equipment::all()->count();
         $response=$this->post('/equipment/verif', [
             'eq_internalReference' => 'Test',
@@ -1124,12 +1124,12 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 25
-     * Update successfully a dimension as to be validated with only a value	
+     * Update successfully a dimension as to be validated with only a value
      * Type : /  Name : /  Value : 8930 Unit : /
-     * Expected result : The dimension is correctly updated in data base 
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Expected result : The dimension is correctly updated in data base
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
@@ -1247,18 +1247,18 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 26
-     * Update successfully a dimension as drafted with a type, name value and a unit	
+     * Update successfully a dimension as drafted with a type, name value and a unit
      * Type : Internal  Name : Width  Value : 18 Unit : cm
-     * Expected result : The dimension is correctly updated in data base 
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Expected result : The dimension is correctly updated in data base
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
 
     public function test_update_dim_toBeValidated_correctValues(){
-        
+
         $countEq=Equipment::all()->count();
         $response=$this->post('/equipment/verif', [
             'eq_internalReference' => 'Test',
@@ -1394,12 +1394,12 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 36
-     * Update successfully a dimension as validated 	
+     * Update successfully a dimension as validated
      * Type : Internal  Name : Width  Value : 18 Unit : cm
-     * Expected result : The dimension is correctly updated in data base 
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Expected result : The dimension is correctly updated in data base
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
@@ -1541,18 +1541,18 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 37
-     * Update dimension type of a validated equipment successfully 	
+     * Update dimension type of a validated equipment successfully
      * Type : Internal  Name : Length  Value : 29 Unit : mm
      * Expected result : The dimension type is correctly updated in the database, the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
 
      public function test_updateType_dim_validated(){
-        
+
         $countUser=User::all()->count();
         $response=$this->post('register', [
             'user_firstName' => 'Test',
@@ -1756,18 +1756,18 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 38
-     * Update dimension name of a validated equipment successfully 	
+     * Update dimension name of a validated equipment successfully
      * Type : External  Name : Width  Value : 29 Unit : mm
      * Expected result : The dimension name is correctly updated in the database, the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
 
      public function test_updateName_dim_validated(){
-        
+
         $countUser=User::all()->count();
         $response=$this->post('register', [
             'user_firstName' => 'Test',
@@ -1967,18 +1967,18 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 39
-     * Update dimension value of a validated equipment successfully 	
+     * Update dimension value of a validated equipment successfully
      * Type : External  Name : Length  Value : 30 Unit : mm
      * Expected result : The dimension value is correctly updated in the database,  the version number of the equipment has been incremented, the reason for the update is required and correctly saved, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
 
      public function test_updateValue_dim_validated(){
-        
+
         $countUser=User::all()->count();
         $response=$this->post('register', [
             'user_firstName' => 'Test',
@@ -2019,7 +2019,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/dimension/enum/name/add', [
             'value' => 'Length',
         ]);
-        
+
         $response->assertStatus(200);
         $this->assertCount($countDimName+1, EnumDimensionName::all());
 
@@ -2169,18 +2169,18 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 40
-     * Update dimension unit of a validated equipment successfully 		
+     * Update dimension unit of a validated equipment successfully
      * Type : External  Name : Length  Value : 29 Unit : cm
      * Expected result : The dimension value is correctly updated in the database, the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
-     * Eq External Ref / Eq Internal Ref : Example1 
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
+     * Eq External Ref / Eq Internal Ref : Example1
      * Eq set : /
      * @return void
      */
 
      public function test_updateUnit_dim_validated(){
-        
+
         $countUser=User::all()->count();
         $response=$this->post('register', [
             'user_firstName' => 'Test',
@@ -2221,7 +2221,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/dimension/enum/name/add', [
             'value' => 'Length',
         ]);
-        
+
         $response->assertStatus(200);
         $this->assertCount($countDimName+1, EnumDimensionName::all());
 
@@ -2377,14 +2377,14 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 54
-     * Add successfully a new dimension in validated for a validated equipment  	
+     * Add successfully a new dimension in validated for a validated equipment
      * Type : External  Name : Width  Value : 41 Unit : km
      * Expected result :The dimension is correctly saved in the database,  the version number of the equipment has been incremented, the reason for the update is required and correctly saved, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
      * @return void
      */
 
      public function test_addFromUpdate_dim(){
-        
+
         $countUser=User::all()->count();
         $response=$this->post('register', [
             'user_firstName' => 'Test',
@@ -2425,7 +2425,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/dimension/enum/name/add', [
             'value' => 'Width',
         ]);
-        
+
         $response->assertStatus(200);
         $this->assertCount($countDimName+1, EnumDimensionName::all());
 
@@ -2547,7 +2547,7 @@ class DimensionTest extends TestCase
             'value' => 'km',
             'id'=> EnumDimensionUnit::all()->last()->id
         ]);
-       
+
         $this->assertDatabaseHas('equipment', [
             'eq_nbrVersion' => 2,
         ]);
@@ -2564,16 +2564,16 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 55
-     * Consult the dimension of an equipment 		 	
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Consult the dimension of an equipment
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
      * External	Length	29	mm
      * Internal Width	41	cm
-     * Expected result :The equipment has two dimensions with the value : External - length - 29 - mm and Internal - width - 41 - cm 
+     * Expected result :The equipment has two dimensions with the value : External - length - 29 - mm and Internal - width - 41 - cm
      * @return void
      */
 
      public function test_consult_dim(){
-        
+
         $countEq=Equipment::all()->count();
         $response=$this->post('/equipment/verif', [
             'eq_internalReference' => 'Test',
@@ -2738,16 +2738,16 @@ class DimensionTest extends TestCase
 
      /**
      * Test Conception Number : 56
-     * Consult by type the dimension of an equipment		 	
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
+     * Consult by type the dimension of an equipment
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
      * External	Length	29	mm
      * Internal Width	41	cm
-     * Expected result :The equipment has two dimensions with the value : External - length - 29 - mm and Internal - width - 41 - cm sorted by type 
+     * Expected result :The equipment has two dimensions with the value : External - length - 29 - mm and Internal - width - 41 - cm sorted by type
      * @return void
      */
 
      public function test_consultByType_dim(){
-        
+
         $countEq=Equipment::all()->count();
         $response=$this->post('/equipment/verif', [
             'eq_internalReference' => 'Test',
@@ -2922,15 +2922,15 @@ class DimensionTest extends TestCase
 
      /**
      * Test Conception Number : 57
-     * Delete the dimension previously created	
+     * Delete the dimension previously created
      * Expected result :The dimension is correctly saved in the database,  the version number of the equipment has been incremented, the reason for the update is required and correctly saved, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
      * @return void
      */
 
      public function test_delete_dim(){
-        
+
         $countEq=Equipment::all()->count();
         $response=$this->post('/equipment/verif', [
             'eq_internalReference' => 'Test',
@@ -2959,7 +2959,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/dimension/enum/name/add', [
             'value' => 'Length',
         ]);
-        
+
         $response->assertStatus(200);
         $this->assertCount($countDimName+1, EnumDimensionName::all());
 
@@ -3016,7 +3016,7 @@ class DimensionTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertCount($countDim-1, Dimension::all());
-       
+
         $this->assertDatabaseHas('equipment', [
             'eq_nbrVersion' => 1,
         ]);
@@ -3033,16 +3033,16 @@ class DimensionTest extends TestCase
 
     /**
      * Test Conception Number : 58
-     * Delete the dimension previously created of an validated equipment	 	
+     * Delete the dimension previously created of an validated equipment
      * Type : External  Name : Width  Value : 41 Unit : km
-     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests			
-     * Type : External  Name : Length  Value : 29 Unit : mm		
+     * Dimension Data for all update tests: it's necessary to create a dimension with theses values for all following tests
+     * Type : External  Name : Length  Value : 29 Unit : mm
      * Expected result :TThe dimension has been deleted successfully and the version number of the equipment has been incremented, the attributes qualityVerifier and TechnicalVerifier become NULL and the attribute representing the creation of the life sheet takes the value false
      * @return void
      */
 
      public function test_delete_dimFromValidatedEq(){
-        
+
         $countUser=User::all()->count();
         $response=$this->post('register', [
             'user_firstName' => 'Test',
@@ -3083,7 +3083,7 @@ class DimensionTest extends TestCase
         $response=$this->post('/dimension/enum/name/add', [
             'value' => 'Length',
         ]);
-        
+
         $response->assertStatus(200);
         $this->assertCount($countDimName+1, EnumDimensionName::all());
 
@@ -3230,9 +3230,6 @@ class DimensionTest extends TestCase
 
     }
 
-   
-
-    
 
 
 
@@ -3243,7 +3240,10 @@ class DimensionTest extends TestCase
 
 
 
-    
+
+
+
+
 
 }
 

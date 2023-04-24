@@ -1,12 +1,20 @@
 <?php
 
+/**
+ * Filename: FileTest.php
+ * Creation date: 20 Apr 2023
+ * Update date: 20 Apr 2023
+ * This file contains all the tests about the file table.
+ * Coverage : 100%
+ */
+
 namespace Tests\Feature;
 
-use App\Models\Equipment;
-use App\Models\EquipmentTemp;
+use App\Models\SW01\Equipment;
+use App\Models\SW01\EquipmentTemp;
 use App\Models\File;
-use App\Models\Mme;
-use App\Models\MmeTemp;
+use App\Models\SW01\Mme;
+use App\Models\SW01\MmeTemp;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,7 +23,7 @@ class FileTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function make_an_equipment($name, $validate)
+    public function make_an_equipment($name, $validate)
     {
         if ($validate != "validated") {
             $countEquipment = Equipment::all()->count();
@@ -95,7 +103,7 @@ class FileTest extends TestCase
         return $equipment;
     }
 
-    private function make_an_eq_verif($eq_id)
+    public function make_an_eq_verif($eq_id)
     {
         $user = $this->make_a_user();
         $response=$this->post('/equipment/validation/'.$eq_id, [
@@ -112,7 +120,7 @@ class FileTest extends TestCase
         $this->assertEquals($user->id, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->technicalVerifier_id);
     }
 
-    private function make_a_mme($name, $validate)
+    public function make_a_mme($name, $validate)
     {
         if ($validate != "validated") {
             $countMme = Mme::all()->count();
@@ -162,7 +170,7 @@ class FileTest extends TestCase
         return $Mme;
     }
 
-    private function make_a_mme_verif($mme_id)
+    public function make_a_mme_verif($mme_id)
     {
         $user = $this->make_a_user();
         $response=$this->post('/mme/validation/'.$mme_id, [
@@ -179,7 +187,7 @@ class FileTest extends TestCase
         $this->assertEquals($user->id, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->technicalVerifier_id);
     }
 
-    private function make_a_user()
+    public function make_a_user()
     {
         $countUser=User::all()->count();
         $response=$this->post('register', [
@@ -842,7 +850,7 @@ class FileTest extends TestCase
         $this->assertEquals(0, MmeTemp::all()->where('mmeTemp_remarks', '==', 'addValMmeVTest')->last()->mmeTemp_lifeSheetCreated);
     }
 
-    private function make_an_eq_with_file($name, $validate)
+    public function make_an_eq_with_file($name, $validate)
     {
         if ($validate != "validated") {
             $equipment = $this->make_an_equipment($name, $validate);
@@ -897,7 +905,7 @@ class FileTest extends TestCase
         return $equipment;
     }
 
-    private function make_a_mme_with_file($name, $validate)
+    public function make_a_mme_with_file($name, $validate)
     {
         if ($validate != "validated") {
             $Mme = $this->make_a_mme($name, $validate);
@@ -1429,11 +1437,91 @@ class FileTest extends TestCase
 
     /**
      * Test Conception Number 37
-     * Successfully delete as drafted a file linked to an equipment
+     * Successfully delete a file linked to an equipment
+     * Expected result: The file is correctly removed in the database
      * @returns void
      */
     public function test_delete_file_from_an_eq()
     {
-        $equipment = $this->make_an_eq_with_file('delEqTest','drafted');
+        $equipment = $this->make_an_eq_with_file('delDrEqTest','drafted');
+        $lastEquipmentTemps = EquipmentTemp::all()->where('equipment_id', '==', $equipment->id)->last()->id;
+        $fileID = File::all()->where('equipmentTemp_id', '==', $lastEquipmentTemps)->first()->id;
+        $this->post('/equipment/delete/file/'.$fileID, [
+            'eq_id' => $equipment->id
+        ]);
+        $this->assertDatabaseMissing('files', [
+            'id' => $fileID,
+            'equipmentTemp_id' => $lastEquipmentTemps
+        ]);
+    }
+
+    /**
+     * Test Conception Number 38
+     * Successfully delete a file linked to a mme
+     * Expected result: The file is correctly removed in the database
+     * @returns void
+     */
+    public function test_delete_file_from_a_mme()
+    {
+        $Mme = $this->make_a_mme_with_file('delDrMmeTest','drafted');
+        $lastMmeTemps = MmeTemp::all()->where('mme_id', '==', $Mme->id)->last()->id;
+        $fileID = File::all()->where('mmeTemp_id', '==', $lastMmeTemps)->first()->id;
+        $this->post('/mme/delete/file/'.$fileID, [
+            'mme_id' => $Mme->id
+        ]);
+        $this->assertDatabaseMissing('files', [
+            'id' => $fileID,
+            'mmeTemp_id' => $lastMmeTemps
+        ]);
+    }
+
+    /**
+     * Test Conception Number 39
+     * Successfully delete a file linked to an validated equipment
+     * Expected result: The file is correctly added in the database and the version of the equipment is changed
+     * @returns void
+     */
+    public function test_delete_file_from_an_valid_eq()
+    {
+        $equipment = $this->make_an_eq_with_file('delValEqTest','validated');
+        $lastEquipmentTemps = EquipmentTemp::all()->where('equipment_id', '==', $equipment->id)->last()->id;
+        $fileID = File::all()->where('equipmentTemp_id', '==', $lastEquipmentTemps)->first()->id;
+        $this->post('/equipment/delete/file/'.$fileID, [
+            'eq_id' => $equipment->id
+        ]);
+        $this->assertDatabaseMissing('files', [
+            'id' => $fileID,
+            'equipmentTemp_id' => $lastEquipmentTemps
+        ]);
+        $this->assertDatabaseHas('equipment_temps',[
+            'id' => $lastEquipmentTemps,
+            'equipment_id' => $equipment->id,
+            'eqTemp_version' => 3
+        ]);
+    }
+
+    /**
+     * Test Conception Number 40
+     * Successfully delete a file linked to a validated mme
+     * Expected result: The file is correctly added in the database and the version of the mme is changed
+     * @returns void
+     */
+    public function test_delete_file_from_a_valid_mme()
+    {
+        $Mme = $this->make_a_mme_with_file('delValMmeTest','validated');
+        $lastMmeTemps = MmeTemp::all()->where('mme_id', '==', $Mme->id)->last()->id;
+        $fileID = File::all()->where('mmeTemp_id', '==', $lastMmeTemps)->first()->id;
+        $this->post('/mme/delete/file/'.$fileID, [
+            'mme_id' => $Mme->id
+        ]);
+        $this->assertDatabaseMissing('files', [
+            'id' => $fileID,
+            'mmeTemp_id' => $lastMmeTemps
+        ]);
+        $this->assertDatabaseHas('mme_temps',[
+            'id' => $lastMmeTemps,
+            'mme_id' => $Mme->id,
+            'mmeTemp_version' => 3
+        ]);
     }
 }

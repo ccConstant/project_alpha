@@ -1,28 +1,28 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SW01\EquipmentController ; 
+use App\Http\Controllers\SW01\EquipmentController ;
 
 
 
-use App\Http\Controllers\SW01\DimensionController ; 
-use App\Http\Controllers\SW01\PowerController ; 
-use App\Http\Controllers\SW01\SpecialProcessController ; 
-use App\Http\Controllers\SW01\UsageController ; 
-use App\Http\Controllers\FileController ; 
-use App\Http\Controllers\SW01\RiskController ; 
-use App\Http\Controllers\SW01\StateController ; 
+use App\Http\Controllers\SW01\DimensionController ;
+use App\Http\Controllers\SW01\PowerController ;
+use App\Http\Controllers\SW01\SpecialProcessController ;
+use App\Http\Controllers\SW01\UsageController ;
+use App\Http\Controllers\FileController ;
+use App\Http\Controllers\SW01\RiskController ;
+use App\Http\Controllers\SW01\StateController ;
 use App\Http\Controllers\SW01\PreventiveMaintenanceOperationController ;
 use App\Http\Controllers\SW01\CurativeMaintenanceOperationController ;
 use App\Http\Controllers\SW01\PreventiveMaintenanceOperationRealizedController ;
-use App\Http\Controllers\SW01\EnumEquipmentTypeController ; 
-use App\Http\Controllers\SW01\EnumEquipmentMassUnitController ; 
-use App\Http\Controllers\SW01\EnumPowerTypeController ; 
-use App\Http\Controllers\SW01\EnumStateNameController ; 
-use App\Http\Controllers\SW01\EnumRiskForController ; 
-use App\Http\Controllers\SW01\EnumDimensionTypeController ; 
-use App\Http\Controllers\SW01\EnumDimensionNameController ; 
-use App\Http\Controllers\SW01\EnumDimensionUnitController ; 
+use App\Http\Controllers\SW01\EnumEquipmentTypeController ;
+use App\Http\Controllers\SW01\EnumEquipmentMassUnitController ;
+use App\Http\Controllers\SW01\EnumPowerTypeController ;
+use App\Http\Controllers\SW01\EnumStateNameController ;
+use App\Http\Controllers\SW01\EnumRiskForController ;
+use App\Http\Controllers\SW01\EnumDimensionTypeController ;
+use App\Http\Controllers\SW01\EnumDimensionNameController ;
+use App\Http\Controllers\SW01\EnumDimensionUnitController ;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\SW01\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\SW01\Auth\ConfirmablePasswordController;
@@ -32,14 +32,14 @@ use App\Http\Controllers\SW01\Auth\NewPasswordController;
 use App\Http\Controllers\SW01\Auth\PasswordResetLinkController;
 use App\Http\Controllers\SW01\Auth\RegisteredUserController;
 use App\Http\Controllers\SW01\Auth\VerifyEmailController;
-use App\Http\Controllers\UserController ; 
-use App\Http\Controllers\SW01\MmeController ; 
-use App\Http\Controllers\SW01\MmeTempController ; 
-use App\Http\Controllers\SW01\VerificationController ; 
-use App\Http\Controllers\SW01\VerificationRealizedController ; 
-use App\Http\Controllers\SW01\MmeUsageController ; 
-use App\Http\Controllers\SW01\MmeStateController ; 
-use App\Http\Controllers\SW01\PrecautionController ; 
+use App\Http\Controllers\UserController ;
+use App\Http\Controllers\SW01\MmeController ;
+use App\Http\Controllers\SW01\MmeTempController ;
+use App\Http\Controllers\SW01\VerificationController ;
+use App\Http\Controllers\SW01\VerificationRealizedController ;
+use App\Http\Controllers\SW01\MmeUsageController ;
+use App\Http\Controllers\SW01\MmeStateController ;
+use App\Http\Controllers\SW01\PrecautionController ;
 use App\Http\Controllers\SW01\EnumVerificationRequiredSkillController;
 use App\Http\Controllers\SW01\EnumPrecautionTypeController;
 use App\Http\Controllers\SW01\EnumUsageMetrologicalLevelController;
@@ -67,6 +67,9 @@ Route::get('/SW01', function () {
     return view('welcomeSW01');
 });
 
+Route::get('/SW02', function () {
+    return view('welcomeSW02');
+});
 
 
 Route::get('/dashboard', function () {
@@ -78,7 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/equipment/add', function () {
         return view('welcome');
     });
-    
+
 
     Route::get('/equipment/list', function () {
         return view('welcome');
@@ -225,6 +228,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/mme/lifesheet_pdf/{id}', function () {
         return view('welcome');
     });
+
+    Route::get('/supplier/add', function () {
+        return view('welcome');
+    });
 });
 
 
@@ -275,7 +282,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']) ->name('logout') ;
 });
 
-/* Equipment ID Form Routes */ 
+/* Equipment ID Form Routes */
 
 
 
@@ -313,7 +320,7 @@ Route::get('/send/state/equipment/{state_id} ', [EquipmentController::class, 'se
 
 Route::get('/send/equipment/planning/periode', [EquipmentController::class, 'send_periode_for_planning'] ) ;
 
-/* Dimension Form Routes */ 
+/* Dimension Form Routes */
 
 Route::post('/equipment/add/dim', [DimensionController::class, 'add_dimension'])  ;
 
@@ -327,7 +334,7 @@ Route::post('/equipment/delete/dim/{id}', [DimensionController::class, 'delete_d
 
 Route::get('/dimension/send/ByType/{id}', [DimensionController::class, 'send_dimensions_by_type'])  ;
 
-/* Power Form Routes */ 
+/* Power Form Routes */
 
 Route::get('/power/names', [PowerController::class, 'send_names'])  ;
 
@@ -343,7 +350,7 @@ Route::post('/equipment/delete/pow/{id}', [PowerController::class, 'delete_power
 
 Route::get('/power/send/ByType/{id}', [PowerController::class, 'send_powers_by_type'])  ;
 
-/* Special Process Form Routes */ 
+/* Special Process Form Routes */
 
 Route::post('/spProc/verif', [SpecialProcessController::class, 'verif_specialProcess'])  ;
 
@@ -355,7 +362,7 @@ Route::get('/spProc/send/{id}', [SpecialProcessController::class, 'send_specialP
 
 Route::post('/equipment/delete/specialProcess{id}', [SpecialProcessController::class, 'delete_power'])  ;
 
-/* Usage Form Routes */ 
+/* Usage Form Routes */
 
 Route::post('/usage/verif', [UsageController::class, 'verif_usage'])  ;
 
@@ -369,7 +376,7 @@ Route::post('/equipment/delete/usg/{id}', [UsageController::class, 'delete_usage
 
 Route::post('/equipment/reform/usg/{id}', [UsageController::class, 'reform_usage'])  ;
 
-/* File Form Routes */ 
+/* File Form Routes */
 
 Route::post('/file/verif', [FileController::class, 'verif_file'])  ;
 
@@ -392,7 +399,7 @@ Route::post('/mme/delete/file/{id}', [FileController::class, 'delete_file_mme'])
 
 
 
-/* Preventive Maintenance Operation Form Routes */ 
+/* Preventive Maintenance Operation Form Routes */
 
 Route::post('/prvMtnOp/verif', [PreventiveMaintenanceOperationController::class, 'verif_prvMtnOp'])  ;
 
@@ -420,7 +427,7 @@ Route::get('/prvMtnOp/send/revisionTimeLimitPassed/{id}', [PreventiveMaintenance
 
 
 
-/* Risk Form Routes */ 
+/* Risk Form Routes */
 
 Route::post('/risk/verif', [RiskController::class, 'verif_risk'])  ;
 
@@ -441,7 +448,7 @@ Route::get('/prvMtnOp/risk/send/{id}', [RiskController::class, 'send_risks_prvMt
 Route::get('/prvMtnOp/risk/send/pdf/{id}', [RiskController::class, 'send_risks_pdf'])  ;
 
 
-/* State Form Routes */ 
+/* State Form Routes */
 
 Route::post('/state/verif', [StateController::class, 'verif_state'])  ;
 
@@ -462,7 +469,7 @@ Route::get('/state/send/{id}', [StateController::class, 'send_state'])  ;
 Route::post('/equipment/delete/state/{id}', [StateController::class, 'delete_state'])  ;
 
 
-/* Preventive Maintenance Operation Realized Form Routes */ 
+/* Preventive Maintenance Operation Realized Form Routes */
 
 Route::post('/prvMtnOpRlz/verif', [PreventiveMaintenanceOperationRealizedController::class, 'verif_prvMtnOpRlz'])  ;
 
@@ -479,7 +486,7 @@ Route::post('/prvMtnOpRlz/approve/{id}', [PreventiveMaintenanceOperationRealized
 Route::post('/prvMtnOpRlz/realize/{id}', [PreventiveMaintenanceOperationRealizedController::class, 'realize_prvMtnOpRlz'])  ;
 
 
-/* Curative Maintenance Operation Form Routes */ 
+/* Curative Maintenance Operation Form Routes */
 
 Route::post('/curMtnOp/verif', [CurativeMaintenanceOperationController::class, 'verif_curMtnOp'])  ;
 
@@ -517,7 +524,7 @@ Route::post('/history/add/mme/{id}', [HistoryController::class, 'add_history_for
 Route::get('/history/send/mme/{id}', [HistoryController::class, 'send_history_for_mme'])  ;
 
 
-/* Enum Form Routes */ 
+/* Enum Form Routes */
 
 
 Route::get('/equipment/enum/type', [EnumEquipmentTypeController::class, 'send_enum_type'] ) ;
@@ -664,7 +671,7 @@ Route::post('usage/enum/metrologicalLevel/analyze/{id}', [EnumUsageMetrologicalL
 
 
 
-/* Information Form Routes */ 
+/* Information Form Routes */
 
 Route::get('/info/send/all', [InformationController::class, 'send_informations_all'])  ;
 
@@ -772,7 +779,7 @@ Route::get(' /user/get/formationEqOk/{id} ', [UserController::class, 'formationE
 Route::get(' /user/get/formationMmeOk/{id} ', [UserController::class, 'formationMmeOk']);
 
 
-/* Mme ID Form Routes */ 
+/* Mme ID Form Routes */
 
 Route::get('/mme/sets', [MmeController::class, 'send_sets'] ) ;
 
@@ -814,9 +821,9 @@ Route::get('/verif/send/revisionDatePassed', [MmeController::class, 'send_mme_ve
 
 Route::get('/verif/send/revisionTimeLimitPassed', [MmeController::class, 'send_mme_verif_revisionLimitPassed'])  ;
 
-Route::get('/mme/send/{id}', [MmeController::class, 'send_mmes']) ; 
+Route::get('/mme/send/{id}', [MmeController::class, 'send_mmes']) ;
 
-/* Mme State Form Routes */ 
+/* Mme State Form Routes */
 
 Route::post('/mme_state/verif', [MmeStateController::class, 'verif_state'])  ;
 
@@ -838,7 +845,7 @@ Route::post('/mme/delete/state/{id}', [MmeStateController::class, 'delete_state'
 
 
 
-/* Verification Form Routes */ 
+/* Verification Form Routes */
 
 Route::post('/verif/verif', [VerificationController::class, 'verif_verif'])  ;
 
@@ -860,7 +867,7 @@ Route::post('/mme/delete/verif/{id}', [VerificationController::class, 'delete_ve
 
 Route::post('/mme/reform/verif/{id}', [VerificationController::class, 'reform_verif'])  ;
 
-/* Preventive Verification Realized Form Routes */ 
+/* Preventive Verification Realized Form Routes */
 
 Route::post('/verifRlz/verif', [VerificationRealizedController::class, 'verif_verifRlz'])  ;
 
@@ -876,7 +883,7 @@ Route::post('/verifRlz/approve/{id}', [VerificationRealizedController::class, 'a
 
 Route::post('/verifRlz/realize/{id}', [VerificationRealizedController::class, 'realize_verifRlz'])  ;
 
-/* Mme Usage Form Routes */ 
+/* Mme Usage Form Routes */
 
 Route::post('/mme_usage/verif', [MmeUsageController::class, 'verif_usage'])  ;
 
@@ -888,9 +895,9 @@ Route::get('/mme_usage/send/{id}', [MmeUsageController::class, 'send_usages'])  
 
 Route::post('/mme/delete/usg/{id}', [MmeUsageController::class, 'delete_usage'])  ;
 
-Route::post('/mme/reform/usg/{id}', [MmeUsageController::class, 'reform_usage'])  ; 
+Route::post('/mme/reform/usg/{id}', [MmeUsageController::class, 'reform_usage'])  ;
 
-/* Precaution Form Routes */ 
+/* Precaution Form Routes */
 
 Route::post('/precaution/verif', [PrecautionController::class, 'verif_precaution'])  ;
 

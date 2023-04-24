@@ -8,11 +8,10 @@
 * Coverage : 100%
 */
 
-
-use App\Models\Equipment;
-use App\Models\EquipmentTemp;
-use App\Models\Power;
-use App\Models\EnumPowerType;
+use App\Models\SW01\Equipment;
+use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\Power;
+use App\Models\SW01\EnumPowerType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -1617,7 +1616,7 @@ class PowerTest extends TestCase
         } else {
             $response->assertStatus(429);
             $response->assertInvalid([
-                'enum_pow_type' => 'The value of the field for the new power type already exist in the data base'
+                'enum_eq_type' => 'The value of the field for the new equipment type already exist in the data base'
             ]);
         }
         // Add a new equipment
@@ -1656,9 +1655,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -1744,8 +1743,8 @@ class PowerTest extends TestCase
             'value' => 'Example'
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -1866,9 +1865,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -1947,8 +1946,8 @@ class PowerTest extends TestCase
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2069,9 +2068,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -2149,8 +2148,8 @@ class PowerTest extends TestCase
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2271,9 +2270,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -2351,8 +2350,8 @@ class PowerTest extends TestCase
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2473,9 +2472,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -2553,8 +2552,8 @@ class PowerTest extends TestCase
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2675,9 +2674,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -2755,8 +2754,8 @@ class PowerTest extends TestCase
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2868,9 +2867,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -2896,8 +2895,8 @@ class PowerTest extends TestCase
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->technicalVerifier_id);
         // Add the power type
         $response=$this->post('/power/enum/type/add', [
             'value' => 'Electric'
@@ -3483,9 +3482,9 @@ class PowerTest extends TestCase
         // Add a user
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierPow',
+            'user_lastName' => 'VerifierPow',
+            'user_pseudo' => 'VerifierPow',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -3562,8 +3561,8 @@ class PowerTest extends TestCase
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierPow')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->technicalVerifier_id);
         // Delete the power
         $response=$this->post('/equipment/delete/pow/'.Power::all()->last()->id, [
             'eq_id' => Equipment::all()->last()->id

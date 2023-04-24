@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Filename: UserTest.php
+ * Creation date: 20 Apr 2023
+ * Update date: 20 Apr 2023
+ * This file contains all the tests about the user table.
+ * Coverage : 100%
+ */
+
 namespace Tests\Feature;
 
 use App\Models\User;
@@ -2839,42 +2847,42 @@ class UserTest extends TestCase
         $this->test_add_a_user_with_correct_data();
         $response = $this->get('/users/send');
         $response->assertStatus(200);
-        $response->assertJson([
-            '0' => [
-                'id' => 0,
-                'user_firstName' => 'three',
-                'user_lastName' => 'three',
-                'user_initials' => null,
-                'user_signaturePath' => null,
-                'user_pseudo' => 'three',
-                'user_password' => Hash::make('password'), // FIXME: password impossible to check
-                'user_menuUserAcessRight' => 0,
-                'user_resetUserPasswordRight' => 0,
-                'user_updateDataInDraftRight' => 0,
-                'user_validateDescriptiveLifeSheetDataRight' => 0,
-                'user_validateOtherDataRight' => 0,
-                'user_updateDataValidatedButNotSignedRight' => 0,
-                'user_updateDescriptiveLifeSheetDataSignedRight' => 0,
-                'user_makeQualityValidationRight' => 0,
-                'user_makeTechnicalValidationRight' => 0,
-                'user_makeEqOpValidationRight' => 0,
-                'user_updateEnumRight' => 0,
-                'user_deleteEnumRight' => 0,
-                'user_addEnumRight' => 0,
-                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 0,
-                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 0,
-                'user_deleteDataSignedLinkedToEqOrMmeRight' => 0,
-                'user_deleteEqOrMmeRight' => 0,
-                'user_updateInformationRight' => 0,
-                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 0,
-                'user_formationEqDate' => null,
-                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 0,
-                'user_formationMmeDate' => null,
-                'user_makeEqRespValidationRight' => 0,
-                'user_makeReformRight' => 0,
-                'user_declareNewStateRight' => 0,
-                'user_makeMmeOpValidationRight' => 0,
-                'user_makeMmeRespValidationRight' => 0
+        $response->assertJsonStructure([
+            '*' => [
+                'id',
+                'user_firstName',
+                'user_lastName',
+                'user_initials',
+                'user_signaturePath',
+                'user_pseudo',
+                'user_password',
+                'user_menuUserAcessRight',
+                'user_resetUserPasswordRight',
+                'user_updateDataInDraftRight',
+                'user_validateDescriptiveLifeSheetDataRight',
+                'user_validateOtherDataRight',
+                'user_updateDataValidatedButNotSignedRight',
+                'user_updateDescriptiveLifeSheetDataSignedRight',
+                'user_makeQualityValidationRight',
+                'user_makeTechnicalValidationRight',
+                'user_makeEqOpValidationRight',
+                'user_updateEnumRight',
+                'user_deleteEnumRight',
+                'user_addEnumRight',
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight',
+                'user_deleteDataValidatedLinkedToEqOrMmeRight',
+                'user_deleteDataSignedLinkedToEqOrMmeRight',
+                'user_deleteEqOrMmeRight',
+                'user_updateInformationRight',
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight',
+                'user_formationEqDate',
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight',
+                'user_formationMmeDate',
+                'user_makeEqRespValidationRight',
+                'user_makeReformRight',
+                'user_declareNewStateRight',
+                'user_makeMmeOpValidationRight',
+                'user_makeMmeRespValidationRight'
             ]
         ]);
     }

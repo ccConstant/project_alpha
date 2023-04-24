@@ -5,12 +5,12 @@
         <meta name="user-id" content="{{Auth::user()}}">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>EQ & MME data mngt SW01</title>
+        <title>Article and supplier data mngt SW01</title>
     </head>
     <link href="{{mix('css/app.css')}}" rel="stylesheet">
     <body>
         <div id="app">
-        <navbar_sw01></navbar_sw01>
+        <navbar_sw02></navbar_sw02>
         <router-view></router-view>
         </div>
         <script src="{{mix('js/app.js')}}"></script>

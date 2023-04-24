@@ -11,20 +11,14 @@
 <!--				<b-navbar-brand href="/">Home</b-navbar-brand>-->
 				<!-- Navbar dropdowns -->
                 <!-- For the Equipment drop-down menu -->
-				<b-nav-item-dropdown text="Equipment" right>
-					<b-dropdown-item href="/equipment/add">Add a new equipment</b-dropdown-item>
-					<b-dropdown-item href="/equipment/list">List of all equipment</b-dropdown-item>
-					<b-dropdown-item href="/equipment/life_event">Life Event</b-dropdown-item>
-					<b-dropdown-item href="/equipment/annual/planning">Annual planning</b-dropdown-item>
-					<b-dropdown-item href="/equipment/monthly/planning">Monthly planning</b-dropdown-item>
+				<b-nav-item-dropdown text="Article" right>
+					<b-dropdown-item href="/article/add">Add a new article</b-dropdown-item>
+					<b-dropdown-item href="/article/list">List of all article</b-dropdown-item>
 				</b-nav-item-dropdown>
                 <!-- For the MME drop-down menu -->
-				<b-nav-item-dropdown text="MME" right>
-					<b-dropdown-item href="/mme/add">Add a new MME</b-dropdown-item>
-					<b-dropdown-item href="/mme/list">List of all MME</b-dropdown-item>
-					<b-dropdown-item href="/mme/life_event">Life Event</b-dropdown-item>
-					<b-dropdown-item href="/mme/annual/planning">Annual planning</b-dropdown-item>
-					<b-dropdown-item href="/mme/monthly/planning">Monthly planning</b-dropdown-item>
+				<b-nav-item-dropdown text="Supplier" right>
+					<b-dropdown-item href="/supplier/add">Add a new supplier</b-dropdown-item>
+					<b-dropdown-item href="/supplier/list">List of all supplier</b-dropdown-item>
 				</b-nav-item-dropdown>
                 <!-- For the all simple menu -->
                 <b-nav-item @click="enum_acces">Enum Management</b-nav-item>

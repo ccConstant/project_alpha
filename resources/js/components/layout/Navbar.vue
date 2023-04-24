@@ -12,7 +12,7 @@
                 <!-- For the SW01 drop-down menu -->
 				<b-navbar-brand href="/SW01">SW01</b-navbar-brand>
 				<b-navbar-brand href="/SW02">SW02</b-navbar-brand>
-                <!-- For the MME drop-down menu 
+<!--                &lt;!&ndash; For the MME drop-down menu &ndash;&gt;
 				<b-nav-item-dropdown text="MME" right>
 					<b-dropdown-item href="/mme/add">Add a new MME</b-dropdown-item>
 					<b-dropdown-item href="/mme/list">List of all MME</b-dropdown-item>
@@ -20,10 +20,10 @@
 					<b-dropdown-item href="/mme/annual/planning">Annual planning</b-dropdown-item>
 					<b-dropdown-item href="/mme/monthly/planning">Monthly planning</b-dropdown-item>
 				</b-nav-item-dropdown>
-                <!-- For the all simple menu 
+                &lt;!&ndash; For the all simple menu &ndash;&gt;
                 <b-nav-item @click="enum_acces">Enum Management</b-nav-item>
                 <b-nav-item  @click="info_acces">Info Management</b-nav-item>
-                <b-nav-item @click="account_managment_acces">Accounts Management</b-nav-item>
+                <b-nav-item @click="account_managment_acces">Accounts Management</b-nav-item>-->
                 <!-- For the User drop-down menu -->
                 <b-nav-item-dropdown text="User" right>
 					<b-dropdown-item v-if="this.$userId==''" href="/sign_up">Sign up</b-dropdown-item>
