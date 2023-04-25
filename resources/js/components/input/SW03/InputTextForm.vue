@@ -17,10 +17,10 @@
             :invalid-feedback="invalidFeedBack"
             :state="state"
         >
-            <!--<label slot="label" :for="name">
+            <label slot="label" :for="name">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
-            </label>-->
+            </label>
             <b-form-input
                 v-model="data"
                 v-on:input="updateValue(data)"

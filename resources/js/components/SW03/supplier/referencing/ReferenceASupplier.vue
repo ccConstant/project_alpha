@@ -46,7 +46,6 @@ import ReferenceAContact from "./ReferenceAContact.vue";
 export default {
     components: {
         ReferenceAContact,
-        ReferenceADim,
         SupplierIDForm,
         ReferenceAnAddress
     },
