@@ -9,7 +9,6 @@
         <!--Initializing of the number type input with his props initialized in the parent component-->
         <b-form-group
             :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"
-            :name="name"
             type="text"
             label-for="input-1"
             :disabled="isDisabled"
@@ -27,7 +26,6 @@
                 :state="state"
                 trim
             ></b-form-input>
-            {{data}}
         </b-form-group>
         <!--If this field has an error this div appear with the error described inside -->
         <div v-if="hasError(this.Errors)" class="invalid-feedback">
@@ -129,10 +127,19 @@ export default {
             return InputInfo
         },
         state() {
-            return this.data.length >= this.min && this.data.length <= this.max;
+            if (this.isRequired) {
+                if (this.data === null) {
+                    return false;
+                }
+                return this.data.length >= this.min && this.data.length <= this.max;
+            }
+            return !(this.data.length > this.max);
         },
         invalidFeedBack() {
             if (this.isRequired) {
+                if (this.data === null) {
+                    return 'This field is required';
+                }
                 if (this.data.length < this.min && this.data.length !== 0) {
                     return 'You must enter at least ' + this.min + ' characters';
                 } else if (this.data.length > this.max) {
@@ -140,8 +147,12 @@ export default {
                 } else {
                     return 'This field is required';
                 }
-            } else if (this.data.length > this.max) {
-                return 'You must enter a maximum of ' + this.max + ' characters';
+            } else {
+                /*console.log("notRequired");
+                console.log(this.data.length + ">" + this.max);*/
+                if (this.data.length > this.max) {
+                    return 'You must enter a maximum of ' + this.max + ' characters';
+                }
             }
         }
     }

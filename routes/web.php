@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\SW03\SupplierAdrController;
+use App\Http\Controllers\SW03\SupplierContactController;
 use App\Http\Controllers\SW03\SupplierController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SW01\EquipmentController ;
@@ -916,5 +918,9 @@ Route::get('/prctn/send/pdf/{id} ', [PrecautionController::class, 'send_precauti
 //SupplierController
 Route::post('/supplier/verif', [SupplierController::class, 'verif_supplier']);
 Route::post('/supplier/add', [SupplierController::class, 'add_supplier']);
+Route::post('/supplier/adr/verif', [SupplierAdrController::class, 'verif_adr']);
+Route::post('/supplier/adr/add', [SupplierAdrController::class, 'add_adr']);
+Route::post('/supplier/contact/verif', [SupplierContactController::class, 'verif_contact']);
+Route::post('/supplier/contact/add', [SupplierContactController::class, 'add_contact']);
 
 

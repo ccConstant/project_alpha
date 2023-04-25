@@ -4,8 +4,8 @@
 <!--Vue Component of the Id card of the supplier who call all the input component and send the data to the controllers-->
 
 <template>
-
     <div class="supplierID">
+        <vue-snotify></vue-snotify>
         <h2>Supplier's Form</h2>
         <h2 class="titleForm1">Supplier ID</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
@@ -302,7 +302,7 @@ export default {
                 endLinkToFolder: TODO expliquer ce que c'est
                 active: Active supplier or not
             -----------------------------------------------------------*/
-            supplr_SupplierID: this.ID,
+            supplr_supplierID: this.ID,
             supplr_name: this.Name,
             supplr_receptionNumber: this.ReceptionNumber,
             supplr_formId: this.FormId,
@@ -335,7 +335,59 @@ export default {
     /*--------Declaration of the different methods:--------*/
     methods: {
         addSupplier(savedAs) {
-
+            axios.post('/supplier/verif', {
+                supplr_name: this.supplr_name,
+                supplr_receptionNumber: this.supplr_receptionNumber,
+                supplr_formId: this.supplr_formId,
+                supplr_consFam_id: this.supplr_consFam_id,
+                supplr_compFam_id: this.supplr_compFam_id,
+                supplr_rawFam_id: this.supplr_rawFam_id,
+                supplr_agreementNumber: this.supplr_agreementNumber,
+                supplr_qualityCertificateNumber: this.supplr_qualityCertificateNumber,
+                supplr_specificsInstructions: this.supplr_specificsInstructions,
+                supplr_validate: savedAs,
+                supplr_siret: this.supplr_siret,
+                supplr_webSite: this.supplr_webSite,
+                supplr_activity: this.supplr_activity,
+                supplr_real: this.supplr_real,
+                supplr_VATnumber: this.supplr_VatNumber,
+                supplr_critical: this.supplr_critical,
+                supplr_endLinkToFolder: this.supplr_endLinkToFolder,
+                supplr_active: this.supplr_active
+            }).then(response => {
+                this.errors = {};
+                axios.post('/supplier/add', {
+                    supplr_name: this.supplr_name,
+                    supplr_receptionNumber: this.supplr_receptionNumber,
+                    supplr_formId: this.supplr_formId,
+                    supplr_consFam_id: this.supplr_consFam_id,
+                    supplr_compFam_id: this.supplr_compFam_id,
+                    supplr_rawFam_id: this.supplr_rawFam_id,
+                    supplr_agreementNumber: this.supplr_agreementNumber,
+                    supplr_qualityCertificateNumber: this.supplr_qualityCertificateNumber,
+                    supplr_specificsInstructions: this.supplr_specificsInstructions,
+                    supplr_validate: savedAs,
+                    supplr_siret: this.supplr_siret,
+                    supplr_webSite: this.supplr_webSite,
+                    supplr_activity: this.supplr_activity,
+                    supplr_real: this.supplr_real,
+                    supplr_VATnumber: this.supplr_VatNumber,
+                    supplr_critical: this.supplr_critical,
+                    supplr_endLinkToFolder: this.supplr_endLinkToFolder,
+                    supplr_active: this.supplr_active
+                }).then(response => {
+                    this.$snotify.success('Supplier\'s ID card is correctly added in the database as ' + savedAs);
+                    this.addSuccess = true;
+                    this.isInConsultMod = true;
+                    this.eq_id = response.data;
+                    this.$emit('SupplierID', this.eq_id);
+                }).catch(error => {
+                    console.log(error);
+                    this.errors = error.response.data.errors;
+                });
+            }).catch(error => {
+                this.errors = error.response.data.errors
+            });
         },
         updateSupplier(savedAs, reason, lifeSheetExist) {
 
