@@ -21,7 +21,7 @@
                 type="number"
                 v-model="data"
                 :state="state"
-                v-on:input="updateValue(data)"
+                v-on:input="updateValue(Number(data))"
             ></b-form-input>
         </b-form-group>
         <!--If this field has an error this div appear with the error described inside -->
@@ -113,11 +113,15 @@ export default {
             return InputInfo
         },
         state() {
-            if (this.data === null) {
-                return false;
-            }
             let size = Number(this.data).toString().length;
-            return size >= this.min && size <= this.max;
+            if (this.isRequired) {
+                if (this.data === null) {
+                    return false;
+                }
+                return size >= this.min && size <= this.max;
+            }
+            return !(size > this.max);
+
         },
         invalidFeedBack() {
             let size = Number(this.data).toString().length;
