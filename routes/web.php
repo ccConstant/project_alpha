@@ -235,6 +235,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/supplier/add', function () {
         return view('welcomeSW03');
     });
+
+    Route::get('/article/add', function () {
+        return view('welcomeSW03');
+    });
 });
 
 
@@ -922,5 +926,13 @@ Route::post('/supplier/adr/verif', [SupplierAdrController::class, 'verif_adr']);
 Route::post('/supplier/adr/add', [SupplierAdrController::class, 'add_adr']);
 Route::post('/supplier/contact/verif', [SupplierContactController::class, 'verif_contact']);
 Route::post('/supplier/contact/add', [SupplierContactController::class, 'add_contact']);
+
+//ArticleController
+Route::post('/comp/family/verif', [CompFamilyController::class, 'verif_compFamily']);
+Route::post('/comp/family/add', [CompFamilyController::class, 'add_compFamily']);
+Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
+Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
+Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
+Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
 
 
