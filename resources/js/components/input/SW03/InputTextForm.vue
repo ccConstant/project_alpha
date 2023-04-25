@@ -15,19 +15,18 @@
             :disabled="isDisabled"
             :placeholder="placeholer"
             :invalid-feedback="invalidFeedBack"
-            :state="state"
-        >
-            <!--<label slot="label" :for="name">
+            :state="state">
+            <label slot="label" :for="name">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
-            </label>-->
+            </label>
             <b-form-input
                 v-model="data"
                 v-on:input="updateValue(data)"
                 :state="state"
                 trim
             ></b-form-input>
-            {{data}}
+<!--            {{data}}-->
         </b-form-group>
         <!--If this field has an error this div appear with the error described inside -->
         <div v-if="hasError(this.Errors)" class="invalid-feedback">
