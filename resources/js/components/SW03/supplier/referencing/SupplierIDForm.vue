@@ -9,7 +9,7 @@
         <h2>Supplier's Form</h2>
         <h2 class="titleForm1">Supplier ID</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-        <b-form class="container" @keydown="">
+        <b-form class="container">
             <InputTextForm
                 :inputClassName="null"
                 :Errors="errors.supplier_name"

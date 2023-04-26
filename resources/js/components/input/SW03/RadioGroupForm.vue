@@ -19,7 +19,7 @@
             <b-form-radio
                 v-for="(option) in options"
                 :v-model="data"
-                :value="option.value">>
+                :value="option.value">
             {{ option.text }}
             </b-form-radio>
         </b-form-radio-group>
