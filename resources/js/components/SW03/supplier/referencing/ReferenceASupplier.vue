@@ -4,9 +4,9 @@
 <!--Vue Component used to reference a new supplier-->
 
 <template>
-    <div>
+    <div class="supplierRef" v-if="loaded==true">
         <SupplierIDForm @SupplierID="put_supplier_id" @importFromSupplierID="put_import_id"/>
-        <div class="accordion">
+        <div class="accordion" v-if="supplier_id != null">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -39,8 +39,8 @@
 
 <script>
 import SupplierIDForm from "./SupplierIDForm.vue";
-import ReferenceAnAddress from "./ReferenceAnAddress.vue";
-import ReferenceAContact from "./ReferenceAContact.vue";
+import ReferenceAnAddress from "./AddressIDForm.vue";
+import ReferenceAContact from "./ContactIDForm.vue";
 
 
 export default {
@@ -52,16 +52,22 @@ export default {
     data() {
         return {
             supplier_id: null,
-            importation_id: null
+            importation_id: null,
+            loaded: false
         }
     },
     methods: {
         put_supplier_id(value) {
+            console.log(value);
             this.supplier_id = value;
+            console.log(this.supplier_id);
         },
         put_import_id(value) {
             this.importation_id = value;
         }
+    },
+    created() {
+        this.loaded = true;
     }
 }
 </script>

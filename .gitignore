@@ -1,2 +1,3 @@
 /tests/reports/
 /.idea/
+/node_modules/.cache/

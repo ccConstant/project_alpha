@@ -236,6 +236,10 @@ Route::middleware('auth')->group(function () {
         return view('welcomeSW03');
     });
 
+    Route::get('/supplier/list', function () {
+        return view('welcomeSW03');
+    });
+
     Route::get('/article/add', function () {
         return view('welcomeSW03');
     });
@@ -922,10 +926,17 @@ Route::get('/prctn/send/pdf/{id} ', [PrecautionController::class, 'send_precauti
 //SupplierController
 Route::post('/supplier/verif', [SupplierController::class, 'verif_supplier']);
 Route::post('/supplier/add', [SupplierController::class, 'add_supplier']);
+Route::get('/supplier/send', [SupplierController::class, 'send_suppliers']);
+Route::get('/supplier/send/{id}', [SupplierController::class, 'send_supplier']);
+Route::post('/supplier/update/{id}', [SupplierController::class, 'update_supplier']);
 Route::post('/supplier/adr/verif', [SupplierAdrController::class, 'verif_adr']);
 Route::post('/supplier/adr/add', [SupplierAdrController::class, 'add_adr']);
+Route::get('/supplier/adr/send/{id}', [SupplierAdrController::class, 'send_adr']);
+Route::post('/supplier/adr/update/{id}', [SupplierAdrController::class, 'update_adr']);
 Route::post('/supplier/contact/verif', [SupplierContactController::class, 'verif_contact']);
 Route::post('/supplier/contact/add', [SupplierContactController::class, 'add_contact']);
+Route::get('/supplier/contact/send/{id}', [SupplierContactController::class, 'send_contact']);
+Route::post('/supplier/contact/update/{id}', [SupplierContactController::class, 'update_contact']);
 
 //ArticleController
 Route::post('/comp/family/verif', [CompFamilyController::class, 'verif_compFamily']);
@@ -934,5 +945,3 @@ Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamil
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
 Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
-
-
