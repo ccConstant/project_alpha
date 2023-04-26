@@ -48,6 +48,7 @@ use App\Http\Controllers\SW01\EnumPrecautionTypeController;
 use App\Http\Controllers\SW01\EnumUsageMetrologicalLevelController;
 use App\Http\Controllers\SW01\EnumVerifAcceptanceAuthorityController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\SW03\CompFamilyController;
 
 /*
 |--------------------------------------------------------------------------
