@@ -112,7 +112,7 @@
                 :modifMod="this.isInModifMod"
                 :savedAs="validate"/>
 
-            <SaveButtonForm v-if="this.articleFam_type=='CONS' && this.addSuccess==false"
+            <!--<SaveButtonForm v-if="this.articleFam_type=='CONS' && this.addSuccess==false"
                 ref="saveButton"
                 @add="addConsFam"
                 @update="updateConsFam"
@@ -126,7 +126,7 @@
                 @update="updateRawFam"
                 :consultMod="this.isInConsultMod"
                 :modifMod="this.isInModifMod"
-                :savedAs="validate"/>
+                :savedAs="validate"/>-->
         </form>
     </div>
 </template>
@@ -253,6 +253,7 @@ export default {
                 {id: 'articleFam_type', value: "RAW", text: 'RAW'},
                 {id: 'articleFam_type', value: "CONS", text: 'CONS'}
             ],
+            savedAs: this.validate
         }
     },
     created() {
@@ -265,18 +266,43 @@ export default {
         addCompFam(savedAs) {
             if (!this.addSuccess) {
                 /*We begin by checking if the data entered by the user are correct*/
-                axios.post('/CompFam/verif', {
-
-                    
+                console.log("before verif")
+                console.log("ref"+this.articleFam_ref)
+                console.log("design"+this.articleFam_design)
+                console.log("drawingPath"+this.articleFam_drawingPath)
+                console.log("purchasedBy"+this.articleFam_purchasedBy)
+                console.log("variablesCharac"+this.articleFam_variablesCharac)
+                console.log("version"+this.articleFam_version)
+                console.log("active"+this.articleFam_active)
+                console.log("validate"+savedAs)
+                axios.post('/comp/family/verif', {
+                    compFam_ref: this.articleFam_ref,
+                    compFam_design: this.articleFam_design,
+                    compFam_drawingPath: this.articleFam_drawingPath,
+                    compFam_purchasedBy: this.articleFam_purchasedBy,
+                    compFam_variablesCharac: this.articleFam_variablesCharac,
+                    compFam_version: this.articleFam_version,
+                    compFam_active: this.articleFam_active,
+                    compFam_validate: savedAs,
                 })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
+                         console.log("after verif")
                         this.errors = {};
-                            axios.post('/articleFam/add', {
+                            axios.post('/comp/family/add', {
+                                compFam_ref: this.articleFam_ref,
+                                compFam_design: this.articleFam_design,
+                                compFam_drawingPath: this.articleFam_drawingPath,
+                                compFam_purchasedBy: this.articleFam_purchasedBy,
+                                compFam_variablesCharac: this.articleFam_variablesCharac,
+                                compFam_version: this.articleFam_version,
+                                compFam_active: this.articleFam_active,
+                                compFam_validate: savedAs,
 
                             })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
+                                     console.log("after add")
                                     this.$refs.SuccessAlert.showAlert(`CompFam ID added successfully and saved as ${savedAs}`);
                                     this.addSuccess = true;
                                     this.isInConsultMod = true;
@@ -292,7 +318,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param articleSheet_created */
-        updateArticleFam(savedAs, reason, articleSheet_created) {
+        updateCompFam(savedAs, reason, articleSheet_created) {
             /*We begin by checking if the data entered by the user are correct*/
             axios.post('/compFam/verif', {
 

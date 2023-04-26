@@ -18,6 +18,7 @@ use App\Models\SW03\CompFamilyMember;
 use App\Models\User;
 use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\Supplier;
+use App\Models\SW02\Criticality;
 
 class CompFamily extends Model
 {

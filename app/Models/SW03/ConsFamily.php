@@ -19,6 +19,7 @@ use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\PurchaseSpecification;
 use App\Models\SW03\IncomingInspection;
 use App\Models\SW03\Supplier;
+use App\Models\SW03\Criticality;
 
 class ConsFamily extends Model
 {
@@ -60,6 +61,11 @@ class ConsFamily extends Model
      //Define the relation between a supplier and its consFamily : a consFamily can correspond to many suppliers
      public function suppliers(){
         return $this->belongsToMany(Supplier::class, 'pivot_cons_fam_supplr', 'consFam_id', 'supplr_id') ;
+    }
+
+     //Define the relation between a consFamily and its criticality : a consFamily has only one criticality
+     public function criticality(){
+        return $this->HasOne(Criticality::class) ;
     }
 
 

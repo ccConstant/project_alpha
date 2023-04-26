@@ -13,10 +13,13 @@ namespace App\Models\SW03;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\RawFamilyMember;
 use App\Models\User;
 use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\Supplier;
+use App\Models\SW03\RawFamilyMember;
+use App\Models\SW03\Criticality;
+
+
 
 class RawFamily extends Model
 {
@@ -48,5 +51,10 @@ class RawFamily extends Model
      //Define the relation between a supplier and its rawFamily : a rawFamily can correspond to many suppliers
      public function suppliers(){
         return $this->belongsToMany(Supplier::class, 'pivot_raw_fam_supplr', 'rawFam_id', 'supplr_id') ;
+    }
+
+     //Define the relation between a rawFamily and its criticality : a rawFamily has only one criticality
+     public function criticality(){
+        return $this->HasOne(Criticality::class) ;
     }
 }
