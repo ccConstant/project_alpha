@@ -1,19 +1,20 @@
 <!--File name : SupplierIDForm.vue-->
-<!--Creation date : 21 Apr 2021-->
+<!--Creation date : 21 Apr 2023-->
 <!--Update date : 21 Apr 2023-->
 <!--Vue Component of the Id card of the supplier who call all the input component and send the data to the controllers-->
 
 <template>
-    <div class="supplierID">
+    <div class="supplierID" v-if="loaded==true">
         <vue-snotify></vue-snotify>
         <h2>Supplier's Form</h2>
-        <h2 class="titleForm1">Supplier ID</h2>
+        <h2 class="titleForm1">Supplier ID {{this.supplr_id}}</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <b-form class="container">
             <InputTextForm
                 :inputClassName="null"
-                :Errors="errors.supplier_name"
-                name="supplr_name" label="Supplier Name"
+                :Errors="errors.supplr_name"
+                name="supplr_name"
+                label="Supplier Name"
                 :isDisabled="isInConsultMod"
                 isRequired
                 v-model="supplr_name"
@@ -22,12 +23,14 @@
                 :max="max"
             />
             <InputNumberForm
-                :name="'SupplierReceptionNumber'"
-                :label="'Reception Number'"
+                :name="'SupplierReceptionPhoneNumber'"
+                :label="'Reception Phone Number'"
                 v-model="supplr_receptionNumber"
-                :info_text="'SupplierController Reception Number'"
+                :info_text="'SupplierController Reception Phone Number'"
                 :inputClassName="null"
-                :Errors="errors['SupplierReceptionNumber']"
+                :Errors="errors.supplr_receptionNumber"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
                 :name="'AgreementNumber'"
@@ -35,7 +38,9 @@
                 v-model="supplr_agreementNumber"
                 :info_text="'SupplierController Agreement Number'"
                 :inputClassName="null"
-                :Errors="errors['AgreementNumber']"
+                :Errors="errors.supplr_agreementNumber"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
                 :name="'QualityCertificateNumber'"
@@ -43,15 +48,19 @@
                 v-model="supplr_qualityCertificateNumber"
                 :info_text="'SupplierController Quality Certificate Number'"
                 :inputClassName="null"
-                :Errors="errors['QualityCertificateNumber']"
+                :Errors="errors.supplr_qualityCertificateNumber"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
-                :name="'SIRET'"
-                :label="'SIRET'"
+                :name="'SIRET/DUNS'"
+                :label="'SIRET/DUNS'"
                 v-model="supplr_siret"
-                :info_text="'SupplierController SIRET'"
+                :info_text="'SupplierController SIRET/DUNS'"
                 :inputClassName="null"
-                :Errors="errors['SIRET']"
+                :Errors="errors.supplr_siret"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
                 :name="'VATNumber'"
@@ -59,7 +68,9 @@
                 v-model="supplr_VatNumber"
                 :info_text="'SupplierController VAT Number'"
                 :inputClassName="null"
-                :Errors="errors['VATNumber']"
+                :Errors="errors.supplr_VatNumber"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
                 :name="'WebSite'"
@@ -67,7 +78,9 @@
                 v-model="supplr_webSite"
                 :info_text="'SupplierController Web Site'"
                 :inputClassName="null"
-                :Errors="errors['WebSite']"
+                :Errors="errors.supplr_webSite"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
                 :name="'Activity(ies)'"
@@ -75,7 +88,9 @@
                 v-model="supplr_activity"
                 :info_text="'SupplierController Activity(ies)'"
                 :inputClassName="null"
-                :Errors="errors['Activity(ies)']"
+                :Errors="errors.supplr_activity"
+                :min="min"
+                :max="max"
             />
             <RadioGroupForm
                 :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
@@ -84,7 +99,7 @@
                 :value="supplr_real"
                 :info_text="'SupplierController is real or not ?'"
                 :inputClassName="null"
-                :Errors="errors['Real']"
+                :Errors="errors.supplr_real"
                 :checked-option="true"
             />
             <RadioGroupForm
@@ -94,7 +109,7 @@
                 :value="supplr_critical"
                 :info_text="'SupplierController is critical or not ?'"
                 :inputClassName="null"
-                :Errors="errors['Critical']"
+                :Errors="errors.supplr_critical"
                 :checked-option="false"
             />
             <InputTextForm
@@ -103,7 +118,9 @@
                 v-model="supplr_formId"
                 :info_text="'SupplierController\'s Form ID'"
                 :input-class-name="null"
-                :Errors="errors['FormID']"
+                :Errors="errors.supplr_formId"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
                 :name="'Specific Instructions'"
@@ -111,7 +128,9 @@
                 v-model="supplr_specificsInstructions"
                 :info_text="'Specific Instructions'"
                 :input-class-name="null"
-                :Errors="errors['SpecInstr']"
+                :Errors="errors.supplr_specificsInstructions"
+                :min="min"
+                :max="max"
             />
             <InputTextForm
                 :name="'End Link to Folder'"
@@ -119,7 +138,9 @@
                 v-model="supplr_endLinkToFolder"
                 :info_text="'End Link to Folder'"
                 :input-class-name="null"
-                :Errors="errors['endLink']"
+                :Errors="errors.supplr_endLinkToFolder"
+                :min="min"
+                :max="max"
             />
 <!--            <RadioGroupForm
                 :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
@@ -138,7 +159,7 @@
                 @add="addSupplier"
                 @update="updateSupplier"
                 :consultMod="this.isInConsultMod"
-                :modifMod="this.isInEditMod"
+                :modifMod="this.modifMod"
                 :savedAs="validate"/>
         </b-form>
     </div>
@@ -256,11 +277,11 @@ export default {
             type: Boolean,
             default: true
         },
-        isInConsultMod : {
+        consultMod : {
             type: Boolean,
             default: false
         },
-        isInEditMod : {
+        modifMod : {
             type: Boolean,
             default: false
         },
@@ -302,7 +323,7 @@ export default {
                 endLinkToFolder: TODO expliquer ce que c'est
                 active: Active supplier or not
             -----------------------------------------------------------*/
-            supplr_supplierID: this.ID,
+            supplr_id: this.ID,
             supplr_name: this.Name,
             supplr_receptionNumber: this.ReceptionNumber,
             supplr_formId: this.FormId,
@@ -323,13 +344,15 @@ export default {
             supplr_critical: this.critical,
             supplr_endLinkToFolder: this.endLinkToFolder,
             supplr_active: this.active,
-            errors: {},
+            errors: [],
             infos_idCard: [],
             addSuccess: false,
             loaded: false,
+            isInConsultMod: this.consultMod
         }
     },
     created() {
+        this.loaded = true;
     },
 
     /*--------Declaration of the different methods:--------*/
@@ -355,7 +378,7 @@ export default {
                 supplr_endLinkToFolder: this.supplr_endLinkToFolder,
                 supplr_active: this.supplr_active
             }).then(response => {
-                this.errors = {};
+                this.errors = [];
                 axios.post('/supplier/add', {
                     supplr_name: this.supplr_name,
                     supplr_receptionNumber: this.supplr_receptionNumber,
@@ -379,8 +402,9 @@ export default {
                     this.$snotify.success('Supplier\'s ID card is correctly added in the database as ' + savedAs);
                     this.addSuccess = true;
                     this.isInConsultMod = true;
-                    this.eq_id = response.data;
-                    this.$emit('SupplierID', this.eq_id);
+                    this.supplr_id = response.data.id;
+                    console.log(typeof this.supplr_id)
+                    this.$emit('SupplierID', this.supplr_id);
                 }).catch(error => {
                     console.log(error);
                     this.errors = error.response.data.errors;

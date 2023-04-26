@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
+use App\Models\SW03\Supplier;
 use App\Models\SW03\SupplierContact;
 use Illuminate\Http\Request;
 
@@ -57,5 +58,32 @@ class SupplierContactController extends Controller
             'supplrContact_validate' => $request->supplrContact_validate,
             'supplrContact_principal' => $request->supplrContact_principal
         ]);
+    }
+
+    public function send_contact($id) {
+        $supplierContact = SupplierContact::findOrfail($id);
+        return response()->json($supplierContact);
+    }
+
+    public function update_contact(Request $request, $id)
+    {
+        $supplierContact = SupplierContact::findOrfail($id);
+        $supplier = Supplier::findOrfail($supplierContact->supplr_id);
+        if ($supplier->supplr_technicalReviewerId !== null) {
+            $supplier->update([
+                'supplr_signatureDate' => null,
+                'supplr_technicalReviewerId' => null,
+                'supplr_version' => $supplier->supplr_version + 1
+            ]);
+        }
+        $supplierContact->update([
+            'supplrContact_name' => $request->supplrContact_name,
+            'supplrContact_email' => $request->supplrContact_email,
+            'supplrContact_phoneNumber' => $request->supplrContact_phoneNumber,
+            'supplrContact_function' => $request->supplrContact_function,
+            'supplrContact_validate' => $request->supplrContact_validate,
+            'supplrContact_principal' => $request->supplrContact_principal
+        ]);
+        return response()->json($supplierContact);
     }
 }

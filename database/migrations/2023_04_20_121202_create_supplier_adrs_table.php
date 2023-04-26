@@ -25,8 +25,8 @@ class CreateSupplierAdrsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('supplrAdr_street')->nullable();
-            $table->string('supplrAdr_town');
-            $table->string('supplrAdr_country');
+            $table->string('supplrAdr_town')->nullable();
+            $table->string('supplrAdr_country')->nullable();
             $table->unsignedBigInteger('supplr_id');
             $table->foreign('supplr_id')->references('id')->on('suppliers');
             $table->enum('supplrAdr_validate',  ['drafted', 'to_be_validated', 'validated']);

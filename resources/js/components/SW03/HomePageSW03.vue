@@ -1,6 +1,6 @@
-<!--File name : HomePage.vue-->
-<!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--File name : HomePageSW03.vue-->
+<!--Creation date : 25 Apr 2023-->
+<!--Update date : 25 Apr 2023-->
 <!--Vue Component of the main page of the website-->
 
 <template>

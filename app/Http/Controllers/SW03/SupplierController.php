@@ -117,4 +117,43 @@ class SupplierController extends Controller
         ]);
         return response()->json($supplier);
     }
+
+    public function send_supplier($id) {
+        $supplier = Supplier::findOrfail($id);
+        return response()->json($supplier);
+    }
+
+    public function send_suppliers() {
+        $suppliers = Supplier::all();
+        return response()->json($suppliers);
+    }
+
+    public function update_supplier(Request $request, $id) {
+        $supplier = Supplier::findOrfail($id);
+        if ($supplier->supplr_technicalReviewerId !== null) {
+            $supplier->update([
+                'supplr_signatureDate' => null,
+                'supplr_technicalReviewerId' => null,
+                'supplr_version' => $supplier->supplr_version + 1
+            ]);
+        }
+        $supplier->update([
+            'supplr_name' => $request->supplr_name,
+            'supplr_receptionNumber' => $request->supplr_receptionNumber,
+            'supplr_formId' => $request->supplr_formId,
+            'supplr_agreementNumber' => $request->supplr_agreementNumber,
+            'supplr_qualityCertificateNumber' => $request->supplr_qualityCertificateNumber,
+            'supplr_specificInstructions' => $request->supplr_specificInstructions,
+            'supplr_siret' => $request->supplr_siret,
+            'supplr_website' => $request->supplr_website,
+            'supplr_activity' => $request->supplr_activity,
+            'supplr_VATnumber' => $request->supplr_VATnumber,
+            'supplr_endLinkToFolder' => $request->supplr_endLinkToFolder,
+            'supplr_consFam_id' => $request->supplr_consFam_id,
+            'supplr_compFam_id' => $request->supplr_compFam_id,
+            'supplr_rawFam_id' => $request->supplr_rawFam_id,
+            'supplr_validate' => $request->supplr_validate
+        ]);
+        return response()->json($supplier);
+    }
 }

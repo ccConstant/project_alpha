@@ -1,174 +1,147 @@
+<!--File name : SupplierIDForm.vue-->
+<!--Creation date : 25 Apr 2023-->
+<!--Update date : 25 Apr 2023-->
+<!--Vue Component of the Id card of the supplier who call all the input component and send the data to the controllers-->
+
 <template>
-    <div>
-        <InputTextForm
-            label="Name"
-            :isRequired="true"
-            :value="name"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors"
-            name="name"
-            :min="min"
-            :max="max"
-        />
-        <InputTextForm
-            label="Function"
-            :isRequired="true"
-            :value="contactFunction"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors"
-            name="function"
-            :min="min"
-            :max="max"
-        />
-        <InputTextForm
-            label="Phone Numbers"
-            :isRequired="true"
-            :value="phoneNumbers"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors"
-            name="phoneNumbers"
-            :min="min"
-            :max="max"
-        />
-        <InputTextForm
-            label="Email"
-            :isRequired="true"
-            :value="email"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors"
-            name="email"
-            :min="min"
-            :max="max"
-        />
-        <RadioGroupForm
-            :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
-            :isRequired="true"
-            :value="principal"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors"
-            label="Principal"
-            :checked-option="true"
+    <div class="supplierContact" v-if="loaded==true">
+        <h2 class="titleForm">Supplier's Contact(s)</h2>
+        <ContactIDForm
+            ref="askContact"
+            v-for="(component, key) in components"
+            :key="component.key"
+            :is="component.comp"
+            :name="component.name"
+            :functiun="component.function"
+            :email="component.email"
+            :phoneNumber="component.phoneNumber"
+            :principal="component.principal"
+            :validated="component.validate"
+            :id="component.id"
+            :is-in-consult-mod="isInConsultMod"
+            :is-in-edit-mod="isInModifMod"
+            :supplier_id="supplr_id"
+            @deleteContact="removeContact(key)"
         />
         <SaveButtonForm
             ref="saveButton"
-            v-if="this.addSuccess===false"
-            @add="addSupplierAdr"
-            @update="updateSupplierAdr"
+            v-if="components.length >= 1"
+            @add="saveAllContact"
+            @update="saveAllContact"
             :consultMod="this.isInConsultMod"
-            :modifMod="this.isInEditMod"
-            :savedAs="validate"
+            :modifMod="this.isInModifMod"
         />
     </div>
 </template>
 
 <script>
-import InputTextForm from "../../../input/SW03/InputTextForm.vue";
-import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue";
+import ContactIDForm from "./ContactIDForm.vue";
+import ImportationAlert from "../../../alert/ImportationAlert.vue";
 import SaveButtonForm from "../../../button/SaveButtonForm.vue";
-
 export default {
-    name: "ReferenceAContact",
     components: {
         SaveButtonForm,
-        RadioGroupForm,
-        InputTextForm
+        ContactIDForm
     },
     props: {
-        name: {
-            type: String
-        },
-        contactFunction: {
-            type: String
-        },
-        phoneNumbers: {
-            type: String
-        },
-        email: {
-            type: String
-        },
-        principal: {
-            type: Boolean,
-            default: false
-        },
-        label: {
-            type: String,
-            default: "Nom non renseigné"
-        },
-        isRequired: {
-            type: Boolean,
-            default: false
-        },
-        value: {
-            type: String,
-            default: ''
-        },
-        placeholder: {
-            type: String
-        },
-        info_text: {
-            type: String,
-            default: null
-        },
-        inputClassName: {
-            type: [String, Array]
-        },
-        divClassName: {
-            type: String
-        },
-        isDisabled: {
-            type: Boolean,
-            default: false
-        },
-        min: {
-            type: Number,
-            default: 3
-        },
-        max: {
-            type: Number,
-            default: 255
-        },
         supplier_id: {
-            type: Number,
-            default: null
+            type: Number
         },
         import_id: {
             type: Number,
             default: null
         },
-        isInConsultMod: {
+        consultMod: {
             type: Boolean,
             default: false
         },
-        isInEditMod: {
+        modifMod: {
             type: Boolean,
             default: false
+        },
+        importedContact: {
+            type: Array,
+            default: null
         }
     },
     data() {
         return {
-            addSuccess: false,
-            Errors: [],
-            validate: ''
-        }
+            supplr_id: this.supplier_id,
+            components: [],
+            count: 0,
+            uniqueKey: 0,
+            isInConsultMod: this.consultMod,
+            isInModifMod: this.modifMod,
+            import_id: this.import_id,
+            importedContact: this.importedContact,
+            loaded: false
+        };
     },
     methods: {
-        addSupplierAdr(savedAs) {
-
+        addContact() {
+            this.components.push({
+                comp: "ContactIDForm",
+                key: this.uniqueKey++,
+            });
         },
-        updateSupplierAdr(savedAs, reason, lifeSheetExist) {
-
+        addImportedContact(contactName, contactFunction, contactEmail, contactPhoneNumber, contactPrincipal, contactId, contactValidate) {
+            this.components.push({
+                comp: "ContactIDForm",
+                key: this.uniqueKey++,
+                name: contactName,
+                function: contactFunction,
+                email: contactEmail,
+                phoneNumber: contactPhoneNumber,
+                principal: contactPrincipal,
+                id: contactId,
+                validate: contactValidate
+            });
         },
-
+        removeContact(key) {
+            this.components.splice(key, 1);
+        },
+        importContact() {
+            if (this.importedContact === null) {
+                ImportationAlert.showAlert();
+            } else {
+                this.importedContact.forEach(contact => {
+                    this.addImportedContact(contact.name, contact.function, contact.email, contact.phoneNumber, contact.principal, contact.id, contact.validate);
+                });
+                this.importedContact = null;
+            }
+        },
+        saveAllContact(savedAs) {
+            for (const component of this.$refs.askContact) {
+                if (this.isInModifMod) {
+                    if (component.contact_id === null) {
+                        component.addSupplierAdr(savedAs);
+                    } else {
+                        if (component.validate !== 'validated') {
+                            component.updateSupplierAdr(savedAs);
+                        }
+                    }
+                } else {
+                    component.addSupplierAdr(savedAs);
+                }
+            }
+        }
+    },
+    created() {
+        if (this.import_id !== null) {
+            axios.get('/supplier/contact/send/' + this.import_id)
+                .then(response => {
+                    this.importedContact = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+        this.loaded = true;
+    },
+    mounted() {
+        if (this.isInConsultMod || this.isInModifMod) {
+            this.importContact();
+        }
     }
 }
 </script>

@@ -26,27 +26,29 @@ class CreateSuppliersTable extends Migration
             $table->timestamps();
             $table->string('supplr_name');
             $table->integer('supplr_receptionNumber')->nullable();
-            $table->integer('supplr_formID')->nullable();
+            $table->integer('supplr_formID');
+
             $table->unsignedBigInteger('supplr_consFam_id')->nullable();
             $table->foreign('supplr_consFam_id')->references('id')->on('cons_families');
             $table->unsignedBigInteger('supplr_compFam_id')->nullable();
             $table->foreign('supplr_compFam_id')->references('id')->on('comp_families');
             $table->unsignedBigInteger('supplr_rawFam_id')->nullable();
             $table->foreign('supplr_rawFam_id')->references('id')->on('raw_families');
+
             $table->string('supplr_agreementNumber')->nullable();
             $table->string('supplr_qualityCertificationNumber')->nullable();
             $table->string('supplr_specificInstructions')->nullable();
             $table->integer('supplr_version')->default(1);
             $table->unsignedBigInteger('supplr_technicalReviewerId')->nullable();
             $table->foreign('supplr_technicalReviewerId')->references('id')->on('users');
-            $table->enum('supplr_validate',  ['drafted', 'to_be_validated', 'validated']);
             $table->date('supplr_signatureDate')->nullable();
+            $table->enum('supplr_validate',  ['drafted', 'to_be_validated', 'validated']);
             $table->string('supplr_siret')->unique()->nullable();
             $table->string('supplr_website')->nullable();
             $table->string('supplr_activity')->nullable();
-            $table->boolean('supplr_real')->default(false);
+            $table->boolean('supplr_real')->default(true);
             $table->string('supplr_VATNumber')->unique()->nullable();
-            $table->boolean('supplr_critical')->default(false);
+            $table->boolean('supplr_critical')->default(false); //FIXME : true or false ?
             $table->string('supplr_endLinkToFolder')->nullable();
             $table->boolean('supplr_active')->default(true);
         });

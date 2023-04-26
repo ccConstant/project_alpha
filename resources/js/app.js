@@ -189,6 +189,10 @@ const router = new VueRouter({
         path: '/supplier/add',
         name: 'supplier_url_add',
         component: require('./components/SW03/supplier/referencing/ReferenceASupplier.vue').default
+    }, {
+        path: '/supplier/list',
+        name: 'supplier_url_list',
+        component: require('./components/SW03/supplier/consultation/ListOfSupplier.vue').default
     },{
         path: '/article/add',
         name: 'article_url_add',

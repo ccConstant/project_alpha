@@ -1,6 +1,6 @@
 <!--File name : InputTextForm.vue-->
-<!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Creation date : 25 Apr 2023-->
+<!--Update date : 25 Apr 2023-->
 <!--Vue Component of an input type text called in the different forms-->
 
 

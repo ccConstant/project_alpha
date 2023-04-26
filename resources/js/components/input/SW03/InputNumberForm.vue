@@ -1,6 +1,6 @@
 <!--File name : InputNumberForm.vue-->
-<!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Creation date : 25 Apr 2023-->
+<!--Update date : 25 Apr 2023-->
 <!--Vue Component of an input type number called in the different forms-->
 
 <template>
@@ -11,8 +11,7 @@
             type="number"
             :disabled="isDisabled"
             :invalid-feedback="invalidFeedBack"
-            :state="state"
-        >
+            :state="state">
             <label slot="label" :for="name">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
@@ -21,8 +20,8 @@
                 type="number"
                 v-model="data"
                 :state="state"
-                v-on:input="updateValue(Number(data))"
-            ></b-form-input>
+                v-on:input="updateValue(Number(data))">
+            </b-form-input>
         </b-form-group>
         <!--If this field has an error this div appear with the error described inside -->
         <div v-if="hasError(this.Errors)" class="invalid-feedback">

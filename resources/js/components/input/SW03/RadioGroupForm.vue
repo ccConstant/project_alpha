@@ -1,6 +1,6 @@
 <!--File name : RadioGroupForm.vue-->
-<!--Creation date : 27 Apr 2022-->
-<!--Update date : 09 May 2022-->
+<!--Creation date : 25 Apr 2023-->
+<!--Update date : 25 Apr 2023-->
 <!--Vue Component of a radio group called in the different forms-->
 
 <template>
@@ -10,8 +10,7 @@
             :disabled="isDisabled"
             :required="isRequired"
             :invalid-feedback="invalidFeedBack"
-            v-model="data"
-        >
+            v-model="data">
             <label>
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
@@ -28,6 +27,7 @@
 
 <script>
 import InputInfo from '../InputInfo.vue'
+import {data} from "autoprefixer";
 export default {
     components : {
         InputInfo
@@ -97,6 +97,7 @@ export default {
             return InputInfo
         },
         state() {
+            this.$emit('input',this.data);
             console.log(this.data);
             console.log(typeof this.data);
             return this.data === null;
