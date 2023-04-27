@@ -58,7 +58,7 @@ export default {
 			if(this.$userId.user_addEnumRight==true ||
 			this.$userId.user_deleteEnumRight==true ||
 			this.$userId.user_updateEnumRight==true){
-				this.$router.push({ name: "url_enum" }).catch(() => {})
+				this.$router.push({ name: "url_enum_SW03" }).catch(() => {})
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}

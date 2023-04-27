@@ -26,7 +26,7 @@ class ConsFamily extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['consFam_ref', 'consFam_design', 'consFam_drawingPath', 'consFam_purchasedBy', 'consFam_nbrVersion', 'consFam_variablesCharac', 'consFam_qualityApproverId', 'consFam_technicalReviewerId', 'consFam_signatureDate', 'consFam_validate', 'consFam_version', 'consFam_active'] ;
+    protected $fillable = ['consFam_ref', 'consFam_design', 'consFam_drawingPath','enumPurchasedBy_id', 'consFam_nbrVersion', 'consFam_variablesCharac', 'consFam_qualityApproverId', 'consFam_technicalReviewerId', 'consFam_signatureDate', 'consFam_validate', 'consFam_version', 'consFam_active'] ;
 
     //Define the relation between a consFamily and its consFamilyMember : a consFamilyMember can correspond to only one consFamily
     public function cons_family_member(){
@@ -46,6 +46,11 @@ class ConsFamily extends Model
      //Define the relation between an EnumStorageCondition and its consFamily : a consFamily can correspond to many EnumStorageCondition
      public function storage_condition(){
         return $this->belongsToMany(EnumStorageCondition::class, 'pivot_cons_fam_sto_cond', 'consFam_id', 'storageCondition_id') ;
+    }
+
+    //Define the relation between an EnumPurchasedBy and its consFamily : a consFamily can correspond to many EnumPurchasedBy 
+    public function purchased_by(){
+        return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
     }
 
     //Define the relation between a consFamily and its purchaseSpecifications : a purchaseSpecifications can correspond to only one consFamily

@@ -6,127 +6,104 @@
 
 <template>
     <div class="articleFamily" v-if="loaded==true">
-        <h2 class="titleForm1">Article ID : {{ articleFam_ref }}</h2>
+        <h2 class="titleForm1">Article ID : {{ artFam_ref }}</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
             <InputSelectForm 
                 @clearSelectError='clearSelectError' 
-                name="articleFam_type" 
-                :Errors="errors.articleFam_type"
+                name="artFam_type" 
+                :Errors="errors.artFam_type"
                 label="Article Family Type :" 
                 :options="enumArticleFam_type" 
-                :selctedOption="articleFam_type"
-                :isDisabled="!!isInConsultMod" 
-                v-model="articleFam_type"
+                :selctedOption="artFam_type"
+                :isDisabled="this.isInConsultMod" 
+                v-model="artFam_type"
                 :info_text="'Article Family Type'" 
                 :id_actual="ArticleFamilyType"/>
-
-
-
             
             
             
-            <InputTextForm
-                :inputClassName="null"
-                :Errors="errors.articleFam_ref"
-                name="articleFam_ref" label="Component Reference"
-                :isDisabled="isInConsultMod"
-                isRequired
-                v-model="articleFam_ref"
-                :info_text="'Reference of the component'"
-                :min="min"
-                :max="max"
-            />
-            <InputTextForm
-                :inputClassName="null"
-                :Errors="errors.articleFam_design"
-                name="articleFam_design" label="Article Designation"
-                :isDisabled="isInConsultMod"
-                isRequired
-                v-model="articleFam_design"
-                :info_text="'Designation of the component'"
-                :min="min"
-                :max="max"
-            />
-            <InputTextForm
-                :inputClassName="null"
-                :Errors="errors.articleFam_drawingPath"
-                name="articleFam_drawingPath" label="Article Drawing Path"
-                :isDisabled="isInConsultMod"
-                isRequired
-                v-model="articleFam_drawingPath"
-                :info_text="'Drawing path of the article'"
-                :min="min"
-                :max="max"
-            />
-            <InputTextForm
-                :inputClassName="null"
-                :Errors="errors.articleFam_variablesCharac"
-                name="articleFam_variablesCharac" label="Article Variable Characteristic"
-                :isDisabled="isInConsultMod"
-                isRequired
-                v-model="articleFam_variablesCharac"
-                :info_text="'Variables Characteristic of the article'"
-                :min="min"
-                :max="max"
-            />
-            <InputTextForm
-                :inputClassName="null"
-                :Errors="errors.articleFam_version"
-                name="articleFam_version" label="Article Version"
-                :isDisabled="isInConsultMod"
-                isRequired
-                v-model="articleFam_version"
-                :info_text="'Version of the article'"
-                :min="min"
-                :max="max"
-            />
-            <RadioGroupForm
-                :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
-                :name="'Active ?'"
-                :label="'Active'"
-                :value="articleFam_active"
-                :info_text="'Is article currently use?'"
-                :inputClassName="null"
-                :Errors="errors['Active']"
-                :checked-option="true"
-            />
-            <InputSelectForm 
-                @clearSelectError='clearSelectError' 
-                name="articleFam_purchasedBy" 
-                :Errors="errors.articleFam_purchasedBy"
-                label="Article Family Purchased By :" 
-                :options="articleFam_purchasedBy" 
-                :selctedOption="articleFam_purchasedBy"
-                :isDisabled="!!isInConsultMod" 
-                v-model="articleFam_purchasedBy"
-                :info_text="'Article Family Purchased By'" 
-                :id_actual="articleFamPurchasedBy"/>
+            <div v-if="artFam_type!=''"> 
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_ref"
+                    name="artFam_ref" label="Component Reference"
+                    :isDisabled="this.isInConsultMod"
+                    isRequired
+                    v-model="artFam_ref"
+                    :info_text="'Reference of the component'"
+                    :min="3"
+                    :max="255"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_design"
+                    name="artFam_design" label="Article Designation"
+                    :isDisabled="isInConsultMod"
+                    isRequired
+                    v-model="artFam_design"
+                    :info_text="'Designation of the component'"
+                    :min="3"
+                    :max="255"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_drawingPath"
+                    name="artFam_drawingPath" label="Article Drawing Path"
+                    :isDisabled="isInConsultMod"
+                    v-model="artFam_drawingPath"
+                    :info_text="'Drawing path of the article'"
+                    :max="255"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_variablesCharac"
+                    name="artFam_variablesCharac" label="Article Variable Characteristic"
+                    :isDisabled="isInConsultMod"
+                    v-model="artFam_variablesCharac"
+                    :info_text="'Variables Characteristic of the article'"
+                    :max="255"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_version"
+                    name="artFam_version" label="Article Version"
+                    :isDisabled="isInConsultMod"
+                    v-model="artFam_version"
+                    :info_text="'Version of the art'"
+                    :max="4"
+                />
+                <RadioGroupForm
+                    :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
+                    :name="'Active ?'"
+                    :label="'Active'"
+                    :value="artFam_active"
+                    :info_text="'Is article currently use?'"
+                    :inputClassName="null"
+                    :Errors="errors['Active']"
+                    :checked-option="true"
+                />
+                <InputSelectForm 
+                    @clearSelectError='clearSelectError' 
+                    name="artFam_purchasedBy" 
+                    :Errors="errors.artFam_purchasedBy"
+                    label="Article Family Purchased By :" 
+                    :options="enum_purchasedBy" 
+                    :selctedOption="artFam_purchasedBy"
+                    :isDisabled="!!isInConsultMod" 
+                    v-model="artFam_purchasedBy"
+                    :info_text="'Article Family Purchased By'" 
+                    :id_actual="artFamPurchasedBy"/>
 
-            <SaveButtonForm v-if="this.articleFam_type=='COMP' && this.addSuccess==false"
-                ref="saveButton"
-                @add="addCompFam"
-                @update="updateCompFam"
-                :consultMod="this.isInConsultMod"
-                :modifMod="this.isInModifMod"
-                :savedAs="validate"/>
-
-            <!--<SaveButtonForm v-if="this.articleFam_type=='CONS' && this.addSuccess==false"
-                ref="saveButton"
-                @add="addConsFam"
-                @update="updateConsFam"
-                :consultMod="this.isInConsultMod"
-                :modifMod="this.isInModifMod"
-                :savedAs="validate"/>
-
-            <SaveButtonForm v-if="this.articleFam_type=='RAW' && this.addSuccess==false"
-                ref="saveButton"
-                @add="addRawFam"
-                @update="updateRawFam"
-                :consultMod="this.isInConsultMod"
-                :modifMod="this.isInModifMod"
-                :savedAs="validate"/>-->
+                <SaveButtonForm v-if="this.addSuccess==false"
+                    ref="saveButton"
+                    @add="addArtFam"
+                    @update="updateArtFam"
+                    :consultMod="this.isInConsultMod"
+                    :modifMod="this.isInModifMod"
+                    :savedAs="validate"/>
+            </div>
         </form>
     </div>
 </template>
@@ -217,108 +194,117 @@ export default {
             /*--------Declaration of the different returned data:--------
               
                 Id : Id of the article family
-                articleFam_ref : Reference of the article family which  will be appear in the field and updated dynamically
-                articleFam_design : Designation of the article family which  will be appear in the field and updated dynamically
-                articleFam_drawingPath : Path to the directory containing the drawing representing the article family which  will be appear in the field and updated dynamically
-                articleFam_purchasedBy : Employee of the company that ordered this article family which  will be appear in the field and updated dynamically
-                articleFam_variablesCharac : Variable characteristic(s) of this article family which  will be appear in the field and updated dynamically
-                articleFam_validate : Validation option selected by the user
-                articleFam_validates : Different validation option with values : drafted , to_be_validated  and validated
-                articleFam_version : Alpha version of this article family
-                articleFam_active : Is the article currently in use?
+                artFam_ref : Reference of the article family which  will be appear in the field and updated dynamically
+                artFam_design : Designation of the article family which  will be appear in the field and updated dynamically
+                artFam_drawingPath : Path to the directory containing the drawing representing the article family which  will be appear in the field and updated dynamically
+                artFam_purchasedBy : Employee of the company that ordered this article family which  will be appear in the field and updated dynamically
+                artFam_variablesCharac : Variable characteristic(s) of this article family which  will be appear in the field and updated dynamically
+                artFam_validate : Validation option selected by the user
+                artFam_validates : Different validation option with values : drafted , to_be_validated  and validated
+                artFam_version : Alpha version of this article family
+                artFam_active : Is the article currently in use?
                 enum_purchasedBy : Different employee option gets from the database
                 errors : Errors due to a wrong input in the field, given by the controller
             -----------------------------------------------------------*/
-            articleFam_ref: this.reference,
-            articleFam_design: this.designation,
-            articleFam_drawingPath: this.drawingPath,
-            articleFam_purchasedBy: this.purchasedBy,
-            articleFam_variablesCharac: this.variablesCharac,
-            articleFam_version: this.version,
-            articleFam_active: this.active,
-            articleFam_validate: this.validate,
+            artFam_ref: this.reference,
+            artFam_design: this.designation,
+            artFam_drawingPath: this.drawingPath,
+            artFam_purchasedBy: this.purchasedBy,
+            artFam_variablesCharac: this.variablesCharac,
+            artFam_version: this.version,
+            artFam_active: this.active,
+            artFam_validate: this.validate,
             isInConsultMod: this.consultMod,
             isInModifMod : this.modifMod,
             enum_purchasedBy: [],
-            articleFam_id: this.$route.params.id,
+            artFam_id: this.$route.params.id,
             errors: {},
             addSuccess: false,
-            infos_articleFam: [],
+            infos_artFam: [],
             loaded: false,
-            articleFamPurchasedBy: "articleFamPurchasedBy",
+            artFamPurchasedBy: "articleFamPurchasedBy",
             ArticleFamilyType: "articleFamType",
-            articleFam_type:"",
+            artFam_type:"",
             enumArticleFam_type: [
-                {id: 'articleFam_type', value: "COMP", text: 'COMP'},
-                {id: 'articleFam_type', value: "RAW", text: 'RAW'},
-                {id: 'articleFam_type', value: "CONS", text: 'CONS'}
+                {id: 'artFam_type', value: "COMP", text: 'COMP'},
+                {id: 'artFam_type', value: "RAW", text: 'RAW'},
+                {id: 'artFam_type', value: "CONS", text: 'CONS'}
             ],
             savedAs: this.validate
         }
     },
     created() {
-        this.loaded=true
+        /*Ask for the controller different purchased by option */
+        axios.get('/artFam/enum/purchasedBy')
+            .then(response => this.enum_purchasedBy = response.data)
+            .catch(error => console.log(error));
+            this.loaded=true
     },
 
     /*--------Declaration of the different methods:--------*/
     methods: {
-        /*Sending to the controller all the information about the article family so that it can be added to the database */
-        addCompFam(savedAs) {
+        /*Sending to the controller all the information about the art family so that it can be added to the database */
+        addArtFam(savedAs) {
             if (!this.addSuccess) {
                 /*We begin by checking if the data entered by the user are correct*/
                 console.log("before verif")
-                console.log("ref"+this.articleFam_ref)
-                console.log("design"+this.articleFam_design)
-                console.log("drawingPath"+this.articleFam_drawingPath)
-                console.log("purchasedBy"+this.articleFam_purchasedBy)
-                console.log("variablesCharac"+this.articleFam_variablesCharac)
-                console.log("version"+this.articleFam_version)
-                console.log("active"+this.articleFam_active)
+                console.log("ref"+this.artFam_ref)
+                console.log("design"+this.artFam_design)
+                console.log("drawingPath"+this.artFam_drawingPath)
+                console.log("purchasedBy"+this.artFam_purchasedBy)
+                console.log("variablesCharac"+this.artFam_variablesCharac)
+                console.log("version"+this.artFam_version)
+                console.log("active"+this.artFam_active)
                 console.log("validate"+savedAs)
-                axios.post('/comp/family/verif', {
-                    compFam_ref: this.articleFam_ref,
-                    compFam_design: this.articleFam_design,
-                    compFam_drawingPath: this.articleFam_drawingPath,
-                    compFam_purchasedBy: this.articleFam_purchasedBy,
-                    compFam_variablesCharac: this.articleFam_variablesCharac,
-                    compFam_version: this.articleFam_version,
-                    compFam_active: this.articleFam_active,
-                    compFam_validate: savedAs,
-                })
-                    /*If the data are correct, we send them to the controller for add them in the database*/
-                    .then(response => {
-                         console.log("after verif")
-                        this.errors = {};
-                            axios.post('/comp/family/add', {
-                                compFam_ref: this.articleFam_ref,
-                                compFam_design: this.articleFam_design,
-                                compFam_drawingPath: this.articleFam_drawingPath,
-                                compFam_purchasedBy: this.articleFam_purchasedBy,
-                                compFam_variablesCharac: this.articleFam_variablesCharac,
-                                compFam_version: this.articleFam_version,
-                                compFam_active: this.articleFam_active,
-                                compFam_validate: savedAs,
+                if (this.artFam_type=="COMP"){
+                    axios.post('/comp/family/verif', {
+                        artFam_ref: this.artFam_ref,
+                        artFam_design: this.artFam_design,
+                        artFam_drawingPath: this.artFam_drawingPath,
+                        artFam_purchasedBy: this.artFam_purchasedBy,
+                        artFam_variablesCharac: this.artFam_variablesCharac,
+                        artFam_version: this.artFam_version,
+                        artFam_active: this.artFam_active,
+                        artFam_validate: savedAs,
+                    })
+                        /*If the data are correct, we send them to the controller for add them in the database*/
+                        .then(response => {
+                            console.log("after verif")
+                            this.errors = {};
+                                axios.post('/comp/family/add', {
+                                    artFam_ref: this.artFam_ref,
+                                    artFam_design: this.artFam_design,
+                                    artFam_drawingPath: this.artFam_drawingPath,
+                                    artFam_purchasedBy: this.artFam_purchasedBy,
+                                    artFam_variablesCharac: this.artFam_variablesCharac,
+                                    artFam_version: this.artFam_version,
+                                    artFam_active: this.artFam_active,
+                                    artFam_validate: savedAs,
 
-                            })
-                                /*If the data have been added in the database, we show a success message*/
-                                .then(response => {
-                                     console.log("after add")
-                                    this.$refs.SuccessAlert.showAlert(`CompFam ID added successfully and saved as ${savedAs}`);
-                                    this.addSuccess = true;
-                                    this.isInConsultMod = true;
-                                    this.articleFam_id = response.data;
-                                    this.$emit('CompFamID', this.articleFam_id);
                                 })
-                                .catch(error => this.errors = error.response.data.errors);
-                        })
-                    .catch(error => this.errors = error.response.data.errors);
+                                    /*If the data have been added in the database, we show a success message*/
+                                    .then(response => {
+                                        console.log("after add")
+                                        console.log(response.data)
+                                        this.addSuccess = true;
+                                        this.isInConsultMod = true;
+                                        console.log(this.addSuccess)
+                                        console.log(this.isInConsultMod)
+                                        this.$snotify.success(`CompFam ID added successfully and saved as ${savedAs}`);
+                                        this.artFam_id = response.data;
+                                        this.$emit('CompFamID', this.artFam_id);
+                                    })
+                                    .catch(error => this.errors = error.response.data.errors);
+                            })
+                        .catch(error => this.errors = error.response.data.errors);
+                }
             }
         },
-        /*Sending to the controller all the information about the article family  so that it can be updated in the database
+        /*Sending to the controller all the information about the art family  so that it can be updated in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
-        @param articleSheet_created */
-        updateCompFam(savedAs, reason, articleSheet_created) {
+        @param artSheet_created */
+        updateArtFam(savedAs, reason, artSheet_created) {
             /*We begin by checking if the data entered by the user are correct*/
             axios.post('/compFam/verif', {
 
@@ -327,14 +313,14 @@ export default {
                 .then(response => {
                     this.errors = {};
                     const consultUrl = (id) => `/compFam/update/${id}`;
-                    axios.post(consultUrl(this.articleFam_id), {
+                    axios.post(consultUrl(this.artFam_id), {
                        
                     })
                         .then(response => {
-                            const id = this.articleFam_id;
+                            const id = this.artFam_id;
                             /*We test if an article sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (articleSheet_created == true) {
+                            if (artSheet_created == true) {
                                 axios.post(`/history/add/compFam/${id}`, {
                                     history_reasonUpdate: reason,
                                 });
@@ -342,7 +328,7 @@ export default {
                             }
                             /*If the data have been updated in the database, we show a success message*/
                             this.$refs.SuccessAlert.showAlert(`CompFam ID card updated successfully and saved as ${savedAs}`);
-                            this.articleFam_validate = savedAs;
+                            this.artFam_validate = savedAs;
                         })
                         .catch(error => this.errors = error.response.data.errors);
                 })

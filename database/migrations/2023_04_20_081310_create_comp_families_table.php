@@ -26,7 +26,6 @@ class CreateCompFamiliesTable extends Migration
             $table->string('compFam_ref') -> unique ; 
             $table->string('compFam_design') ;
             $table->string('compFam_drawingPath') -> nullable() ; 
-            $table->string('compFam_purchasedBy') -> nullable() ; 
             $table->integer('compFam_nbrVersion') -> default(1) ; 
             $table->string('compFam_variablesCharac') -> nullable();  
             $table->timestamps() ; 
@@ -38,6 +37,8 @@ class CreateCompFamiliesTable extends Migration
             $table->enum('compFam_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->string('compFam_version')->nullable();
             $table->boolean('compFam_active')->default(true);
+            $table->unsignedBigInteger('enumPurchasedBy_id') ->nullable();
+            $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies') -> onDelete('restrict') ;
 
         });
     }

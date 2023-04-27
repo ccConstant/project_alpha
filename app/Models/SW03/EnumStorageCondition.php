@@ -27,7 +27,7 @@ class EnumStorageCondition extends Model
         return $this->belongsToMany(CompFamily::class, 'pivot_comp_fam_sto_cond', 'storageCondition_id', 'compFam_id') ;
     }
 
-    //Define the relation between an EnumStorageCondition and its compFamily : an EnumStorageCondition can have many consFamily
+    //Define the relation between an EnumStorageCondition and its consFamily : an EnumStorageCondition can have many consFamily
     public function consFamily(){
         return $this->belongsToMany(ConsFamily::class, 'pivot_cons_fam_sto_cond', 'storageCondition_id', 'consFam_id') ;
     }

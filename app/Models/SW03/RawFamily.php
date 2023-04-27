@@ -18,6 +18,7 @@ use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\Supplier;
 use App\Models\SW03\RawFamilyMember;
 use App\Models\SW03\Criticality;
+use App\Models\SW03\EnumPurchasedBy;
 
 
 
@@ -26,7 +27,7 @@ class RawFamily extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['rawFam_ref', 'rawFam_design', 'rawFam_drawingPath', 'rawFam_purchasedBy', 'rawFam_nbrVersion', 'rawFam_variablesCharac', 'rawFam_qualityApproverId', 'rawFam_technicalReviewerId', 'rawFam_signatureDate', 'rawFam_validate', 'rawFam_active'] ;
+    protected $fillable = ['rawFam_ref', 'rawFam_design', 'rawFam_drawingPath', 'enumPurchasedBy_id', 'rawFam_nbrVersion', 'rawFam_variablesCharac', 'rawFam_qualityApproverId', 'rawFam_technicalReviewerId', 'rawFam_signatureDate', 'rawFam_validate', 'rawFam_active'] ;
 
     //Define the relation between a rawFamily and its rawFamilyMember : a rawFamilyMember can correspond to only one rawFamily
     public function raw_family_member(){
@@ -56,5 +57,10 @@ class RawFamily extends Model
      //Define the relation between a rawFamily and its criticality : a rawFamily has only one criticality
      public function criticality(){
         return $this->HasOne(Criticality::class) ;
+    }
+
+    //Define the relation between an EnumPurchasedBy and its rawFamily : a rawFamily can correspond to many EnumPurchasedBy
+    public function purchased_by(){
+        return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
     }
 }

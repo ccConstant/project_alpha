@@ -107,7 +107,7 @@ export default {
     data(){
         return{
             data: this.value,
-            returnedText_info:this.info_text
+            returnedText_info:this.info_text,
         }
     },
     /*--------Declaration of the differents methods:--------

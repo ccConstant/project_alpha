@@ -26,7 +26,6 @@ class CreateConsFamiliesTable extends Migration
             $table->string('consFam_ref') -> unique ; 
             $table->string('consFam_design') ;
             $table->string('consFam_drawingPath') -> nullable() ; 
-            $table->string('consFam_purchasedBy') -> nullable() ; 
             $table->integer('consFam_nbrVersion') -> default(1) ; 
             $table->string('consFam_variablesCharac') -> nullable();  
             $table->timestamps() ; 
@@ -38,6 +37,8 @@ class CreateConsFamiliesTable extends Migration
             $table->enum('consFam_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->string('consFam_version')->nullable();
             $table->boolean('consFam_active')->default(true);
+            $table->unsignedBigInteger('enumPurchasedBy_id') ->nullable();
+            $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies') -> onDelete('restrict') ;
         });
     }
 
