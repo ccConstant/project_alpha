@@ -21,6 +21,7 @@
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>
             <b-form-input
+                :disabled="isDisabled"
                 v-model="data"
                 v-on:input="updateValue(data)"
                 :state="state"
@@ -116,6 +117,7 @@ export default {
     ---------------------------------------------------*/
     methods: {
         updateValue: function (value) {
+            console.log(value);
             this.$emit('input', value)
         },
         hasError(errors){
@@ -133,7 +135,10 @@ export default {
                 }
                 return this.data.length >= this.min && this.data.length <= this.max;
             }
-            return !(this.data.length > this.max);
+            if (this.data !== null) {
+                return this.data.length <= this.max;
+            }
+            return true;
         },
         invalidFeedBack() {
             if (this.isRequired) {
@@ -148,9 +153,7 @@ export default {
                     return 'This field is required';
                 }
             } else {
-                /*console.log("notRequired");
-                console.log(this.data.length + ">" + this.max);*/
-                if (this.data.length > this.max) {
+                if (this.data !== null && this.data.length > this.max) {
                     return 'You must enter a maximum of ' + this.max + ' characters';
                 }
             }
