@@ -14,7 +14,7 @@
                             <b>{{list.supplr_name}}</b>
                         </div>
                         <div class="supplier_list_options">
-                            <router-link :to="{name:'url_eq_consult',params:{id: list.id} }">Consult</router-link>
+                            <router-link :to="{name:'supplier_url_consult',params:{id: list.id} }">Consult</router-link>
                             <a href="#" @click="warningUpdate(list.id,list.supplr_technicalReviewerId !== null)">Update</a>
                             <a v-if="!(list.supplr_technicalReviewerId !== null)" href="#" @click="technicalValidation(list.id)">Technical validation</a>
                             <a v-if="list.supplr_technicalReviewerId !== null">Statut : Approved</a>
@@ -71,7 +71,7 @@ export default {
             if (this.$userId.user_makeTechnicalValidationRight !== true) {
                 ErrorAlert.showAlert("You don't have the right");
             } else {
-                this.$router.replace({ name: "url_eq_consult", params: { id: id }, query: { method: "technical" } })
+                this.$router.replace({ name: "supplier_url_consult", params: { id: id }, query: { method: "technical" } })
             }
         },
         warningUpdate(id, technicalReviewer, redirect) {

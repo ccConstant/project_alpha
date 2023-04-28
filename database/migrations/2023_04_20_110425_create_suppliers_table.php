@@ -26,7 +26,7 @@ class CreateSuppliersTable extends Migration
             $table->timestamps();
             $table->string('supplr_name');
             $table->integer('supplr_receptionNumber')->nullable();
-            $table->integer('supplr_formID');
+            $table->string('supplr_formID');
 
             $table->unsignedBigInteger('supplr_consFam_id')->nullable();
             $table->foreign('supplr_consFam_id')->references('id')->on('cons_families');
@@ -48,7 +48,7 @@ class CreateSuppliersTable extends Migration
             $table->string('supplr_activity')->nullable();
             $table->boolean('supplr_real')->default(true);
             $table->string('supplr_VATNumber')->unique()->nullable();
-            $table->boolean('supplr_critical')->default(false); //FIXME : true or false ?
+            $table->boolean('supplr_critical')->default(false);
             $table->string('supplr_endLinkToFolder')->nullable();
             $table->boolean('supplr_active')->default(true);
         });

@@ -112,30 +112,14 @@ export default {
             return InputInfo
         },
         state() {
-            let size = Number(this.data).toString().length;
             if (this.isRequired) {
-                if (this.data === null) {
-                    return false;
-                }
-                return size >= this.min && size <= this.max;
+                return this.data === null
             }
-            return !(size > this.max);
-
+            return true;
         },
         invalidFeedBack() {
-            let size = Number(this.data).toString().length;
-            if (this.isRequired) {
-                if (size < this.min && size !== 0) {
-                    return 'You must enter at least ' + this.min + ' characters';
-                } else if (size > this.max) {
-                    return 'You must enter a maximum of ' + this.max + ' characters';
-                } else {
-                    return 'This field is required';
-                }
-            } else {
-                if (size > this.max) {
-                    return 'You must enter a maximum of ' + this.max + ' characters';
-                }
+            if (this.isRequired && this.data === null) {
+                return 'This field is required';
             }
         }
     }

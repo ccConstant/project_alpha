@@ -21,23 +21,26 @@ class SupplierAdrController extends Controller
             $this->validate(
                 $request,
                 [
-                    'supplrAdr_name' => 'required|min:3|max:255',
-                    'supplrAdr_street' => 'required|min:3|max:255',
-                    'supplrAdr_town' => 'required|min:3|max:255',
-                    'supplrAdr_country' => 'required|min:3|max:255',
+                    'supplrAdr_name' => 'required|min:2|max:255',
+                    'supplrAdr_street' => 'required|min:2|max:255',
+                    'supplrAdr_town' => 'required|min:2|max:255',
+                    'supplrAdr_country' => 'required|min:2|max:255',
                 ],
                 [
                     'supplrAdr_name.required' => 'You must enter a name',
-                    'supplrAdr_name.min' => 'You must enter at least 3 characters',
+                    'supplrAdr_name.min' => 'You must enter at least two characters',
                     'supplrAdr_name.max' => 'You must enter a maximum of 255 characters',
+
                     'supplrAdr_street.required' => 'You must enter a street',
-                    'supplrAdr_street.min' => 'You must enter at least 3 characters',
+                    'supplrAdr_street.min' => 'You must enter at least two characters',
                     'supplrAdr_street.max' => 'You must enter a maximum of 255 characters',
+
                     'supplrAdr_town.required' => 'You must enter a town',
-                    'supplrAdr_town.min' => 'You must enter at least 3 characters',
+                    'supplrAdr_town.min' => 'You must enter at least two characters',
                     'supplrAdr_town.max' => 'You must enter a maximum of 255 characters',
+
                     'supplrAdr_country.required' => 'You must enter a country',
-                    'supplrAdr_country.min' => 'You must enter at least 3 characters',
+                    'supplrAdr_country.min' => 'You must enter at least two characters',
                     'supplrAdr_country.max' => 'You must enter a maximum of 255 characters'
                 ]
             );
@@ -45,20 +48,12 @@ class SupplierAdrController extends Controller
             $this->validate(
                 $request,
                 [
-                    'supplrAdr_name' => 'required|min:3|max:255',
-                    'supplrAdr_town' => 'required|min:3|max:255',
-                    'supplrAdr_country' => 'required|min:3|max:255',
+                    'supplrAdr_name' => 'required|min:2|max:255'
                 ],
                 [
                     'supplrAdr_name.required' => 'You must enter a name',
-                    'supplrAdr_name.min' => 'You must enter at least 3 characters',
-                    'supplrAdr_name.max' => 'You must enter a maximum of 255 characters',
-                    'supplrAdr_town.required' => 'You must enter a town',
-                    'supplrAdr_town.min' => 'You must enter at least 3 characters',
-                    'supplrAdr_town.max' => 'You must enter a maximum of 255 characters',
-                    'supplrAdr_country.required' => 'You must enter a country',
-                    'supplrAdr_country.min' => 'You must enter at least 3 characters',
-                    'supplrAdr_country.max' => 'You must enter a maximum of 255 characters'
+                    'supplrAdr_name.min' => 'You must enter at least two characters',
+                    'supplrAdr_name.max' => 'You must enter a maximum of 255 characters'
                 ]
             );
         }
@@ -83,8 +78,23 @@ class SupplierAdrController extends Controller
     }
 
     public function send_adr($id) {
-        $supplierAdr = SupplierAdr::findOrfail($id);
-        return response()->json($supplierAdr);
+        $supplier = Supplier::findOrfail($id);
+        $supplierAdr = SupplierAdr::all()->where('supplr_id', '==', $supplier->id);
+        $array = [];
+        foreach ($supplierAdr as $adr) {
+            $obj = ([
+                'id' => $adr->id,
+                'supplrAdr_name' => $adr->supplrAdr_name,
+                'supplrAdr_street' => $adr->supplrAdr_street,
+                'supplrAdr_town' => $adr->supplrAdr_town,
+                'supplrAdr_country' => $adr->supplrAdr_country,
+                'supplrAdr_validate' => $adr->supplrAdr_validate,
+                'supplrAdr_principal' => (boolean)$adr->supplrAdr_principal,
+                'supplr_id' => $adr->supplr_id
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
     }
 
     public function update_adr(Request $request, $id) {

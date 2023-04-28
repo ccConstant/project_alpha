@@ -14,22 +14,27 @@ class SupplierContactController extends Controller
             $this->validate(
                 $request,
                 [
-                    'supplrContact_name' => 'required|min:3|max:255',
-                    'supplrContact_email' => 'required|email',
-                    'supplrContact_phoneNumber' => 'required|min:3|max:255',
-                    'supplrContact_function' => 'required|min:3|max:255',
+                    'supplrContact_name' => 'required|min:2|max:255',
+                    'supplrContact_email' => 'required|email|min:2|max:255',
+                    'supplrContact_phoneNumber' => 'required|min:10|max:30',
+                    'supplrContact_function' => 'required|min:2|max:255',
                 ],
                 [
                     'supplrContact_name.required' => 'You must enter a name',
-                    'supplrContact_name.min' => 'You must enter at least 3 characters',
+                    'supplrContact_name.min' => 'You must enter at least two characters',
                     'supplrContact_name.max' => 'You must enter a maximum of 255 characters',
+
                     'supplrContact_email.required' => 'You must enter an email',
                     'supplrContact_email.email' => 'You must enter a valid email',
+                    'supplrContact_email.min' => 'You must enter at least two characters',
+                    'supplrContact_email.max' => 'You must enter a maximum of 255 characters',
+
                     'supplrContact_phoneNumber.required' => 'You must enter a phone number',
-                    'supplrContact_phoneNumber.min' => 'You must enter at least 3 characters',
+                    'supplrContact_phoneNumber.min' => 'You must enter at least two characters',
                     'supplrContact_phoneNumber.max' => 'You must enter a maximum of 255 characters',
+
                     'supplrContact_function.required' => 'You must enter a function',
-                    'supplrContact_function.min' => 'You must enter at least 3 characters',
+                    'supplrContact_function.min' => 'You must enter at least two characters',
                     'supplrContact_function.max' => 'You must enter a maximum of 255 characters'
                 ]
             );
@@ -37,11 +42,11 @@ class SupplierContactController extends Controller
             $this->validate(
                 $request,
                 [
-                    'supplrContact_name' => 'required|min:3|max:255'
+                    'supplrContact_name' => 'required|min:2|max:255'
                 ],
                 [
                     'supplrContact_name.required' => 'You must enter a name',
-                    'supplrContact_name.min' => 'You must enter at least 3 characters',
+                    'supplrContact_name.min' => 'You must enter at least two characters',
                     'supplrContact_name.max' => 'You must enter a maximum of 255 characters'
                 ]
             );
@@ -61,8 +66,23 @@ class SupplierContactController extends Controller
     }
 
     public function send_contact($id) {
-        $supplierContact = SupplierContact::findOrfail($id);
-        return response()->json($supplierContact);
+        $supplier = Supplier::findOrfail($id);
+        $supplierContact = SupplierContact::all()->where('supplr_id', '==', $supplier->id);
+        $array = [];
+        foreach ($supplierContact as $contact) {
+            $obj = ([
+                'id' => $contact->id,
+                'supplrContact_name' => $contact->supplrContact_name,
+                'supplrContact_email' => $contact->supplrContact_email,
+                'supplrContact_phoneNumber' => $contact->supplrContact_phoneNumber,
+                'supplrContact_function' => $contact->supplrContact_function,
+                'supplrContact_validate' => $contact->supplrContact_validate,
+                'supplrContact_principal' => (boolean)$contact->supplrContact_principal,
+                'supplr_id' => $contact->supplr_id
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
     }
 
     public function update_contact(Request $request, $id)

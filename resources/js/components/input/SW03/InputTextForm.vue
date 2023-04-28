@@ -117,7 +117,6 @@ export default {
     ---------------------------------------------------*/
     methods: {
         updateValue: function (value) {
-            console.log(value);
             this.$emit('input', value)
         },
         hasError(errors){

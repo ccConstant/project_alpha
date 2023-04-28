@@ -1,74 +1,101 @@
 <template>
-    <div class="supplierAdr" v-if="loaded==true">
-        <InputTextForm
-            name="street"
-            label="Street"
-            :isRequired="true"
-            v-model="supplrAdr_street"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors.supplrAdr_street"
-            :min="min"
-            :max="max"
-        />
-        <InputTextForm
-            name="town"
-            label="Town"
-            :isRequired="true"
-            v-model="supplrAdr_town"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors.supplrAdr_town"
-            :min="min"
-            :max="max"
-        />
-        <InputTextForm
-            name="country"
-            label="Country"
-            :isRequired="true"
-            v-model="supplrAdr_country"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors.supplrAdr_country"
-            :min="min"
-            :max="max"
-        />
-        <InputTextForm
-            name="Name"
-            label="Name"
-            :isRequired="true"
-            v-model="supplrAdr_name"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors.supplrAdr_name"
-            :min="min"
-            :max="max"
-        />
-        <RadioGroupForm
-            :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
-            :isRequired="true"
-            v-model="supplrAdr_principal"
-            :info_text="null"
-            :inputClassName="null"
-            :isDisabled="isDisabled"
-            :Errors="Errors.supplrAdr_principal"
-            name="principal"
-            label="Principal"
-            :checked-option="true"
-        />
-        <SaveButtonForm
-            ref="saveButton"
-            v-if="this.addSuccess===false"
-            @add="addSupplierAdr"
-            @update="updateSupplierAdr"
-            :consultMod="this.isInConsultMod"
-            :modifMod="this.isInEditMod"
-            :savedAs="validate"
-        />
+    <div :class="divClass">
+        <div v-if="loaded==true">
+            <form>
+                <InputTextForm
+                    name="street"
+                    label="Street"
+                    v-model="supplrAdr_street"
+                    :info_text="null"
+                    :inputClassName="null"
+                    :Errors="Errors.supplrAdr_street"
+                    :min="2"
+                    :max="255"
+                    :isDisabled="isInConsultMod"
+                />
+                <InputTextForm
+                    name="town"
+                    label="Town"
+                    v-model="supplrAdr_town"
+                    :info_text="null"
+                    :inputClassName="null"
+                    :Errors="Errors.supplrAdr_town"
+                    :min="2"
+                    :max="255"
+                    :isDisabled="isInConsultMod"
+                />
+                <InputTextForm
+                    name="country"
+                    label="Country"
+                    v-model="supplrAdr_country"
+                    :info_text="null"
+                    :inputClassName="null"
+                    :Errors="Errors.supplrAdr_country"
+                    :min="2"
+                    :max="255"
+                    :isDisabled="isInConsultMod"
+                />
+                <InputTextForm
+                    name="Name"
+                    label="Name"
+                    isRequired
+                    v-model="supplrAdr_name"
+                    :info_text="null"
+                    :inputClassName="null"
+                    :Errors="Errors.supplrAdr_name"
+                    :min="2"
+                    :max="255"
+                    :isDisabled="isInConsultMod"
+                />
+                <RadioGroupForm
+                    :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
+                    isRequired
+                    v-model="supplrAdr_principal"
+                    :info_text="null"
+                    :inputClassName="null"
+                    :Errors="Errors.supplrAdr_principal"
+                    name="principal"
+                    label="Principal"
+                    :checked-option="true"
+                    :isDisabled="isInConsultMod"
+                />
+                <SaveButtonForm
+                    ref="saveButton"
+                    v-if="this.addSuccess===false"
+                    @add="addSupplierAdr"
+                    @update="updateSupplierAdr"
+                    :consultMod="this.isInConsultMod"
+                    :modifMod="this.modifMod"
+                    :savedAs="validate"
+                />
+                <div v-if="this.addSuccess==false ">
+                    <!--If this file doesn't have a id the addEquipmentFile is called function else the updateEquipmentFile function is called -->
+                    <div v-if="this.adr_id==null ">
+                        <div v-if="modifMod==true">
+                            <SaveButtonForm @add="addSupplierAdr" @update="updateSupplierAdr"
+                                            :consultMod="this.isInConsultMod" :savedAs="validate"
+                                            :AddinUpdate="true"/>
+                        </div>
+                        <div v-else>
+                            <SaveButtonForm @add="addSupplierAdr" @update="updateSupplierAdr"
+                                            :consultMod="this.isInConsultMod" :savedAs="validate"/>
+                        </div>
+                    </div>
+                    <div v-else-if="this.adr_id!==null">
+                        <SaveButtonForm @add="addSupplierAdr" @update="updateSupplierAdr"
+                                        :consultMod="this.isInConsultMod" :modifMod="this.modifMod"
+                                        :savedAs="validate"/>
+                    </div>
+                    <!-- If the user is not in the consultation mode, the delete button appear -->
+                    <!--            <DeleteComponentButton :validationMode="validate" :consultMod="this.isInConsultMod"
+                                                       @deleteOk="deleteContact"/>-->
+                </div>
+            </form>
+            <SuccessAlert ref="successAlert"/>
+        </div>
+        <div v-else>
+            <b-spinner variant="primary"></b-spinner>
+        </div>
     </div>
 </template>
 
@@ -77,9 +104,11 @@ import InputTextForm from "../../../input/SW03/InputTextForm.vue";
 import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue";
 import SaveButtonForm from "../../../button/SaveButtonForm.vue";
 import InputInfo from "../../../input/InputInfo.vue";
+import SuccessAlert from "../../../alert/SuccesAlert.vue";
 
 export default {
     components: {
+        SuccessAlert,
         InputInfo,
         SaveButtonForm,
         RadioGroupForm,
@@ -110,11 +139,11 @@ export default {
             type: Boolean,
             default: false
         },
-        isInConsultMod: {
+        consultMod: {
             type: Boolean,
             default: false
         },
-        isInEditMod: {
+        modifMod: {
             type: Boolean,
             default: false
         },
@@ -137,16 +166,18 @@ export default {
             type: Number,
             default: null
         },
-        validated: {
+        validate: {
             type: String
         },
+        divClass: {
+            type: String
+        }
     },
     data() {
         return {
             addSuccess: false,
             updateSuccess: false,
             Errors: [],
-            validate: this.validated,
             supplrAdr_name: this.name,
             supplrAdr_street: this.street,
             supplrAdr_town: this.town,
@@ -154,18 +185,11 @@ export default {
             supplrAdr_principal: this.principal,
             adr_id: this.id,
             loaded: false,
+            isInConsultMod: this.consultMod,
         }
     },
     methods: {
         addSupplierAdr(savedAs) {
-            console.log('add');
-            console.log(savedAs);
-            console.log(this.supplrAdr_street);
-            console.log(this.supplrAdr_town);
-            console.log(this.supplrAdr_country);
-            console.log(this.supplrAdr_name);
-            console.log(this.supplrAdr_principal);
-            console.log('coucou' + this.supplier_id);
             axios.post('/supplier/adr/verif', {
                 supplrAdr_validate: savedAs,
                 supplrAdr_street: this.supplrAdr_street,
@@ -175,7 +199,6 @@ export default {
                 supplrAdr_principal: this.supplrAdr_principal,
                 supplr_id: this.supplier_id,
             }).then(response => {
-                console.log('response verif');
                 this.Errors = [];
                 axios.post('/supplier/adr/add', {
                     supplrAdr_validate: savedAs,
@@ -186,15 +209,13 @@ export default {
                     supplrAdr_principal: this.supplrAdr_principal,
                     supplr_id: this.supplier_id,
                 }).catch(error => {
-                    console.log('error add');
-                    console.log(error);
                     this.Errors = error.response.data.errors;
                 }).then(response => {
+                    this.$snotify.success('Supplier\'s address is correctly added in the database as ' + savedAs);
                     this.addSuccess = true;
                     this.isInConsultMod = true;
                 });
             }).catch(error => {
-                console.log('error verif');
                 this.Errors = error.response.data.errors;
             });
         },
@@ -210,6 +231,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 </style>

@@ -4,39 +4,41 @@
 <!--Vue Component of the Id card of the supplier who call all the input component and send the data to the controllers-->
 
 <template>
-    <div class="supplierAddress" v-if="loaded==true">
+    <div class="supplierAddress">
         <h2 class="titleForm">Supplier's Address</h2>
         <AddressIDForm
             ref="askAddress"
-            v-for="(component, key) in components"
-            :key="component.key"
-            :is="component.comp"
-            :name="component.name"
-            :street="component.street"
-            :town="component.town"
-            :country="component.country"
-            :principal="component.principal"
-            :validated="component.validate"
-            :id="component.id"
-            :is-in-consult-mod="isInConsultMod"
-            :is-in-edit-mod="isInModifMod"
+            v-for="(comp, key) in component"
+            :key="comp.key"
+            :is="comp.comp"
+            :name="comp.name"
+            :street="comp.street"
+            :town="comp.town"
+            :country="comp.country"
+            :principal="comp.principal"
+            :validated="comp.validate"
+            :id="comp.id"
+            :consultMod="isInConsultMod"
+            :modifMod="isInModifMod"
             :supplier_id="supplr_id"
+            :divClass="comp.className"
             @deleteAddress="removeAddress(key)"
         />
-        <div v-if="!this.isInConsultMod">
-            <button v-on:click="addAddress" class="btn btn-primary">Add an address</button>
-            <div v-if="this.address !== null">
-                <button v-if="!isInModifMod" v-on:click="importAddress" class="btn btn-primary">Import address</button>
+        <div v-if="!this.consultMod">
+            <button v-on:click="addAddress">Add</button>
+            <div v-if="this.importedAddress!==null">
+                <button v-if="!isInModifMod " v-on:click="importAddress">import</button>
             </div>
         </div>
         <SaveButtonForm
-            ref="saveButton"
-            v-if="components.length > 1"
+            saveAll
+            v-if="component.length>1"
             @add="saveAllAddress"
             @update="saveAllAddress"
             :consultMod="this.isInConsultMod"
             :modifMod="this.isInModifMod"
         />
+        <ImportationAlert ref="importAlert"/>
     </div>
 </template>
 
@@ -70,11 +72,14 @@ export default {
         importedAddress: {
             type: Array,
             default: null
+        },
+        divClass: {
+            type: String
         }
     },
     data() {
         return {
-            components: [],
+            component: [],
             address: this.importedAddress,
             count: 0,
             uniqueKey: 0,
@@ -86,40 +91,41 @@ export default {
     },
     methods: {
         addAddress() {
-            this.components.push({
+            this.component.push({
                 key: this.uniqueKey++,
-                comp: 'SupplierAddressForm'
+                comp: 'AddressIDForm'
             });
         },
-        addImportedAddress(addressName, addressStreet, addressTown, addressCountry, addressPrincipal, addressValidate, addressId) {
-            this.components.push({
+        addImportedAddress(addressName, addressStreet, addressTown, addressCountry, addressPrincipal, addressValidate, addressId, className) {
+            this.component.push({
                 key: this.uniqueKey++,
-                comp: 'SupplierAddressForm',
+                comp: 'AddressIDForm',
                 name: addressName,
                 street: addressStreet,
                 town: addressTown,
                 country: addressCountry,
                 principal: addressPrincipal,
                 validate: addressValidate,
-                id: addressId
+                id: addressId,
+                className: className
             });
         },
         removeAddress(key) {
-            return [] === this.components.slice(key, 1);
+            this.component.slice(key, 1);
         },
         importAddress() {
-            if (this.importedAddress === null) {
+            if (this.address === null) {
                 ImportationAlert.showAlert();
             } else {
-                this.importedAddress.forEach(address => {
-                    this.addImportedAddress(address.name, address.street, address.town, address.country, address.principal, address.validate, address.id);
+                this.address.forEach(adr => {
+                    this.addImportedAddress(adr.supplrAdr_name, adr.supplrAdr_street, adr.supplrAdr_town, adr.supplrAdr_country, adr.supplrAdr_principal, adr.supplrAdr_validate, adr.id, 'importedAddress'+adr.id);
                 });
-                this.importedAddress = null;
+                this.address = null;
             }
         },
         saveAllAddress(savedAs) {
             for (const component of this.$refs.askAddress) {
-                if (this.isInEditMode) {
+                if (this.isInModifMod) {
                     if (component.adr_id === null) {
                         component.addSupplierAdr(savedAs);
                     } else {
@@ -146,7 +152,7 @@ export default {
         this.loaded = true;
     },
     mounted() {
-        if (this.isInConsultMode || this.isInEditMode) {
+        if (this.isInConsultMod || this.isInModifMod) {
             this.importAddress();
         }
     }
