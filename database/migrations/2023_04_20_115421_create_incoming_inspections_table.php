@@ -27,6 +27,7 @@ class CreateIncomingInspectionsTable extends Migration
             $table->string('incmgInsp_remarks')->nullable();
             $table->string('incmgInsp_partMaterialComplianceCertificate')->nullable();
             $table->string('incmgInsp_rawMaterialCertificate')->nullable();
+
             $table->unsignedBigInteger('incmgInsp_qualityApproverId')->nullable();
             $table->foreign('incmgInsp_qualityApproverId')->references('id')->on('users');
             $table->unsignedBigInteger('incmgInsp_technicalReviewerId')->nullable();
@@ -38,6 +39,7 @@ class CreateIncomingInspectionsTable extends Migration
             $table->foreign('incmgInsp_compFam_id')->references('id')->on('comp_families');
             $table->unsignedBigInteger('incmgInsp_rawFam_id')->nullable();
             $table->foreign('incmgInsp_rawFam_id')->references('id')->on('raw_families');
+
             $table->enum('incmgInsp_validate',  ['drafted', 'to_be_validated', 'validated']);
         });
     }

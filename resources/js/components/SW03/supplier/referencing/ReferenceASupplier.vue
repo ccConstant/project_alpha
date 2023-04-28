@@ -4,7 +4,7 @@
 <!--Vue Component used to reference a new supplier-->
 
 <template>
-    <div class="supplierRef" v-if="loaded==true">
+    <div>
         <SupplierIDForm @SupplierID="put_supplier_id" @importFromSupplierID="put_import_id"/>
         <div class="accordion" v-if="supplier_id != null">
             <div class="accordion-item">
@@ -21,13 +21,13 @@
                 </div>
             </div>
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
+                <h2 class="accordion-header" id="headingTwo">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                         Supplier's Contact
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
                     <div class="accordion-body">
                         <ReferenceAContact :supplier_id="this.supplier_id" :import_id="this.importation_id"/>
                     </div>

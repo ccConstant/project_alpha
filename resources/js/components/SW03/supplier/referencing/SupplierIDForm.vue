@@ -390,23 +390,7 @@ export default {
                 supplr_endLinkToFolder: this.supplr_endLinkToFolder,
                 supplr_active: this.supplr_active
             }).then(response => {
-                console.log("response");
                 this.errors = [];
-                console.log(savedAs);
-                console.log(this.supplr_name);
-                console.log(this.supplr_receptionNumber);
-                console.log(this.supplr_formId);
-                console.log(this.supplr_agreementNumber);
-                console.log(this.supplr_qualityCertificateNumber);
-                console.log(this.supplr_specificsInstructions);
-                console.log(this.supplr_siret);
-                console.log(this.supplr_webSite);
-                console.log(this.supplr_activity);
-                console.log(this.supplr_real);
-                console.log(this.supplr_VatNumber);
-                console.log(this.supplr_critical);
-                console.log(this.supplr_endLinkToFolder);
-                console.log(this.supplr_active);
                 axios.post('/supplier/add', {
                     supplr_name: this.supplr_name,
                     supplr_receptionNumber: this.supplr_receptionNumber,
@@ -431,12 +415,8 @@ export default {
                     this.addSuccess = true;
                     this.isInConsultMod = true;
                     this.supplr_id = response.data.id;
-                    console.log("good");
-                    console.log(this.supplr_id);
                     this.$emit('SupplierID', this.supplr_id);
                 }).catch(error => {
-                    console.log(error);
-                    console.log(error.response.data.errors);
                     this.errors = error.response.data.errors;
                 });
             }).catch(error => {

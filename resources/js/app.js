@@ -193,6 +193,14 @@ const router = new VueRouter({
         path: '/supplier/list',
         name: 'supplier_url_list',
         component: require('./components/SW03/supplier/consultation/ListOfSupplier.vue').default
+    }, {
+        path: '/supplier/list/consult/:id(\\d+)',
+        name: 'supplier_url_consult',
+        component: require('./components/SW03/supplier/consultation/SupplierConsult.vue').default
+    }, {
+        path: '/supplier/list/update/:id(\\d+)',
+        name: 'supplier_url_update',
+        component: require('./components/SW03/supplier/consultation/SupplierUpdate.vue').default
     },{
         path: '/article/add',
         name: 'article_url_add',
@@ -214,8 +222,6 @@ Vue.component('navbar_sw03', require('./components/layout/NavbarSW03.vue').defau
 Vue.component('equipmentid', require('./components/SW01/equipment/referencing/EquipmentIDForm.vue').default);
 
 
-const app = new Vue({
-    router
-}).$mount('#app');
+const app = new Vue({router}).$mount('#app');
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SW03\IncmgInspController;
 use App\Http\Controllers\SW03\SupplierAdrController;
 use App\Http\Controllers\SW03\SupplierContactController;
 use App\Http\Controllers\SW03\SupplierController;
@@ -244,6 +245,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/supplier/list', function () {
+        return view('welcomeSW03');
+    });
+
+    Route::get('/supplier/list/consult/{id}', function () {
         return view('welcomeSW03');
     });
 
@@ -952,6 +957,16 @@ Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamil
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
 Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
+
+
+// Incoming Inspection Controller
+Route::post('/incmgInsp/verif', [IncmgInspController::class, 'verif_incmgInsp']);
+Route::post('/incmgInsp/add', [IncmgInspController::class, 'add_incmgInsp']);
+Route::post('/incmgInsp/update/{id}', [IncmgInspController::class, 'update_incmgInsp']);
+Route::get('/incmgInsp/send', [IncmgInspController::class, 'send_incmgInsp']);
+Route::get('/incmgInsp/send/raw/{id}', [IncmgInspController::class, 'send_incmgInspRaw']);
+Route::get('/incmgInsp/send/comp/{id}', [IncmgInspController::class, 'send_incmgInspComp']);
+Route::get('/incmgInsp/send/cons/{id}', [IncmgInspController::class, 'send_incmgInspCons']);
 
 
 //Enum 

@@ -4,33 +4,46 @@
 <!--Vue Component of the Id card of the supplier who call all the input component and send the data to the controllers-->
 
 <template>
-    <div class="supplierContact" v-if="loaded==true">
-        <h2 class="titleForm">Supplier's Contact(s)</h2>
-        <ContactIDForm
-            ref="askContact"
-            v-for="(component, key) in components"
-            :key="component.key"
-            :is="component.comp"
-            :name="component.name"
-            :functiun="component.function"
-            :email="component.email"
-            :phoneNumber="component.phoneNumber"
-            :principal="component.principal"
-            :validated="component.validate"
-            :id="component.id"
-            :is-in-consult-mod="isInConsultMod"
-            :is-in-edit-mod="isInModifMod"
-            :supplier_id="supplr_id"
-            @deleteContact="removeContact(key)"
-        />
-        <SaveButtonForm
-            ref="saveButton"
-            v-if="components.length >= 1"
-            @add="saveAllContact"
-            @update="saveAllContact"
-            :consultMod="this.isInConsultMod"
-            :modifMod="this.isInModifMod"
-        />
+    <div :class="divClass">
+        <div v-if="loaded === false">
+            <b-spinner variant="primary"></b-spinner>
+        </div>
+        <div v-if="loaded === true">
+            <h2 class="titleForm">Supplier's Contact(s)</h2>
+            <ContactIDForm
+                ref="askContact"
+                v-for="(component, key) in components"
+                :key="component.key"
+                :is="component.comp"
+                :name="component.name"
+                :function="component.function"
+                :email="component.email"
+                :phoneNumber="component.phoneNumber"
+                :principal="component.principal"
+                :validated="component.validate"
+                :id="component.id"
+                :consult-mod="isInConsultMod"
+                :modif-mod="isInModifMod"
+                :supplier_id="supplr_id"
+                :divClass="component.className"
+                @deleteContact="removeContact(key)"
+            />
+            <div v-if="!this.consultMod">
+                <button v-on:click="addContact">Add</button>
+                <div v-if="this.importedContact!==null">
+                    <button v-if="!modifMod " v-on:click="importContact">import</button>
+                </div>
+            </div>
+            <SaveButtonForm
+                saveAll
+                v-if="components.length > 1"
+                @add="saveAllContact"
+                @update="saveAllContact"
+                :consultMod="this.isInConsultMod"
+                :modifMod="this.isInModifMod"
+            />
+            <ImportationAlert ref="importAlert"/>
+        </div>
     </div>
 </template>
 
@@ -41,7 +54,8 @@ import SaveButtonForm from "../../../button/SaveButtonForm.vue";
 export default {
     components: {
         SaveButtonForm,
-        ContactIDForm
+        ContactIDForm,
+        ImportationAlert
     },
     props: {
         supplier_id: {
@@ -62,6 +76,10 @@ export default {
         importedContact: {
             type: Array,
             default: null
+        },
+        divClass: {
+            type: String,
+            default: "supplierContact"
         }
     },
     data() {
@@ -73,7 +91,7 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             import_id: this.import_id,
-            importedContact: this.importedContact,
+            contacts: this.importedContact,
             loaded: false
         };
     },
@@ -84,7 +102,8 @@ export default {
                 key: this.uniqueKey++,
             });
         },
-        addImportedContact(contactName, contactFunction, contactEmail, contactPhoneNumber, contactPrincipal, contactId, contactValidate) {
+        addImportedContact(contactName, contactFunction, contactEmail, contactPhoneNumber, contactPrincipal, contactId, contactValidate, className) {
+            console.log(contactName);
             this.components.push({
                 comp: "ContactIDForm",
                 key: this.uniqueKey++,
@@ -94,34 +113,35 @@ export default {
                 phoneNumber: contactPhoneNumber,
                 principal: contactPrincipal,
                 id: contactId,
-                validate: contactValidate
+                validate: contactValidate,
+                className: className
             });
         },
         removeContact(key) {
             this.components.splice(key, 1);
         },
         importContact() {
-            if (this.importedContact === null) {
+            if (this.contacts === null) {
                 ImportationAlert.showAlert();
             } else {
-                this.importedContact.forEach(contact => {
-                    this.addImportedContact(contact.name, contact.function, contact.email, contact.phoneNumber, contact.principal, contact.id, contact.validate);
+                this.contacts.forEach(contact => {
+                    this.addImportedContact(contact.supplrContact_name, contact.supplrContact_function, contact.supplrContact_email, contact.supplrContact_phoneNumber, contact.supplrContact_principal, contact.id, contact.supplrContact_validate, "importedContact"+contact.id);
                 });
-                this.importedContact = null;
+                this.contacts = null;
             }
         },
         saveAllContact(savedAs) {
             for (const component of this.$refs.askContact) {
                 if (this.isInModifMod) {
                     if (component.contact_id === null) {
-                        component.addSupplierAdr(savedAs);
+                        component.addSupplierContact(savedAs);
                     } else {
                         if (component.validate !== 'validated') {
-                            component.updateSupplierAdr(savedAs);
+                            component.updateSupplierContact(savedAs);
                         }
                     }
                 } else {
-                    component.addSupplierAdr(savedAs);
+                    component.addSupplierContact(savedAs);
                 }
             }
         }
@@ -137,15 +157,19 @@ export default {
                 });
         }
         this.loaded = true;
+        console.log(this.contacts);
+        console.log(this.components.length)
     },
     mounted() {
         if (this.isInConsultMod || this.isInModifMod) {
+            console.log("import");
             this.importContact();
         }
+        console.log(this.components.length)
     }
 }
 </script>
 
-<style scoped>
+<style>
 
 </style>

@@ -16,7 +16,8 @@
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>
             <b-form-radio
-                v-for="(option) in options"
+                v-for="(option, key) in options"
+                :key="key"
                 :v-model="data"
                 :value="option.value">
             {{ option.text }}
