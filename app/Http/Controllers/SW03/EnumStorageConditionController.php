@@ -64,4 +64,15 @@ class EnumStorageConditionController extends Controller
         }
         return response()->json($id) ;
     }
+
+    /**
+     * Function call by ArticleEnumStorageCondition with the route : /artFam/enum/storageCondition/link (post)
+    * Add a new field for the art fam storage condition enum in the data base
+     */
+
+     public function add_enum_storageCondition (Request $request){
+        $enum_type=EnumStorageCondition::create([
+            'value' => $request->value, 
+        ]);
+    }
 }
