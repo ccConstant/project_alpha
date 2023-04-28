@@ -6,8 +6,8 @@
 
 <template>
     <div>
-        <ArticleFamilyForm @CompFamID="put_compFamily_id"/>
-        <div v-if="this.compFam_id!=null">
+        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type"/>
+        <div v-if="this.artFam_id!=null">
             <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
@@ -18,7 +18,7 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-                            <ReferenceAStorageCondition :artType="'COMP'" :artFam_id="this.compFam_id" :import_id="this.compFam_id"/>
+                            <ReferenceAStorageCondition :artType="this.artFam_type" :artFam_id="this.artFam_id" :import_id="this.artFam_id"/>
                         </div>
                     </div>
                 </div>
@@ -41,12 +41,16 @@ export default {
     data() {
         return {
             /*ID of the equipment created*/
-            compFam_id: null,
+            artFam_id: null,
+            artFam_type: null,
         }
     },
     methods: {
-        put_compFamily_id(value) {
-            this.compFam_id = value;
+        put_artFamily_id(value) {
+            this.artFam_id = value;
+        },
+        put_artFamily_type(value) {
+            this.artFam_type = value;
         },
     }
 }

@@ -79,7 +79,7 @@ export default {
             count: 0,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
-            data_art_id: this.art_id,
+            data_art_id: this.artFam_id,
             all_storageCondition_validate: [],
             title_info: null,
             data_art_type: this.artType,

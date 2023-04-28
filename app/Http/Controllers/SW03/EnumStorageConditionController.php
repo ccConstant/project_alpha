@@ -3,7 +3,7 @@
 /*
 * Filename : EnumStorageConditionController.php
 * Creation date : 27 Apr 2023
-* Update date : 27 Apr 2023
+* Update date : 28 Apr 2023
 * This file is used to link the view files and the database that concern the EnumStorageCondition table. 
 * For example : send the fields of the enum, add a new field...
 */
@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumStorageCondition;
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
+use App\Models\SW03\RawFamily;
 
 class EnumStorageConditionController extends Controller
 {
@@ -67,12 +70,25 @@ class EnumStorageConditionController extends Controller
 
     /**
      * Function call by ArticleEnumStorageCondition with the route : /artFam/enum/storageCondition/link (post)
-    * Add a new field for the art fam storage condition enum in the data base
+    * Link a storage condition to an article in the data base
      */
 
-     public function add_enum_storageCondition (Request $request){
-        $enum_type=EnumStorageCondition::create([
-            'value' => $request->value, 
-        ]);
+    public function link_enum_storageCondition (Request $request, $id){
+        $enum=EnumStorageCondition::where('value', '=', $request->artFam_storageCondition)->first();
+        /*if ($request->artFam_type="COMP"){
+            $compFam=CompFamily::findOrFail($id);
+            $enum->compFamily()->attach($compFam) ;
+            return response()->json($enum->id) ;
+        }*/
+        if ($request->artFam_type="RAW"){
+            $rawFam=RawFamily::findOrFail($id);
+            $enum->rawFamily()->attach($rawFam) ;
+            return response()->json($enum->id) ;
+        }
+       /* if ($request->artFam_type="CONS"){
+            $consFam=ConsFamily::findOrFail($id);
+            $enum->consFamily()->attach($consFam) ;
+            return response()->json($enum->id) ;
+        }*/
     }
 }

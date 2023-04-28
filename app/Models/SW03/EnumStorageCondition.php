@@ -14,6 +14,8 @@ namespace App\Models\SW03;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
+use App\Models\SW03\RawFamily;
 
 class EnumStorageCondition extends Model
 {

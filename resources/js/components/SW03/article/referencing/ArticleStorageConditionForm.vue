@@ -92,6 +92,9 @@ export default {
         },
         art_id: {
             type: Number
+        },
+        art_type:{
+            type: String
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -110,7 +113,8 @@ export default {
             artFam_storageCondition: this.value,
             storageCondition_validate: this.validate,
             storageCondition_id: this.id,
-            art_id_add: this.eq_id,
+            art_id_add: this.art_id,
+            artFam_type:this.art_type,
             art_id_update: this.$route.params.id,
             errors: {},
             addSucces: false,
@@ -122,65 +126,54 @@ export default {
         }
     },
     methods: {
-        /*Sending to the controller all the information about the equipment so that it can be updated in the database
+        /*Sending to the controller all the information about the article so that it can be updated in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
-        @param lifesheet_created */
-        addStorageConditions(savedAs, reason, lifesheet_created) {
+        @param artSheet_created */
+        addStorageConditions(savedAs, reason, artSheet_created) {
             if (!this.addSucces) {
                 /*ID of the equipment in which the file will be added*/
                 let id;
-                /*If the user is not in modification mode, we set the id with the value of data equipment_id_add*/
+                /*If the user is not in modification mode, we set the id with the value of data art_id_add*/
                 if (!this.modifMod) {
-                    id = this.equipment_id_add
+                    id = this.art_id_add;
                     /*Else the user is in the update menu, we allocate to the id the value of the id get in the url*/
                 } else {
-                    id = this.equipment_id_update;
+                    id = this.art_id_update;
                 }
-                /*The First post to verify if all the fields are filled correctly
-                Name, location and validate option is sent to the controller*/
-                axios.post('/file/verif', {
-                    file_name: this.file_name,
-                    file_location: this.file_location,
-                    file_validate: savedAs,
+                console.log("hola")
+                console.log(this.artFam_storageCondition)
+                const consultUrl = (id) => `/artFam/enum/storageCondition/link/${id}`;
+                axios.post(consultUrl(id), {
+                    artFam_type: this.artFam_type,
+                    artFam_storageCondition: this.artFam_storageCondition,
                 })
-                    .then(response => {
-                        this.errors = {};
-                        /*If all the verifications passed, a new post this time to add the file in the database
-                        The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                        axios.post('/equipment/add/file', {
-                            file_name: this.file_name,
-                            file_location: this.file_location,
-                            file_validate: savedAs,
-                            eq_id: id
-                        })
-                            /*If the file is added successfully*/
-                            .then(response => {
-                                /*We test if a life sheet has been already created*/
-                                /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                                if (lifesheet_created == true) {
-                                    axios.post(`/history/add/equipment/${id}`, {
-                                        history_reasonUpdate: reason,
-                                    });
-                                    window.location.reload();
-                                }
-                                this.$refs.sucessAlert.showAlert(`Equipment file added successfully and saved as ${savedAs}`);
-                                /*If the user is not in modification mode*/
-                                if (!this.modifMod) {
-                                    /*The form pass in consulting mode and addSucces pass to True*/
-                                    this.isInConsultedMod = true;
-                                    this.addSucces = true
-                                }
-                                /*the id of the file take the value of the newly created id*/
-                                this.file_id = response.data;
-                                /*The validate option of this file takes the value of savedAs(Params of the function)*/
-                                this.file_validate = savedAs;
-                            })
-                            /*If the controller sends errors, we put it in the error object*/
-                            .catch(error => this.errors = error.response.data.errors);
-                    })
-                    //If the controller sends errors, we put it in the error object
-                    .catch(error => this.errors = error.response.data.errors);
+                    
+                /*If the storage condition have been linked successfully*/
+                .then(response => {
+                    /*We test if a article sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                    /* TODO 
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }*/
+                    this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
+                    /*If the user is not in modification mode*/
+                    if (!this.modifMod) {
+                        /*The form pass in consulting mode and addSucces pass to True*/
+                        this.isInConsultedMod = true;
+                        this.addSucces = true
+                    }
+                    /*the id of the file take the value of the newly created id*/
+                    this.storageCondition_id = response.data;
+                    /*The validate option of this file takes the value of savedAs(Params of the function)*/
+                    this.storageCondition_validate = savedAs;
+                })
+                /*If the controller sends errors, we put it in the error object*/
+                .catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
