@@ -49,6 +49,8 @@ use App\Http\Controllers\SW01\EnumUsageMetrologicalLevelController;
 use App\Http\Controllers\SW01\EnumVerifAcceptanceAuthorityController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\SW03\CompFamilyController;
+use App\Http\Controllers\SW03\EnumPurchasedByController;
+use App\Http\Controllers\SW03\EnumStorageConditionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,6 +114,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/enum', function () {
         return view('welcome');
+    });
+
+    Route::get('/SW03/enum', function () {
+        return view('welcomeSW03');
     });
 
     Route::get('/equipment/life_event', function () {
@@ -946,3 +952,14 @@ Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamil
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
 Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
+
+
+//Enum 
+Route::get('/artFam/enum/purchasedBy', [EnumPurchasedByController::class, 'send_enum_purchasedBy']);
+Route::post('/artFam/enum/purchasedBy/add', [EnumPurchasedByController::class, 'add_enum_purchasedBy']);
+Route::post('/artFam/enum/purchasedBy/verif/{id}', [EnumPurchasedByController::class, 'verif_enum_purchasedBy']);
+Route::get('/artFam/enum/storageCondition', [EnumStorageConditionController::class, 'send_enum_storageCondition']);
+Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController::class, 'add_enum_storageCondition']);
+Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
+
+

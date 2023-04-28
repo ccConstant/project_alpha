@@ -31,7 +31,7 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
-                            <EnumElement error_name='enum_storageConditions' :enumList="enum_storageConditions" title="Article Fam Storage Conditions " url="#" />
+                            <EnumElement error_name='enum_storageCondition' :enumList="enum_storageCondition" title="Article Fam Storage Conditions " url="/artFam/enum/storageCondition/" />
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@ export default {
     data(){
         return{
             enum_purchased_by:[],
-            enum_storageConditions:[],
+            enum_storageCondition:[],
             loaded:false
 
         }
@@ -60,10 +60,18 @@ export default {
         &&  this.$userId.user_updateEnumRight!=true ){
                 this.$router.replace({ name: "home" })
         }
-        /*Ask for the controller the different equipment type option */
+        /*Ask for the controller the different art purchased by option */
         axios.get('/artFam/enum/purchasedBy')
             .then (response=> {
-                this.enum_purchased_by=response.data,
+                this.enum_purchased_by=response.data;
+            })
+            .catch(error => console.log(error)) ;
+
+        /*Ask for the controller the different art storage condition option */
+        axios.get('/artFam/enum/storageCondition')
+            .then (response=> {
+                console.log(response.data),
+                this.enum_storageCondition=response.data,
                 this.loaded=true;
             })
             .catch(error => console.log(error)) ;

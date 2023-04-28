@@ -129,7 +129,9 @@ export default {
         InputTextAreaForm,
         RadioGroupForm,
         SaveButtonForm,
-        SuccessAlert
+        SuccessAlert,
+       
+
     },
     /*--------Declaration of the different props:--------
         Id : Id of the article family
@@ -212,11 +214,13 @@ export default {
             artFam_purchasedBy: this.purchasedBy,
             artFam_variablesCharac: this.variablesCharac,
             artFam_version: this.version,
+            artFam_storageCondition : this.storageCondition,
             artFam_active: this.active,
             artFam_validate: this.validate,
             isInConsultMod: this.consultMod,
             isInModifMod : this.modifMod,
             enum_purchasedBy: [],
+            enum_storageCondition:[],
             artFam_id: this.$route.params.id,
             errors: {},
             addSuccess: false,
@@ -237,6 +241,11 @@ export default {
         /*Ask for the controller different purchased by option */
         axios.get('/artFam/enum/purchasedBy')
             .then(response => this.enum_purchasedBy = response.data)
+            .catch(error => console.log(error));
+
+        /*Ask for the controller different storage condition option */
+        axios.get('/artFam/enum/storageCondition')
+            .then(response => this.enum_storageCondition = response.data)
             .catch(error => console.log(error));
             this.loaded=true
     },
