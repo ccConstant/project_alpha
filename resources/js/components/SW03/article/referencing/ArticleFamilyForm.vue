@@ -300,7 +300,7 @@ export default {
                             })
                         .catch(error => this.errors = error.response.data.errors);
                 }else{
-                    if (this.artFam_type){
+                    if (this.artFam_type=="RAW"){
                         console.log("ref"+this.artFam_ref)
                         console.log("des"+this.artFam_design)
                         console.log("dra"+this.artFam_drawingPath)
@@ -349,6 +349,59 @@ export default {
                             .catch(error => this.errors = error.response.data.errors);
                         })
                         .catch(error => this.errors = error.response.data.errors);
+                    }else{
+                        if (this.artFam_type=="CONS"){
+                            console.log("ref"+this.artFam_ref)
+                            console.log("des"+this.artFam_design)
+                            console.log("dra"+this.artFam_drawingPath)
+                            console.log("pur"+this.artFam_purchasedBy)
+                            console.log("var"+this.artFam_variablesCharac)
+                            console.log("act"+this.artFam_active)
+                            console.log("val"+savedAs)
+                            console.log("type"+this.artFam_type)
+                            console.log("before verif")
+                            axios.post('/cons/family/verif', {
+                                artFam_ref: this.artFam_ref,
+                                artFam_design: this.artFam_design,
+                                artFam_drawingPath: this.artFam_drawingPath,
+                                artFam_purchasedBy: this.artFam_purchasedBy,
+                                artFam_version: this.artFam_version,
+                                artFam_variablesCharac: this.artFam_variablesCharac,
+                                artFam_active: this.artFam_active,
+                                artFam_validate: savedAs,
+                            })
+                            /*If the data are correct, we send them to the controller for add them in the database*/
+                            .then(response => {
+                                console.log("after verif")
+                                this.errors = {};
+                                axios.post('/cons/family/add', {
+                                    artFam_ref: this.artFam_ref,
+                                    artFam_design: this.artFam_design,
+                                    artFam_drawingPath: this.artFam_drawingPath,
+                                    artFam_purchasedBy: this.artFam_purchasedBy,
+                                    artFam_variablesCharac: this.artFam_variablesCharac,
+                                    artFam_active: this.artFam_active,
+                                    artFam_version: this.artFam_version,
+                                    artFam_validate: savedAs,
+
+                                })
+                                /*If the data have been added in the database, we show a success message*/
+                                .then(response => {
+                                    console.log("after add")
+                                    console.log(response.data)
+                                    this.addSuccess = true;
+                                    this.isInConsultMod = true;
+                                    console.log(this.addSuccess)
+                                    console.log(this.isInConsultMod)
+                                    this.$snotify.success(`ConsFam ID added successfully and saved as ${savedAs}`);
+                                    this.artFam_id = response.data;
+                                    this.$emit('ArtFamID', this.artFam_id);
+                                    this.$emit('ArtFamType', this.artFam_type);
+                                })
+                                .catch(error => this.errors = error.response.data.errors);
+                            })
+                            .catch(error => this.errors = error.response.data.errors);
+                        }
                     }
                 }
             }

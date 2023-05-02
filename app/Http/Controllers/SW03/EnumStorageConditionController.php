@@ -75,20 +75,22 @@ class EnumStorageConditionController extends Controller
 
     public function link_enum_storageCondition (Request $request, $id){
         $enum=EnumStorageCondition::where('value', '=', $request->artFam_storageCondition)->first();
-        /*if ($request->artFam_type="COMP"){
+        if ($request->artFam_type=="COMP"){
             $compFam=CompFamily::findOrFail($id);
             $enum->compFamily()->attach($compFam) ;
             return response()->json($enum->id) ;
-        }*/
-        if ($request->artFam_type="RAW"){
-            $rawFam=RawFamily::findOrFail($id);
-            $enum->rawFamily()->attach($rawFam) ;
-            return response()->json($enum->id) ;
+        }else{
+            if ($request->artFam_type=="RAW"){
+                $rawFam=RawFamily::findOrFail($id);
+                $enum->rawFamily()->attach($rawFam) ;
+                return response()->json($enum->id) ;
+            }else{
+                if ($request->artFam_type=="CONS"){
+                    $consFam=ConsFamily::findOrFail($id);
+                    $enum->consFamily()->attach($consFam) ;
+                    return response()->json($enum->id) ;
+                }
+            }
         }
-       /* if ($request->artFam_type="CONS"){
-            $consFam=ConsFamily::findOrFail($id);
-            $enum->consFamily()->attach($consFam) ;
-            return response()->json($enum->id) ;
-        }*/
     }
 }

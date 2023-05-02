@@ -6,15 +6,11 @@ use App\Http\Controllers\SW03\DimensionnalTestController;
 use App\Http\Controllers\SW03\DocControlController;
 use App\Http\Controllers\SW03\FunctionnalTestController;
 use App\Http\Controllers\SW03\IncmgInspController;
-use App\Http\Controllers\SW03\RawFamilyController;
 use App\Http\Controllers\SW03\SupplierAdrController;
 use App\Http\Controllers\SW03\SupplierContactController;
 use App\Http\Controllers\SW03\SupplierController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SW01\EquipmentController ;
-
-
-
 use App\Http\Controllers\SW01\DimensionController ;
 use App\Http\Controllers\SW01\PowerController ;
 use App\Http\Controllers\SW01\SpecialProcessController ;
@@ -58,6 +54,9 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\SW03\CompFamilyController;
 use App\Http\Controllers\SW03\EnumPurchasedByController;
 use App\Http\Controllers\SW03\EnumStorageConditionController;
+use App\Http\Controllers\SW03\RawFamilyController;
+use App\Http\Controllers\SW03\ConsFamilyController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -963,7 +962,8 @@ Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamil
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
 Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
-
+Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
+Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
 
 // Incoming Inspection Controller
 Route::post('/incmgInsp/verif', [IncmgInspController::class, 'verif_incmgInsp']);
@@ -1016,5 +1016,5 @@ Route::post('/artFam/enum/purchasedBy/verif/{id}', [EnumPurchasedByController::c
 Route::get('/artFam/enum/storageCondition', [EnumStorageConditionController::class, 'send_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController::class, 'add_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
-
+Route::post('/artFam/enum/storageCondition/link/{id}', [EnumStorageConditionController::class, 'link_enum_storageCondition']);
 
