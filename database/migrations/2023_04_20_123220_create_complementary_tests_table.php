@@ -27,11 +27,12 @@ class CreateComplementaryTestsTable extends Migration
             $table->string('compTest_name');
             $table->string('compTest_unitValue');
             $table->double('compTest_expectedValue');
-            $table->enum('compTest_severityLevel', ['I', 'II', 'III', 'IV']);
-            $table->enum('compTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced']);
+            $table->enum('compTest_severityLevel', ['I', 'II', 'III', 'IV'])->nullable();
+            $table->enum('compTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
             $table->string('compTest_expectedMethod');
             $table->unsignedBigInteger('incmgInsp_id');
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
+            $table->enum('compTest_sampling',  ['sampling', '100%']);
         });
     }
 

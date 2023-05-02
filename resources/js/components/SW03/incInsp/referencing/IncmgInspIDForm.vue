@@ -5,7 +5,7 @@
 
 <template>
     <div :class="divClass">
-        <div v-if="loaded==false">
+        <div v-if="loaded===false">
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
@@ -62,23 +62,54 @@
                     <DeleteComponentButton :validationMode="incmgInsp_validate" :consultMod="this.isInConsultedMod"
                                            @deleteOk="deleteComponent"/>
                 </div>
-                <div v-if="incmgInsp_id !== null">
+            </form>
+            <div v-if="incmgInsp_id !== null">
+                <div class="accordion">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
+                        <h2 class="accordion-header" id="headingDocControl">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    data-bs-target="#collapseDocControl" aria-expanded="true" aria-controls="collapseDocControl">
                                 Documentary Control
                             </button>
                         </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                        <div id="collapseDocControl" class="accordion-collapse collapse show" aria-labelledby="headingDocControl">
                             <div class="accordion-body">
-                                <ReferenceADocControl/>
+                                <ReferenceADocControl :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAspTest">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
+                                Aspect Test
+                            </button>
+                        </h2>
+                        <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
+                            <div class="accordion-body">
+                                <ReferenceAnAspTest :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FuncTest -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFuncTest">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFuncTest" aria-expanded="true" aria-controls="collapseFuncTest">
+                                Functional Test
+                            </button>
+                        </h2>
+                        <div id="collapseFuncTest" class="accordion-collapse collapse show" aria-labelledby="headingFuncTest">
+                            <div class="accordion-body">
+                                <ReferenceAFuncTest :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <SucessAlert ref="sucessAlert"/>
+            </div>
         </div>
     </div>
 </template>
@@ -90,10 +121,13 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import ReferenceADocControl from "./ReferenceADocControl.vue";
-
+import ReferenceAnAspTest from "./ReferenceAnAspTest.vue";
+import ReferenceAFuncTest from "./ReferenceAFuncTest.vue";
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        ReferenceAFuncTest,
+        ReferenceAnAspTest,
         ReferenceADocControl,
         InputTextForm,
         SaveButtonForm,
@@ -181,11 +215,11 @@ export default {
         addIncmgInsp(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
                 if (this.article_type === 'cons') {
-                    this.consFam_id = id;
+                    this.consFam_id = this.article_id;
                 } else if (this.article_type === 'raw') {
-                    this.rawFam_id = id;
+                    this.rawFam_id = this.article_id;
                 } else if (this.article_type === 'comp') {
-                    this.compFam_id = id;
+                    this.compFam_id = this.article_id;
                 }
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
@@ -222,7 +256,7 @@ export default {
                             this.addSucces = true
                         }
                         /*the id of the file take the value of the newly created id*/
-                        this.incmgInsp_id = response.data;
+                        this.incmgInsp_id = response.data.id;
                         /*The validate option of this file takes the value of savedAs(Params of the function)*/
                         this.incmgInsp_validate = savedAs;
                     })
@@ -307,12 +341,7 @@ export default {
         }
     },
     created() {
-        axios.get('/info/send/file')
-            .then(response => {
-                this.infos_file = response.data;
-                this.loaded = true;
-            })
-            .catch(error => console.log(error));
+        this.loaded = true;
     }
 }
 </script>

@@ -5,61 +5,112 @@
 
 <template>
     <div :class="divClass">
-        <div v-if="loaded==false">
+        <div v-if="loaded===false">
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <InputTextForm
-                    :Errors="errors.docControl_name"
+                    v-if="data_article_type === 'comp'"
                     name="name"
-                    label="Doc Control Name :"
-                    v-model="docControl_name"
-                    :isDisabled="!!isInConsultedMod"
+                    label="Aspect Test Name :"
+                    v-model="funcTest_name"
+                    :isDisabled="isInConsultedMod"
                     :info_text="null"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
                     isRequired
+                    :Errors="errors.funcTest_name"
                 />
                 <InputTextForm
-                    :Errors="errors.docControl_reference"
-                    name="reference"
-                    label="Doc Control Reference :"
-                    v-model="docControl_reference"
+                    v-if="data_article_type === 'comp'"
+                    name="expectedMethod"
+                    label="Expected Method :"
+                    v-model="funcTest_expectedMethod"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
                     isRequired
+                    :Errors="errors.funcTest_expectedMethod"
                 />
                 <InputTextForm
-                    v-if="this.data_article_type === 'raw' || this.data_article_type === 'comp'"
-                    :Errors="errors.docControl_materialCertiSpec"
-                    name="matCertifSpec"
-                    label="Doc Control Material Certification Specifications :"
-                    v-model="docControl_materialCertiSpec"
+                    v-if="data_article_type === 'comp'"
+                    name="expectedValue"
+                    label="Expected Value :"
+                    v-model="funcTest_expectedValue"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
-                    :min="2"
-                    :max="255"
+                    :min="1"
+                    :max="50"
                     :inputClassName="null"
                     isRequired
+                    :Errors="errors.funcTest_expectedValue"
+                />
+                <InputSelectForm
+                    :name="'Sampling'"
+                    :label="'Sampling :'"
+                    isRequired
+                    :options="[
+                        {id: 'Sampling', value: 'sampling', text: 'sampling'},
+                        {id: 'Sampling', value: '100%', text: '100%'}
+                    ]"
+                    :isDisabled="this.isInConsultedMod"
+                    v-model="funcTest_sampling"
+                    :info_text="null"
+                    :Errors="errors.funcTest_sampling"
+                    :selctedOption="funcTest_sampling"
+                    :id_actual="'Sampling'"
                 />
                 <InputTextForm
-                    v-if="this.data_article_type === 'cons'"
-                    :Errors="errors.docControl_fds"
-                    name="fds"
-                    label="Doc Control FDS :"
-                    v-model="docControl_fds"
+                    v-if="data_article_type === 'comp'"
+                    name="unitValue"
+                    label="Unit Value :"
+                    v-model="funcTest_unitValue"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
-                    :min="2"
-                    :max="255"
+                    :min="1"
+                    :max="10"
                     :inputClassName="null"
                     isRequired
+                    :Errors="errors.funcTest_unitValue"
+                />
+                <InputSelectForm
+                    v-if="this.funcTest_sampling === 'sampling'"
+                    name="SeverityLevel"
+                    :Errors="errors.funcTest_severityLevel"
+                    label="Severity Level :"
+                    :options="[
+                        {id: 'SeverityLevel', value: 'I', text: 'I'},
+                        {id: 'SeverityLevel', value: 'II', text: 'II'},
+                        {id: 'SeverityLevel', value: 'III', text: 'III'},
+                        {id: 'SeverityLevel', value: 'IV', text: 'IV'}
+                    ]"
+                    :selctedOption="funcTest_severityLevel"
+                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'sampling'"
+                    v-model="funcTest_severityLevel"
+                    :info_text="'SeverityLevel'"
+                    :id_actual="'SeverityLevel'"
+                />
+                <InputSelectForm
+                    v-if="this.funcTest_sampling === 'sampling'"
+                    :name="'ControlLevel'"
+                    :label="'Control Level :'"
+                    isRequired
+                    :options="[
+                        {id: 'ControlLevel', value: 'Reduced', text: 'Reduced'},
+                        {id: 'ControlLevel', value: 'Normal', text: 'Normal'},
+                        {id: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
+                    ]"
+                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'sampling'"
+                    v-model="funcTest_controlLevel"
+                    :info_text="null"
+                    :Errors="errors.funcTest_controlLevel"
+                    :selctedOption="funcTest_controlLevel"
+                    :id_actual="'ControlLevel'"
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces===false ">
@@ -96,10 +147,12 @@ import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
+import InputSelectForm from "../../../input/InputSelectForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        InputSelectForm,
         InputTextForm,
         SaveButtonForm,
         DeleteComponentButton,
@@ -116,16 +169,25 @@ export default {
         article_id: ID of the equipment in which the file will be added
     ---------------------------------------------------*/
     props: {
-        reference: {
+        severityLevel: {
             type: String
         },
-        docControlName: {
+        controlLevel: {
             type: String
         },
-        materialCertiSpec: {
+        expectedMethod: {
             type: String
         },
-        fds: {
+        expectedValue: {
+            type: String
+        },
+        name: {
+            type: String
+        },
+        unitValue: {
+            type: String
+        },
+        sampling: {
             type: String
         },
         consultMod: {
@@ -169,11 +231,14 @@ export default {
 -----------------------------------------------------------*/
     data() {
         return {
-            docControl_id: this.id,
-            docControl_reference: this.reference,
-            docControl_name: this.name,
-            docControl_materialCertiSpec: this.materialCertiSpec,
-            docControl_fds: this.fds,
+            funcTest_id: this.id,
+            funcTest_severityLevel: this.severityLevel,
+            funcTest_controlLevel: this.controlLevel,
+            funcTest_expectedMethod: this.expectedMethod,
+            funcTest_expectedValue: this.expectedValue,
+            funcTest_name: this.name,
+            funcTest_unitValue: this.unitValue,
+            funcTest_sampling: this.sampling,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -193,36 +258,33 @@ export default {
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
-                console.log(this.data_article_type);
-                console.log(this.data_article_id);
-                console.log(this.data_incmgInsp_id);
-                console.log(this.docControl_reference);
-                console.log(this.docControl_name);
-                console.log(this.docControl_materialCertiSpec);
-                console.log(this.docControl_fds);
-                axios.post('/incmgInsp/docControl/verif', {
-                    docControl_articleType: this.data_article_type,
-                    docControl_reference: this.docControl_reference,
-                    docControl_name: this.docControl_name,
-                    docControl_materialCertifSpe: this.docControl_materialCertiSpec,
-                    docControl_FDS: this.docControl_fds,
-                    incmgInsp_id: this.data_incmgInsp_id
+                axios.post('/incmgInsp/funcTest/verif', {
+                    funcTest_name: this.funcTest_name,
+                    funcTest_severityLevel: this.funcTest_severityLevel,
+                    funcTest_levelOfControl: this.funcTest_controlLevel,
+                    funcTest_expectedMethod: this.funcTest_expectedMethod,
+                    funcTest_expectedValue: this.funcTest_expectedValue,
+                    incmgInsp_id: this.data_incmgInsp_id,
+                    funcTest_articleType: this.data_article_type,
+                    funcTest_sampling: this.funcTest_sampling,
                 })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                    axios.post('/incmgInsp/docControl/add', {
-                        docControl_articleType: this.data_article_type,
-                        docControl_reference: this.docControl_reference,
-                        docControl_name: this.docControl_name,
-                        docControl_materialCertifSpe: this.docControl_materialCertiSpec,
-                        docControl_FDS: this.docControl_fds,
-                        incmgInsp_id: this.data_incmgInsp_id
+                    axios.post('/incmgInsp/funcTest/add', {
+                        funcTest_name: this.funcTest_name,
+                        funcTest_severityLevel: this.funcTest_severityLevel,
+                        funcTest_levelOfControl: this.funcTest_controlLevel,
+                        funcTest_expectedMethod: this.funcTest_expectedMethod,
+                        funcTest_expectedValue: this.funcTest_expectedValue,
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        funcTest_articleType: this.data_article_type,
+                        funcTest_sampling: this.funcTest_sampling,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
-                        this.$refs.sucessAlert.showAlert(`Documentary control added successfully`);
+                        SucessAlert.showAlert(`Functional Test added successfully and saved as ${savedAs}`);
                         if (!this.modifMod) {
                             /*The form pass in consulting mode and addSucces pass to True*/
                             this.isInConsultedMod = true;
@@ -230,10 +292,10 @@ export default {
                         }
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => console.log(error));
+                    .catch(error => this.errors = error.response.data.errors);
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => console.log(error.response.data.errors));
+                .catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -249,8 +311,8 @@ export default {
         },
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
-            this.$emit('deleteDocControl', '')
-            this.$refs.sucessAlert.showAlert(`Documentary Control Form deleted successfully`);
+            this.$emit('deleteAspTest', '')
+            this.$refs.sucessAlert.showAlert(`Empty Aspect Test Form deleted successfully`);
         }
     },
     created() {

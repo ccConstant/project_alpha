@@ -90,7 +90,7 @@ export default {
             uniqueKey: 0,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
-            import_id: this.import_id,
+            import_ID: this.import_id,
             contacts: this.importedContact,
             loaded: false
         };
@@ -125,7 +125,16 @@ export default {
                 ImportationAlert.showAlert();
             } else {
                 this.contacts.forEach(contact => {
-                    this.addImportedContact(contact.supplrContact_name, contact.supplrContact_function, contact.supplrContact_email, contact.supplrContact_phoneNumber, contact.supplrContact_principal, contact.id, contact.supplrContact_validate, "importedContact"+contact.id);
+                    this.addImportedContact(
+                        contact.supplrContact_name,
+                        contact.supplrContact_function,
+                        contact.supplrContact_email,
+                        contact.supplrContact_phoneNumber,
+                        contact.supplrContact_principal,
+                        contact.id,
+                        contact.supplrContact_validate,
+                        "importedContact"+contact.id
+                    );
                 });
                 this.contacts = null;
             }
@@ -147,8 +156,8 @@ export default {
         }
     },
     created() {
-        if (this.import_id !== null) {
-            axios.get('/supplier/contact/send/' + this.import_id)
+        if (this.import_ID !== null) {
+            axios.get('/supplier/contact/send/' + this.import_ID)
                 .then(response => {
                     this.importedContact = response.data;
                 })

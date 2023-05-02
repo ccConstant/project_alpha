@@ -24,14 +24,15 @@ class CreateDimensionalTestsTable extends Migration
         Schema::create('dimensional_tests', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('dimTest_severityLevel', ['I', 'II', 'III', 'IV']);
-            $table->enum('dimTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced']);
+            $table->enum('dimTest_severityLevel', ['I', 'II', 'III', 'IV'])->nullable();
+            $table->enum('dimTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
             $table->string('dimTest_expectedMethod');
             $table->double('dimTest_expectedValue');
             $table->unsignedBigInteger('incmgInsp_id');
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             $table->string('dimTest_name');
             $table->string('dimTest_unitValue');
+            $table->enum('dimTest_sampling',  ['sampling', '100%']);
         });
     }
 
