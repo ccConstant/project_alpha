@@ -56,6 +56,10 @@ use App\Http\Controllers\SW03\EnumPurchasedByController;
 use App\Http\Controllers\SW03\EnumStorageConditionController;
 use App\Http\Controllers\SW03\RawFamilyController;
 use App\Http\Controllers\SW03\ConsFamilyController;
+use App\Http\Controllers\SW03\CompFamilyMemberController;
+use App\Http\Controllers\SW03\ConsFamilyMemberController;
+use App\Http\Controllers\SW03\RawFamilyMemberController;
+
 
 
 /*
@@ -958,12 +962,22 @@ Route::post('/supplier/contact/update/{id}', [SupplierContactController::class, 
 //ArticleController
 Route::post('/comp/family/verif', [CompFamilyController::class, 'verif_compFamily']);
 Route::post('/comp/family/add', [CompFamilyController::class, 'add_compFamily']);
+Route::post('/comp/mb/verif', [CompFamilyMemberController::class, 'verif_compFamilyMember']);
+Route::post('/comp/mb/add/{id}', [CompFamilyMemberController::class, 'add_compFamilyMember']);
+
+
+
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
+Route::post('/cons/mb/verif', [ConsFamilyMemberController::class, 'verif_consFamilyMember']);
+Route::post('/cons/mb/add/{id}', [ConsFamilyMemberController::class, 'add_consFamilyMember']);
+
+
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
 Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
-Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
-Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
+Route::post('/raw/mb/verif', [RawFamilyMemberController::class, 'verif_rawFamilyMember']);
+Route::post('/raw/mb/add/{id}', [RawFamilyMemberController::class, 'add_rawFamilyMember']);
+
 
 // Incoming Inspection Controller
 Route::post('/incmgInsp/verif', [IncmgInspController::class, 'verif_incmgInsp']);

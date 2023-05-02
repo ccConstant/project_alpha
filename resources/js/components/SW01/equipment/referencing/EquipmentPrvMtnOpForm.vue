@@ -43,7 +43,7 @@
                     <InputSelectForm @clearSelectError='clearSelectError' name="prvMtnOp_symbolPeriodicity"
                                      label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity"
                                      :options="enum_periodicity_symbol" :number="this.prvMtnOp_id"
-                                     :id_actual="SymbolPeriodicity" :selctedOption="this.prvMtnOp_symbolPeriodicity"
+                                     :id_actual="SymbolPeriodicity" :selctedOption="prvMtnOp_symbolPeriodicity"
                                      :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass"
                                      v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
                 </div>
@@ -388,6 +388,9 @@ export default {
         /*Clears all the error of the targeted field*/
         clearError(event) {
             delete this.errors[event.target.name];
+        },
+        updateEnumPeriodicitySymbol(event){
+            this.prvMtnOp_symbolPeriodicity = event.target.value;
         },
         clearRadioError() {
             delete this.errors["prvMtnOp_puttingIntoService"]

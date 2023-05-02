@@ -28,11 +28,11 @@
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_ref"
-                    name="artFam_ref" label="Component Reference"
+                    name="artFam_ref" label="Article Reference"
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="artFam_ref"
-                    :info_text="'Reference of the component'"
+                    :info_text="'Reference of the article'"
                     :min="3"
                     :max="255"
                 />
@@ -95,7 +95,7 @@
                     :isDisabled="!!isInConsultMod" 
                     v-model="artFam_purchasedBy"
                     :info_text="'Article Family Purchased By'" 
-                    :id_actual="artFamPurchasedBy"/>
+                    :id_actual="PurchasedBy"/>
 
                 <SaveButtonForm v-if="this.addSuccess==false"
                     ref="saveButton"
@@ -231,9 +231,9 @@ export default {
             ArticleFamilyType: "articleFamType",
             artFam_type:"",
             enumArticleFam_type: [
-                {id: 'artFam_type', value: "COMP", text: 'COMP'},
-                {id: 'artFam_type', value: "RAW", text: 'RAW'},
-                {id: 'artFam_type', value: "CONS", text: 'CONS'}
+                {id_enum: 'artFam_type', value: "COMP", text: 'COMP'},
+                {id_enum: 'artFam_type', value: "RAW", text: 'RAW'},
+                {id_enum: 'artFam_type', value: "CONS", text: 'CONS'}
             ],
             savedAs: this.validate
         }
