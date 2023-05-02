@@ -23,6 +23,10 @@ class CreatePivotConsFamStoCond extends Migration
     {
         Schema::create('pivot_cons_fam_sto_cond', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('consFam_id') ; 
+            $table->foreign('consFam_id')->references('id')->on('cons_families') ->onDelete('cascade') ;
+            $table->unsignedBigInteger('storageCondition_id') ; 
+            $table->foreign('storageCondition_id')->references('id')->on('enum_storage_conditions') ->onDelete('cascade') ;
             $table->timestamps();
         });
     }
