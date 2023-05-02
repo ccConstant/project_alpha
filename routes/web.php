@@ -6,15 +6,11 @@ use App\Http\Controllers\SW03\DimensionnalTestController;
 use App\Http\Controllers\SW03\DocControlController;
 use App\Http\Controllers\SW03\FunctionnalTestController;
 use App\Http\Controllers\SW03\IncmgInspController;
-use App\Http\Controllers\SW03\RawFamilyController;
 use App\Http\Controllers\SW03\SupplierAdrController;
 use App\Http\Controllers\SW03\SupplierContactController;
 use App\Http\Controllers\SW03\SupplierController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SW01\EquipmentController ;
-
-
-
 use App\Http\Controllers\SW01\DimensionController ;
 use App\Http\Controllers\SW01\PowerController ;
 use App\Http\Controllers\SW01\SpecialProcessController ;
