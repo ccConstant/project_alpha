@@ -5,7 +5,7 @@
 
 <template>
     <div class="crit">
-        <h2 class="titleForm" v-if="components.length > 0">Criticality</h2>
+        <h2 class="titleForm">Criticality</h2>
         <!--Adding to the vue dimTestIDForm by going through the components array with the v-for-->
         <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
         <!--The emitted deleteFile is caught here and call the function getContent -->

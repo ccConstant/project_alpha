@@ -265,6 +265,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/article/add', function () {
         return view('welcomeSW03');
     });
+
+    Route::get('/article/list', function () {
+        return view('welcomeSW03');
+    });
 });
 
 
@@ -965,19 +969,21 @@ Route::post('/comp/family/verif', [CompFamilyController::class, 'verif_compFamil
 Route::post('/comp/family/add', [CompFamilyController::class, 'add_compFamily']);
 Route::post('/comp/mb/verif', [CompFamilyMemberController::class, 'verif_compFamilyMember']);
 Route::post('/comp/mb/add/{id}', [CompFamilyMemberController::class, 'add_compFamilyMember']);
-
+Route::get('/comp/family/send', [CompFamilyController::class, 'send_compFamilies']);
 
 
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
 Route::post('/cons/mb/verif', [ConsFamilyMemberController::class, 'verif_consFamilyMember']);
 Route::post('/cons/mb/add/{id}', [ConsFamilyMemberController::class, 'add_consFamilyMember']);
+Route::get('/cons/family/send', [ConsFamilyController::class, 'send_consFamilies']);
 
 
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
 Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
 Route::post('/raw/mb/verif', [RawFamilyMemberController::class, 'verif_rawFamilyMember']);
 Route::post('/raw/mb/add/{id}', [RawFamilyMemberController::class, 'add_rawFamilyMember']);
+Route::get('/raw/family/send', [RawFamilyController::class, 'send_rawFamilies']);
 
 
 // Incoming Inspection Controller
@@ -1038,4 +1044,5 @@ Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_c
 Route::post('/artFam/criticality/add', [CriticalityController::class, 'add_criticality']);
 Route::post('/artFam/criticality/update/{id}', [CriticalityController::class, 'update_criticality']);
 Route::get('/artFam/criticality/send/{id}', [CriticalityController::class, 'send_criticality']);
+
 

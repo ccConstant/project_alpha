@@ -1,12 +1,12 @@
 <?php
 
 /*
-* Filename : ConsFamilyController.php 
+* Filename : ConsFamilyController.php
 * Creation date : 2 May 2023
 * Update date : 2 May 2023
-* This file is used to link the view files and the database that concern the cons family table. 
+* This file is used to link the view files and the database that concern the cons family table.
 * For example : add a cons family in the data base, update a cons family...
-*/ 
+*/
 
 
 namespace App\Http\Controllers\SW03;
@@ -38,7 +38,7 @@ class ConsFamilyController extends Controller
                     'artFam_version' => 'required|min:2|max:4|String',
                 ],
                 [
-                    
+
                     'artFam_ref.required' => 'You must enter a reference for your cons family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
@@ -71,10 +71,10 @@ class ConsFamilyController extends Controller
             }
 
 
-           
+
         }else{
              //-----CASE artFam->validate=drafted or artFam->validate=to be validated----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -99,13 +99,13 @@ class ConsFamilyController extends Controller
                     'artFam_variablesCharac.String' => 'You must enter a string ',
                     'artFam_version.max' => 'You must enter a maximum of 4 characters',
                     'artFam_version.String' => 'You must enter a string ',
-                   
+
                 ]
             );
         }
 
          //we checked if the reference entered is already used for another cons family
-         $cons_already_exist=ConsFamily::where('consFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first() ; 
+         $cons_already_exist=ConsFamily::where('consFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first() ;
          if ($cons_already_exist!=null){
              return response()->json([
                  'errors' => [
@@ -117,7 +117,7 @@ class ConsFamilyController extends Controller
 
     /**
      * Function call by ArticleFamilyForm.vue when the form is submitted for insert with the route : /cons/family/add (post)
-     * Add a new enregistrement of cons family in the data base with the informations entered in the form 
+     * Add a new enregistrement of cons family in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new cons family
      */
     public function add_consFamily(Request $request){
@@ -137,11 +137,31 @@ class ConsFamilyController extends Controller
             'consFam_validate' => $request->artFam_validate,
             'consFam_version' => $request->artFam_version,
             'consFam_active' => $request->artFam_active,
-        ]) ; 
+        ]) ;
 
         $consFamily_id=$consFamily->id ;
-        
+
         return response()->json($consFamily_id) ;
+    }
+
+    public function send_consFamilies(){
+        $consFamilies=ConsFamily::all() ;
+        $array = [];
+        foreach ($consFamilies as $consFamily) {
+            $obj = [
+                'id' => $consFamily->id,
+                'consFam_ref' => $consFamily->consFam_ref,
+                'consFam_design' => $consFamily->consFam_design,
+                'consFam_drawingPath' => $consFamily->consFam_drawingPath,
+                'consFam_variablesCharac' => $consFamily->consFam_variablesCharac,
+                'consFam_version' => $consFamily->consFam_version,
+                'consFam_nbrVersion' => $consFamily->compFam_nbrVersion,
+                'consFam_validate' => $consFamily->consFam_validate,
+                'consFam_active' => $consFamily->consFam_active
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
     }
 }
 
