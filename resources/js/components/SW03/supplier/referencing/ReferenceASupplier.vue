@@ -39,8 +39,8 @@
 
 <script>
 import SupplierIDForm from "./SupplierIDForm.vue";
-import ReferenceAnAddress from "./AddressIDForm.vue";
-import ReferenceAContact from "./ContactIDForm.vue";
+import ReferenceAnAddress from "./ReferenceAnAddress.vue";
+import ReferenceAContact from "./ReferenceAContact.vue";
 
 
 export default {

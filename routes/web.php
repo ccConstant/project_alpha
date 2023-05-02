@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\SW03\AspectTestController;
+use App\Http\Controllers\SW03\ComplementaryTestController;
+use App\Http\Controllers\SW03\DimensionnalTestController;
+use App\Http\Controllers\SW03\DocControlController;
+use App\Http\Controllers\SW03\FunctionnalTestController;
 use App\Http\Controllers\SW03\IncmgInspController;
+use App\Http\Controllers\SW03\RawFamilyController;
 use App\Http\Controllers\SW03\SupplierAdrController;
 use App\Http\Controllers\SW03\SupplierContactController;
 use App\Http\Controllers\SW03\SupplierController;
@@ -968,8 +974,42 @@ Route::get('/incmgInsp/send/raw/{id}', [IncmgInspController::class, 'send_incmgI
 Route::get('/incmgInsp/send/comp/{id}', [IncmgInspController::class, 'send_incmgInspComp']);
 Route::get('/incmgInsp/send/cons/{id}', [IncmgInspController::class, 'send_incmgInspCons']);
 
+// Documentary Control Controller
+Route::post('/incmgInsp/docControl/verif', [DocControlController::class, 'verif_docControl']);
+Route::post('/incmgInsp/docControl/add', [DocControlController::class, 'add_docControl']);
+Route::post('/incmgInsp/docControl/update/{id}', [DocControlController::class, 'update_docControl']);
+Route::get('/incmgInsp/docControl/send/{id}', [DocControlController::class, 'send_docControl']);
+Route::get('/incmgInsp/docControl/sendFromIncmgInsp/{id}', [DocControlController::class, 'send_docControlFromIncmgInsp']);
 
-//Enum 
+// Aspect Test Controller
+Route::post('/incmgInsp/aspTest/verif', [AspectTestController::class, 'verif_aspectTest']);
+Route::post('/incmgInsp/aspTest/add', [AspectTestController::class, 'add_aspectTest']);
+Route::post('/incmgInsp/aspTest/update/{id}', [AspectTestController::class, 'update_aspectTest']);
+Route::get('/incmgInsp/aspTest/send/{id}', [AspectTestController::class, 'send_aspectTest']);
+Route::get('/incmgInsp/aspTest/sendFromIncmgInsp/{id}', [AspectTestController::class, 'send_aspectTestFromIncmgInsp']);
+
+// Functionnal Test Controller
+Route::post('/incmgInsp/funcTest/verif', [FunctionnalTestController::class, 'verif_funcTest']);
+Route::post('/incmgInsp/funcTest/add', [FunctionnalTestController::class, 'add_funcTest']);
+Route::post('/incmgInsp/funcTest/update/{id}', [FunctionnalTestController::class, 'update_funcTest']);
+Route::get('/incmgInsp/funcTest/send/{id}', [FunctionnalTestController::class, 'send_funcTest']);
+Route::get('/incmgInsp/funcTest/sendFromIncmgInsp/{id}', [FunctionnalTestController::class, 'send_funcTestFromIncmgInsp']);
+
+// Dimensionnal Test Controller
+Route::post('/incmgInsp/dimTest/verif', [DimensionnalTestController::class, 'verif_dimTest']);
+Route::post('/incmgInsp/dimTest/add', [DimensionnalTestController::class, 'add_dimTest']);
+Route::post('/incmgInsp/dimTest/update/{id}', [DimensionnalTestController::class, 'update_dimTest']);
+Route::get('/incmgInsp/dimTest/send/{id}', [DimensionnalTestController::class, 'send_dimTest']);
+Route::get('/incmgInsp/dimTest/sendFromIncmgInsp/{id}', [DimensionnalTestController::class, 'send_dimTestFromIncmgInsp']);
+
+// Complementary Test Controller
+Route::post('/incmgInsp/compTest/verif', [ComplementaryTestController::class, 'verif_compTest']);
+Route::post('/incmgInsp/compTest/add', [ComplementaryTestController::class, 'add_compTest']);
+Route::post('/incmgInsp/compTest/update/{id}', [ComplementaryTestController::class, 'update_compTest']);
+Route::get('/incmgInsp/compTest/send/{id}', [ComplementaryTestController::class, 'send_compTest']);
+Route::get('/incmgInsp/compTest/sendFromIncmgInsp/{id}', [ComplementaryTestController::class, 'send_compTestFromIncmgInsp']);
+
+//Enum
 Route::get('/artFam/enum/purchasedBy', [EnumPurchasedByController::class, 'send_enum_purchasedBy']);
 Route::post('/artFam/enum/purchasedBy/add', [EnumPurchasedByController::class, 'add_enum_purchasedBy']);
 Route::post('/artFam/enum/purchasedBy/verif/{id}', [EnumPurchasedByController::class, 'verif_enum_purchasedBy']);

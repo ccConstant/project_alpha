@@ -1,44 +1,46 @@
-<!--File name :ReferenceAFile.vue-->
+<!--File name :ReferenceADocControl.vue-->
 <!--Creation date : 10 May 2022-->
 <!--Update date : 12 Apr 2023-->
-<!--Vue Component used to reference a file in the equipment-->
+<!--Vue Component used to reference a documentary control in as incoming inspection-->
 
 <template>
     <div class="docControl">
-        <h2 class="titleForm">Documentary Control</h2>
+        <h2 class="titleForm" v-if="components.length > 0">Documentary Control</h2>
         <!--Adding to the vue docControlIDForm by going through the components array with the v-for-->
-        <!--ref="ask_codControl_data" is used to call the child elements in this component-->
+        <!--ref="ask_docControl_data" is used to call the child elements in this component-->
         <!--The emitted deleteFile is caught here and call the function getContent -->
         <DocControlIDForm
-            ref="ask_codControl_data"
+            ref="ask_docControl_data"
             v-for="(component, key) in components"
             :key="component.key"
             :is="component.comp"
             :id="component.id"
             :consultMod="isInConsultMod"
             :modifMod="isInModifMod"
-            :reference="component.docControl_reference"
-            :name="component.docControl_name"
-            :material-certi-spec="component.docControl_materialCertifSpe"
-            :fds="component.docControl_fds"
-            :incmg-insp_id="incmgInsp_id"
-            @deleteFile="getContent(key)"
+            :reference="component.reference"
+            :docControlName="component.docControlName"
+            :materialCertiSpec="component.materialCertiSpec"
+            :fds="component.fds"
+            :incmgInsp_id="incmgInsp_id"
+            :articleID="data_article_id"
+            :articleType="data_article_type"
+            @deleteDocControl="getContent(key)"
         />
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
             <!--Add another file button appear -->
             <button v-on:click="addComponent">Add</button>
             <!--If file array is not empty and if the user is not in modification mode -->
-            <div v-if="this.docControl!==null">
-                <!--The importation button appear -->
-                <button v-if="!modifMod " v-on:click="importFile">import</button>
-            </div>
         </div>
-        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
-        <ImportationAlert ref="importAlert"/>
+        <SaveButtonForm
+            saveAll
+            v-if="components.length>1"
+            @add="saveAll"
+            @update="saveAll"
+            :consultMod="this.isInConsultMod"
+            :modifMod="this.isInModifMod"
+        />
     </div>
-
 </template>
 
 <script>
@@ -107,27 +109,28 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
-            data_article_type: this.articleType
+            data_article_type: this.articleType,
+            data_incmingInsp_id: this.incmgInsp_id
         };
     },
     methods: {
         /*Function for adding a new empty file form*/
         addComponent() {
             this.components.push({
-                comp: 'docControlIDForm',
+                comp: 'DocControlIDForm',
                 key: this.uniqueKey++,
             });
         },
         /*Function for adding an imported file form with his data*/
         addImportedComponent(docControl_name, docControl_reference, docControl_materialCertifSpe, incmgInsp_id, docControl_FDS, id, className) {
             this.components.push({
-                comp: 'docControlIDForm',
+                comp: 'DocControlIDForm',
                 key: this.uniqueKey++,
-                docControl_name: docControl_name,
-                docControl_reference: docControl_reference,
-                docControl_materialCertifSpe: docControl_materialCertifSpe,
+                docControlName: docControl_name,
+                reference: docControl_reference,
+                materialCertiSpec: docControl_materialCertifSpe,
                 incmgInsp_id: incmgInsp_id,
-                docControl_FDS: docControl_FDS,
+                fds: docControl_FDS,
                 id: id,
                 className: className
             });
@@ -137,9 +140,9 @@ export default {
             this.components.splice(key, 1);
         },
         /*Function for adding to the vue the imported article*/
-        importFile() {
+        importDocControl() {
             if (this.docControl.length == 0 && !this.isInModifMod) {
-                this.$refs.importAlert.showAlert();
+                ImportationAlert.showAlert();
             } else {
                 for (const dc of this.docControl) {
                     const className = "importedDocControl" + dc.id;
@@ -150,14 +153,15 @@ export default {
                         dc.incmgInsp_id,
                         dc.docControl_FDS,
                         dc.id,
-                        className);
+                        className
+                    );
                 }
                 this.docControl = null
             }
         },
         /*Function for saving all the data in one time*/
         saveAll(savedAs) {
-            for (const component of this.$refs.ask_codControl_data) {
+            for (const component of this.$refs.ask_docControl_data) {
                 /*If the user is in modification mode*/
                 if (this.modifMod == true) {
                     /*If the file doesn't have, an id*/
@@ -181,26 +185,23 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        /*If the user chooses importation equipment*/
+        console.log('incmgInsp_id', this.incmgInsp_id);
+        /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
-            /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
-            const consultUrl = (id) => `/file/send/${id}`; // FIXME
+            /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
+            const consultUrl = (id) => `/incmgInsp/docControl/send/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
                 .then(response => this.docControl = response.data)
                 .catch(error => console.log(error));
-
         }
-
     },
-    /*All functions inside the created option are called after the component has been mounted.*/
+    /*All functions inside the mounted option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
         if (this.consultMod || this.modifMod) {
-            this.importFile();
+            this.importDocControl();
         }
     }
-
-
 }
 </script>
 

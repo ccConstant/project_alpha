@@ -16,14 +16,6 @@ class IncmgInspController extends Controller
      * @throws ValidationException
      */
     public function verif_incmgInsp(Request $request) {
-        $article = null;
-        if ($request->incmgInsp_articleType === 'raw') {
-            $article = RawFamily::findOrfail($request->articleFam_id);
-        } else if ($request->incmgInsp_articleType === 'cons') {
-            $article = ConsFamily::findOrfail($request->articleFam_id);
-        } else if ($request->incmgInsp_articleType === 'comp') {
-            $article = CompFamily::findOrfail($request->articleFam_id);
-        }
         if ($request->incmpInsp_articleType == 'raw' || $request->incmpInsp_articleType == 'comp') {
             if ($request->incmgInsp_validate == 'validated') {
                 $this->validate(
