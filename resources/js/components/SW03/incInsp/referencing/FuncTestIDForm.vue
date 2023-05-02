@@ -14,7 +14,7 @@
                 <InputTextForm
                     v-if="data_article_type === 'comp'"
                     name="name"
-                    label="Aspect Test Name :"
+                    label="Functional Test Name :"
                     v-model="funcTest_name"
                     :isDisabled="isInConsultedMod"
                     :info_text="null"
@@ -37,15 +37,13 @@
                     isRequired
                     :Errors="errors.funcTest_expectedMethod"
                 />
-                <InputTextForm
+                <InputNumberForm
                     v-if="data_article_type === 'comp'"
                     name="expectedValue"
                     label="Expected Value :"
                     v-model="funcTest_expectedValue"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
-                    :min="1"
-                    :max="50"
                     :inputClassName="null"
                     isRequired
                     :Errors="errors.funcTest_expectedValue"
@@ -55,8 +53,8 @@
                     :label="'Sampling :'"
                     isRequired
                     :options="[
-                        {id: 'Sampling', value: 'sampling', text: 'sampling'},
-                        {id: 'Sampling', value: '100%', text: '100%'}
+                        {id_enum: 'Sampling', value: 'sampling', text: 'sampling'},
+                        {id_enum: 'Sampling', value: '100%', text: '100%'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
                     v-model="funcTest_sampling"
@@ -84,10 +82,10 @@
                     :Errors="errors.funcTest_severityLevel"
                     label="Severity Level :"
                     :options="[
-                        {id: 'SeverityLevel', value: 'I', text: 'I'},
-                        {id: 'SeverityLevel', value: 'II', text: 'II'},
-                        {id: 'SeverityLevel', value: 'III', text: 'III'},
-                        {id: 'SeverityLevel', value: 'IV', text: 'IV'}
+                        {id_enum: 'SeverityLevel', value: 'I', text: 'I'},
+                        {id_enum: 'SeverityLevel', value: 'II', text: 'II'},
+                        {id_enum: 'SeverityLevel', value: 'III', text: 'III'},
+                        {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="funcTest_severityLevel"
                     :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'sampling'"
@@ -101,14 +99,14 @@
                     :label="'Control Level :'"
                     isRequired
                     :options="[
-                        {id: 'ControlLevel', value: 'Reduced', text: 'Reduced'},
-                        {id: 'ControlLevel', value: 'Normal', text: 'Normal'},
-                        {id: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
+                        {id_enum: 'ControlLevel', value: 'Reduced', text: 'Reduced'},
+                        {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
+                        {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
                     :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'sampling'"
                     v-model="funcTest_controlLevel"
                     :info_text="null"
-                    :Errors="errors.funcTest_controlLevel"
+                    :Errors="errors.funcTest_levelOfControl"
                     :selctedOption="funcTest_controlLevel"
                     :id_actual="'ControlLevel'"
                 />
@@ -148,10 +146,12 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from "../../../input/InputSelectForm.vue";
+import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        InputNumberForm,
         InputSelectForm,
         InputTextForm,
         SaveButtonForm,
@@ -267,6 +267,7 @@ export default {
                     incmgInsp_id: this.data_incmgInsp_id,
                     funcTest_articleType: this.data_article_type,
                     funcTest_sampling: this.funcTest_sampling,
+                    funcTest_unitValue: this.funcTest_unitValue,
                 })
                 .then(response => {
                     this.errors = {};
@@ -281,10 +282,11 @@ export default {
                         incmgInsp_id: this.data_incmgInsp_id,
                         funcTest_articleType: this.data_article_type,
                         funcTest_sampling: this.funcTest_sampling,
+                        funcTest_unitValue: this.funcTest_unitValue,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
-                        SucessAlert.showAlert(`Functional Test added successfully and saved as ${savedAs}`);
+                        this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);
                         if (!this.modifMod) {
                             /*The form pass in consulting mode and addSucces pass to True*/
                             this.isInConsultedMod = true;
@@ -292,10 +294,16 @@ export default {
                         }
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
+                    });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => this.errors = error.response.data.errors);
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                });
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -311,7 +319,7 @@ export default {
         },
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
-            this.$emit('deleteAspTest', '')
+            this.$emit('deleteFuncTest', '')
             this.$refs.sucessAlert.showAlert(`Empty Aspect Test Form deleted successfully`);
         }
     },

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SW03\AspectTestController;
 use App\Http\Controllers\SW03\ComplementaryTestController;
+use App\Http\Controllers\SW03\CriticalityController;
 use App\Http\Controllers\SW03\DimensionnalTestController;
 use App\Http\Controllers\SW03\DocControlController;
 use App\Http\Controllers\SW03\FunctionnalTestController;
@@ -1031,4 +1032,10 @@ Route::get('/artFam/enum/storageCondition', [EnumStorageConditionController::cla
 Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController::class, 'add_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/link/{id}', [EnumStorageConditionController::class, 'link_enum_storageCondition']);
+
+// Criticality
+Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_criticality']);
+Route::post('/artFam/criticality/add', [CriticalityController::class, 'add_criticality']);
+Route::post('/artFam/criticality/update/{id}', [CriticalityController::class, 'update_criticality']);
+Route::get('/artFam/criticality/send/{id}', [CriticalityController::class, 'send_criticality']);
 

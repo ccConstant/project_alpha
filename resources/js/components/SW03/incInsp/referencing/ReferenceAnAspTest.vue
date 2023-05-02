@@ -5,7 +5,7 @@
 
 <template>
     <div class="aspTest">
-        <h2 class="titleForm" v-if="components.length > 0">Documentary Control</h2>
+        <h2 class="titleForm" v-if="components.length > 0">Aspect Test</h2>
         <!--Adding to the vue aspTestIDForm by going through the components array with the v-for-->
         <!--ref="ask_aspTest_data" is used to call the child elements in this component-->
         <!--The emitted deleteFile is caught here and call the function getContent -->
@@ -22,7 +22,7 @@
             :expectedAspect="component.aspTest_expectedAspect"
             :name="component.aspTest_name"
             :sampling="component.aspTest_sampling"
-            :incmgInspId="incmgInsp_id"
+            :incmgInsp_id="incmgInsp_id"
             :articleID="data_article_id"
             :articleType="data_article_type"
             @deleteAspTest="getContent(key)"

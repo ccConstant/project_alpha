@@ -12,77 +12,103 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <InputTextForm
+                    v-if="data_article_type === 'comp'"
                     name="name"
-                    label="Aspect Test Name :"
-                    v-model="aspTest_name"
+                    label="Dimensional Test Name :"
+                    v-model="dimTest_name"
                     :isDisabled="isInConsultedMod"
                     :info_text="null"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
                     isRequired
-                    :Errors="errors.aspTest_name"
+                    :Errors="errors.dimTest_name"
                 />
                 <InputTextForm
-                    name="expectedAspect"
-                    label="Expected Aspect :"
-                    v-model="aspTest_expectedAspect"
+                    v-if="data_article_type === 'comp'"
+                    name="expectedMethod"
+                    label="Expected Method :"
+                    v-model="dimTest_expectedMethod"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
                     isRequired
-                    :Errors="errors.aspTest_expectedAspect"
+                    :Errors="errors.dimTest_expectedMethod"
+                />
+                <InputNumberForm
+                    v-if="data_article_type === 'comp'"
+                    name="expectedValue"
+                    label="Expected Value :"
+                    v-model="dimTest_expectedValue"
+                    :isDisabled="!!isInConsultedMod"
+                    :info_text="null"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.dimTest_expectedValue"
                 />
                 <InputSelectForm
                     :name="'Sampling'"
                     :label="'Sampling :'"
                     isRequired
                     :options="[
-                        {id_enum: 'Sampling', value: 'sampling', text: 'sampling'},
-                        {id_enum: 'Sampling', value: '100%', text: '100%'}
+                        {id_enum: 'DimSampling', value: 'sampling', text: 'sampling'},
+                        {id_enum: 'DimSampling', value: '100%', text: '100%'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
-                    v-model="aspTest_sampling"
+                    v-model="dimTest_sampling"
                     :info_text="null"
-                    :Errors="errors.aspTest_sampling"
-                    :selctedOption="aspTest_sampling"
-                    :id_actual="'Sampling'"
+                    :Errors="errors.dimTest_sampling"
+                    :selctedOption="dimTest_sampling"
+                    :id_actual="'DimSampling'"
+                />
+                <InputTextForm
+                    v-if="data_article_type === 'comp'"
+                    name="unitValue"
+                    label="Unit Value :"
+                    v-model="dimTest_unitValue"
+                    :isDisabled="!!isInConsultedMod"
+                    :info_text="null"
+                    :min="1"
+                    :max="10"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.dimTest_unitValue"
                 />
                 <InputSelectForm
-                    v-if="this.aspTest_sampling === 'sampling'"
+                    v-if="this.dimTest_sampling === 'sampling'"
                     name="SeverityLevel"
-                    :Errors="errors.aspTest_severityLevel"
+                    :Errors="errors.dimTest_severityLevel"
                     label="Severity Level :"
                     :options="[
-                        {id_enum: 'SeverityLevel', value: 'I', text: 'I'},
-                        {id_enum: 'SeverityLevel', value: 'II', text: 'II'},
-                        {id_enum: 'SeverityLevel', value: 'III', text: 'III'},
-                        {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
+                        {id_enum: 'DimSeverityLevel', value: 'I', text: 'I'},
+                        {id_enum: 'DimSeverityLevel', value: 'II', text: 'II'},
+                        {id_enum: 'DimSeverityLevel', value: 'III', text: 'III'},
+                        {id_enum: 'DimSeverityLevel', value: 'IV', text: 'IV'}
                     ]"
-                    :selctedOption="aspTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'sampling'"
-                    v-model="aspTest_severityLevel"
-                    :info_text="'SeverityLevel'"
-                    :id_actual="'SeverityLevel'"
+                    :selctedOption="dimTest_severityLevel"
+                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'sampling'"
+                    v-model="dimTest_severityLevel"
+                    :info_text="'DimSeverityLevel'"
+                    :id_actual="'DimSeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.aspTest_sampling === 'sampling'"
+                    v-if="this.dimTest_sampling === 'sampling'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
                     :options="[
-                        {id_enum: 'ControlLevel', value: 'Reduced', text: 'Reduced'},
-                        {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
-                        {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
+                        {id_enum: 'DimControlLevel', value: 'Reduced', text: 'Reduced'},
+                        {id_enum: 'DimControlLevel', value: 'Normal', text: 'Normal'},
+                        {id_enum: 'DimControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'sampling'"
-                    v-model="aspTest_controlLevel"
+                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'sampling'"
+                    v-model="dimTest_controlLevel"
                     :info_text="null"
-                    :Errors="errors.aspTest_levelOfControl"
-                    :selctedOption="aspTest_controlLevel"
-                    :id_actual="'ControlLevel'"
+                    :Errors="errors.dimTest_levelOfControl"
+                    :selctedOption="dimTest_controlLevel"
+                    :id_actual="'DimControlLevel'"
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces===false ">
@@ -120,10 +146,12 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from "../../../input/InputSelectForm.vue";
+import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        InputNumberForm,
         InputSelectForm,
         InputTextForm,
         SaveButtonForm,
@@ -147,10 +175,16 @@ export default {
         controlLevel: {
             type: String
         },
-        expectedAspect: {
+        expectedMethod: {
+            type: String
+        },
+        expectedValue: {
             type: String
         },
         name: {
+            type: String
+        },
+        unitValue: {
             type: String
         },
         sampling: {
@@ -197,12 +231,14 @@ export default {
 -----------------------------------------------------------*/
     data() {
         return {
-            aspTest_id: this.id,
-            aspTest_severityLevel: this.severityLevel,
-            aspTest_controlLevel: this.controlLevel,
-            aspTest_expectedAspect: this.expectedAspect,
-            aspTest_sampling: this.sampling,
-            aspTest_name: this.name,
+            dimTest_id: this.id,
+            dimTest_severityLevel: this.severityLevel,
+            dimTest_controlLevel: this.controlLevel,
+            dimTest_expectedMethod: this.expectedMethod,
+            dimTest_expectedValue: this.expectedValue,
+            dimTest_name: this.name,
+            dimTest_unitValue: this.unitValue,
+            dimTest_sampling: this.sampling,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -220,44 +256,37 @@ export default {
         @param lifesheet_created */
         addDocControl(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
-                console.log("addAspTest");
-                console.log('name');
-                console.log(this.aspTest_name);
-                console.log('severityLevel');
-                console.log(this.aspTest_severityLevel);
-                console.log('controlLevel');
-                console.log(this.aspTest_controlLevel);
-                console.log('expectedAspect');
-                console.log(this.aspTest_expectedAspect);
-                console.log('sampling');
-                console.log(this.aspTest_sampling);
-                console.log('incmgInsp_id');
-                console.log(this.data_incmgInsp_id);
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
-                axios.post('/incmgInsp/aspTest/verif', {
-                    aspTest_name: this.aspTest_name,
-                    aspTest_severityLevel: this.aspTest_severityLevel,
-                    aspTest_levelOfControl: this.aspTest_controlLevel,
-                    aspTest_expectedAspect: this.aspTest_expectedAspect,
-                    aspTest_sampling: this.aspTest_sampling,
+                axios.post('/incmgInsp/dimTest/verif', {
+                    dimTest_name: this.dimTest_name,
+                    dimTest_severityLevel: this.dimTest_severityLevel,
+                    dimTest_levelOfControl: this.dimTest_controlLevel,
+                    dimTest_expectedMethod: this.dimTest_expectedMethod,
+                    dimTest_expectedValue: this.dimTest_expectedValue,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    dimTest_articleType: this.data_article_type,
+                    dimTest_sampling: this.dimTest_sampling,
+                    dimTest_unitValue: this.dimTest_unitValue,
                 })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                    axios.post('/incmgInsp/aspTest/add', {
-                        aspTest_name: this.aspTest_name,
-                        aspTest_severityLevel: this.aspTest_severityLevel,
-                        aspTest_levelOfControl: this.aspTest_controlLevel,
-                        aspTest_expectedAspect: this.aspTest_expectedAspect,
-                        aspTest_sampling: this.aspTest_sampling,
+                    axios.post('/incmgInsp/dimTest/add', {
+                        dimTest_name: this.dimTest_name,
+                        dimTest_severityLevel: this.dimTest_severityLevel,
+                        dimTest_levelOfControl: this.dimTest_controlLevel,
+                        dimTest_expectedMethod: this.dimTest_expectedMethod,
+                        dimTest_expectedValue: this.dimTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        dimTest_articleType: this.data_article_type,
+                        dimTest_sampling: this.dimTest_sampling,
+                        dimTest_unitValue: this.dimTest_unitValue,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
-                        this.$snotify.success(`Aspect Test added successfully`);
+                        this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);
                         if (!this.modifMod) {
                             /*The form pass in consulting mode and addSucces pass to True*/
                             this.isInConsultedMod = true;
@@ -265,10 +294,16 @@ export default {
                         }
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
+                    });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => this.errors = error.response.data.errors);
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                });
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -284,7 +319,7 @@ export default {
         },
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
-            this.$emit('deleteAspTest', '')
+            this.$emit('deleteDimTest', '')
             this.$refs.sucessAlert.showAlert(`Empty Aspect Test Form deleted successfully`);
         }
     },

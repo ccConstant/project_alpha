@@ -10,7 +10,7 @@
             :disabled="isDisabled"
             :required="isRequired"
             :invalid-feedback="invalidFeedBack"
-            v-model="data">
+            :v-model="data">
             <label>
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>

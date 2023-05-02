@@ -12,12 +12,12 @@ class DimensionnalTestController extends Controller
         $this->validate(
             $request,
             [
-                'dimTest_sampling' => 'required|integer',
+                'dimTest_sampling' => 'required',
                 'incmgInsp_id' => 'required',
             ],
             [
                 'dimTest_sampling.required' => 'You must enter a sampling',
-                'dimTest_sampling.integer' => 'The sampling must be an integer'
+                'incmgInsp_id.required' => 'You must enter an incoming inspection',
             ]
         );
         if ($request->dimTest_sampling === 'sampling') {
@@ -38,7 +38,7 @@ class DimensionnalTestController extends Controller
                 $request,
                 [
                     'dimTest_expectedMethod' => 'required|string|min:2|max:255',
-                    'dimTest_expectedValue' => 'required|string|min:1|max:50',
+                    'dimTest_expectedValue' => 'required|integer',
                     'dimTest_name' => 'required|string|min:2|max:255',
                     'dimTest_unitValue' => 'required|string|min:1|max:10',
                 ],
@@ -49,9 +49,7 @@ class DimensionnalTestController extends Controller
                     'dimTest_expectedMethod.max' => 'You must enter a maximum of 255 characters',
 
                     'dimTest_expectedValue.required' => 'You must enter an expected value',
-                    'dimTest_expectedValue.string' => 'The expected value must be a string',
-                    'dimTest_expectedValue.min' => 'You must enter at least one character',
-                    'dimTest_expectedValue.max' => 'You must enter a maximum of 50 characters',
+                    'dimTest_expectedValue.integer' => 'The expected value must be a integer',
 
                     'dimTest_name.required' => 'You must enter a name of control',
                     'dimTest_name.string' => 'The name of control must be a string',

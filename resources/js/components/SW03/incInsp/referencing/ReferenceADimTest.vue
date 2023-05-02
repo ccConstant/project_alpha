@@ -4,30 +4,30 @@
 <!--Vue Component used to reference a documentary control in as incoming inspection-->
 
 <template>
-    <div class="funcTest">
-        <h2 class="titleForm" v-if="components.length > 0">Functional Test</h2>
-        <!--Adding to the vue funcTestIDForm by going through the components array with the v-for-->
-        <!--ref="ask_funcTest_data" is used to call the child elements in this component-->
+    <div class="dimTest">
+        <h2 class="titleForm" v-if="components.length > 0">Dimensional Test</h2>
+        <!--Adding to the vue dimTestIDForm by going through the components array with the v-for-->
+        <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
         <!--The emitted deleteFile is caught here and call the function getContent -->
-        <FuncTestIDForm
-            ref="ask_funcTest_data"
+        <DimTestIDForm
+            ref="ask_dimTest_data"
             v-for="(component, key) in components"
             :key="component.key"
             :is="component.comp"
             :id="component.id"
             :consultMod="isInConsultMod"
             :modifMod="isInModifMod"
-            :severityLevel="component.funcTest_severityLevel"
-            :controlLevel="component.funcTest_controlLevel"
-            :expectedMethod="component.funcTest_expectedAspect"
-            :expectedValue="component.funcTest_expectedValue"
-            :name="component.funcTest_name"
-            :unitValue="component.funcTest_unitValue"
-            :sampling="component.funcTest_sampling"
+            :severityLevel="component.dimTest_severityLevel"
+            :controlLevel="component.dimTest_controlLevel"
+            :expectedMethod="component.dimTest_expectedAspect"
+            :expectedValue="component.dimTest_expectedValue"
+            :name="component.dimTest_name"
+            :unitValue="component.dimTest_unitValue"
+            :sampling="component.dimTest_sampling"
             :incmgInsp_id="incmgInsp_id"
             :articleID="data_article_id"
             :articleType="data_article_type"
-            @deletefuncTest="getContent(key)"
+            @deletedimTest="getContent(key)"
         />
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -50,12 +50,12 @@
 /*Importation of the other Components who will be used here*/
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import ImportationAlert from '../../../alert/ImportationAlert.vue'
-import FuncTestIDForm from "./FuncTestIDForm.vue";
+import DimTestIDForm from "./DimTestIDForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
-        FuncTestIDForm,
+        DimTestIDForm,
         SaveButtonForm,
         ImportationAlert
 
@@ -63,7 +63,7 @@ export default {
     /*--------Declaration of the different props:--------
         consultMod: If this props is present the form is in consult mode we disable all the field
         modifMod: If this props is present, the form is in modification mode we disable the save button and show update button
-        importedfuncTest: All article imported from the database
+        importeddimTest: All article imported from the database
         article_id: ID of the equipment in which the file will be added
         import_id: ID of the equipment with which article will be imported
     ---------------------------------------------------*/
@@ -76,7 +76,7 @@ export default {
             type: Boolean,
             default: false
         },
-        importedFuncTest: {
+        importeddimTest: {
             type: Array,
             default: null
         },
@@ -107,7 +107,7 @@ export default {
         return {
             components: [],
             uniqueKey: 0,
-            funcTest: this.importedFuncTest,
+            dimTest: this.importeddimTest,
             count: 0,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
@@ -119,20 +119,20 @@ export default {
         /*Function for adding a new empty file form*/
         addComponent() {
             this.components.push({
-                comp: 'FuncTestIDForm',
+                comp: 'DimTestIDForm',
                 key: this.uniqueKey++,
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(funcTest_severityLevel, funcTest_controlLevel, funcTest_expectedAspect, funcTest_name, funcTest_sampling, incmgInsp_id, id, className) {
+        addImportedComponent(dimTest_severityLevel, dimTest_controlLevel, dimTest_expectedAspect, dimTest_name, dimTest_sampling, incmgInsp_id, id, className) {
             this.components.push({
-                comp: 'FuncTestIDForm',
+                comp: 'DimTestIDForm',
                 key: this.uniqueKey++,
-                funcTest_severityLevel: funcTest_severityLevel,
-                funcTest_controlLevel: funcTest_controlLevel,
-                funcTest_expectedAspect: funcTest_expectedAspect,
-                funcTest_name: funcTest_name,
-                funcTest_sampling: funcTest_sampling,
+                dimTest_severityLevel: dimTest_severityLevel,
+                dimTest_controlLevel: dimTest_controlLevel,
+                dimTest_expectedAspect: dimTest_expectedAspect,
+                dimTest_name: dimTest_name,
+                dimTest_sampling: dimTest_sampling,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -143,30 +143,30 @@ export default {
             this.components.splice(key, 1);
         },
         /*Function for adding to the vue the imported article*/
-        importFuncTest() {
-            if (this.funcTest.length == 0 && !this.isInModifMod) {
+        importdimTest() {
+            if (this.dimTest.length == 0 && !this.isInModifMod) {
                 ImportationAlert.showAlert();
             } else {
-                for (const ft of this.funcTest) {
-                    const className = "importedFuncTest" + ft.id;
+                for (const dt of this.dimTest) {
+                    const className = "importedDimTest" + dt.id;
                     this.addImportedComponent(
-                        ft.funcTest_severityLevel,
-                        ft.funcTest_levelOfControl,
-                        ft.funcTest_expectedMethod,
-                        ft.funcTest_expectedValue,
-                        ft.funcTest_name,
-                        ft.funcTest_unitValue,
-                        ft.incmgInsp_id,
-                        ft.id,
+                        dt.dimTest_severityLevel,
+                        dt.dimTest_levelOfControl,
+                        dt.dimTest_expectedMethod,
+                        dt.dimTest_expectedValue,
+                        dt.dimTest_name,
+                        dt.dimTest_unitValue,
+                        dt.incmgInsp_id,
+                        dt.id,
                         className
                     );
                 }
-                this.funcTest = null
+                this.dimTest = null
             }
         },
         /*Function for saving all the data in one time*/
         saveAll(savedAs) {
-            for (const component of this.$refs.ask_funcTest_data) {
+            for (const component of this.$refs.ask_dimTest_data) {
                 /*If the user is in modification mode*/
                 if (this.modifMod == true) {
                     /*If the file doesn't have, an id*/
@@ -194,9 +194,9 @@ export default {
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/funcTest/send/${id}`; // FIXME
+            const consultUrl = (id) => `/incmgInsp/dimTest/send/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
-                .then(response => this.funcTest = response.data)
+                .then(response => this.dimTest = response.data)
                 .catch(error => console.log(error));
         }
     },
@@ -204,7 +204,7 @@ export default {
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
         if (this.consultMod || this.modifMod) {
-            this.importFuncTest();
+            this.importdimTest();
         }
     }
 }

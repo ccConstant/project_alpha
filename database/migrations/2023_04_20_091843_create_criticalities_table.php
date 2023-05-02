@@ -6,7 +6,7 @@
 * Update date : 26 Apr 2023
 * This file is used to create the table "comp_criticalities" in the data base. In this file, we can see the different
 * attribute of this table (compCriticality, technicalReviewer..) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -24,13 +24,13 @@ class CreateCriticalitiesTable extends Migration
         Schema::create('criticalities', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('crit_artCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRTICAL']) ;
-            $table->enum('crit_artMaterialContactCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRTICAL']) ;
-            $table->enum('crit_artMaterialFunctionCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRTICAL']) ;
-            $table->enum('crit_artProcessCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRTICAL']) ;
-            $table->unsignedBigInteger('crit_qualityApproverId') ->nullable(); 
+            $table->enum('crit_artCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL']) ;
+            $table->enum('crit_artMaterialContactCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL']) ;
+            $table->enum('crit_artMaterialFunctionCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL']) ;
+            $table->enum('crit_artProcessCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL']) ;
+            $table->unsignedBigInteger('crit_qualityApproverId') ->nullable();
             $table->foreign('crit_qualityApproverId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('crit_technicalReviewerId') ->nullable(); 
+            $table->unsignedBigInteger('crit_technicalReviewerId') ->nullable();
             $table->foreign('crit_technicalReviewerId')->references('id')->on('users') ;
             $table->date('crit_signatureDate') -> nullable() ;
             $table->enum('crit_validate',  ['drafted', 'to_be_validated', 'validated']) ;

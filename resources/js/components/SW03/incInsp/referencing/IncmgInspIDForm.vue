@@ -107,6 +107,22 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- DimTest -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingDimTest">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseDimTest" aria-expanded="true" aria-controls="collapseDimTest">
+                                Dimensional Test
+                            </button>
+                        </h2>
+                        <div id="collapseDimTest" class="accordion-collapse collapse show" aria-labelledby="headingDimTest">
+                            <div class="accordion-body">
+                                <ReferenceADimTest :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             <SucessAlert ref="sucessAlert"/>
             </div>
@@ -123,9 +139,11 @@ import SucessAlert from '../../../alert/SuccesAlert.vue'
 import ReferenceADocControl from "./ReferenceADocControl.vue";
 import ReferenceAnAspTest from "./ReferenceAnAspTest.vue";
 import ReferenceAFuncTest from "./ReferenceAFuncTest.vue";
+import ReferenceADimTest from "./ReferenceADimTest.vue";
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        ReferenceADimTest,
         ReferenceAFuncTest,
         ReferenceAnAspTest,
         ReferenceADocControl,
@@ -249,7 +267,9 @@ export default {
                     })
                     /*If the file is added successfully*/
                     .then(response => {
-                        this.$refs.sucessAlert.showAlert(`Incoming Inspection added successfully and saved as ${savedAs}`);
+                        console.log("coucou")
+                        this.$snotify.success(`Incoming Inspection added successfully`);
+                        console.log("coucou2")
                         if (!this.modifMod) {
                             /*The form pass in consulting mode and addSucces pass to True*/
                             this.isInConsultedMod = true;
