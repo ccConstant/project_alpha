@@ -201,19 +201,27 @@ const router = new VueRouter({
         path: '/supplier/list/update/:id(\\d+)',
         name: 'supplier_url_update',
         component: require('./components/SW03/supplier/consultation/SupplierUpdate.vue').default
-    },{
+    }, {
         path: '/article/add',
         name: 'article_url_add',
         component: require('./components/SW03/article/referencing/ReferenceAnArticleFamily.vue').default
-    },{
+    }, {
         path: '/article/list',
         name: 'article_url_list',
         component: require('./components/SW03/article/consultation/ListOfArticle.vue').default
-    },{
+    }, {
+        path: '/article/consult/:type/:id(\\d+)',
+        name: 'article_url_consult',
+        component: require('./components/SW03/article/consultation/ArticleConsult.vue').default
+    }, {
+        path: '/article/update/:type/:id(\\d+)',
+        name: 'article_url_update',
+        component: require('./components/SW03/article/consultation/ArticleUpdate.vue').default
+    }, {
         path: '/SW03/enum',
         name: 'url_enum_SW03',
         component: require('./components/SW03/enum/EnumManagment.vue').default
-    },{
+    }, {
         path: '*',
     }]
 })

@@ -17,7 +17,7 @@
                     name="remarks"
                     label="Incoming Inspection Remarks :"
                     v-model="incmgInsp_remarks"
-                    :isDisabled="!!isInConsultedMod"
+                    :isDisabled="!!isInConsultMod"
                     :info_text="null"
                     :max="255"
                 />
@@ -26,7 +26,7 @@
                     name="partMatCertif"
                     label="Incoming Inspection Part Material Compliance Certification :"
                     v-model="incmgInsp_partMaterialCertif"
-                    :isDisabled="!!isInConsultedMod"
+                    :isDisabled="!!isInConsultMod"
                     :info_text="null"
                     :max="255"
                 />
@@ -35,7 +35,7 @@
                     name="rawMatCertif"
                     label="Incoming Inspection Raw Material Certificate :"
                     v-model="incmgInsp_rawMaterialCertif"
-                    :isDisabled="!!isInConsultedMod"
+                    :isDisabled="!!isInConsultMod"
                     :info_text="null"
                     :max="255"
                 />
@@ -45,21 +45,21 @@
                     <div v-if="this.incmgInsp_id==null ">
                         <div v-if="modifMod==true">
                             <SaveButtonForm @add="addIncmgInsp" @update="updateIncmgInsp"
-                                            :consultMod="this.isInConsultedMod" :savedAs="incmgInsp_validate"
+                                            :consultMod="this.isInConsultMod" :savedAs="incmgInsp_validate"
                                             :AddinUpdate="true"/>
                         </div>
                         <div v-else>
                             <SaveButtonForm @add="addIncmgInsp" @update="updateIncmgInsp"
-                                            :consultMod="this.isInConsultedMod" :savedAs="incmgInsp_validate"/>
+                                            :consultMod="this.isInConsultMod" :savedAs="incmgInsp_validate"/>
                         </div>
                     </div>
                     <div v-else-if="this.incmgInsp_id!==null">
                         <SaveButtonForm @add="addIncmgInsp" @update="updateIncmgInsp"
-                                        :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
+                                        :consultMod="this.isInConsultMod" :modifMod="this.modifMod"
                                         :savedAs="incmgInsp_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :validationMode="incmgInsp_validate" :consultMod="this.isInConsultedMod"
+                    <DeleteComponentButton :validationMode="incmgInsp_validate" :consultMod="this.isInConsultMod"
                                            @deleteOk="deleteComponent"/>
                 </div>
             </form>
@@ -74,7 +74,13 @@
                         </h2>
                         <div id="collapseDocControl" class="accordion-collapse collapse show" aria-labelledby="headingDocControl">
                             <div class="accordion-body">
-                                <ReferenceADocControl :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
+                                <ReferenceADocControl
+                                    :articleType="article_type"
+                                    :article_id="article_id"
+                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :incmgInsp_id="incmgInsp_id"
+                                    :consultMod="this.isInConsultMod"
+                                />
                             </div>
                         </div>
                     </div>
@@ -89,7 +95,13 @@
                         </h2>
                         <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
                             <div class="accordion-body">
-                                <ReferenceAnAspTest :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
+                                <ReferenceAnAspTest
+                                    :articleType="article_type"
+                                    :article_id="article_id"
+                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :incmgInsp_id="incmgInsp_id"
+                                    :consultMod="this.isInConsultMod"
+                                />
                             </div>
                         </div>
                     </div>
@@ -103,7 +115,13 @@
                         </h2>
                         <div id="collapseFuncTest" class="accordion-collapse collapse show" aria-labelledby="headingFuncTest">
                             <div class="accordion-body">
-                                <ReferenceAFuncTest :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
+                                <ReferenceAFuncTest
+                                    :articleType="article_type"
+                                    :article_id="article_id"
+                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :incmgInsp_id="incmgInsp_id"
+                                    :consultMod="this.isInConsultMod"
+                                />
                             </div>
                         </div>
                     </div>
@@ -118,7 +136,13 @@
                         </h2>
                         <div id="collapseDimTest" class="accordion-collapse collapse show" aria-labelledby="headingDimTest">
                             <div class="accordion-body">
-                                <ReferenceADimTest :articleType="article_type" :article_id="article_id" :import_id="null" :incmgInsp_id="incmgInsp_id"/>
+                                <ReferenceADimTest
+                                    :articleType="article_type"
+                                    :article_id="article_id"
+                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :incmgInsp_id="incmgInsp_id"
+                                    :consultMod="this.isInConsultMod"
+                                />
                             </div>
                         </div>
 
@@ -217,7 +241,7 @@ export default {
             incmgInsp_validate: this.validate,
             errors: {},
             addSucces: false,
-            isInConsultedMod: this.consultMod,
+            isInConsultMod: this.consultMod,
             loaded: false,
             infos_file: [],
             rawFam_id: null,

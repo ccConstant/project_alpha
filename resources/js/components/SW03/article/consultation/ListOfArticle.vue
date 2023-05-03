@@ -113,6 +113,7 @@ export default {
                     version: this.compList[i].compFam_version,
                     active: this.compList[i].compFam_active,
                     signatureDate: this.compList[i].compFam_signatureDate,
+                    type: "comp"
                 };
                 this.globalList.push(obj);
             }
@@ -124,6 +125,7 @@ export default {
                     version: this.consList[i].consFam_version,
                     active: this.consList[i].consFam_active,
                     signatureDate: this.consList[i].consFam_signatureDate,
+                    type: "cons"
                 };
                 this.globalList.push(obj);
             }
@@ -135,6 +137,7 @@ export default {
                     version: "",
                     active: this.rawList[i].rawFam_active,
                     signatureDate: this.rawList[i].rawFam_signatureDate,
+                    type: "raw"
                 };
                 this.globalList.push(obj);
             }
@@ -159,42 +162,48 @@ export default {
             if (this.checked.length === 1) {
                 this.compList.forEach(element => {
                     if (element.compFam_ref === this.checked[0]) {
-                        window.location.href = "/article/update/" + element.id;
+                        window.location.href = "/article/update/comp/" + element.id;
                     }
                 });
                 this.consList.forEach(element => {
                     if (element.consFam_ref === this.checked[0]) {
-                        window.location.href = "/article/update/" + element.id;
+                        window.location.href = "/article/update/cons/" + element.id;
                     }
                 });
                 this.rawList.forEach(element => {
                     if (element.rawFam_ref === this.checked[0]) {
-                        window.location.href = "/article/update/" + element.id;
+                        window.location.href = "/article/update/raw/" + element.id;
                     }
                 });
             } else {
-                this.$refs.errorAlert.showAlert("Please select only one article to update");
+                if (this.checked.length === 0)
+                    this.$refs.errorAlert.showAlert("Please select an article to update");
+                else
+                    this.$refs.errorAlert.showAlert("Please select only one article to update");
             }
         },
         consultArticle() {
             if (this.checked.length === 1) {
                 this.compList.forEach(element => {
                     if (element.compFam_ref === this.checked[0]) {
-                        window.location.href = "/article/consult/" + element.id;
+                        window.location.href = "/article/consult/comp/" + element.id;
                     }
                 });
                 this.consList.forEach(element => {
                     if (element.consFam_ref === this.checked[0]) {
-                        window.location.href = "/article/consult/" + element.id;
+                        window.location.href = "/article/consult/cons/" + element.id;
                     }
                 });
                 this.rawList.forEach(element => {
                     if (element.rawFam_ref === this.checked[0]) {
-                        window.location.href = "/article/consult/" + element.id;
+                        window.location.href = "/article/consult/raw/" + element.id;
                     }
                 });
             } else {
-                this.$refs.errorAlert.showAlert("Please select only one article to consult");
+                if (this.checked.length === 0)
+                    this.$refs.errorAlert.showAlert("Please select an article to consult");
+                else
+                    this.$refs.errorAlert.showAlert("Please select only one article to consult");
             }
         },
         resetActiveFilter() {

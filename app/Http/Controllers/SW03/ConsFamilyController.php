@@ -163,5 +163,21 @@ class ConsFamilyController extends Controller
         }
         return response()->json($array);
     }
+
+    public function send_consFamily($id) {
+        $consFamily = ConsFamily::find($id);
+        $obj = [
+            'id' => $consFamily->id,
+            'consFam_ref' => $consFamily->consFam_ref,
+            'consFam_design' => $consFamily->consFam_design,
+            'consFam_drawingPath' => $consFamily->consFam_drawingPath,
+            'consFam_variablesCharac' => $consFamily->consFam_variablesCharac,
+            'consFam_version' => $consFamily->consFam_version,
+            'consFam_nbrVersion' => $consFamily->compFam_nbrVersion,
+            'consFam_validate' => $consFamily->consFam_validate,
+            'consFam_active' => $consFamily->consFam_active
+        ];
+        return response()->json($obj);
+    }
 }
 

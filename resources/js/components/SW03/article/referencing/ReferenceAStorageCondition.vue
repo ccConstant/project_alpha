@@ -18,7 +18,7 @@
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
             <!--Add another dimension button appear -->
-            <button v-on:click="addComponent">Add</button> 
+            <button v-on:click="addComponent">Add</button>
         </div>
         <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
                         :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
@@ -63,7 +63,11 @@ export default {
         },
         artType:{
             type: String
-        }
+        },
+        import_id: {
+            type: Number,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
         components: Array in which will be added the data of a component
@@ -107,7 +111,7 @@ export default {
         getContent(key) {
             this.components.splice(key, 1);
         },
-        
+
         /*Function for saving all the data in one time*/
         /*saveAll(savedAs) {
             for (const component of this.$refs.ask_dim_data) {
@@ -132,6 +136,10 @@ export default {
                 }
             }
         }*/
+
+        importDim() {
+
+        }
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {

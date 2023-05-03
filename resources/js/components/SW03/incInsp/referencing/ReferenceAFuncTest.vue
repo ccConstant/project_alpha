@@ -4,45 +4,50 @@
 <!--Vue Component used to reference a documentary control in as incoming inspection-->
 
 <template>
-    <div class="funcTest">
-        <h2 class="titleForm" v-if="components.length > 0">Functional Test</h2>
-        <!--Adding to the vue funcTestIDForm by going through the components array with the v-for-->
-        <!--ref="ask_funcTest_data" is used to call the child elements in this component-->
-        <!--The emitted deleteFile is caught here and call the function getContent -->
-        <FuncTestIDForm
-            ref="ask_funcTest_data"
-            v-for="(component, key) in components"
-            :key="component.key"
-            :is="component.comp"
-            :id="component.id"
-            :consultMod="isInConsultMod"
-            :modifMod="isInModifMod"
-            :severityLevel="component.funcTest_severityLevel"
-            :controlLevel="component.funcTest_controlLevel"
-            :expectedMethod="component.funcTest_expectedAspect"
-            :expectedValue="component.funcTest_expectedValue"
-            :name="component.funcTest_name"
-            :unitValue="component.funcTest_unitValue"
-            :sampling="component.funcTest_sampling"
-            :incmgInsp_id="incmgInsp_id"
-            :articleID="data_article_id"
-            :articleType="data_article_type"
-            @deletefuncTest="getContent(key)"
-        />
-        <!--If the user is not in consultation mode -->
-        <div v-if="!this.consultMod">
-            <!--Add another file button appear -->
-            <button v-on:click="addComponent">Add</button>
-            <!--If file array is not empty and if the user is not in modification mode -->
+    <div>
+        <div v-if="loaded===false">
+            <b-spinner variant="primary"></b-spinner>
         </div>
-        <SaveButtonForm
-            saveAll
-            v-if="components.length>1"
-            @add="saveAll"
-            @update="saveAll"
-            :consultMod="this.isInConsultMod"
-            :modifMod="this.isInModifMod"
-        />
+        <div v-else class="funcTest">
+            <h2 class="titleForm" v-if="components.length > 0">Functional Test</h2>
+            <!--Adding to the vue funcTestIDForm by going through the components array with the v-for-->
+            <!--ref="ask_funcTest_data" is used to call the child elements in this component-->
+            <!--The emitted deleteFile is caught here and call the function getContent -->
+            <FuncTestIDForm
+                ref="ask_funcTest_data"
+                v-for="(component, key) in components"
+                :key="component.key"
+                :is="component.comp"
+                :id="component.id"
+                :consultMod="isInConsultMod"
+                :modifMod="isInModifMod"
+                :severityLevel="component.funcTest_severityLevel"
+                :controlLevel="component.funcTest_controlLevel"
+                :expectedMethod="component.funcTest_expectedAspect"
+                :expectedValue="component.funcTest_expectedValue"
+                :name="component.funcTest_name"
+                :unitValue="component.funcTest_unitValue"
+                :sampling="component.funcTest_sampling"
+                :incmgInsp_id="incmgInsp_id"
+                :articleID="data_article_id"
+                :articleType="data_article_type"
+                @deletefuncTest="getContent(key)"
+            />
+            <!--If the user is not in consultation mode -->
+            <div v-if="!this.consultMod">
+                <!--Add another file button appear -->
+                <button v-on:click="addComponent">Add</button>
+                <!--If file array is not empty and if the user is not in modification mode -->
+            </div>
+            <SaveButtonForm
+                saveAll
+                v-if="components.length>1"
+                @add="saveAll"
+                @update="saveAll"
+                :consultMod="this.isInConsultMod"
+                :modifMod="this.isInModifMod"
+            />
+        </div>
     </div>
 </template>
 
@@ -112,7 +117,8 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
-            data_article_type: this.articleType
+            data_article_type: this.articleType,
+            loaded: false
         };
     },
     methods: {
@@ -144,8 +150,9 @@ export default {
         },
         /*Function for adding to the vue the imported article*/
         importFuncTest() {
-            if (this.funcTest.length == 0 && !this.isInModifMod) {
-                ImportationAlert.showAlert();
+            if (this.funcTest.length === 0 && !this.isInModifMod) {
+                console.log("No funcTest to import");
+                this.loaded = true;
             } else {
                 for (const ft of this.funcTest) {
                     const className = "importedFuncTest" + ft.id;
@@ -194,18 +201,24 @@ export default {
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/funcTest/send/${id}`; // FIXME
+            const consultUrl = (id) => `/incmgInsp/funcTest/sendFromIncmgInsp/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
-                .then(response => this.funcTest = response.data)
+                .then(response => {
+                    this.funcTest = response.data;
+                    this.importFuncTest();
+                    this.loaded = true;
+                })
                 .catch(error => console.log(error));
+        } else {
+            this.loaded = true;
         }
     },
     /*All functions inside the mounted option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        if (this.consultMod || this.modifMod) {
+        /*if (this.consultMod || this.modifMod) {
             this.importFuncTest();
-        }
+        }*/
     }
 }
 </script>

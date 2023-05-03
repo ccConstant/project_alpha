@@ -111,4 +111,30 @@ class CriticalityController extends Controller
             'rawFam_id' => $crit->rawFam_id,
         ]);
     }
+
+    public function send_criticalities($type, $id) {
+        $array = [];
+        if ($type === 'comp') {
+            $crits = Criticality::all()->where('compFam_id', "==", $id);
+        } else if ($type === 'cons') {
+            $crits = Criticality::all()->where('consFam_id', "==", $id);
+        } else if ($type === 'raw') {
+            $crits = Criticality::all()->where('rawFam_id', "==", $id);
+        }
+        foreach ($crits as $crit) {
+            array_push($array, [
+                'id' => $crit->id,
+                'crit_artCriticality' => $crit->crit_artCriticality,
+                'crit_artMaterialContactCriticality' => $crit->crit_artMaterialContactCriticality,
+                'crit_artMaterialFunctionCriticality' => $crit->crit_artMaterialFunctionCriticality,
+                'crit_artProcessCriticality' => $crit->crit_artProcessCriticality,
+                'crit_remarks' => $crit->crit_remarks,
+                'crit_validate' => $crit->crit_validate,
+                'consFam_id' => $crit->consFam_id,
+                'compFam_id' => $crit->compFam_id,
+                'rawFam_id' => $crit->rawFam_id,
+            ]);
+        }
+        return response()->json($array);
+    }
 }

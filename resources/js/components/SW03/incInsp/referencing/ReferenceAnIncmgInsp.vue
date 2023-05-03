@@ -4,42 +4,46 @@
 <!--Vue Component used to reference a file in the equipment-->
 
 <template>
-    <div class="incmgInsp">
-        <h2 class="titleForm">Incoming Inspection</h2>
-        <!--Adding to the vue IncmgInspIDForm by going through the components array with the v-for-->
-        <!--ref="ask_incmgInsp_data" is used to call the child elements in this component-->
-        <!--The emitted deleteFile is caught here and call the function getContent -->
-        <IncmgInspIDForm
-            ref="ask_incmgInsp_data"
-            v-for="(component, key) in components"
-            :key="component.key"
-            :is="component.comp"
-            :remarks="component.remarks"
-            :part-material-certif="component.partMaterialCertif"
-            :raw-material-certif="component.rawMaterialCertif"
-            :divClass="component.className"
-            :id="component.id"
-            :validate="component.validate"
-            :consultMod="isInConsultMod"
-            :modifMod="isInModifMod"
-            :article_id="data_article_id"
-            :article_type="data_article_type"
-            @deleteFile="getContent(key)"
-        />
-        <!--If the user is not in consultation mode -->
-        <div v-if="!this.consultMod">
-            <!--Add another file button appear -->
-            <button v-on:click="addComponent">Add</button>
-            <!--If file array is not empty and if the user is not in modification mode -->
-            <div v-if="this.incmgInsp!==null">
-                <!--The importation button appear -->
-                <button v-if="!modifMod " v-on:click="importFile">import</button>
-            </div>
+    <div>
+        <div v-if="loaded===false">
+            <b-spinner variant="primary"></b-spinner>
         </div>
-        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        <div v-else class="incmgInsp">
+            <h2 v-if="components.length>0" class="titleForm">Incoming Inspection</h2>
+            <!--Adding to the vue IncmgInspIDForm by going through the components array with the v-for-->
+            <!--ref="ask_incmgInsp_data" is used to call the child elements in this component-->
+            <!--The emitted deleteFile is caught here and call the function getContent -->
+            <IncmgInspIDForm
+                ref="ask_incmgInsp_data"
+                v-for="(component, key) in components"
+                :key="component.key"
+                :is="component.comp"
+                :remarks="component.remarks"
+                :part-material-certif="component.partMaterialCertif"
+                :raw-material-certif="component.rawMaterialCertif"
+                :divClass="component.className"
+                :id="component.id"
+                :validate="component.validate"
+                :consultMod="isInConsultMod"
+                :modifMod="isInModifMod"
+                :article_id="data_article_id"
+                :article_type="data_article_type"
+                @deleteFile="getContent(key)"
+            />
+            <!--If the user is not in consultation mode -->
+            <div v-if="!this.consultMod">
+                <!--Add another file button appear -->
+                <button v-on:click="addComponent">Add</button>
+                <!--If file array is not empty and if the user is not in modification mode -->
+                <!--            <div v-if="this.incmgInsp!==null">
+                                &lt;!&ndash;The importation button appear &ndash;&gt;
+                                <button v-if="!modifMod " v-on:click="importIncmgInsp">import</button>
+                            </div>-->
+            </div>
+            <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
+                            :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        </div>
     </div>
-
 </template>
 
 <script>
@@ -104,7 +108,8 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
-            data_article_type: this.articleType === null ? 'raw' : this.articleType
+            data_article_type: this.articleType === null ? 'raw' : this.articleType.toLowerCase(),
+            loaded: false
         };
     },
     methods: {
@@ -120,9 +125,9 @@ export default {
             this.components.push({
                 comp: 'IncmgInspIDForm',
                 key: this.uniqueKey++,
-                incmgInsp_remarks: incmgInsp_remarks,
-                incmgInsp_partMaterialCertif: incmgInsp_partMaterialCertif,
-                incmgInsp_rawMaterialCertif: incmgInsp_rawMaterialCertif,
+                remarks: incmgInsp_remarks,
+                partMaterialCertif: incmgInsp_partMaterialCertif,
+                rawMaterialCertif: incmgInsp_rawMaterialCertif,
                 validate: validate,
                 id: id,
                 className: className
@@ -133,11 +138,12 @@ export default {
             this.components.splice(key, 1);
         },
         /*Function for adding to the vue the imported article*/
-        importFile() {
+        importIncmgInsp() {
             if (this.incmgInsp.length === 0 && !this.isInModifMod) {
-                this.$refs.importAlert.showAlert();
+                /*this.$refs.importAlert.showAlert();*/
             } else {
                 for (const ii of this.incmgInsp) {
+                    console.log(ii);
                     const className = "importedArticle" + ii.id;
                     this.addImportedComponent(
                         ii.incmgInsp_remarks,
@@ -176,30 +182,49 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log("created incmgInsp");
+        console.log(this.data_article_type);
+        console.log(this.data_article_id);
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             if (this.data_article_type === 'raw') {
                 axios.get('/incmgInsp/send/raw/' + this.data_article_id)
-                    .then(response => this.incmgInsp = response.data)
+                    .then(response => {
+                        this.incmgInsp = response.data;
+                        this.importIncmgInsp();
+                        this.loaded = true;
+                    })
                     .catch(error => console.log(error));
             } else if (this.data_article_type === 'cons') {
                 axios.get('/incmgInsp/send/cons/' + this.data_article_id)
-                    .then(response => this.incmgInsp = response.data)
+                    .then(response => {
+                        this.incmgInsp = response.data;
+                        this.importIncmgInsp();
+                        this.loaded = true;
+                    })
                     .catch(error => console.log(error));
             } else if (this.data_article_type === 'comp') {
+                console.log("comp");
                 axios.get('/incmgInsp/send/comp/' + this.data_article_id)
-                    .then(response => this.incmgInsp = response.data)
+                    .then(response => {
+                        this.incmgInsp = response.data;
+                        console.log(this.incmgInsp);
+                        this.importIncmgInsp();
+                        this.loaded = true;
+                    })
                     .catch(error => console.log(error));
             }
+        } else {
+            this.loaded = true;
         }
     },
     /*All functions inside the created option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        if (this.consultMod || this.modifMod) {
-            this.importFile();
-        }
+        /*if (this.consultMod || this.modifMod) {
+            this.importIncmgInsp();
+        }*/
     }
 
 

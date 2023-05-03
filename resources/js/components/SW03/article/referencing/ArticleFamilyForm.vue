@@ -10,21 +10,21 @@
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputSelectForm 
-                @clearSelectError='clearSelectError' 
-                name="artFam_type" 
+            <InputSelectForm
+                @clearSelectError='clearSelectError'
+                name="artFam_type"
                 :Errors="errors.artFam_type"
-                label="Article Family Type :" 
-                :options="enumArticleFam_type" 
+                label="Article Family Type :"
+                :options="enumArticleFam_type"
                 :selctedOption="artFam_type"
-                :isDisabled="this.isInConsultMod" 
+                :isDisabled="this.isInConsultMod"
                 v-model="artFam_type"
-                :info_text="'Article Family Type'" 
+                :info_text="'Article Family Type'"
                 :id_actual="ArticleFamilyType"/>
-            
-            
-            
-            <div v-if="artFam_type!=''"> 
+
+
+
+            <div v-if="artFam_type!=''">
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_ref"
@@ -65,7 +65,7 @@
                     :info_text="'Variables Characteristic of the article'"
                     :max="255"
                 />
-                
+
                 <InputTextForm v-if="artFam_type=='COMP' || artFam_type=='CONS'"
                     :inputClassName="null"
                     :Errors="errors.artFam_version"
@@ -85,16 +85,16 @@
                     :Errors="errors['Active']"
                     :checked-option="true"
                 />
-                <InputSelectForm 
-                    @clearSelectError='clearSelectError' 
-                    name="artFam_purchasedBy" 
+                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    name="artFam_purchasedBy"
                     :Errors="errors.artFam_purchasedBy"
-                    label="Article Family Purchased By :" 
-                    :options="enum_purchasedBy" 
+                    label="Article Family Purchased By :"
+                    :options="enum_purchasedBy"
                     :selctedOption="artFam_purchasedBy"
-                    :isDisabled="!!isInConsultMod" 
+                    :isDisabled="!!isInConsultMod"
                     v-model="artFam_purchasedBy"
-                    :info_text="'Article Family Purchased By'" 
+                    :info_text="'Article Family Purchased By'"
                     :id_actual="PurchasedBy"/>
 
                 <SaveButtonForm v-if="this.addSuccess==false"
@@ -131,7 +131,7 @@ export default {
         RadioGroupForm,
         SaveButtonForm,
         SuccessAlert,
-       
+
 
     },
     /*--------Declaration of the different props:--------
@@ -172,6 +172,10 @@ export default {
         validate: {
             type: String
         },
+        type: {
+            type: String,
+            default: ""
+        },
         active: {
             type: Boolean,
             default: false
@@ -196,7 +200,7 @@ export default {
     data() {
         return {
             /*--------Declaration of the different returned data:--------
-              
+
                 Id : Id of the article family
                 artFam_ref : Reference of the article family which  will be appear in the field and updated dynamically
                 artFam_design : Designation of the article family which  will be appear in the field and updated dynamically
@@ -230,7 +234,7 @@ export default {
             loaded: false,
             artFamPurchasedBy: "articleFamPurchasedBy",
             ArticleFamilyType: "articleFamType",
-            artFam_type:"",
+            artFam_type: this.type,
             enumArticleFam_type: [
                 {id_enum: 'artFam_type', value: "COMP", text: 'COMP'},
                 {id_enum: 'artFam_type', value: "RAW", text: 'RAW'},
@@ -413,33 +417,55 @@ export default {
         @param artSheet_created */
         updateArtFam(savedAs, reason, artSheet_created) {
             /*We begin by checking if the data entered by the user are correct*/
-            axios.post('/compFam/verif', {
-
-            })
-                /*If the data are correct, we send them to the controller for update data in the database*/
-                .then(response => {
-                    this.errors = {};
-                    const consultUrl = (id) => `/compFam/update/${id}`;
-                    axios.post(consultUrl(this.artFam_id), {
-                       
-                    })
-                        .then(response => {
-                            const id = this.artFam_id;
-                            /*We test if an article sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (artSheet_created == true) {
-                                axios.post(`/history/add/compFam/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            /*If the data have been updated in the database, we show a success message*/
-                            this.$refs.SuccessAlert.showAlert(`CompFam ID card updated successfully and saved as ${savedAs}`);
-                            this.artFam_validate = savedAs;
-                        })
-                        .catch(error => this.errors = error.response.data.errors);
+            if (this.artFam_type=="COMP"){
+                axios.post('/comp/family/verif', {
+                    artFam_ref: this.artFam_ref,
+                    artFam_design: this.artFam_design,
+                    artFam_drawingPath: this.artFam_drawingPath,
+                    artFam_purchasedBy: this.artFam_purchasedBy,
+                    artFam_variablesCharac: this.artFam_variablesCharac,
+                    artFam_version: this.artFam_version,
+                    artFam_active: this.artFam_active,
+                    artFam_validate: savedAs,
                 })
-                .catch(error => this.errors = error.response.data.errors);
+                    /*If the data are correct, we send them to the controller for update data in the database*/
+                    .then(response => {
+                        this.errors = {};
+                        const consultUrl = (id) => `/comp/family/verif${id}`;
+                        axios.post(consultUrl(this.artFam_id), {
+                            artFam_ref: this.artFam_ref,
+                            artFam_design: this.artFam_design,
+                            artFam_drawingPath: this.artFam_drawingPath,
+                            artFam_purchasedBy: this.artFam_purchasedBy,
+                            artFam_variablesCharac: this.artFam_variablesCharac,
+                            artFam_version: this.artFam_version,
+                            artFam_active: this.artFam_active,
+                            artFam_validate: savedAs,
+                        })
+                            .then(response => {
+                                const id = this.artFam_id;
+                                /*We test if an article sheet has been already created*/
+                                /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                                if (artSheet_created == true) {
+                                    axios.post(`/history/add/compFam/${id}`, {
+                                        history_reasonUpdate: reason,
+                                    });
+                                    window.location.reload();
+                                }
+                                /*If the data have been updated in the database, we show a success message*/
+                                this.$refs.SuccessAlert.showAlert(`CompFam ID card updated successfully and saved as ${savedAs}`);
+                                this.artFam_validate = savedAs;
+                            })
+                            .catch(error => {
+                                this.errors = error.response.data.errors;
+                                console.log(this.errors);
+                            });
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(this.errors);
+                    });
+            }
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
