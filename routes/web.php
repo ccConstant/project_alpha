@@ -60,6 +60,7 @@ use App\Http\Controllers\SW03\ConsFamilyController;
 use App\Http\Controllers\SW03\CompFamilyMemberController;
 use App\Http\Controllers\SW03\ConsFamilyMemberController;
 use App\Http\Controllers\SW03\RawFamilyMemberController;
+use App\Http\Controllers\SW03\PurchaseSpecificationController;
 
 
 
@@ -1038,4 +1039,10 @@ Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_c
 Route::post('/artFam/criticality/add', [CriticalityController::class, 'add_criticality']);
 Route::post('/artFam/criticality/update/{id}', [CriticalityController::class, 'update_criticality']);
 Route::get('/artFam/criticality/send/{id}', [CriticalityController::class, 'send_criticality']);
+
+
+//purchase Specification 
+Route::post('/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);
+Route::post('/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
+
 
