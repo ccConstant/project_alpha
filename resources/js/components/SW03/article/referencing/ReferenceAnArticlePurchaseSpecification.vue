@@ -12,16 +12,16 @@
         <!--The emitted deleteDim is caught here and call the function getContent -->
         <ArticlePurchaseSpecificationForm ref="ask_purchaseSpecification_data" v-for="(component, key) in components" :key="component.key"
                          :is="component.comp" :requiredDoc="component.requiredDoc" :divClass="component.className"
-                          :id="component.id" :consultMod="isInConsultMod" :modifMod="isInModifMod" 
+                          :id="component.id" :consultMod="isInConsultMod" :modifMod="isInModifMod"
                           :art_type="data_art_type" :art_id="data_art_id"
                           @deleteStorageCondition="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
             <!--Add another dimension button appear -->
-            <button v-on:click="addComponent">Add</button> 
+            <button v-on:click="addComponent">Add</button>
         </div>
         <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>-->
+                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
     </div>
 
 
@@ -107,7 +107,7 @@ export default {
         getContent(key) {
             this.components.splice(key, 1);
         },
-        
+
         /*Function for saving all the data in one time*/
         /*saveAll(savedAs) {
             for (const component of this.$refs.ask_dim_data) {

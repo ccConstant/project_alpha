@@ -206,6 +206,10 @@ const router = new VueRouter({
         name: 'article_url_add',
         component: require('./components/SW03/article/referencing/ReferenceAnArticleFamily.vue').default
     },{
+        path: '/article/list',
+        name: 'article_url_list',
+        component: require('./components/SW03/article/consultation/ListOfArticle.vue').default
+    },{
         path: '/SW03/enum',
         name: 'url_enum_SW03',
         component: require('./components/SW03/enum/EnumManagment.vue').default
