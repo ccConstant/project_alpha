@@ -1,12 +1,12 @@
 <?php
 
 /*
-* Filename : CompFamilyController.php 
+* Filename : CompFamilyController.php
 * Creation date : 25 Apr 2023
 * Update date : 25 Apr 2023
-* This file is used to link the view files and the database that concern the comp family table. 
+* This file is used to link the view files and the database that concern the comp family table.
 * For example : add a comp family in the data base, update a comp family...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW03;
 
@@ -37,7 +37,7 @@ class CompFamilyController extends Controller
                     'artFam_version' => 'required|min:2|max:4|String',
                 ],
                 [
-                    
+
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
@@ -70,10 +70,10 @@ class CompFamilyController extends Controller
             }
 
 
-           
+
         }else{
              //-----CASE artFam->validate=drafted or artFam->validate=to be validated----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -98,13 +98,13 @@ class CompFamilyController extends Controller
                     'artFam_variablesCharac.String' => 'You must enter a string ',
                     'artFam_version.max' => 'You must enter a maximum of 4 characters',
                     'artFam_version.String' => 'You must enter a string ',
-                   
+
                 ]
             );
         }
 
          //we checked if the reference entered is already used for another component family
-         $component_already_exist=CompFamily::where('compFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first() ; 
+         $component_already_exist=CompFamily::where('compFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first() ;
          if ($component_already_exist!=null){
              return response()->json([
                  'errors' => [
@@ -116,7 +116,7 @@ class CompFamilyController extends Controller
 
     /**
      * Function call by ArticleFamilyForm.vue when the form is submitted for insert with the route : /comp/family/add (post)
-     * Add a new enregistrement of comp family in the data base with the informations entered in the form 
+     * Add a new enregistrement of comp family in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new comp family
      */
     public function add_compFamily(Request $request){
@@ -136,10 +136,30 @@ class CompFamilyController extends Controller
             'compFam_validate' => $request->artFam_validate,
             'compFam_version' => $request->artFam_version,
             'compFam_active' => $request->artFam_active,
-        ]) ; 
+        ]) ;
 
         $compFamily_id=$compFamily->id ;
-        
+
         return response()->json($compFamily_id) ;
+    }
+
+    public function send_compFamilies(){
+        $compFamilies=CompFamily::all() ;
+        $array = [];
+        foreach ($compFamilies as $compFamily) {
+            $obj = [
+                'id' => $compFamily->id,
+                'compFam_ref' => $compFamily->compFam_ref,
+                'compFam_design' => $compFamily->compFam_design,
+                'compFam_drawingPath' => $compFamily->compFam_drawingPath,
+                'compFam_variablesCharac' => $compFamily->compFam_variablesCharac,
+                'compFam_version' => $compFamily->compFam_version,
+                'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
+                'compFam_validate' => $compFamily->compFam_validate,
+                'compFam_active' => $compFamily->compFam_active
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
     }
 }

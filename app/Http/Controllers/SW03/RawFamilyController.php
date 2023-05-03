@@ -1,12 +1,12 @@
 <?php
 
 /*
-* Filename : RawFamilyController.php 
+* Filename : RawFamilyController.php
 * Creation date : 28 Apr 2023
 * Update date : 28 Apr 2023
-* This file is used to link the view files and the database that concern the raw family table. 
+* This file is used to link the view files and the database that concern the raw family table.
 * For example : add a raw family in the data base, update a raw family...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW03;
 
@@ -36,7 +36,7 @@ class RawFamilyController extends Controller
                     'artFam_variablesCharac' => 'required|min:2|max:255|String',
                 ],
                 [
-                    
+
                     'artFam_ref.required' => 'You must enter a reference for your raw family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
@@ -65,10 +65,10 @@ class RawFamilyController extends Controller
             }
 
 
-           
+
         }else{
              //-----CASE artFam->validate=drafted or artFam->validate=to be validated----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -90,13 +90,13 @@ class RawFamilyController extends Controller
                     'artFam_drawingPath.String' => 'You must enter a string ',
                     'artFam_variablesCharac.max' => 'You must enter a maximum of 255 characters',
                     'artFam_variablesCharac.String' => 'You must enter a string ',
-                   
+
                 ]
             );
         }
 
          //we checked if the reference entered is already used for another raw family
-         $raw_already_exist=RawFamily::where('rawFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first() ; 
+         $raw_already_exist=RawFamily::where('rawFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first() ;
          if ($raw_already_exist!=null){
              return response()->json([
                  'errors' => [
@@ -108,7 +108,7 @@ class RawFamilyController extends Controller
 
     /**
      * Function call by ArticleFamilyForm.vue when the form is submitted for insert with the route : /raw/family/add (post)
-     * Add a new enregistrement of raw family in the data base with the informations entered in the form 
+     * Add a new enregistrement of raw family in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new raw family
      */
     public function add_rawFamily(Request $request){
@@ -127,11 +127,28 @@ class RawFamilyController extends Controller
             'rawFam_variablesCharac' => $request->artFam_variablesCharac,
             'rawFam_validate' => $request->artFam_validate,
             'rawFam_active' => $request->artFam_active,
-        ]) ; 
+        ]) ;
 
         $rawFamily_id=$rawFamily->id ;
-        
+
         return response()->json($rawFamily_id) ;
     }
-    
+
+    public function send_rawFamilies(){
+        $rawFamilies=RawFamily::all() ;
+        $array = [];
+        foreach ($rawFamilies as $rawFamily){
+            $obj = [
+                'id' => $rawFamily->id,
+                'rawFam_ref' => $rawFamily->rawFam_ref,
+                'rawFam_design' => $rawFamily->rawFam_design,
+                'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
+                'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
+                'rawFam_validate' => $rawFamily->rawFam_validate,
+                'rawFam_active' => $rawFamily->rawFam_active
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
 }
