@@ -32,44 +32,49 @@
             </div>
             <div class="list">
                 <b-form >
-                    <table>
-                        <tr>
-                            <th></th>
-                            <th>Reference Alpha</th>
-                            <th>Reference Supplier</th>
-                            <th>Designation</th>
-                            <th>Version</th>
-                            <th>
-                                Active ?
-                                <select v-model="searchTermActive" class="form-control search_bar align-self-center" type="text">
-                                    <option :value="1">Yes</option>
-                                    <option :value="0">No</option>
-                                    <option :value="-1">All</option>
-                                </select>
-                            </th>
-                            <th>
-                                Validate ?
-                                <select v-model="searchTermValidate" class="form-control search_bar align-self-center" type="text">
-                                    <option :value="1">Yes</option>
-                                    <option :value="0">No</option>
-                                    <option :value="-1">All</option>
-                                </select>
-                            </th>
-                        </tr>
-                        <tr v-for="elem in pageOfItems">
-                            <td><b-checkbox class="checkbox" :checked="checked.includes(elem.ref)" variant="primary" v-on:change="updateChecked(elem.ref)"></b-checkbox></td>
-                            <td>{{elem.ref}}</td>
-                            <td>{{elem.refSupplier}}</td>
-                            <td>{{elem.design}}</td>
-                            <td>{{elem.version}}</td>
-<!--                            <td><b-checkbox disabled :checked="elem.active === 1"></b-checkbox></td>-->
-                            <td>{{elem.active === 1 ? "Yes": "No"}}</td>
-<!--                            <td><b-checkbox disabled :checked="elem.signatureDate === null"></b-checkbox></td>-->
-                            <td>{{elem.signatureDate === undefined ? "No": elem.signatureDate}}</td>
-                        </tr>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Reference Alpha</th>
+                                <th scope="col">Reference Supplier</th>
+                                <th scope="col">Designation</th>
+                                <th scope="col">Version</th>
+                                <th scope="col">
+                                    Active ?
+                                    <select v-model="searchTermActive" class="form-control search_bar align-self-center" type="text">
+                                        <option :value="1">Yes</option>
+                                        <option :value="0">No</option>
+                                        <option :value="-1">All</option>
+                                    </select>
+                                </th>
+                                <th scope="col">
+                                    Validate ?
+                                    <select v-model="searchTermValidate" class="form-control search_bar align-self-center" type="text">
+                                        <option :value="1">Yes</option>
+                                        <option :value="0">No</option>
+                                        <option :value="-1">All</option>
+                                    </select>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="elem in pageOfItems">
+                                <td><b-checkbox class="checkbox" :checked="checked.includes(elem.ref)" variant="primary" v-on:change="updateChecked(elem.ref)"></b-checkbox></td>
+                                <td>{{elem.ref}}</td>
+                                <td>{{elem.refSupplier}}</td>
+                                <td>{{elem.design}}</td>
+                                <td>{{elem.version}}</td>
+                                <!--                            <td><b-checkbox disabled :checked="elem.active === 1"></b-checkbox></td>-->
+                                <td>{{elem.active === 1 ? "Yes": "No"}}</td>
+                                <!--                            <td><b-checkbox disabled :checked="elem.signatureDate === null"></b-checkbox></td>-->
+                                <td>{{elem.signatureDate === undefined ? "No": elem.signatureDate}}</td>
+                            </tr>
+                        </tbody>
                     </table>
                     <jw-pagination class="eq_list_pagination" :pageSize=25 :items="filterByTerm" @changePage="onChangePage"></jw-pagination>
                 </b-form>
+                <ErrorAlert ref="errorAlert"></ErrorAlert>
             </div>
         </div>
     </div>
@@ -77,8 +82,11 @@
 </template>
 
 <script>
+import ErrorAlert from "../../../alert/ErrorAlert.vue";
+
 export default {
     components: {
+        ErrorAlert
     },
     data() {
         return {
@@ -165,7 +173,7 @@ export default {
                     }
                 });
             } else {
-                alert("Please select only one article to update");
+                this.$refs.errorAlert.showAlert("Please select only one article to update");
             }
         },
         consultArticle() {
@@ -186,7 +194,7 @@ export default {
                     }
                 });
             } else {
-                alert("Please select only one article to consult");
+                this.$refs.errorAlert.showAlert("Please select only one article to consult");
             }
         },
         resetActiveFilter() {
@@ -221,9 +229,9 @@ export default {
             }
             if (this.searchTermValidate !== -1) {
                 res = res.filter(option => {
-                    if (this.searchTermValidate === "0")
+                    if (this.searchTermValidate === 0)
                         return option.signatureDate === undefined;
-                    else if (this.searchTermValidate === "1")
+                    else if (this.searchTermValidate === 1)
                         return option.signatureDate !== undefined;
                 });
             }
@@ -253,23 +261,4 @@ export default {
 </script>
 
 <style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    th {
-        text-align: center;
-    }
-    td {
-        text-align: center;
-        width: auto;
-        height: auto;
-        margin: auto;
-    }
-    .list td {
-        border: 1px solid black;
-    }
-    b-checkbox {
-        margin: 0;
-    }
 </style>
