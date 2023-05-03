@@ -19,8 +19,8 @@
                     isRequired
                     v-model="artMb_dimension"
                     :info_text="'Article Member Dimension'"
-                    :min="3"
-                    :max="255"
+                    :min="0"
+                    :max="50"
                 />
             
             
@@ -170,7 +170,7 @@ export default {
                             this.isInConsultMod = true;
                             console.log(this.addSuccess)
                             console.log(this.isInConsultMod)
-                            this.$snotify.success(`CompFamMemner added successfully and saved as ${savedAs}`);
+                            this.$snotify.success(`CompFamMember added successfully and saved as ${savedAs}`);
                             this.artFamMember_id = response.data;
                         })
                         .catch(error => this.errors = error.response.data.errors);
@@ -199,7 +199,7 @@ export default {
                             this.isInConsultMod = true;
                             console.log(this.addSuccess)
                             console.log(this.isInConsultMod)
-                            this.$snotify.success(`CompFamMemner added successfully and saved as ${savedAs}`);
+                            this.$snotify.success(`CompFamMember added successfully and saved as ${savedAs}`);
                             this.artFamMember_id = response.data;
                         })
                         .catch(error => this.errors = error.response.data.errors);

@@ -79,7 +79,7 @@
                     :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                     :name="'Active ?'"
                     :label="'Active'"
-                    :value="artFam_active"
+                    :value="this.artFam_active"
                     :info_text="'Is article currently use?'"
                     :inputClassName="null"
                     :Errors="errors['Active']"
@@ -173,7 +173,8 @@ export default {
             type: String
         },
         active: {
-            type: Boolean
+            type: Boolean,
+            default: false
         },
         consultMod: {
             type: Boolean,
