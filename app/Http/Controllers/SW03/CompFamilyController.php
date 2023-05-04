@@ -162,4 +162,43 @@ class CompFamilyController extends Controller
         }
         return response()->json($array);
     }
+
+    public function send_compFamily($id) {
+        $compFamily = CompFamily::find($id);
+        $obj = [
+            'id' => $compFamily->id,
+            'compFam_ref' => $compFamily->compFam_ref,
+            'compFam_design' => $compFamily->compFam_design,
+            'compFam_drawingPath' => $compFamily->compFam_drawingPath,
+            'compFam_variablesCharac' => $compFamily->compFam_variablesCharac,
+            'compFam_version' => $compFamily->compFam_version,
+            'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
+            'compFam_validate' => $compFamily->compFam_validate,
+            'compFam_active' => $compFamily->compFam_active
+        ];
+        return response()->json($obj);
+    }
+
+    public function update_compFamily(Request $request, $id) {
+        $compFamily = CompFamily::findOrfail($id);
+        if ($compFamily->compFam_signatureDate != null) {
+            $compFamily->update([
+                'compFam_nbrVersion' => $compFamily->compFam_nbrVersion + 1,
+            ]);
+        }
+        $compFamily->update([
+            'compFam_ref' => $request->compFam_ref,
+            'compFam_design' => $request->compFam_design,
+            'compFam_drawingPath' => $request->compFam_drawingPath,
+            'compFam_variablesCharac' => $request->compFam_variablesCharac,
+            'compFam_version' => $request->compFam_version,
+            'compFam_qualityApproverId' => null,
+            'compFam_technicalReviewerId' => null,
+            'compFam_signatureDate' => null,
+            'compFam_validate' => $request->compFam_validate,
+            'compFam_active' => $request->compFam_active,
+            'enumPurchasedBy_id' => $request->enumPurchasedBy_id
+        ]);
+        return response()->json($compFamily);
+    }
 }

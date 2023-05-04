@@ -4,43 +4,49 @@
 <!--Vue Component used to reference a documentary control in as incoming inspection-->
 
 <template>
-    <div class="crit">
-        <h2 class="titleForm">Criticality</h2>
-        <!--Adding to the vue dimTestIDForm by going through the components array with the v-for-->
-        <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
-        <!--The emitted deleteFile is caught here and call the function getContent -->
-        <CritIDForm
-            ref="ask_crit_data"
-            v-for="(component, key) in components"
-            :key="component.key"
-            :is="component.comp"
-            :id="component.id"
-            :consultMod="isInConsultMod"
-            :modifMod="isInModifMod"
-            :artCriticality="component.crit_artCriticality"
-            :artMaterialContactCriticality="component.crit_artMaterialContactCriticality"
-            :artMaterialFunctionCriticality="component.crit_artMaterialFunctionCriticality"
-            :artProcessCriticality="component.crit_artProcessCriticality"
-            :remarks="component.crit_remarks"
-            :articleID="data_article_id"
-            :articleType="data_article_type"
-            @deleteCrit="getContent(key)"
-        />
-        <!--If the user is not in consultation mode -->
-        <div v-if="!this.consultMod">
-            <!--Add another file button appear -->
-            <button v-on:click="addComponent">Add</button>
-            <!--If file array is not empty and if the user is not in modification mode -->
+    <div>
+        <div v-if="loaded===false">
+            <b-spinner variant="primary"></b-spinner>
         </div>
-        <SaveButtonForm
-            saveAll
-            v-if="components.length>1"
-            @add="saveAll"
-            @update="saveAll"
-            :consultMod="this.isInConsultMod"
-            :modifMod="this.isInModifMod"
-        />
+        <div v-else class="crit">
+            <h2 v-if="components.length>0" class="titleForm">Criticality</h2>
+            <!--Adding to the vue dimTestIDForm by going through the components array with the v-for-->
+            <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
+            <!--The emitted deleteFile is caught here and call the function getContent -->
+            <CritIDForm
+                ref="ask_crit_data"
+                v-for="(component, key) in components"
+                :key="component.key"
+                :is="component.comp"
+                :id="component.id"
+                :consultMod="isInConsultMod"
+                :modifMod="isInModifMod"
+                :artCriticality="component.crit_artCriticality"
+                :artMaterialContactCriticality="component.crit_artMaterialContactCriticality"
+                :artMaterialFunctionCriticality="component.crit_artMaterialFunctionCriticality"
+                :artProcessCriticality="component.crit_artProcessCriticality"
+                :remarks="component.crit_remarks"
+                :articleID="data_article_id"
+                :articleType="data_article_type"
+                @deleteCrit="getContent(key)"
+            />
+            <!--If the user is not in consultation mode -->
+            <div v-if="!this.consultMod">
+                <!--Add another file button appear -->
+                <button v-on:click="addComponent">Add</button>
+                <!--If file array is not empty and if the user is not in modification mode -->
+            </div>
+            <SaveButtonForm
+                saveAll
+                v-if="components.length>1"
+                @add="saveAll"
+                @update="saveAll"
+                :consultMod="this.isInConsultMod"
+                :modifMod="this.isInModifMod"
+            />
+        </div>
     </div>
+
 </template>
 
 <script>
@@ -105,7 +111,8 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
-            data_article_type: this.articleType
+            data_article_type: this.articleType.toLowerCase(),
+            loaded: false
         };
     },
     methods: {
@@ -143,8 +150,9 @@ export default {
         },
         /*Function for adding to the vue the imported article*/
         importCrit() {
-            if (this.dimTest.length == 0 && !this.isInModifMod) {
-                ImportationAlert.showAlert();
+            if (this.criticality.length === 0 && !this.isInModifMod) {
+                console.log("importCritVide");
+                this.loaded = true;
             } else {
                 for (const dt of this.criticality) {
                     const className = "importedCrit" + dt.id;
@@ -192,18 +200,23 @@ export default {
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/article/criticality/send/${id}`;
-            axios.get(consultUrl(this.import_id))
-                .then(response => this.criticality = response.data)
+            axios.get('/artFam/criticality/send/'+this.data_article_type+'/'+this.import_id)
+                .then(response => {
+                    this.criticality = response.data;
+                    this.importCrit();
+                    this.loaded = true;
+                })
                 .catch(error => console.log(error));
+        } else {
+            this.loaded = true;
         }
     },
     /*All functions inside the mounted option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        if (this.consultMod || this.modifMod) {
+        /*if (this.consultMod || this.modifMod) {
             this.importCrit();
-        }
+        }*/
     }
 }
 </script>

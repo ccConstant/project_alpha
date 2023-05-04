@@ -263,11 +263,23 @@ Route::middleware('auth')->group(function () {
         return view('welcomeSW03');
     });
 
+    Route::get('/supplier/list/update/{id}', function () {
+        return view('welcomeSW03');
+    });
+
     Route::get('/article/add', function () {
         return view('welcomeSW03');
     });
 
     Route::get('/article/list', function () {
+        return view('welcomeSW03');
+    });
+
+    Route::get('/article/consult/{type}/{id}', function () {
+        return view('welcomeSW03');
+    });
+
+    Route::get('/article/update/{type}/{id}', function () {
         return view('welcomeSW03');
     });
 });
@@ -971,6 +983,9 @@ Route::post('/comp/family/add', [CompFamilyController::class, 'add_compFamily'])
 Route::post('/comp/mb/verif', [CompFamilyMemberController::class, 'verif_compFamilyMember']);
 Route::post('/comp/mb/add/{id}', [CompFamilyMemberController::class, 'add_compFamilyMember']);
 Route::get('/comp/family/send', [CompFamilyController::class, 'send_compFamilies']);
+Route::get('/comp/family/send/{id}', [CompFamilyController::class, 'send_compFamily']);
+Route::get('/comp/mb/send/{id}', [CompFamilyMemberController::class, 'send_compFamilyMember']);
+Route::post('/comp/family/update/{id}', [CompFamilyController::class, 'update_compFamily']);
 
 
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
@@ -978,6 +993,8 @@ Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily'])
 Route::post('/cons/mb/verif', [ConsFamilyMemberController::class, 'verif_consFamilyMember']);
 Route::post('/cons/mb/add/{id}', [ConsFamilyMemberController::class, 'add_consFamilyMember']);
 Route::get('/cons/family/send', [ConsFamilyController::class, 'send_consFamilies']);
+Route::get('/cons/family/send/{id}', [ConsFamilyController::class, 'send_consFamily']);
+Route::get('/cons/mb/send/{id}', [ConsFamilyMemberController::class, 'send_consFamilyMember']);
 
 
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
@@ -985,6 +1002,8 @@ Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
 Route::post('/raw/mb/verif', [RawFamilyMemberController::class, 'verif_rawFamilyMember']);
 Route::post('/raw/mb/add/{id}', [RawFamilyMemberController::class, 'add_rawFamilyMember']);
 Route::get('/raw/family/send', [RawFamilyController::class, 'send_rawFamilies']);
+Route::get('/raw/family/send/{id}', [RawFamilyController::class, 'send_rawFamily']);
+Route::get('/raw/mb/send/{id}', [RawFamilyMemberController::class, 'send_rawFamilyMember']);
 
 
 // Incoming Inspection Controller
@@ -1045,10 +1064,14 @@ Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_c
 Route::post('/artFam/criticality/add', [CriticalityController::class, 'add_criticality']);
 Route::post('/artFam/criticality/update/{id}', [CriticalityController::class, 'update_criticality']);
 Route::get('/artFam/criticality/send/{id}', [CriticalityController::class, 'send_criticality']);
+Route::get('/artFam/criticality/send/{type}/{id}', [CriticalityController::class, 'send_criticalities']);
 
 
-//purchase Specification 
+//purchase Specification
 Route::post('/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);
 Route::post('/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
+Route::post('/purSpe/update/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
+Route::get('/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
+Route::get('/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);
 
 

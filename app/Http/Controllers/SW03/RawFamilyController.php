@@ -151,4 +151,18 @@ class RawFamilyController extends Controller
         }
         return response()->json($array);
     }
+
+    public function send_rawFamily($id) {
+        $rawFamily = RawFamily::find($id);
+        $obj = [
+            'id' => $rawFamily->id,
+            'rawFam_ref' => $rawFamily->rawFam_ref,
+            'rawFam_design' => $rawFamily->rawFam_design,
+            'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
+            'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
+            'rawFam_validate' => $rawFamily->rawFam_validate,
+            'rawFam_active' => $rawFamily->rawFam_active
+        ];
+        return response()->json($obj);
+    }
 }

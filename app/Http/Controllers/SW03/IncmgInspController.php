@@ -49,8 +49,7 @@ class IncmgInspController extends Controller
     }
 
     public function send_incmgInspRaw($id) {
-        $rawFam = RawFamily::findOrfail($id);
-        $incmgInsps = IncomingInspection::all()->where('articleFam_id', $rawFam->id);
+        $incmgInsps = IncomingInspection::all()->where('incmgInsp_rawFam_id', "==", $id);
         $array = [];
         foreach ($incmgInsps as $incmgInsp) {
             $obj = ([
@@ -72,8 +71,7 @@ class IncmgInspController extends Controller
     }
 
     public function send_incmgInspCons($id) {
-        $consFam = ConsFamily::findOrfail($id);
-        $incmgInsps = IncomingInspection::all()->where('articleFam_id', $consFam->id);
+        $incmgInsps = IncomingInspection::all()->where('incmgInsp_consFam_id', "==", $id);
         $array = [];
         foreach ($incmgInsps as $incmgInsp) {
             $obj = ([
@@ -95,8 +93,7 @@ class IncmgInspController extends Controller
     }
 
     public function send_incmgInspComp($id) {
-        $compFam = CompFamily::findOrfail($id);
-        $incmgInsps = IncomingInspection::all()->where('articleFam_id', $compFam->id);
+        $incmgInsps = IncomingInspection::all()->where('incmgInsp_compFam_id', "==", $id);
         $array = [];
         foreach ($incmgInsps as $incmgInsp) {
             $obj = ([

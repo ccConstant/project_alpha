@@ -4,45 +4,50 @@
 <!--Vue Component used to reference a documentary control in as incoming inspection-->
 
 <template>
-    <div class="dimTest">
-        <h2 class="titleForm" v-if="components.length > 0">Dimensional Test</h2>
-        <!--Adding to the vue dimTestIDForm by going through the components array with the v-for-->
-        <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
-        <!--The emitted deleteFile is caught here and call the function getContent -->
-        <DimTestIDForm
-            ref="ask_dimTest_data"
-            v-for="(component, key) in components"
-            :key="component.key"
-            :is="component.comp"
-            :id="component.id"
-            :consultMod="isInConsultMod"
-            :modifMod="isInModifMod"
-            :severityLevel="component.dimTest_severityLevel"
-            :controlLevel="component.dimTest_controlLevel"
-            :expectedMethod="component.dimTest_expectedAspect"
-            :expectedValue="component.dimTest_expectedValue"
-            :name="component.dimTest_name"
-            :unitValue="component.dimTest_unitValue"
-            :sampling="component.dimTest_sampling"
-            :incmgInsp_id="incmgInsp_id"
-            :articleID="data_article_id"
-            :articleType="data_article_type"
-            @deletedimTest="getContent(key)"
-        />
-        <!--If the user is not in consultation mode -->
-        <div v-if="!this.consultMod">
-            <!--Add another file button appear -->
-            <button v-on:click="addComponent">Add</button>
-            <!--If file array is not empty and if the user is not in modification mode -->
+    <div>
+        <div v-if="loaded===false">
+            <b-spinner variant="primary"></b-spinner>
         </div>
-        <SaveButtonForm
-            saveAll
-            v-if="components.length>1"
-            @add="saveAll"
-            @update="saveAll"
-            :consultMod="this.isInConsultMod"
-            :modifMod="this.isInModifMod"
-        />
+        <div v-else class="dimTest">
+            <h2 class="titleForm" v-if="components.length > 0">Dimensional Test</h2>
+            <!--Adding to the vue dimTestIDForm by going through the components array with the v-for-->
+            <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
+            <!--The emitted deleteFile is caught here and call the function getContent -->
+            <DimTestIDForm
+                ref="ask_dimTest_data"
+                v-for="(component, key) in components"
+                :key="component.key"
+                :is="component.comp"
+                :id="component.id"
+                :consultMod="isInConsultMod"
+                :modifMod="isInModifMod"
+                :severityLevel="component.dimTest_severityLevel"
+                :controlLevel="component.dimTest_controlLevel"
+                :expectedMethod="component.dimTest_expectedAspect"
+                :expectedValue="component.dimTest_expectedValue"
+                :name="component.dimTest_name"
+                :unitValue="component.dimTest_unitValue"
+                :sampling="component.dimTest_sampling"
+                :incmgInsp_id="incmgInsp_id"
+                :articleID="data_article_id"
+                :articleType="data_article_type"
+                @deletedimTest="getContent(key)"
+            />
+            <!--If the user is not in consultation mode -->
+            <div v-if="!this.consultMod">
+                <!--Add another file button appear -->
+                <button v-on:click="addComponent">Add</button>
+                <!--If file array is not empty and if the user is not in modification mode -->
+            </div>
+            <SaveButtonForm
+                saveAll
+                v-if="components.length>1"
+                @add="saveAll"
+                @update="saveAll"
+                :consultMod="this.isInConsultMod"
+                :modifMod="this.isInModifMod"
+            />
+        </div>
     </div>
 </template>
 
@@ -112,7 +117,8 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
-            data_article_type: this.articleType
+            data_article_type: this.articleType,
+            loaded: false
         };
     },
     methods: {
@@ -144,8 +150,9 @@ export default {
         },
         /*Function for adding to the vue the imported article*/
         importdimTest() {
-            if (this.dimTest.length == 0 && !this.isInModifMod) {
-                ImportationAlert.showAlert();
+            if (this.dimTest.length === 0 && !this.isInModifMod) {
+                console.log("no dimTest");
+                this.loaded = true;
             } else {
                 for (const dt of this.dimTest) {
                     const className = "importedDimTest" + dt.id;
@@ -194,18 +201,24 @@ export default {
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/dimTest/send/${id}`; // FIXME
+            const consultUrl = (id) => `/incmgInsp/dimTest/sendFromIncmgInsp/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
-                .then(response => this.dimTest = response.data)
+                .then(response => {
+                    this.dimTest = response.data;
+                    this.importdimTest();
+                    this.loaded = true;
+                })
                 .catch(error => console.log(error));
+        } else {
+            this.loaded = true;
         }
     },
     /*All functions inside the mounted option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        if (this.consultMod || this.modifMod) {
+        /*if (this.consultMod || this.modifMod) {
             this.importdimTest();
-        }
+        }*/
     }
 }
 </script>

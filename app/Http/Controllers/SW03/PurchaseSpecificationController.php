@@ -4,9 +4,9 @@
 * Filename : PurchaseSpecificationController.php
 * Creation date : 2 May 2023
 * Update date : 2 May 2023
-* This file is used to link the view files and the database that concern the purchase specification  table. 
+* This file is used to link the view files and the database that concern the purchase specification  table.
 * For example : add a purchase specification in the data base, update a purchase specification...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW03;
 
@@ -24,7 +24,7 @@ class PurchaseSpecificationController extends Controller
                 'purSpe_requiredDoc' => 'max:255|String',
             ],
             [
-                
+
                 'purSpe_requiredDoc.max' => 'You must enter less than 255 characters ',
                 'purSpe_requiredDoc.String' => 'You must enter a string ',
             ]
@@ -33,12 +33,12 @@ class PurchaseSpecificationController extends Controller
 
     /**
      * Function call by ArticleFamilyMemberForm.vue when the form is submitted for insert with the route : /cons/mb/add (post)
-     * Add a new enregistrement of cons family member in the data base with the informations entered in the form 
+     * Add a new enregistrement of cons family member in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new cons family member
      */
     public function add_purSpe(Request $request, $id){
         //Creation of a new purchase specification
-        $consFam_id=null ; 
+        $consFam_id=null ;
         $rawFam_id=null ;
         $compFam_id=null ;
         if ($request->artFam_type=="COMP"){
@@ -56,10 +56,32 @@ class PurchaseSpecificationController extends Controller
             'rawFam_id' => $rawFam_id,
             'compFam_id' => $compFam_id,
             'purSpe_validate' => $request->purSpe_validate
-        ]) ; 
+        ]) ;
 
         $purSpe_id=$purSpe->id ;
-        
+
         return response()->json($purSpe_id) ;
+    }
+
+    public function send_purSpes($type, $id) {
+        $array = [];
+        if ($type === 'cons') {
+            $purSpecs = PurchaseSpecification::all()->where('consFam_id', '==', $id);
+        } else if ($type === 'raw') {
+            $purSpecs = PurchaseSpecification::all()->where('rawFam_id', '==', $id);
+        } else if ($type === 'comp') {
+            $purSpecs = PurchaseSpecification::all()->where('compFam_id', '==', $id);
+        }
+        foreach ($purSpecs as $purSpec) {
+            array_push($array, [
+                'id' => $purSpec->id,
+                'purSpe_requiredDoc' => $purSpec->purSpe_requiredDoc,
+                'purSpe_validate' => $purSpec->purSpe_validate,
+                'consFam_id' => $purSpec->consFam_id,
+                'rawFam_id' => $purSpec->rawFam_id,
+                'compFam_id' => $purSpec->compFam_id,
+            ]);
+        }
+        return response()->json($array);
     }
 }
