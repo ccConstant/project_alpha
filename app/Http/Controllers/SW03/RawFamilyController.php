@@ -30,29 +30,29 @@ class RawFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|String',
-                    'artFam_design' => 'required|min:3|max:255|String',
-                    'artFam_drawingPath' => 'required|min:3|max:255|String',
-                    'artFam_variablesCharac' => 'required|min:2|max:255|String',
+                    'artFam_ref' => 'required|min:3|max:255|string',
+                    'artFam_design' => 'required|min:3|max:255|string',
+                    'artFam_drawingPath' => 'required|min:3|max:255|string',
+                    'artFam_variablesCharac' => 'required|min:2|max:255|string',
                 ],
                 [
 
                     'artFam_ref.required' => 'You must enter a reference for your raw family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
-                    'artFam_ref.String' => 'You must enter a string ',
+                    'artFam_ref.string' => 'You must enter a string ',
                     'artFam_design.required' => 'You must enter a design for your raw family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
-                    'artFam_design.String' => 'You must enter a string ',
+                    'artFam_design.string' => 'You must enter a string ',
                     'artFam_drawingPath.required' => 'You must enter a drawing path for your raw family ',
                     'artFam_drawingPath.min' => 'You must enter at least three characters ',
                     'artFam_drawingPath.max' => 'You must enter less than 255 characters ',
-                    'artFam_drawingPath.String' => 'You must enter a string ',
+                    'artFam_drawingPath.string' => 'You must enter a string ',
                     'artFam_variablesCharac.required' => 'You must enter variables characteristics for your raw family ',
                     'artFam_variablesCharac.min' => 'You must enter at least two characters ',
                     'artFam_variablesCharac.max' => 'You must enter less than 255 characters ',
-                    'artFam_variablesCharac.String' => 'You must enter a string ',
+                    'artFam_variablesCharac.string' => 'You must enter a string ',
                 ]
             );
 
@@ -72,24 +72,24 @@ class RawFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|String',
-                    'artFam_design' => 'required|min:3|max:255|String',
-                    'artFam_drawingPath' => 'max:255|String',
-                    'artFam_variablesCharac' => 'max:255|String',
+                    'artFam_ref' => 'required|min:3|max:255|string',
+                    'artFam_design' => 'required|min:3|max:255|string',
+                    'artFam_drawingPath' => 'max:255|string',
+                    'artFam_variablesCharac' => 'max:255|string',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your raw family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_ref.String' => 'You must enter a string ',
+                    'artFam_ref.string' => 'You must enter a string ',
                     'artFam_design.required' => 'You must enter a designation for your raw family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_design.String' => 'You must enter a string ',
+                    'artFam_design.string' => 'You must enter a string ',
                     'artFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_drawingPath.String' => 'You must enter a string ',
+                    'artFam_drawingPath.string' => 'You must enter a string ',
                     'artFam_variablesCharac.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_variablesCharac.String' => 'You must enter a string ',
+                    'artFam_variablesCharac.string' => 'You must enter a string ',
 
                 ]
             );
@@ -145,7 +145,11 @@ class RawFamilyController extends Controller
                 'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
                 'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
                 'rawFam_validate' => $rawFamily->rawFam_validate,
-                'rawFam_active' => $rawFamily->rawFam_active
+                'rawFam_active' => $rawFamily->rawFam_active,
+                'rawFam_purchasedBy' => $rawFamily->enumPurchasedBy_id,
+                'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
+                'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
+                'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate
             ];
             array_push($array, $obj);
         }
@@ -161,8 +165,40 @@ class RawFamilyController extends Controller
             'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
             'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
             'rawFam_validate' => $rawFamily->rawFam_validate,
-            'rawFam_active' => $rawFamily->rawFam_active
+            'rawFam_active' => $rawFamily->rawFam_active,
+            'rawFam_purchasedBy' => $rawFamily->enumPurchasedBy_id,
+            'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
+            'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
+            'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate
         ];
         return response()->json($obj);
+    }
+
+    public function update_rawFamily(Request $request, $id) {
+        $rawFamily = RawFamily::findOrfail($id);
+        if ($rawFamily->rawFam_signatureDate != null) {
+            $rawFamily->update([
+                'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion + 1,
+            ]);
+        }
+        $enum=NULL;
+        if ($request->artFam_purchasedBy!="" && $request->artFam_purchasedBy!=NULL){
+            $enum=EnumPurchasedBy::where('value', '=', $request->artFam_purchasedBy)->first() ;
+            $enum=$enum->id ;
+        }
+        $rawFamily->update([
+            'rawFam_ref' => $request->artFam_ref,
+            'rawFam_design' => $request->artFam_design,
+            'rawFam_drawingPath' => $request->artFam_drawingPath,
+            'rawFam_variablesCharac' => $request->artFam_variablesCharac,
+            'rawFam_version' => $request->artFam_version,
+            'rawFam_qualityApproverId' => null,
+            'rawFam_technicalReviewerId' => null,
+            'rawFam_signatureDate' => null,
+            'rawFam_validate' => $request->artFam_validate,
+            'rawFam_active' => $request->artFam_active,
+            'enumPurchasedBy_id' => $enum,
+        ]);
+        return response()->json($rawFamily);
     }
 }

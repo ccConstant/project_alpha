@@ -275,8 +275,41 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
-
+        updateDocControl(savedAs, reason, lifesheet_created) {
+            axios.post('/incmgInsp/aspTest/verif', {
+                aspTest_name: this.aspTest_name,
+                aspTest_severityLevel: this.aspTest_severityLevel,
+                aspTest_levelOfControl: this.aspTest_controlLevel,
+                aspTest_expectedAspect: this.aspTest_expectedAspect,
+                aspTest_sampling: this.aspTest_sampling,
+                incmgInsp_id: this.data_incmgInsp_id,
+                aspTest_articleType: this.data_article_type,
+            })
+                .then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/incmgInsp/aspTest/update/' + this.aspTest_id, {
+                        aspTest_name: this.aspTest_name,
+                        aspTest_severityLevel: this.aspTest_severityLevel,
+                        aspTest_levelOfControl: this.aspTest_controlLevel,
+                        aspTest_expectedAspect: this.aspTest_expectedAspect,
+                        aspTest_sampling: this.aspTest_sampling,
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        aspTest_articleType: this.data_article_type,
+                    })
+                        /*If the file is added successfully*/
+                        .then(response => {
+                            this.$snotify.success(`Aspect Test added successfully`);
+                            this.isInConsultedMod = true;
+                            this.addSucces = true
+                            // TODO: faire l'historique
+                        })
+                        /*If the controller sends errors, we put it in the error object*/
+                        .catch(error => this.errors = error.response.data.errors);
+                })
+                //If the controller sends errors, we put it in the error object
+                .catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

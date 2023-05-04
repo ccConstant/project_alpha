@@ -20,7 +20,7 @@
                 :is="component.comp"
                 :id="component.id"
                 :consultMod="isInConsultMod"
-                :modifMod="isInModifMod"
+                :modifMod="component.id !== null"
                 :reference="component.reference"
                 :docControlName="component.docControlName"
                 :materialCertiSpec="component.materialCertiSpec"
@@ -125,6 +125,7 @@ export default {
             this.components.push({
                 comp: 'DocControlIDForm',
                 key: this.uniqueKey++,
+                id: null,
             });
         },
         /*Function for adding an imported file form with his data*/
@@ -140,6 +141,7 @@ export default {
                 id: id,
                 className: className
             });
+            console.log(this.components);
         },
         /*Suppression of a file component from the vue*/
         getContent(key) {

@@ -30,34 +30,34 @@ class CompFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|String',
-                    'artFam_design' => 'required|min:3|max:255|String',
-                    'artFam_drawingPath' => 'required|min:3|max:255|String',
-                    'artFam_variablesCharac' => 'required|min:2|max:255|String',
-                    'artFam_version' => 'required|min:2|max:4|String',
+                    'artFam_ref' => 'required|min:3|max:255|string',
+                    'artFam_design' => 'required|min:3|max:255|string',
+                    'artFam_drawingPath' => 'required|min:3|max:255|string',
+                    'artFam_variablesCharac' => 'required|min:2|max:255|string',
+                    'artFam_version' => 'required|min:2|max:4|string',
                 ],
                 [
 
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
-                    'artFam_ref.String' => 'You must enter a string ',
+                    'artFam_ref.string' => 'You must enter a string ',
                     'artFam_design.required' => 'You must enter a design for your comp family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
-                    'artFam_design.String' => 'You must enter a string ',
+                    'artFam_design.string' => 'You must enter a string ',
                     'artFam_drawingPath.required' => 'You must enter a drawing path for your comp family ',
                     'artFam_drawingPath.min' => 'You must enter at least three characters ',
                     'artFam_drawingPath.max' => 'You must enter less than 255 characters ',
-                    'artFam_drawingPath.String' => 'You must enter a string ',
+                    'artFam_drawingPath.string' => 'You must enter a string ',
                     'artFam_variablesCharac.required' => 'You must enter variables characteristics for your comp family ',
                     'artFam_variablesCharac.min' => 'You must enter at least two characters ',
                     'artFam_variablesCharac.max' => 'You must enter less than 255 characters ',
-                    'artFam_variablesCharac.String' => 'You must enter a string ',
+                    'artFam_variablesCharac.string' => 'You must enter a string ',
                     'artFam_version.required' => 'You must enter a version for your comp family ',
                     'artFam_version.min' => 'You must enter at least two characters ',
                     'artFam_version.max' => 'You must enter less than 4 characters ',
-                    'artFam_version.String' => 'You must enter a string ',
+                    'artFam_version.string' => 'You must enter a string ',
                 ]
             );
 
@@ -68,43 +68,40 @@ class CompFamilyController extends Controller
                     ],
                 ], 422);
             }
-
-
-
         }else{
              //-----CASE artFam->validate=drafted or artFam->validate=to be validated----//
             //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|String',
-                    'artFam_design' => 'required|min:3|max:255|String',
-                    'artFam_drawingPath' => 'max:255|String',
-                    'artFam_variablesCharac' => 'max:255|String',
-                    'artFam_version' => 'max:4|String',
+                    'artFam_ref' => 'required|min:3|max:255|string',
+                    'artFam_design' => 'required|min:3|max:255|string',
+                    'artFam_drawingPath' => 'max:255',
+                    'artFam_variablesCharac' => 'max:255',
+                    'artFam_version' => 'max:4',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_ref.String' => 'You must enter a string ',
+                    'artFam_ref.string' => 'You must enter a string ',
                     'artFam_design.required' => 'You must enter a designation for your comp family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_design.String' => 'You must enter a string ',
+                    'artFam_design.string' => 'You must enter a string ',
                     'artFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_drawingPath.String' => 'You must enter a string ',
+                    'artFam_drawingPath.string' => 'You must enter a string ',
                     'artFam_variablesCharac.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_variablesCharac.String' => 'You must enter a string ',
+                    'artFam_variablesCharac.string' => 'You must enter a string ',
                     'artFam_version.max' => 'You must enter a maximum of 4 characters',
-                    'artFam_version.String' => 'You must enter a string ',
+                    'artFam_version.string' => 'You must enter a string ',
 
                 ]
             );
         }
 
          //we checked if the reference entered is already used for another component family
-         $component_already_exist=CompFamily::where('compFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first() ;
+         $component_already_exist=CompFamily::where('compFam_ref', '=', $request->artFam_ref, 'and')->where('id', '<>', $request->artFam_id)->first();
          if ($component_already_exist!=null){
              return response()->json([
                  'errors' => [
@@ -156,7 +153,11 @@ class CompFamilyController extends Controller
                 'compFam_version' => $compFamily->compFam_version,
                 'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
                 'compFam_validate' => $compFamily->compFam_validate,
-                'compFam_active' => $compFamily->compFam_active
+                'compFam_active' => $compFamily->compFam_active,
+                'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
+                'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
+                'compFam_purchasedBy' => $compFamily->enumPurchasedBy_id,
+                'compFam_signatureDate' => $compFamily->compFam_signatureDate
             ];
             array_push($array, $obj);
         }
@@ -174,7 +175,11 @@ class CompFamilyController extends Controller
             'compFam_version' => $compFamily->compFam_version,
             'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
             'compFam_validate' => $compFamily->compFam_validate,
-            'compFam_active' => $compFamily->compFam_active
+            'compFam_active' => $compFamily->compFam_active,
+            'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
+            'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
+            'compFam_purchasedBy' => $compFamily->enumPurchasedBy_id,
+            'compFam_signatureDate' => $compFamily->compFam_signatureDate
         ];
         return response()->json($obj);
     }
@@ -186,18 +191,23 @@ class CompFamilyController extends Controller
                 'compFam_nbrVersion' => $compFamily->compFam_nbrVersion + 1,
             ]);
         }
+        $enum=NULL;
+        if ($request->artFam_purchasedBy!="" && $request->artFam_purchasedBy!=NULL){
+            $enum=EnumPurchasedBy::where('value', '=', $request->artFam_purchasedBy)->first() ;
+            $enum=$enum->id ;
+        }
         $compFamily->update([
-            'compFam_ref' => $request->compFam_ref,
-            'compFam_design' => $request->compFam_design,
-            'compFam_drawingPath' => $request->compFam_drawingPath,
-            'compFam_variablesCharac' => $request->compFam_variablesCharac,
-            'compFam_version' => $request->compFam_version,
+            'compFam_ref' => $request->artFam_ref,
+            'compFam_design' => $request->artFam_design,
+            'compFam_drawingPath' => $request->artFam_drawingPath,
+            'compFam_variablesCharac' => $request->artFam_variablesCharac,
+            'compFam_version' => $request->artFam_version,
             'compFam_qualityApproverId' => null,
             'compFam_technicalReviewerId' => null,
             'compFam_signatureDate' => null,
-            'compFam_validate' => $request->compFam_validate,
-            'compFam_active' => $request->compFam_active,
-            'enumPurchasedBy_id' => $request->enumPurchasedBy_id
+            'compFam_validate' => $request->artFam_validate,
+            'compFam_active' => $request->artFam_active,
+            'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($compFamily);
     }

@@ -5,7 +5,7 @@
     <div v-else class="supplier_consultation">
         <ErrorAlert ref="errorAlert"/>
         <SuccessAlert ref="successAlert"/>
-        <h1>Article Consultation</h1>
+        <h1>Article Update</h1>
         <!--        <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>-->
         <ArticleFamilyForm
             :reference="article.ref"
@@ -29,12 +29,12 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-                            <!--                            <ReferenceAStorageCondition
-                                                            modifMod
-                                                            :artType="this.articleType"
-                                                            :artFam_id="this.articleID"
-                                                            :import_id="this.articleID"
-                                                        />-->
+                            <ReferenceAStorageCondition
+                                modifMod
+                                :artType="this.articleType"
+                                :artFam_id="this.articleID"
+                                :import_id="this.articleID"
+                            />
                         </div>
                     </div>
                 </div>
@@ -158,10 +158,10 @@ export default {
     created() {
         console.log("created");
         if(this.validationMethod === 'technical' && this.$userId.user_makeTechnicalValidationRight !== true){
-            this.$router.replace({ name: "url_eq_list"})
+            this.$router.replace({ name: "article_url_list"})
         }
         if (this.validationMethod === 'quality' && this.$userID.user_makeQualityValidationRight !== true){
-            this.$router.replace({ name: "url_eq_list"})
+            this.$router.replace({ name: "article_url_list"})
         }
         console.log(this.articleType);
         if (this.articleType === 'raw') {
@@ -178,6 +178,7 @@ export default {
                         purchasedBy: response.data.rawFam_purchasedBy,
                         version: null
                     };
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType}, query: {signed : response.data.rawFam_signatureDate != null}});
                     console.log(this.article);
                     this.loaded = true;
                 })
@@ -198,6 +199,7 @@ export default {
                         purchasedBy: response.data.compFam_purchasedBy,
                         version: response.data.compFam_version
                     };
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType}, query: {signed : response.data.compFam_signatureDate != null}});
                     console.log(this.article);
                     this.loaded = true;
                 })
@@ -218,6 +220,7 @@ export default {
                         purchasedBy: response.data.consFam_purchasedBy,
                         version: response.data.consFam_version
                     };
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType}, query: {signed : response.data.consFam_signatureDate != null}});
                     console.log(this.article);
                     this.loaded = true;
                 })

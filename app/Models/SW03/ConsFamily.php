@@ -44,11 +44,11 @@ class ConsFamily extends Model
     }
 
      //Define the relation between an EnumStorageCondition and its consFamily : a consFamily can correspond to many EnumStorageCondition
-     public function storage_condition(){
+     public function storage_conditions(){
         return $this->belongsToMany(EnumStorageCondition::class, 'pivot_cons_fam_sto_cond', 'consFam_id', 'storageCondition_id') ;
     }
 
-    //Define the relation between an EnumPurchasedBy and its consFamily : a consFamily can correspond to many EnumPurchasedBy 
+    //Define the relation between an EnumPurchasedBy and its consFamily : a consFamily can correspond to many EnumPurchasedBy
     public function purchased_by(){
         return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
     }

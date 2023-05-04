@@ -179,7 +179,7 @@ export default {
             type: String
         },
         expectedValue: {
-            type: String
+            type: Number
         },
         name: {
             type: String

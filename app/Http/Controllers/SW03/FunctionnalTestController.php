@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
 use App\Models\SW03\FunctionalTest;
+use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 
 class FunctionnalTestController extends Controller
@@ -41,7 +45,7 @@ class FunctionnalTestController extends Controller
                 $request,
                 [
                     'funcTest_expectedMethod' => 'required|string|min:2|max:255',
-                    'funcTest_expectedValue' => 'required|string|min:1|max:50',
+                    'funcTest_expectedValue' => 'required|min:1|max:50',
                     'funcTest_name' => 'required|string|min:2|max:255',
                     'funcTest_unitValue' => 'required|string|min:1|max:10',
                 ],
@@ -52,7 +56,6 @@ class FunctionnalTestController extends Controller
                     'funcTest_expectedMethod.max' => 'You must enter a maximum of 255 characters',
 
                     'funcTest_expectedValue.required' => 'You must enter an expected value',
-                    'funcTest_expectedValue.string' => 'The expected value must be a string',
                     'funcTest_expectedValue.min' => 'You must enter at least one character',
                     'funcTest_expectedValue.max' => 'You must enter a maximum of 50 characters',
 
@@ -119,7 +122,44 @@ class FunctionnalTestController extends Controller
     }
 
     public function update_funcTest(Request $request, $id) {
-        $funcTest = FunctionalTest::all()->find($id);
+        $funcTest = FunctionalTest::all()->findOrfail($id)->first();
+        $incmgInsp = IncomingInspection::all()->findOrfail($funcTest->incmgInsp_id)->first();
+        $article = null;
+        if ($request->funcTest_articleType === 'cons') {
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->consFam_id)->first();
+            $signed = $article->consFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->funcTest_articleType === 'raw') {
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->rawFam_id)->first();
+            $signed = $article->rawFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->funcTest_articleType === 'comp') {
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->compFam_id)->first();
+            $signed = $article->compFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        }
+        $article->update([
+            $request->funcTest_articleType.'Fam_signatureDate' => null,
+            $request->funcTest_articleType.'Fam_qualityApproverId' => null,
+            $request->funcTest_articleType.'Fam_technicalReviewerId' => null,
+        ]);
+        $incmgInsp->update([
+            'incmgInsp_qualityApproverId' => null,
+            'incmgInsp_technicalReviewerId' => null,
+            'incmgInsp_signatureDate' => null,
+        ]);
         $funcTest->update([
             'funcTest_severityLevel' => $request->funcTest_severityLevel,
             'funcTest_levelOfControl' => $request->funcTest_levelOfControl,
@@ -128,7 +168,6 @@ class FunctionnalTestController extends Controller
             'funcTest_name' => $request->funcTest_name,
             'funcTest_unitValue' => $request->funcTest_unitValue,
             'funcTest_sampling' => $request->funcTest_sampling,
-            'incmgInsp_id' => $request->incmgInsp_id,
         ]);
         return response()->json($funcTest);
     }

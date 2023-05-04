@@ -18,7 +18,7 @@ use App\Models\SW03\CompFamilyMember;
 use App\Models\User;
 use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\Supplier;
-use App\Models\SW02\Criticality;
+use App\Models\SW03\Criticality;
 use App\Models\SW03\EnumPurchasedBy;
 
 class CompFamily extends Model
@@ -48,8 +48,8 @@ class CompFamily extends Model
         return $this->belongsToMany(EnumStorageCondition::class, 'pivot_comp_fam_sto_cond', 'compFam_id', 'storageCondition_id') ;
     }
 
-    //Define the relation between an EnumPurchasedBy and its compFamily : a compFamily has only one EnumPurchasedBy 
-    public function purchased_by(){    
+    //Define the relation between an EnumPurchasedBy and its compFamily : a compFamily has only one EnumPurchasedBy
+    public function purchased_by(){
         return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
     }
 

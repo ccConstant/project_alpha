@@ -179,7 +179,7 @@ export default {
             type: String
         },
         expectedValue: {
-            type: String
+            type: Number
         },
         name: {
             type: String
@@ -310,8 +310,51 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
-
+        updateDocControl(savedAs, reason, lifesheet_created) {
+            axios.post('/incmgInsp/funcTest/verif', {
+                funcTest_name: this.funcTest_name,
+                funcTest_severityLevel: this.funcTest_severityLevel,
+                funcTest_levelOfControl: this.funcTest_controlLevel,
+                funcTest_expectedMethod: this.funcTest_expectedMethod,
+                funcTest_expectedValue: this.funcTest_expectedValue,
+                incmgInsp_id: this.data_incmgInsp_id,
+                funcTest_articleType: this.data_article_type,
+                funcTest_sampling: this.funcTest_sampling,
+                funcTest_unitValue: this.funcTest_unitValue,
+            })
+                .then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/incmgInsp/funcTest/update/' + this.funcTest_id, {
+                        funcTest_name: this.funcTest_name,
+                        funcTest_severityLevel: this.funcTest_severityLevel,
+                        funcTest_levelOfControl: this.funcTest_controlLevel,
+                        funcTest_expectedMethod: this.funcTest_expectedMethod,
+                        funcTest_expectedValue: this.funcTest_expectedValue,
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        funcTest_articleType: this.data_article_type,
+                        funcTest_sampling: this.funcTest_sampling,
+                        funcTest_unitValue: this.funcTest_unitValue,
+                    })
+                        /*If the file is added successfully*/
+                        .then(response => {
+                            this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);
+                            this.isInConsultedMod = true;
+                            this.addSucces = true
+                            // TODO: faire l'historique
+                        })
+                        /*If the controller sends errors, we put it in the error object*/
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                            console.log(error.response.data);
+                        });
+                })
+                //If the controller sends errors, we put it in the error object
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                });
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

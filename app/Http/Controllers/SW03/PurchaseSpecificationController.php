@@ -10,6 +10,7 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\SW03\ConsFamily;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\PurchaseSpecification;
@@ -83,5 +84,48 @@ class PurchaseSpecificationController extends Controller
             ]);
         }
         return response()->json($array);
+    }
+
+    public function update_purSpe(Request $request, $type, $id) {
+        $purSpec = PurchaseSpecification::findOrfail($id);
+        $article = null;
+        if ($type === 'cons') {
+            $article = ConsFamily::all()->where('id', '==', $purSpec->consFam_id)->first();
+            $signed = $article->consFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'raw') {
+            $article = RawFamily::all()->where('id', '==', $purSpec->rawFam_id)->first();
+            $signed = $article->rawFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'comp') {
+            $article = CompFamily::all()->where('id', '==', $purSpec->compFam_id)->first();
+            $signed = $article->compFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        }
+        $article->update([
+            $type.'Fam_signatureDate' => null,
+            $type.'Fam_qualityApproverId' => null,
+            $type.'Fam_technicalReviewerId' => null,
+        ]);
+        $purSpec->update([
+            'purSpe_requiredDoc' => $request->purSpe_requiredDoc,
+            'purSpe_validate' => $request->purSpe_validate,
+            'purSpe_qualityApproverId' => null,
+            'purSpe_technicalReviewerId' => null,
+            'purSpe_signatureDate' => null,
+        ]);
+        return response()->json($purSpec);
     }
 }

@@ -77,7 +77,7 @@
                                 <ReferenceADocControl
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
@@ -98,7 +98,7 @@
                                 <ReferenceAnAspTest
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
@@ -118,7 +118,7 @@
                                 <ReferenceAFuncTest
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
@@ -139,7 +139,7 @@
                                 <ReferenceADimTest
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
@@ -242,6 +242,7 @@ export default {
             errors: {},
             addSucces: false,
             isInConsultMod: this.consultMod,
+            isInModifMod: this.modifMod,
             loaded: false,
             infos_file: [],
             rawFam_id: null,
@@ -291,14 +292,9 @@ export default {
                     })
                     /*If the file is added successfully*/
                     .then(response => {
-                        console.log("coucou")
                         this.$snotify.success(`Incoming Inspection added successfully`);
-                        console.log("coucou2")
-                        if (!this.modifMod) {
-                            /*The form pass in consulting mode and addSucces pass to True*/
-                            this.isInConsultedMod = true;
-                            this.addSucces = true
-                        }
+                        this.isInConsultedMod = true;
+                        this.addSucces = true
                         /*the id of the file take the value of the newly created id*/
                         this.incmgInsp_id = response.data.id;
                         /*The validate option of this file takes the value of savedAs(Params of the function)*/
@@ -318,22 +314,31 @@ export default {
         updateIncmgInsp(savedAs, reason, lifesheet_created) { // TODO: update
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
-            axios.post('/file/verif', {
-                file_name: this.file_name,
-                file_location: this.file_location,
-                file_validate: savedAs,
+            axios.post('/incmgInsp/verif', {
+                incmgInsp_remarks: this.incmgInsp_remarks,
+                incmgInsp_partMaterialComplianceCertificate: this.incmgInsp_partMaterialCertif,
+                incmgInsp_rawMaterialCertificate: this.incmgInsp_rawMaterialCertif,
+                incmgInsp_validate: savedAs,
+                incmgInsp_consFam_id: this.consFam_id,
+                incmgInsp_rawFam_id: this.rawFam_id,
+                incmgInsp_compFam_id: this.compFam_id,
+                incmpInsp_articleType: this.article_type
             })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the file who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/file/${id}`;
-                    axios.post(consultUrl(this.file_id), {
-                        file_name: this.file_name,
-                        file_location: this.file_location,
-                        article_id: this.equipment_id_update,
-                        file_validate: savedAs
+                    const consultUrl = (id) => `/incmgInsp/update/${id}`;
+                    axios.post(consultUrl(this.incmgInsp_id), {
+                        incmgInsp_remarks: this.incmgInsp_remarks,
+                        incmgInsp_partMaterialComplianceCertificate: this.incmgInsp_partMaterialCertif,
+                        incmgInsp_rawMaterialCertificate: this.incmgInsp_rawMaterialCertif,
+                        incmgInsp_validate: savedAs,
+                        incmgInsp_consFam_id: this.consFam_id,
+                        incmgInsp_rawFam_id: this.rawFam_id,
+                        incmgInsp_compFam_id: this.compFam_id,
+                        incmpInsp_articleType: this.article_type
                     })
                         .then(response => {
                             this.file_validate = savedAs;

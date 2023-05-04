@@ -4,6 +4,10 @@ namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
 use App\Models\SW03\AspectTest;
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
+use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 
 class AspectTestController extends Controller
@@ -93,15 +97,51 @@ class AspectTestController extends Controller
         ]);
     }
 
-public function update_aspectTest(Request $request, $id) {
-        $aspTest = AspectTest::find($id);
+    public function update_aspectTest(Request $request, $id) {
+        $aspTest = AspectTest::all()->findOrfail($id)->first();
+        $incmgInsp = IncomingInspection::all()->findOrfail($aspTest->incmgInsp_id)->first();
+        $article = null;
+        if ($request->aspTest_articleType === 'cons') {
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->consFam_id)->first();
+            $signed = $article->consFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->aspTest_articleType === 'raw') {
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->rawFam_id)->first();
+            $signed = $article->rawFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->aspTest_articleType === 'comp') {
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->compFam_id)->first();
+            $signed = $article->compFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        }
+        $article->update([
+            $request->aspTest_articleType.'Fam_signatureDate' => null,
+            $request->aspTest_articleType.'Fam_qualityApproverId' => null,
+            $request->aspTest_articleType.'Fam_technicalReviewerId' => null,
+        ]);
+        $incmgInsp->update([
+            'incmgInsp_qualityApproverId' => null,
+            'incmgInsp_technicalReviewerId' => null,
+            'incmgInsp_signatureDate' => null,
+        ]);
         $aspTest->update([
             'aspTest_severityLevel' => $request->aspTest_severityLevel,
             'aspTest_levelOfControl' => $request->aspTest_levelOfControl,
             'aspTest_expectedAspect' => $request->aspTest_expectedAspect,
             'aspTest_name' => $request->aspTest_name,
             'aspTest_sampling' => $request->aspTest_sampling,
-            'incmgInsp_id' => $request->incmgInsp_id,
         ]);
         return response()->json($aspTest);
     }

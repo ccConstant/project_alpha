@@ -995,6 +995,7 @@ Route::post('/cons/mb/add/{id}', [ConsFamilyMemberController::class, 'add_consFa
 Route::get('/cons/family/send', [ConsFamilyController::class, 'send_consFamilies']);
 Route::get('/cons/family/send/{id}', [ConsFamilyController::class, 'send_consFamily']);
 Route::get('/cons/mb/send/{id}', [ConsFamilyMemberController::class, 'send_consFamilyMember']);
+Route::post('/cons/family/update/{id}', [ConsFamilyController::class, 'update_consFamily']);
 
 
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
@@ -1004,6 +1005,7 @@ Route::post('/raw/mb/add/{id}', [RawFamilyMemberController::class, 'add_rawFamil
 Route::get('/raw/family/send', [RawFamilyController::class, 'send_rawFamilies']);
 Route::get('/raw/family/send/{id}', [RawFamilyController::class, 'send_rawFamily']);
 Route::get('/raw/mb/send/{id}', [RawFamilyMemberController::class, 'send_rawFamilyMember']);
+Route::post('/raw/family/update/{id}', [RawFamilyController::class, 'update_rawFamily']);
 
 
 // Incoming Inspection Controller
@@ -1058,6 +1060,7 @@ Route::get('/artFam/enum/storageCondition', [EnumStorageConditionController::cla
 Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController::class, 'add_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/link/{id}', [EnumStorageConditionController::class, 'link_enum_storageCondition']);
+Route::get('/artFam/enum/storageCondition/send/:type/:id', [EnumStorageConditionController::class, 'send_enum_storageCondition_linked']);
 
 // Criticality
 Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_criticality']);
@@ -1070,7 +1073,7 @@ Route::get('/artFam/criticality/send/{type}/{id}', [CriticalityController::class
 //purchase Specification
 Route::post('/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);
 Route::post('/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
-Route::post('/purSpe/update/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
+Route::post('/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
 Route::get('/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
 Route::get('/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);
 

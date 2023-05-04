@@ -20,10 +20,8 @@
                 :isDisabled="this.isInConsultMod"
                 v-model="artFam_type"
                 :info_text="'Article Family Type'"
-                :id_actual="ArticleFamilyType"/>
-
-
-
+                :id_actual="ArticleFamilyType"
+            />
             <div v-if="artFam_type!=''">
                 <InputTextForm
                     :inputClassName="null"
@@ -106,6 +104,7 @@
                     :savedAs="validate"/>
             </div>
         </form>
+        <SuccessAlert ref="successAlert"/>
     </div>
 </template>
 
@@ -261,6 +260,16 @@ export default {
         /*Sending to the controller all the information about the art family so that it can be added to the database */
         addArtFam(savedAs) {
             if (!this.addSuccess) {
+                console.log("before verif")
+                console.log(this.artFam_type)
+                console.log(this.artFam_ref)
+                console.log(this.artFam_design)
+                console.log(this.artFam_drawingPath)
+                console.log(this.artFam_purchasedBy)
+                console.log(this.artFam_variablesCharac)
+                console.log(this.artFam_version)
+                console.log(this.artFam_active)
+                console.log(savedAs)
                 /*We begin by checking if the data entered by the user are correct*/
                 if (this.artFam_type=="COMP"){
                     axios.post('/comp/family/verif', {
@@ -272,6 +281,7 @@ export default {
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
+                        artFam_id: this.artFam_id,
                     })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
@@ -286,6 +296,7 @@ export default {
                                     artFam_version: this.artFam_version,
                                     artFam_active: this.artFam_active,
                                     artFam_validate: savedAs,
+                                    artFam_id: this.artFam_id,
 
                                 })
                                     /*If the data have been added in the database, we show a success message*/
@@ -323,6 +334,7 @@ export default {
                             artFam_variablesCharac: this.artFam_variablesCharac,
                             artFam_active: this.artFam_active,
                             artFam_validate: savedAs,
+                            artFam_id: this.artFam_id,
                         })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
@@ -336,6 +348,7 @@ export default {
                                 artFam_variablesCharac: this.artFam_variablesCharac,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
+                                artFam_id: this.artFam_id,
 
                             })
                             /*If the data have been added in the database, we show a success message*/
@@ -374,6 +387,7 @@ export default {
                                 artFam_variablesCharac: this.artFam_variablesCharac,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
+                                artFam_id: this.artFam_id,
                             })
                             /*If the data are correct, we send them to the controller for add them in the database*/
                             .then(response => {
@@ -388,7 +402,7 @@ export default {
                                     artFam_active: this.artFam_active,
                                     artFam_version: this.artFam_version,
                                     artFam_validate: savedAs,
-
+                                    artFam_id: this.artFam_id,
                                 })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -416,6 +430,19 @@ export default {
         @param reason The reason of the modification
         @param artSheet_created */
         updateArtFam(savedAs, reason, artSheet_created) {
+            console.log("updateArtFam");
+            console.log("savedAs"+savedAs);
+            console.log("reason"+reason);
+            console.log("artSheet_created"+artSheet_created);
+            console.log(this.artFam_type);
+            console.log(this.artFam_id);
+            console.log(this.artFam_ref);
+            console.log(this.artFam_design);
+            console.log(this.artFam_drawingPath);
+            console.log(this.artFam_purchasedBy);
+            console.log(this.artFam_variablesCharac);
+            console.log(this.artFam_active);
+            console.log(this.artFam_version);
             /*We begin by checking if the data entered by the user are correct*/
             if (this.artFam_type=="COMP"){
                 axios.post('/comp/family/verif', {
@@ -427,11 +454,13 @@ export default {
                     artFam_version: this.artFam_version,
                     artFam_active: this.artFam_active,
                     artFam_validate: savedAs,
+                    artFam_id: this.artFam_id,
                 })
                     /*If the data are correct, we send them to the controller for update data in the database*/
                     .then(response => {
+                        console.log("after verif");
                         this.errors = {};
-                        const consultUrl = (id) => `/comp/family/verif${id}`;
+                        const consultUrl = (id) => `/comp/family/update/${id}`;
                         axios.post(consultUrl(this.artFam_id), {
                             artFam_ref: this.artFam_ref,
                             artFam_design: this.artFam_design,
@@ -441,8 +470,10 @@ export default {
                             artFam_version: this.artFam_version,
                             artFam_active: this.artFam_active,
                             artFam_validate: savedAs,
+                            artFam_id: this.artFam_id,
                         })
                             .then(response => {
+                                console.log("after update");
                                 const id = this.artFam_id;
                                 /*We test if an article sheet has been already created*/
                                 /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
@@ -453,7 +484,7 @@ export default {
                                     window.location.reload();
                                 }
                                 /*If the data have been updated in the database, we show a success message*/
-                                this.$refs.SuccessAlert.showAlert(`CompFam ID card updated successfully and saved as ${savedAs}`);
+                                this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
                                 this.artFam_validate = savedAs;
                             })
                             .catch(error => {
@@ -463,6 +494,7 @@ export default {
                     })
                     .catch(error => {
                         this.errors = error.response.data.errors;
+                        console.log('crash verif');
                         console.log(this.errors);
                     });
             }

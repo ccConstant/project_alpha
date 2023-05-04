@@ -171,7 +171,7 @@ export default {
         return {
             docControl_id: this.id,
             docControl_reference: this.reference,
-            docControl_name: this.name,
+            docControl_name: this.docControlName,
             docControl_materialCertiSpec: this.materialCertiSpec,
             docControl_fds: this.fds,
             errors: {},
@@ -223,11 +223,9 @@ export default {
                     /*If the file is added successfully*/
                     .then(response => {
                         this.$refs.sucessAlert.showAlert(`Documentary control added successfully`);
-                        if (!this.modifMod) {
-                            /*The form pass in consulting mode and addSucces pass to True*/
-                            this.isInConsultedMod = true;
-                            this.addSucces = true
-                        }
+                        this.isInConsultedMod = true;
+                        this.addSucces = true
+
                     })
                     /*If the controller sends errors, we put it in the error object*/
                     .catch(error => console.log(error));
@@ -240,8 +238,42 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
-
+        updateDocControl(savedAs, reason, lifesheet_created) {
+            axios.post('/incmgInsp/docControl/verif', {
+                docControl_articleType: this.data_article_type,
+                docControl_reference: this.docControl_reference,
+                docControl_name: this.docControl_name,
+                docControl_materialCertifSpe: this.docControl_materialCertiSpec,
+                docControl_FDS: this.docControl_fds,
+                incmgInsp_id: this.data_incmgInsp_id
+            })
+                .then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/incmgInsp/docControl/update/' + this.docControl_id, {
+                        docControl_articleType: this.data_article_type,
+                        docControl_reference: this.docControl_reference,
+                        docControl_name: this.docControl_name,
+                        docControl_materialCertifSpe: this.docControl_materialCertiSpec,
+                        docControl_FDS: this.docControl_fds,
+                        incmgInsp_id: this.data_incmgInsp_id
+                    })
+                        /*If the file is added successfully*/
+                        .then(response => {
+                            this.$refs.sucessAlert.showAlert(`Documentary control successfully updated`);
+                            if (!this.modifMod) {
+                                /*The form pass in consulting mode and addSucces pass to True*/
+                                this.isInConsultedMod = true;
+                                this.addSucces = true
+                                // TODO: faire l'historique
+                            }
+                        })
+                        /*If the controller sends errors, we put it in the error object*/
+                        .catch(error => console.log(error));
+                })
+                //If the controller sends errors, we put it in the error object
+                .catch(error => console.log(error.response.data.errors));
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -255,6 +287,11 @@ export default {
     },
     created() {
         this.loaded = true;
+        console.log('created doc control');
+        console.log(this.docControl_id);
+        console.log(this.incmgInsp_id);
+        console.log(this.consultMod);
+        console.log(this.modifMod);
     }
 }
 </script>

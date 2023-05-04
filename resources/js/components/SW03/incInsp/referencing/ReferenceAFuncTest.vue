@@ -20,10 +20,10 @@
                 :is="component.comp"
                 :id="component.id"
                 :consultMod="isInConsultMod"
-                :modifMod="isInModifMod"
+                :modifMod="component.id !== null"
                 :severityLevel="component.funcTest_severityLevel"
                 :controlLevel="component.funcTest_controlLevel"
-                :expectedMethod="component.funcTest_expectedAspect"
+                :expectedMethod="component.funcTest_expectedMethod"
                 :expectedValue="component.funcTest_expectedValue"
                 :name="component.funcTest_name"
                 :unitValue="component.funcTest_unitValue"
@@ -127,18 +127,21 @@ export default {
             this.components.push({
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
+                id: null,
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(funcTest_severityLevel, funcTest_controlLevel, funcTest_expectedAspect, funcTest_name, funcTest_sampling, incmgInsp_id, id, className) {
+        addImportedComponent(funcTest_severityLevel, funcTest_controlLevel, funcTest_expectedMethod, funcTest_expectedValue, funcTest_name, funcTest_sampling, funcTest_unitValue, incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
                 funcTest_severityLevel: funcTest_severityLevel,
                 funcTest_controlLevel: funcTest_controlLevel,
-                funcTest_expectedAspect: funcTest_expectedAspect,
+                funcTest_expectedMethod: funcTest_expectedMethod,
+                funcTest_expectedValue: funcTest_expectedValue,
                 funcTest_name: funcTest_name,
                 funcTest_sampling: funcTest_sampling,
+                funcTest_unitValue: funcTest_unitValue,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -162,6 +165,7 @@ export default {
                         ft.funcTest_expectedMethod,
                         ft.funcTest_expectedValue,
                         ft.funcTest_name,
+                        ft.funcTest_sampling,
                         ft.funcTest_unitValue,
                         ft.incmgInsp_id,
                         ft.id,

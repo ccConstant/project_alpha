@@ -20,7 +20,7 @@
                 :is="component.comp"
                 :id="component.id"
                 :consultMod="isInConsultMod"
-                :modifMod="isInModifMod"
+                :modifMod="component.id !== null"
                 :severityLevel="component.aspTest_severityLevel"
                 :controlLevel="component.aspTest_controlLevel"
                 :expectedAspect="component.aspTest_expectedAspect"
@@ -126,6 +126,7 @@ export default {
             this.components.push({
                 comp: 'AspTestIDForm',
                 key: this.uniqueKey++,
+                id: null,
             });
         },
         /*Function for adding an imported file form with his data*/
@@ -160,6 +161,7 @@ export default {
                         at.aspTest_levelOfControl,
                         at.aspTest_expectedAspect,
                         at.aspTest_name,
+                        at.aspTest_sampling,
                         at.incmgInsp_id,
                         at.id,
                         className

@@ -23,7 +23,7 @@
                 :modifMod="isInModifMod"
                 :severityLevel="component.dimTest_severityLevel"
                 :controlLevel="component.dimTest_controlLevel"
-                :expectedMethod="component.dimTest_expectedAspect"
+                :expectedMethod="component.dimTest_expectedMethod"
                 :expectedValue="component.dimTest_expectedValue"
                 :name="component.dimTest_name"
                 :unitValue="component.dimTest_unitValue"
@@ -130,15 +130,17 @@ export default {
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(dimTest_severityLevel, dimTest_controlLevel, dimTest_expectedAspect, dimTest_name, dimTest_sampling, incmgInsp_id, id, className) {
+        addImportedComponent(dimTest_severityLevel, dimTest_controlLevel, dimTest_expectedMethod, dimTest_expectedValue, dimTest_name, dimTest_sampling, dimTest_unitValue, incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'DimTestIDForm',
                 key: this.uniqueKey++,
                 dimTest_severityLevel: dimTest_severityLevel,
                 dimTest_controlLevel: dimTest_controlLevel,
-                dimTest_expectedAspect: dimTest_expectedAspect,
+                dimTest_expectedMethod: dimTest_expectedMethod,
+                dimTest_expectedValue: dimTest_expectedValue,
                 dimTest_name: dimTest_name,
                 dimTest_sampling: dimTest_sampling,
+                dimTest_unitValue: dimTest_unitValue,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -162,6 +164,7 @@ export default {
                         dt.dimTest_expectedMethod,
                         dt.dimTest_expectedValue,
                         dt.dimTest_name,
+                        dt.dimTest_sampling,
                         dt.dimTest_unitValue,
                         dt.incmgInsp_id,
                         dt.id,

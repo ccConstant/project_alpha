@@ -31,34 +31,34 @@ class ConsFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|String',
-                    'artFam_design' => 'required|min:3|max:255|String',
-                    'artFam_drawingPath' => 'required|min:3|max:255|String',
-                    'artFam_variablesCharac' => 'required|min:2|max:255|String',
-                    'artFam_version' => 'required|min:2|max:4|String',
+                    'artFam_ref' => 'required|min:3|max:255|string',
+                    'artFam_design' => 'required|min:3|max:255|string',
+                    'artFam_drawingPath' => 'required|min:3|max:255|string',
+                    'artFam_variablesCharac' => 'required|min:2|max:255|string',
+                    'artFam_version' => 'required|min:2|max:4|string',
                 ],
                 [
 
                     'artFam_ref.required' => 'You must enter a reference for your cons family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
-                    'artFam_ref.String' => 'You must enter a string ',
+                    'artFam_ref.string' => 'You must enter a string ',
                     'artFam_design.required' => 'You must enter a design for your cons family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
-                    'artFam_design.String' => 'You must enter a string ',
+                    'artFam_design.string' => 'You must enter a string ',
                     'artFam_drawingPath.required' => 'You must enter a drawing path for your cons family ',
                     'artFam_drawingPath.min' => 'You must enter at least three characters ',
                     'artFam_drawingPath.max' => 'You must enter less than 255 characters ',
-                    'artFam_drawingPath.String' => 'You must enter a string ',
+                    'artFam_drawingPath.string' => 'You must enter a string ',
                     'artFam_variablesCharac.required' => 'You must enter variables characteristics for your cons family ',
                     'artFam_variablesCharac.min' => 'You must enter at least two characters ',
                     'artFam_variablesCharac.max' => 'You must enter less than 255 characters ',
-                    'artFam_variablesCharac.String' => 'You must enter a string ',
+                    'artFam_variablesCharac.string' => 'You must enter a string ',
                     'artFam_version.required' => 'You must enter a version for your cons family ',
                     'artFam_version.min' => 'You must enter at least two characters ',
                     'artFam_version.max' => 'You must enter less than 4 characters ',
-                    'artFam_version.String' => 'You must enter a string ',
+                    'artFam_version.string' => 'You must enter a string ',
                 ]
             );
 
@@ -78,27 +78,27 @@ class ConsFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|String',
-                    'artFam_design' => 'required|min:3|max:255|String',
-                    'artFam_drawingPath' => 'max:255|String',
-                    'artFam_variablesCharac' => 'max:255|String',
-                    'artFam_version' => 'max:4|String',
+                    'artFam_ref' => 'required|min:3|max:255|string',
+                    'artFam_design' => 'required|min:3|max:255|string',
+                    'artFam_drawingPath' => 'max:255|string',
+                    'artFam_variablesCharac' => 'max:255|string',
+                    'artFam_version' => 'max:4|string',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your cons family ',
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_ref.String' => 'You must enter a string ',
+                    'artFam_ref.string' => 'You must enter a string ',
                     'artFam_design.required' => 'You must enter a designation for your cons family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_design.String' => 'You must enter a string ',
+                    'artFam_design.string' => 'You must enter a string ',
                     'artFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_drawingPath.String' => 'You must enter a string ',
+                    'artFam_drawingPath.string' => 'You must enter a string ',
                     'artFam_variablesCharac.max' => 'You must enter a maximum of 255 characters',
-                    'artFam_variablesCharac.String' => 'You must enter a string ',
+                    'artFam_variablesCharac.string' => 'You must enter a string ',
                     'artFam_version.max' => 'You must enter a maximum of 4 characters',
-                    'artFam_version.String' => 'You must enter a string ',
+                    'artFam_version.string' => 'You must enter a string ',
 
                 ]
             );
@@ -155,9 +155,13 @@ class ConsFamilyController extends Controller
                 'consFam_drawingPath' => $consFamily->consFam_drawingPath,
                 'consFam_variablesCharac' => $consFamily->consFam_variablesCharac,
                 'consFam_version' => $consFamily->consFam_version,
-                'consFam_nbrVersion' => $consFamily->compFam_nbrVersion,
+                'consFam_nbrVersion' => $consFamily->consFam_nbrVersion,
                 'consFam_validate' => $consFamily->consFam_validate,
-                'consFam_active' => $consFamily->consFam_active
+                'consFam_active' => $consFamily->consFam_active,
+                'consFam_purchasedBy' => $consFamily->enumPurchasedBy_id,
+                'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
+                'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
+                'consFam_signatureDate' => $consFamily->consFam_signatureDate,
             ];
             array_push($array, $obj);
         }
@@ -173,11 +177,43 @@ class ConsFamilyController extends Controller
             'consFam_drawingPath' => $consFamily->consFam_drawingPath,
             'consFam_variablesCharac' => $consFamily->consFam_variablesCharac,
             'consFam_version' => $consFamily->consFam_version,
-            'consFam_nbrVersion' => $consFamily->compFam_nbrVersion,
+            'consFam_nbrVersion' => $consFamily->consFam_nbrVersion,
             'consFam_validate' => $consFamily->consFam_validate,
-            'consFam_active' => $consFamily->consFam_active
+            'consFam_active' => $consFamily->consFam_active,
+            'consFam_purchasedBy' => $consFamily->enumPurchasedBy_id,
+            'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
+            'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
+            'consFam_signatureDate' => $consFamily->consFam_signatureDate,
         ];
         return response()->json($obj);
+    }
+
+    public function update_consFamily(Request $request, $id) {
+        $consFamily = ConsFamily::findOrfail($id);
+        if ($consFamily->consFam_signatureDate != null) {
+            $consFamily->update([
+                'consFam_nbrVersion' => $consFamily->consFam_nbrVersion + 1,
+            ]);
+        }
+        $enum=NULL;
+        if ($request->artFam_purchasedBy!="" && $request->artFam_purchasedBy!=NULL){
+            $enum=EnumPurchasedBy::where('value', '=', $request->artFam_purchasedBy)->first() ;
+            $enum=$enum->id ;
+        }
+        $consFamily->update([
+            'consFam_ref' => $request->artFam_ref,
+            'consFam_design' => $request->artFam_design,
+            'consFam_drawingPath' => $request->artFam_drawingPath,
+            'consFam_variablesCharac' => $request->artFam_variablesCharac,
+            'consFam_version' => $request->artFam_version,
+            'consFam_qualityApproverId' => null,
+            'consFam_technicalReviewerId' => null,
+            'consFam_signatureDate' => null,
+            'consFam_validate' => $request->artFam_validate,
+            'consFam_active' => $request->artFam_active,
+            'enumPurchasedBy_id' => $enum,
+        ]);
+        return response()->json($consFamily);
     }
 }
 

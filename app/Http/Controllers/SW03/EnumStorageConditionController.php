@@ -4,7 +4,7 @@
 * Filename : EnumStorageConditionController.php
 * Creation date : 27 Apr 2023
 * Update date : 28 Apr 2023
-* This file is used to link the view files and the database that concern the EnumStorageCondition table. 
+* This file is used to link the view files and the database that concern the EnumStorageCondition table.
 * For example : send the fields of the enum, add a new field...
 */
 
@@ -22,12 +22,12 @@ class EnumStorageConditionController extends Controller
 {
     /**
      * Function call by EnumManagement.vue with the route : /artFam/enum/storageCondition (get)
-    * Get the fields of the art fam storage condition enum to the vue for print them in the form 
+    * Get the fields of the art fam storage condition enum to the vue for print them in the form
      * @return \Illuminate\Http\Response
      */
 
      public function send_enum_storageCondition (){
-        $enums_storageCondition=DB::table('enum_storage_conditions')->orderBy('value', 'asc')->get() ;  
+        $enums_storageCondition=DB::table('enum_storage_conditions')->orderBy('value', 'asc')->get() ;
         $enums=array() ;
         foreach($enums_storageCondition as $enum_storageCondition){
             $enum=([
@@ -37,7 +37,7 @@ class EnumStorageConditionController extends Controller
             ]);
             array_push($enums, $enum) ;
         }
-        return response()->json($enums) ; 
+        return response()->json($enums) ;
     }
 
     /**
@@ -47,7 +47,7 @@ class EnumStorageConditionController extends Controller
 
      public function add_enum_storageCondition (Request $request){
         $enum_type=EnumStorageCondition::create([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
     }
 
@@ -91,6 +91,27 @@ class EnumStorageConditionController extends Controller
                     return response()->json($enum->id) ;
                 }
             }
+        }
+    }
+
+    public function send_enum_storageCondition_linked($type, $id) {
+        $article = null;
+        if ($type === 'cons') {
+            $article = ConsFamily::findOrFail($id);
+        } else if ($type === 'comp') {
+            $article = CompFamily::findOrFail($id);
+        } else if ($type === 'raw') {
+            $article = RawFamily::findOrFail($id);
+        }
+        $sto_cond = $article->storage_conditions;
+        $detailed = EnumStorageCondition::all()->where('id', '=', $sto_cond->storageCondition_id)->first();
+        $array = [];
+        foreach ($sto_cond as $sto) {
+            array_push($array, [
+                'id' => $sto->id,
+                'storageCondition_id' => $sto->storageCondition_id,
+                'value' => $detailed->value,
+            ]);
         }
     }
 }

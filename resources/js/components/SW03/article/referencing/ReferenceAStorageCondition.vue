@@ -87,6 +87,8 @@ export default {
             all_storageCondition_validate: [],
             title_info: null,
             data_art_type: this.artType,
+            sto_conds: [],
+            loaded: false
         };
     },
     methods: {
@@ -137,19 +139,45 @@ export default {
             }
         }*/
 
-        importDim() {
-
+        importStoConds() {
+            if (this.sto_conds.length === 0 && !this.isInModifMod) {
+                console.log("no sto conds");
+                this.loaded = true;
+            } else {
+                for (const st of this.sto_conds) {
+                    this.addImportedComponent(
+                        st.value,
+                        'importedStorageCondition'+st.id,
+                        st.id);
+                }
+            }
         }
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        if (this.import_id !== null) {
+            console.log("import id: " + this.import_id);
+            console.log("art type: " + this.data_art_type);
+            /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
+            axios.get('/artFam/criticality/send/' + this.data_art_type + '/' + this.import_id)
+                .then(response => {
+                    this.sto_conds = response.data;
+                    this.importStoConds();
+                    this.loaded = true;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            this.loaded = true;
+        }
     },
     /*All functions inside the created option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        if (this.consultMod || this.modifMod) {
+        /*if (this.consultMod || this.modifMod) {
             this.importDim();
-        }
+        }*/
     }
 }
 </script>

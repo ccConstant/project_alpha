@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
 use App\Models\SW03\DocumentaryControl;
+use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -113,7 +117,44 @@ class DocControlController extends Controller
     }
 
     public function update_docControl(Request $request, $id) {
-        $docControl = DocumentaryControl::all()->find($id)->first();
+        $docControl = DocumentaryControl::all()->findOrfail($id)->first();
+        $incmgInsp = IncomingInspection::all()->findOrfail($docControl->incmgInsp_id)->first();
+        $article = null;
+        if ($request->docControl_articleType === 'cons') {
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->consFam_id)->first();
+            $signed = $article->consFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->docControl_articleType === 'raw') {
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->rawFam_id)->first();
+            $signed = $article->rawFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->docControl_articleType === 'comp') {
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->compFam_id)->first();
+            $signed = $article->compFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        }
+        $article->update([
+            $request->docControl_articleType.'Fam_signatureDate' => null,
+            $request->docControl_articleType.'Fam_qualityApproverId' => null,
+            $request->docControl_articleType.'Fam_technicalReviewerId' => null,
+        ]);
+        $incmgInsp->update([
+            'incmgInsp_qualityApproverId' => null,
+            'incmgInsp_technicalReviewerId' => null,
+            'incmgInsp_signatureDate' => null,
+        ]);
         $docControl->update([
             'docControl_name' => $request->docControl_name,
             'docControl_reference' => $request->docControl_reference,

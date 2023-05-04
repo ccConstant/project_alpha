@@ -25,7 +25,7 @@
                 :id="component.id"
                 :validate="component.validate"
                 :consultMod="isInConsultMod"
-                :modifMod="isInModifMod"
+                :modifMod="component.id !== null"
                 :article_id="data_article_id"
                 :article_type="data_article_type"
                 @deleteFile="getContent(key)"
@@ -118,6 +118,7 @@ export default {
             this.components.push({
                 comp: 'IncmgInspIDForm',
                 key: this.uniqueKey++,
+                id: null,
             });
         },
         /*Function for adding an imported file form with his data*/
@@ -140,7 +141,7 @@ export default {
         /*Function for adding to the vue the imported article*/
         importIncmgInsp() {
             if (this.incmgInsp.length === 0 && !this.isInModifMod) {
-                /*this.$refs.importAlert.showAlert();*/
+                this.loaded = true;
             } else {
                 for (const ii of this.incmgInsp) {
                     console.log(ii);
@@ -185,6 +186,7 @@ export default {
         console.log("created incmgInsp");
         console.log(this.data_article_type);
         console.log(this.data_article_id);
+        console.log(this.consultMod);
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/

@@ -22,9 +22,6 @@
                     :min="0"
                     :max="255"
                 />
-            
-            
-            
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addPurchaseSpecification"
@@ -32,6 +29,8 @@
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
                     :savedAs="validate"/>
+                <DeleteComponentButton :validationMode="purSpe_validate" :consultMod="this.isInConsultMod"
+                                       @deleteOk="deleteComponent"/>
             </form>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -138,6 +137,8 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
+                console.log("before verif");
+                console.log(id);
                 axios.post('/purSpe/verif', {
                     purSpe_requiredDoc: this.purSpe_requiredDoc,
                     purSpe_validate: savedAs,
@@ -151,7 +152,7 @@ export default {
                     axios.post(consultUrl(id), {
                         purSpe_requiredDoc: this.purSpe_requiredDoc,
                         purSpe_validate: savedAs,
-                        artFam_type : this.artFam_type,
+                        artFam_type : this.artFam_type.toUpperCase(),
                     })
                     /*If the data have been added in the database, we show a success message*/
                     .then(response => {
@@ -177,22 +178,19 @@ export default {
         updatePurchaseSpecification(savedAs, reason, lifesheet_created) {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
-            axios.post('/file/verif', {
-                file_name: this.file_name,
-                file_location: this.file_location,
-                file_validate: savedAs,
+            axios.post('/purSpe/verif', {
+                purSpe_requiredDoc: this.purSpe_requiredDoc,
+                purSpe_validate: savedAs
             })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the file who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/file/${id}`;
-                    axios.post(consultUrl(this.file_id), {
-                        file_name: this.file_name,
-                        file_location: this.file_location,
-                        eq_id: this.equipment_id_update,
-                        file_validate: savedAs
+                    const consultUrl = (type, id) => `/purSpe/update/${type}/${id}`;
+                    axios.post(consultUrl(this.artFam_type, this.purSpe_id), {
+                        purSpe_requiredDoc: this.purSpe_requiredDoc,
+                        purSpe_validate: savedAs
                     })
                         .then(response => {
                             this.file_validate = savedAs;

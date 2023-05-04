@@ -29,12 +29,12 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-<!--                            <ReferenceAStorageCondition
+                            <ReferenceAStorageCondition
                                 consultMod
                                 :artType="this.articleType"
                                 :artFam_id="this.articleID"
                                 :import_id="this.articleID"
-                            />-->
+                            />
                         </div>
                     </div>
                 </div>
