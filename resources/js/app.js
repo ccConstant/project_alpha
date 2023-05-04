@@ -193,7 +193,7 @@ const router = new VueRouter({
         path: '/supplier/list',
         name: 'supplier_url_list',
         component: require('./components/SW03/supplier/consultation/ListOfSupplier.vue').default
-    }, {
+    }, /*{
         path: '/supplier/list/consult/:id(\\d+)',
         name: 'supplier_url_consult',
         component: require('./components/SW03/supplier/consultation/SupplierConsult.vue').default
@@ -201,10 +201,14 @@ const router = new VueRouter({
         path: '/supplier/list/update/:id(\\d+)',
         name: 'supplier_url_update',
         component: require('./components/SW03/supplier/consultation/SupplierUpdate.vue').default
-    },{
+    },*/{
         path: '/article/add',
         name: 'article_url_add',
         component: require('./components/SW03/article/referencing/ReferenceAnArticleFamily.vue').default
+    },{
+        path: '/article/list',
+        name: 'article_url_list',
+        component: require('./components/SW03/article/consultation/ListOfArticle.vue').default
     },{
         path: '/SW03/enum',
         name: 'url_enum_SW03',
