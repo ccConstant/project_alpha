@@ -22,8 +22,8 @@
                     :min="0"
                     :max="50"
                 />
-            
-            
+
+
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addArticleMember"
@@ -143,19 +143,14 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
-                 console.log("type")
-                 console.log(this.artFam_type)
                 /*We begin by checking if the data entered by the user are correct*/
                 if (this.artFam_type=="COMP"){
-                    console.log("type=COMP")
                     axios.post('/comp/mb/verif', {
                         artMb_dimension: this.artMb_dimension,
                         artFam_validate: savedAs,
                     })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
-                        console.log("after verif")
-                        console.log(id)
                         this.errors = {};
                         const consultUrl = (id) => `/comp/mb/add/${id}`;
                         axios.post(consultUrl(id), {
@@ -164,12 +159,8 @@ export default {
                         })
                         /*If the data have been added in the database, we show a success message*/
                         .then(response => {
-                            console.log("after add")
-                            console.log(response.data)
                             this.addSuccess = true;
                             this.isInConsultMod = true;
-                            console.log(this.addSuccess)
-                            console.log(this.isInConsultMod)
                             this.$snotify.success(`CompFamMember added successfully and saved as ${savedAs}`);
                             this.artFamMember_id = response.data;
                         })
@@ -184,7 +175,6 @@ export default {
                     })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
-                        console.log("after verif")
                         this.errors = {};
                         const consultUrl = (id) => `/raw/mb/add/${id}`;
                         axios.post(consultUrl(id), {
@@ -193,12 +183,8 @@ export default {
                         })
                         /*If the data have been added in the database, we show a success message*/
                         .then(response => {
-                            console.log("after add")
-                            console.log(response.data)
                             this.addSuccess = true;
                             this.isInConsultMod = true;
-                            console.log(this.addSuccess)
-                            console.log(this.isInConsultMod)
                             this.$snotify.success(`CompFamMember added successfully and saved as ${savedAs}`);
                             this.artFamMember_id = response.data;
                         })
@@ -213,7 +199,6 @@ export default {
                             })
                             /*If the data are correct, we send them to the controller for add them in the database*/
                             .then(response => {
-                                console.log("after verif")
                                 this.errors = {};
                                 const consultUrl = (id) => `/cons/mb/add/${id}`;
                                 axios.post(consultUrl(id), {
@@ -222,12 +207,8 @@ export default {
                                 })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
-                                    console.log("after add")
-                                    console.log(response.data)
                                     this.addSuccess = true;
                                     this.isInConsultMod = true;
-                                    console.log(this.addSuccess)
-                                    console.log(this.isInConsultMod)
                                     this.$snotify.success(`ConsFamMember added successfully and saved as ${savedAs}`);
                                     this.artFamMember_id = response.data;
                                 })
@@ -242,7 +223,6 @@ export default {
                                 })
                                 /*If the data are correct, we send them to the controller for add them in the database*/
                                 .then(response => {
-                                    console.log("after verif")
                                     this.errors = {};
                                     axios.post('/raw/mb/add', {
                                         artMb_dimension: this.artMb_dimension,
@@ -250,12 +230,8 @@ export default {
                                     })
                                     /*If the data have been added in the database, we show a success message*/
                                     .then(response => {
-                                        console.log("after add")
-                                        console.log(response.data)
                                         this.addSuccess = true;
                                         this.isInConsultMod = true;
-                                        console.log(this.addSuccess)
-                                        console.log(this.isInConsultMod)
                                         this.$snotify.success(`RawFamMember added successfully and saved as ${savedAs}`);
                                         this.artFamMember_id = response.data;
                                     })
@@ -267,7 +243,7 @@ export default {
                     }
                 }
             }
-        },     
+        },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
@@ -318,7 +294,6 @@ export default {
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {

@@ -141,7 +141,6 @@ export default {
                 id: id,
                 className: className
             });
-            console.log(this.components);
         },
         /*Suppression of a file component from the vue*/
         getContent(key) {
@@ -150,7 +149,6 @@ export default {
         /*Function for adding to the vue the imported article*/
         importDocControl() {
             if (this.docControl.length === 0 && !this.isInModifMod) {
-                console.log("docControl is empty");
                 this.loaded = true;
             } else {
                 for (const dc of this.docControl) {
@@ -194,7 +192,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log('incmgInsp_id', this.incmgInsp_id);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
@@ -205,7 +202,9 @@ export default {
                     this.importDocControl();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    console.log(error);
+                });
         } else {
             this.loaded = true;
         }

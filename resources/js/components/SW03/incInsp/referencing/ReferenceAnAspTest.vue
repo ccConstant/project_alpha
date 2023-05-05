@@ -29,6 +29,7 @@
                 :incmgInsp_id="incmgInsp_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :desc="component.aspTest_desc"
                 @deleteAspTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -127,10 +128,11 @@ export default {
                 comp: 'AspTestIDForm',
                 key: this.uniqueKey++,
                 id: null,
+                aspTest_sampling: "100%",
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(aspTest_severityLevel, aspTest_controlLevel, aspTest_expectedAspect, aspTest_name, aspTest_sampling, incmgInsp_id, id, className) {
+        addImportedComponent(aspTest_severityLevel, aspTest_controlLevel, aspTest_expectedAspect, aspTest_name, aspTest_sampling, aspTest_desc, incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'AspTestIDForm',
                 key: this.uniqueKey++,
@@ -139,6 +141,7 @@ export default {
                 aspTest_expectedAspect: aspTest_expectedAspect,
                 aspTest_name: aspTest_name,
                 aspTest_sampling: aspTest_sampling,
+                aspTest_desc: aspTest_desc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -151,7 +154,6 @@ export default {
         /*Function for adding to the vue the imported article*/
         importAspTest() {
             if (this.aspTest.length === 0 && !this.isInModifMod) {
-                console.log("No aspTest to import");
                 this.loaded = true;
             } else {
                 for (const at of this.aspTest) {
@@ -162,6 +164,7 @@ export default {
                         at.aspTest_expectedAspect,
                         at.aspTest_name,
                         at.aspTest_sampling,
+                        at.aspTest_desc,
                         at.incmgInsp_id,
                         at.id,
                         className
@@ -196,7 +199,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_article_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
@@ -207,7 +209,9 @@ export default {
                     this.importAspTest();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    console.log(error);
+                });
         } else {
             this.loaded = true;
         }

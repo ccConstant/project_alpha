@@ -20,7 +20,7 @@ class ComplementaryTest extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['compTest_name', 'compTest_unitValue', 'compTest_expectedValue', 'compTest_severityLevel', 'compTest_levelOfControl', 'compTest_expectedMethod', 'incmgInsp_id'];
+    protected $fillable = ['compTest_name', 'compTest_unitValue', 'compTest_expectedValue', 'compTest_severityLevel', 'compTest_levelOfControl', 'compTest_expectedMethod', 'incmgInsp_id', 'compTest_desc', 'compTest_sampling'];
 
     //Define the relation between a complementaryTest and its inspection: a complementaryTest has only one inspection
     public function incomingInspection(){

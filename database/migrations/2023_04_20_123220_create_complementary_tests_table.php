@@ -32,7 +32,8 @@ class CreateComplementaryTestsTable extends Migration
             $table->string('compTest_expectedMethod');
             $table->unsignedBigInteger('incmgInsp_id');
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
-            $table->enum('compTest_sampling',  ['sampling', '100%']);
+            $table->enum('compTest_sampling',  ['Statistics', '100%', 'Other']);
+            $table->string('compTest_desc')->nullable();
         });
     }
 

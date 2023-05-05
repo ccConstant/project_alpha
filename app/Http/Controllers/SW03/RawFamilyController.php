@@ -138,6 +138,12 @@ class RawFamilyController extends Controller
         $rawFamilies=RawFamily::all() ;
         $array = [];
         foreach ($rawFamilies as $rawFamily){
+            $purchaseBy = EnumPurchasedBy::find($rawFamily->enumPurchasedBy_id);
+            if ($purchaseBy != null){
+                $purchaseBy = $purchaseBy->first()->value;
+            } else {
+                $purchaseBy = null;
+            }
             $obj = [
                 'id' => $rawFamily->id,
                 'rawFam_ref' => $rawFamily->rawFam_ref,
@@ -146,7 +152,7 @@ class RawFamilyController extends Controller
                 'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
                 'rawFam_validate' => $rawFamily->rawFam_validate,
                 'rawFam_active' => $rawFamily->rawFam_active,
-                'rawFam_purchasedBy' => $rawFamily->enumPurchasedBy_id,
+                'rawFam_purchasedBy' => $purchaseBy,
                 'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
                 'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
                 'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate
@@ -158,6 +164,12 @@ class RawFamilyController extends Controller
 
     public function send_rawFamily($id) {
         $rawFamily = RawFamily::find($id);
+        $purchaseBy = EnumPurchasedBy::find($rawFamily->enumPurchasedBy_id);
+        if ($purchaseBy != null){
+            $purchaseBy = $purchaseBy->first()->value;
+        } else {
+            $purchaseBy = null;
+        }
         $obj = [
             'id' => $rawFamily->id,
             'rawFam_ref' => $rawFamily->rawFam_ref,
@@ -166,7 +178,7 @@ class RawFamilyController extends Controller
             'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
             'rawFam_validate' => $rawFamily->rawFam_validate,
             'rawFam_active' => $rawFamily->rawFam_active,
-            'rawFam_purchasedBy' => $rawFamily->enumPurchasedBy_id,
+            'rawFam_purchasedBy' => $purchaseBy,
             'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
             'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
             'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate

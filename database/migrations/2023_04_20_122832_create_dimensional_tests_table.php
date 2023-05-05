@@ -32,7 +32,8 @@ class CreateDimensionalTestsTable extends Migration
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             $table->string('dimTest_name');
             $table->string('dimTest_unitValue');
-            $table->enum('dimTest_sampling',  ['sampling', '100%']);
+            $table->enum('dimTest_sampling',  ['Statistics', '100%', 'Other']);
+            $table->string('dimTest_desc')->nullable();
         });
     }
 

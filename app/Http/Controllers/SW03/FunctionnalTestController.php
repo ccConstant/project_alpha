@@ -26,7 +26,7 @@ class FunctionnalTestController extends Controller
                 'incmgInsp_id.integer' => 'The incoming inspection id must be an integer',
             ]
         );
-        if ($request->funcTest_sampling === 'sampling') {
+        if ($request->funcTest_sampling === 'statistics') {
             $this->validate(
                 $request,
                 [
@@ -37,6 +37,20 @@ class FunctionnalTestController extends Controller
                     'funcTest_severityLevel.required' => 'You must enter a severity level',
 
                     'funcTest_levelOfControl.required' => 'You must enter a level of control',
+                ]
+            );
+        }
+        if ($request->funcTest_sampling === 'other') {
+            $this->validate(
+                $request,
+                [
+                    'funcTest_desc' => 'required|string|min:2|max:255',
+                ],
+                [
+                    'funcTest_desc.required' => 'You must enter a description',
+                    'funcTest_desc.string' => 'The description must be a string',
+                    'funcTest_desc.min' => 'You must enter at least two characters',
+                    'funcTest_desc.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
@@ -83,6 +97,7 @@ class FunctionnalTestController extends Controller
             'funcTest_unitValue' => $request->funcTest_unitValue,
             'funcTest_sampling' => $request->funcTest_sampling,
             'incmgInsp_id' => $request->incmgInsp_id,
+            'funcTest_desc' => $request->funcTest_desc,
         ]);
         return $funcTest;
     }
@@ -101,6 +116,7 @@ class FunctionnalTestController extends Controller
                 'funcTest_unitValue' => $funcTest->funcTest_unitValue,
                 'funcTest_sampling' => $funcTest->funcTest_sampling,
                 'incmgInsp_id' => $funcTest->incmgInsp_id,
+                'funcTest_desc' => $funcTest->funcTest_desc,
             ];
         }
         return response()->json($array);
@@ -118,15 +134,26 @@ class FunctionnalTestController extends Controller
             'funcTest_unitValue' => $funcTest->funcTest_unitValue,
             'funcTest_sampling' => $funcTest->funcTest_sampling,
             'incmgInsp_id' => $funcTest->incmgInsp_id,
+            'funcTest_desc' => $funcTest->funcTest_desc,
         ]);
     }
 
     public function update_funcTest(Request $request, $id) {
-        $funcTest = FunctionalTest::all()->findOrfail($id)->first();
-        $incmgInsp = IncomingInspection::all()->findOrfail($funcTest->incmgInsp_id)->first();
+        $funcTest = FunctionalTest::all()->where('id', '==', $id)->first();
+        if ($funcTest == null) {
+            return response()->json([
+                'message' => 'Functional test not found',
+            ], 404);
+        };
+        $incmgInsp = IncomingInspection::all()->where('id', '==', $funcTest->incmgInsp_id)->first();
+        if ($incmgInsp == null) {
+            return response()->json([
+                'message' => 'Incoming inspection not found',
+            ], 404);
+        };
         $article = null;
         if ($request->funcTest_articleType === 'cons') {
-            $article = ConsFamily::all()->where('id', '==', $incmgInsp->consFam_id)->first();
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
             $signed = $article->consFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -134,7 +161,7 @@ class FunctionnalTestController extends Controller
                 ]);
             }
         } else if ($request->funcTest_articleType === 'raw') {
-            $article = RawFamily::all()->where('id', '==', $incmgInsp->rawFam_id)->first();
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->incmgInsp_rawFam_id)->first();
             $signed = $article->rawFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -142,7 +169,7 @@ class FunctionnalTestController extends Controller
                 ]);
             }
         } else if ($request->funcTest_articleType === 'comp') {
-            $article = CompFamily::all()->where('id', '==', $incmgInsp->compFam_id)->first();
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->incmgInsp_compFam_id)->first();
             $signed = $article->compFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -168,6 +195,7 @@ class FunctionnalTestController extends Controller
             'funcTest_name' => $request->funcTest_name,
             'funcTest_unitValue' => $request->funcTest_unitValue,
             'funcTest_sampling' => $request->funcTest_sampling,
+            'funcTest_desc' => $request->funcTest_desc,
         ]);
         return response()->json($funcTest);
     }

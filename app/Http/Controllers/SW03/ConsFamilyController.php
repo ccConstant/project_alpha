@@ -148,6 +148,13 @@ class ConsFamilyController extends Controller
         $consFamilies=ConsFamily::all() ;
         $array = [];
         foreach ($consFamilies as $consFamily) {
+            $purchaseBy = EnumPurchasedBy::find($consFamily->enumPurchasedBy_id);
+            if ($purchaseBy != null) {
+                $purchaseBy = $purchaseBy->first()->value;
+            } else {
+                $purchaseBy = null;
+            }
+
             $obj = [
                 'id' => $consFamily->id,
                 'consFam_ref' => $consFamily->consFam_ref,
@@ -158,7 +165,7 @@ class ConsFamilyController extends Controller
                 'consFam_nbrVersion' => $consFamily->consFam_nbrVersion,
                 'consFam_validate' => $consFamily->consFam_validate,
                 'consFam_active' => $consFamily->consFam_active,
-                'consFam_purchasedBy' => $consFamily->enumPurchasedBy_id,
+                'consFam_purchasedBy' => $purchaseBy,
                 'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
                 'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
                 'consFam_signatureDate' => $consFamily->consFam_signatureDate,
@@ -170,6 +177,12 @@ class ConsFamilyController extends Controller
 
     public function send_consFamily($id) {
         $consFamily = ConsFamily::find($id);
+        $purchaseBy = EnumPurchasedBy::find($consFamily->enumPurchasedBy_id);
+        if ($purchaseBy != null) {
+            $purchaseBy = $purchaseBy->first()->value;
+        } else {
+            $purchaseBy = null;
+        }
         $obj = [
             'id' => $consFamily->id,
             'consFam_ref' => $consFamily->consFam_ref,
@@ -180,7 +193,7 @@ class ConsFamilyController extends Controller
             'consFam_nbrVersion' => $consFamily->consFam_nbrVersion,
             'consFam_validate' => $consFamily->consFam_validate,
             'consFam_active' => $consFamily->consFam_active,
-            'consFam_purchasedBy' => $consFamily->enumPurchasedBy_id,
+            'consFam_purchasedBy' => $purchaseBy,
             'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
             'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
             'consFam_signatureDate' => $consFamily->consFam_signatureDate,

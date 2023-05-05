@@ -20,7 +20,7 @@
                         {id_enum: 'Criticality', value: 'DETECTABLE', text: 'DETECTABLE'},
                         {id_enum: 'Criticality', value: 'CRITICAL', text: 'CRITICAL'},
                     ]"
-                    :isDisabled="this.isInConsultedMod"
+                    :isDisabled="this.isInConsultMod"
                     v-model="crit_artCriticality"
                     :info_text="null"
                     :Errors="errors.crit_artCriticality"
@@ -36,7 +36,7 @@
                         {id_enum: 'MaterialContactCriticality', value: 'DETECTABLE', text: 'DETECTABLE'},
                         {id_enum: 'MaterialContactCriticality', value: 'CRITICAL', text: 'CRITICAL'},
                     ]"
-                    :isDisabled="this.isInConsultedMod"
+                    :isDisabled="this.isInConsultMod"
                     v-model="crit_artMaterialContactCriticality"
                     :info_text="null"
                     :Errors="errors.crit_artMaterialContactCriticality"
@@ -52,7 +52,7 @@
                         {id_enum: 'MaterialFunctionCriticality', value: 'DETECTABLE', text: 'DETECTABLE'},
                         {id_enum: 'MaterialFunctionCriticality', value: 'CRITICAL', text: 'CRITICAL'},
                     ]"
-                    :isDisabled="this.isInConsultedMod"
+                    :isDisabled="this.isInConsultMod"
                     v-model="crit_artMaterialFunctionCriticality"
                     :info_text="null"
                     :Errors="errors.crit_artMaterialFunctionCriticality"
@@ -68,7 +68,7 @@
                         {id_enum: 'ProcessCriticality', value: 'DETECTABLE', text: 'DETECTABLE'},
                         {id_enum: 'ProcessCriticality', value: 'CRITICAL', text: 'CRITICAL'},
                     ]"
-                    :isDisabled="this.isInConsultedMod"
+                    :isDisabled="this.isInConsultMod"
                     v-model="crit_artProcessCriticality"
                     :info_text="null"
                     :Errors="errors.crit_artProcessCriticality"
@@ -79,7 +79,7 @@
                     name="Remarks"
                     label="Remarks :"
                     v-model="crit_remarks"
-                    :isDisabled="isInConsultedMod"
+                    :isDisabled="isInConsultMod"
                     :info_text="null"
                     :min="0"
                     :max="255"
@@ -87,26 +87,26 @@
                     :Errors="errors.crit_remarks"
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
-                <div v-if="this.addSucces===false ">
+                <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addCriticality is called function else the updateDocControl function is called -->
-                    <div v-if="this.data_article_id===null ">
-                        <div v-if="modifMod===true">
+                    <div v-if="this.crit_id==null ">
+                        <div v-if="modifMod==true">
                             <SaveButtonForm @add="addCriticality" @update="updateDocControl"
-                                            :consultMod="this.isInConsultedMod" :savedAs="'validated'"
+                                            :consultMod="this.isInConsultMod" :savedAs="crit_validate"
                                             :AddinUpdate="true"/>
                         </div>
                         <div v-else>
                             <SaveButtonForm @add="addCriticality" @update="updateDocControl"
-                                            :consultMod="this.isInConsultedMod" :savedAs="'validated'"/>
+                                            :consultMod="this.isInConsultMod" :savedAs="crit_validate"/>
                         </div>
                     </div>
-                    <div v-else-if="this.data_article_id!==null">
+                    <div v-else-if="this.crit_id!==null">
                         <SaveButtonForm @add="addCriticality" @update="updateDocControl"
-                                        :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
-                                        :savedAs="'validated'"/>
+                                        :consultMod="this.isInConsultMod" :modifMod="this.modifMod"
+                                        :savedAs="crit_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :validationMode="'validated'" :consultMod="this.isInConsultedMod"
+                    <DeleteComponentButton :validationMode="crit_validate" :consultMod="this.isInConsultMod"
                                            @deleteOk="deleteComponent"/>
                 </div>
             </form>
@@ -183,6 +183,9 @@ export default {
             type: String,
             default: null
         },
+        validate: {
+            type: String
+        }
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -205,11 +208,12 @@ export default {
             crit_remarks: this.remarks,
             errors: {},
             addSucces: false,
-            isInConsultedMod: this.consultMod,
+            isInConsultMod: this.consultMod,
             loaded: false,
             isInModifMod: this.modifMod,
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
+            crit_validate: this.validate,
         }
     },
     methods: {
@@ -248,22 +252,17 @@ export default {
                     /*If the file is added successfully*/
                     .then(response => {
                         this.$snotify.success(`Criticality added successfully and saved as ${savedAs}`);
-                        if (!this.modifMod) {
-                            /*The form pass in consulting mode and addSucces pass to True*/
-                            this.isInConsultedMod = true;
-                            this.addSucces = true
-                        }
+                        this.isInConsultedMod = true;
+                        this.addSucces = true
                     })
                     /*If the controller sends errors, we put it in the error object*/
                     .catch(error => {
                         this.errors = error.response.data.errors;
-                        console.log(error.response.data);
                     });
                 })
                 //If the controller sends errors, we put it in the error object
                 .catch(error => {
                     this.errors = error.response.data.errors;
-                    console.log(error.response.data);
                 });
             }
         },
@@ -272,7 +271,52 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
-
+            axios.post('/artFam/criticality/verif', {
+                crit_artCriticality: this.crit_artCriticality,
+                crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
+                crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
+                crit_artProcessCriticality: this.crit_artProcessCriticality,
+                crit_remarks: this.crit_remarks,
+                crit_validate: savedAs,
+                crit_articleType: this.data_article_type,
+                crit_articleID: this.data_article_id,
+            })
+                .then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    Type, name, value, unit, validate option and id of the equipment is sent to the controller
+                    In the post url the id correspond to the id of the file who will be updated*/
+                    const consultUrl = (id) => `/artFam/criticality/update/${id}`;
+                    axios.post(consultUrl(this.crit_id), {
+                        crit_artCriticality: this.crit_artCriticality,
+                        crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
+                        crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
+                        crit_artProcessCriticality: this.crit_artProcessCriticality,
+                        crit_remarks: this.crit_remarks,
+                        crit_validate: savedAs,
+                        crit_articleType: this.data_article_type,
+                        crit_articleID: this.data_article_id,
+                    })
+                        .then(response => {
+                            this.crit_validate = savedAs;
+                            /*We test if a life sheet has been already created*/
+                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                            if (lifesheet_created == true) {
+                                axios.post(`/history/add/equipment/${id}`, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
+                            this.$refs.sucessAlert.showAlert(`Incoming Inspection updated successfully and saved as ${savedAs}`);
+                            this.isInConsultedMod = true;
+                        })
+                        /*If the controller sends errors, we put it in the error object*/
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
+                })
+                /*If the controller sends errors, we put it in the error object*/
+                .catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

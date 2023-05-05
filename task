@@ -1,0 +1,23 @@
+TODO:
+    Ajout d'un membre de groupe article
+    Ajouter les formulaires si pas déjà remplis:
+        Compliance Certificate inspection (To ensure Raw Material Compliance)
+        Compliance Certificate inspection (Related to article Compliance)
+        Chacun contient les champs:
+            - Name
+            - Reference
+            - Specification
+        + le bouton add pour en ajouter des vides
+    Fiche consultation article
+    Loc incmgInsp et criticality après ajout
+    */
+
+FIXME:
+    Storage Condition
+    */
+
+DONE:
+    Update de la plupart de la fiche article
+    Ajout de Other pour le sampling + desc et prise en compte controller et model + migration
+    Complementary Test pour CONS
+    */

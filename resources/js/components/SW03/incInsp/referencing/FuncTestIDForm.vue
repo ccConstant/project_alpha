@@ -53,8 +53,9 @@
                     :label="'Sampling :'"
                     isRequired
                     :options="[
-                        {id_enum: 'Sampling', value: 'sampling', text: 'sampling'},
-                        {id_enum: 'Sampling', value: '100%', text: '100%'}
+                        {id_enum: 'Sampling', value: 'statistics', text: 'statistics'},
+                        {id_enum: 'Sampling', value: '100%', text: '100%'},
+                        {id_enum: 'Sampling', value: 'other', text: 'other'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
                     v-model="funcTest_sampling"
@@ -77,7 +78,7 @@
                     :Errors="errors.funcTest_unitValue"
                 />
                 <InputSelectForm
-                    v-if="this.funcTest_sampling === 'sampling'"
+                    v-if="this.funcTest_sampling === 'statistics'"
                     name="SeverityLevel"
                     :Errors="errors.funcTest_severityLevel"
                     label="Severity Level :"
@@ -88,13 +89,13 @@
                         {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="funcTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'sampling'"
+                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'statistics'"
                     v-model="funcTest_severityLevel"
                     :info_text="'SeverityLevel'"
                     :id_actual="'SeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.funcTest_sampling === 'sampling'"
+                    v-if="this.funcTest_sampling === 'statistics'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
@@ -103,12 +104,25 @@
                         {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
                         {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'sampling'"
+                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'statistics'"
                     v-model="funcTest_controlLevel"
                     :info_text="null"
                     :Errors="errors.funcTest_levelOfControl"
                     :selctedOption="funcTest_controlLevel"
                     :id_actual="'ControlLevel'"
+                />
+                <InputTextForm
+                    v-if="funcTest_sampling === 'other'"
+                    name="desc"
+                    label="Description :"
+                    v-model="funcTest_desc"
+                    :isDisabled="!!isInConsultedMod || funcTest_sampling !== 'other'"
+                    :info_text="null"
+                    :min="2"
+                    :max="255"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.funcTest_desc"
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces===false ">
@@ -217,6 +231,10 @@ export default {
             type: String,
             default: null
         },
+        desc: {
+            type: String,
+            default: null
+        }
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -239,6 +257,7 @@ export default {
             funcTest_name: this.name,
             funcTest_unitValue: this.unitValue,
             funcTest_sampling: this.sampling,
+            funcTest_desc: this.desc,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -268,6 +287,7 @@ export default {
                     funcTest_articleType: this.data_article_type,
                     funcTest_sampling: this.funcTest_sampling,
                     funcTest_unitValue: this.funcTest_unitValue,
+                    funcTest_desc: this.funcTest_desc,
                 })
                 .then(response => {
                     this.errors = {};
@@ -283,6 +303,7 @@ export default {
                         funcTest_articleType: this.data_article_type,
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
+                        funcTest_desc: this.funcTest_desc,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -296,13 +317,11 @@ export default {
                     /*If the controller sends errors, we put it in the error object*/
                     .catch(error => {
                         this.errors = error.response.data.errors;
-                        console.log(error.response.data);
                     });
                 })
                 //If the controller sends errors, we put it in the error object
                 .catch(error => {
                     this.errors = error.response.data.errors;
-                    console.log(error.response.data);
                 });
             }
         },
@@ -321,6 +340,7 @@ export default {
                 funcTest_articleType: this.data_article_type,
                 funcTest_sampling: this.funcTest_sampling,
                 funcTest_unitValue: this.funcTest_unitValue,
+                funcTest_desc: this.funcTest_desc,
             })
                 .then(response => {
                     this.errors = {};
@@ -336,10 +356,11 @@ export default {
                         funcTest_articleType: this.data_article_type,
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
+                        funcTest_desc: this.funcTest_desc,
                     })
                         /*If the file is added successfully*/
                         .then(response => {
-                            this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);
+                            this.$snotify.success(`Functional Test successfully updated`);
                             this.isInConsultedMod = true;
                             this.addSucces = true
                             // TODO: faire l'historique
@@ -347,13 +368,11 @@ export default {
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
                             this.errors = error.response.data.errors;
-                            console.log(error.response.data);
                         });
                 })
                 //If the controller sends errors, we put it in the error object
                 .catch(error => {
                     this.errors = error.response.data.errors;
-                    console.log(error.response.data);
                 });
         },
         /*Clears all the error of the targeted field*/

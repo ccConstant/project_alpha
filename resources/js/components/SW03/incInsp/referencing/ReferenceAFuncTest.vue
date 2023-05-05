@@ -31,6 +31,7 @@
                 :incmgInsp_id="incmgInsp_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :desc="component.funcTest_desc"
                 @deletefuncTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -128,10 +129,11 @@ export default {
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
                 id: null,
+                funcTest_sampling:"100%",
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(funcTest_severityLevel, funcTest_controlLevel, funcTest_expectedMethod, funcTest_expectedValue, funcTest_name, funcTest_sampling, funcTest_unitValue, incmgInsp_id, id, className) {
+        addImportedComponent(funcTest_severityLevel, funcTest_controlLevel, funcTest_expectedMethod, funcTest_expectedValue, funcTest_name, funcTest_sampling, funcTest_unitValue, funcTest_desc, incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
@@ -142,6 +144,7 @@ export default {
                 funcTest_name: funcTest_name,
                 funcTest_sampling: funcTest_sampling,
                 funcTest_unitValue: funcTest_unitValue,
+                funcTest_desc: funcTest_desc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -154,7 +157,6 @@ export default {
         /*Function for adding to the vue the imported article*/
         importFuncTest() {
             if (this.funcTest.length === 0 && !this.isInModifMod) {
-                console.log("No funcTest to import");
                 this.loaded = true;
             } else {
                 for (const ft of this.funcTest) {
@@ -167,6 +169,7 @@ export default {
                         ft.funcTest_name,
                         ft.funcTest_sampling,
                         ft.funcTest_unitValue,
+                        ft.funcTest_desc,
                         ft.incmgInsp_id,
                         ft.id,
                         className
@@ -201,7 +204,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_article_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -212,7 +214,9 @@ export default {
                     this.importFuncTest();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    console.log(error);
+                });
         } else {
             this.loaded = true;
         }

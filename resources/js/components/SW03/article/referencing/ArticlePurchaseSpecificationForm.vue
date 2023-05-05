@@ -137,16 +137,12 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
-                console.log("before verif");
-                console.log(id);
                 axios.post('/purSpe/verif', {
                     purSpe_requiredDoc: this.purSpe_requiredDoc,
                     purSpe_validate: savedAs,
                 })
                 /*If the data are correct, we send them to the controller for add them in the database*/
                 .then(response => {
-                    console.log("after verif")
-                    console.log(id)
                     this.errors = {};
                     const consultUrl = (id) => `/purSpe/add/${id}`;
                     axios.post(consultUrl(id), {
@@ -156,12 +152,8 @@ export default {
                     })
                     /*If the data have been added in the database, we show a success message*/
                     .then(response => {
-                        console.log("after add")
-                        console.log(response.data)
                         this.addSuccess = true;
                         this.isInConsultMod = true;
-                        console.log(this.addSuccess)
-                        console.log(this.isInConsultMod)
                         this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
                         this.purSpe_id = response.data;
                         this.purSpe_validate=savedAs;
@@ -187,8 +179,7 @@ export default {
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the file who will be updated*/
-                    const consultUrl = (type, id) => `/purSpe/update/${type}/${id}`;
-                    axios.post(consultUrl(this.artFam_type, this.purSpe_id), {
+                    axios.post('/purSpe/update/' + this.artFam_type + '/' + this.purSpe_id, {
                         purSpe_requiredDoc: this.purSpe_requiredDoc,
                         purSpe_validate: savedAs
                     })
@@ -196,17 +187,18 @@ export default {
                             this.file_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            const id = this.equipment_id_update;
                             if (lifesheet_created == true) {
                                 axios.post(`/history/add/equipment/${id}`, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
                             }
-                            this.$refs.sucessAlert.showAlert(`Equipment file updated successfully and saved as ${savedAs}`);
+                            this.$refs.sucessAlert.showAlert(`Article Purchase Specification updated successfully and saved as ${savedAs}`);
                         })
                         /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
                 })
                 /*If the controller sends errors, we put it in the error object*/
                 .catch(error => this.errors = error.response.data.errors);
@@ -247,6 +239,8 @@ export default {
         }
     },
     created() {
+        console.log("created purSpe");
+        console.log(this.purSpe_requiredDoc);
         this.loaded=true;
     },
 }

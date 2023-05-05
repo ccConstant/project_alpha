@@ -11,20 +11,20 @@
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" >
-                <InputSelectForm 
-                    @clearSelectError='clearSelectError' 
-                    name="artFam_storageCondition" 
+                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    name="artFam_storageCondition"
                     :Errors="errors.artFam_storageCondition"
-                    label="Article Family Storage Condition :" 
-                    :options="enumArticle_storageCondition" 
+                    label="Article Family Storage Condition :"
+                    :options="enumArticle_storageCondition"
                     :selctedOption="artFam_storageCondition"
-                    :isDisabled="this.isInConsultMod" 
+                    :isDisabled="this.isInConsultMod"
                     v-model="artFam_storageCondition"
-                    :info_text="'Article Family Storage Condition value'" 
+                    :info_text="'Article Family Storage Condition value'"
                     :id_actual="'ArticleFamilyStorageCondition'"/>
-            
-            
-            
+
+
+
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addStorageConditions"
@@ -148,12 +148,12 @@ export default {
                     artFam_type: this.artFam_type,
                     artFam_storageCondition: this.artFam_storageCondition,
                 })
-                    
+
                 /*If the storage condition have been linked successfully*/
                 .then(response => {
                     /*We test if a article sheet has been already created*/
                     /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                    /* TODO 
+                    /* TODO
                     if (lifesheet_created == true) {
                         axios.post(`/history/add/equipment/${id}`, {
                             history_reasonUpdate: reason,
@@ -162,11 +162,8 @@ export default {
                     }*/
                     this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
                     /*If the user is not in modification mode*/
-                    if (!this.modifMod) {
-                        /*The form pass in consulting mode and addSucces pass to True*/
-                        this.isInConsultedMod = true;
-                        this.addSucces = true
-                    }
+                    this.isInConsultedMod = true;
+                    this.addSucces = true
                     /*the id of the file take the value of the newly created id*/
                     this.storageCondition_id = response.data;
                     /*The validate option of this file takes the value of savedAs(Params of the function)*/

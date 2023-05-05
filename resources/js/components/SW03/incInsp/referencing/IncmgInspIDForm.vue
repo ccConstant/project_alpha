@@ -24,7 +24,7 @@
                 <InputTextForm
                     :Errors="errors.incmgInsp_partMaterialComplianceCertificate"
                     name="partMatCertif"
-                    label="Incoming Inspection Part Material Compliance Certification :"
+                    label="Incoming Inspection Part Material Compliance Certificate :"
                     v-model="incmgInsp_partMaterialCertif"
                     :isDisabled="!!isInConsultMod"
                     :info_text="null"
@@ -147,6 +147,26 @@
                         </div>
 
                     </div>
+                    <!-- CompTest -->
+                    <div class="accordion-item" v-if="article_type === 'cons'">
+                        <h2 class="accordion-header" id="headingCompTest">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseCompTest" aria-expanded="true" aria-controls="collapseCompTest">
+                                Complementary Test
+                            </button>
+                        </h2>
+                        <div id="collapseCompTest" class="accordion-collapse collapse show" aria-labelledby="headingCompTest">
+                            <div class="accordion-body">
+                                <ReferenceACompTest
+                                    :articleType="article_type"
+                                    :article_id="article_id"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
+                                    :incmgInsp_id="incmgInsp_id"
+                                    :consultMod="this.isInConsultMod"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             <SucessAlert ref="sucessAlert"/>
             </div>
@@ -164,9 +184,11 @@ import ReferenceADocControl from "./ReferenceADocControl.vue";
 import ReferenceAnAspTest from "./ReferenceAnAspTest.vue";
 import ReferenceAFuncTest from "./ReferenceAFuncTest.vue";
 import ReferenceADimTest from "./ReferenceADimTest.vue";
+import ReferenceACompTest from "./ReferenceACompTest.vue";
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        ReferenceACompTest,
         ReferenceADimTest,
         ReferenceAFuncTest,
         ReferenceAnAspTest,
@@ -311,7 +333,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateIncmgInsp(savedAs, reason, lifesheet_created) { // TODO: update
+        updateIncmgInsp(savedAs, reason, lifesheet_created) {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
             axios.post('/incmgInsp/verif', {
@@ -341,10 +363,9 @@ export default {
                         incmpInsp_articleType: this.article_type
                     })
                         .then(response => {
-                            this.file_validate = savedAs;
+                            this.incmgInsp_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            const id = this.equipment_id_update;
                             if (lifesheet_created == true) {
                                 axios.post(`/history/add/equipment/${id}`, {
                                     history_reasonUpdate: reason,
@@ -352,9 +373,12 @@ export default {
                                 window.location.reload();
                             }
                             this.$refs.sucessAlert.showAlert(`Incoming Inspection updated successfully and saved as ${savedAs}`);
+                            this.isInConsultedMod = true;
                         })
                         /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
                 })
                 /*If the controller sends errors, we put it in the error object*/
                 .catch(error => this.errors = error.response.data.errors);
@@ -367,7 +391,6 @@ export default {
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {

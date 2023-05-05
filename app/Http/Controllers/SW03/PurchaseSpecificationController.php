@@ -10,11 +10,12 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\SW03\CompFamily;
 use App\Models\SW03\ConsFamily;
+use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\PurchaseSpecification;
-use Illuminate\Support\Facades\DB;
 
 class PurchaseSpecificationController extends Controller
 {
@@ -87,7 +88,7 @@ class PurchaseSpecificationController extends Controller
     }
 
     public function update_purSpe(Request $request, $type, $id) {
-        $purSpec = PurchaseSpecification::findOrfail($id);
+        $purSpec = PurchaseSpecification::all()->where('id', '==', $id)->first();
         $article = null;
         if ($type === 'cons') {
             $article = ConsFamily::all()->where('id', '==', $purSpec->consFam_id)->first();
@@ -113,6 +114,8 @@ class PurchaseSpecificationController extends Controller
                     'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
                 ]);
             }
+        } else {
+            return response()->json('error', 429);
         }
         $article->update([
             $type.'Fam_signatureDate' => null,

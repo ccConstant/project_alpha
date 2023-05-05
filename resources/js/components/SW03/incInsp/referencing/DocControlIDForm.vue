@@ -39,7 +39,7 @@
                     v-if="this.data_article_type === 'raw' || this.data_article_type === 'comp'"
                     :Errors="errors.docControl_materialCertiSpec"
                     name="matCertifSpec"
-                    label="Doc Control Material Certification Specifications :"
+                    label="Doc Control Material Certificate Specifications :"
                     v-model="docControl_materialCertiSpec"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
@@ -193,13 +193,6 @@ export default {
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
-                console.log(this.data_article_type);
-                console.log(this.data_article_id);
-                console.log(this.data_incmgInsp_id);
-                console.log(this.docControl_reference);
-                console.log(this.docControl_name);
-                console.log(this.docControl_materialCertiSpec);
-                console.log(this.docControl_fds);
                 axios.post('/incmgInsp/docControl/verif', {
                     docControl_articleType: this.data_article_type,
                     docControl_reference: this.docControl_reference,
@@ -228,10 +221,10 @@ export default {
 
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => console.log(error));
+                    .catch(error => this.errors = error.response.data.errors);
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => console.log(error.response.data.errors));
+                .catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -261,19 +254,18 @@ export default {
                     })
                         /*If the file is added successfully*/
                         .then(response => {
-                            this.$refs.sucessAlert.showAlert(`Documentary control successfully updated`);
-                            if (!this.modifMod) {
-                                /*The form pass in consulting mode and addSucces pass to True*/
-                                this.isInConsultedMod = true;
-                                this.addSucces = true
-                                // TODO: faire l'historique
-                            }
+                            this.$snotify.success(`Documentary Control successfully updated`);
+                            this.isInConsultedMod = true;
+                            this.addSucces = true
                         })
                         /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => console.log(error));
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                            console.log(error.response.data);
+                        });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => console.log(error.response.data.errors));
+                .catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -287,11 +279,6 @@ export default {
     },
     created() {
         this.loaded = true;
-        console.log('created doc control');
-        console.log(this.docControl_id);
-        console.log(this.incmgInsp_id);
-        console.log(this.consultMod);
-        console.log(this.modifMod);
     }
 }
 </script>

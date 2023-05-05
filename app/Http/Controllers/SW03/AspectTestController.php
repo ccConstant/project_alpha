@@ -38,7 +38,7 @@ class AspectTestController extends Controller
                 'incmgInsp_id.integer' => 'The incoming inspection id must be an integer',
             ]
         );
-        if ($request->aspTest_sampling === 'sampling') {
+        if ($request->aspTest_sampling === 'statistics') {
             $this->validate(
                 $request,
                 [
@@ -52,6 +52,20 @@ class AspectTestController extends Controller
                 ]
             );
         }
+        if ($request->aspTest_sampling === 'other') {
+            $this->validate(
+                $request,
+                [
+                    'aspTest_desc' => 'required|string|min:2|max:255',
+                ],
+                [
+                    'aspTest_desc.required' => 'You must enter a description',
+                    'aspTest_desc.string' => 'The description must be a string',
+                    'aspTest_desc.min' => 'You must enter at least two characters',
+                    'aspTest_desc.max' => 'You must enter a maximum of 255 characters',
+                ]
+            );
+        }
     }
 
     public function add_aspectTest(Request $request) {
@@ -61,6 +75,7 @@ class AspectTestController extends Controller
             'aspTest_expectedAspect' => $request->aspTest_expectedAspect,
             'aspTest_name' => $request->aspTest_name,
             'aspTest_sampling' => $request->aspTest_sampling,
+            'aspTest_desc' => $request->aspTest_desc,
             'incmgInsp_id' => $request->incmgInsp_id,
         ]);
         return response()->json($aspTest);
@@ -77,6 +92,7 @@ class AspectTestController extends Controller
                 'aspTest_expectedAspect' => $asp->aspTest_expectedAspect,
                 'aspTest_name' => $asp->aspTest_name,
                 'aspTest_sampling' => $asp->aspTest_sampling,
+                'aspTest_desc' => $asp->aspTest_desc,
                 'incmgInsp_id' => $asp->incmgInsp_id,
             ];
             array_push($array, $obj);
@@ -93,16 +109,27 @@ class AspectTestController extends Controller
             'aspTest_expectedAspect' => $aspTest->aspTest_expectedAspect,
             'aspTest_name' => $aspTest->aspTest_name,
             'aspTest_sampling' => $aspTest->aspTest_sampling,
+            'aspTest_desc' => $aspTest->aspTest_desc,
             'incmgInsp_id' => $aspTest->incmgInsp_id,
         ]);
     }
 
     public function update_aspectTest(Request $request, $id) {
-        $aspTest = AspectTest::all()->findOrfail($id)->first();
-        $incmgInsp = IncomingInspection::all()->findOrfail($aspTest->incmgInsp_id)->first();
+        $aspTest = AspectTest::all()->where('id', '==', $id)->first();
+        if ($aspTest == null) {
+            return response()->json([
+                'message' => 'Aspect test not found',
+            ], 404);
+        };
+        $incmgInsp = IncomingInspection::all()->where('id', '==', $aspTest->incmgInsp_id)->first();
+        if ($incmgInsp == null) {
+            return response()->json([
+                'message' => 'Incoming inspection not found',
+            ], 404);
+        };
         $article = null;
         if ($request->aspTest_articleType === 'cons') {
-            $article = ConsFamily::all()->where('id', '==', $incmgInsp->consFam_id)->first();
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
             $signed = $article->consFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -110,7 +137,7 @@ class AspectTestController extends Controller
                 ]);
             }
         } else if ($request->aspTest_articleType === 'raw') {
-            $article = RawFamily::all()->where('id', '==', $incmgInsp->rawFam_id)->first();
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->incmgInsp_rawFam_id)->first();
             $signed = $article->rawFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -118,7 +145,7 @@ class AspectTestController extends Controller
                 ]);
             }
         } else if ($request->aspTest_articleType === 'comp') {
-            $article = CompFamily::all()->where('id', '==', $incmgInsp->compFam_id)->first();
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->incmgInsp_compFam_id)->first();
             $signed = $article->compFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -142,6 +169,7 @@ class AspectTestController extends Controller
             'aspTest_expectedAspect' => $request->aspTest_expectedAspect,
             'aspTest_name' => $request->aspTest_name,
             'aspTest_sampling' => $request->aspTest_sampling,
+            'aspTest_desc' => $request->aspTest_desc,
         ]);
         return response()->json($aspTest);
     }

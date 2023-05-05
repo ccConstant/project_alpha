@@ -123,7 +123,7 @@ class IncmgInspController extends Controller
         $incmgInsp = IncomingInspection::findOrfail($id);
         $article = null;
         if ($request->incmpInsp_articleType === 'cons') {
-            $article = ConsFamily::all()->where('id', '==', $incmgInsp->consFam_id)->first();
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
             $signed = $article->consFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -131,7 +131,7 @@ class IncmgInspController extends Controller
                 ]);
             }
         } else if ($request->incmpInsp_articleType === 'raw') {
-            $article = RawFamily::all()->where('id', '==', $incmgInsp->rawFam_id)->first();
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->incmgInsp_rawFam_id)->first();
             $signed = $article->rawFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -139,7 +139,7 @@ class IncmgInspController extends Controller
                 ]);
             }
         } else if ($request->incmpInsp_articleType === 'comp') {
-            $article = CompFamily::all()->where('id', '==', $incmgInsp->compFam_id)->first();
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->incmgInsp_compFam_id)->first();
             $signed = $article->compFam_signatureDate;
             if ($signed !== null) {
                 $article->update([

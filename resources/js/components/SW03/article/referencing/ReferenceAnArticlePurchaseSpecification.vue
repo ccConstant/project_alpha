@@ -121,7 +121,6 @@ export default {
         },
         importPurSpe() {
             if (this.purchaseSpec.length === 0 && !this.isInModifMod) {
-                console.log("purchaseSpec is empty");
                 this.loaded = true;
             } else {
                 for (const dt of this.purchaseSpec) {
@@ -163,7 +162,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_art_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -173,7 +171,9 @@ export default {
                     this.importPurSpe();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                    console.log(error);
+                });
         } else {
             this.loaded = true;
         }

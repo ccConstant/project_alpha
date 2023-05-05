@@ -12,28 +12,41 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <InputTextForm
+                    v-if="data_article_type === 'cons'"
                     name="name"
-                    label="Aspect Test Name :"
-                    v-model="aspTest_name"
+                    label="Complementary Test Name :"
+                    v-model="compTest_name"
                     :isDisabled="isInConsultedMod"
                     :info_text="null"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
                     isRequired
-                    :Errors="errors.aspTest_name"
+                    :Errors="errors.compTest_name"
                 />
                 <InputTextForm
-                    name="expectedAspect"
-                    label="Expected Aspect :"
-                    v-model="aspTest_expectedAspect"
+                    v-if="data_article_type === 'cons'"
+                    name="expectedMethod"
+                    label="Expected Method :"
+                    v-model="compTest_expectedMethod"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
                     isRequired
-                    :Errors="errors.aspTest_expectedAspect"
+                    :Errors="errors.compTest_expectedMethod"
+                />
+                <InputNumberForm
+                    v-if="data_article_type === 'cons'"
+                    name="expectedValue"
+                    label="Expected Value :"
+                    v-model="compTest_expectedValue"
+                    :isDisabled="!!isInConsultedMod"
+                    :info_text="null"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.compTest_expectedValue"
                 />
                 <InputSelectForm
                     :name="'Sampling'"
@@ -45,58 +58,71 @@
                         {id_enum: 'Sampling', value: 'other', text: 'other'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
-                    v-model="aspTest_sampling"
+                    v-model="compTest_sampling"
                     :info_text="null"
-                    :Errors="errors.aspTest_sampling"
-                    :selctedOption="aspTest_sampling"
-                    :id_actual="'Sampling'"
+                    :Errors="errors.compTest_sampling"
+                    :selctedOption="compTest_sampling"
+                    :id_actual="'CompSampling'"
+                />
+                <InputTextForm
+                    v-if="data_article_type === 'cons'"
+                    name="unitValue"
+                    label="Unit Value :"
+                    v-model="compTest_unitValue"
+                    :isDisabled="!!isInConsultedMod"
+                    :info_text="null"
+                    :min="1"
+                    :max="10"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.compTest_unitValue"
                 />
                 <InputSelectForm
-                    v-if="this.aspTest_sampling === 'statistics'"
+                    v-if="this.compTest_sampling === 'statistics'"
                     name="SeverityLevel"
-                    :Errors="errors.aspTest_severityLevel"
+                    :Errors="errors.compTest_severityLevel"
                     label="Severity Level :"
                     :options="[
-                        {id_enum: 'SeverityLevel', value: 'I', text: 'I'},
-                        {id_enum: 'SeverityLevel', value: 'II', text: 'II'},
-                        {id_enum: 'SeverityLevel', value: 'III', text: 'III'},
-                        {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
+                        {id_enum: 'CompSeverityLevel', value: 'I', text: 'I'},
+                        {id_enum: 'CompSeverityLevel', value: 'II', text: 'II'},
+                        {id_enum: 'CompSeverityLevel', value: 'III', text: 'III'},
+                        {id_enum: 'CompSeverityLevel', value: 'IV', text: 'IV'}
                     ]"
-                    :selctedOption="aspTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'statistics'"
-                    v-model="aspTest_severityLevel"
-                    :info_text="'SeverityLevel'"
-                    :id_actual="'SeverityLevel'"
+                    :selctedOption="compTest_severityLevel"
+                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'statistics
+                    v-model="compTest_severityLevel"
+                    :info_text="'CompSeverityLevel'"
+                    :id_actual="'CompSeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.aspTest_sampling === 'statistics'"
+                    v-if="this.compTest_sampling === 'statistics'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
                     :options="[
-                        {id_enum: 'ControlLevel', value: 'Reduced', text: 'Reduced'},
-                        {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
-                        {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
+                        {id_enum: 'CompControlLevel', value: 'Reduced', text: 'Reduced'},
+                        {id_enum: 'CompControlLevel', value: 'Normal', text: 'Normal'},
+                        {id_enum: 'CompControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'statistics'"
-                    v-model="aspTest_controlLevel"
+                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'statistics'"
+                    v-model="compTest_controlLevel"
                     :info_text="null"
-                    :Errors="errors.aspTest_levelOfControl"
-                    :selctedOption="aspTest_controlLevel"
-                    :id_actual="'ControlLevel'"
+                    :Errors="errors.compTest_levelOfControl"
+                    :selctedOption="compTest_controlLevel"
+                    :id_actual="'CompControlLevel'"
                 />
                 <InputTextForm
-                    v-if="this.aspTest_sampling === 'other'"
+                    v-if="compTest_sampling === 'other'"
                     name="desc"
                     label="Description :"
-                    v-model="aspTest_desc"
-                    :isDisabled="!!isInConsultedMod || aspTest_sampling !== 'other'"
+                    v-model="compTest_desc"
+                    :isDisabled="!!isInConsultedMod || compTest_sampling !== 'other'"
                     :info_text="null"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
                     isRequired
-                    :Errors="errors.aspTest_desc"
+                    :Errors="errors.compTest_desc"
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces===false ">
@@ -134,10 +160,12 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from "../../../input/InputSelectForm.vue";
+import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        InputNumberForm,
         InputSelectForm,
         InputTextForm,
         SaveButtonForm,
@@ -161,10 +189,16 @@ export default {
         controlLevel: {
             type: String
         },
-        expectedAspect: {
+        expectedMethod: {
             type: String
         },
+        expectedValue: {
+            type: Number
+        },
         name: {
+            type: String
+        },
+        unitValue: {
             type: String
         },
         sampling: {
@@ -215,13 +249,15 @@ export default {
 -----------------------------------------------------------*/
     data() {
         return {
-            aspTest_id: this.id,
-            aspTest_severityLevel: this.severityLevel,
-            aspTest_controlLevel: this.controlLevel,
-            aspTest_expectedAspect: this.expectedAspect,
-            aspTest_sampling: this.sampling,
-            aspTest_name: this.name,
-            aspTest_desc: this.desc,
+            compTest_id: this.id,
+            compTest_severityLevel: this.severityLevel,
+            compTest_controlLevel: this.controlLevel,
+            compTest_expectedMethod: this.expectedMethod,
+            compTest_expectedValue: this.expectedValue,
+            compTest_name: this.name,
+            compTest_unitValue: this.unitValue,
+            compTest_sampling: this.sampling,
+            compTest_desc: this.desc,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -241,31 +277,37 @@ export default {
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
-                axios.post('/incmgInsp/aspTest/verif', {
-                    aspTest_name: this.aspTest_name,
-                    aspTest_severityLevel: this.aspTest_severityLevel,
-                    aspTest_levelOfControl: this.aspTest_controlLevel,
-                    aspTest_expectedAspect: this.aspTest_expectedAspect,
-                    aspTest_sampling: this.aspTest_sampling,
-                    aspTest_desc: this.aspTest_desc,
+                axios.post('/incmgInsp/compTest/verif', {
+                    compTest_name: this.compTest_name,
+                    compTest_severityLevel: this.compTest_severityLevel,
+                    compTest_levelOfControl: this.compTest_controlLevel,
+                    compTest_expectedMethod: this.compTest_expectedMethod,
+                    compTest_expectedValue: this.compTest_expectedValue,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    compTest_articleType: this.data_article_type,
+                    compTest_sampling: this.compTest_sampling,
+                    compTest_unitValue: this.compTest_unitValue,
+                    compTest_desc: this.compTest_desc,
                 })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                    axios.post('/incmgInsp/aspTest/add', {
-                        aspTest_name: this.aspTest_name,
-                        aspTest_severityLevel: this.aspTest_severityLevel,
-                        aspTest_levelOfControl: this.aspTest_controlLevel,
-                        aspTest_expectedAspect: this.aspTest_expectedAspect,
-                        aspTest_sampling: this.aspTest_sampling,
-                        aspTest_desc: this.aspTest_desc,
+                    axios.post('/incmgInsp/compTest/add', {
+                        compTest_name: this.compTest_name,
+                        compTest_severityLevel: this.compTest_severityLevel,
+                        compTest_levelOfControl: this.compTest_controlLevel,
+                        compTest_expectedMethod: this.compTest_expectedMethod,
+                        compTest_expectedValue: this.compTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        compTest_articleType: this.data_article_type,
+                        compTest_sampling: this.compTest_sampling,
+                        compTest_unitValue: this.compTest_unitValue,
+                        compTest_desc: this.compTest_desc,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
-                        this.$snotify.success(`Aspect Test added successfully`);
+                        this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);
                         if (!this.modifMod) {
                             /*The form pass in consulting mode and addSucces pass to True*/
                             this.isInConsultedMod = true;
@@ -273,10 +315,14 @@ export default {
                         }
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                    });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => this.errors = error.response.data.errors);
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -284,42 +330,51 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updateDocControl(savedAs, reason, lifesheet_created) {
-            axios.post('/incmgInsp/aspTest/verif', {
-                aspTest_name: this.aspTest_name,
-                aspTest_severityLevel: this.aspTest_severityLevel,
-                aspTest_levelOfControl: this.aspTest_controlLevel,
-                aspTest_expectedAspect: this.aspTest_expectedAspect,
-                aspTest_sampling: this.aspTest_sampling,
-                aspTest_desc: this.aspTest_desc,
+            axios.post('/incmgInsp/compTest/verif', {
+                compTest_name: this.compTest_name,
+                compTest_severityLevel: this.compTest_severityLevel,
+                compTest_levelOfControl: this.compTest_controlLevel,
+                compTest_expectedMethod: this.compTest_expectedMethod,
+                compTest_expectedValue: this.compTest_expectedValue,
                 incmgInsp_id: this.data_incmgInsp_id,
-                aspTest_articleType: this.data_article_type,
+                compTest_articleType: this.data_article_type,
+                compTest_sampling: this.compTest_sampling,
+                compTest_unitValue: this.compTest_unitValue,
+                compTest_desc: this.compTest_desc,
             })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                    axios.post('/incmgInsp/aspTest/update/' + this.aspTest_id, {
-                        aspTest_name: this.aspTest_name,
-                        aspTest_severityLevel: this.aspTest_severityLevel,
-                        aspTest_levelOfControl: this.aspTest_controlLevel,
-                        aspTest_expectedAspect: this.aspTest_expectedAspect,
-                        aspTest_sampling: this.aspTest_sampling,
-                        aspTest_desc: this.aspTest_desc,
+                    axios.post('/incmgInsp/compTest/update/' + this.compTest_id, {
+                        compTest_name: this.compTest_name,
+                        compTest_severityLevel: this.compTest_severityLevel,
+                        compTest_levelOfControl: this.compTest_controlLevel,
+                        compTest_expectedMethod: this.compTest_expectedMethod,
+                        compTest_expectedValue: this.compTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
-                        aspTest_articleType: this.data_article_type,
+                        compTest_articleType: this.data_article_type,
+                        compTest_sampling: this.compTest_sampling,
+                        compTest_unitValue: this.compTest_unitValue,
+                        compTest_desc: this.compTest_desc,
                     })
                         /*If the file is added successfully*/
                         .then(response => {
-                            this.$snotify.success(`Aspect Test added successfully`);
+                            this.$snotify.success(`Complementary Test successfully updated`);
                             this.isInConsultedMod = true;
                             this.addSucces = true
                             // TODO: faire l'historique
                         })
                         /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                            console.log(error.response.data);
+                        });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => this.errors = error.response.data.errors);
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -327,7 +382,7 @@ export default {
         },
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
-            this.$emit('deleteAspTest', '')
+            this.$emit('deleteCompTest', '')
             this.$refs.sucessAlert.showAlert(`Empty Aspect Test Form deleted successfully`);
         }
     },

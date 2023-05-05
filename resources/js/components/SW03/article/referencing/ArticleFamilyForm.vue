@@ -81,7 +81,7 @@
                     :info_text="'Is article currently use?'"
                     :inputClassName="null"
                     :Errors="errors['Active']"
-                    :checked-option="true"
+                    :checkedOption="isInModifMod ? artFam_active : true"
                 />
                 <InputSelectForm
                     @clearSelectError='clearSelectError'
@@ -93,7 +93,7 @@
                     :isDisabled="!!isInConsultMod"
                     v-model="artFam_purchasedBy"
                     :info_text="'Article Family Purchased By'"
-                    :id_actual="PurchasedBy"/>
+                    :id_actual="purchasedBy"/>
 
                 <SaveButtonForm v-if="this.addSuccess==false"
                     ref="saveButton"
@@ -246,12 +246,12 @@ export default {
         /*Ask for the controller different purchased by option */
         axios.get('/artFam/enum/purchasedBy')
             .then(response => this.enum_purchasedBy = response.data)
-            .catch(error => console.log(error));
+            .catch(error => this.errors = error.response.data.errors);
 
         /*Ask for the controller different storage condition option */
         axios.get('/artFam/enum/storageCondition')
             .then(response => this.enum_storageCondition = response.data)
-            .catch(error => console.log(error));
+            .catch(error => this.errors = error.response.data.errors);
             this.loaded=true
     },
 
@@ -260,16 +260,6 @@ export default {
         /*Sending to the controller all the information about the art family so that it can be added to the database */
         addArtFam(savedAs) {
             if (!this.addSuccess) {
-                console.log("before verif")
-                console.log(this.artFam_type)
-                console.log(this.artFam_ref)
-                console.log(this.artFam_design)
-                console.log(this.artFam_drawingPath)
-                console.log(this.artFam_purchasedBy)
-                console.log(this.artFam_variablesCharac)
-                console.log(this.artFam_version)
-                console.log(this.artFam_active)
-                console.log(savedAs)
                 /*We begin by checking if the data entered by the user are correct*/
                 if (this.artFam_type=="COMP"){
                     axios.post('/comp/family/verif', {
@@ -285,7 +275,6 @@ export default {
                     })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
-                            console.log("after verif")
                             this.errors = {};
                                 axios.post('/comp/family/add', {
                                     artFam_ref: this.artFam_ref,
@@ -301,12 +290,8 @@ export default {
                                 })
                                     /*If the data have been added in the database, we show a success message*/
                                     .then(response => {
-                                        console.log("after add")
-                                        console.log(response.data)
                                         this.addSuccess = true;
                                         this.isInConsultMod = true;
-                                        console.log(this.addSuccess)
-                                        console.log(this.isInConsultMod)
                                         this.$snotify.success(`CompFam ID added successfully and saved as ${savedAs}`);
                                         this.artFam_id = response.data;
                                         this.$emit('ArtFamID', this.artFam_id);
@@ -317,15 +302,6 @@ export default {
                         .catch(error => this.errors = error.response.data.errors);
                 }else{
                     if (this.artFam_type=="RAW"){
-                        console.log("ref"+this.artFam_ref)
-                        console.log("des"+this.artFam_design)
-                        console.log("dra"+this.artFam_drawingPath)
-                        console.log("pur"+this.artFam_purchasedBy)
-                        console.log("var"+this.artFam_variablesCharac)
-                        console.log("act"+this.artFam_active)
-                        console.log("val"+savedAs)
-                        console.log("type"+this.artFam_type)
-                        console.log("before verif")
                         axios.post('/raw/family/verif', {
                             artFam_ref: this.artFam_ref,
                             artFam_design: this.artFam_design,
@@ -338,7 +314,6 @@ export default {
                         })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
-                            console.log("after verif")
                             this.errors = {};
                             axios.post('/raw/family/add', {
                                 artFam_ref: this.artFam_ref,
@@ -353,12 +328,8 @@ export default {
                             })
                             /*If the data have been added in the database, we show a success message*/
                             .then(response => {
-                                console.log("after add")
-                                console.log(response.data)
                                 this.addSuccess = true;
                                 this.isInConsultMod = true;
-                                console.log(this.addSuccess)
-                                console.log(this.isInConsultMod)
                                 this.$snotify.success(`RawFam ID added successfully and saved as ${savedAs}`);
                                 this.artFam_id = response.data;
                                 this.$emit('ArtFamID', this.artFam_id);
@@ -369,15 +340,6 @@ export default {
                         .catch(error => this.errors = error.response.data.errors);
                     }else{
                         if (this.artFam_type=="CONS"){
-                            console.log("ref"+this.artFam_ref)
-                            console.log("des"+this.artFam_design)
-                            console.log("dra"+this.artFam_drawingPath)
-                            console.log("pur"+this.artFam_purchasedBy)
-                            console.log("var"+this.artFam_variablesCharac)
-                            console.log("act"+this.artFam_active)
-                            console.log("val"+savedAs)
-                            console.log("type"+this.artFam_type)
-                            console.log("before verif")
                             axios.post('/cons/family/verif', {
                                 artFam_ref: this.artFam_ref,
                                 artFam_design: this.artFam_design,
@@ -391,7 +353,6 @@ export default {
                             })
                             /*If the data are correct, we send them to the controller for add them in the database*/
                             .then(response => {
-                                console.log("after verif")
                                 this.errors = {};
                                 axios.post('/cons/family/add', {
                                     artFam_ref: this.artFam_ref,
@@ -406,12 +367,8 @@ export default {
                                 })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
-                                    console.log("after add")
-                                    console.log(response.data)
                                     this.addSuccess = true;
                                     this.isInConsultMod = true;
-                                    console.log(this.addSuccess)
-                                    console.log(this.isInConsultMod)
                                     this.$snotify.success(`ConsFam ID added successfully and saved as ${savedAs}`);
                                     this.artFam_id = response.data;
                                     this.$emit('ArtFamID', this.artFam_id);
@@ -430,19 +387,6 @@ export default {
         @param reason The reason of the modification
         @param artSheet_created */
         updateArtFam(savedAs, reason, artSheet_created) {
-            console.log("updateArtFam");
-            console.log("savedAs"+savedAs);
-            console.log("reason"+reason);
-            console.log("artSheet_created"+artSheet_created);
-            console.log(this.artFam_type);
-            console.log(this.artFam_id);
-            console.log(this.artFam_ref);
-            console.log(this.artFam_design);
-            console.log(this.artFam_drawingPath);
-            console.log(this.artFam_purchasedBy);
-            console.log(this.artFam_variablesCharac);
-            console.log(this.artFam_active);
-            console.log(this.artFam_version);
             /*We begin by checking if the data entered by the user are correct*/
             if (this.artFam_type=="COMP"){
                 axios.post('/comp/family/verif', {
@@ -458,7 +402,6 @@ export default {
                 })
                     /*If the data are correct, we send them to the controller for update data in the database*/
                     .then(response => {
-                        console.log("after verif");
                         this.errors = {};
                         const consultUrl = (id) => `/comp/family/update/${id}`;
                         axios.post(consultUrl(this.artFam_id), {
@@ -473,7 +416,6 @@ export default {
                             artFam_id: this.artFam_id,
                         })
                             .then(response => {
-                                console.log("after update");
                                 const id = this.artFam_id;
                                 /*We test if an article sheet has been already created*/
                                 /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
@@ -489,13 +431,10 @@ export default {
                             })
                             .catch(error => {
                                 this.errors = error.response.data.errors;
-                                console.log(this.errors);
                             });
                     })
                     .catch(error => {
                         this.errors = error.response.data.errors;
-                        console.log('crash verif');
-                        console.log(this.errors);
                     });
             }
         },
@@ -507,8 +446,8 @@ export default {
             delete this.errors[value];
         },
         clearAllError() {
-            console.log("ERROR:", this.errors)
-        }
+            this.errors = {};
+        },
     }
 }
 </script>

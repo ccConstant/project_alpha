@@ -144,6 +144,12 @@ class CompFamilyController extends Controller
         $compFamilies=CompFamily::all() ;
         $array = [];
         foreach ($compFamilies as $compFamily) {
+            $purchaseBy = EnumPurchasedBy::all()->find($compFamily->enumPurchasedBy_id);
+            if ($purchaseBy != null) {
+                $purchaseBy = $purchaseBy->first()->value;
+            } else {
+                $purchaseBy = null;
+            }
             $obj = [
                 'id' => $compFamily->id,
                 'compFam_ref' => $compFamily->compFam_ref,
@@ -156,7 +162,7 @@ class CompFamilyController extends Controller
                 'compFam_active' => $compFamily->compFam_active,
                 'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
                 'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
-                'compFam_purchasedBy' => $compFamily->enumPurchasedBy_id,
+                'compFam_purchasedBy' => $purchaseBy,
                 'compFam_signatureDate' => $compFamily->compFam_signatureDate
             ];
             array_push($array, $obj);
@@ -166,6 +172,12 @@ class CompFamilyController extends Controller
 
     public function send_compFamily($id) {
         $compFamily = CompFamily::find($id);
+        $purchaseBy = EnumPurchasedBy::find($compFamily->enumPurchasedBy_id);
+        if ($purchaseBy != null) {
+            $purchaseBy = $purchaseBy->first()->value;
+        } else {
+            $purchaseBy = null;
+        }
         $obj = [
             'id' => $compFamily->id,
             'compFam_ref' => $compFamily->compFam_ref,
@@ -178,7 +190,7 @@ class CompFamilyController extends Controller
             'compFam_active' => $compFamily->compFam_active,
             'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
             'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
-            'compFam_purchasedBy' => $compFamily->enumPurchasedBy_id,
+            'compFam_purchasedBy' => $purchaseBy,
             'compFam_signatureDate' => $compFamily->compFam_signatureDate
         ];
         return response()->json($obj);

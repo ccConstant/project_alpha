@@ -10,7 +10,8 @@
             :disabled="isDisabled"
             :required="isRequired"
             :invalid-feedback="invalidFeedBack"
-            v-model="data">
+            v-model="data"
+        >
             <label>
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
@@ -18,7 +19,7 @@
             <b-form-radio
                 v-for="(option, key) in options"
                 :key="key"
-                :v-model="data"
+                v-model="data"
                 :value="option.value">
             {{ option.text }}
             </b-form-radio>
@@ -67,6 +68,10 @@ export default {
         info_text:{
             type:String,
             default:null
+        },
+        value: {
+            type: Boolean,
+            default: null
         }
     },
     data(){
@@ -99,8 +104,6 @@ export default {
         },
         state() {
             this.$emit('input',this.data);
-            console.log(this.data);
-            console.log(typeof this.data);
             return this.data === null;
         },
         invalidFeedBack() {
@@ -108,6 +111,8 @@ export default {
                 return 'This field is required';
             }
         }
+    },
+    created() {
     }
 
 }

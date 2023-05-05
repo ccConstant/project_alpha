@@ -117,11 +117,21 @@ class DocControlController extends Controller
     }
 
     public function update_docControl(Request $request, $id) {
-        $docControl = DocumentaryControl::all()->findOrfail($id)->first();
-        $incmgInsp = IncomingInspection::all()->findOrfail($docControl->incmgInsp_id)->first();
+        $docControl = DocumentaryControl::all()->where('id', '==', $id)->first();
+        if ($docControl === null) {
+            return response()->json([
+                'message' => 'Documentary control not found'
+            ], 404);
+        };
+        $incmgInsp = IncomingInspection::all()->where('id', '==', $docControl->incmgInsp_id)->first();
+        if ($incmgInsp === null) {
+            return response()->json([
+                'message' => 'Incoming inspection not found'
+            ], 404);
+        };
         $article = null;
         if ($request->docControl_articleType === 'cons') {
-            $article = ConsFamily::all()->where('id', '==', $incmgInsp->consFam_id)->first();
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
             $signed = $article->consFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -129,7 +139,7 @@ class DocControlController extends Controller
                 ]);
             }
         } else if ($request->docControl_articleType === 'raw') {
-            $article = RawFamily::all()->where('id', '==', $incmgInsp->rawFam_id)->first();
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->incmgInsp_rawFam_id)->first();
             $signed = $article->rawFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
@@ -137,7 +147,7 @@ class DocControlController extends Controller
                 ]);
             }
         } else if ($request->docControl_articleType === 'comp') {
-            $article = CompFamily::all()->where('id', '==', $incmgInsp->compFam_id)->first();
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->incmgInsp_compFam_id)->first();
             $signed = $article->compFam_signatureDate;
             if ($signed !== null) {
                 $article->update([

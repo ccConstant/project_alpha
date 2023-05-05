@@ -144,7 +144,6 @@ export default {
                 this.loaded = true;
             } else {
                 for (const ii of this.incmgInsp) {
-                    console.log(ii);
                     const className = "importedArticle" + ii.id;
                     this.addImportedComponent(
                         ii.incmgInsp_remarks,
@@ -183,10 +182,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("created incmgInsp");
-        console.log(this.data_article_type);
-        console.log(this.data_article_id);
-        console.log(this.consultMod);
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
@@ -207,11 +202,9 @@ export default {
                     })
                     .catch(error => console.log(error));
             } else if (this.data_article_type === 'comp') {
-                console.log("comp");
                 axios.get('/incmgInsp/send/comp/' + this.data_article_id)
                     .then(response => {
                         this.incmgInsp = response.data;
-                        console.log(this.incmgInsp);
                         this.importIncmgInsp();
                         this.loaded = true;
                     })
