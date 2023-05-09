@@ -53,9 +53,9 @@
                     :label="'Sampling :'"
                     isRequired
                     :options="[
-                        {id_enum: 'Sampling', value: 'statistics', text: 'statistics'},
+                        {id_enum: 'Sampling', value: 'Statistics', text: 'Statistics'},
                         {id_enum: 'Sampling', value: '100%', text: '100%'},
-                        {id_enum: 'Sampling', value: 'other', text: 'other'}
+                        {id_enum: 'Sampling', value: 'Other', text: 'Other'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
                     v-model="compTest_sampling"
@@ -78,7 +78,7 @@
                     :Errors="errors.compTest_unitValue"
                 />
                 <InputSelectForm
-                    v-if="this.compTest_sampling === 'statistics'"
+                    v-if="this.compTest_sampling === 'Statistics'"
                     name="SeverityLevel"
                     :Errors="errors.compTest_severityLevel"
                     label="Severity Level :"
@@ -89,13 +89,13 @@
                         {id_enum: 'CompSeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="compTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'statistics
+                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'Statistics
                     v-model="compTest_severityLevel"
                     :info_text="'CompSeverityLevel'"
                     :id_actual="'CompSeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.compTest_sampling === 'statistics'"
+                    v-if="this.compTest_sampling === 'Statistics'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
@@ -104,7 +104,7 @@
                         {id_enum: 'CompControlLevel', value: 'Normal', text: 'Normal'},
                         {id_enum: 'CompControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'statistics'"
+                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'Statistics'"
                     v-model="compTest_controlLevel"
                     :info_text="null"
                     :Errors="errors.compTest_levelOfControl"
@@ -112,11 +112,11 @@
                     :id_actual="'CompControlLevel'"
                 />
                 <InputTextForm
-                    v-if="compTest_sampling === 'other'"
+                    v-if="compTest_sampling === 'Other'"
                     name="desc"
                     label="Description :"
                     v-model="compTest_desc"
-                    :isDisabled="!!isInConsultedMod || compTest_sampling !== 'other'"
+                    :isDisabled="!!isInConsultedMod || compTest_sampling !== 'Other'"
                     :info_text="null"
                     :min="2"
                     :max="255"
@@ -154,7 +154,7 @@
 </template>
 
 <script>
-/*Importation of the other Components who will be used here*/
+/*Importation of the Other Components who will be used here*/
 import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
@@ -163,7 +163,7 @@ import InputSelectForm from "../../../input/InputSelectForm.vue";
 import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
-    /*--------Declaration of the others Components:--------*/
+    /*--------Declaration of the Others Components:--------*/
     components: {
         InputNumberForm,
         InputSelectForm,
@@ -288,6 +288,9 @@ export default {
                     compTest_sampling: this.compTest_sampling,
                     compTest_unitValue: this.compTest_unitValue,
                     compTest_desc: this.compTest_desc,
+                    reason: 'add',
+                    id: this.compTest_id,
+                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -304,6 +307,9 @@ export default {
                         compTest_sampling: this.compTest_sampling,
                         compTest_unitValue: this.compTest_unitValue,
                         compTest_desc: this.compTest_desc,
+                        reason: 'add',
+                        id: this.compTest_id,
+                        article_id: this.data_article_id,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -341,6 +347,9 @@ export default {
                 compTest_sampling: this.compTest_sampling,
                 compTest_unitValue: this.compTest_unitValue,
                 compTest_desc: this.compTest_desc,
+                reason: 'update',
+                id: this.compTest_id,
+                article_id: this.data_article_id,
             })
                 .then(response => {
                     this.errors = {};
@@ -357,6 +366,9 @@ export default {
                         compTest_sampling: this.compTest_sampling,
                         compTest_unitValue: this.compTest_unitValue,
                         compTest_desc: this.compTest_desc,
+                        reason: 'update',
+                        id: this.compTest_id,
+                        article_id: this.data_article_id,
                     })
                         /*If the file is added successfully*/
                         .then(response => {

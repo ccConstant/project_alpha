@@ -26,7 +26,7 @@ class FunctionnalTestController extends Controller
                 'incmgInsp_id.integer' => 'The incoming inspection id must be an integer',
             ]
         );
-        if ($request->funcTest_sampling === 'statistics') {
+        if ($request->funcTest_sampling === 'Statistics') {
             $this->validate(
                 $request,
                 [
@@ -40,7 +40,7 @@ class FunctionnalTestController extends Controller
                 ]
             );
         }
-        if ($request->funcTest_sampling === 'other') {
+        if ($request->funcTest_sampling === 'Other') {
             $this->validate(
                 $request,
                 [
@@ -84,6 +84,12 @@ class FunctionnalTestController extends Controller
                     'funcTest_unitValue.max' => 'You must enter a maximum of 10 characters',
                 ]
             );
+        }
+        $find = FunctionalTest::all()->where('funcTest_name', '==', $request->funcTest_name)->where('id', '<>', $request->id)->count();
+        if ($find !== 0) {
+            return response()->json([
+                'funcTest_name' => 'This functional test already exists',
+            ], 429);
         }
     }
 

@@ -40,9 +40,9 @@
                     :label="'Sampling :'"
                     isRequired
                     :options="[
-                        {id_enum: 'Sampling', value: 'statistics', text: 'statistics'},
+                        {id_enum: 'Sampling', value: 'Statistics', text: 'Statistics'},
                         {id_enum: 'Sampling', value: '100%', text: '100%'},
-                        {id_enum: 'Sampling', value: 'other', text: 'other'}
+                        {id_enum: 'Sampling', value: 'Other', text: 'Other'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
                     v-model="aspTest_sampling"
@@ -52,7 +52,7 @@
                     :id_actual="'Sampling'"
                 />
                 <InputSelectForm
-                    v-if="this.aspTest_sampling === 'statistics'"
+                    v-if="this.aspTest_sampling === 'Statistics'"
                     name="SeverityLevel"
                     :Errors="errors.aspTest_severityLevel"
                     label="Severity Level :"
@@ -63,13 +63,13 @@
                         {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="aspTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'statistics'"
+                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'Statistics'"
                     v-model="aspTest_severityLevel"
                     :info_text="'SeverityLevel'"
                     :id_actual="'SeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.aspTest_sampling === 'statistics'"
+                    v-if="this.aspTest_sampling === 'Statistics'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
@@ -78,7 +78,7 @@
                         {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
                         {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'statistics'"
+                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'Statistics'"
                     v-model="aspTest_controlLevel"
                     :info_text="null"
                     :Errors="errors.aspTest_levelOfControl"
@@ -86,11 +86,11 @@
                     :id_actual="'ControlLevel'"
                 />
                 <InputTextForm
-                    v-if="this.aspTest_sampling === 'other'"
+                    v-if="this.aspTest_sampling === 'Other'"
                     name="desc"
                     label="Description :"
                     v-model="aspTest_desc"
-                    :isDisabled="!!isInConsultedMod || aspTest_sampling !== 'other'"
+                    :isDisabled="!!isInConsultedMod || aspTest_sampling !== 'Other'"
                     :info_text="null"
                     :min="2"
                     :max="255"
@@ -128,7 +128,7 @@
 </template>
 
 <script>
-/*Importation of the other Components who will be used here*/
+/*Importation of the Other Components who will be used here*/
 import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
@@ -136,7 +136,7 @@ import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from "../../../input/InputSelectForm.vue";
 
 export default {
-    /*--------Declaration of the others Components:--------*/
+    /*--------Declaration of the Others Components:--------*/
     components: {
         InputSelectForm,
         InputTextForm,
@@ -238,6 +238,8 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         addDocControl(savedAs, reason, lifesheet_created) {
+            console.log(this.data_article_id);
+            console.log(this.data_article_type);
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
@@ -249,6 +251,10 @@ export default {
                     aspTest_sampling: this.aspTest_sampling,
                     aspTest_desc: this.aspTest_desc,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    reason: 'add',
+                    id: this.aspTest_id,
+                    article_id: this.data_article_id,
+                    aspTest_articleType: this.data_article_type,
                 })
                 .then(response => {
                     this.errors = {};
@@ -262,6 +268,10 @@ export default {
                         aspTest_sampling: this.aspTest_sampling,
                         aspTest_desc: this.aspTest_desc,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        reason: 'add',
+                        id: this.aspTest_id,
+                        article_id: this.data_article_id,
+                        aspTest_articleType: this.data_article_type,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -273,10 +283,16 @@ export default {
                         }
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
+                    });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => this.errors = error.response.data.errors);
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                });
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -293,6 +309,9 @@ export default {
                 aspTest_desc: this.aspTest_desc,
                 incmgInsp_id: this.data_incmgInsp_id,
                 aspTest_articleType: this.data_article_type,
+                reason: 'update',
+                id: this.aspTest_id,
+                article_id: this.data_article_id,
             })
                 .then(response => {
                     this.errors = {};
@@ -307,6 +326,9 @@ export default {
                         aspTest_desc: this.aspTest_desc,
                         incmgInsp_id: this.data_incmgInsp_id,
                         aspTest_articleType: this.data_article_type,
+                        reason: 'update',
+                        id: this.aspTest_id,
+                        article_id: this.data_article_id,
                     })
                         /*If the file is added successfully*/
                         .then(response => {

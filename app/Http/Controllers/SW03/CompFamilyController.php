@@ -163,7 +163,8 @@ class CompFamilyController extends Controller
                 'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
                 'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
                 'compFam_purchasedBy' => $purchaseBy,
-                'compFam_signatureDate' => $compFamily->compFam_signatureDate
+                'compFam_signatureDate' => $compFamily->compFam_signatureDate,
+                'compFam_created_at' => $compFamily->created_at,
             ];
             array_push($array, $obj);
         }
@@ -191,7 +192,8 @@ class CompFamilyController extends Controller
             'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
             'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
             'compFam_purchasedBy' => $purchaseBy,
-            'compFam_signatureDate' => $compFamily->compFam_signatureDate
+            'compFam_signatureDate' => $compFamily->compFam_signatureDate,
+            'compFam_created_at' => $compFamily->created_at,
         ];
         return response()->json($obj);
     }

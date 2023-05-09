@@ -199,7 +199,10 @@ export default {
                     docControl_name: this.docControl_name,
                     docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                     docControl_FDS: this.docControl_fds,
-                    incmgInsp_id: this.data_incmgInsp_id
+                    incmgInsp_id: this.data_incmgInsp_id,
+                    reason: 'add',
+                    id: this.docControl_id,
+                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -211,7 +214,10 @@ export default {
                         docControl_name: this.docControl_name,
                         docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                         docControl_FDS: this.docControl_fds,
-                        incmgInsp_id: this.data_incmgInsp_id
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        reason: 'add',
+                        id: this.docControl_id,
+                        article_id: this.data_article_id,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -221,7 +227,10 @@ export default {
 
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
+                    });
                 })
                 //If the controller sends errors, we put it in the error object
                 .catch(error => this.errors = error.response.data.errors);
@@ -238,7 +247,10 @@ export default {
                 docControl_name: this.docControl_name,
                 docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                 docControl_FDS: this.docControl_fds,
-                incmgInsp_id: this.data_incmgInsp_id
+                incmgInsp_id: this.data_incmgInsp_id,
+                reason: 'update',
+                id: this.docControl_id,
+                article_id: this.data_article_id,
             })
                 .then(response => {
                     this.errors = {};
@@ -250,7 +262,10 @@ export default {
                         docControl_name: this.docControl_name,
                         docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                         docControl_FDS: this.docControl_fds,
-                        incmgInsp_id: this.data_incmgInsp_id
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        reason: 'update',
+                        id: this.docControl_id,
+                        article_id: this.data_article_id,
                     })
                         /*If the file is added successfully*/
                         .then(response => {
@@ -265,7 +280,10 @@ export default {
                         });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => this.errors = error.response.data.errors);
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                });
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

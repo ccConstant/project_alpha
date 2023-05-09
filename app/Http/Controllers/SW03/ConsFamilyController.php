@@ -169,6 +169,7 @@ class ConsFamilyController extends Controller
                 'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
                 'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
                 'consFam_signatureDate' => $consFamily->consFam_signatureDate,
+                'consFam_created_at' => $consFamily->created_at,
             ];
             array_push($array, $obj);
         }
@@ -197,6 +198,7 @@ class ConsFamilyController extends Controller
             'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
             'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
             'consFam_signatureDate' => $consFamily->consFam_signatureDate,
+            'consFam_created_at' => $consFamily->created_at,
         ];
         return response()->json($obj);
     }

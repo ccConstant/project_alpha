@@ -24,7 +24,7 @@ class DimensionnalTestController extends Controller
                 'incmgInsp_id.required' => 'You must enter an incoming inspection',
             ]
         );
-        if ($request->dimTest_sampling === 'statistics') {
+        if ($request->dimTest_sampling === 'Statistics') {
             $this->validate(
                 $request,
                 [
@@ -37,7 +37,7 @@ class DimensionnalTestController extends Controller
                 ]
             );
         }
-        if ($request->dimTest_sampling === 'other') {
+        if ($request->dimTest_sampling === 'Other') {
             $this->validate(
                 $request,
                 [
@@ -80,6 +80,12 @@ class DimensionnalTestController extends Controller
                     'dimTest_unitValue.max' => 'You must enter a maximum of 10 characters',
                 ]
             );
+        }
+        $find = DimensionalTest::all()->where('dimTest_name', '==', $request->dimTest_name)->where('id', '<>', $request->id)->count();
+        if ($find !== 0) {
+            return response()->json([
+                'dimTest_name' => 'This dimensional test already exists',
+            ], 429);
         }
     }
 

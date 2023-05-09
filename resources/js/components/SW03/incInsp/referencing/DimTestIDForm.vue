@@ -53,9 +53,9 @@
                     :label="'Sampling :'"
                     isRequired
                     :options="[
-                        {id_enum: 'Sampling', value: 'statistics', text: 'statistics'},
+                        {id_enum: 'Sampling', value: 'Statistics', text: 'Statistics'},
                         {id_enum: 'Sampling', value: '100%', text: '100%'},
-                        {id_enum: 'Sampling', value: 'other', text: 'other'}
+                        {id_enum: 'Sampling', value: 'Other', text: 'Other'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
                     v-model="dimTest_sampling"
@@ -78,7 +78,7 @@
                     :Errors="errors.dimTest_unitValue"
                 />
                 <InputSelectForm
-                    v-if="this.dimTest_sampling === 'statistics'"
+                    v-if="this.dimTest_sampling === 'Statistics'"
                     name="SeverityLevel"
                     :Errors="errors.dimTest_severityLevel"
                     label="Severity Level :"
@@ -89,13 +89,13 @@
                         {id_enum: 'DimSeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="dimTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'statistics'"
+                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'Statistics'"
                     v-model="dimTest_severityLevel"
                     :info_text="'DimSeverityLevel'"
                     :id_actual="'DimSeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.dimTest_sampling === 'statistics'"
+                    v-if="this.dimTest_sampling === 'Statistics'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
@@ -104,7 +104,7 @@
                         {id_enum: 'DimControlLevel', value: 'Normal', text: 'Normal'},
                         {id_enum: 'DimControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'statistics'"
+                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'Statistics'"
                     v-model="dimTest_controlLevel"
                     :info_text="null"
                     :Errors="errors.dimTest_levelOfControl"
@@ -112,11 +112,11 @@
                     :id_actual="'DimControlLevel'"
                 />
                 <InputTextForm
-                    v-if="dimTest_sampling === 'other'"
+                    v-if="dimTest_sampling === 'Other'"
                     name="desc"
                     label="Description :"
                     v-model="dimTest_desc"
-                    :isDisabled="!!isInConsultedMod || dimTest_sampling !== 'other'"
+                    :isDisabled="!!isInConsultedMod || dimTest_sampling !== 'Other'"
                     :info_text="null"
                     :min="2"
                     :max="255"
@@ -154,7 +154,7 @@
 </template>
 
 <script>
-/*Importation of the other Components who will be used here*/
+/*Importation of the Other Components who will be used here*/
 import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
@@ -163,7 +163,7 @@ import InputSelectForm from "../../../input/InputSelectForm.vue";
 import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
-    /*--------Declaration of the others Components:--------*/
+    /*--------Declaration of the Others Components:--------*/
     components: {
         InputNumberForm,
         InputSelectForm,
@@ -288,6 +288,9 @@ export default {
                     dimTest_sampling: this.dimTest_sampling,
                     dimTest_unitValue: this.dimTest_unitValue,
                     dimTest_desc: this.dimTest_desc,
+                    reason: 'add',
+                    id: this.dimTest_id,
+                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -304,6 +307,9 @@ export default {
                         dimTest_sampling: this.dimTest_sampling,
                         dimTest_unitValue: this.dimTest_unitValue,
                         dimTest_desc: this.dimTest_desc,
+                        reason: 'add',
+                        id: this.dimTest_id,
+                        article_id: this.data_article_id,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -341,6 +347,9 @@ export default {
                 dimTest_sampling: this.dimTest_sampling,
                 dimTest_unitValue: this.dimTest_unitValue,
                 dimTest_desc: this.dimTest_desc,
+                reason: 'update',
+                id: this.dimTest_id,
+                article_id: this.data_article_id,
             })
                 .then(response => {
                     this.errors = {};
@@ -357,6 +366,9 @@ export default {
                         dimTest_sampling: this.dimTest_sampling,
                         dimTest_unitValue: this.dimTest_unitValue,
                         dimTest_desc: this.dimTest_desc,
+                        reason: 'update',
+                        id: this.dimTest_id,
+                        article_id: this.data_article_id,
                     })
                         /*If the file is added successfully*/
                         .then(response => {

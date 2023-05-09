@@ -8,12 +8,15 @@ TODO:
             - Reference
             - Specification
         + le bouton add pour en ajouter des vides
-    Fiche consultation article
+    Fiche consultation article :
+        - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé docSpec)
     Loc incmgInsp et criticality après ajout
+    Unicité commencée dans AspectTest
     */
 
 FIXME:
     Storage Condition
+    Changer expected value du funcTest en String et en 'Expected Acceptance Criteria' ??
     */
 
 DONE:

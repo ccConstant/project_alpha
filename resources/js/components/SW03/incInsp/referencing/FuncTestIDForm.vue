@@ -53,9 +53,9 @@
                     :label="'Sampling :'"
                     isRequired
                     :options="[
-                        {id_enum: 'Sampling', value: 'statistics', text: 'statistics'},
+                        {id_enum: 'Sampling', value: 'Statistics', text: 'Statistics'},
                         {id_enum: 'Sampling', value: '100%', text: '100%'},
-                        {id_enum: 'Sampling', value: 'other', text: 'other'}
+                        {id_enum: 'Sampling', value: 'Other', text: 'Other'}
                     ]"
                     :isDisabled="this.isInConsultedMod"
                     v-model="funcTest_sampling"
@@ -78,7 +78,7 @@
                     :Errors="errors.funcTest_unitValue"
                 />
                 <InputSelectForm
-                    v-if="this.funcTest_sampling === 'statistics'"
+                    v-if="this.funcTest_sampling === 'Statistics'"
                     name="SeverityLevel"
                     :Errors="errors.funcTest_severityLevel"
                     label="Severity Level :"
@@ -89,13 +89,13 @@
                         {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="funcTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'statistics'"
+                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'Statistics'"
                     v-model="funcTest_severityLevel"
                     :info_text="'SeverityLevel'"
                     :id_actual="'SeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.funcTest_sampling === 'statistics'"
+                    v-if="this.funcTest_sampling === 'Statistics'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
@@ -104,7 +104,7 @@
                         {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
                         {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'statistics'"
+                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'Statistics'"
                     v-model="funcTest_controlLevel"
                     :info_text="null"
                     :Errors="errors.funcTest_levelOfControl"
@@ -112,11 +112,11 @@
                     :id_actual="'ControlLevel'"
                 />
                 <InputTextForm
-                    v-if="funcTest_sampling === 'other'"
+                    v-if="funcTest_sampling === 'Other'"
                     name="desc"
                     label="Description :"
                     v-model="funcTest_desc"
-                    :isDisabled="!!isInConsultedMod || funcTest_sampling !== 'other'"
+                    :isDisabled="!!isInConsultedMod || funcTest_sampling !== 'Other'"
                     :info_text="null"
                     :min="2"
                     :max="255"
@@ -154,7 +154,7 @@
 </template>
 
 <script>
-/*Importation of the other Components who will be used here*/
+/*Importation of the Other Components who will be used here*/
 import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
@@ -163,7 +163,7 @@ import InputSelectForm from "../../../input/InputSelectForm.vue";
 import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
-    /*--------Declaration of the others Components:--------*/
+    /*--------Declaration of the Others Components:--------*/
     components: {
         InputNumberForm,
         InputSelectForm,
@@ -288,6 +288,9 @@ export default {
                     funcTest_sampling: this.funcTest_sampling,
                     funcTest_unitValue: this.funcTest_unitValue,
                     funcTest_desc: this.funcTest_desc,
+                    reason: 'add',
+                    id: this.funcTest_id,
+                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -304,6 +307,9 @@ export default {
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
                         funcTest_desc: this.funcTest_desc,
+                        reason: 'add',
+                        id: this.funcTest_id,
+                        article_id: this.data_article_id,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -341,6 +347,9 @@ export default {
                 funcTest_sampling: this.funcTest_sampling,
                 funcTest_unitValue: this.funcTest_unitValue,
                 funcTest_desc: this.funcTest_desc,
+                reason: 'update',
+                id: this.funcTest_id,
+                article_id: this.data_article_id,
             })
                 .then(response => {
                     this.errors = {};
@@ -357,6 +366,9 @@ export default {
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
                         funcTest_desc: this.funcTest_desc,
+                        reason: 'update',
+                        id: this.funcTest_id,
+                        article_id: this.data_article_id,
                     })
                         /*If the file is added successfully*/
                         .then(response => {

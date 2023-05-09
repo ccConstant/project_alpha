@@ -38,7 +38,7 @@ class AspectTestController extends Controller
                 'incmgInsp_id.integer' => 'The incoming inspection id must be an integer',
             ]
         );
-        if ($request->aspTest_sampling === 'statistics') {
+        if ($request->aspTest_sampling === 'Statistics') {
             $this->validate(
                 $request,
                 [
@@ -52,7 +52,7 @@ class AspectTestController extends Controller
                 ]
             );
         }
-        if ($request->aspTest_sampling === 'other') {
+        if ($request->aspTest_sampling === 'Other') {
             $this->validate(
                 $request,
                 [
@@ -66,6 +66,28 @@ class AspectTestController extends Controller
                 ]
             );
         }
+        $insp = null;
+        if ($request->aspTest_articleType === 'comp') {
+            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+        } else if ($request->aspTest_articleType === 'raw') {
+            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+        } else if ($request->aspTest_articleType === 'cons') {
+            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+        }
+        $val = [];
+        foreach ($insp as $in) {
+            array_push($val, $in->id);
+        }
+        $find = AspectTest::all()->where('aspTest_name', '==', $request->aspTest_name)
+            ->whereIn('incmgInsp_id', $val)
+            ->where('id', '<>', $request->id)
+            ->count();
+        if ($find !== 0) {
+            return response()->json([
+                'aspTest_name' => 'This aspect test already exists',
+            ], 429);
+        }
+
     }
 
     public function add_aspectTest(Request $request) {

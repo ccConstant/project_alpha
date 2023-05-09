@@ -155,7 +155,8 @@ class RawFamilyController extends Controller
                 'rawFam_purchasedBy' => $purchaseBy,
                 'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
                 'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
-                'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate
+                'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
+                'rawFam_created_at' => $rawFamily->created_at,
             ];
             array_push($array, $obj);
         }
@@ -181,7 +182,8 @@ class RawFamilyController extends Controller
             'rawFam_purchasedBy' => $purchaseBy,
             'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
             'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
-            'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate
+            'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
+            'rawFam_created_at' => $rawFamily->created_at,
         ];
         return response()->json($obj);
     }

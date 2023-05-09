@@ -24,7 +24,7 @@ class ComplementaryTestController extends Controller
                 'compTest_sampling.integer' => 'The sampling must be an integer'
             ]
         );
-        if ($request->compTest_sampling === 'statistics') {
+        if ($request->compTest_sampling === 'Statistics') {
             $this->validate(
                 $request,
                 [
@@ -37,7 +37,7 @@ class ComplementaryTestController extends Controller
                 ]
             );
         }
-        if ($request->compTest_sampling === 'other') {
+        if ($request->compTest_sampling === 'Other') {
             $this->validate(
                 $request,
                 [
@@ -81,6 +81,12 @@ class ComplementaryTestController extends Controller
                     'compTest_unitValue.max' => 'You must enter a maximum of 10 characters',
                 ]
             );
+        }
+        $find = ComplementaryTest::all()->where('compTest_name', '==', $request->compTest_name)->where('id', '<>', $request->id)->count();
+        if ($find !== 0) {
+            return response()->json([
+                'compTest_name' => 'This complementary test already exists',
+            ], 429);
         }
     }
 

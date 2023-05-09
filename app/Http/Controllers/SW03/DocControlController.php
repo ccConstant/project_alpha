@@ -69,6 +69,12 @@ class DocControlController extends Controller
                 ]
             );
         }
+        $find = DocumentaryControl::all()->where('docControl_name', '==', $request->docControl_name)->where('id', '<>', $request->id)->count();
+        if ($find !== 0) {
+            return response()->json([
+                'docControl_name' => 'This documentary control already exists',
+            ], 429);
+        }
     }
 
     public function add_docControl(Request $request) {

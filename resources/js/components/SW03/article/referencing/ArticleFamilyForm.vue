@@ -77,7 +77,7 @@
                     :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                     :name="'Active ?'"
                     :label="'Active'"
-                    :value="this.artFam_active"
+                    v-model="artFam_active"
                     :info_text="'Is article currently use?'"
                     :inputClassName="null"
                     :Errors="errors['Active']"
@@ -388,55 +388,54 @@ export default {
         @param artSheet_created */
         updateArtFam(savedAs, reason, artSheet_created) {
             /*We begin by checking if the data entered by the user are correct*/
-            if (this.artFam_type=="COMP"){
-                axios.post('/comp/family/verif', {
-                    artFam_ref: this.artFam_ref,
-                    artFam_design: this.artFam_design,
-                    artFam_drawingPath: this.artFam_drawingPath,
-                    artFam_purchasedBy: this.artFam_purchasedBy,
-                    artFam_variablesCharac: this.artFam_variablesCharac,
-                    artFam_version: this.artFam_version,
-                    artFam_active: this.artFam_active,
-                    artFam_validate: savedAs,
-                    artFam_id: this.artFam_id,
-                })
-                    /*If the data are correct, we send them to the controller for update data in the database*/
-                    .then(response => {
-                        this.errors = {};
-                        const consultUrl = (id) => `/comp/family/update/${id}`;
-                        axios.post(consultUrl(this.artFam_id), {
-                            artFam_ref: this.artFam_ref,
-                            artFam_design: this.artFam_design,
-                            artFam_drawingPath: this.artFam_drawingPath,
-                            artFam_purchasedBy: this.artFam_purchasedBy,
-                            artFam_variablesCharac: this.artFam_variablesCharac,
-                            artFam_version: this.artFam_version,
-                            artFam_active: this.artFam_active,
-                            artFam_validate: savedAs,
-                            artFam_id: this.artFam_id,
-                        })
-                            .then(response => {
-                                const id = this.artFam_id;
-                                /*We test if an article sheet has been already created*/
-                                /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                                if (artSheet_created == true) {
-                                    axios.post(`/history/add/compFam/${id}`, {
-                                        history_reasonUpdate: reason,
-                                    });
-                                    window.location.reload();
-                                }
-                                /*If the data have been updated in the database, we show a success message*/
-                                this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
-                                this.artFam_validate = savedAs;
-                            })
-                            .catch(error => {
-                                this.errors = error.response.data.errors;
-                            });
+            console.log(this.artFam_active);
+            axios.post('/' + this.artFam_type.toLowerCase() + '/family/verif', {
+                artFam_ref: this.artFam_ref,
+                artFam_design: this.artFam_design,
+                artFam_drawingPath: this.artFam_drawingPath,
+                artFam_purchasedBy: this.artFam_purchasedBy,
+                artFam_variablesCharac: this.artFam_variablesCharac,
+                artFam_version: this.artFam_version,
+                artFam_active: this.artFam_active,
+                artFam_validate: savedAs,
+                artFam_id: this.artFam_id,
+            })
+                /*If the data are correct, we send them to the controller for update data in the database*/
+                .then(response => {
+                    this.errors = {};
+                    const consultUrl = (id) => '/' + this.artFam_type.toLowerCase() + '/family/update/' + id;
+                    axios.post(consultUrl(this.artFam_id), {
+                        artFam_ref: this.artFam_ref,
+                        artFam_design: this.artFam_design,
+                        artFam_drawingPath: this.artFam_drawingPath,
+                        artFam_purchasedBy: this.artFam_purchasedBy,
+                        artFam_variablesCharac: this.artFam_variablesCharac,
+                        artFam_version: this.artFam_version,
+                        artFam_active: this.artFam_active,
+                        artFam_validate: savedAs,
+                        artFam_id: this.artFam_id,
                     })
-                    .catch(error => {
-                        this.errors = error.response.data.errors;
-                    });
-            }
+                        .then(response => {
+                            const id = this.artFam_id;
+                            /*We test if an article sheet has been already created*/
+                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + 'Fam/${id}', {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
+                            /*If the data have been updated in the database, we show a success message*/
+                            this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
+                            this.artFam_validate = savedAs;
+                        })
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
