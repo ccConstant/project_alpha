@@ -11,8 +11,8 @@
         <!--ref="ask_dim_data" is used to call the child elements in this component-->
         <!--The emitted deleteDim is caught here and call the function getContent -->
         <ArticleStorageConditionForm ref="ask_storageCondition_data" v-for="(component, key) in components" :key="component.key"
-                          :is="component.comp" :value="component.storageConditionValue" :divClass="component.className"
-                          :id="component.id" :consultMod="isInConsultMod" :modifMod="isInModifMod"
+                          :is="component.comp" :value="component.value" :divClass="component.className"
+                          :id="component.id" :consultMod="isInConsultMod" :modifMod="component.id !== null && isInModifMod"
                           :art_type="data_art_type" :art_id="data_art_id"
                           @deleteStorageCondition="getContent(key)"/>
         <!--If the user is not in consultation mode -->
@@ -97,6 +97,7 @@ export default {
             this.components.push({
                 comp: 'ArticleStorageConditionForm',
                 key: this.uniqueKey++,
+                id: null
             });
         },
         /*Function for adding an imported dimension form with his data*/
@@ -104,7 +105,7 @@ export default {
             this.components.push({
                 comp: 'ArticleStorageConditionForm',
                 key: this.uniqueKey++,
-                value: storageCondition_value.toString(),
+                value: storageCondition_value,
                 className: storageCondition_className,
                 id: id
             });
@@ -159,14 +160,14 @@ export default {
             console.log("import id: " + this.import_id);
             console.log("art type: " + this.data_art_type);
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
-            axios.get('/artFam/criticality/send/' + this.data_art_type + '/' + this.import_id)
+            axios.get('/artFam/enum/storageCondition/send/' + this.data_art_type + '/' + this.import_id)
                 .then(response => {
                     this.sto_conds = response.data;
                     this.importStoConds();
                     this.loaded = true;
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
         } else {
             this.loaded = true;

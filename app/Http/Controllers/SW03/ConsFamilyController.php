@@ -36,6 +36,8 @@ class ConsFamilyController extends Controller
                     'artFam_drawingPath' => 'required|min:3|max:255|string',
                     'artFam_variablesCharac' => 'required|min:2|max:255|string',
                     'artFam_version' => 'required|min:2|max:4|string',
+                    'artFam_genRef' => 'required|min:3|max:255|string',
+                    'artFam_genDesign' => 'required|min:3|max:255|string',
                 ],
                 [
 
@@ -59,6 +61,14 @@ class ConsFamilyController extends Controller
                     'artFam_version.min' => 'You must enter at least two characters ',
                     'artFam_version.max' => 'You must enter less than 4 characters ',
                     'artFam_version.string' => 'You must enter a string ',
+                    'artFam_genRef.required' => 'You must enter a general reference for your cons family ',
+                    'artFam_genRef.min' => 'You must enter at least three characters ',
+                    'artFam_genRef.max' => 'You must enter less than 255 characters ',
+                    'artFam_genRef.string' => 'You must enter a string ',
+                    'artFam_genDesign.required' => 'You must enter a general design for your cons family ',
+                    'artFam_genDesign.min' => 'You must enter at least three characters ',
+                    'artFam_genDesign.max' => 'You must enter less than 255 characters ',
+                    'artFam_genDesign.string' => 'You must enter a string ',
                 ]
             );
 
@@ -83,6 +93,8 @@ class ConsFamilyController extends Controller
                     'artFam_drawingPath' => 'max:255|string',
                     'artFam_variablesCharac' => 'max:255|string',
                     'artFam_version' => 'max:4|string',
+                    'artFam_genRef' => 'max:255|string',
+                    'artFam_genDesign' => 'max:255|string',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your cons family ',
@@ -99,6 +111,10 @@ class ConsFamilyController extends Controller
                     'artFam_variablesCharac.string' => 'You must enter a string ',
                     'artFam_version.max' => 'You must enter a maximum of 4 characters',
                     'artFam_version.string' => 'You must enter a string ',
+                    'artFam_genRef.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_genRef.string' => 'You must enter a string ',
+                    'artFam_genDesign.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_genDesign.string' => 'You must enter a string ',
 
                 ]
             );
@@ -137,6 +153,8 @@ class ConsFamilyController extends Controller
             'consFam_validate' => $request->artFam_validate,
             'consFam_version' => $request->artFam_version,
             'consFam_active' => $request->artFam_active,
+            'consFam_genRef' => $request->artFam_genRef,
+            'consFam_genDesign' => $request->artFam_genDesign,
         ]) ;
 
         $consFamily_id=$consFamily->id ;
@@ -170,6 +188,9 @@ class ConsFamilyController extends Controller
                 'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
                 'consFam_signatureDate' => $consFamily->consFam_signatureDate,
                 'consFam_created_at' => $consFamily->created_at,
+                'consFam_updated_at' => $consFamily->updated_at,
+                'consFam_genRef' => $consFamily->consFam_genRef,
+                'consFam_genDesign' => $consFamily->consFam_genDesign,
             ];
             array_push($array, $obj);
         }
@@ -199,6 +220,9 @@ class ConsFamilyController extends Controller
             'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
             'consFam_signatureDate' => $consFamily->consFam_signatureDate,
             'consFam_created_at' => $consFamily->created_at,
+            'consFam_updated_at' => $consFamily->updated_at,
+            'consFam_genRef' => $consFamily->consFam_genRef,
+            'consFam_genDesign' => $consFamily->consFam_genDesign,
         ];
         return response()->json($obj);
     }
@@ -226,6 +250,8 @@ class ConsFamilyController extends Controller
             'consFam_signatureDate' => null,
             'consFam_validate' => $request->artFam_validate,
             'consFam_active' => $request->artFam_active,
+            'consFam_genRef' => $request->artFam_genRef,
+            'consFam_genDesign' => $request->artFam_genDesign,
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($consFamily);

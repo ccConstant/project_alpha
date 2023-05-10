@@ -212,7 +212,7 @@ const router = new VueRouter({
     }, {
         path: '/article/consult/:type/:id(\\d+)',
         name: 'article_url_consult',
-        component: require('./components/SW03/article/consultation/ArticleConsult.vue').default
+        component: require('./components/SW03/article/consultation/ArticleConsultV3.vue').default
     }, {
         path: '/article/update/:type/:id(\\d+)',
         name: 'article_url_update',

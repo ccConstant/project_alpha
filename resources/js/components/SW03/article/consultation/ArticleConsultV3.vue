@@ -8,7 +8,7 @@
                 <!-- Header -->
                 <table class="header">
                     <tbody>
-                    <tr rowspan="3">
+                    <tr rowspan="3" class="ignored">
                         <td rowspan="3" style="text-align: center; vertical-align: middle" class="ignored">
                             <img alt="logo Alpha" src="/images/logo.png" style="width: max-content; height: max-content">
                         </td>
@@ -33,7 +33,10 @@
                                 Reference & Version :
                             </p>
                             <h2>
-                                {{this.articleType.toUpperCase()}}-ART_v{{this.articleData.nbrVersion}}.0
+                                {{this.articleData.ref}}
+                            </h2>
+                            <h2>
+                                v{{this.articleData.nbrVersion}}.0
                             </h2>
                         </td>
                     </tr>
@@ -69,12 +72,12 @@
                     <tr>
                         <td class="tableName" rowspan="8">
                             <h2>
-                                Article Identification
+                                Family Article Identification
                             </h2>
                         </td>
                         <td class="tableDesc">
                             <p>
-                                Article or Family references
+                                Family reference
                             </p>
                         </td>
                         <td class="tableValue">
@@ -96,6 +99,18 @@
                         </td>
                     </tr>
                     <tr>
+                        <td class="tableDesc">
+                            <p>
+                                Purchased By
+                            </p>
+                        </td>
+                        <td class="tableValue">
+                            <p id="purchased">
+                                {{ articleData.purchasedBy === null ? "/" : articleData.purchasedBy }}
+                            </p>
+                        </td>
+                    </tr>
+                    <tr v-if="articleType !== 'raw'">
                         <td class="tableDesc">
                             <p>
                                 Version
@@ -121,18 +136,6 @@
                     <tr>
                         <td class="tableDesc">
                             <p>
-                                Type of article
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <p id="type">
-                                {{ articleType.toUpperCase() }}
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tableDesc">
-                            <p>
                                 Name of supplier
                             </p>
                         </td>
@@ -152,68 +155,85 @@
                             </p>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="tableDesc">
-                            <p>
-                                Purchased By
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <p id="purchased">
-                                {{ articleData.purchasedBy === null ? "/" : articleData.purchasedBy }}
-                            </p>
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
-                <!-- Storage Condition and Purchasing Specification -->
+                <!-- Article Member Description -->
                 <p></p>
-                <table class="header">
-                    <tbody>
-                    <tr>
-                        <td style="width: 40%; text-align: center" class="lightGray">
-                            <p>
-                                Storage Conditions
-                            </p>
-                        </td>
-                        <td>
-                            <p id="storage">
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width: 40%; text-align: center" class="lightGray">
-                            <p>
-                                Purchasing specifications
-                            </p>
-                        </td>
-                        <td>
-                            <p id="purSpec">
-                            </p>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <!-- Family Members -->
-                <p></p>
-                <table class="header">
+                <table class="header" v-if="articleData.variablesCharac !== null" style="text-align: center">
                     <thead>
                     <tr>
-                        <td colspan="4" style="text-align: center" class="gray">
+                        <td colspan="3">
                             <h2>
-                                Family Identification
+                                Article Variable Caracteristics
+                            </h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <h2>
+                                Reference
+                            </h2>
+                        </td>
+                        <td>
+                            <h2>
+                                Designation
                             </h2>
                         </td>
                     </tr>
                     </thead>
-
+                    <tbody>
+<!--                        <tr v-for="(variable, index) in articleData.variablesCharac">
+                            <td>
+                                <p>
+                                    {{ index + 1 }}
+                                </p>
+                            </td>
+                            <td>
+                                <p>
+                                    {{ variable.variable }}
+                                </p>
+                            </td>
+                            <td>
+                                <p>
+                                    {{ variable.design }}
+                                </p>
+                            </td>
+                        </tr>-->
+                        <tr>
+                            <td>
+                                <p>
+                                    1
+                                </p>
+                            </td>
+                            <td>
+                                <p>
+                                    {{ this.articleData.variablesCharac }}
+                                </p>
+                            </td>
+                            <td>
+                                <p>
+                                    {{ this.articleData.variablesCharac }}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Family Members -->
+                <p></p>
+                <table class="header" v-if="familyMembers.length > 0">
+                    <thead>
+                    <tr>
+                        <td colspan="4" style="text-align: center" class="gray">
+                            <h2>
+                                Family Member Article List
+                            </h2>
+                        </td>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr class="lightGray">
-                        <td :rowspan="articleData.familyMembers.length + 1" style="text-align: center">
-                            <p>
-                                Family Member
-                            </p>
-                        </td>
                         <td>
                             <p>
                                 Reference
@@ -230,29 +250,70 @@
                             </p>
                         </td>
                     </tr>
-                    <tr v-for="member in articleData.familyMembers">
+                    <tr v-for="member in familyMembers">
                         <td>
                             <p>
-                                {{ member.ref === null ? "/" : member.ref }}
+                                {{ articleData.genRef.replace('('+articleData.variablesCharac+')', member.dimension) }}
                             </p>
                         </td>
                         <td>
-                            <p>
-                                {{ member.design === null ? "/" : member.design }}
+                            <p v-if="member.sameValues">
+                                {{ articleData.genDesign.replace('('+articleData.variablesCharac+')', member.dimension) }}
+                            </p>
+                            <p v-else>
+                                {{ articleData.genDesign.replace('('+articleData.variablesCharac+')', member.designation) }}
                             </p>
                         </td>
                         <td>
-                            <p>
-                                {{ member.variablesCharac === null ? "/" : member.variablesCharac }}
+                            <p v-if="member.sameValues">
+                                {{ member.dimension }}
+                            </p>
+                            <p v-else>
+                                {{ member.designation }}
                             </p>
                         </td>
                     </tr>
                     </tbody>
                 </table>
                 <p></p>
+                <!-- Storage Condition and Purchasing Specification -->
+                <p></p>
+                <table class="header">
+                    <tbody>
+                    <tr>
+                        <td style="width: 40%; text-align: center" class="lightGray">
+                            <p>
+                                Storage Conditions
+                            </p>
+                        </td>
+                        <td>
+                            <ul>
+                                <li v-for="storage in stoConds" :key="storage.id">
+                                    {{ storage.value }}
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 40%; text-align: center" class="lightGray">
+                            <p>
+                                Purchasing specifications
+                            </p>
+                        </td>
+                        <td>
+                            <ul>
+                                <li v-for="spec in purSpes" :key="spec.id">
+                                    {{ spec.purSpe_requiredDoc }}
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
                 <h2 style="text-align: center">
                     INCOMING INSPECTION SPECIFICATIONS
                 </h2>
+                <p></p>
                 <!-- Documentary Control -->
                 <table>
                     <tbody>
@@ -785,7 +846,8 @@ export default {
             purSpes: [],
             stoConds: [],
             histories: [],
-            supplier: null
+            supplier: null,
+            familyMembers: [],
         }
     },
     methods: {
@@ -795,23 +857,27 @@ export default {
                 jsPDF: {
                     unit: 'px',
                     format: 'a4',
-                    width: 300
+                    width: 300,
                 },
                 html2canvas: {
                     imageTimeout: 15000,
                     logging: true,
                     useCORS: false,
+                    dpi: 1200,
                 },
-
+                pagebreak: {
+                    avoid: ['tr', 'td', 'table'],
+                    mode: ['avoid-all', 'css', 'legacy']
+                },
                 imageType: 'image/jpeg',
                 imageQuality: 1,
                 margin: {
                     top: 40,
-                    right: 10,
                     bottom: 40,
                     left: 10,
+                    right: 10,
                 },
-                output: this.articleType + '_' + this.articleId + '_export.pdf',
+                output: this.articleData.ref + '_v' + this.articleData.nbrVersion + '.0_export.pdf',
             });
         }
     },
@@ -833,10 +899,19 @@ export default {
                         technicalReviewerID: response.data.rawFam_technicalReviewerId,
                         validate: response.data.rawFam_validate,
                         variablesCharac: response.data.rawFam_variablesCharac,
-                        version: response.data.rawFam_version,
+                        version: '/',
                         created_at: response.data.rawFam_created_at,
-                        familyMembers: []
+                        updated_at: response.data.rawFam_updated_at,
+                        genRef: response.data.rawFam_genRef,
+                        genDesign: response.data.rawFam_genDesign,
                     };
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            axios.get('/raw/mb/send/' + this.articleId)
+                .then(response => {
+                    this.familyMembers = response.data;
                 })
                 .catch(error => {
                     console.log(error);
@@ -858,8 +933,17 @@ export default {
                         variablesCharac: response.data.compFam_variablesCharac,
                         version: response.data.compFam_version,
                         created_at: response.data.compFam_created_at,
-                        familyMembers: []
+                        updated_at: response.data.compFam_updated_at,
+                        genRef: response.data.compFam_genRef,
+                        genDesign: response.data.compFam_genDesign,
                     };
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            axios.get('/comp/mb/send/' + this.articleId)
+                .then(response => {
+                    this.familyMembers = response.data;
                 })
                 .catch(error => {
                     console.log(error);
@@ -881,8 +965,17 @@ export default {
                         variablesCharac: response.data.consFam_variablesCharac,
                         version: response.data.consFam_version,
                         created_at: response.data.consFam_created_at,
-                        familyMembers: []
+                        updated_at: response.data.consFam_updated_at,
+                        genRef: response.data.consFam_genRef,
+                        genDesign: response.data.consFam_genDesign,
                     };
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            axios.get('/cons/mb/send/' + this.articleId)
+                .then(response => {
+                    this.familyMembers = response.data;
                 })
                 .catch(error => {
                     console.log(error);
@@ -943,10 +1036,18 @@ export default {
             .catch(error => {
                 console.log(error);
             });
+        axios.get('/artFam/enum/storageCondition/send/' + this.articleType + '/' + this.articleId)
+            .then(response => {
+                this.stoConds = response.data;
+                console.log(this.stoConds);
+            }).catch(error => {
+                console.log(error);
+            });
         axios.get('/purSpe/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.purSpes = response.data;
                 this.loaded = true;
+                console.log(this.purSpes);
             })
             .catch(error => {
                 console.log(error);
@@ -959,11 +1060,14 @@ export default {
 <style scoped>
     table {
         width: 100%;
-        page-break-before: auto;
-        page-break-after: auto;
-        page-break-inside: avoid;
+        page-break-before: always!important;
+        page-break-after: always!important;
+        page-break-inside: avoid!important;
         position: relative;
         border: 1px solid black;
+    }
+    div {
+        page-break-inside: auto!important;
     }
     tr {
         width: auto;
@@ -978,10 +1082,10 @@ export default {
         border: 1px solid black;
     }
     .gray {
-        background-color: gray;
+        background-color: #999898;
     }
     .lightGray {
-        background-color: lightgray;
+        background-color: #e3e2e2;
     }
     .contentArticle {
         display: block;
@@ -993,11 +1097,11 @@ export default {
         vertical-align: middle;
         /*transform: rotate(-90deg);*/
         width: 15%;
-        background: gray;
+        background: #999898;
     }
     .tableDesc {
         width: 25%;
-        background-color: lightgray;
+        background-color: #e3e2e2;
         border: 1px solid black;
     }
     .tableValue {
@@ -1005,17 +1109,30 @@ export default {
         border: 1px solid black;
     }
     p {
-        font-size: 15px;
+        font-size: 14px;
         font-style: normal;
         font-weight: normal;
         font-family: Calibri;
     }
-    p:not(.ignored) {
+    .tableDesc p:not(.ignored) {
         text-align: center;
+        vertical-align: center;
+    }
+    .tableValue p:not(.ignored) {
+        text-align: justify;
         vertical-align: center;
     }
     h2 {
         text-align: center;
     }
-
+    li {
+        font-size: 14px;
+        font-style: normal;
+        font-weight: normal;
+        font-family: Calibri;
+        list-style: none;
+    }
+    .ignored {
+        border: none!important;
+    }
 </style>

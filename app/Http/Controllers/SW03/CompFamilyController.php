@@ -35,6 +35,8 @@ class CompFamilyController extends Controller
                     'artFam_drawingPath' => 'required|min:3|max:255|string',
                     'artFam_variablesCharac' => 'required|min:2|max:255|string',
                     'artFam_version' => 'required|min:2|max:4|string',
+                    'artFam_genRef' => 'required|min:3|max:255|string',
+                    'artFam_genDesign' => 'required|min:3|max:255|string',
                 ],
                 [
 
@@ -58,6 +60,14 @@ class CompFamilyController extends Controller
                     'artFam_version.min' => 'You must enter at least two characters ',
                     'artFam_version.max' => 'You must enter less than 4 characters ',
                     'artFam_version.string' => 'You must enter a string ',
+                    'artFam_genRef.required' => 'You must enter a general reference for your comp family ',
+                    'artFam_genRef.min' => 'You must enter at least three characters ',
+                    'artFam_genRef.max' => 'You must enter less than 255 characters ',
+                    'artFam_genRef.string' => 'You must enter a string ',
+                    'artFam_genDesign.required' => 'You must enter a general design for your comp family ',
+                    'artFam_genDesign.min' => 'You must enter at least three characters ',
+                    'artFam_genDesign.max' => 'You must enter less than 255 characters ',
+                    'artFam_genDesign.string' => 'You must enter a string ',
                 ]
             );
 
@@ -79,6 +89,8 @@ class CompFamilyController extends Controller
                     'artFam_drawingPath' => 'max:255',
                     'artFam_variablesCharac' => 'max:255',
                     'artFam_version' => 'max:4',
+                    'artFam_genRef' => 'max:255',
+                    'artFam_genDesign' => 'max:255',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
@@ -95,6 +107,10 @@ class CompFamilyController extends Controller
                     'artFam_variablesCharac.string' => 'You must enter a string ',
                     'artFam_version.max' => 'You must enter a maximum of 4 characters',
                     'artFam_version.string' => 'You must enter a string ',
+                    'artFam_genRef.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_genRef.string' => 'You must enter a string ',
+                    'artFam_genDesign.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_genDesign.string' => 'You must enter a string ',
 
                 ]
             );
@@ -133,6 +149,8 @@ class CompFamilyController extends Controller
             'compFam_validate' => $request->artFam_validate,
             'compFam_version' => $request->artFam_version,
             'compFam_active' => $request->artFam_active,
+            'compFam_genRef' => $request->artFam_genRef,
+            'compFam_genDesign' => $request->artFam_genDesign,
         ]) ;
 
         $compFamily_id=$compFamily->id ;
@@ -165,6 +183,9 @@ class CompFamilyController extends Controller
                 'compFam_purchasedBy' => $purchaseBy,
                 'compFam_signatureDate' => $compFamily->compFam_signatureDate,
                 'compFam_created_at' => $compFamily->created_at,
+                'compFam_updated_at' => $compFamily->updated_at,
+                'compFam_genRef' => $compFamily->compFam_genRef,
+                'compFam_genDesign' => $compFamily->compFam_genDesign,
             ];
             array_push($array, $obj);
         }
@@ -194,6 +215,9 @@ class CompFamilyController extends Controller
             'compFam_purchasedBy' => $purchaseBy,
             'compFam_signatureDate' => $compFamily->compFam_signatureDate,
             'compFam_created_at' => $compFamily->created_at,
+            'compFam_updated_at' => $compFamily->updated_at,
+            'compFam_genRef' => $compFamily->compFam_genRef,
+            'compFam_genDesign' => $compFamily->compFam_genDesign,
         ];
         return response()->json($obj);
     }
@@ -221,6 +245,8 @@ class CompFamilyController extends Controller
             'compFam_signatureDate' => null,
             'compFam_validate' => $request->artFam_validate,
             'compFam_active' => $request->artFam_active,
+            'compFam_genRef' => $request->artFam_genRef,
+            'compFam_genDesign' => $request->artFam_genDesign,
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($compFamily);

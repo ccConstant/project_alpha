@@ -34,6 +34,8 @@ class RawFamilyController extends Controller
                     'artFam_design' => 'required|min:3|max:255|string',
                     'artFam_drawingPath' => 'required|min:3|max:255|string',
                     'artFam_variablesCharac' => 'required|min:2|max:255|string',
+                    'artFam_genRef' => 'required|min:3|max:255|string',
+                    'artFam_genDesign' => 'required|min:3|max:255|string',
                 ],
                 [
 
@@ -53,6 +55,14 @@ class RawFamilyController extends Controller
                     'artFam_variablesCharac.min' => 'You must enter at least two characters ',
                     'artFam_variablesCharac.max' => 'You must enter less than 255 characters ',
                     'artFam_variablesCharac.string' => 'You must enter a string ',
+                    'artFam_genRef.required' => 'You must enter a general reference for your comp family ',
+                    'artFam_genRef.min' => 'You must enter at least three characters ',
+                    'artFam_genRef.max' => 'You must enter less than 255 characters ',
+                    'artFam_genRef.string' => 'You must enter a string ',
+                    'artFam_genDesign.required' => 'You must enter a general design for your comp family ',
+                    'artFam_genDesign.min' => 'You must enter at least three characters ',
+                    'artFam_genDesign.max' => 'You must enter less than 255 characters ',
+                    'artFam_genDesign.string' => 'You must enter a string ',
                 ]
             );
 
@@ -76,6 +86,8 @@ class RawFamilyController extends Controller
                     'artFam_design' => 'required|min:3|max:255|string',
                     'artFam_drawingPath' => 'max:255|string',
                     'artFam_variablesCharac' => 'max:255|string',
+                    'artFam_genRef' => 'max:255|string',
+                    'artFam_genDesign' => 'max:255|string',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your raw family ',
@@ -90,7 +102,10 @@ class RawFamilyController extends Controller
                     'artFam_drawingPath.string' => 'You must enter a string ',
                     'artFam_variablesCharac.max' => 'You must enter a maximum of 255 characters',
                     'artFam_variablesCharac.string' => 'You must enter a string ',
-
+                    'artFam_genRef.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_genRef.string' => 'You must enter a string ',
+                    'artFam_genDesign.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_genDesign.string' => 'You must enter a string ',
                 ]
             );
         }
@@ -127,6 +142,8 @@ class RawFamilyController extends Controller
             'rawFam_variablesCharac' => $request->artFam_variablesCharac,
             'rawFam_validate' => $request->artFam_validate,
             'rawFam_active' => $request->artFam_active,
+            'rawFam_genRef' => $request->artFam_genRef,
+            'rawFam_genDesign' => $request->artFam_genDesign,
         ]) ;
 
         $rawFamily_id=$rawFamily->id ;
@@ -157,6 +174,10 @@ class RawFamilyController extends Controller
                 'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
                 'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
                 'rawFam_created_at' => $rawFamily->created_at,
+                'rawFam_updated_at' => $rawFamily->updated_at,
+                'rawFam_genRef' => $rawFamily->rawFam_genRef,
+                'rawFam_genDesign' => $rawFamily->rawFam_genDesign,
+                'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion,
             ];
             array_push($array, $obj);
         }
@@ -184,6 +205,10 @@ class RawFamilyController extends Controller
             'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
             'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
             'rawFam_created_at' => $rawFamily->created_at,
+            'rawFam_updated_at' => $rawFamily->updated_at,
+            'rawFam_genRef' => $rawFamily->rawFam_genRef,
+            'rawFam_genDesign' => $rawFamily->rawFam_genDesign,
+            'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion,
         ];
         return response()->json($obj);
     }
@@ -211,6 +236,8 @@ class RawFamilyController extends Controller
             'rawFam_signatureDate' => null,
             'rawFam_validate' => $request->artFam_validate,
             'rawFam_active' => $request->artFam_active,
+            'rawFam_genRef' => $request->artFam_genRef,
+            'rawFam_genDesign' => $request->artFam_genDesign,
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($rawFamily);

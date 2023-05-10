@@ -20,7 +20,7 @@ class RawFamilyMember extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['rawMb_dimension', 'rawMb_technicalReviewerId', 'rawMb_qualityApproverId', 'rawMb_signatureDate', 'rawFam_id'] ;
+    protected $fillable = ['rawMb_dimension', 'rawMb_technicalReviewerId', 'rawMb_qualityApproverId', 'rawMb_signatureDate', 'rawFam_id', 'rawMb_design', 'rawMb_sameValues'] ;
 
     //Define the relation between a raw_family_member and the raw_family which he is linked : a raw_family_member can be linked to only one raw_family
     public function raw_family(){

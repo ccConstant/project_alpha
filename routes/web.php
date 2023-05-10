@@ -1061,6 +1061,7 @@ Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController
 Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/link/{id}', [EnumStorageConditionController::class, 'link_enum_storageCondition']);
 Route::get('/artFam/enum/storageCondition/send/{type}/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_linked']);
+Route::post('/artFam/enum/storageCondition/update/{type}/{id}', [EnumStorageConditionController::class, 'update_enum_storageCondition_linked']);
 
 // Criticality
 Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_criticality']);

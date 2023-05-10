@@ -16,6 +16,9 @@
             :version="article.version"
             :type="articleType.toUpperCase()"
             :active="article.active === 1"
+            :genRef="article.genRef"
+            :genDesign="article.genDesign"
+            @generic="genericSetter"
             modifMod
         />
         <div class="accordion">
@@ -33,12 +36,13 @@
                             :artType="this.articleType"
                             :artFam_id="this.articleID"
                             :import_id="this.articleID"
+                            :genRef="this.generic.genRef"
+                            :genDesign="this.generic.genDesign"
+                            :varCharac="this.generic.variablesCharac"
                         />
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="accordion">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingTwo">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -150,7 +154,8 @@ export default {
             article: null,
             validationMethod: this.$route.query.method,
             errors: [],
-            loaded: false
+            loaded: false,
+            generic: null,
         }
     },
     created() {
@@ -171,9 +176,19 @@ export default {
                         variablesCharac: response.data.rawFam_variablesCharac,
                         active: response.data.rawFam_active,
                         purchasedBy: response.data.rawFam_purchasedBy,
-                        version: null
+                        version: null,
+                        genRef: response.data.rawFam_genRef,
+                        genDesign: response.data.rawFam_genDesign,
                     };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType}, query: {signed : response.data.rawFam_signatureDate != null}});
+                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
+                        this.generic = {
+                            variablesCharac: this.article.variablesCharac,
+                            genRef: this.article.genRef,
+                            genDesign: this.article.genDesign,
+                        };
+                        console.log(this.generic);
+                    }
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -190,9 +205,19 @@ export default {
                         variablesCharac: response.data.compFam_variablesCharac,
                         active: response.data.compFam_active,
                         purchasedBy: response.data.compFam_purchasedBy,
-                        version: response.data.compFam_version
+                        version: response.data.compFam_version,
+                        genRef: response.data.compFam_genRef,
+                        genDesign: response.data.compFam_genDesign,
                     };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType}, query: {signed : response.data.compFam_signatureDate != null}});
+                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
+                        this.generic = {
+                            variablesCharac: this.article.variablesCharac,
+                            genRef: this.article.genRef,
+                            genDesign: this.article.genDesign,
+                        };
+                        console.log(this.generic);
+                    }
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -209,9 +234,19 @@ export default {
                         variablesCharac: response.data.consFam_variablesCharac,
                         active: response.data.consFam_active,
                         purchasedBy: response.data.consFam_purchasedBy,
-                        version: response.data.consFam_version
+                        version: response.data.consFam_version,
+                        genRef: response.data.consFam_genRef,
+                        genDesign: response.data.consFam_genDesign,
                     };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType}, query: {signed : response.data.consFam_signatureDate != null}});
+                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
+                        this.generic = {
+                            variablesCharac: this.article.variablesCharac,
+                            genRef: this.article.genRef,
+                            genDesign: this.article.genDesign,
+                        };
+                        console.log(this.generic);
+                    }
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -220,6 +255,17 @@ export default {
         }
     },
     methods: {
+        genericSetter(ref, design, variableCharac) {
+            this.generic = {
+                variablesCharac: variableCharac,
+                genRef: ref,
+                genDesign: design,
+            };
+        },
+    },
+    updated() {
+        console.log('trest');
+        console.log(this.generic);
     }
 }
 </script>

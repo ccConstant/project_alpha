@@ -11,10 +11,24 @@
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" >
+                <p v-if="artMb_dimension !== undefined">
+                    Member reference : {{ data_genRef.replace('(' + varCharac + ')', artMb_dimension) }}
+                </p>
+                <div v-if="artMb_sameValues">
+                    <p v-if="artMb_dimension !== undefined">
+                        Member Designation : {{ data_genDesign.replace('(' + varCharac + ')', artMb_dimension) }}
+                    </p>
+                </div>
+                <div v-else>
+                    <p v-if="artMb_designation !== undefined">
+                        Member Designation : {{ data_genDesign.replace('(' + varCharac + ')', artMb_designation) }}
+                    </p>
+                </div>
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artMb_dimension"
-                    name="artMb_dimension" label="Article Member Dimension"
+                    name="artMb_dimension"
+                    label="Article Member Dimension"
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="artMb_dimension"
@@ -22,8 +36,29 @@
                     :min="0"
                     :max="50"
                 />
-
-
+                <RadioGroupForm
+                    :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
+                    :name="'Same value ?'"
+                    :label="'sameValues'"
+                    v-model="artMb_sameValues"
+                    :info_text="'Is it the same value for the designation ?'"
+                    :inputClassName="null"
+                    :Errors="errors['Active']"
+                    :checkedOption="isInModifMod ? artMb_sameValues : true"
+                />
+                <InputTextForm
+                    v-if="!artMb_sameValues"
+                    :inputClassName="null"
+                    :Errors="errors.artMb_designation"
+                    name="artMb_designation"
+                    label="Article Member Designation"
+                    :isDisabled="this.isInConsultMod"
+                    isRequired
+                    v-model="artMb_designation"
+                    :info_text="'Article Member Designation'"
+                    :min="0"
+                    :max="50"
+                />
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addArticleMember"
@@ -45,12 +80,14 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from '../../../input/InputSelectForm.vue'
+import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue";
 
 
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        RadioGroupForm,
         InputTextForm,
         SaveButtonForm,
         DeleteComponentButton,
@@ -71,6 +108,13 @@ export default {
     props: {
         dimension: {
             type: String
+        },
+        designation: {
+            type: String
+        },
+        sameValues: {
+            type: Boolean,
+            default: true
         },
         validate: {
             type: String
@@ -95,7 +139,16 @@ export default {
         },
         art_type:{
             type: String
-        }
+        },
+        genRef: {
+            type: String
+        },
+        genDesign: {
+            type: String
+        },
+        varCharac: {
+            type: String
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -111,6 +164,8 @@ export default {
     data() {
         return {
             artMb_dimension: this.dimension,
+            artMb_designation: this.designation,
+            artMb_sameValues: this.sameValues,
             artMb_validate: this.validate,
             artFamMember_id: this.id,
             art_id_add: this.art_id,
@@ -122,6 +177,9 @@ export default {
             isInModifMod: this.modifMod,
             loaded: false,
             infos_artFamMember: [],
+            data_genRef: this.genRef,
+            data_genDesign: this.genDesign,
+            data_varCharac: this.varCharac,
         }
     },
     created(){
@@ -148,6 +206,8 @@ export default {
                     axios.post('/comp/mb/verif', {
                         artMb_dimension: this.artMb_dimension,
                         artFam_validate: savedAs,
+                        artMb_sameValues: this.artMb_sameValues,
+                        artMb_designation: this.artMb_designation,
                     })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
@@ -155,7 +215,9 @@ export default {
                         const consultUrl = (id) => `/comp/mb/add/${id}`;
                         axios.post(consultUrl(id), {
                             artMb_dimension: this.artMb_dimension,
-                              artFam_validate: savedAs,
+                            artFam_validate: savedAs,
+                            artMb_sameValues: this.artMb_sameValues,
+                            artMb_designation: this.artMb_designation,
                         })
                         /*If the data have been added in the database, we show a success message*/
                         .then(response => {
@@ -172,6 +234,8 @@ export default {
                         axios.post('/raw/mb/verif', {
                         artMb_dimension: this.artMb_dimension,
                         artFam_validate: savedAs,
+                        artMb_sameValues: this.artMb_sameValues,
+                        artMb_designation: this.artMb_designation,
                     })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
@@ -180,6 +244,8 @@ export default {
                         axios.post(consultUrl(id), {
                             artMb_dimension: this.artMb_dimension,
                             artFam_validate: savedAs,
+                            artMb_sameValues: this.artMb_sameValues,
+                            artMb_designation: this.artMb_designation,
                         })
                         /*If the data have been added in the database, we show a success message*/
                         .then(response => {
@@ -196,6 +262,8 @@ export default {
                             axios.post('/cons/mb/verif', {
                                 artMb_dimension: this.artMb_dimension,
                                 artFam_validate: savedAs,
+                                artMb_sameValues: this.artMb_sameValues,
+                                artMb_designation: this.artMb_designation,
                             })
                             /*If the data are correct, we send them to the controller for add them in the database*/
                             .then(response => {
@@ -204,6 +272,8 @@ export default {
                                 axios.post(consultUrl(id), {
                                     artMb_dimension: this.artMb_dimension,
                                     artFam_validate: savedAs,
+                                    artMb_sameValues: this.artMb_sameValues,
+                                    artMb_designation: this.artMb_designation,
                                 })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -215,30 +285,6 @@ export default {
                                 .catch(error => this.errors = error.response.data.errors);
                             })
                             .catch(error => this.errors = error.response.data.errors);
-                        }else{
-                            if (this.artFam_type=="RAW"){
-                                axios.post('/raw/mb/verif', {
-                                    artMb_dimension: this.artMb_dimension,
-                                    artFam_validate: savedAs,
-                                })
-                                /*If the data are correct, we send them to the controller for add them in the database*/
-                                .then(response => {
-                                    this.errors = {};
-                                    axios.post('/raw/mb/add', {
-                                        artMb_dimension: this.artMb_dimension,
-                                        artFam_validate: savedAs,
-                                    })
-                                    /*If the data have been added in the database, we show a success message*/
-                                    .then(response => {
-                                        this.addSuccess = true;
-                                        this.isInConsultMod = true;
-                                        this.$snotify.success(`RawFamMember added successfully and saved as ${savedAs}`);
-                                        this.artFamMember_id = response.data;
-                                    })
-                                    .catch(error => this.errors = error.response.data.errors);
-                                })
-                                .catch(error => this.errors = error.response.data.errors);
-                            }
                         }
                     }
                 }

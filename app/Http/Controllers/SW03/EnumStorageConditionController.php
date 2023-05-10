@@ -79,18 +79,14 @@ class EnumStorageConditionController extends Controller
             $compFam=CompFamily::findOrFail($id);
             $enum->compFamily()->attach($compFam) ;
             return response()->json($enum->id) ;
-        }else{
-            if ($request->artFam_type=="RAW"){
-                $rawFam=RawFamily::findOrFail($id);
-                $enum->rawFamily()->attach($rawFam) ;
-                return response()->json($enum->id) ;
-            }else{
-                if ($request->artFam_type=="CONS"){
-                    $consFam=ConsFamily::findOrFail($id);
-                    $enum->consFamily()->attach($consFam) ;
-                    return response()->json($enum->id) ;
-                }
-            }
+        }else if ($request->artFam_type=="RAW"){
+            $rawFam=RawFamily::findOrFail($id);
+            $enum->rawFamily()->attach($rawFam) ;
+            return response()->json($enum->id) ;
+        }else if ($request->artFam_type=="CONS"){
+            $consFam=ConsFamily::findOrFail($id);
+            $enum->consFamily()->attach($consFam) ;
+            return response()->json($enum->id) ;
         }
     }
 
@@ -104,14 +100,56 @@ class EnumStorageConditionController extends Controller
             $article = RawFamily::findOrFail($id);
         }
         $sto_cond = $article->storage_conditions;
-        $detailed = EnumStorageCondition::all()->where('id', '=', $sto_cond->storageCondition_id)->first();
         $array = [];
         foreach ($sto_cond as $sto) {
             array_push($array, [
                 'id' => $sto->id,
-                'storageCondition_id' => $sto->storageCondition_id,
-                'value' => $detailed->value,
+                'value' => $sto->value,
             ]);
+        }
+        return response()->json($array);
+    }
+
+    public function update_enum_storageCondition_linked(Request $request, $type, $id) {
+        if ($type === 'cons') {
+            $article = ConsFamily::findOrFail($id);
+            $sto_cond = $article->storage_conditions;
+            foreach ($sto_cond as $sto) {
+                if ($sto->id == $request->id) {
+                    if ($request->value != $sto->value) {
+                        $oldEnum = EnumStorageCondition::where('value', '=', $sto->value)->first();
+                        $oldEnum->consFamily()->detach($article);
+                        $newEnum = EnumStorageCondition::where('value', '=', $request->value)->first();
+                        $newEnum->consFamily()->attach($article);
+                    }
+                }
+            }
+        } else if ($type === 'comp') {
+            $article = CompFamily::findOrFail($id);
+            $sto_cond = $article->storage_conditions;
+            foreach ($sto_cond as $sto) {
+                if ($sto->id == $request->id) {
+                    if ($request->value != $sto->value) {
+                        $oldEnum = EnumStorageCondition::where('value', '=', $sto->value)->first();
+                        $oldEnum->compFamily()->detach($article);
+                        $newEnum = EnumStorageCondition::where('value', '=', $request->value)->first();
+                        $newEnum->compFamily()->attach($article);
+                    }
+                }
+            }
+        } else if ($type === 'raw') {
+            $article = RawFamily::findOrFail($id);
+            $sto_cond = $article->storage_conditions;
+            foreach ($sto_cond as $sto) {
+                if ($sto->id == $request->id) {
+                    if ($request->value != $sto->value) {
+                        $oldEnum = EnumStorageCondition::where('value', '=', $sto->value)->first();
+                        $oldEnum->rawFamily()->detach($article);
+                        $newEnum = EnumStorageCondition::where('value', '=', $request->value)->first();
+                        $newEnum->rawFamily()->attach($article);
+                    }
+                }
+            }
         }
     }
 }

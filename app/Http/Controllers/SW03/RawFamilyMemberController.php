@@ -28,14 +28,29 @@ class RawFamilyMemberController extends Controller
             $request,
             [
                 'artMb_dimension' => 'required|max:50|String',
+                'artMb_sameValues' => 'required'
             ],
             [
 
                 'artMb_dimension.required' => 'You must enter a dimension for your raw family member',
                 'artMb_dimension.max' => 'You must enter less than 50 characters ',
                 'artMb_dimension.String' => 'You must enter a string ',
+
+                'artMb_sameValues.required' => 'You must enter a boolean for your raw family member',
             ]
         );
+        if (!$request->artMb_sameValues) {
+            $this->validate(
+                $request,
+                [
+                    'artMb_designation' => 'required|max:255',
+                ],
+                [
+                    'artMb_designation.required' => 'You must enter a designation for your comp family member',
+                    'artMb_designation.max' => 'You must enter less than 255 characters ',
+                ]
+            );
+        }
     }
 
     /**
@@ -48,6 +63,8 @@ class RawFamilyMemberController extends Controller
         $rawFamilyMember=rawFamilyMember::create([
             'rawMb_dimension' => $request->artMb_dimension,
             'rawFam_id' => $id,
+            'rawMb_sameValues' => $request->artMb_sameValues,
+            'rawMb_design' => $request->artMb_designation,
         ]) ;
 
         $rawFamilyMember_id=$rawFamilyMember->id ;
@@ -61,7 +78,9 @@ class RawFamilyMemberController extends Controller
         foreach ($members as $member) {
             array_push($array, [
                 'id' => $member->id,
-                'dimension' => $member->rawMb_dimension
+                'dimension' => $member->rawMb_dimension,
+                'sameValues' => $member->rawMb_sameValues,
+                'designation' => $member->rawMb_design,
             ]);
         }
         return response()->json($array);

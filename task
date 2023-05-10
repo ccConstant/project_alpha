@@ -12,10 +12,11 @@ TODO:
         - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé docSpec)
     Loc incmgInsp et criticality après ajout
     Unicité commencée dans AspectTest
+    Update des membres de familles d'articles
+    Ajouter un champs description de la variable generique dans la fiche article
     */
 
 FIXME:
-    Storage Condition
     Changer expected value du funcTest en String et en 'Expected Acceptance Criteria' ??
     */
 
@@ -23,4 +24,5 @@ DONE:
     Update de la plupart de la fiche article
     Ajout de Other pour le sampling + desc et prise en compte controller et model + migration
     Complementary Test pour CONS
+    Membres génériques + autres membres + migrations + model
     */
