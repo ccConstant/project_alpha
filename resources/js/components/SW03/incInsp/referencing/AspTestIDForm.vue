@@ -238,8 +238,6 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         addDocControl(savedAs, reason, lifesheet_created) {
-            console.log(this.data_article_id);
-            console.log(this.data_article_type);
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
@@ -285,13 +283,11 @@ export default {
                     /*If the controller sends errors, we put it in the error object*/
                     .catch(error => {
                         this.errors = error.response.data.errors;
-                        console.log(error.response.data);
                     });
                 })
                 //If the controller sends errors, we put it in the error object
                 .catch(error => {
                     this.errors = error.response.data.errors;
-                    console.log(error.response.data);
                 });
             }
         },

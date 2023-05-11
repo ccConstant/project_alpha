@@ -34,6 +34,7 @@ class CreateComplementaryTestsTable extends Migration
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             $table->enum('compTest_sampling',  ['Statistics', '100%', 'Other']);
             $table->string('compTest_desc')->nullable();
+            $table->string('compTest_specDoc')->nullable();
         });
     }
 

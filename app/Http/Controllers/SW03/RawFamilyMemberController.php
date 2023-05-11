@@ -85,4 +85,14 @@ class RawFamilyMemberController extends Controller
         }
         return response()->json($array);
     }
+
+    public function update_rawFamilyMember(Request $request, $id) {
+        $member = RawFamilyMember::all()->where('id', '==', $id)->first();
+        $member->update([
+            'rawMb_dimension' => $request->artMb_dimension,
+            'rawMb_sameValues' => $request->artMb_sameValues,
+            'rawMb_design' => $request->artMb_designation,
+        ]);
+        return response()->json($member);
+    }
 }

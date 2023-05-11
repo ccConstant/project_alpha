@@ -85,7 +85,22 @@ class FunctionnalTestController extends Controller
                 ]
             );
         }
-        $find = FunctionalTest::all()->where('funcTest_name', '==', $request->funcTest_name)->where('id', '<>', $request->id)->count();
+        $insp = null;
+        if ($request->funcTest_articleType === 'comp') {
+            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+        } else if ($request->funcTest_articleType === 'raw') {
+            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+        } else if ($request->funcTest_articleType === 'cons') {
+            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+        }
+        $val = [];
+        foreach ($insp as $in) {
+            array_push($val, $in->id);
+        }
+        $find = FunctionalTest::all()->where('funcTest_name', '==', $request->funcTest_name)
+            ->whereIn('incmgInsp_id', $val)
+            ->where('id', '<>', $request->id)
+            ->count();
         if ($find !== 0) {
             return response()->json([
                 'funcTest_name' => 'This functional test already exists',

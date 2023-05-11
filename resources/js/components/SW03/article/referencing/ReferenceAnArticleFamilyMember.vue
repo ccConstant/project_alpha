@@ -149,7 +149,6 @@ export default {
         },
         importFamilyMembers() {
             if (this.familyMember.length === 0 && !this.isInModifMod) {
-                console.log("purchaseSpec is empty");
                 this.loaded = true;
             } else {
                 for (const dt of this.familyMember) {
@@ -193,7 +192,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_art_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -204,7 +202,8 @@ export default {
                         this.importFamilyMembers();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             } else if (this.data_art_type === 'cons') {
                 axios.get('/cons/mb/send/'+this.import_id)
                     .then(response => {
@@ -212,7 +211,8 @@ export default {
                         this.importFamilyMembers();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             } else if (this.data_art_type === 'raw') {
                 axios.get('/raw/mb/send/'+this.import_id)
                     .then(response => {
@@ -220,21 +220,12 @@ export default {
                         this.importFamilyMembers();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             }
         } else {
             this.loaded = true;
         }
-    },
-    /*All functions inside the created option are called after the component has been mounted.*/
-    updated() {
-        console.log(this.data_genRef);
-        console.log(this.data_genDesign);
-        console.log(this.data_varCharac);
-        /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        /*if (this.consultMod || this.modifMod) {
-            this.importDim();
-        }*/
     }
 }
 </script>

@@ -341,7 +341,7 @@ export default {
                                         this.$emit('ArtFamID', this.artFam_id);
                                         this.$emit('ArtFamType', this.artFam_type);
                                         if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                            this.$emit('generic', this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                                            this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
                                         }
                                     })
                                     .catch(error => this.errors = error.response.data.errors);
@@ -386,7 +386,7 @@ export default {
                                 this.$emit('ArtFamID', this.artFam_id);
                                 this.$emit('ArtFamType', this.artFam_type);
                                 if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                    this.$emit('generic', this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                                    this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
                                 }
                             })
                             .catch(error => this.errors = error.response.data.errors);
@@ -432,7 +432,7 @@ export default {
                                     this.$emit('ArtFamID', this.artFam_id);
                                     this.$emit('ArtFamType', this.artFam_type);
                                     if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                        this.$emit('generic', this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                                        this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
                                     }
                                 })
                                 .catch(error => this.errors = error.response.data.errors);
@@ -449,7 +449,6 @@ export default {
         @param artSheet_created */
         updateArtFam(savedAs, reason, artSheet_created) {
             /*We begin by checking if the data entered by the user are correct*/
-            console.log(this.artFam_active);
             axios.post('/' + this.artFam_type.toLowerCase() + '/family/verif', {
                 artFam_ref: this.artFam_ref,
                 artFam_design: this.artFam_design,
@@ -494,7 +493,7 @@ export default {
                             this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
                             this.artFam_validate = savedAs;
                             if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                this.$emit('generic', this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                                this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
                             }
                         })
                         .catch(error => {

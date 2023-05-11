@@ -11,6 +11,7 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\ConsFamily;
@@ -172,7 +173,18 @@ class ConsFamilyController extends Controller
             } else {
                 $purchaseBy = null;
             }
-
+            $qualityApprover = User::find($consFamily->consFam_qualityApproverId);
+            if ($qualityApprover != null){
+                $qualityApprover = strtoupper($qualityApprover->user_lastName) . ' ' . $qualityApprover->user_firstName;
+            } else {
+                $qualityApprover = null;
+            }
+            $technicalReviewer = User::find($consFamily->consFam_technicalReviewerId);
+            if ($technicalReviewer != null){
+                $technicalReviewer = strtoupper($technicalReviewer->user_lastName) . ' ' . $technicalReviewer->user_firstName;
+            } else {
+                $technicalReviewer = null;
+            }
             $obj = [
                 'id' => $consFamily->id,
                 'consFam_ref' => $consFamily->consFam_ref,
@@ -185,7 +197,9 @@ class ConsFamilyController extends Controller
                 'consFam_active' => $consFamily->consFam_active,
                 'consFam_purchasedBy' => $purchaseBy,
                 'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
+                'consFam_qualityApproverName' => $qualityApprover,
                 'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
+                'consFam_technicalReviewerName' => $technicalReviewer,
                 'consFam_signatureDate' => $consFamily->consFam_signatureDate,
                 'consFam_created_at' => $consFamily->created_at,
                 'consFam_updated_at' => $consFamily->updated_at,
@@ -205,6 +219,18 @@ class ConsFamilyController extends Controller
         } else {
             $purchaseBy = null;
         }
+        $qualityApprover = User::find($consFamily->consFam_qualityApproverId);
+        if ($qualityApprover != null){
+            $qualityApprover = strtoupper($qualityApprover->user_lastName) . ' ' . $qualityApprover->user_firstName;
+        } else {
+            $qualityApprover = null;
+        }
+        $technicalReviewer = User::find($consFamily->consFam_technicalReviewerId);
+        if ($technicalReviewer != null){
+            $technicalReviewer = strtoupper($technicalReviewer->user_lastName) . ' ' . $technicalReviewer->user_firstName;
+        } else {
+            $technicalReviewer = null;
+        }
         $obj = [
             'id' => $consFamily->id,
             'consFam_ref' => $consFamily->consFam_ref,
@@ -217,7 +243,9 @@ class ConsFamilyController extends Controller
             'consFam_active' => $consFamily->consFam_active,
             'consFam_purchasedBy' => $purchaseBy,
             'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
+            'consFam_qualityApproverName' => $qualityApprover,
             'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
+            'consFam_technicalReviewerName' => $technicalReviewer,
             'consFam_signatureDate' => $consFamily->consFam_signatureDate,
             'consFam_created_at' => $consFamily->created_at,
             'consFam_updated_at' => $consFamily->updated_at,

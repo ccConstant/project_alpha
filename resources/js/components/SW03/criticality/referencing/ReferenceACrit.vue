@@ -154,7 +154,6 @@ export default {
         /*Function for adding to the vue the imported article*/
         importCrit() {
             if (this.criticality.length === 0 && !this.isInModifMod) {
-                console.log("importCritVide");
                 this.loaded = true;
             } else {
                 for (const dt of this.criticality) {
@@ -200,7 +199,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_article_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -210,7 +208,8 @@ export default {
                     this.importCrit();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                });
         } else {
             this.loaded = true;
         }

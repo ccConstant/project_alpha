@@ -14,7 +14,8 @@
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.purSpe_requiredDoc"
-                    name="purSpe_requiredDoc" label="Purchase Specification Required Doc"
+                    name="purSpe_requiredDoc"
+                    label="Purchase Specification Required Doc"
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="purSpe_requiredDoc"
@@ -22,6 +23,30 @@
                     :min="0"
                     :max="255"
                 />
+<!--                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    name="supplier"
+                    :Errors="errors.artFam_purchasedBy"
+                    label="Supplier :"
+                    :options="suppliers"
+                    :selctedOption="purSpe_supplier_id"
+                    :isDisabled="!!isInConsultMod"
+                    v-model="purSpe_supplier_id"
+                    :info_text="'Supplier'"
+                    :id_actual="supplier_id"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.supplr_ref"
+                    name="purSpe_supplrRef"
+                    label="Supplier's Reference"
+                    :isDisabled="this.isInConsultMod"
+                    isRequired
+                    v-model="purSpe_supplier_ref"
+                    :info_text="'Supplier\'s Reference'"
+                    :min="2"
+                    :max="255"
+                />-->
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addPurchaseSpecification"
@@ -43,11 +68,13 @@ import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
+import InputSelectForm from "../../../input/InputSelectForm.vue";
 
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        InputSelectForm,
         InputTextForm,
         SaveButtonForm,
         DeleteComponentButton,
@@ -67,6 +94,12 @@ export default {
     ---------------------------------------------------*/
     props: {
         requiredDoc: {
+            type: String
+        },
+        supplier_id: {
+            type: Number
+        },
+        supplier_ref: {
             type: String
         },
         validate: {
@@ -108,6 +141,8 @@ export default {
     data() {
         return {
             purSpe_requiredDoc: this.requiredDoc,
+            purSpe_supplier_id: this.supplier_id,
+            purSpe_supplier_ref: this.supplier_ref,
             purSpe_validate: this.validate,
             purSpe_id: this.id,
             art_id_add: this.art_id,
@@ -119,6 +154,7 @@ export default {
             isInModifMod: this.modifMod,
             loaded: false,
             infos_purSpe: [],
+            suppliers: [],
         }
     },
     methods: {
@@ -210,7 +246,6 @@ export default {
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {
@@ -239,8 +274,18 @@ export default {
         }
     },
     created() {
-        console.log("created purSpe");
-        console.log(this.purSpe_requiredDoc);
+        axios.get('/supplier/active/send')
+            .then(response => {
+                for (let i = 0; i < response.data.length; i++) {
+                    this.suppliers.push({
+                        id_enum: 'suppliers',
+                        value: response.data[i].id,
+                        text: response.data[i].supplr_name,
+                    });
+                }
+            })
+            .catch(error => {
+            });
         this.loaded=true;
     },
 }

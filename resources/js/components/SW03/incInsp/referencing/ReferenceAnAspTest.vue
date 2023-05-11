@@ -210,7 +210,6 @@ export default {
                     this.loaded = true;
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         } else {
             this.loaded = true;

@@ -10,6 +10,7 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\RawFamily;
@@ -161,6 +162,18 @@ class RawFamilyController extends Controller
             } else {
                 $purchaseBy = null;
             }
+            $qualityApprover = User::find($rawFamily->rawFam_qualityApproverId);
+            if ($qualityApprover != null){
+                $qualityApprover = strtoupper($qualityApprover->user_lastName) . ' ' . $qualityApprover->user_firstName;
+            } else {
+                $qualityApprover = null;
+            }
+            $technicalReviewer = User::find($rawFamily->rawFam_technicalReviewerId);
+            if ($technicalReviewer != null){
+                $technicalReviewer = strtoupper($technicalReviewer->user_lastName) . ' ' . $technicalReviewer->user_firstName;
+            } else {
+                $technicalReviewer = null;
+            }
             $obj = [
                 'id' => $rawFamily->id,
                 'rawFam_ref' => $rawFamily->rawFam_ref,
@@ -171,7 +184,9 @@ class RawFamilyController extends Controller
                 'rawFam_active' => $rawFamily->rawFam_active,
                 'rawFam_purchasedBy' => $purchaseBy,
                 'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
-                'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
+                'rawFam_qualityApproverName' => $qualityApprover,
+                'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId,
+                'rawFam_technicalReviewerName' => $technicalReviewer,
                 'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
                 'rawFam_created_at' => $rawFamily->created_at,
                 'rawFam_updated_at' => $rawFamily->updated_at,
@@ -192,6 +207,18 @@ class RawFamilyController extends Controller
         } else {
             $purchaseBy = null;
         }
+        $qualityApprover = User::find($rawFamily->rawFam_qualityApproverId);
+        if ($qualityApprover != null){
+            $qualityApprover = strtoupper($qualityApprover->user_lastName) . ' ' . $qualityApprover->user_firstName;
+        } else {
+            $qualityApprover = null;
+        }
+        $technicalReviewer = User::find($rawFamily->rawFam_technicalReviewerId);
+        if ($technicalReviewer != null){
+            $technicalReviewer = strtoupper($technicalReviewer->user_lastName) . ' ' . $technicalReviewer->user_firstName;
+        } else {
+            $technicalReviewer = null;
+        }
         $obj = [
             'id' => $rawFamily->id,
             'rawFam_ref' => $rawFamily->rawFam_ref,
@@ -202,7 +229,9 @@ class RawFamilyController extends Controller
             'rawFam_active' => $rawFamily->rawFam_active,
             'rawFam_purchasedBy' => $purchaseBy,
             'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
-            'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId ,
+            'rawFam_qualityApproverName' => $qualityApprover,
+            'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId,
+            'rawFam_technicalReviewerName' => $technicalReviewer,
             'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
             'rawFam_created_at' => $rawFamily->created_at,
             'rawFam_updated_at' => $rawFamily->updated_at,

@@ -32,6 +32,7 @@ class CreateAspectTestsTable extends Migration
             $table->string('aspTest_name');
             $table->enum('aspTest_sampling',  ['Statistics', '100%', 'Other']);
             $table->string('aspTest_desc')->nullable();
+            $table->string('aspTest_specDoc')->nullable();
         });
     }
 

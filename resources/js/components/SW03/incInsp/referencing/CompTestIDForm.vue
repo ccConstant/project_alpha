@@ -380,7 +380,6 @@ export default {
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
                             this.errors = error.response.data.errors;
-                            console.log(error.response.data);
                         });
                 })
                 //If the controller sends errors, we put it in the error object

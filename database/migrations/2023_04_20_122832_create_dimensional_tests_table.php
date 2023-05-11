@@ -34,6 +34,7 @@ class CreateDimensionalTestsTable extends Migration
             $table->string('dimTest_unitValue');
             $table->enum('dimTest_sampling',  ['Statistics', '100%', 'Other']);
             $table->string('dimTest_desc')->nullable();
+            $table->string('dimTest_specDoc')->nullable();
         });
     }
 

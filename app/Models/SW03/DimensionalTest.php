@@ -20,7 +20,7 @@ class DimensionalTest extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['dimTest_severityLevel', 'dimTest_levelOfControl', 'dimTest_expectedMethod', 'dimTest_expectedValue', 'incmgInsp_id', 'dimTest_name', 'dimTest_unitValue', 'dimTest_sampling', 'dimTest_desc'];
+    protected $fillable = ['dimTest_severityLevel', 'dimTest_levelOfControl', 'dimTest_expectedMethod', 'dimTest_expectedValue', 'incmgInsp_id', 'dimTest_name', 'dimTest_unitValue', 'dimTest_sampling', 'dimTest_desc', 'dimTest_specDoc'];
 
     //Define the relation between a dimensionalTest and its inspection: a dimensionalTest has only one inspection
     public function incomingInspection(){

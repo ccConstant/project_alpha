@@ -106,7 +106,7 @@
                         </div>
                     </div>
                     <!-- FuncTest -->
-                    <div class="accordion-item">
+                    <div class="accordion-item" v-if="article_type === 'comp'">
                         <h2 class="accordion-header" id="headingFuncTest">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseFuncTest" aria-expanded="true" aria-controls="collapseFuncTest">
@@ -127,7 +127,7 @@
                     </div>
 
                     <!-- DimTest -->
-                    <div class="accordion-item">
+                    <div class="accordion-item" v-if="article_type === 'comp' || article_type === 'raw'">
                         <h2 class="accordion-header" id="headingDimTest">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseDimTest" aria-expanded="true" aria-controls="collapseDimTest">

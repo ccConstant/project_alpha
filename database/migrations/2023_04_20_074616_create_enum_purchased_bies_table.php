@@ -6,7 +6,7 @@
 * Update date : 26 Apr 2023
 * This file is used to create the table "enum_purchased_bies" in the data base. In this file, we can see the different
 * attribute of this table (id, value..) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -23,7 +23,8 @@ class CreateEnumPurchasedBiesTable extends Migration
     {
         Schema::create('enum_purchased_bies', function (Blueprint $table) {
             $table->id();
-            $table->string('value') ; 
+            $table->string('value') ;
+            $table->boolean('caduc')->default(false);
             $table->timestamps();
         });
     }

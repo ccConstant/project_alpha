@@ -5,7 +5,7 @@
 
 <template>
     <div class="articleStorageCondition">
-        <h2 class="titleForm">Article Storage Condition(s) </h2>
+        <h2 v-if="sto_conds.length > 0" class="titleForm">Article Storage Condition(s) </h2>
         <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info!=null "/>
         <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
         <!--ref="ask_dim_data" is used to call the child elements in this component-->
@@ -142,7 +142,6 @@ export default {
 
         importStoConds() {
             if (this.sto_conds.length === 0 && !this.isInModifMod) {
-                console.log("no sto conds");
                 this.loaded = true;
             } else {
                 for (const st of this.sto_conds) {
@@ -157,8 +156,6 @@ export default {
     /*All functions inside the created option are called after the component has been created.*/
     created() {
         if (this.import_id !== null) {
-            console.log("import id: " + this.import_id);
-            console.log("art type: " + this.data_art_type);
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             axios.get('/artFam/enum/storageCondition/send/' + this.data_art_type + '/' + this.import_id)
                 .then(response => {
@@ -167,7 +164,6 @@ export default {
                     this.loaded = true;
                 })
                 .catch(error => {
-                    console.log(error.response.data);
                 });
         } else {
             this.loaded = true;

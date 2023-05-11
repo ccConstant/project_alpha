@@ -19,7 +19,13 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-                            <EnumElement error_name='enum_purchased_by' :enumList="enum_purchased_by" title="Article Fam Purchased By" url="/artFam/enum/purchasedBy/" info_text=" info of enum Article fam purchased by"/>
+                            <EnumElement
+                                error_name='enum_purchased_by'
+                                :enumList="enum_purchased_by"
+                                title="Article Fam Purchased By"
+                                url="/artFam/enum/purchasedBy/"
+                                info_text=" info of enum Article fam purchased by"
+                            />
                         </div>
                     </div>
                 </div>
@@ -31,7 +37,12 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
-                            <EnumElement error_name='enum_storageCondition' :enumList="enum_storageCondition" title="Article Fam Storage Conditions " url="/artFam/enum/storageCondition/" />
+                            <EnumElement
+                                error_name='enum_storageCondition'
+                                :enumList="enum_storageCondition"
+                                title="Article Fam Storage Conditions"
+                                url="/artFam/enum/storageCondition/"
+                            />
                         </div>
                     </div>
                 </div>
@@ -65,16 +76,17 @@ export default {
             .then (response=> {
                 this.enum_purchased_by=response.data;
             })
-            .catch(error => console.log(error)) ;
+            .catch(error => {
+            }) ;
 
         /*Ask for the controller the different art storage condition option */
         axios.get('/artFam/enum/storageCondition')
             .then (response=> {
-                console.log(response.data),
-                this.enum_storageCondition=response.data,
+                this.enum_storageCondition=response.data;
                 this.loaded=true;
             })
-            .catch(error => console.log(error)) ;
+            .catch(error => {
+            });
     }
 }
 </script>

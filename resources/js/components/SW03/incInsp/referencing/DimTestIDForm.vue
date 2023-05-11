@@ -12,7 +12,6 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <InputTextForm
-                    v-if="data_article_type === 'comp'"
                     name="name"
                     label="Dimensional Test Name :"
                     v-model="dimTest_name"
@@ -25,7 +24,6 @@
                     :Errors="errors.dimTest_name"
                 />
                 <InputTextForm
-                    v-if="data_article_type === 'comp'"
                     name="expectedMethod"
                     label="Expected Method :"
                     v-model="dimTest_expectedMethod"
@@ -38,7 +36,6 @@
                     :Errors="errors.dimTest_expectedMethod"
                 />
                 <InputNumberForm
-                    v-if="data_article_type === 'comp'"
                     name="expectedValue"
                     label="Expected Value :"
                     v-model="dimTest_expectedValue"
@@ -65,7 +62,6 @@
                     :id_actual="'DimSampling'"
                 />
                 <InputTextForm
-                    v-if="data_article_type === 'comp'"
                     name="unitValue"
                     label="Unit Value :"
                     v-model="dimTest_unitValue"
@@ -380,7 +376,6 @@ export default {
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
                             this.errors = error.response.data.errors;
-                            console.log(error.response.data);
                         });
                 })
                 //If the controller sends errors, we put it in the error object

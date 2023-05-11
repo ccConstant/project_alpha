@@ -10,6 +10,7 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\CompFamily;
@@ -168,6 +169,18 @@ class CompFamilyController extends Controller
             } else {
                 $purchaseBy = null;
             }
+            $qualityApprover = User::all()->find($compFamily->compFam_qualityApproverId);
+            if ($qualityApprover != null){
+                $qualityApprover = strtoupper($qualityApprover->user_lastName) . ' ' . $qualityApprover->user_firstName;
+            } else {
+                $qualityApprover = null;
+            }
+            $technicalReviewer = User::find($compFamily->compFam_technicalReviewerId);
+            if ($technicalReviewer != null){
+                $technicalReviewer = strtoupper($technicalReviewer->user_lastName) . ' ' . $technicalReviewer->user_firstName;
+            } else {
+                $technicalReviewer = null;
+            }
             $obj = [
                 'id' => $compFamily->id,
                 'compFam_ref' => $compFamily->compFam_ref,
@@ -179,7 +192,9 @@ class CompFamilyController extends Controller
                 'compFam_validate' => $compFamily->compFam_validate,
                 'compFam_active' => $compFamily->compFam_active,
                 'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
+                'compFam_technicalReviewerName' => $technicalReviewer,
                 'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
+                'compFam_qualityApproverName' => $qualityApprover,
                 'compFam_purchasedBy' => $purchaseBy,
                 'compFam_signatureDate' => $compFamily->compFam_signatureDate,
                 'compFam_created_at' => $compFamily->created_at,
@@ -200,6 +215,18 @@ class CompFamilyController extends Controller
         } else {
             $purchaseBy = null;
         }
+        $qualityApprover = User::find($compFamily->compFam_qualityApproverId);
+        if ($qualityApprover != null){
+            $qualityApprover = strtoupper($qualityApprover->user_lastName) . ' ' . $qualityApprover->user_firstName;
+        } else {
+            $qualityApprover = null;
+        }
+        $technicalReviewer = User::find($compFamily->compFam_technicalReviewerId);
+        if ($technicalReviewer != null){
+            $technicalReviewer = strtoupper($technicalReviewer->user_lastName) . ' ' . $technicalReviewer->user_firstName;
+        } else {
+            $technicalReviewer = null;
+        }
         $obj = [
             'id' => $compFamily->id,
             'compFam_ref' => $compFamily->compFam_ref,
@@ -211,7 +238,9 @@ class CompFamilyController extends Controller
             'compFam_validate' => $compFamily->compFam_validate,
             'compFam_active' => $compFamily->compFam_active,
             'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
+            'compFam_technicalReviewerName' => $technicalReviewer,
             'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
+            'compFam_qualityApproverName' => $qualityApprover,
             'compFam_purchasedBy' => $purchaseBy,
             'compFam_signatureDate' => $compFamily->compFam_signatureDate,
             'compFam_created_at' => $compFamily->created_at,

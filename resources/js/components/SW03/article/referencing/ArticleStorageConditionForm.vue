@@ -21,17 +21,21 @@
                     :isDisabled="this.isInConsultMod"
                     v-model="artFam_storageCondition"
                     :info_text="'Article Family Storage Condition value'"
-                    :id_actual="'ArticleFamilyStorageCondition'"/>
-
-
-
+                    :id_actual="'ArticleFamilyStorageCondition'"
+                />
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addStorageConditions"
                     @update="updateStorageConditions"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
-                    :savedAs="validate"/>
+                    :savedAs="validate"
+                />
+                <DeleteComponentButton v-if="this.isInModifMod"
+                    @delete="deleteComponent"
+                    :consultMod="this.isInConsultMod"
+                    :modifMod="this.isInModifMod"
+                />
             </form>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -141,9 +145,6 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
-                console.log("hola");
-                console.log(this.artFam_type);
-                console.log(this.artFam_storageCondition);
                 const consultUrl = (id) => `/artFam/enum/storageCondition/link/${id}`;
                 axios.post(consultUrl(id), {
                     artFam_type: this.artFam_type.toUpperCase(),
@@ -190,7 +191,6 @@ export default {
                 this.addSucces = true
             }).catch(error =>{
                 this.errors = error.response.data.errors;
-                console.log(error.response.data);
             })
         },
         clearSelectError(value) {
@@ -199,12 +199,11 @@ export default {
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
-            if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
+            if (this.modifMod == true && this.storageCondition_id !== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
-                const consultUrl = (id) => `/equipment/delete/file/${id}`;
-                axios.post(consultUrl(this.file_id), {
-                    eq_id: this.equipment_id_update
+                const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
+                axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
+                    artFam_id: this.art_id
                 })
                     .then(response => {
                         const id = this.equipment_id_update;
@@ -218,25 +217,24 @@ export default {
                         }
                         /*Emit to the parent component that we want to delete this component*/
                         this.$emit('deleteFile', '')
-                        this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
+                        this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
                     })
                     /*If the controller sends errors, we put it in the error object*/
                     .catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteFile', '')
-                this.$refs.sucessAlert.showAlert(`Empty Equipment file deleted successfully`);
+                this.$refs.sucessAlert.showAlert(`Empty storage condition deleted successfully`);
             }
         }
     },
     created() {
-        console.log("hola")
         axios.get('/artFam/enum/storageCondition')
             .then(response => {
                 this.enumArticle_storageCondition = response.data;
-                console.log(response.data)
                 this.loaded = true;
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+            });
     },
 }
 </script>

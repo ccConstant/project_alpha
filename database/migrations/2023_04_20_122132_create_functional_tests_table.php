@@ -34,6 +34,7 @@ class CreateFunctionalTestsTable extends Migration
             $table->string('funcTest_unitValue');
             $table->enum('funcTest_sampling',  ['Statistics', '100%', 'Other']);
             $table->string('funcTest_desc')->nullable();
+            $table->string('funcTest_specDoc')->nullable();
         });
     }
 

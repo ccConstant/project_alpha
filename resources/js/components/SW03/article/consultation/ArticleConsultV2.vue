@@ -848,7 +848,6 @@ export default {
                     };
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         } else if (this.articleType === "comp") {
             axios.get('/comp/family/send/' + this.articleId)
@@ -871,7 +870,6 @@ export default {
                     };
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         } else if (this.articleType === "cons") {
             axios.get('/cons/family/send/' + this.articleId)
@@ -894,7 +892,6 @@ export default {
                     };
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         }
         axios.get('/incmgInsp/send/' + this.articleType + '/' + this.articleId)
@@ -908,17 +905,14 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/aspTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
                             for (let j = 0; j < response.data.length; j++) {
                                 this.aspTests.push(response.data[j]);
                             }
-                            console.log(this.aspTests);
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/funcTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
@@ -927,7 +921,6 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/dimTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
@@ -936,7 +929,6 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/compTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
@@ -945,28 +937,22 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                 }
             })
             .catch(error => {
-                console.log(error);
             });
         axios.get('/artFam/enum/storageCondition/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.stoConds = response.data;
-                console.log(this.stoConds);
             }).catch(error => {
-                console.log(error);
             });
         axios.get('/purSpe/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.purSpes = response.data;
                 this.loaded = true;
-                console.log(this.purSpes);
             })
             .catch(error => {
-                console.log(error);
             });
     }
 }

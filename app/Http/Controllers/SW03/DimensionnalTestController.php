@@ -81,7 +81,22 @@ class DimensionnalTestController extends Controller
                 ]
             );
         }
-        $find = DimensionalTest::all()->where('dimTest_name', '==', $request->dimTest_name)->where('id', '<>', $request->id)->count();
+        $insp = null;
+        if ($request->dimTest_articleType === 'comp') {
+            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+        } else if ($request->dimTest_articleType === 'raw') {
+            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+        } else if ($request->dimTest_articleType === 'cons') {
+            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+        }
+        $val = [];
+        foreach ($insp as $in) {
+            array_push($val, $in->id);
+        }
+        $find = DimensionalTest::all()->where('dimTest_name', '==', $request->dimTest_name)
+            ->whereIn('incmgInsp_id', $val)
+            ->where('id', '<>', $request->id)
+            ->count();
         if ($find !== 0) {
             return response()->json([
                 'dimTest_name' => 'This dimensional test already exists',

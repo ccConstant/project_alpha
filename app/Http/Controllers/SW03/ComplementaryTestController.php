@@ -82,7 +82,22 @@ class ComplementaryTestController extends Controller
                 ]
             );
         }
-        $find = ComplementaryTest::all()->where('compTest_name', '==', $request->compTest_name)->where('id', '<>', $request->id)->count();
+        $insp = null;
+        if ($request->compTest_articleType === 'comp') {
+            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+        } else if ($request->compTest_articleType === 'raw') {
+            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+        } else if ($request->compTest_articleType === 'cons') {
+            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+        }
+        $val = [];
+        foreach ($insp as $in) {
+            array_push($val, $in->id);
+        }
+        $find = ComplementaryTest::all()->where('compTest_name', '==', $request->compTest_name)
+            ->whereIn('incmgInsp_id', $val)
+            ->where('id', '<>', $request->id)
+            ->count();
         if ($find !== 0) {
             return response()->json([
                 'compTest_name' => 'This complementary test already exists',

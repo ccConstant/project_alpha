@@ -84,4 +84,14 @@ class ConsFamilyMemberController extends Controller
         }
         return response()->json($array);
     }
+
+    public function update_consFamilyMember(Request $request, $id) {
+        $member = ConsFamilyMember::all()->where('id', '==', $id)->first();
+        $member->update([
+            'consMb_dimension' => $request->artMb_dimension,
+            'consMb_sameValues' => $request->artMb_sameValues,
+            'consMb_design' => $request->artMb_designation,
+        ]);
+        return response()->json($member);
+    }
 }

@@ -85,4 +85,14 @@ class CompFamilyMemberController extends Controller
         }
         return response()->json($array);
     }
+
+    public function update_compFamilyMember(Request $request, $id) {
+        $member = CompFamilyMember::all()->where('id', '==', $id)->first();
+        $member->update([
+            'compMb_dimension' => $request->artMb_dimension,
+            'compMb_sameValues' => $request->artMb_sameValues,
+            'compMb_design' => $request->artMb_designation,
+        ]);
+        return response()->json($member);
+    }
 }

@@ -966,6 +966,7 @@ Route::get('/prctn/send/pdf/{id} ', [PrecautionController::class, 'send_precauti
 Route::post('/supplier/verif', [SupplierController::class, 'verif_supplier']);
 Route::post('/supplier/add', [SupplierController::class, 'add_supplier']);
 Route::get('/supplier/send', [SupplierController::class, 'send_suppliers']);
+Route::get('/supplier/active/send', [SupplierController::class, 'send_active_suppliers']);
 Route::get('/supplier/send/{id}', [SupplierController::class, 'send_supplier']);
 Route::post('/supplier/update/{id}', [SupplierController::class, 'update_supplier']);
 Route::post('/supplier/adr/verif', [SupplierAdrController::class, 'verif_adr']);
@@ -986,6 +987,7 @@ Route::get('/comp/family/send', [CompFamilyController::class, 'send_compFamilies
 Route::get('/comp/family/send/{id}', [CompFamilyController::class, 'send_compFamily']);
 Route::get('/comp/mb/send/{id}', [CompFamilyMemberController::class, 'send_compFamilyMember']);
 Route::post('/comp/family/update/{id}', [CompFamilyController::class, 'update_compFamily']);
+Route::post('/comp/mb/update/{id}', [CompFamilyMemberController::class, 'update_compFamilyMember']);
 
 
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
@@ -996,6 +998,8 @@ Route::get('/cons/family/send', [ConsFamilyController::class, 'send_consFamilies
 Route::get('/cons/family/send/{id}', [ConsFamilyController::class, 'send_consFamily']);
 Route::get('/cons/mb/send/{id}', [ConsFamilyMemberController::class, 'send_consFamilyMember']);
 Route::post('/cons/family/update/{id}', [ConsFamilyController::class, 'update_consFamily']);
+Route::post('/cons/mb/update/{id}', [ConsFamilyMemberController::class, 'update_consFamilyMember']);
+
 
 
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
@@ -1006,6 +1010,8 @@ Route::get('/raw/family/send', [RawFamilyController::class, 'send_rawFamilies'])
 Route::get('/raw/family/send/{id}', [RawFamilyController::class, 'send_rawFamily']);
 Route::get('/raw/mb/send/{id}', [RawFamilyMemberController::class, 'send_rawFamilyMember']);
 Route::post('/raw/family/update/{id}', [RawFamilyController::class, 'update_rawFamily']);
+Route::post('/raw/mb/update/{id}', [RawFamilyMemberController::class, 'update_rawFamilyMember']);
+
 
 
 // Incoming Inspection Controller
@@ -1056,12 +1062,18 @@ Route::get('/incmgInsp/compTest/sendFromIncmgInsp/{id}', [ComplementaryTestContr
 Route::get('/artFam/enum/purchasedBy', [EnumPurchasedByController::class, 'send_enum_purchasedBy']);
 Route::post('/artFam/enum/purchasedBy/add', [EnumPurchasedByController::class, 'add_enum_purchasedBy']);
 Route::post('/artFam/enum/purchasedBy/verif/{id}', [EnumPurchasedByController::class, 'verif_enum_purchasedBy']);
+Route::post('/artFam/enum/purchasedBy/update/{id}', [EnumPurchasedByController::class, 'update_enum_purchasedBy']);
+Route::post('/artFam/enum/purchasedBy/disable/{id}', [EnumPurchasedByController::class, 'disable_enum_purchasedBy']);
+Route::post('/artFam/enum/purchasedBy/enable/{id}', [EnumPurchasedByController::class, 'enable_enum_purchasedBy']);
+Route::get('/artFam/enum/purchasedBy/sendUsage/{id}', [EnumPurchasedByController::class, 'send_enum_purchasedBy_usage']);
 Route::get('/artFam/enum/storageCondition', [EnumStorageConditionController::class, 'send_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController::class, 'add_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/link/{id}', [EnumStorageConditionController::class, 'link_enum_storageCondition']);
 Route::get('/artFam/enum/storageCondition/send/{type}/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_linked']);
 Route::post('/artFam/enum/storageCondition/update/{type}/{id}', [EnumStorageConditionController::class, 'update_enum_storageCondition_linked']);
+Route::post('/artFam/enum/storageCondition/unlink/{type}/{id}', [EnumStorageConditionController::class, 'unlink_enum_storageCondition']);
+Route::post('/artFam/enum/storageCondition/delete/{id}', [EnumStorageConditionController::class, 'delete_enum_stoConds']);
 
 // Criticality
 Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_criticality']);

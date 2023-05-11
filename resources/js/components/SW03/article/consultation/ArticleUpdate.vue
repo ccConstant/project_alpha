@@ -179,6 +179,7 @@ export default {
                         version: null,
                         genRef: response.data.rawFam_genRef,
                         genDesign: response.data.rawFam_genDesign,
+                        supplier: response.data.supplr_id,
                     };
                     if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
                         this.generic = {
@@ -186,7 +187,6 @@ export default {
                             genRef: this.article.genRef,
                             genDesign: this.article.genDesign,
                         };
-                        console.log(this.generic);
                     }
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
@@ -208,6 +208,7 @@ export default {
                         version: response.data.compFam_version,
                         genRef: response.data.compFam_genRef,
                         genDesign: response.data.compFam_genDesign,
+                        supplier: response.data.supplr_id,
                     };
                     if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
                         this.generic = {
@@ -215,7 +216,6 @@ export default {
                             genRef: this.article.genRef,
                             genDesign: this.article.genDesign,
                         };
-                        console.log(this.generic);
                     }
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
@@ -237,6 +237,7 @@ export default {
                         version: response.data.consFam_version,
                         genRef: response.data.consFam_genRef,
                         genDesign: response.data.consFam_genDesign,
+                        supplier: response.data.supplr_id,
                     };
                     if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
                         this.generic = {
@@ -244,7 +245,6 @@ export default {
                             genRef: this.article.genRef,
                             genDesign: this.article.genDesign,
                         };
-                        console.log(this.generic);
                     }
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;
@@ -262,10 +262,6 @@ export default {
                 genDesign: design,
             };
         },
-    },
-    updated() {
-        console.log('trest');
-        console.log(this.generic);
     }
 }
 </script>

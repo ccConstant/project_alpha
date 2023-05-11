@@ -192,7 +192,8 @@ export default {
                         this.importIncmgInsp();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             } else if (this.data_article_type === 'cons') {
                 axios.get('/incmgInsp/send/cons/' + this.data_article_id)
                     .then(response => {
@@ -200,7 +201,8 @@ export default {
                         this.importIncmgInsp();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             } else if (this.data_article_type === 'comp') {
                 axios.get('/incmgInsp/send/comp/' + this.data_article_id)
                     .then(response => {
@@ -208,7 +210,8 @@ export default {
                         this.importIncmgInsp();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             }
         } else {
             this.loaded = true;

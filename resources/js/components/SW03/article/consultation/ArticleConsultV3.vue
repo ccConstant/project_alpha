@@ -4,12 +4,16 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else class="contentArticle">
+            <p style="text-align: center; width: 80%;">
+                <button class="btn btn-primary" @click="generateReport">Generate Report</button>
+            </p>
             <div id="page">
                 <!-- Header -->
+                <p></p>
                 <table class="header">
                     <tbody>
                     <tr rowspan="3" class="ignored">
-                        <td rowspan="3" style="text-align: center; vertical-align: middle" class="ignored">
+                        <td rowspan="3" style="text-align: center; vertical-align: middle; border: none!important;" class="ignored">
                             <img alt="logo Alpha" src="/images/logo.png" style="width: max-content; height: max-content">
                         </td>
                         <td class="lightGray">
@@ -30,36 +34,56 @@
                         </td>
                         <td class="lightGray">
                             <p>
-                                Reference & Version :
+                                Reference & Designation :
                             </p>
                             <h2>
                                 {{this.articleData.ref}}
                             </h2>
+                            <h2>
+                                {{this.articleData.design}}
+                            </h2>
+                        </td>
+                        <td class="lightGray">
+                            <p>
+                                Version :
+                            </p>
                             <h2>
                                 v{{this.articleData.nbrVersion}}.0
                             </h2>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="4">
                             <h2>
                                 ARTICLE SHEET
                             </h2>
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: left; vertical-align: text-top">
+                        <td style="text-align: left; vertical-align: text-top" colspan="2">
                             <p class="ignored">
                                 Verified by (Name and Date) :
                             </p>
-                            <p id="verifier">
+                            <p>
+                                <p v-if="articleData.signatureDate !== null">
+                                    {{ articleData.technicalReviewerName }}
+                                </p>
+                                <p v-if="articleData.signatureDate !== null">
+                                    {{ articleData.signatureDate }}
+                                </p>
                             </p>
                         </td>
                         <td colspan="2" style="text-align: left; vertical-align: top">
                             <p class="ignored">
                                 Approved by (Name and Date) :
                             </p>
-                            <p id="approver">
+                            <p>
+                                <p v-if="articleData.signatureDate !== null">
+                                    {{ articleData.qualityApproverName }}
+                                </p>
+                                <p v-if="articleData.signatureDate !== null">
+                                    {{ articleData.signatureDate }}
+                                </p>
                             </p>
                         </td>
                     </tr>
@@ -133,28 +157,6 @@
                             </p>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="tableDesc">
-                            <p>
-                                Name of supplier
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <p id="supplierName">
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tableDesc">
-                            <p>
-                                Supplier article reference
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <p id="supplierRef">
-                            </p>
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
                 <!-- Article Member Description -->
@@ -214,7 +216,7 @@
                             </td>
                             <td>
                                 <p>
-                                    {{ this.articleData.variablesCharac }}
+                                    TODO &#9888;
                                 </p>
                             </td>
                         </tr>
@@ -281,10 +283,10 @@
                 <table class="header">
                     <tbody>
                     <tr>
-                        <td style="width: 40%; text-align: center" class="lightGray">
-                            <p>
+                        <td class="gray" colspan="2" style="text-align: center;">
+                            <h2>
                                 Storage Conditions
-                            </p>
+                            </h2>
                         </td>
                         <td>
                             <ul>
@@ -295,12 +297,39 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 40%; text-align: center" class="lightGray">
-                            <p>
+                        <td class="tableName" rowspan="3" style="text-align: center;">
+                            <h2>
                                 Purchasing specifications
+                            </h2>
+                        </td>
+                        <td class="tableDesc">
+                            <p>
+                                Name of supplier
                             </p>
                         </td>
-                        <td>
+                        <td class="tableValue">
+                            <p id="supplierName">
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableDesc">
+                            <p>
+                                Supplier article reference
+                            </p>
+                        </td>
+                        <td class="tableValue">
+                            <p id="supplierRef">
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableDesc">
+                            <p>
+                                Required document(s)
+                            </p>
+                        </td>
+                        <td class="tableValue">
                             <ul>
                                 <li v-for="spec in purSpes" :key="spec.id">
                                     {{ spec.purSpe_requiredDoc }}
@@ -308,6 +337,7 @@
                             </ul>
                         </td>
                     </tr>
+
                     </tbody>
                 </table>
                 <h2 style="text-align: center">
@@ -476,7 +506,7 @@
                             </td>
                             <td class="tableValue">
                                 <p>
-                                    {{ test.funcTest_expectedValue === null ? "/" : test.funcTest_expectedValue }}
+                                    {{ test.funcTest_expectedValue === null ? "/" : test.funcTest_expectedValue }} {{ test.funcTest_expectedUnit === null ? "/" : test.funcTest_expectedUnit }}
                                 </p>
                             </td>
                         </tr>
@@ -585,7 +615,7 @@
                             </td>
                             <td class="tableValue">
                                 <p>
-                                    {{ test.dimTest_expectedValue === null ? "/" : test.dimTest_expectedValue }}
+                                    {{ test.dimTest_expectedValue === null ? "/" : test.dimTest_expectedValue }} {{ test.dimTest_unitValue === null ? "/" : test.dimTest_unitValue }}
                                 </p>
                             </td>
                         </tr>
@@ -697,7 +727,7 @@
                             </td>
                             <td class="tableValue">
                                 <p>
-                                    {{ test.compTest_expectedValue === null ? "/" : test.compTest_expectedValue }}
+                                    {{ test.compTest_expectedValue === null ? "/" : test.compTest_expectedValue }} {{ test.compTest_unitValue === null ? "/" : test.compTest_unitValue }}
                                 </p>
                             </td>
                         </tr>
@@ -820,7 +850,6 @@
                     </tbody>
                 </table>
             </div>
-            <button class="btn btn-primary" @click="generateReport">Generate Report</button>
         </div>
     </div>
 </template>
@@ -894,9 +923,11 @@ export default {
                         nbrVersion: response.data.rawFam_nbrVersion,
                         purchasedBy: response.data.rawFam_purchasedBy,
                         qualityApproverID: response.data.rawFam_qualityApproverId,
+                        qualityApproverName: response.data.rawFam_qualityApproverName,
                         ref: response.data.rawFam_ref,
                         signatureDate: response.data.rawFam_signatureDate,
                         technicalReviewerID: response.data.rawFam_technicalReviewerId,
+                        technicalReviewerName: response.data.rawFam_technicalReviewerName,
                         validate: response.data.rawFam_validate,
                         variablesCharac: response.data.rawFam_variablesCharac,
                         version: '/',
@@ -907,14 +938,12 @@ export default {
                     };
                 })
                 .catch(error => {
-                    console.log(error);
                 });
             axios.get('/raw/mb/send/' + this.articleId)
                 .then(response => {
                     this.familyMembers = response.data;
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         } else if (this.articleType === "comp") {
             axios.get('/comp/family/send/' + this.articleId)
@@ -926,9 +955,11 @@ export default {
                         nbrVersion: response.data.compFam_nbrVersion,
                         purchasedBy: response.data.compFam_purchasedBy,
                         qualityApproverID: response.data.compFam_qualityApproverId,
+                        qualityApproverName: response.data.compFam_qualityApproverName,
                         ref: response.data.compFam_ref,
                         signatureDate: response.data.compFam_signatureDate,
                         technicalReviewerID: response.data.compFam_technicalReviewerId,
+                        technicalReviewerName: response.data.compFam_technicalReviewerName,
                         validate: response.data.compFam_validate,
                         variablesCharac: response.data.compFam_variablesCharac,
                         version: response.data.compFam_version,
@@ -939,14 +970,12 @@ export default {
                     };
                 })
                 .catch(error => {
-                    console.log(error);
                 });
             axios.get('/comp/mb/send/' + this.articleId)
                 .then(response => {
                     this.familyMembers = response.data;
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         } else if (this.articleType === "cons") {
             axios.get('/cons/family/send/' + this.articleId)
@@ -958,9 +987,11 @@ export default {
                         nbrVersion: response.data.consFam_nbrVersion,
                         purchasedBy: response.data.consFam_purchasedBy,
                         qualityApproverID: response.data.consFam_qualityApproverId,
+                        qualityApproverName: response.data.consFam_qualityApproverName,
                         ref: response.data.consFam_ref,
                         signatureDate: response.data.consFam_signatureDate,
                         technicalReviewerID: response.data.consFam_technicalReviewerId,
+                        technicalReviewerName: response.data.consFam_technicalReviewerName,
                         validate: response.data.consFam_validate,
                         variablesCharac: response.data.consFam_variablesCharac,
                         version: response.data.consFam_version,
@@ -971,14 +1002,12 @@ export default {
                     };
                 })
                 .catch(error => {
-                    console.log(error);
                 });
             axios.get('/cons/mb/send/' + this.articleId)
                 .then(response => {
                     this.familyMembers = response.data;
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         }
         axios.get('/incmgInsp/send/' + this.articleType + '/' + this.articleId)
@@ -992,17 +1021,14 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/aspTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
                             for (let j = 0; j < response.data.length; j++) {
                                 this.aspTests.push(response.data[j]);
                             }
-                            console.log(this.aspTests);
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/funcTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
@@ -1011,7 +1037,6 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/dimTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
@@ -1020,7 +1045,6 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                     axios.get('/incmgInsp/compTest/sendFromIncmgInsp/' + this.incmgInsps[i].id)
                         .then(response => {
@@ -1029,28 +1053,22 @@ export default {
                             }
                         })
                         .catch(error => {
-                            console.log(error);
                         });
                 }
             })
             .catch(error => {
-                console.log(error);
             });
         axios.get('/artFam/enum/storageCondition/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.stoConds = response.data;
-                console.log(this.stoConds);
             }).catch(error => {
-                console.log(error);
             });
         axios.get('/purSpe/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.purSpes = response.data;
                 this.loaded = true;
-                console.log(this.purSpes);
             })
             .catch(error => {
-                console.log(error);
             });
     }
 }
@@ -1058,13 +1076,16 @@ export default {
 </script>
 
 <style scoped>
-    table {
+    table:not(.ignored) {
         width: 100%;
         page-break-before: always!important;
         page-break-after: always!important;
         page-break-inside: avoid!important;
         position: relative;
         border: 1px solid black;
+    }
+    .ignored {
+        border: none!important;
     }
     div {
         page-break-inside: auto!important;
@@ -1109,10 +1130,11 @@ export default {
         border: 1px solid black;
     }
     p {
-        font-size: 14px;
+        font-size: 20px;
         font-style: normal;
         font-weight: normal;
         font-family: Calibri;
+        marign-left: 10px;
     }
     .tableDesc p:not(.ignored) {
         text-align: center;
@@ -1126,13 +1148,22 @@ export default {
         text-align: center;
     }
     li {
-        font-size: 14px;
+        font-size: 20px;
         font-style: normal;
         font-weight: normal;
         font-family: Calibri;
         list-style: none;
     }
-    .ignored {
-        border: none!important;
+    li:before {
+        content: "-";
+        color: #999898;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+    img {
+        width: 100%!important;
+        height: auto;
     }
 </style>

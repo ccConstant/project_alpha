@@ -152,4 +152,43 @@ class EnumStorageConditionController extends Controller
             }
         }
     }
+
+    public function unlink_enum_storageCondition (Request $request, $type, $id){
+        $enum=EnumStorageCondition::where('value', '=', $request->artFam_id)->first();
+        if ($type === "comp"){
+            $compFam=CompFamily::findOrFail($id);
+            $enum->compFamily()->detach($compFam);
+        }else if ($type === "raw"){
+            $rawFam=RawFamily::findOrFail($id);
+            $enum->rawFamily()->detach($rawFam);
+        }else if ($type === "cons"){
+            $consFam=ConsFamily::findOrFail($id);
+            $enum->consFamily()->detach($consFam);
+        }
+    }
+
+    public function delete_enum_stoConds ($id){
+        $stoConds = [];
+        $comp=CompFamily::all()->where('enumType_id', '=', $id);
+        foreach ($comp as $c){
+            array_push($stoConds, $c->storage_conditions);
+        }
+        $raw=RawFamily::all()->where('enumType_id', '=', $id);
+        foreach ($raw as $r){
+            array_push($stoConds, $r->storage_conditions);
+        }
+        $cons=ConsFamily::all()->where('enumType_id', '=', $id);
+        foreach ($cons as $c){
+            array_push($stoConds, $c->storage_conditions);
+        }
+        if (count($stoConds)!=0){
+            return response()->json([
+                'errors' => [
+                    'enum_stoConds' => ["This value is already used in the data base so you can't delete it"]
+                ]
+            ], 429);
+        }
+        $enum = EnumStorageCondition::all()->find($id);
+        $enum->delete() ;
+    }
 }
