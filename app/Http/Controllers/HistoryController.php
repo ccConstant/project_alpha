@@ -12,6 +12,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
+use App\Models\SW03\RawFamily;
 use Carbon\CarbonTimeZone;
 use DateTimeZone;
 use Illuminate\Http\Request;
@@ -111,5 +114,44 @@ class HistoryController extends Controller
         return response()->json($containerHistory);
     }
 
+    public function add_history_for_article(Request $request, $type, $id) {
+         if ($type === 'cons') {
+             $article = ConsFamily::all()->find($id)->first();
+             $hist = History::create([
+                'history_numVersion' => $article->consFam_nbrVersion-1,
+                 'history_reasonUpdate' => $request->history_reasonUpdate,
+                 'consFam_id' => $id
+             ]);
+             return response()->json($hist);
+         } else if ($type === 'comp') {
+             $article = CompFamily::all()->find($id)->first();
+             $hist = History::create([
+                 'history_numVersion' => $article->compFam_nbrVersion-1,
+                 'history_reasonUpdate' => $request->history_reasonUpdate,
+                 'compFam_id' => $id
+             ]);
+             return response()->json($hist);
+         } else if ($type === 'raw') {
+             $article = RawFamily::all()->find($id)->first();
+             $hist = History::create([
+                 'history_numVersion' => $article->rawFam_nbrVersion-1,
+                 'history_reasonUpdate' => $request->history_reasonUpdate,
+                 'rawFam_id' => $id
+             ]);
+             return response()->json($hist);
+         }
+    }
 
+    public function send_history_for_article($type, $id) {
+         if ($type === 'cons') {
+             $hist = History::all()->where('consFam_id', '=', $id);
+             return response()->json($hist);
+         } else if ($type === 'comp') {
+             $hist = History::all()->where('compFam_id', '=', $id);
+             return response()->json($hist);
+         } else if ($type === 'raw') {
+             $hist = History::all()->where('rawFam_id', '=', $id);
+             return response()->json($hist);
+         }
+    }
 }

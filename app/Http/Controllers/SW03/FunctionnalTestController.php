@@ -62,6 +62,7 @@ class FunctionnalTestController extends Controller
                     'funcTest_expectedValue' => 'required|min:1|max:50',
                     'funcTest_name' => 'required|string|min:2|max:255',
                     'funcTest_unitValue' => 'required|string|min:1|max:10',
+                    'funcTest_specDoc' => 'required|string|min:2|max:255',
                 ],
                 [
                     'funcTest_expectedMethod.required' => 'You must enter an expected method',
@@ -82,6 +83,11 @@ class FunctionnalTestController extends Controller
                     'funcTest_unitValue.string' => 'The unit value must be a string',
                     'funcTest_unitValue.min' => 'You must enter at least one character',
                     'funcTest_unitValue.max' => 'You must enter a maximum of 10 characters',
+
+                    'funcTest_specDoc.required' => 'You must enter a specification document',
+                    'funcTest_specDoc.string' => 'The specification document must be a string',
+                    'funcTest_specDoc.min' => 'You must enter at least two characters',
+                    'funcTest_specDoc.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
@@ -119,6 +125,7 @@ class FunctionnalTestController extends Controller
             'funcTest_sampling' => $request->funcTest_sampling,
             'incmgInsp_id' => $request->incmgInsp_id,
             'funcTest_desc' => $request->funcTest_desc,
+            'funcTest_specDoc' => $request->funcTest_specDoc,
         ]);
         return $funcTest;
     }
@@ -138,6 +145,7 @@ class FunctionnalTestController extends Controller
                 'funcTest_sampling' => $funcTest->funcTest_sampling,
                 'incmgInsp_id' => $funcTest->incmgInsp_id,
                 'funcTest_desc' => $funcTest->funcTest_desc,
+                'funcTest_specDoc' => $funcTest->funcTest_specDoc,
             ];
         }
         return response()->json($array);
@@ -156,6 +164,7 @@ class FunctionnalTestController extends Controller
             'funcTest_sampling' => $funcTest->funcTest_sampling,
             'incmgInsp_id' => $funcTest->incmgInsp_id,
             'funcTest_desc' => $funcTest->funcTest_desc,
+            'funcTest_specDoc' => $funcTest->funcTest_specDoc,
         ]);
     }
 
@@ -217,6 +226,7 @@ class FunctionnalTestController extends Controller
             'funcTest_unitValue' => $request->funcTest_unitValue,
             'funcTest_sampling' => $request->funcTest_sampling,
             'funcTest_desc' => $request->funcTest_desc,
+            'funcTest_specDoc' => $request->funcTest_specDoc,
         ]);
         return response()->json($funcTest);
     }

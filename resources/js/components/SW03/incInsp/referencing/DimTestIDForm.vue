@@ -24,6 +24,18 @@
                     :Errors="errors.dimTest_name"
                 />
                 <InputTextForm
+                    name="specDoc"
+                    label="Document specification :"
+                    v-model="dimTest_specDoc"
+                    :isDisabled="isInConsultedMod"
+                    :info_text="null"
+                    :min="2"
+                    :max="255"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.dimTest_specDoc"
+                />
+                <InputTextForm
                     name="expectedMethod"
                     label="Expected Method :"
                     v-model="dimTest_expectedMethod"
@@ -45,6 +57,18 @@
                     isRequired
                     :Errors="errors.dimTest_expectedValue"
                 />
+                <InputTextForm
+                    name="unitValue"
+                    label="Unit Value :"
+                    v-model="dimTest_unitValue"
+                    :isDisabled="!!isInConsultedMod"
+                    :info_text="null"
+                    :min="1"
+                    :max="10"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.dimTest_unitValue"
+                />
                 <InputSelectForm
                     :name="'Sampling'"
                     :label="'Sampling :'"
@@ -60,18 +84,6 @@
                     :Errors="errors.dimTest_sampling"
                     :selctedOption="dimTest_sampling"
                     :id_actual="'DimSampling'"
-                />
-                <InputTextForm
-                    name="unitValue"
-                    label="Unit Value :"
-                    v-model="dimTest_unitValue"
-                    :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
-                    :min="1"
-                    :max="10"
-                    :inputClassName="null"
-                    isRequired
-                    :Errors="errors.dimTest_unitValue"
                 />
                 <InputSelectForm
                     v-if="this.dimTest_sampling === 'Statistics'"
@@ -230,7 +242,11 @@ export default {
         desc: {
             type: String,
             default: null
-        }
+        },
+        specDoc: {
+            type: String,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -254,6 +270,7 @@ export default {
             dimTest_unitValue: this.unitValue,
             dimTest_sampling: this.sampling,
             dimTest_desc: this.desc,
+            dimTest_specDoc: this.specDoc,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -284,6 +301,7 @@ export default {
                     dimTest_sampling: this.dimTest_sampling,
                     dimTest_unitValue: this.dimTest_unitValue,
                     dimTest_desc: this.dimTest_desc,
+                    dimTest_specDoc: this.dimTest_specDoc,
                     reason: 'add',
                     id: this.dimTest_id,
                     article_id: this.data_article_id,
@@ -303,6 +321,7 @@ export default {
                         dimTest_sampling: this.dimTest_sampling,
                         dimTest_unitValue: this.dimTest_unitValue,
                         dimTest_desc: this.dimTest_desc,
+                        dimTest_specDoc: this.dimTest_specDoc,
                         reason: 'add',
                         id: this.dimTest_id,
                         article_id: this.data_article_id,
@@ -331,7 +350,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) {
+        updateDocControl(savedAs, reason, artSheet_created) {
             axios.post('/incmgInsp/dimTest/verif', {
                 dimTest_name: this.dimTest_name,
                 dimTest_severityLevel: this.dimTest_severityLevel,
@@ -343,6 +362,7 @@ export default {
                 dimTest_sampling: this.dimTest_sampling,
                 dimTest_unitValue: this.dimTest_unitValue,
                 dimTest_desc: this.dimTest_desc,
+                dimTest_specDoc: this.dimTest_specDoc,
                 reason: 'update',
                 id: this.dimTest_id,
                 article_id: this.data_article_id,
@@ -362,16 +382,22 @@ export default {
                         dimTest_sampling: this.dimTest_sampling,
                         dimTest_unitValue: this.dimTest_unitValue,
                         dimTest_desc: this.dimTest_desc,
+                        dimTest_specDoc: this.dimTest_specDoc,
                         reason: 'update',
                         id: this.dimTest_id,
                         article_id: this.data_article_id,
                     })
                         /*If the file is added successfully*/
                         .then(response => {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
                             this.$snotify.success(`Dimensional Test successfully updated`);
                             this.isInConsultedMod = true;
                             this.addSucces = true
-                            // TODO: faire l'historique
                         })
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {

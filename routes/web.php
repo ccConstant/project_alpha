@@ -1090,4 +1090,8 @@ Route::post('/purSpe/update/{type}/{id}', [PurchaseSpecificationController::clas
 Route::get('/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
 Route::get('/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);
 
+//History for article
+Route::post('/artFam/history/add/{type}/{id}', [HistoryController::class, 'add_history_for_article']);
+Route::get('/artFam/history/send/{type}/{id}', [HistoryController::class, 'send_history_for_article']);
+
 

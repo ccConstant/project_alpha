@@ -17,7 +17,7 @@
                     name="remarks"
                     label="Incoming Inspection Remarks :"
                     v-model="incmgInsp_remarks"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="!!isInConsultMod || addSucces"
                     :info_text="null"
                     :max="255"
                 />
@@ -26,7 +26,7 @@
                     name="partMatCertif"
                     label="Incoming Inspection Part Material Compliance Certificate :"
                     v-model="incmgInsp_partMaterialCertif"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="!!isInConsultMod || addSucces"
                     :info_text="null"
                     :max="255"
                 />
@@ -35,7 +35,7 @@
                     name="rawMatCertif"
                     label="Incoming Inspection Raw Material Certificate :"
                     v-model="incmgInsp_rawMaterialCertif"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="!!isInConsultMod || addSucces"
                     :info_text="null"
                     :max="255"
                 />
@@ -252,7 +252,7 @@ export default {
     equipment_id_update: ID of the equipment in which the file will be updated
     errors: Object of errors in which will be stores the different error occurred when adding in database
     addSucces: Boolean who tell if this file has been added successfully
-    isInConsultedMod: data of the consultMod prop
+    isInConsultMod: data of the consultMod prop
 -----------------------------------------------------------*/
     data() {
         return {
@@ -315,7 +315,6 @@ export default {
                     /*If the file is added successfully*/
                     .then(response => {
                         this.$snotify.success(`Incoming Inspection added successfully`);
-                        this.isInConsultedMod = true;
                         this.addSucces = true
                         /*the id of the file take the value of the newly created id*/
                         this.incmgInsp_id = response.data.id;
@@ -333,7 +332,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateIncmgInsp(savedAs, reason, lifesheet_created) {
+        updateIncmgInsp(savedAs, reason, artSheet_created) {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
             axios.post('/incmgInsp/verif', {
@@ -366,14 +365,14 @@ export default {
                             this.incmgInsp_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
                             }
                             this.$refs.sucessAlert.showAlert(`Incoming Inspection updated successfully and saved as ${savedAs}`);
-                            this.isInConsultedMod = true;
+                            this.addSucces = true;
                         })
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
@@ -388,7 +387,7 @@ export default {
             delete this.errors[event.target.name];
         },
         /*Function for deleting a file from the view and the database*/
-        deleteComponent(reason, lifesheet_created) {
+        deleteComponent(reason, artSheet_created) {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.file_id !== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
@@ -401,6 +400,12 @@ export default {
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
                         /*Emit to the parent component that we want to delete this component*/
+                        if (artSheet_created == true) {
+                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
                         this.$emit('deleteFile', '')
                         this.$refs.sucessAlert.showAlert(`Incoming Inspection deleted successfully`);
                     })

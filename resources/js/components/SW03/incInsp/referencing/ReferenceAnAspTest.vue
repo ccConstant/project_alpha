@@ -30,6 +30,7 @@
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.aspTest_desc"
+                :specDoc="component.aspTest_specDoc"
                 @deleteAspTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -132,7 +133,15 @@ export default {
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(aspTest_severityLevel, aspTest_controlLevel, aspTest_expectedAspect, aspTest_name, aspTest_sampling, aspTest_desc, incmgInsp_id, id, className) {
+        addImportedComponent(
+            aspTest_severityLevel,
+            aspTest_controlLevel,
+            aspTest_expectedAspect,
+            aspTest_name,
+            aspTest_sampling,
+            aspTest_desc,
+            aspTest_specDoc,
+            incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'AspTestIDForm',
                 key: this.uniqueKey++,
@@ -142,6 +151,7 @@ export default {
                 aspTest_name: aspTest_name,
                 aspTest_sampling: aspTest_sampling,
                 aspTest_desc: aspTest_desc,
+                aspTest_specDoc: aspTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -165,6 +175,7 @@ export default {
                         at.aspTest_name,
                         at.aspTest_sampling,
                         at.aspTest_desc,
+                        at.aspTest_specDoc,
                         at.incmgInsp_id,
                         at.id,
                         className

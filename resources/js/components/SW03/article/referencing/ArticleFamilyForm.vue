@@ -484,11 +484,12 @@ export default {
                             /*We test if an article sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
                             if (artSheet_created == true) {
-                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + 'Fam/${id}', {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
                             }
+                            this.isInConsultMod = true;
                             /*If the data have been updated in the database, we show a success message*/
                             this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
                             this.artFam_validate = savedAs;

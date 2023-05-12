@@ -196,7 +196,7 @@ export default {
     equipment_id_update: ID of the equipment in which the file will be updated
     errors: Object of errors in which will be stores the different error occurred when adding in database
     addSucces: Boolean who tell if this file has been added successfully
-    isInConsultedMod: data of the consultMod prop
+    isInConsultMod: data of the consultMod prop
 -----------------------------------------------------------*/
     data() {
         return {
@@ -252,7 +252,7 @@ export default {
                     /*If the file is added successfully*/
                     .then(response => {
                         this.$snotify.success(`Criticality added successfully and saved as ${savedAs}`);
-                        this.isInConsultedMod = true;
+                        this.isInConsultMod = true;
                         this.addSucces = true
                     })
                     /*If the controller sends errors, we put it in the error object*/
@@ -301,14 +301,14 @@ export default {
                             this.crit_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
                             }
                             this.$refs.sucessAlert.showAlert(`Incoming Inspection updated successfully and saved as ${savedAs}`);
-                            this.isInConsultedMod = true;
+                            this.isInConsultMod = true;
                         })
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {

@@ -59,6 +59,7 @@ class DimensionnalTestController extends Controller
                     'dimTest_expectedValue' => 'required|integer',
                     'dimTest_name' => 'required|string|min:2|max:255',
                     'dimTest_unitValue' => 'required|string|min:1|max:10',
+                    'dimTest_specDoc' => 'required|string|min:2|max:255',
                 ],
                 [
                     'dimTest_expectedMethod.required' => 'You must enter an expected method',
@@ -78,6 +79,11 @@ class DimensionnalTestController extends Controller
                     'dimTest_unitValue.string' => 'The unit value must be a string',
                     'dimTest_unitValue.min' => 'You must enter at least one character',
                     'dimTest_unitValue.max' => 'You must enter a maximum of 10 characters',
+
+                    'dimTest_specDoc.required' => 'You must enter a specification document',
+                    'dimTest_specDoc.string' => 'The specification document must be a string',
+                    'dimTest_specDoc.min' => 'You must enter at least two characters',
+                    'dimTest_specDoc.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
@@ -115,6 +121,7 @@ class DimensionnalTestController extends Controller
             'dimTest_unitValue' => $request->dimTest_unitValue,
             'incmgInsp_id' => $request->incmgInsp_id,
             'dimTest_desc' => $request->dimTest_desc,
+            'dimTest_specDoc' => $request->dimTest_specDoc,
         ]);
         return response()->json($dimTest);
     }
@@ -134,6 +141,7 @@ class DimensionnalTestController extends Controller
                 'dimTest_unitValue' => $item->dimTest_unitValue,
                 'incmgInsp_id' => $item->incmgInsp_id,
                 'dimTest_desc' => $item->dimTest_desc,
+                'dimTest_specDoc' => $item->dimTest_specDoc,
             ];
             array_push($array, $obj);
         }
@@ -153,6 +161,7 @@ class DimensionnalTestController extends Controller
             'dimTest_unitValue' => $dimTest->dimTest_unitValue,
             'incmgInsp_id' => $dimTest->incmgInsp_id,
             'dimTest_desc' => $dimTest->dimTest_desc,
+            'dimTest_specDoc' => $dimTest->dimTest_specDoc,
         ]);
     }
 
@@ -215,6 +224,7 @@ class DimensionnalTestController extends Controller
             'dimTest_unitValue' => $request->dimTest_unitValue,
             'incmgInsp_id' => $request->incmgInsp_id,
             'dimTest_desc' => $request->dimTest_desc,
+            'dimTest_specDoc' => $request->dimTest_specDoc,
         ]);
         return response()->json($dimTest);
     }

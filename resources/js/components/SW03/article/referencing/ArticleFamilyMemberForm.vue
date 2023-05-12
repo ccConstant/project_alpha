@@ -320,6 +320,12 @@ export default {
                             .then(response => {
                                 this.addSuccess = true;
                                 this.isInConsultMod = true;
+                                if (artSheet_created == true) {
+                                    axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                        history_reasonUpdate: reason,
+                                    });
+                                    window.location.reload();
+                                }
                                 this.$snotify.success(`CompFamMember updated successfully and saved as ${savedAs}`);
                                 this.artFamMember_id = response.data;
                             })
@@ -348,6 +354,12 @@ export default {
                                 .then(response => {
                                     this.addSuccess = true;
                                     this.isInConsultMod = true;
+                                    if (artSheet_created == true) {
+                                        axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                            history_reasonUpdate: reason,
+                                        });
+                                        window.location.reload();
+                                    }
                                     this.$snotify.success(`CompFamMember updated successfully and saved as ${savedAs}`);
                                     this.artFamMember_id = response.data;
                                 })
@@ -378,6 +390,12 @@ export default {
                                     .then(response => {
                                         this.addSuccess = true;
                                         this.isInConsultMod = true;
+                                        if (artSheet_created == true) {
+                                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                                history_reasonUpdate: reason,
+                                            });
+                                            window.location.reload();
+                                        }
                                         this.$snotify.success(`ConsFamMember updated successfully and saved as ${savedAs}`);
                                         this.artFamMember_id = response.data;
                                     })

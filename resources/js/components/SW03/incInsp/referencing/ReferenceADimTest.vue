@@ -32,6 +32,7 @@
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.dimTest_desc"
+                :specDoc="component.dimTest_specDoc"
                 @deletedimTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -133,7 +134,17 @@ export default {
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(dimTest_severityLevel, dimTest_controlLevel, dimTest_expectedMethod, dimTest_expectedValue, dimTest_name, dimTest_sampling, dimTest_unitValue, dimTest_desc, incmgInsp_id, id, className) {
+        addImportedComponent(
+            dimTest_severityLevel,
+            dimTest_controlLevel,
+            dimTest_expectedMethod,
+            dimTest_expectedValue,
+            dimTest_name,
+            dimTest_sampling,
+            dimTest_unitValue,
+            dimTest_desc,
+            dimTest_specDoc,
+            incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'DimTestIDForm',
                 key: this.uniqueKey++,
@@ -145,6 +156,7 @@ export default {
                 dimTest_sampling: dimTest_sampling,
                 dimTest_unitValue: dimTest_unitValue,
                 dimTest_desc: dimTest_desc,
+                dimTest_specDoc: dimTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -170,6 +182,7 @@ export default {
                         dt.dimTest_sampling,
                         dt.dimTest_unitValue,
                         dt.dimTest_desc,
+                        dt.dimTest_specDoc,
                         dt.incmgInsp_id,
                         dt.id,
                         className

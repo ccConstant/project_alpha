@@ -32,6 +32,7 @@
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.compTest_desc"
+                :specDoc="component.compTest_specDoc"
                 @deletecompTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -142,6 +143,7 @@ export default {
             compTest_sampling,
             compTest_unitValue,
             compTest_desc,
+            compTest_specDoc,
             incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'CompTestIDForm',
@@ -154,6 +156,7 @@ export default {
                 compTest_sampling: compTest_sampling,
                 compTest_unitValue: compTest_unitValue,
                 compTest_desc: compTest_desc,
+                compTest_specDoc: compTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -179,6 +182,7 @@ export default {
                         dt.compTest_sampling,
                         dt.compTest_unitValue,
                         dt.compTest_desc,
+                        dt.compTest_specDoc,
                         dt.incmgInsp_id,
                         dt.id,
                         className
@@ -216,7 +220,7 @@ export default {
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/compTest/sendFromIncmgInsp/${id}`; // FIXME
+            const consultUrl = (id) => `/incmgInsp/compTest/sendFromIncmgInsp/${id}`;
             axios.get(consultUrl(this.import_id))
                 .then(response => {
                     this.compTest = response.data;

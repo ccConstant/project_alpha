@@ -16,12 +16,11 @@ class ComplementaryTestController extends Controller
         $this->validate(
             $request,
             [
-                'compTest_sampling' => 'required|integer',
+                'compTest_sampling' => 'required',
                 'incmgInsp_id' => 'required',
             ],
             [
                 'compTest_sampling.required' => 'You must enter a sampling',
-                'compTest_sampling.integer' => 'The sampling must be an integer'
             ]
         );
         if ($request->compTest_sampling === 'Statistics') {
@@ -59,6 +58,7 @@ class ComplementaryTestController extends Controller
                     'compTest_expectedValue' => 'required|min:1|max:50',
                     'compTest_name' => 'required|string|min:2|max:255',
                     'compTest_unitValue' => 'required|string|min:1|max:10',
+                    'compTest_specDoc' => 'required|min:2|max:255',
                 ],
                 [
                     'compTest_expectedMethod.required' => 'You must enter an expected method',
@@ -79,6 +79,10 @@ class ComplementaryTestController extends Controller
                     'compTest_unitValue.string' => 'The unit value must be a string',
                     'compTest_unitValue.min' => 'You must enter at least one character',
                     'compTest_unitValue.max' => 'You must enter a maximum of 10 characters',
+
+                    'compTest_specDoc.required' => 'You must enter a specification document',
+                    'compTest_specDoc.min' => 'You must enter at least two characters',
+                    'compTest_specDoc.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
@@ -116,6 +120,7 @@ class ComplementaryTestController extends Controller
             'compTest_expectedValue' => $request->compTest_expectedValue,
             'compTest_expectedMethod' => $request->compTest_expectedMethod,
             'compTest_desc' => $request->compTest_desc,
+            'compTest_specDoc' => $request->compTest_specDoc,
         ]);
         return response()->json($compTest);
     }
@@ -135,6 +140,7 @@ class ComplementaryTestController extends Controller
                 'compTest_expectedValue' => $compTest->compTest_expectedValue,
                 'compTest_expectedMethod' => $compTest->compTest_expectedMethod,
                 'compTest_desc' => $compTest->compTest_desc,
+                'compTest_specDoc' => $compTest->compTest_specDoc,
             ];
             array_push($array, $obj);
         }
@@ -154,6 +160,7 @@ class ComplementaryTestController extends Controller
             'compTest_expectedValue' => $compTest->compTest_expectedValue,
             'compTest_expectedMethod' => $compTest->compTest_expectedMethod,
             'compTest_desc' => $compTest->compTest_desc,
+            'compTest_specDoc' => $compTest->compTest_specDoc,
         ]);
     }
 
@@ -216,6 +223,7 @@ class ComplementaryTestController extends Controller
             'compTest_expectedValue' => $request->compTest_expectedValue,
             'compTest_expectedMethod' => $request->compTest_expectedMethod,
             'compTest_desc' => $request->compTest_desc,
+            'compTest_specDoc' => $request->compTest_specDoc,
         ]);
         return response()->json($compTest);
     }

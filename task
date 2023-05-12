@@ -7,9 +7,6 @@ TODO:
             - Reference
             - Specification
         + le bouton add pour en ajouter des vides
-    Fiche consultation article :
-        - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé docSpec)
-    Loc incmgInsp et criticality après ajout
     Update des membres de familles d'articles
     Ajouter un champs description de la variable generique dans la fiche article
     Completer la partie Purchasing Specifications de la fiche article
@@ -18,6 +15,7 @@ TODO:
 FIXME:
     Changer expected value du funcTest en String et en 'Expected Acceptance Criteria' ??
     Empêcher Html2pdf de couper les tableaux de la fiche consultation article
+    Update criticality
     */
 
 DONE:
@@ -29,4 +27,6 @@ DONE:
     Unicité des noms dans les tests (par famille d'articles)
     Ajout d'un membre générique de famille article
     Ajout d'un membre non générique (adapté au générique) de famille article
+    Fiche consultation article :
+            - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé specDoc)
     */

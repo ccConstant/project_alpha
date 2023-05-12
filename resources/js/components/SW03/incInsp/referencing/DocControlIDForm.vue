@@ -239,7 +239,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) {
+        updateDocControl(savedAs, reason, artSheet_created) {
             axios.post('/incmgInsp/docControl/verif', {
                 docControl_articleType: this.data_article_type,
                 docControl_reference: this.docControl_reference,
@@ -268,6 +268,12 @@ export default {
                     })
                         /*If the file is added successfully*/
                         .then(response => {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
                             this.$snotify.success(`Documentary Control successfully updated`);
                             this.isInConsultedMod = true;
                             this.addSucces = true

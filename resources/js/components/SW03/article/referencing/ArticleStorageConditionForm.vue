@@ -185,6 +185,12 @@ export default {
                 value: this.artFam_storageCondition,
                 id: this.storageCondition_id
             }).then(response =>{
+                if (artSheet_created == true) {
+                    axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                        history_reasonUpdate: reason,
+                    });
+                    window.location.reload();
+                }
                 this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
                 /*If the user is not in modification mode*/
                 this.isInConsultedMod = true;
@@ -209,8 +215,8 @@ export default {
                         const id = this.equipment_id_update;
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
+                        if (artSheet_created == true) {
+                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                 history_reasonUpdate: reason,
                             });
                             window.location.reload();

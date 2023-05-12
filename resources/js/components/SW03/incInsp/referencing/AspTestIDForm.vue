@@ -24,6 +24,18 @@
                     :Errors="errors.aspTest_name"
                 />
                 <InputTextForm
+                    name="specDoc"
+                    label="Document specification :"
+                    v-model="aspTest_specDoc"
+                    :isDisabled="isInConsultedMod"
+                    :info_text="null"
+                    :min="2"
+                    :max="255"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.aspTest_specDoc"
+                />
+                <InputTextForm
                     name="expectedAspect"
                     label="Expected Aspect :"
                     v-model="aspTest_expectedAspect"
@@ -200,7 +212,11 @@ export default {
         desc: {
             type: String,
             default: null
-        }
+        },
+        specDoc: {
+            type: String,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -222,6 +238,7 @@ export default {
             aspTest_sampling: this.sampling,
             aspTest_name: this.name,
             aspTest_desc: this.desc,
+            aspTest_specDoc: this.specDoc,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -248,6 +265,7 @@ export default {
                     aspTest_expectedAspect: this.aspTest_expectedAspect,
                     aspTest_sampling: this.aspTest_sampling,
                     aspTest_desc: this.aspTest_desc,
+                    aspTest_specDoc: this.aspTest_specDoc,
                     incmgInsp_id: this.data_incmgInsp_id,
                     reason: 'add',
                     id: this.aspTest_id,
@@ -265,6 +283,7 @@ export default {
                         aspTest_expectedAspect: this.aspTest_expectedAspect,
                         aspTest_sampling: this.aspTest_sampling,
                         aspTest_desc: this.aspTest_desc,
+                        aspTest_specDoc: this.aspTest_specDoc,
                         incmgInsp_id: this.data_incmgInsp_id,
                         reason: 'add',
                         id: this.aspTest_id,
@@ -295,7 +314,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) {
+        updateDocControl(savedAs, reason, artSheet_created) {
             axios.post('/incmgInsp/aspTest/verif', {
                 aspTest_name: this.aspTest_name,
                 aspTest_severityLevel: this.aspTest_severityLevel,
@@ -303,6 +322,7 @@ export default {
                 aspTest_expectedAspect: this.aspTest_expectedAspect,
                 aspTest_sampling: this.aspTest_sampling,
                 aspTest_desc: this.aspTest_desc,
+                aspTest_specDoc: this.aspTest_specDoc,
                 incmgInsp_id: this.data_incmgInsp_id,
                 aspTest_articleType: this.data_article_type,
                 reason: 'update',
@@ -320,6 +340,7 @@ export default {
                         aspTest_expectedAspect: this.aspTest_expectedAspect,
                         aspTest_sampling: this.aspTest_sampling,
                         aspTest_desc: this.aspTest_desc,
+                        aspTest_specDoc: this.aspTest_specDoc,
                         incmgInsp_id: this.data_incmgInsp_id,
                         aspTest_articleType: this.data_article_type,
                         reason: 'update',
@@ -328,10 +349,15 @@ export default {
                     })
                         /*If the file is added successfully*/
                         .then(response => {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
                             this.$snotify.success(`Aspect Test added successfully`);
                             this.isInConsultedMod = true;
                             this.addSucces = true
-                            // TODO: faire l'historique
                         })
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => this.errors = error.response.data.errors);

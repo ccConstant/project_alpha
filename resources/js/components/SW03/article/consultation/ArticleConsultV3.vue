@@ -409,7 +409,7 @@
                             </td>
                             <td>
                                 <p>
-                                    {{ test.aspTest_docSpec === null ? "/" : test.aspTest_docSpec }}
+                                    {{ test.aspTest_specDoc === null ? "/" : test.aspTest_specDoc }}
                                 </p>
                             </td>
                         </tr>
@@ -506,7 +506,7 @@
                             </td>
                             <td class="tableValue">
                                 <p>
-                                    {{ test.funcTest_expectedValue === null ? "/" : test.funcTest_expectedValue }} {{ test.funcTest_expectedUnit === null ? "/" : test.funcTest_expectedUnit }}
+                                    {{ test.funcTest_expectedValue === null ? "/" : test.funcTest_expectedValue }} {{ test.funcTest_unitValue === null ? "/" : test.funcTest_unitValue }}
                                 </p>
                             </td>
                         </tr>
@@ -518,7 +518,7 @@
                             </td>
                             <td>
                                 <p>
-                                    {{ test.funcTest_docSpec === null ? "/" : test.funcTest_docSpec }}
+                                    {{ test.funcTest_specDoc === null ? "/" : test.funcTest_specDoc }}
                                 </p>
                             </td>
                         </tr>
@@ -627,7 +627,7 @@
                             </td>
                             <td>
                                 <p>
-                                    {{ test.dimTest_docSpec === null ? "/" : test.dimTest_docSpec }}
+                                    {{ test.dimTest_specDoc === null ? "/" : test.dimTest_specDoc }}
                                 </p>
                             </td>
                         </tr>
@@ -739,7 +739,7 @@
                             </td>
                             <td>
                                 <p>
-                                    {{ test.compTest_docSpec === null ? "/" : test.compTest_docSpec }}
+                                    {{ test.compTest_specDoc === null ? "/" : test.compTest_specDoc }}
                                 </p>
                             </td>
                         </tr>
@@ -849,7 +849,11 @@
                     </tr>
                     </tbody>
                 </table>
+                <p></p>
             </div>
+            <p style="text-align: center; width: 80%;">
+                <button class="btn btn-primary" @click="generateReport">Generate Report</button>
+            </p>
         </div>
     </div>
 </template>
@@ -1010,6 +1014,12 @@ export default {
                 .catch(error => {
                 });
         }
+        axios.get('/artFam/history/send/' + this.articleType + '/' + this.articleId)
+            .then(response => {
+                this.histories = response.data;
+            })
+            .catch(error => {
+            });
         axios.get('/incmgInsp/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.incmgInsps = response.data;

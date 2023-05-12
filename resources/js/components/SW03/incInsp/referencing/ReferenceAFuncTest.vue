@@ -32,6 +32,7 @@
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.funcTest_desc"
+                :specDoc="component.funcTest_specDoc"
                 @deletefuncTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -133,7 +134,17 @@ export default {
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(funcTest_severityLevel, funcTest_controlLevel, funcTest_expectedMethod, funcTest_expectedValue, funcTest_name, funcTest_sampling, funcTest_unitValue, funcTest_desc, incmgInsp_id, id, className) {
+        addImportedComponent(
+            funcTest_severityLevel,
+            funcTest_controlLevel,
+            funcTest_expectedMethod,
+            funcTest_expectedValue,
+            funcTest_name,
+            funcTest_sampling,
+            funcTest_unitValue,
+            funcTest_desc,
+            funcTest_specDoc,
+            incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
@@ -145,6 +156,7 @@ export default {
                 funcTest_sampling: funcTest_sampling,
                 funcTest_unitValue: funcTest_unitValue,
                 funcTest_desc: funcTest_desc,
+                funcTest_specDoc: funcTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -170,6 +182,7 @@ export default {
                         ft.funcTest_sampling,
                         ft.funcTest_unitValue,
                         ft.funcTest_desc,
+                        ft.funcTest_specDoc,
                         ft.incmgInsp_id,
                         ft.id,
                         className

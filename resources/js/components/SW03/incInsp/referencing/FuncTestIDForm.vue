@@ -25,6 +25,18 @@
                     :Errors="errors.funcTest_name"
                 />
                 <InputTextForm
+                    name="specDoc"
+                    label="Document specification :"
+                    v-model="funcTest_specDoc"
+                    :isDisabled="isInConsultedMod"
+                    :info_text="null"
+                    :min="2"
+                    :max="255"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.funcTest_specDoc"
+                />
+                <InputTextForm
                     v-if="data_article_type === 'comp'"
                     name="expectedMethod"
                     label="Expected Method :"
@@ -48,6 +60,19 @@
                     isRequired
                     :Errors="errors.funcTest_expectedValue"
                 />
+                <InputTextForm
+                    v-if="data_article_type === 'comp'"
+                    name="unitValue"
+                    label="Unit Value :"
+                    v-model="funcTest_unitValue"
+                    :isDisabled="!!isInConsultedMod"
+                    :info_text="null"
+                    :min="1"
+                    :max="10"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.funcTest_unitValue"
+                />
                 <InputSelectForm
                     :name="'Sampling'"
                     :label="'Sampling :'"
@@ -63,19 +88,6 @@
                     :Errors="errors.funcTest_sampling"
                     :selctedOption="funcTest_sampling"
                     :id_actual="'Sampling'"
-                />
-                <InputTextForm
-                    v-if="data_article_type === 'comp'"
-                    name="unitValue"
-                    label="Unit Value :"
-                    v-model="funcTest_unitValue"
-                    :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
-                    :min="1"
-                    :max="10"
-                    :inputClassName="null"
-                    isRequired
-                    :Errors="errors.funcTest_unitValue"
                 />
                 <InputSelectForm
                     v-if="this.funcTest_sampling === 'Statistics'"
@@ -234,7 +246,11 @@ export default {
         desc: {
             type: String,
             default: null
-        }
+        },
+        specDoc: {
+            type: String,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -258,6 +274,7 @@ export default {
             funcTest_unitValue: this.unitValue,
             funcTest_sampling: this.sampling,
             funcTest_desc: this.desc,
+            funcTest_specDoc: this.specDoc,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -288,6 +305,7 @@ export default {
                     funcTest_sampling: this.funcTest_sampling,
                     funcTest_unitValue: this.funcTest_unitValue,
                     funcTest_desc: this.funcTest_desc,
+                    funcTest_specDoc: this.funcTest_specDoc,
                     reason: 'add',
                     id: this.funcTest_id,
                     article_id: this.data_article_id,
@@ -307,6 +325,7 @@ export default {
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
                         funcTest_desc: this.funcTest_desc,
+                        funcTest_specDoc: this.funcTest_specDoc,
                         reason: 'add',
                         id: this.funcTest_id,
                         article_id: this.data_article_id,
@@ -335,7 +354,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) {
+        updateDocControl(savedAs, reason, artSheet_created) {
             axios.post('/incmgInsp/funcTest/verif', {
                 funcTest_name: this.funcTest_name,
                 funcTest_severityLevel: this.funcTest_severityLevel,
@@ -347,6 +366,7 @@ export default {
                 funcTest_sampling: this.funcTest_sampling,
                 funcTest_unitValue: this.funcTest_unitValue,
                 funcTest_desc: this.funcTest_desc,
+                funcTest_specDoc: this.funcTest_specDoc,
                 reason: 'update',
                 id: this.funcTest_id,
                 article_id: this.data_article_id,
@@ -366,16 +386,22 @@ export default {
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
                         funcTest_desc: this.funcTest_desc,
+                        funcTest_specDoc: this.funcTest_specDoc,
                         reason: 'update',
                         id: this.funcTest_id,
                         article_id: this.data_article_id,
                     })
                         /*If the file is added successfully*/
                         .then(response => {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
                             this.$snotify.success(`Functional Test successfully updated`);
                             this.isInConsultedMod = true;
                             this.addSucces = true
-                            // TODO: faire l'historique
                         })
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
