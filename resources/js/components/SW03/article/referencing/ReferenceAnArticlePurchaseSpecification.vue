@@ -66,6 +66,7 @@ export default {
         },
         artType:{
             type: String
+        },
         import_id: {
             type: Number,
             default: null
