@@ -298,11 +298,11 @@ export default {
         },
         handleSubmitUpdate() {
             const postUrlUpdate = (url, id) => `${url}update/${id}`;
-            axios.post(postUrlUpdate(this.url, this.enumId), {
+            axios.post(postUrlUpdate(this.url, this.sendedEnumId), {
                 value: this.returnedEnum,
-                validated_eq: this.approved_articles,
+                /*validated_eq: this.approved_articles,
                 validated_mme: this.approved_mmes,
-                history_reasonUpdate: this.reason,
+                history_reasonUpdate: this.reason,*/
             })
                 .then(response => {
                     window.location.reload();
@@ -313,6 +313,9 @@ export default {
                     this.mmes_concerned = null;
                     this.reason = "";
                 })
+                .catch(error => {
+                    console.log(error.response.data);
+                });
         },
         handleSubmitDisable() {
             const postUrlDisable = (url, id) => `${url}disable/${id}`;
@@ -368,6 +371,8 @@ export default {
         showRightAlert() {
             this.$refs.errorAlert.showAlert("You don't have the right")
         }
+    },
+    created() {
     }
 }
 </script>

@@ -11,10 +11,14 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\SW03\Criticality;
+use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\PurchaseSpecification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\CompFamily;
 use App\Models\SW03\CompFamilyMember;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class CompFamilyMemberController extends Controller
@@ -56,7 +60,7 @@ class CompFamilyMemberController extends Controller
     /**
      * Function call by ArticleFamilyMemberForm.vue when the form is submitted for insert with the route : /comp/mb/add (post)
      * Add a new enregistrement of comp family member in the data base with the informations entered in the form
-     * @return \Illuminate\Http\Response : id of the new comp family member
+     * @return \Illuminate\Http\JsonResponse
      */
     public function add_compFamilyMember(Request $request, $id){
         //Creation of a new compFamMember
@@ -86,12 +90,24 @@ class CompFamilyMemberController extends Controller
         return response()->json($array);
     }
 
-    public function update_compFamilyMember(Request $request, $id) {
+    public function update_compFamilyMember(Request $request, $id)
+    {
         $member = CompFamilyMember::all()->where('id', '==', $id)->first();
         $member->update([
             'compMb_dimension' => $request->artMb_dimension,
             'compMb_sameValues' => $request->artMb_sameValues,
             'compMb_design' => $request->artMb_designation,
+        ]);
+        $fam = CompFamily::all()->where('id', '==', $member->compFam_id)->first();
+        if ($fam->compFam_signatureDate != null) {
+            $fam->update([
+                'compFam_nbrVersion' => $fam->compFam_nbrVersion + 1,
+            ]);
+        }
+        $fam->update([
+            'compFam_signatureDate' => null,
+            'compFam_qualityApproverId' => null,
+            'compFam_technicalReviewerId' => null,
         ]);
         return response()->json($member);
     }

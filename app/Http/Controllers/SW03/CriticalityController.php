@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
 use App\Models\SW03\Criticality;
+use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 
 class CriticalityController extends Controller
@@ -78,10 +81,43 @@ class CriticalityController extends Controller
         $rawFam_id = null;
         if ($request->crit_articleType === 'comp') {
             $compFam_id = $request->crit_articleID;
+            $compFam = CompFamily::all()->where('id', '=', $request->crit_articleID)->first();
+            if ($compFam->compFam_signatureDate != null) {
+                $compFam->update([
+                    'compFam_nbrVersion' => $compFam->compFam_nbrVersion + 1,
+                ]);
+            }
+            $compFam->update([
+                'compFam_signatureDate' => null,
+                'compFam_qualityApproverId' => null,
+                'compFam_technicalReviewerId' => null,
+            ]);
         } else if ($request->crit_articleType === 'cons') {
             $consFam_id = $request->crit_articleID;
+            $consFam = ConsFamily::all()->where('id', '=', $request->crit_articleID)->first();
+            if ($consFam->consFam_signatureDate != null) {
+                $consFam->update([
+                    'consFam_nbrVersion' => $consFam->consFam_nbrVersion + 1,
+                ]);
+            }
+            $consFam->update([
+                'consFam_signatureDate' => null,
+                'consFam_qualityApproverId' => null,
+                'consFam_technicalReviewerId' => null,
+            ]);
         } else if ($request->crit_articleType === 'raw') {
             $rawFam_id = $request->crit_articleID;
+            $rawFam = RawFamily::all()->where('id', '=', $request->crit_articleID)->first();
+            if ($rawFam->rawFam_signatureDate != null) {
+                $rawFam->update([
+                    'rawFam_nbrVersion' => $rawFam->rawFam_nbrVersion + 1,
+                ]);
+            }
+            $rawFam->update([
+                'rawFam_signatureDate' => null,
+                'rawFam_qualityApproverId' => null,
+                'rawFam_technicalReviewerId' => null,
+            ]);
         }
         $crit->update([
             'crit_artCriticality' => $request->crit_artCriticality,

@@ -321,7 +321,7 @@ export default {
                                 this.addSuccess = true;
                                 this.isInConsultMod = true;
                                 if (artSheet_created == true) {
-                                    axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                    axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
                                         history_reasonUpdate: reason,
                                     });
                                     window.location.reload();
@@ -329,7 +329,10 @@ export default {
                                 this.$snotify.success(`CompFamMember updated successfully and saved as ${savedAs}`);
                                 this.artFamMember_id = response.data;
                             })
-                            .catch(error => this.errors = error.response.data.errors);
+                            .catch(error => {
+                                this.errors = error.response.data.errors;
+                                console.log(error.response.data);
+                            });
                     })
                     .catch(error => this.errors = error.response.data.errors);
             }else{
@@ -355,7 +358,7 @@ export default {
                                     this.addSuccess = true;
                                     this.isInConsultMod = true;
                                     if (artSheet_created == true) {
-                                        axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                        axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
                                             history_reasonUpdate: reason,
                                         });
                                         window.location.reload();
@@ -391,7 +394,7 @@ export default {
                                         this.addSuccess = true;
                                         this.isInConsultMod = true;
                                         if (artSheet_created == true) {
-                                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                            axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
                                                 history_reasonUpdate: reason,
                                             });
                                             window.location.reload();
@@ -399,7 +402,10 @@ export default {
                                         this.$snotify.success(`ConsFamMember updated successfully and saved as ${savedAs}`);
                                         this.artFamMember_id = response.data;
                                     })
-                                    .catch(error => this.errors = error.response.data.errors);
+                                    .catch(error => {
+                                        this.errors = error.response.data.errors;
+                                        console.log(error.response.data);
+                                    });
                             })
                             .catch(error => this.errors = error.response.data.errors);
                     }

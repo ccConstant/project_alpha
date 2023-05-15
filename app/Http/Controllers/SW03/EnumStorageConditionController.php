@@ -90,66 +90,57 @@ class EnumStorageConditionController extends Controller
         }
     }
 
-    public function send_enum_storageCondition_linked($type, $id) {
-        $article = null;
-        if ($type === 'cons') {
-            $article = ConsFamily::findOrFail($id);
-        } else if ($type === 'comp') {
-            $article = CompFamily::findOrFail($id);
-        } else if ($type === 'raw') {
-            $article = RawFamily::findOrFail($id);
-        }
-        $sto_cond = $article->storage_conditions;
-        $array = [];
-        foreach ($sto_cond as $sto) {
-            array_push($array, [
-                'id' => $sto->id,
-                'value' => $sto->value,
+
+    public function update_enum_storageCondition_linked (Request $request, $id){
+        $enum_type=EnumStorageCondition::findOrFail($id) ;
+        $enum_type->update([
+            'value' => $request->value,
+        ]);
+        $consFams = $enum_type->consFamily;
+        $compFams = $enum_type->compFamily;
+        $rawFams = $enum_type->rawFamily;
+        foreach ($consFams as $art){
+            $nbrVersion = null;
+            $nbrVersion = $art->consFam_nbrVersion;
+            $art->update([
+                'consFam_nbrVersion' => $nbrVersion+1,
+                'consFam_qualityApproverId' => NULL,
+                'consFam_technicalReviewerId' => NULL,
+                'consFam_signatureDate' => NULL,
             ]);
         }
-        return response()->json($array);
+        foreach ($compFams as $art){
+            $nbrVersion = null;
+            $nbrVersion = $art->compFam_nbrVersion;
+            $art->update([
+                'compFam_nbrVersion' => $nbrVersion+1,
+                'compFam_qualityApproverId' => NULL,
+                'compFam_technicalReviewerId' => NULL,
+                'compFam_signatureDate' => NULL,
+            ]);
+        }
+        foreach ($rawFams as $art){
+            $nbrVersion = null;
+            $nbrVersion = $art->rawFam_nbrVersion;
+            $art->update([
+                'rawFam_nbrVersion' => $nbrVersion+1,
+                'rawFam_qualityApproverId' => NULL,
+                'rawFam_technicalReviewerId' => NULL,
+                'rawFam_signatureDate' => NULL,
+            ]);
+        }
     }
 
-    public function update_enum_storageCondition_linked(Request $request, $type, $id) {
-        if ($type === 'cons') {
-            $article = ConsFamily::findOrFail($id);
-            $sto_cond = $article->storage_conditions;
-            foreach ($sto_cond as $sto) {
-                if ($sto->id == $request->id) {
-                    if ($request->value != $sto->value) {
-                        $oldEnum = EnumStorageCondition::where('value', '=', $sto->value)->first();
-                        $oldEnum->consFamily()->detach($article);
-                        $newEnum = EnumStorageCondition::where('value', '=', $request->value)->first();
-                        $newEnum->consFamily()->attach($article);
-                    }
-                }
-            }
-        } else if ($type === 'comp') {
-            $article = CompFamily::findOrFail($id);
-            $sto_cond = $article->storage_conditions;
-            foreach ($sto_cond as $sto) {
-                if ($sto->id == $request->id) {
-                    if ($request->value != $sto->value) {
-                        $oldEnum = EnumStorageCondition::where('value', '=', $sto->value)->first();
-                        $oldEnum->compFamily()->detach($article);
-                        $newEnum = EnumStorageCondition::where('value', '=', $request->value)->first();
-                        $newEnum->compFamily()->attach($article);
-                    }
-                }
-            }
-        } else if ($type === 'raw') {
-            $article = RawFamily::findOrFail($id);
-            $sto_cond = $article->storage_conditions;
-            foreach ($sto_cond as $sto) {
-                if ($sto->id == $request->id) {
-                    if ($request->value != $sto->value) {
-                        $oldEnum = EnumStorageCondition::where('value', '=', $sto->value)->first();
-                        $oldEnum->rawFamily()->detach($article);
-                        $newEnum = EnumStorageCondition::where('value', '=', $request->value)->first();
-                        $newEnum->rawFamily()->attach($article);
-                    }
-                }
-            }
+    public function send_enum_storageCondition_usage($type, $id) {
+        if ($type === "comp"){
+            $compFam=CompFamily::findOrFail($id);
+            return response()->json($compFam->storage_conditions);
+        }else if ($type === "raw"){
+            $rawFam=RawFamily::findOrFail($id);
+            return response()->json($rawFam->storage_conditions);
+        }else if ($type === "cons"){
+            $consFam=ConsFamily::findOrFail($id);
+            return response()->json($consFam->storage_conditions);
         }
     }
 
@@ -165,6 +156,76 @@ class EnumStorageConditionController extends Controller
             $consFam=ConsFamily::findOrFail($id);
             $enum->consFamily()->detach($consFam);
         }
+    }
+
+    public function send_enum_storageCondition_linked($id){
+        $articles = [];
+        $signed_articles = [];
+        $sto_conds = EnumStorageCondition::all()->where('id', '=', $id)->first();
+        $consFams = $sto_conds->consFamily;
+        $compFams = $sto_conds->compFamily;
+        $rawFams = $sto_conds->rawFamily;
+        foreach ($consFams as $consFam){
+            if ($consFam->signatureDate === null) {
+                array_push($articles, [
+                    'id' => $consFam->id,
+                    'type' => 'cons',
+                    'artFam_ref' => $consFam->consFam_ref,
+                    'artFam_design' => $consFam->consFam_design,
+                ]);
+            } else {
+                array_push($signed_articles, [
+                    'id' => $consFam->id,
+                    'type' => 'cons',
+                    'artFam_ref' => $consFam->consFam_ref,
+                    'artFam_design' => $consFam->consFam_design,
+                    'artFam_signatureDate' => $consFam->consFam_signatureDate,
+                ]);
+            }
+        }
+        foreach ($compFams as $compFam){
+            if ($compFam->signatureDate === null) {
+                array_push($articles, [
+                    'id' => $compFam->id,
+                    'type' => 'comp',
+                    'artFam_ref' => $compFam->compFam_ref,
+                    'artFam_design' => $compFam->compFam_design,
+                ]);
+            } else {
+                array_push($signed_articles, [
+                    'id' => $compFam->id,
+                    'type' => 'comp',
+                    'artFam_ref' => $compFam->compFam_ref,
+                    'artFam_design' => $compFam->compFam_design,
+                    'artFam_signatureDate' => $compFam->compFam_signatureDate,
+                ]);
+            }
+        }
+        foreach ($rawFams as $rawFam){
+            if ($rawFam->signatureDate === null) {
+                array_push($articles, [
+                    'id' => $rawFam->id,
+                    'type' => 'raw',
+                    'artFam_ref' => $rawFam->rawFam_ref,
+                    'artFam_design' => $rawFam->rawFam_design,
+                ]);
+            } else {
+                array_push($signed_articles, [
+                    'id' => $rawFam->id,
+                    'type' => 'raw',
+                    'artFam_ref' => $rawFam->rawFam_ref,
+                    'artFam_design' => $rawFam->rawFam_design,
+                    'artFam_signatureDate' => $rawFam->rawFam_signatureDate,
+                ]);
+            }
+        }
+        return response()->json([
+            'articles' => $articles,
+            'signed_articles' => $signed_articles,
+            'consFam' => $consFams,
+            'compFam' => $compFams,
+            'rawFam' => $rawFams,
+        ]);
     }
 
     public function delete_enum_stoConds ($id){

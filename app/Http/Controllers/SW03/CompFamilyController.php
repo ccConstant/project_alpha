@@ -10,7 +10,11 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\SW03\Criticality;
+use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\PurchaseSpecification;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\CompFamily;
@@ -279,5 +283,56 @@ class CompFamilyController extends Controller
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($compFamily);
+    }
+
+    public function verifValidation_compFamily($id) {
+        $article = CompFamily::all()->where('id', '==', $id)->first();
+        if ($article->compFam_validate !== 'validated') {
+            return response()->json([
+                'error' => 'This article family is not validated'
+            ], 429);
+        }
+        $criticalities = Criticality::all()->where('compFam_id', '==', $id);
+        foreach ($criticalities as $criticality) {
+            if ($criticality->crit_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This article family has not validated criticalities'
+                ], 429);
+            }
+        }
+        $purSpes = PurchaseSpecification::all()->where('compFam_id', '==', $id);
+        foreach ($purSpes as $purSpe) {
+            if ($purSpe->purSpe_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This article family has not validated purchase specifications'
+                ], 429);
+            }
+        }
+        $incmgInsp = IncomingInspection::all()->where('compFam_id', '==', $id);
+        foreach ($incmgInsp as $incmg) {
+            if ($incmg->incmgInsp_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This article family has not validated incoming inspections'
+                ], 429);
+            }
+        }
+    }
+
+    public function validate_compFamily(Request $request, $id) {
+        $compFamily = CompFamily::findOrfail($id);
+        if ($request->reason === 'technical') {
+            $compFamily->update([
+                'compFam_technicalReviewerId' => $request->user_id,
+            ]);
+        } else if ($request->reason === 'quality') {
+            $compFamily->update([
+                'compFam_qualityApproverId' => $request->user_id,
+            ]);
+        }
+        if ($compFamily->compFam_technicalReviewerId != null && $compFamily->compFam_qualityApproverId != null) {
+            $compFamily->update([
+                'compFam_signatureDate' => Carbon::now(),
+            ]);
+        }
     }
 }

@@ -149,29 +149,37 @@ class EnumPurchasedByController extends Controller
         $enum_type->update([
             'value' => $request->value,
         ]);
-        $type = $request->article_type;
-        $articles = null;
-        if ($type === 'cons') {
-            $articles = ConsFamily::where('enumPurchasedBy_id', '=', $id);
-        } else if ($type === 'comp') {
-            $articles = CompFamily::where('enumPurchasedBy_id', '=', $id);
-        } else if ($type === 'raw') {
-            $articles = RawFamily::where('enumPurchasedBy_id', '=', $id);
-        }
-        foreach ($articles as $art){
+        $cons = ConsFamily::all()->where('enumPurchasedBy_id', '=', $id);
+        $comp = CompFamily::all()->where('enumPurchasedBy_id', '=', $id);
+        $raw = RawFamily::all()->where('enumPurchasedBy_id', '=', $id);
+        foreach ($cons as $art){
             $nbrVersion = null;
-            if ($type === 'cons') {
-                $nbrVersion = $art->consFam_nbrVersion;
-            } else if ($type === 'comp') {
-                $nbrVersion = $art->compFam_nbrVersion;
-            } else if ($type === 'raw') {
-                $nbrVersion = $art->rawFam_nbrVersion;
-            }
+            $nbrVersion = $art->consFam_nbrVersion;
             $art->update([
-                $type.'Fam_nbrVersion' => $nbrVersion+1,
-                $type.'Fam_qualityApproverId' => NULL,
-                $type.'Fam_technicalReviewerId' => NULL,
-                $type.'Fam_signatureDate' => NULL,
+                'consFam_nbrVersion' => $nbrVersion+1,
+                'consFam_qualityApproverId' => NULL,
+                'consFam_technicalReviewerId' => NULL,
+                'consFam_signatureDate' => NULL,
+            ]);
+        }
+        foreach ($comp as $art){
+            $nbrVersion = null;
+            $nbrVersion = $art->compFam_nbrVersion;
+            $art->update([
+                'compFam_nbrVersion' => $nbrVersion+1,
+                'compFam_qualityApproverId' => NULL,
+                'compFam_technicalReviewerId' => NULL,
+                'compFam_signatureDate' => NULL,
+            ]);
+        }
+        foreach ($raw as $art){
+            $nbrVersion = null;
+            $nbrVersion = $art->rawFam_nbrVersion;
+            $art->update([
+                'rawFam_nbrVersion' => $nbrVersion+1,
+                'rawFam_qualityApproverId' => NULL,
+                'rawFam_technicalReviewerId' => NULL,
+                'rawFam_signatureDate' => NULL,
             ]);
         }
     }

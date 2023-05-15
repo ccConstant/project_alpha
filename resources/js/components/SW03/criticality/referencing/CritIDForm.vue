@@ -270,7 +270,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
+        updateDocControl(savedAs, reason, lifesheet_created) {
             axios.post('/artFam/criticality/verif', {
                 crit_artCriticality: this.crit_artCriticality,
                 crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
@@ -302,17 +302,20 @@ export default {
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
                             if (lifesheet_created == true) {
-                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                console.log("lifesheet_created");
+                                console.log(this.data_article_type);
+                                console.log(this.data_article_id);
+                                axios.post('/artFam/history/add/' + this.data_article_type.toLowerCase() + '/' + this.data_article_id, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
                             }
-                            this.$refs.sucessAlert.showAlert(`Incoming Inspection updated successfully and saved as ${savedAs}`);
+                            this.$refs.sucessAlert.showAlert(`Criticality updated successfully and saved as ${savedAs}`);
                             this.isInConsultMod = true;
                         })
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
-                            this.errors = error.response.data.errors;
+                            console.log(error.response.data);
                         });
                 })
                 /*If the controller sends errors, we put it in the error object*/

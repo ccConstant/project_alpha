@@ -223,8 +223,8 @@ export default {
                             this.file_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (artSheet_created == true) {
-                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                            if (lifesheet_created == true) {
+                                axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
