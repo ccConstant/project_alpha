@@ -93,6 +93,17 @@ class RawFamilyMemberController extends Controller
             'rawMb_sameValues' => $request->artMb_sameValues,
             'rawMb_design' => $request->artMb_designation,
         ]);
+        $fam = RawFamily::all()->where('id', '==', $member->rawFam_id)->first();
+        if ($fam->rawFam_signatureDate != null) {
+            $fam->update([
+                'rawFam_nbrVersion' => $fam->rawFam_nbrVersion + 1,
+            ]);
+        }
+        $fam->update([
+            'rawFam_signatureDate' => null,
+            'rawFam_qualityApproverId' => null,
+            'rawFam_technicalReviewerId' => null,
+        ]);
         return response()->json($member);
     }
 }

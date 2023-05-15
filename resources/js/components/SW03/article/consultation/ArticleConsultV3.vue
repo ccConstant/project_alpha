@@ -4,10 +4,14 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else class="contentArticle">
-            <p style="text-align: center; width: 80%;">
+            <ErrorAlert ref="errorAlert"/>
+            <SuccessAlert ref="successAlert"/>
+            <p class="reportButton">
                 <button class="btn btn-primary" @click="generateReport">Generate Report</button>
+                <button v-if="articleData.technicalReviewerID === null" class="btn btn-primary" @click="validate">Technical Review</button>
+                <button v-if="articleData.qualityApproverID === null" class="btn btn-primary" @click="validate">Quality Approval</button>
             </p>
-            <div id="page">
+            <div id="page" class="page">
                 <!-- Header -->
                 <p></p>
                 <table class="header">
@@ -63,27 +67,27 @@
                         <td style="text-align: left; vertical-align: text-top" colspan="2">
                             <p class="ignored">
                                 Verified by (Name and Date) :
-                            </p>
-                            <p>
-                                <p v-if="articleData.signatureDate !== null">
+                                <br>
+                                <span v-if="articleData.signatureDate !== null">
                                     {{ articleData.technicalReviewerName }}
-                                </p>
-                                <p v-if="articleData.signatureDate !== null">
-                                    {{ articleData.signatureDate }}
-                                </p>
+                                </span>
+                                <br>
+                                <span v-if="articleData.signatureDate !== null">
+                                    {{new Date(articleData.signatureDate).getDate()}} {{new Date(articleData.signatureDate).toDateString().slice(4, 7)}} {{new Date(articleData.signatureDate).getFullYear()}}
+                                </span>
                             </p>
                         </td>
                         <td colspan="2" style="text-align: left; vertical-align: top">
                             <p class="ignored">
                                 Approved by (Name and Date) :
-                            </p>
-                            <p>
-                                <p v-if="articleData.signatureDate !== null">
+                                <br>
+                                <span v-if="articleData.signatureDate !== null">
                                     {{ articleData.qualityApproverName }}
-                                </p>
-                                <p v-if="articleData.signatureDate !== null">
-                                    {{ articleData.signatureDate }}
-                                </p>
+                                </span>
+                                <br>
+                                <span v-if="articleData.signatureDate !== null">
+                                    {{new Date(articleData.signatureDate).getDate()}} {{new Date(articleData.signatureDate).toDateString().slice(4, 7)}} {{new Date(articleData.signatureDate).getFullYear()}}
+                                </span>
                             </p>
                         </td>
                     </tr>
@@ -172,6 +176,9 @@
                     </tr>
                     <tr>
                         <td>
+                            <h2>
+                                N°
+                            </h2>
                         </td>
                         <td>
                             <h2>
@@ -835,11 +842,13 @@
                     <tr v-for="hist in histories">
                         <td>
                             <p>
-                                {{ hist.history_numVersion }}
+                                {{ hist.history_numVersion }}.0
                             </p>
                         </td>
                         <td>
-                            {{new Date(hist.created_at).getDate()}} {{new Date(hist.created_at).toDateString().slice(4, 7)}} {{new Date(hist.created_at).getFullYear()}}
+                            <p>
+                                {{new Date(hist.created_at).getDate()}} {{new Date(hist.created_at).toDateString().slice(4, 7)}} {{new Date(hist.created_at).getFullYear()}}
+                            </p>
                         </td>
                         <td>
                             <p>
@@ -851,19 +860,26 @@
                 </table>
                 <p></p>
             </div>
-            <p style="text-align: center; width: 80%;">
+            <p class="reportButton">
                 <button class="btn btn-primary" @click="generateReport">Generate Report</button>
+                <button v-if="articleData.technicalReviewerID === null" class="btn btn-primary" @click="validate">Technical Review</button>
+                <button v-if="articleData.qualityApproverID === null" class="btn btn-primary" @click="validate">Quality Approval</button>
             </p>
         </div>
     </div>
 </template>
 
-<!--v-if="articleType === 'comp' || articleType === 'raw'"-->
 <script>
 import html2PDF from "jspdf-html2canvas";
+import ErrorAlert from "../../../alert/ErrorAlert.vue";
+import SuccessAlert from "../../../alert/SuccesAlert.vue";
 
 export default {
     name: "ArticleConsult",
+    components: {
+        SuccessAlert,
+        ErrorAlert
+    },
     data() {
         return {
             loaded: false,
@@ -881,6 +897,7 @@ export default {
             histories: [],
             supplier: null,
             familyMembers: [],
+            validationMethod: null,
         }
     },
     methods: {
@@ -912,6 +929,46 @@ export default {
                 },
                 output: this.articleData.ref + '_v' + this.articleData.nbrVersion + '.0_export.pdf',
             });
+        },
+        validate(){
+            if(this.articleData.technicalReviewerID === null && this.$userId.user_makeTechnicalValidationRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            }else if(this.articleData.qualityApproverID === null && this.$userId.user_makeQualityValidationRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            }else{
+                if (this.articleData.technicalReviewerID === null) {
+                    this.validationMethod = "technical";
+                } else if (this.articleData.qualityApproverID === null) {
+                    this.validationMethod = "quality";
+                }
+                const validVerifUrl = (type, id) => `/${type}/verifValidation/${id}`;
+                axios.post(validVerifUrl(this.articleType, this.articleId),{
+                })
+                    .then(response =>{
+                        console.log(this.validationMethod)
+                        console.log(this.$userId.id);
+                        const techVeriftUrl = (type, id) => `/${type}/validation/${id}`;
+                        axios.post(techVeriftUrl(this.articleType, this.articleId),{
+                            reason:this.validationMethod,
+                            user_id:this.$userId.id,
+                        })
+                            .then(response =>{
+                                if(this.articleData.technicalReviewerID === null){
+                                    this.$refs.successAlert.showAlert(`Technical review made successfully`);
+                                }else if(this.articleData.qualityApproverID === null){
+                                    this.$refs.successAlert.showAlert(`Quality approving made successfully`);
+                                }
+                                window.location.reload();
+                            })
+                            //If the controller sends errors we put it in the errors object
+                            .catch(error => this.errors=error.response.data.errors);
+                        })
+                    //If the controller sends errors we put it in the errors object
+                    .catch(error =>{
+                        console.log(error.response.data);
+                        this.errors=error.response.data.errors
+                    });
+            }
         }
     },
     mounted() {
@@ -1068,7 +1125,7 @@ export default {
             })
             .catch(error => {
             });
-        axios.get('/artFam/enum/storageCondition/send/' + this.articleType + '/' + this.articleId)
+        axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.stoConds = response.data;
             }).catch(error => {
@@ -1096,9 +1153,6 @@ export default {
     }
     .ignored {
         border: none!important;
-    }
-    div {
-        page-break-inside: auto!important;
     }
     tr {
         width: auto;
@@ -1175,5 +1229,15 @@ export default {
     img {
         width: 100%!important;
         height: auto;
+    }
+    .reportButton {
+        display: block;
+        text-align: center;
+        margin: auto;
+    }
+    .page {
+        display: block;
+        margin: auto;
+        page-break-inside: auto;
     }
 </style>

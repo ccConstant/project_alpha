@@ -1019,6 +1019,8 @@ Route::get('/comp/family/send/{id}', [CompFamilyController::class, 'send_compFam
 Route::get('/comp/mb/send/{id}', [CompFamilyMemberController::class, 'send_compFamilyMember']);
 Route::post('/comp/family/update/{id}', [CompFamilyController::class, 'update_compFamily']);
 Route::post('/comp/mb/update/{id}', [CompFamilyMemberController::class, 'update_compFamilyMember']);
+Route::post('/comp/verifValidation/{id}', [CompFamilyController::class, 'verifValidation_compFamily']);
+Route::post('/comp/validation/{id}', [CompFamilyController::class, 'validate_compFamily']);
 
 
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
@@ -1101,8 +1103,9 @@ Route::get('/artFam/enum/storageCondition', [EnumStorageConditionController::cla
 Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController::class, 'add_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/link/{id}', [EnumStorageConditionController::class, 'link_enum_storageCondition']);
-Route::get('/artFam/enum/storageCondition/send/{type}/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_linked']);
-Route::post('/artFam/enum/storageCondition/update/{type}/{id}', [EnumStorageConditionController::class, 'update_enum_storageCondition_linked']);
+Route::get('/artFam/enum/storageCondition/sendUsage/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_linked']);
+Route::get('/artFam/enum/storageCondition/sendUsageByType/{type}/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_usage']);
+Route::post('/artFam/enum/storageCondition/update/{id}', [EnumStorageConditionController::class, 'update_enum_storageCondition_linked']);
 Route::post('/artFam/enum/storageCondition/unlink/{type}/{id}', [EnumStorageConditionController::class, 'unlink_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/delete/{id}', [EnumStorageConditionController::class, 'delete_enum_stoConds']);
 
@@ -1124,5 +1127,3 @@ Route::get('/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 
 //History for article
 Route::post('/artFam/history/add/{type}/{id}', [HistoryController::class, 'add_history_for_article']);
 Route::get('/artFam/history/send/{type}/{id}', [HistoryController::class, 'send_history_for_article']);
-
-

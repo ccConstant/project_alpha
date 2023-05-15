@@ -350,7 +350,7 @@ export default {
                         /*If the file is added successfully*/
                         .then(response => {
                             if (artSheet_created == true) {
-                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                axios.post('/artFam/history/add/' + this.articleType.toLowerCase() + '/' + this.articleID, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();

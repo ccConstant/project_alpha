@@ -157,7 +157,7 @@ export default {
     created() {
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
-            axios.get('/artFam/enum/storageCondition/send/' + this.data_art_type + '/' + this.import_id)
+            axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
                 .then(response => {
                     this.sto_conds = response.data;
                     this.importStoConds();

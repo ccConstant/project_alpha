@@ -117,6 +117,10 @@ export default {
             }
 
         }
+        .save{
+            display: block;
+            margin: auto;
+        }
     }
 
 

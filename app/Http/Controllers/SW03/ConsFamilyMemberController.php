@@ -92,6 +92,17 @@ class ConsFamilyMemberController extends Controller
             'consMb_sameValues' => $request->artMb_sameValues,
             'consMb_design' => $request->artMb_designation,
         ]);
+        $fam = ConsFamily::all()->where('id', '==', $member->consFam_id)->first();
+        if ($fam->consFam_signatureDate != null) {
+            $fam->update([
+                'consFam_nbrVersion' => $fam->consFam_nbrVersion + 1,
+            ]);
+        }
+        $fam->update([
+            'consFam_signatureDate' => null,
+            'consFam_qualityApproverId' => null,
+            'consFam_technicalReviewerId' => null,
+        ]);
         return response()->json($member);
     }
 }

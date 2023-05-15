@@ -180,13 +180,13 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updateStorageConditions(savedAs, reason, lifesheet_created) {
-            const consultUrl = (type, id) => `/artFam/enum/storageCondition/update/${type}/${id}`;
-            axios.post(consultUrl(this.artFam_type, this.art_id_add), {
+            const consultUrl = (id) => `/artFam/enum/storageCondition/update/${id}`;
+            axios.post(consultUrl(this.storageCondition_id), {
                 value: this.artFam_storageCondition,
                 id: this.storageCondition_id
             }).then(response =>{
-                if (artSheet_created == true) {
-                    axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                if (lifesheet_created == true) {
+                    axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
                         history_reasonUpdate: reason,
                     });
                     window.location.reload();

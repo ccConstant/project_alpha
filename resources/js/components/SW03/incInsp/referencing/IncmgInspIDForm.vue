@@ -366,7 +366,7 @@ export default {
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
                             if (artSheet_created == true) {
-                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                axios.post('/artFam/history/add/' + this.article_type.toLowerCase() + '/' + this.article_id, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();

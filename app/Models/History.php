@@ -24,7 +24,7 @@ class History extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['history_numVersion', 'history_reasonUpdate', 'equipmentTemp_id', 'mmeTemp_id'] ;
+    protected $fillable = ['history_numVersion', 'history_reasonUpdate', 'equipmentTemp_id', 'mmeTemp_id', 'consFam_id', 'compFam_id', 'rawFam_id'] ;
 
     //Define the relation between an equipment_temp and its histories : an equipment temps can correspond to many histories
     public function equipment_temps(){
