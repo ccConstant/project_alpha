@@ -3,7 +3,7 @@
 /*
 * Filename : InformationController.php 
 * Creation date : 9 Jun 2022
-* Update date : 9 Jun 2022
+* Update date : 15 May 2023
 * This file is used to link the view files and the database that concern the information table. 
 * For example : update an information in the data base, send all information about ID card of equipment...
 */ 
@@ -219,6 +219,136 @@ class InformationController extends Controller
     public function send_informations_enum(){
        //$informations=Information::where('info_name', '=', 'enum')->get() ; 
        $informations=DB::select(DB::raw("SELECT id, info_name, info_value FROM information WHERE info_name LIKE 'enum%'"));
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/articleFamily (get)
+     * Get all the informations (=the dictionnary) about an article family in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_article_family(){
+        $informations=Information::where('info_set', '=', 'article_family')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/article_member (get)
+     * Get all the informations (=the dictionnary) about an article_member in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_article_member(){
+        $informations=Information::where('info_set', '=', 'article_member')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/purSpe (get)
+     * Get all the informations (=the dictionnary) about a purchase specification in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_purchase_specifications(){
+        $informations=Information::where('info_set', '=', 'purSpe')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/crit (get)
+     * Get all the informations (=the dictionnary) about a criticality in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_criticality(){
+        $informations=Information::where('info_set', '=', 'crit')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/supplier (get)
+     * Get all the informations (=the dictionnary) about a supplier in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_supplier(){
+        $informations=Information::where('info_set', '=', 'supplier')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/supplierAdr (get)
+     * Get all the informations (=the dictionnary) about a supplier address in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_supplier_address(){
+        $informations=Information::where('info_set', '=', 'supplierAdr')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/supplierContact (get)
+     * Get all the informations (=the dictionnary) about a supplier contact in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_supplier_contact(){
+        $informations=Information::where('info_set', '=', 'supplierContact')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/IncmgInsp(get)
+     * Get all the informations (=the dictionnary) about an incoming inspection in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_incoming_inspection(){
+        $informations=Information::where('info_set', '=', 'IncmgInsp')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/aspectTest(get)
+     * Get all the informations (=the dictionnary) about an aspect test in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_aspectTest(){
+        $informations=Information::where('info_set', '=', 'aspectTest')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/dimTest(get)
+     * Get all the informations (=the dictionnary) about an dimTest in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_dimTest(){
+        $informations=Information::where('info_set', '=', 'dimTest')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/funcTest(get)
+     * Get all the informations (=the dictionnary) about an funcTest in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_funcTest(){
+        $informations=Information::where('info_set', '=', 'funcTest')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/docControl(get)
+     * Get all the informations (=the dictionnary) about an docControl in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_docControl(){
+        $informations=Information::where('info_set', '=', 'docControl')->get() ; 
+        return response()->json($informations) ; 
+    }
+
+     /**
+     * Function call by InfoManagement.vue with the route : /info/send/compTest(get)
+     * Get all the informations (=the dictionnary) about an compTest in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_compTest(){
+        $informations=Information::where('info_set', '=', 'compTest')->get() ; 
         return response()->json($informations) ; 
     }
 

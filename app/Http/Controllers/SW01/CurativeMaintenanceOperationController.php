@@ -258,7 +258,7 @@ class CurativeMaintenanceOperationController extends Controller
             $this->validate(
                 $request,
                 [
-                    'curMtnOp_reportNumber' => 'required|min:3|max:255',
+                    'curMtnOp_reportNumber' => 'required|min:3|max:255|',
                     'curMtnOp_description' => 'required|min:3|max:50',
                 ],
                 [

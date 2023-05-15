@@ -113,6 +113,10 @@ const router = new VueRouter({
         name: 'url_infos',
         component: require('./components/SW01/infos/InfosManagment.vue').default
     }, {
+        path: '/SW03/infos',
+        name: 'url_infos_SW03',
+        component: require('./components/SW03/infos/InfosManagment.vue').default
+    },{
         path: '/accounts',
         name: 'url_accounts',
         component: require('./components/account/AccountsManagment.vue').default

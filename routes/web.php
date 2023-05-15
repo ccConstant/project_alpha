@@ -178,6 +178,10 @@ Route::middleware('auth')->group(function () {
         return view('welcome');
     });
 
+    Route::get('/SW03/infos', function () {
+        return view('welcomeSW03');
+    });
+
     Route::get('/accounts', function () {
         return view('welcome');
     });
@@ -764,6 +768,33 @@ Route::get(' /info/send/verifRlz', [InformationController::class, 'send_informat
 Route::get(' /info/send/mme_usage', [InformationController::class, 'send_informations_mme_usage']);
 
 Route::get(' /info/send/mme_precaution', [InformationController::class, 'send_informations_mme_precaution']);
+
+Route::get(' /info/send/articleFamily', [InformationController::class, 'send_informations_article_family']);
+
+Route::get(' /info/send/article_member', [InformationController::class, 'send_informations_article_member']);
+
+Route::get(' /info/send/purSpe', [InformationController::class, 'send_informations_purchase_specifications']);
+
+Route::get(' /info/send/crit', [InformationController::class, 'send_informations_criticality']);
+
+Route::get(' /info/send/supplier', [InformationController::class, 'send_informations_supplier']);
+
+Route::get(' /info/send/supplierAdr', [InformationController::class, 'send_informations_supplier_address']);
+
+Route::get(' /info/send/supplierContact', [InformationController::class, 'send_informations_supplier_contact']);
+
+Route::get(' /info/send/IncmgInsp', [InformationController::class, 'send_informations_incoming_inspection']);
+
+Route::get(' /info/send/aspectTest', [InformationController::class, 'send_informations_aspectTest']);
+
+Route::get(' /info/send/dimTest', [InformationController::class, 'send_informations_dimTest']);
+
+Route::get(' /info/send/funcTest', [InformationController::class, 'send_informations_funcTest']);
+
+Route::get(' /info/send/docControl', [InformationController::class, 'send_informations_docControl']);
+
+Route::get(' /info/send/compTest', [InformationController::class, 'send_informations_compTest']);
+
 
 
 /* User Form Routes */
