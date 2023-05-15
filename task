@@ -10,12 +10,17 @@ TODO:
     Update des membres de familles d'articles
     Ajouter un champs description de la variable generique dans la fiche article
     Completer la partie Purchasing Specifications de la fiche article
+    Signature
+    Info 
+    Commentaires
+    Tests
+    Tests SW01
     */
 
 FIXME:
     Changer expected value du funcTest en String et en 'Expected Acceptance Criteria' ??
-    Empêcher Html2pdf de couper les tableaux de la fiche consultation article
-    Update criticality
+    Empêcher Html2pdf de couper les tableaux de la fiche consultation article => On le fera plus tard quand des données auront été saisies par l\'entreprise
+    Update criticality => si c\'était corriger une erreur c\'est fait 
     */
 
 DONE:
@@ -29,4 +34,5 @@ DONE:
     Ajout d'un membre non générique (adapté au générique) de famille article
     Fiche consultation article :
             - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé specDoc)
+    Delete actif/inactif
     */
