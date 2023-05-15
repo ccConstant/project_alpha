@@ -121,19 +121,45 @@ class IncmgInspController extends Controller
 
     public function update_incmgInsp(Request $request, $id) {
         $incmgInsp = IncomingInspection::findOrfail($id);
-        if ($incmgInsp->incmgInsp_qualityApproverId !== null || $incmgInsp->incmgInsp_technicalReviewerId !== null || $incmgInsp->incmgInsp_signatureDate !== null) {
-            $incmgInsp->update([
-                'incmgInsp_qualityApproverId' => null,
-                'incmgInsp_technicalReviewerId' => null,
-                'incmgInsp_signatureDate' => null,
-            ]);
+        $article = null;
+        if ($request->incmpInsp_articleType === 'cons') {
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
+            $signed = $article->consFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->incmpInsp_articleType === 'raw') {
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->incmgInsp_rawFam_id)->first();
+            $signed = $article->rawFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->incmpInsp_articleType === 'comp') {
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->incmgInsp_compFam_id)->first();
+            $signed = $article->compFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
         }
+        $article->update([
+            $request->incmpInsp_articleType.'Fam_signatureDate' => null,
+            $request->incmpInsp_articleType.'Fam_qualityApproverId' => null,
+            $request->incmpInsp_articleType.'Fam_technicalReviewerId' => null,
+        ]);
         $incmgInsp->update([
             'incmgInsp_remarks' => $request->incmgInsp_remarks,
             'incmgInsp_partMaterialComplianceCertificate' => $request->incmgInsp_partMaterialComplianceCertificate,
             'incmgInsp_rawMaterialCertificate' => $request->incmgInsp_rawMaterialCertificate,
             'incmgInsp_validate' => $request->incmgInsp_validate,
-            'articleFam_id' => $request->articleFam_id,
+            'incmgInsp_qualityApproverId' => null,
+            'incmgInsp_technicalReviewerId' => null,
+            'incmgInsp_signatureDate' => null,
         ]);
         return response()->json($incmgInsp);
     }

@@ -27,7 +27,7 @@ class RawFamily extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['rawFam_ref', 'rawFam_design', 'rawFam_drawingPath', 'enumPurchasedBy_id', 'rawFam_nbrVersion', 'rawFam_variablesCharac', 'rawFam_qualityApproverId', 'rawFam_technicalReviewerId', 'rawFam_signatureDate', 'rawFam_validate', 'rawFam_active'] ;
+    protected $fillable = ['rawFam_ref', 'rawFam_design', 'rawFam_drawingPath', 'enumPurchasedBy_id', 'rawFam_nbrVersion', 'rawFam_variablesCharac', 'rawFam_qualityApproverId', 'rawFam_technicalReviewerId', 'rawFam_signatureDate', 'rawFam_validate', 'rawFam_active', 'rawFam_genDesign', 'rawFam_genRef'] ;
 
     //Define the relation between a rawFamily and its rawFamilyMember : a rawFamilyMember can correspond to only one rawFamily
     public function raw_family_member(){

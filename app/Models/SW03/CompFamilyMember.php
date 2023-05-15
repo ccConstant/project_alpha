@@ -19,7 +19,7 @@ class CompFamilyMember extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['compMb_dimension', 'compMb_technicalReviewerId', 'compMb_qualityApproverId', 'compMb_signatureDate', 'compFam_id'] ;
+    protected $fillable = ['compMb_dimension', 'compMb_technicalReviewerId', 'compMb_qualityApproverId', 'compMb_signatureDate', 'compFam_id', 'compMb_design', 'compMb_sameValues'] ;
 
     //Define the relation between a comp_family_member and the comp_family which he is linked : a comp_family_member can be linked to only one comp_family
     public function comp_family(){

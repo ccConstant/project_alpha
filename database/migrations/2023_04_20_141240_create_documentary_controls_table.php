@@ -30,6 +30,7 @@ class CreateDocumentaryControlsTable extends Migration
             $table->unsignedBigInteger('incmgInsp_id');
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             $table->string('docControl_FDS')->nullable();
+            /*$table->string('docControl_specDoc')->nullable();*/
         });
     }
 

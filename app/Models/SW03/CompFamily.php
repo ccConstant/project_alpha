@@ -18,7 +18,7 @@ use App\Models\SW03\CompFamilyMember;
 use App\Models\User;
 use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\Supplier;
-use App\Models\SW02\Criticality;
+use App\Models\SW03\Criticality;
 use App\Models\SW03\EnumPurchasedBy;
 
 class CompFamily extends Model
@@ -26,7 +26,7 @@ class CompFamily extends Model
     use HasFactory;
 
      //Data which can be added, updated or deleted by us in the data base.
-     protected $fillable = ['compFam_ref', 'compFam_design', 'compFam_drawingPath', 'enumPurchasedBy_id', 'compFam_nbrVersion', 'compFam_variablesCharac', 'compFam_qualityApproverId', 'compFam_technicalReviewerId', 'compFam_signatureDate', 'compFam_validate', 'compFam_version', 'compFam_active'] ;
+     protected $fillable = ['compFam_ref', 'compFam_design', 'compFam_drawingPath', 'enumPurchasedBy_id', 'compFam_nbrVersion', 'compFam_variablesCharac', 'compFam_qualityApproverId', 'compFam_technicalReviewerId', 'compFam_signatureDate', 'compFam_validate', 'compFam_version', 'compFam_active', 'compFam_genDesign', 'compFam_genRef'] ;
 
      //Define the relation between a compFamily and its compFamilyMember : a compFamilyMember can correspond to only one compFamily
      public function comp_family_member(){
@@ -48,8 +48,8 @@ class CompFamily extends Model
         return $this->belongsToMany(EnumStorageCondition::class, 'pivot_comp_fam_sto_cond', 'compFam_id', 'storageCondition_id') ;
     }
 
-    //Define the relation between an EnumPurchasedBy and its compFamily : a compFamily has only one EnumPurchasedBy 
-    public function purchased_by(){    
+    //Define the relation between an EnumPurchasedBy and its compFamily : a compFamily has only one EnumPurchasedBy
+    public function purchased_by(){
         return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
     }
 

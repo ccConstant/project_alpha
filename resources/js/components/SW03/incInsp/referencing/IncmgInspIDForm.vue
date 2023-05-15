@@ -17,16 +17,16 @@
                     name="remarks"
                     label="Incoming Inspection Remarks :"
                     v-model="incmgInsp_remarks"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="!!isInConsultMod || addSucces"
                     :info_text="null"
                     :max="255"
                 />
                 <InputTextForm
                     :Errors="errors.incmgInsp_partMaterialComplianceCertificate"
                     name="partMatCertif"
-                    label="Incoming Inspection Part Material Compliance Certification :"
+                    label="Incoming Inspection Part Material Compliance Certificate :"
                     v-model="incmgInsp_partMaterialCertif"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="!!isInConsultMod || addSucces"
                     :info_text="null"
                     :max="255"
                 />
@@ -35,7 +35,7 @@
                     name="rawMatCertif"
                     label="Incoming Inspection Raw Material Certificate :"
                     v-model="incmgInsp_rawMaterialCertif"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="!!isInConsultMod || addSucces"
                     :info_text="null"
                     :max="255"
                 />
@@ -77,7 +77,7 @@
                                 <ReferenceADocControl
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
@@ -98,7 +98,7 @@
                                 <ReferenceAnAspTest
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
@@ -106,7 +106,7 @@
                         </div>
                     </div>
                     <!-- FuncTest -->
-                    <div class="accordion-item">
+                    <div class="accordion-item" v-if="article_type === 'comp'">
                         <h2 class="accordion-header" id="headingFuncTest">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseFuncTest" aria-expanded="true" aria-controls="collapseFuncTest">
@@ -118,7 +118,7 @@
                                 <ReferenceAFuncTest
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
@@ -127,7 +127,7 @@
                     </div>
 
                     <!-- DimTest -->
-                    <div class="accordion-item">
+                    <div class="accordion-item" v-if="article_type === 'comp' || article_type === 'raw'">
                         <h2 class="accordion-header" id="headingDimTest">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseDimTest" aria-expanded="true" aria-controls="collapseDimTest">
@@ -139,13 +139,33 @@
                                 <ReferenceADimTest
                                     :articleType="article_type"
                                     :article_id="article_id"
-                                    :import_id="this.isInConsultMod ? incmgInsp_id : null"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                     :incmgInsp_id="incmgInsp_id"
                                     :consultMod="this.isInConsultMod"
                                 />
                             </div>
                         </div>
 
+                    </div>
+                    <!-- CompTest -->
+                    <div class="accordion-item" v-if="article_type === 'cons'">
+                        <h2 class="accordion-header" id="headingCompTest">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseCompTest" aria-expanded="true" aria-controls="collapseCompTest">
+                                Complementary Test
+                            </button>
+                        </h2>
+                        <div id="collapseCompTest" class="accordion-collapse collapse show" aria-labelledby="headingCompTest">
+                            <div class="accordion-body">
+                                <ReferenceACompTest
+                                    :articleType="article_type"
+                                    :article_id="article_id"
+                                    :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
+                                    :incmgInsp_id="incmgInsp_id"
+                                    :consultMod="this.isInConsultMod"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             <SucessAlert ref="sucessAlert"/>
@@ -164,9 +184,11 @@ import ReferenceADocControl from "./ReferenceADocControl.vue";
 import ReferenceAnAspTest from "./ReferenceAnAspTest.vue";
 import ReferenceAFuncTest from "./ReferenceAFuncTest.vue";
 import ReferenceADimTest from "./ReferenceADimTest.vue";
+import ReferenceACompTest from "./ReferenceACompTest.vue";
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        ReferenceACompTest,
         ReferenceADimTest,
         ReferenceAFuncTest,
         ReferenceAnAspTest,
@@ -230,7 +252,7 @@ export default {
     equipment_id_update: ID of the equipment in which the file will be updated
     errors: Object of errors in which will be stores the different error occurred when adding in database
     addSucces: Boolean who tell if this file has been added successfully
-    isInConsultedMod: data of the consultMod prop
+    isInConsultMod: data of the consultMod prop
 -----------------------------------------------------------*/
     data() {
         return {
@@ -242,6 +264,7 @@ export default {
             errors: {},
             addSucces: false,
             isInConsultMod: this.consultMod,
+            isInModifMod: this.modifMod,
             loaded: false,
             infos_file: [],
             rawFam_id: null,
@@ -291,14 +314,8 @@ export default {
                     })
                     /*If the file is added successfully*/
                     .then(response => {
-                        console.log("coucou")
                         this.$snotify.success(`Incoming Inspection added successfully`);
-                        console.log("coucou2")
-                        if (!this.modifMod) {
-                            /*The form pass in consulting mode and addSucces pass to True*/
-                            this.isInConsultedMod = true;
-                            this.addSucces = true
-                        }
+                        this.addSucces = true
                         /*the id of the file take the value of the newly created id*/
                         this.incmgInsp_id = response.data.id;
                         /*The validate option of this file takes the value of savedAs(Params of the function)*/
@@ -315,41 +332,52 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateIncmgInsp(savedAs, reason, lifesheet_created) { // TODO: update
+        updateIncmgInsp(savedAs, reason, artSheet_created) {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
-            axios.post('/file/verif', {
-                file_name: this.file_name,
-                file_location: this.file_location,
-                file_validate: savedAs,
+            axios.post('/incmgInsp/verif', {
+                incmgInsp_remarks: this.incmgInsp_remarks,
+                incmgInsp_partMaterialComplianceCertificate: this.incmgInsp_partMaterialCertif,
+                incmgInsp_rawMaterialCertificate: this.incmgInsp_rawMaterialCertif,
+                incmgInsp_validate: savedAs,
+                incmgInsp_consFam_id: this.consFam_id,
+                incmgInsp_rawFam_id: this.rawFam_id,
+                incmgInsp_compFam_id: this.compFam_id,
+                incmpInsp_articleType: this.article_type
             })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the file who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/file/${id}`;
-                    axios.post(consultUrl(this.file_id), {
-                        file_name: this.file_name,
-                        file_location: this.file_location,
-                        article_id: this.equipment_id_update,
-                        file_validate: savedAs
+                    const consultUrl = (id) => `/incmgInsp/update/${id}`;
+                    axios.post(consultUrl(this.incmgInsp_id), {
+                        incmgInsp_remarks: this.incmgInsp_remarks,
+                        incmgInsp_partMaterialComplianceCertificate: this.incmgInsp_partMaterialCertif,
+                        incmgInsp_rawMaterialCertificate: this.incmgInsp_rawMaterialCertif,
+                        incmgInsp_validate: savedAs,
+                        incmgInsp_consFam_id: this.consFam_id,
+                        incmgInsp_rawFam_id: this.rawFam_id,
+                        incmgInsp_compFam_id: this.compFam_id,
+                        incmpInsp_articleType: this.article_type
                     })
                         .then(response => {
-                            this.file_validate = savedAs;
+                            this.incmgInsp_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            const id = this.equipment_id_update;
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
                             }
                             this.$refs.sucessAlert.showAlert(`Incoming Inspection updated successfully and saved as ${savedAs}`);
+                            this.addSucces = true;
                         })
                         /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
                 })
                 /*If the controller sends errors, we put it in the error object*/
                 .catch(error => this.errors = error.response.data.errors);
@@ -359,10 +387,9 @@ export default {
             delete this.errors[event.target.name];
         },
         /*Function for deleting a file from the view and the database*/
-        deleteComponent(reason, lifesheet_created) {
+        deleteComponent(reason, artSheet_created) {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {
@@ -373,6 +400,12 @@ export default {
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
                         /*Emit to the parent component that we want to delete this component*/
+                        if (artSheet_created == true) {
+                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
                         this.$emit('deleteFile', '')
                         this.$refs.sucessAlert.showAlert(`Incoming Inspection deleted successfully`);
                     })

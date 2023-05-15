@@ -11,27 +11,31 @@
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" >
-                <InputSelectForm 
-                    @clearSelectError='clearSelectError' 
-                    name="artFam_storageCondition" 
+                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    name="artFam_storageCondition"
                     :Errors="errors.artFam_storageCondition"
-                    label="Article Family Storage Condition :" 
-                    :options="enumArticle_storageCondition" 
+                    label="Article Family Storage Condition :"
+                    :options="enumArticle_storageCondition"
                     :selctedOption="artFam_storageCondition"
-                    :isDisabled="this.isInConsultMod" 
+                    :isDisabled="this.isInConsultMod"
                     v-model="artFam_storageCondition"
-                    :info_text="'Article Family Storage Condition value'" 
-                    :id_actual="'ArticleFamilyStorageCondition'"/>
-            
-            
-            
+                    :info_text="'Article Family Storage Condition value'"
+                    :id_actual="'ArticleFamilyStorageCondition'"
+                />
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addStorageConditions"
                     @update="updateStorageConditions"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
-                    :savedAs="validate"/>
+                    :savedAs="validate"
+                />
+                <DeleteComponentButton v-if="this.isInModifMod"
+                    @delete="deleteComponent"
+                    :consultMod="this.isInConsultMod"
+                    :modifMod="this.isInModifMod"
+                />
             </form>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -141,19 +145,17 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
-                console.log("hola")
-                console.log(this.artFam_storageCondition)
                 const consultUrl = (id) => `/artFam/enum/storageCondition/link/${id}`;
                 axios.post(consultUrl(id), {
-                    artFam_type: this.artFam_type,
+                    artFam_type: this.artFam_type.toUpperCase(),
                     artFam_storageCondition: this.artFam_storageCondition,
                 })
-                    
+
                 /*If the storage condition have been linked successfully*/
                 .then(response => {
                     /*We test if a article sheet has been already created*/
                     /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                    /* TODO 
+                    /* TODO
                     if (lifesheet_created == true) {
                         axios.post(`/history/add/equipment/${id}`, {
                             history_reasonUpdate: reason,
@@ -162,11 +164,8 @@ export default {
                     }*/
                     this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
                     /*If the user is not in modification mode*/
-                    if (!this.modifMod) {
-                        /*The form pass in consulting mode and addSucces pass to True*/
-                        this.isInConsultedMod = true;
-                        this.addSucces = true
-                    }
+                    this.isInConsultedMod = true;
+                    this.addSucces = true
                     /*the id of the file take the value of the newly created id*/
                     this.storageCondition_id = response.data;
                     /*The validate option of this file takes the value of savedAs(Params of the function)*/
@@ -181,43 +180,24 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updateStorageConditions(savedAs, reason, lifesheet_created) {
-            /*The First post to verify if all the fields are filled correctly,
-            The name, location and validate option are sent to the controller*/
-            axios.post('/file/verif', {
-                file_name: this.file_name,
-                file_location: this.file_location,
-                file_validate: savedAs,
+            const consultUrl = (type, id) => `/artFam/enum/storageCondition/update/${type}/${id}`;
+            axios.post(consultUrl(this.artFam_type, this.art_id_add), {
+                value: this.artFam_storageCondition,
+                id: this.storageCondition_id
+            }).then(response =>{
+                if (artSheet_created == true) {
+                    axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                        history_reasonUpdate: reason,
+                    });
+                    window.location.reload();
+                }
+                this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
+                /*If the user is not in modification mode*/
+                this.isInConsultedMod = true;
+                this.addSucces = true
+            }).catch(error =>{
+                this.errors = error.response.data.errors;
             })
-                .then(response => {
-                    this.errors = {};
-                    /*If all the verifications passed, a new post this time to add the file in the database
-                    Type, name, value, unit, validate option and id of the equipment is sent to the controller
-                    In the post url the id correspond to the id of the file who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/file/${id}`;
-                    axios.post(consultUrl(this.file_id), {
-                        file_name: this.file_name,
-                        file_location: this.file_location,
-                        eq_id: this.equipment_id_update,
-                        file_validate: savedAs
-                    })
-                        .then(response => {
-                            this.file_validate = savedAs;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            const id = this.equipment_id_update;
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.sucessAlert.showAlert(`Equipment file updated successfully and saved as ${savedAs}`);
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
         },
         clearSelectError(value) {
             delete this.errors[value];
@@ -225,44 +205,42 @@ export default {
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
-            if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
+            if (this.modifMod == true && this.storageCondition_id !== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
-                const consultUrl = (id) => `/equipment/delete/file/${id}`;
-                axios.post(consultUrl(this.file_id), {
-                    eq_id: this.equipment_id_update
+                const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
+                axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
+                    artFam_id: this.art_id
                 })
                     .then(response => {
                         const id = this.equipment_id_update;
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
+                        if (artSheet_created == true) {
+                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                 history_reasonUpdate: reason,
                             });
                             window.location.reload();
                         }
                         /*Emit to the parent component that we want to delete this component*/
                         this.$emit('deleteFile', '')
-                        this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
+                        this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
                     })
                     /*If the controller sends errors, we put it in the error object*/
                     .catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteFile', '')
-                this.$refs.sucessAlert.showAlert(`Empty Equipment file deleted successfully`);
+                this.$refs.sucessAlert.showAlert(`Empty storage condition deleted successfully`);
             }
         }
     },
     created() {
-        console.log("hola")
         axios.get('/artFam/enum/storageCondition')
             .then(response => {
                 this.enumArticle_storageCondition = response.data;
-                console.log(response.data)
                 this.loaded = true;
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+            });
     },
 }
 </script>

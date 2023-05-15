@@ -39,7 +39,7 @@
                     v-if="this.data_article_type === 'raw' || this.data_article_type === 'comp'"
                     :Errors="errors.docControl_materialCertiSpec"
                     name="matCertifSpec"
-                    label="Doc Control Material Certification Specifications :"
+                    label="Doc Control Material Certificate Specifications :"
                     v-model="docControl_materialCertiSpec"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="null"
@@ -171,7 +171,7 @@ export default {
         return {
             docControl_id: this.id,
             docControl_reference: this.reference,
-            docControl_name: this.name,
+            docControl_name: this.docControlName,
             docControl_materialCertiSpec: this.materialCertiSpec,
             docControl_fds: this.fds,
             errors: {},
@@ -193,20 +193,16 @@ export default {
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
-                console.log(this.data_article_type);
-                console.log(this.data_article_id);
-                console.log(this.data_incmgInsp_id);
-                console.log(this.docControl_reference);
-                console.log(this.docControl_name);
-                console.log(this.docControl_materialCertiSpec);
-                console.log(this.docControl_fds);
                 axios.post('/incmgInsp/docControl/verif', {
                     docControl_articleType: this.data_article_type,
                     docControl_reference: this.docControl_reference,
                     docControl_name: this.docControl_name,
                     docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                     docControl_FDS: this.docControl_fds,
-                    incmgInsp_id: this.data_incmgInsp_id
+                    incmgInsp_id: this.data_incmgInsp_id,
+                    reason: 'add',
+                    id: this.docControl_id,
+                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -218,30 +214,79 @@ export default {
                         docControl_name: this.docControl_name,
                         docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                         docControl_FDS: this.docControl_fds,
-                        incmgInsp_id: this.data_incmgInsp_id
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        reason: 'add',
+                        id: this.docControl_id,
+                        article_id: this.data_article_id,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
                         this.$refs.sucessAlert.showAlert(`Documentary control added successfully`);
-                        if (!this.modifMod) {
-                            /*The form pass in consulting mode and addSucces pass to True*/
-                            this.isInConsultedMod = true;
-                            this.addSucces = true
-                        }
+                        this.isInConsultedMod = true;
+                        this.addSucces = true
+
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                    });
                 })
                 //If the controller sends errors, we put it in the error object
-                .catch(error => console.log(error.response.data.errors));
+                .catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
-
+        updateDocControl(savedAs, reason, artSheet_created) {
+            axios.post('/incmgInsp/docControl/verif', {
+                docControl_articleType: this.data_article_type,
+                docControl_reference: this.docControl_reference,
+                docControl_name: this.docControl_name,
+                docControl_materialCertifSpe: this.docControl_materialCertiSpec,
+                docControl_FDS: this.docControl_fds,
+                incmgInsp_id: this.data_incmgInsp_id,
+                reason: 'update',
+                id: this.docControl_id,
+                article_id: this.data_article_id,
+            })
+                .then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/incmgInsp/docControl/update/' + this.docControl_id, {
+                        docControl_articleType: this.data_article_type,
+                        docControl_reference: this.docControl_reference,
+                        docControl_name: this.docControl_name,
+                        docControl_materialCertifSpe: this.docControl_materialCertiSpec,
+                        docControl_FDS: this.docControl_fds,
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        reason: 'update',
+                        id: this.docControl_id,
+                        article_id: this.data_article_id,
+                    })
+                        /*If the file is added successfully*/
+                        .then(response => {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
+                            this.$snotify.success(`Documentary Control successfully updated`);
+                            this.isInConsultedMod = true;
+                            this.addSucces = true
+                        })
+                        /*If the controller sends errors, we put it in the error object*/
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
+                })
+                //If the controller sends errors, we put it in the error object
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

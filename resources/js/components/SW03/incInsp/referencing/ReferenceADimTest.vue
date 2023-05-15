@@ -20,10 +20,10 @@
                 :is="component.comp"
                 :id="component.id"
                 :consultMod="isInConsultMod"
-                :modifMod="isInModifMod"
+                :modifMod="component.id !== null"
                 :severityLevel="component.dimTest_severityLevel"
                 :controlLevel="component.dimTest_controlLevel"
-                :expectedMethod="component.dimTest_expectedAspect"
+                :expectedMethod="component.dimTest_expectedMethod"
                 :expectedValue="component.dimTest_expectedValue"
                 :name="component.dimTest_name"
                 :unitValue="component.dimTest_unitValue"
@@ -31,6 +31,8 @@
                 :incmgInsp_id="incmgInsp_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :desc="component.dimTest_desc"
+                :specDoc="component.dimTest_specDoc"
                 @deletedimTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -127,18 +129,34 @@ export default {
             this.components.push({
                 comp: 'DimTestIDForm',
                 key: this.uniqueKey++,
+                id: null,
+                dimTest_sampling: "100%",
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(dimTest_severityLevel, dimTest_controlLevel, dimTest_expectedAspect, dimTest_name, dimTest_sampling, incmgInsp_id, id, className) {
+        addImportedComponent(
+            dimTest_severityLevel,
+            dimTest_controlLevel,
+            dimTest_expectedMethod,
+            dimTest_expectedValue,
+            dimTest_name,
+            dimTest_sampling,
+            dimTest_unitValue,
+            dimTest_desc,
+            dimTest_specDoc,
+            incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'DimTestIDForm',
                 key: this.uniqueKey++,
                 dimTest_severityLevel: dimTest_severityLevel,
                 dimTest_controlLevel: dimTest_controlLevel,
-                dimTest_expectedAspect: dimTest_expectedAspect,
+                dimTest_expectedMethod: dimTest_expectedMethod,
+                dimTest_expectedValue: dimTest_expectedValue,
                 dimTest_name: dimTest_name,
                 dimTest_sampling: dimTest_sampling,
+                dimTest_unitValue: dimTest_unitValue,
+                dimTest_desc: dimTest_desc,
+                dimTest_specDoc: dimTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -151,7 +169,6 @@ export default {
         /*Function for adding to the vue the imported article*/
         importdimTest() {
             if (this.dimTest.length === 0 && !this.isInModifMod) {
-                console.log("no dimTest");
                 this.loaded = true;
             } else {
                 for (const dt of this.dimTest) {
@@ -162,7 +179,10 @@ export default {
                         dt.dimTest_expectedMethod,
                         dt.dimTest_expectedValue,
                         dt.dimTest_name,
+                        dt.dimTest_sampling,
                         dt.dimTest_unitValue,
+                        dt.dimTest_desc,
+                        dt.dimTest_specDoc,
                         dt.incmgInsp_id,
                         dt.id,
                         className
@@ -197,7 +217,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_article_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -208,7 +227,8 @@ export default {
                     this.importdimTest();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                });
         } else {
             this.loaded = true;
         }

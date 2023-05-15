@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
+use App\Models\SW03\CompFamily;
+use App\Models\SW03\ConsFamily;
 use App\Models\SW03\DocumentaryControl;
+use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -65,6 +69,27 @@ class DocControlController extends Controller
                 ]
             );
         }
+        $insp = null;
+        if ($request->docControl_articleType === 'comp') {
+            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+        } else if ($request->docControl_articleType === 'raw') {
+            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+        } else if ($request->docControl_articleType === 'cons') {
+            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+        }
+        $val = [];
+        foreach ($insp as $in) {
+            array_push($val, $in->id);
+        }
+        $find = DocumentaryControl::all()->where('docControl_name', '==', $request->docControl_name)
+            ->whereIn('incmgInsp_id', $val)
+            ->where('id', '<>', $request->id)
+            ->count();
+        if ($find !== 0) {
+            return response()->json([
+                'docControl_name' => 'This documentary control already exists',
+            ], 429);
+        }
     }
 
     public function add_docControl(Request $request) {
@@ -113,7 +138,54 @@ class DocControlController extends Controller
     }
 
     public function update_docControl(Request $request, $id) {
-        $docControl = DocumentaryControl::all()->find($id)->first();
+        $docControl = DocumentaryControl::all()->where('id', '==', $id)->first();
+        if ($docControl === null) {
+            return response()->json([
+                'message' => 'Documentary control not found'
+            ], 404);
+        };
+        $incmgInsp = IncomingInspection::all()->where('id', '==', $docControl->incmgInsp_id)->first();
+        if ($incmgInsp === null) {
+            return response()->json([
+                'message' => 'Incoming inspection not found'
+            ], 404);
+        };
+        $article = null;
+        if ($request->docControl_articleType === 'cons') {
+            $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
+            $signed = $article->consFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->docControl_articleType === 'raw') {
+            $article = RawFamily::all()->where('id', '==', $incmgInsp->incmgInsp_rawFam_id)->first();
+            $signed = $article->rawFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($request->docControl_articleType === 'comp') {
+            $article = CompFamily::all()->where('id', '==', $incmgInsp->incmgInsp_compFam_id)->first();
+            $signed = $article->compFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        }
+        $article->update([
+            $request->docControl_articleType.'Fam_signatureDate' => null,
+            $request->docControl_articleType.'Fam_qualityApproverId' => null,
+            $request->docControl_articleType.'Fam_technicalReviewerId' => null,
+        ]);
+        $incmgInsp->update([
+            'incmgInsp_qualityApproverId' => null,
+            'incmgInsp_technicalReviewerId' => null,
+            'incmgInsp_signatureDate' => null,
+        ]);
         $docControl->update([
             'docControl_name' => $request->docControl_name,
             'docControl_reference' => $request->docControl_reference,

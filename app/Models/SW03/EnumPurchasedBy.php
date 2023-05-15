@@ -22,7 +22,7 @@ class EnumPurchasedBy extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['value'] ;
+    protected $fillable = ['value', 'caduc'] ;
 
     //Define the relation between an EnumPurchasedBy and its compFamily : an EnumPurchasedBy can have many compFamily
     public function compFamily(){

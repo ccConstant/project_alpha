@@ -213,6 +213,11 @@ class SupplierController extends Controller
         return response()->json($suppliers);
     }
 
+    public function send_active_suppliers() {
+        $suppliers = Supplier::all()->where('supplr_active', '=', 1);
+        return response()->json($suppliers);
+    }
+
     public function update_supplier(Request $request, $id) {
         $supplier = Supplier::findOrfail($id);
         if ($supplier->supplr_technicalReviewerId !== null) {

@@ -20,10 +20,10 @@
                 :is="component.comp"
                 :id="component.id"
                 :consultMod="isInConsultMod"
-                :modifMod="isInModifMod"
+                :modifMod="component.id !== null"
                 :severityLevel="component.funcTest_severityLevel"
                 :controlLevel="component.funcTest_controlLevel"
-                :expectedMethod="component.funcTest_expectedAspect"
+                :expectedMethod="component.funcTest_expectedMethod"
                 :expectedValue="component.funcTest_expectedValue"
                 :name="component.funcTest_name"
                 :unitValue="component.funcTest_unitValue"
@@ -31,6 +31,8 @@
                 :incmgInsp_id="incmgInsp_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :desc="component.funcTest_desc"
+                :specDoc="component.funcTest_specDoc"
                 @deletefuncTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -127,18 +129,34 @@ export default {
             this.components.push({
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
+                id: null,
+                funcTest_sampling:"100%",
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(funcTest_severityLevel, funcTest_controlLevel, funcTest_expectedAspect, funcTest_name, funcTest_sampling, incmgInsp_id, id, className) {
+        addImportedComponent(
+            funcTest_severityLevel,
+            funcTest_controlLevel,
+            funcTest_expectedMethod,
+            funcTest_expectedValue,
+            funcTest_name,
+            funcTest_sampling,
+            funcTest_unitValue,
+            funcTest_desc,
+            funcTest_specDoc,
+            incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
                 funcTest_severityLevel: funcTest_severityLevel,
                 funcTest_controlLevel: funcTest_controlLevel,
-                funcTest_expectedAspect: funcTest_expectedAspect,
+                funcTest_expectedMethod: funcTest_expectedMethod,
+                funcTest_expectedValue: funcTest_expectedValue,
                 funcTest_name: funcTest_name,
                 funcTest_sampling: funcTest_sampling,
+                funcTest_unitValue: funcTest_unitValue,
+                funcTest_desc: funcTest_desc,
+                funcTest_specDoc: funcTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -151,7 +169,6 @@ export default {
         /*Function for adding to the vue the imported article*/
         importFuncTest() {
             if (this.funcTest.length === 0 && !this.isInModifMod) {
-                console.log("No funcTest to import");
                 this.loaded = true;
             } else {
                 for (const ft of this.funcTest) {
@@ -162,7 +179,10 @@ export default {
                         ft.funcTest_expectedMethod,
                         ft.funcTest_expectedValue,
                         ft.funcTest_name,
+                        ft.funcTest_sampling,
                         ft.funcTest_unitValue,
+                        ft.funcTest_desc,
+                        ft.funcTest_specDoc,
                         ft.incmgInsp_id,
                         ft.id,
                         className
@@ -197,7 +217,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_article_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -208,7 +227,8 @@ export default {
                     this.importFuncTest();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                });
         } else {
             this.loaded = true;
         }

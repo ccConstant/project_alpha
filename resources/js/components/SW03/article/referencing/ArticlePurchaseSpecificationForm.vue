@@ -14,7 +14,8 @@
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.purSpe_requiredDoc"
-                    name="purSpe_requiredDoc" label="Purchase Specification Required Doc"
+                    name="purSpe_requiredDoc"
+                    label="Purchase Specification Required Doc"
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="purSpe_requiredDoc"
@@ -22,9 +23,30 @@
                     :min="0"
                     :max="255"
                 />
-            
-            
-            
+<!--                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    name="supplier"
+                    :Errors="errors.artFam_purchasedBy"
+                    label="Supplier :"
+                    :options="suppliers"
+                    :selctedOption="purSpe_supplier_id"
+                    :isDisabled="!!isInConsultMod"
+                    v-model="purSpe_supplier_id"
+                    :info_text="'Supplier'"
+                    :id_actual="supplier_id"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.supplr_ref"
+                    name="purSpe_supplrRef"
+                    label="Supplier's Reference"
+                    :isDisabled="this.isInConsultMod"
+                    isRequired
+                    v-model="purSpe_supplier_ref"
+                    :info_text="'Supplier\'s Reference'"
+                    :min="2"
+                    :max="255"
+                />-->
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addPurchaseSpecification"
@@ -32,6 +54,8 @@
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
                     :savedAs="validate"/>
+                <DeleteComponentButton :validationMode="purSpe_validate" :consultMod="this.isInConsultMod"
+                                       @deleteOk="deleteComponent"/>
             </form>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -44,11 +68,13 @@ import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
+import InputSelectForm from "../../../input/InputSelectForm.vue";
 
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        InputSelectForm,
         InputTextForm,
         SaveButtonForm,
         DeleteComponentButton,
@@ -68,6 +94,12 @@ export default {
     ---------------------------------------------------*/
     props: {
         requiredDoc: {
+            type: String
+        },
+        supplier_id: {
+            type: Number
+        },
+        supplier_ref: {
             type: String
         },
         validate: {
@@ -109,6 +141,8 @@ export default {
     data() {
         return {
             purSpe_requiredDoc: this.requiredDoc,
+            purSpe_supplier_id: this.supplier_id,
+            purSpe_supplier_ref: this.supplier_ref,
             purSpe_validate: this.validate,
             purSpe_id: this.id,
             art_id_add: this.art_id,
@@ -120,6 +154,7 @@ export default {
             isInModifMod: this.modifMod,
             loaded: false,
             infos_purSpe: [],
+            suppliers: [],
         }
     },
     methods: {
@@ -144,23 +179,17 @@ export default {
                 })
                 /*If the data are correct, we send them to the controller for add them in the database*/
                 .then(response => {
-                    console.log("after verif")
-                    console.log(id)
                     this.errors = {};
                     const consultUrl = (id) => `/purSpe/add/${id}`;
                     axios.post(consultUrl(id), {
                         purSpe_requiredDoc: this.purSpe_requiredDoc,
                         purSpe_validate: savedAs,
-                        artFam_type : this.artFam_type,
+                        artFam_type : this.artFam_type.toUpperCase(),
                     })
                     /*If the data have been added in the database, we show a success message*/
                     .then(response => {
-                        console.log("after add")
-                        console.log(response.data)
                         this.addSuccess = true;
                         this.isInConsultMod = true;
-                        console.log(this.addSuccess)
-                        console.log(this.isInConsultMod)
                         this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
                         this.purSpe_id = response.data;
                         this.purSpe_validate=savedAs;
@@ -177,38 +206,35 @@ export default {
         updatePurchaseSpecification(savedAs, reason, lifesheet_created) {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
-            axios.post('/file/verif', {
-                file_name: this.file_name,
-                file_location: this.file_location,
-                file_validate: savedAs,
+            axios.post('/purSpe/verif', {
+                purSpe_requiredDoc: this.purSpe_requiredDoc,
+                purSpe_validate: savedAs
             })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the file who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/file/${id}`;
-                    axios.post(consultUrl(this.file_id), {
-                        file_name: this.file_name,
-                        file_location: this.file_location,
-                        eq_id: this.equipment_id_update,
-                        file_validate: savedAs
+                    axios.post('/purSpe/update/' + this.artFam_type + '/' + this.purSpe_id, {
+                        purSpe_requiredDoc: this.purSpe_requiredDoc,
+                        purSpe_validate: savedAs
                     })
                         .then(response => {
                             this.file_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            const id = this.equipment_id_update;
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 });
                                 window.location.reload();
                             }
-                            this.$refs.sucessAlert.showAlert(`Equipment file updated successfully and saved as ${savedAs}`);
+                            this.$refs.sucessAlert.showAlert(`Article Purchase Specification updated successfully and saved as ${savedAs}`);
                         })
                         /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
                 })
                 /*If the controller sends errors, we put it in the error object*/
                 .catch(error => this.errors = error.response.data.errors);
@@ -220,7 +246,6 @@ export default {
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {
@@ -230,8 +255,8 @@ export default {
                         const id = this.equipment_id_update;
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
+                        if (artSheet_created == true) {
+                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                 history_reasonUpdate: reason,
                             });
                             window.location.reload();
@@ -249,6 +274,18 @@ export default {
         }
     },
     created() {
+        axios.get('/supplier/active/send')
+            .then(response => {
+                for (let i = 0; i < response.data.length; i++) {
+                    this.suppliers.push({
+                        id_enum: 'suppliers',
+                        value: response.data[i].id,
+                        text: response.data[i].supplr_name,
+                    });
+                }
+            })
+            .catch(error => {
+            });
         this.loaded=true;
     },
 }

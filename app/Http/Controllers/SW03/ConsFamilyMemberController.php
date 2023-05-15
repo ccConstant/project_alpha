@@ -27,14 +27,29 @@ class ConsFamilyMemberController extends Controller
             $request,
             [
                 'artMb_dimension' => 'required|max:50|String',
+                'artMb_sameValues' => 'required'
             ],
             [
 
                 'artMb_dimension.required' => 'You must enter a dimension for your cons family member',
                 'artMb_dimension.max' => 'You must enter less than 50 characters ',
                 'artMb_dimension.String' => 'You must enter a string ',
+
+                'artMb_sameValues.required' => 'You must enter a boolean for your cons family member',
             ]
         );
+        if (!$request->artMb_sameValues) {
+            $this->validate(
+                $request,
+                [
+                    'artMb_designation' => 'required|max:255',
+                ],
+                [
+                    'artMb_designation.required' => 'You must enter a designation for your comp family member',
+                    'artMb_designation.max' => 'You must enter less than 255 characters ',
+                ]
+            );
+        }
     }
 
     /**
@@ -47,6 +62,8 @@ class ConsFamilyMemberController extends Controller
         $consFamilyMember=consFamilyMember::create([
             'consMb_dimension' => $request->artMb_dimension,
             'consFam_id' => $id,
+            'consMb_sameValues' => $request->artMb_sameValues,
+            'consMb_design' => $request->artMb_designation,
         ]) ;
 
         $consFamilyMember_id=$consFamilyMember->id ;
@@ -61,8 +78,20 @@ class ConsFamilyMemberController extends Controller
             array_push($array, [
                 'id' => $member->id,
                 'dimension' => $member->compMb_dimension,
+                'sameValues' => $member->compMb_sameValues,
+                'designation' => $member->compMb_design,
             ]);
         }
         return response()->json($array);
+    }
+
+    public function update_consFamilyMember(Request $request, $id) {
+        $member = ConsFamilyMember::all()->where('id', '==', $id)->first();
+        $member->update([
+            'consMb_dimension' => $request->artMb_dimension,
+            'consMb_sameValues' => $request->artMb_sameValues,
+            'consMb_design' => $request->artMb_designation,
+        ]);
+        return response()->json($member);
     }
 }

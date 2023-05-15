@@ -262,7 +262,6 @@ export default {
         }
     },
     created(){
-        console.log("signed"+this.$route.query.signed)
     },
     methods:{
         addDraft(){

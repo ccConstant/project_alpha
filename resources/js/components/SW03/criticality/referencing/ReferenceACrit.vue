@@ -28,6 +28,7 @@
                 :remarks="component.crit_remarks"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :validate="component.validate"
                 @deleteCrit="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -130,6 +131,7 @@ export default {
             crit_artMaterialFunctionCriticality,
             crit_artProcessCriticality,
             crit_remarks,
+            crit_validate,
             incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'CritIDForm',
@@ -139,6 +141,7 @@ export default {
                 crit_artMaterialFunctionCriticality: crit_artMaterialFunctionCriticality,
                 crit_artProcessCriticality: crit_artProcessCriticality,
                 crit_remarks: crit_remarks,
+                validate: crit_validate,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -151,7 +154,6 @@ export default {
         /*Function for adding to the vue the imported article*/
         importCrit() {
             if (this.criticality.length === 0 && !this.isInModifMod) {
-                console.log("importCritVide");
                 this.loaded = true;
             } else {
                 for (const dt of this.criticality) {
@@ -162,6 +164,7 @@ export default {
                         dt.crit_artMaterialFunctionCriticality,
                         dt.crit_artProcessCriticality,
                         dt.crit_remarks,
+                        dt.crit_validate,
                         dt.incmgInsp_id,
                         dt.id,
                         className
@@ -196,7 +199,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_article_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -206,7 +208,8 @@ export default {
                     this.importCrit();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                });
         } else {
             this.loaded = true;
         }

@@ -6,7 +6,7 @@
 * Update date : 20 Apr 2023
 * This file is used to create the table "comp_family_members" in the data base. In this file, we can see the different
 * attribute of this table (dimension, technicalReviewer..) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -23,13 +23,15 @@ class CreateCompFamilyMembersTable extends Migration
     {
         Schema::create('comp_family_members', function (Blueprint $table) {
             $table->id();
-            $table->string('compMb_dimension') ->nullable(); 
+            $table->string('compMb_dimension') ->nullable();
+            $table->string('compMb_design')->nullable();
+            $table->boolean('compMb_sameValues')->default(true);
             $table->foreign('compMb_technicalReviewerId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('compMb_technicalReviewerId') ->nullable(); 
+            $table->unsignedBigInteger('compMb_technicalReviewerId') ->nullable();
             $table->foreign('compMb_qualityApproverId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('compMb_qualityApproverId') ->nullable(); 
+            $table->unsignedBigInteger('compMb_qualityApproverId') ->nullable();
             $table->string('compMb_signatureDate') ->nullable();
-            $table->unsignedBigInteger('compFam_id') ->nullable(); 
+            $table->unsignedBigInteger('compFam_id') ->nullable();
             $table->foreign('compFam_id')->references('id')->on('comp_families') ;
             $table->timestamps();
         });

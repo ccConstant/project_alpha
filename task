@@ -1,0 +1,32 @@
+TODO:
+    Ajouter les formulaires si pas déjà remplis:
+        Compliance Certificate inspection (To ensure Raw Material Compliance)
+        Compliance Certificate inspection (Related to article Compliance)
+        Chacun contient les champs:
+            - Name
+            - Reference
+            - Specification
+        + le bouton add pour en ajouter des vides
+    Update des membres de familles d'articles
+    Ajouter un champs description de la variable generique dans la fiche article
+    Completer la partie Purchasing Specifications de la fiche article
+    */
+
+FIXME:
+    Changer expected value du funcTest en String et en 'Expected Acceptance Criteria' ??
+    Empêcher Html2pdf de couper les tableaux de la fiche consultation article
+    Update criticality
+    */
+
+DONE:
+    Update de la fiche article
+    Ajout de Other pour le sampling + desc et prise en compte controller et model + migration
+    Complementary Test pour CONS
+    Membres génériques + autres membres + migrations + model
+    Update et suppression/enable_disable des enums Vue + controller
+    Unicité des noms dans les tests (par famille d'articles)
+    Ajout d'un membre générique de famille article
+    Ajout d'un membre non générique (adapté au générique) de famille article
+    Fiche consultation article :
+            - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé specDoc)
+    */

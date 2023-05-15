@@ -12,7 +12,6 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <InputTextForm
-                    v-if="data_article_type === 'comp'"
                     name="name"
                     label="Dimensional Test Name :"
                     v-model="dimTest_name"
@@ -25,7 +24,18 @@
                     :Errors="errors.dimTest_name"
                 />
                 <InputTextForm
-                    v-if="data_article_type === 'comp'"
+                    name="specDoc"
+                    label="Document specification :"
+                    v-model="dimTest_specDoc"
+                    :isDisabled="isInConsultedMod"
+                    :info_text="null"
+                    :min="2"
+                    :max="255"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.dimTest_specDoc"
+                />
+                <InputTextForm
                     name="expectedMethod"
                     label="Expected Method :"
                     v-model="dimTest_expectedMethod"
@@ -38,7 +48,6 @@
                     :Errors="errors.dimTest_expectedMethod"
                 />
                 <InputNumberForm
-                    v-if="data_article_type === 'comp'"
                     name="expectedValue"
                     label="Expected Value :"
                     v-model="dimTest_expectedValue"
@@ -48,23 +57,7 @@
                     isRequired
                     :Errors="errors.dimTest_expectedValue"
                 />
-                <InputSelectForm
-                    :name="'Sampling'"
-                    :label="'Sampling :'"
-                    isRequired
-                    :options="[
-                        {id_enum: 'DimSampling', value: 'sampling', text: 'sampling'},
-                        {id_enum: 'DimSampling', value: '100%', text: '100%'}
-                    ]"
-                    :isDisabled="this.isInConsultedMod"
-                    v-model="dimTest_sampling"
-                    :info_text="null"
-                    :Errors="errors.dimTest_sampling"
-                    :selctedOption="dimTest_sampling"
-                    :id_actual="'DimSampling'"
-                />
                 <InputTextForm
-                    v-if="data_article_type === 'comp'"
                     name="unitValue"
                     label="Unit Value :"
                     v-model="dimTest_unitValue"
@@ -77,7 +70,23 @@
                     :Errors="errors.dimTest_unitValue"
                 />
                 <InputSelectForm
-                    v-if="this.dimTest_sampling === 'sampling'"
+                    :name="'Sampling'"
+                    :label="'Sampling :'"
+                    isRequired
+                    :options="[
+                        {id_enum: 'Sampling', value: 'Statistics', text: 'Statistics'},
+                        {id_enum: 'Sampling', value: '100%', text: '100%'},
+                        {id_enum: 'Sampling', value: 'Other', text: 'Other'}
+                    ]"
+                    :isDisabled="this.isInConsultedMod"
+                    v-model="dimTest_sampling"
+                    :info_text="null"
+                    :Errors="errors.dimTest_sampling"
+                    :selctedOption="dimTest_sampling"
+                    :id_actual="'DimSampling'"
+                />
+                <InputSelectForm
+                    v-if="this.dimTest_sampling === 'Statistics'"
                     name="SeverityLevel"
                     :Errors="errors.dimTest_severityLevel"
                     label="Severity Level :"
@@ -88,13 +97,13 @@
                         {id_enum: 'DimSeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="dimTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'sampling'"
+                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'Statistics'"
                     v-model="dimTest_severityLevel"
                     :info_text="'DimSeverityLevel'"
                     :id_actual="'DimSeverityLevel'"
                 />
                 <InputSelectForm
-                    v-if="this.dimTest_sampling === 'sampling'"
+                    v-if="this.dimTest_sampling === 'Statistics'"
                     :name="'ControlLevel'"
                     :label="'Control Level :'"
                     isRequired
@@ -103,12 +112,25 @@
                         {id_enum: 'DimControlLevel', value: 'Normal', text: 'Normal'},
                         {id_enum: 'DimControlLevel', value: 'Reinforced', text: 'Reinforced'}
                     ]"
-                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'sampling'"
+                    :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'Statistics'"
                     v-model="dimTest_controlLevel"
                     :info_text="null"
                     :Errors="errors.dimTest_levelOfControl"
                     :selctedOption="dimTest_controlLevel"
                     :id_actual="'DimControlLevel'"
+                />
+                <InputTextForm
+                    v-if="dimTest_sampling === 'Other'"
+                    name="desc"
+                    label="Description :"
+                    v-model="dimTest_desc"
+                    :isDisabled="!!isInConsultedMod || dimTest_sampling !== 'Other'"
+                    :info_text="null"
+                    :min="2"
+                    :max="255"
+                    :inputClassName="null"
+                    isRequired
+                    :Errors="errors.dimTest_desc"
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces===false ">
@@ -140,7 +162,7 @@
 </template>
 
 <script>
-/*Importation of the other Components who will be used here*/
+/*Importation of the Other Components who will be used here*/
 import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
@@ -149,7 +171,7 @@ import InputSelectForm from "../../../input/InputSelectForm.vue";
 import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
-    /*--------Declaration of the others Components:--------*/
+    /*--------Declaration of the Others Components:--------*/
     components: {
         InputNumberForm,
         InputSelectForm,
@@ -179,7 +201,7 @@ export default {
             type: String
         },
         expectedValue: {
-            type: String
+            type: Number
         },
         name: {
             type: String
@@ -217,6 +239,14 @@ export default {
             type: String,
             default: null
         },
+        desc: {
+            type: String,
+            default: null
+        },
+        specDoc: {
+            type: String,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -239,6 +269,8 @@ export default {
             dimTest_name: this.name,
             dimTest_unitValue: this.unitValue,
             dimTest_sampling: this.sampling,
+            dimTest_desc: this.desc,
+            dimTest_specDoc: this.specDoc,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -268,6 +300,11 @@ export default {
                     dimTest_articleType: this.data_article_type,
                     dimTest_sampling: this.dimTest_sampling,
                     dimTest_unitValue: this.dimTest_unitValue,
+                    dimTest_desc: this.dimTest_desc,
+                    dimTest_specDoc: this.dimTest_specDoc,
+                    reason: 'add',
+                    id: this.dimTest_id,
+                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -283,6 +320,11 @@ export default {
                         dimTest_articleType: this.data_article_type,
                         dimTest_sampling: this.dimTest_sampling,
                         dimTest_unitValue: this.dimTest_unitValue,
+                        dimTest_desc: this.dimTest_desc,
+                        dimTest_specDoc: this.dimTest_specDoc,
+                        reason: 'add',
+                        id: this.dimTest_id,
+                        article_id: this.data_article_id,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -296,13 +338,11 @@ export default {
                     /*If the controller sends errors, we put it in the error object*/
                     .catch(error => {
                         this.errors = error.response.data.errors;
-                        console.log(error.response.data);
                     });
                 })
                 //If the controller sends errors, we put it in the error object
                 .catch(error => {
                     this.errors = error.response.data.errors;
-                    console.log(error.response.data);
                 });
             }
         },
@@ -310,8 +350,64 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
-
+        updateDocControl(savedAs, reason, artSheet_created) {
+            axios.post('/incmgInsp/dimTest/verif', {
+                dimTest_name: this.dimTest_name,
+                dimTest_severityLevel: this.dimTest_severityLevel,
+                dimTest_levelOfControl: this.dimTest_controlLevel,
+                dimTest_expectedMethod: this.dimTest_expectedMethod,
+                dimTest_expectedValue: this.dimTest_expectedValue,
+                incmgInsp_id: this.data_incmgInsp_id,
+                dimTest_articleType: this.data_article_type,
+                dimTest_sampling: this.dimTest_sampling,
+                dimTest_unitValue: this.dimTest_unitValue,
+                dimTest_desc: this.dimTest_desc,
+                dimTest_specDoc: this.dimTest_specDoc,
+                reason: 'update',
+                id: this.dimTest_id,
+                article_id: this.data_article_id,
+            })
+                .then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/incmgInsp/dimTest/update/' + this.dimTest_id, {
+                        dimTest_name: this.dimTest_name,
+                        dimTest_severityLevel: this.dimTest_severityLevel,
+                        dimTest_levelOfControl: this.dimTest_controlLevel,
+                        dimTest_expectedMethod: this.dimTest_expectedMethod,
+                        dimTest_expectedValue: this.dimTest_expectedValue,
+                        incmgInsp_id: this.data_incmgInsp_id,
+                        dimTest_articleType: this.data_article_type,
+                        dimTest_sampling: this.dimTest_sampling,
+                        dimTest_unitValue: this.dimTest_unitValue,
+                        dimTest_desc: this.dimTest_desc,
+                        dimTest_specDoc: this.dimTest_specDoc,
+                        reason: 'update',
+                        id: this.dimTest_id,
+                        article_id: this.data_article_id,
+                    })
+                        /*If the file is added successfully*/
+                        .then(response => {
+                            if (artSheet_created == true) {
+                                axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
+                            this.$snotify.success(`Dimensional Test successfully updated`);
+                            this.isInConsultedMod = true;
+                            this.addSucces = true
+                        })
+                        /*If the controller sends errors, we put it in the error object*/
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
+                })
+                //If the controller sends errors, we put it in the error object
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

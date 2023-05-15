@@ -5,14 +5,14 @@
 
 <template>
     <div class="articleStorageCondition">
-        <h2 class="titleForm">Article Storage Condition(s) </h2>
+        <h2 v-if="sto_conds.length > 0" class="titleForm">Article Storage Condition(s) </h2>
         <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info!=null "/>
         <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
         <!--ref="ask_dim_data" is used to call the child elements in this component-->
         <!--The emitted deleteDim is caught here and call the function getContent -->
         <ArticleStorageConditionForm ref="ask_storageCondition_data" v-for="(component, key) in components" :key="component.key"
-                          :is="component.comp" :value="component.storageConditionValue" :divClass="component.className"
-                          :id="component.id" :consultMod="isInConsultMod" :modifMod="isInModifMod"
+                          :is="component.comp" :value="component.value" :divClass="component.className"
+                          :id="component.id" :consultMod="isInConsultMod" :modifMod="component.id !== null && isInModifMod"
                           :art_type="data_art_type" :art_id="data_art_id"
                           @deleteStorageCondition="getContent(key)"/>
         <!--If the user is not in consultation mode -->
@@ -87,6 +87,8 @@ export default {
             all_storageCondition_validate: [],
             title_info: null,
             data_art_type: this.artType,
+            sto_conds: [],
+            loaded: false
         };
     },
     methods: {
@@ -95,6 +97,7 @@ export default {
             this.components.push({
                 comp: 'ArticleStorageConditionForm',
                 key: this.uniqueKey++,
+                id: null
             });
         },
         /*Function for adding an imported dimension form with his data*/
@@ -102,7 +105,7 @@ export default {
             this.components.push({
                 comp: 'ArticleStorageConditionForm',
                 key: this.uniqueKey++,
-                value: storageCondition_value.toString(),
+                value: storageCondition_value,
                 className: storageCondition_className,
                 id: id
             });
@@ -137,19 +140,41 @@ export default {
             }
         }*/
 
-        importDim() {
-
+        importStoConds() {
+            if (this.sto_conds.length === 0 && !this.isInModifMod) {
+                this.loaded = true;
+            } else {
+                for (const st of this.sto_conds) {
+                    this.addImportedComponent(
+                        st.value,
+                        'importedStorageCondition'+st.id,
+                        st.id);
+                }
+            }
         }
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        if (this.import_id !== null) {
+            /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
+            axios.get('/artFam/enum/storageCondition/send/' + this.data_art_type + '/' + this.import_id)
+                .then(response => {
+                    this.sto_conds = response.data;
+                    this.importStoConds();
+                    this.loaded = true;
+                })
+                .catch(error => {
+                });
+        } else {
+            this.loaded = true;
+        }
     },
     /*All functions inside the created option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        if (this.consultMod || this.modifMod) {
+        /*if (this.consultMod || this.modifMod) {
             this.importDim();
-        }
+        }*/
     }
 }
 </script>

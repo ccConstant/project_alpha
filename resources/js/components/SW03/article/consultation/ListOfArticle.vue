@@ -148,11 +148,9 @@ export default {
         updateChecked(ref) {
             if (this.checked.includes(ref)) {
                 this.checked.splice(this.checked.indexOf(ref), 1);
-                console.log(this.checked);
                 return false;
             }
             this.checked.push(ref);
-            console.log(this.checked);
             return true;
         },
         newArticle() {
@@ -251,19 +249,16 @@ export default {
         axios.get('/comp/family/send').then(response => {
             this.compList = response.data;
         }).catch(error => {
-            console.log(error.response.data);
         });
         axios.get('/cons/family/send').then(response => {
             this.consList = response.data;
         }).catch(error => {
-            console.log(error.response.data);
         });
         axios.get('/raw/family/send').then(response => {
             this.rawList = response.data;
             this.createGlobalList();
             this.loaded = true;
         }).catch(error => {
-            console.log(error.response.data);
         });
     }
 }

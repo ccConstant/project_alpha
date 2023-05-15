@@ -110,7 +110,6 @@ export default {
         }
     },
     created(){
-        console.log("option")
 
         //console.log(this.selctedOption)
     },

@@ -14,11 +14,24 @@
             <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
             <!--ref="ask_dim_data" is used to call the child elements in this component-->
             <!--The emitted deleteDim is caught here and call the function getContent -->
-            <ArticleFamilyMemberForm ref="ask_familyMember_data" v-for="(component, key) in components" :key="component.key"
-                                     :is="component.comp" :dimension="component.dimension" :divClass="component.className"
-                                     :id="component.id" :consultMod="isInConsultMod" :modifMod="isInModifMod"
-                                     :art_type="data_art_type" :art_id="data_art_id"
-                                     @deleteStorageCondition="getContent(key)"/>
+            <ArticleFamilyMemberForm
+                ref="ask_familyMember_data"
+                v-for="(component, key) in components"
+                :key="component.key"
+                :is="component.comp"
+                :dimension="component.dimension"
+                :sameValues="component.sameValues"
+                :designation="component.designation"
+                :divClass="component.className"
+                :id="component.id"
+                :consultMod="isInConsultMod"
+                :modifMod="component.id !== null"
+                :art_type="data_art_type.toUpperCase()"
+                :art_id="data_art_id"
+                :genRef="data_genRef"
+                :genDesign="data_genDesign"
+                :varCharac="data_varCharac"
+                @deleteStorageCondition="getContent(key)"/>
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->
@@ -74,6 +87,15 @@ export default {
             type: Number,
             default: null
         },
+        genRef: {
+            type: String
+        },
+        genDesign: {
+            type: String
+        },
+        varCharac: {
+            type: String
+        },
     },
     /*--------Declaration of the different returned data:--------
         components: Array in which will be added the data of a component
@@ -93,6 +115,9 @@ export default {
             all_familyMember_validate: [],
             title_info: null,
             data_art_type: this.artType.toLowerCase(),
+            data_genRef: this.genRef,
+            data_genDesign: this.genDesign,
+            data_varCharac: this.varCharac,
             loaded: false,
             familyMember: [],
         };
@@ -103,14 +128,17 @@ export default {
             this.components.push({
                 comp: 'ArticleFamilyMemberForm',
                 key: this.uniqueKey++,
+                id: null,
             });
         },
         /*Function for adding an imported dimension form with his data*/
-        addImportedComponent(familyMember_dimension, familyMember_className, id) {
+        addImportedComponent(familyMember_dimension, familyMember_sameValues, familyMember_design,familyMember_className, id) {
             this.components.push({
                 comp: 'ArticleFamilyMemberForm',
                 key: this.uniqueKey++,
                 dimension: familyMember_dimension,
+                sameValues: familyMember_sameValues,
+                designation: familyMember_design,
                 className: familyMember_className,
                 id: id
             });
@@ -121,13 +149,14 @@ export default {
         },
         importFamilyMembers() {
             if (this.familyMember.length === 0 && !this.isInModifMod) {
-                console.log("purchaseSpec is empty");
                 this.loaded = true;
             } else {
                 for (const dt of this.familyMember) {
                     const className = "importedPurSpe" + dt.id;
                     this.addImportedComponent(
                         dt.dimension,
+                        Boolean(dt.sameValues),
+                        dt.designation,
                         className,
                         dt.id
                     );
@@ -163,7 +192,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_art_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -174,7 +202,8 @@ export default {
                         this.importFamilyMembers();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             } else if (this.data_art_type === 'cons') {
                 axios.get('/cons/mb/send/'+this.import_id)
                     .then(response => {
@@ -182,7 +211,8 @@ export default {
                         this.importFamilyMembers();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             } else if (this.data_art_type === 'raw') {
                 axios.get('/raw/mb/send/'+this.import_id)
                     .then(response => {
@@ -190,18 +220,12 @@ export default {
                         this.importFamilyMembers();
                         this.loaded = true;
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => {
+                    });
             }
         } else {
             this.loaded = true;
         }
-    },
-    /*All functions inside the created option are called after the component has been mounted.*/
-    mounted() {
-        /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
-        /*if (this.consultMod || this.modifMod) {
-            this.importDim();
-        }*/
     }
 }
 </script>

@@ -5,7 +5,7 @@
     <div v-else class="supplier_consultation">
         <ErrorAlert ref="errorAlert"/>
         <SuccessAlert ref="successAlert"/>
-        <h1>Article Consultation</h1>
+        <h1>Article Update</h1>
         <!--        <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>-->
         <ArticleFamilyForm
             :reference="article.ref"
@@ -16,38 +16,60 @@
             :version="article.version"
             :type="articleType.toUpperCase()"
             :active="article.active === 1"
+            :genRef="article.genRef"
+            :genDesign="article.genDesign"
+            @generic="genericSetter"
             modifMod
         />
-        <div>
-            <div class="accordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Article Storage Condition
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-                        <div class="accordion-body">
-                            <!--                            <ReferenceAStorageCondition
-                                                            modifMod
-                                                            :artType="this.articleType"
-                                                            :artFam_id="this.articleID"
-                                                            :import_id="this.articleID"
-                                                        />-->
-                        </div>
+        <div class="accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Article Family Member
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                    <div class="accordion-body">
+                        <ReferenceAnArticleFamilyMember
+                            modifMod
+                            :artType="this.articleType"
+                            :artFam_id="this.articleID"
+                            :import_id="this.articleID"
+                            :genRef="this.generic.genRef"
+                            :genDesign="this.generic.genDesign"
+                            :varCharac="this.generic.variablesCharac"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                        Criticality
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
+                    <div class="accordion-body">
+                        <ReferenceACrit
+                            modifMod
+                            :articleType="this.articleType"
+                            :article_id="this.articleID"
+                            :import_id="this.articleID"
+                        />
                     </div>
                 </div>
             </div>
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
+                    <h2 class="accordion-header" id="headingThree">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
                             Article Purchase Specification
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
+                    <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
                         <div class="accordion-body">
                             <ReferenceAnArticlePurchaseSpecification
                                 modifMod
@@ -61,35 +83,15 @@
             </div>
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                            Incoming Inspection
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
-                        <div class="accordion-body">
-                            <ReferenceAnIncmgInsp
-                                modifMod
-                                :articleType="this.articleType"
-                                :article_id="this.articleID"
-                                :import_id="this.articleID"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion">
-                <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFour">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                            Criticality
+                            Incoming Inspection
                         </button>
                     </h2>
                     <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour">
                         <div class="accordion-body">
-                            <ReferenceACrit
+                            <ReferenceAnIncmgInsp
                                 modifMod
                                 :articleType="this.articleType"
                                 :article_id="this.articleID"
@@ -104,12 +106,12 @@
                     <h2 class="accordion-header" id="headingFive">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-                            Article Family Member
+                            Article Storage Condition
                         </button>
                     </h2>
                     <div id="collapseFive" class="accordion-collapse collapse show" aria-labelledby="headingFive">
                         <div class="accordion-body">
-                            <ReferenceAnArticleFamilyMember
+                            <ReferenceAStorageCondition
                                 modifMod
                                 :artType="this.articleType"
                                 :artFam_id="this.articleID"
@@ -152,22 +154,20 @@ export default {
             article: null,
             validationMethod: this.$route.query.method,
             errors: [],
-            loaded: false
+            loaded: false,
+            generic: null,
         }
     },
     created() {
-        console.log("created");
         if(this.validationMethod === 'technical' && this.$userId.user_makeTechnicalValidationRight !== true){
-            this.$router.replace({ name: "url_eq_list"})
+            this.$router.replace({ name: "article_url_list"})
         }
         if (this.validationMethod === 'quality' && this.$userID.user_makeQualityValidationRight !== true){
-            this.$router.replace({ name: "url_eq_list"})
+            this.$router.replace({ name: "article_url_list"})
         }
-        console.log(this.articleType);
         if (this.articleType === 'raw') {
             axios.get('/raw/family/send/' + this.articleID)
                 .then(response => {
-                    console.log("raw");
                     this.article = {
                         ref: response.data.rawFam_ref,
                         design: response.data.rawFam_design,
@@ -176,9 +176,19 @@ export default {
                         variablesCharac: response.data.rawFam_variablesCharac,
                         active: response.data.rawFam_active,
                         purchasedBy: response.data.rawFam_purchasedBy,
-                        version: null
+                        version: null,
+                        genRef: response.data.rawFam_genRef,
+                        genDesign: response.data.rawFam_genDesign,
+                        supplier: response.data.supplr_id,
                     };
-                    console.log(this.article);
+                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
+                        this.generic = {
+                            variablesCharac: this.article.variablesCharac,
+                            genRef: this.article.genRef,
+                            genDesign: this.article.genDesign,
+                        };
+                    }
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -187,7 +197,6 @@ export default {
         } else if (this.articleType === 'comp') {
             axios.get('/comp/family/send/' + this.articleID)
                 .then(response => {
-                    console.log("comp");
                     this.article = {
                         ref: response.data.compFam_ref,
                         design: response.data.compFam_design,
@@ -196,9 +205,19 @@ export default {
                         variablesCharac: response.data.compFam_variablesCharac,
                         active: response.data.compFam_active,
                         purchasedBy: response.data.compFam_purchasedBy,
-                        version: response.data.compFam_version
+                        version: response.data.compFam_version,
+                        genRef: response.data.compFam_genRef,
+                        genDesign: response.data.compFam_genDesign,
+                        supplier: response.data.supplr_id,
                     };
-                    console.log(this.article);
+                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
+                        this.generic = {
+                            variablesCharac: this.article.variablesCharac,
+                            genRef: this.article.genRef,
+                            genDesign: this.article.genDesign,
+                        };
+                    }
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -207,7 +226,6 @@ export default {
         } else if (this.articleType === 'cons') {
             axios.get('/cons/family/send/' + this.articleID)
                 .then(response => {
-                    console.log("cons");
                     this.article = {
                         ref: response.data.consFam_ref,
                         design: response.data.consFam_design,
@@ -216,19 +234,34 @@ export default {
                         variablesCharac: response.data.consFam_variablesCharac,
                         active: response.data.consFam_active,
                         purchasedBy: response.data.consFam_purchasedBy,
-                        version: response.data.consFam_version
+                        version: response.data.consFam_version,
+                        genRef: response.data.consFam_genRef,
+                        genDesign: response.data.consFam_genDesign,
+                        supplier: response.data.supplr_id,
                     };
-                    console.log(this.article);
+                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
+                        this.generic = {
+                            variablesCharac: this.article.variablesCharac,
+                            genRef: this.article.genRef,
+                            genDesign: this.article.genDesign,
+                        };
+                    }
+                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
                     this.$refs.errorAlert.showAlert(error.response.data.message);
                 });
-        } else {
-            console.log("error");
         }
     },
     methods: {
+        genericSetter(ref, design, variableCharac) {
+            this.generic = {
+                variablesCharac: variableCharac,
+                genRef: ref,
+                genDesign: design,
+            };
+        },
     }
 }
 </script>

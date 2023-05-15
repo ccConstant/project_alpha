@@ -10,13 +10,13 @@
         </div>
         <div v-else class="articlePurchaseSpecification">
             <h2 v-if="components.length>0" class="titleForm">Article Purchase Specification(s) </h2>
-            <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info!=null "/>
+            <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info != null"/>
             <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
             <!--ref="ask_dim_data" is used to call the child elements in this component-->
             <!--The emitted deleteDim is caught here and call the function getContent -->
             <ArticlePurchaseSpecificationForm ref="ask_purchaseSpecification_data" v-for="(component, key) in components" :key="component.key"
                                               :is="component.comp" :requiredDoc="component.requiredDoc" :divClass="component.className"
-                                              :id="component.id" :consultMod="isInConsultMod" :modifMod="isInModifMod"
+                                              :id="component.id" :consultMod="isInConsultMod" :modifMod="component.id !== null"
                                               :art_type="data_art_type" :art_id="data_art_id"
                                               @deleteStorageCondition="getContent(key)"/>
             <!--If the user is not in consultation mode -->
@@ -64,7 +64,7 @@ export default {
         artFam_id: {
             type: Number
         },
-        artType:{
+        artType: {
             type: String
         },
         import_id: {
@@ -100,6 +100,7 @@ export default {
             this.components.push({
                 comp: 'ArticlePurchaseSpecificationForm',
                 key: this.uniqueKey++,
+                id: null
             });
         },
         /*Function for adding an imported dimension form with his data*/
@@ -120,7 +121,6 @@ export default {
         },
         importPurSpe() {
             if (this.purchaseSpec.length === 0 && !this.isInModifMod) {
-                console.log("purchaseSpec is empty");
                 this.loaded = true;
             } else {
                 for (const dt of this.purchaseSpec) {
@@ -162,7 +162,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.data_art_type);
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
@@ -172,7 +171,8 @@ export default {
                     this.importPurSpe();
                     this.loaded = true;
                 })
-                .catch(error => console.log(error));
+                .catch(error => {
+                });
         } else {
             this.loaded = true;
         }

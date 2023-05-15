@@ -1,47 +1,54 @@
-<!--File name :ReferenceAFile.vue-->
+<!--File name :ReferenceADocControl.vue-->
 <!--Creation date : 10 May 2022-->
 <!--Update date : 12 Apr 2023-->
-<!--Vue Component used to reference a file in the equipment-->
+<!--Vue Component used to reference a documentary control in as incoming inspection-->
 
 <template>
     <div>
         <div v-if="loaded===false">
             <b-spinner variant="primary"></b-spinner>
         </div>
-        <div v-else class="incmgInsp">
-            <h2 v-if="components.length>0" class="titleForm">Incoming Inspection</h2>
-            <!--Adding to the vue IncmgInspIDForm by going through the components array with the v-for-->
-            <!--ref="ask_incmgInsp_data" is used to call the child elements in this component-->
+        <div v-else class="compTest">
+            <h2 class="titleForm" v-if="components.length > 0">Complementary Test</h2>
+            <!--Adding to the vue compTestIDForm by going through the components array with the v-for-->
+            <!--ref="ask_compTest_data" is used to call the child elements in this component-->
             <!--The emitted deleteFile is caught here and call the function getContent -->
-            <IncmgInspIDForm
-                ref="ask_incmgInsp_data"
+            <CompTestIDForm
+                ref="ask_compTest_data"
                 v-for="(component, key) in components"
                 :key="component.key"
                 :is="component.comp"
-                :remarks="component.remarks"
-                :part-material-certif="component.partMaterialCertif"
-                :raw-material-certif="component.rawMaterialCertif"
-                :divClass="component.className"
                 :id="component.id"
-                :validate="component.validate"
                 :consultMod="isInConsultMod"
                 :modifMod="component.id !== null"
-                :article_id="data_article_id"
-                :article_type="data_article_type"
-                @deleteFile="getContent(key)"
+                :severityLevel="component.compTest_severityLevel"
+                :controlLevel="component.compTest_controlLevel"
+                :expectedMethod="component.compTest_expectedMethod"
+                :expectedValue="component.compTest_expectedValue"
+                :name="component.compTest_name"
+                :unitValue="component.compTest_unitValue"
+                :sampling="component.compTest_sampling"
+                :incmgInsp_id="incmgInsp_id"
+                :articleID="data_article_id"
+                :articleType="data_article_type"
+                :desc="component.compTest_desc"
+                :specDoc="component.compTest_specDoc"
+                @deletecompTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another file button appear -->
                 <button v-on:click="addComponent">Add</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
-                <!--            <div v-if="this.incmgInsp!==null">
-                                &lt;!&ndash;The importation button appear &ndash;&gt;
-                                <button v-if="!modifMod " v-on:click="importIncmgInsp">import</button>
-                            </div>-->
             </div>
-            <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                            :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+            <SaveButtonForm
+                saveAll
+                v-if="components.length>1"
+                @add="saveAll"
+                @update="saveAll"
+                :consultMod="this.isInConsultMod"
+                :modifMod="this.isInModifMod"
+            />
         </div>
     </div>
 </template>
@@ -50,12 +57,12 @@
 /*Importation of the other Components who will be used here*/
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import ImportationAlert from '../../../alert/ImportationAlert.vue'
-import IncmgInspIDForm from "./IncmgInspIDForm.vue";
+import CompTestIDForm from "./CompTestIDForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
-        IncmgInspIDForm,
+        CompTestIDForm,
         SaveButtonForm,
         ImportationAlert
 
@@ -63,7 +70,7 @@ export default {
     /*--------Declaration of the different props:--------
         consultMod: If this props is present the form is in consult mode we disable all the field
         modifMod: If this props is present, the form is in modification mode we disable the save button and show update button
-        importedArticle: All article imported from the database
+        importedCompTest: All article imported from the database
         article_id: ID of the equipment in which the file will be added
         import_id: ID of the equipment with which article will be imported
     ---------------------------------------------------*/
@@ -76,7 +83,7 @@ export default {
             type: Boolean,
             default: false
         },
-        importedIncgmInsp: {
+        importedCompTest: {
             type: Array,
             default: null
         },
@@ -89,6 +96,10 @@ export default {
         },
         articleType: {
             type: String
+        },
+        incmgInsp_id: {
+            type: Number,
+            default: null
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -103,12 +114,12 @@ export default {
         return {
             components: [],
             uniqueKey: 0,
-            incmgInsp: this.importedIncgmInsp,
+            compTest: this.importedCompTest,
             count: 0,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
-            data_article_type: this.articleType === null ? 'raw' : this.articleType.toLowerCase(),
+            data_article_type: this.articleType,
             loaded: false
         };
     },
@@ -116,20 +127,37 @@ export default {
         /*Function for adding a new empty file form*/
         addComponent() {
             this.components.push({
-                comp: 'IncmgInspIDForm',
+                comp: 'CompTestIDForm',
                 key: this.uniqueKey++,
                 id: null,
+                compTest_sampling: "100%",
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(incmgInsp_remarks, incmgInsp_partMaterialCertif, incmgInsp_rawMaterialCertif, validate, id, className) {
+        addImportedComponent(
+            compTest_severityLevel,
+            compTest_controlLevel,
+            compTest_expectedMethod,
+            compTest_expectedValue,
+            compTest_name,
+            compTest_sampling,
+            compTest_unitValue,
+            compTest_desc,
+            compTest_specDoc,
+            incmgInsp_id, id, className) {
             this.components.push({
-                comp: 'IncmgInspIDForm',
+                comp: 'CompTestIDForm',
                 key: this.uniqueKey++,
-                remarks: incmgInsp_remarks,
-                partMaterialCertif: incmgInsp_partMaterialCertif,
-                rawMaterialCertif: incmgInsp_rawMaterialCertif,
-                validate: validate,
+                compTest_severityLevel: compTest_severityLevel,
+                compTest_controlLevel: compTest_controlLevel,
+                compTest_expectedMethod: compTest_expectedMethod,
+                compTest_expectedValue: compTest_expectedValue,
+                compTest_name: compTest_name,
+                compTest_sampling: compTest_sampling,
+                compTest_unitValue: compTest_unitValue,
+                compTest_desc: compTest_desc,
+                compTest_specDoc: compTest_specDoc,
+                incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
             });
@@ -139,93 +167,79 @@ export default {
             this.components.splice(key, 1);
         },
         /*Function for adding to the vue the imported article*/
-        importIncmgInsp() {
-            if (this.incmgInsp.length === 0 && !this.isInModifMod) {
+        importCompTest() {
+            if (this.compTest.length === 0 && !this.isInModifMod) {
                 this.loaded = true;
             } else {
-                for (const ii of this.incmgInsp) {
-                    const className = "importedArticle" + ii.id;
+                for (const dt of this.compTest) {
+                    const className = "importedCompTest" + dt.id;
                     this.addImportedComponent(
-                        ii.incmgInsp_remarks,
-                        ii.incmgInsp_partMaterialComplianceCertificate,
-                        ii.incmgInsp_rawMaterialCertificate,
-                        ii.incmgInsp_validate,
-                        ii.id,
-                        className);
+                        dt.compTest_severityLevel,
+                        dt.compTest_levelOfControl,
+                        dt.compTest_expectedMethod,
+                        dt.compTest_expectedValue,
+                        dt.compTest_name,
+                        dt.compTest_sampling,
+                        dt.compTest_unitValue,
+                        dt.compTest_desc,
+                        dt.compTest_specDoc,
+                        dt.incmgInsp_id,
+                        dt.id,
+                        className
+                    );
                 }
-                this.incmgInsp = null
+                this.compTest = null
             }
         },
         /*Function for saving all the data in one time*/
         saveAll(savedAs) {
-            for (const component of this.$refs.ask_incmgInsp_data) {
+            for (const component of this.$refs.ask_compTest_data) {
                 /*If the user is in modification mode*/
-                if (this.modifMod === true) {
+                if (this.modifMod == true) {
                     /*If the file doesn't have, an id*/
                     if (component.id == null) {
                         /*AddequipmentFile is used*/
-                        component.addIncmgInsp(savedAs);
+                        component.addEquipmentFile(savedAs);
                     } else
                         /*Else if the file has an id and addSucces is equal to true*/
                     if (component.id != null || component.addSucces == true) {
                         /*updateEquipmentFile is used*/
-                        if (component.incmgInsp_validate !== "validated") {
-                            component.updateIncmgInsp(savedAs);
-                        }
+                        /*if (component !== "validated") {
+                            component.updateEquipmentFile(savedAs);
+                        }*/ // FIXME ?
                     }
                 } else {
                     /*Else If the user is not in modification mode*/
-                    component.addIncmgInsp(savedAs);
+                    component.addEquipmentFile(savedAs);
                 }
             }
         }
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        /*If the user chooses importation equipment*/
+        /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
-            /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
-            if (this.data_article_type === 'raw') {
-                axios.get('/incmgInsp/send/raw/' + this.data_article_id)
-                    .then(response => {
-                        this.incmgInsp = response.data;
-                        this.importIncmgInsp();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            } else if (this.data_article_type === 'cons') {
-                axios.get('/incmgInsp/send/cons/' + this.data_article_id)
-                    .then(response => {
-                        this.incmgInsp = response.data;
-                        this.importIncmgInsp();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            } else if (this.data_article_type === 'comp') {
-                axios.get('/incmgInsp/send/comp/' + this.data_article_id)
-                    .then(response => {
-                        this.incmgInsp = response.data;
-                        this.importIncmgInsp();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            }
+            /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
+            const consultUrl = (id) => `/incmgInsp/compTest/sendFromIncmgInsp/${id}`;
+            axios.get(consultUrl(this.import_id))
+                .then(response => {
+                    this.compTest = response.data;
+                    this.importCompTest();
+                    this.loaded = true;
+                })
+                .catch(error => {
+                });
         } else {
             this.loaded = true;
         }
     },
-    /*All functions inside the created option are called after the component has been mounted.*/
+    /*All functions inside the mounted option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
         /*if (this.consultMod || this.modifMod) {
-            this.importIncmgInsp();
+            this.importdimTest();
         }*/
     }
-
-
 }
 </script>
 

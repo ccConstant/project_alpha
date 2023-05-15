@@ -113,7 +113,7 @@ export default {
         },
         state() {
             if (this.isRequired) {
-                return this.data === null
+                return this.data !== null
             }
             return true;
         },

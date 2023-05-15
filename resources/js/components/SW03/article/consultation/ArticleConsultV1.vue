@@ -29,12 +29,12 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-<!--                            <ReferenceAStorageCondition
+                            <ReferenceAStorageCondition
                                 consultMod
                                 :artType="this.articleType"
                                 :artFam_id="this.articleID"
                                 :import_id="this.articleID"
-                            />-->
+                            />
                         </div>
                     </div>
                 </div>
@@ -156,18 +156,15 @@ export default {
         }
     },
     created() {
-        console.log("created");
         if(this.validationMethod === 'technical' && this.$userId.user_makeTechnicalValidationRight !== true){
             this.$router.replace({ name: "url_eq_list"})
         }
         if (this.validationMethod === 'quality' && this.$userID.user_makeQualityValidationRight !== true){
             this.$router.replace({ name: "url_eq_list"})
         }
-        console.log(this.articleType);
         if (this.articleType === 'raw') {
             axios.get('/raw/family/send/' + this.articleID)
                 .then(response => {
-                    console.log("raw");
                     this.article = {
                         ref: response.data.rawFam_ref,
                         design: response.data.rawFam_design,
@@ -178,7 +175,6 @@ export default {
                         purchasedBy: response.data.rawFam_purchasedBy,
                         version: null
                     };
-                    console.log(this.article);
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -187,7 +183,6 @@ export default {
         } else if (this.articleType === 'comp') {
             axios.get('/comp/family/send/' + this.articleID)
                 .then(response => {
-                    console.log("comp");
                     this.article = {
                         ref: response.data.compFam_ref,
                         design: response.data.compFam_design,
@@ -198,7 +193,6 @@ export default {
                         purchasedBy: response.data.compFam_purchasedBy,
                         version: response.data.compFam_version
                     };
-                    console.log(this.article);
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -207,7 +201,6 @@ export default {
         } else if (this.articleType === 'cons') {
             axios.get('/cons/family/send/' + this.articleID)
                 .then(response => {
-                    console.log("cons");
                     this.article = {
                         ref: response.data.consFam_ref,
                         design: response.data.consFam_design,
@@ -218,14 +211,11 @@ export default {
                         purchasedBy: response.data.consFam_purchasedBy,
                         version: response.data.consFam_version
                     };
-                    console.log(this.article);
                     this.loaded = true;
                 })
                 .catch(error => {
                     this.$refs.errorAlert.showAlert(error.response.data.message);
                 });
-        } else {
-            console.log("error");
         }
     },
     methods: {

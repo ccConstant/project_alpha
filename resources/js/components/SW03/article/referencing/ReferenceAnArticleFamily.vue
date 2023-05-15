@@ -6,79 +6,105 @@
 
 <template>
     <div>
-        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type"/>
+        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type" @generic="genericSetter"/>
         <div v-if="this.artFam_id!=null">
             <div class="accordion">
-                <div class="accordion-item">
+                <div class="accordion-item" v-if="generic !== null">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Article Storage Condition
+                            Article Family Member
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-                            <ReferenceAStorageCondition :artType="this.artFam_type" :artFam_id="this.artFam_id" :import_id="this.artFam_id"/>
+                            <ReferenceAnArticleFamilyMember
+                                modifMod
+                                :artType="this.artFam_type"
+                                :artFam_id="this.artFam_id"
+                                :import_id="this.artFam_id"
+                                :genRef="this.generic.genRef"
+                                :genDesign="this.generic.genDesign"
+                                :varCharac="this.generic.variablesCharac"
+                            />
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                            Article Purchase Specification
+                            Criticality
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
                         <div class="accordion-body">
-                            <ReferenceAnArticlePurchaseSpecification :artType="this.artFam_type" :artFam_id="this.artFam_id" :import_id="this.artFam_id"/>
+                            <ReferenceACrit
+                                modifMod
+                                :articleType="this.artFam_type"
+                                :article_id="this.artFam_id"
+                                :import_id="this.artFam_id"
+                            />
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                            Incoming Inspection
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
-                        <div class="accordion-body">
-                            <ReferenceAnIncmgInsp :articleType="this.artFam_type" :article_id="this.artFam_id" :import_id="null"/>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                Article Purchase Specification
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
+                            <div class="accordion-body">
+                                <ReferenceAnArticlePurchaseSpecification
+                                    modifMod
+                                    :artType="this.artFam_type"
+                                    :artFam_id="this.artFam_id"
+                                    :import_id="this.artFam_id"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFour">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                            Criticality
-                        </button>
-                    </h2>
-                    <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour">
-                        <div class="accordion-body">
-                            <ReferenceACrit :articleType="this.artFam_type" :article_id="this.artFam_id" :import_id="null"/>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                Incoming Inspection
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour">
+                            <div class="accordion-body">
+                                <ReferenceAnIncmgInsp
+                                    modifMod
+                                    :articleType="this.artFam_type"
+                                    :article_id="this.artFam_id"
+                                    :import_id="this.artFam_id"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFive">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-                            Article Family Member
-                        </button>
-                    </h2>
-                    <div id="collapseFive" class="accordion-collapse collapse show" aria-labelledby="headingFive">
-                        <div class="accordion-body">
-                            <ReferenceAnArticleFamilyMember :artType="this.artFam_type" :artFam_id="this.artFam_id" :import_id="null"/>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                                Article Storage Condition
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse show" aria-labelledby="headingFive">
+                            <div class="accordion-body">
+                                <ReferenceAStorageCondition
+                                    modifMod
+                                    :artType="this.artFam_type"
+                                    :artFam_id="this.artFam_id"
+                                    :import_id="this.artFam_id"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -110,6 +136,7 @@ export default {
             /*ID of the equipment created*/
             artFam_id: null,
             artFam_type: null,
+            generic: null,
         }
     },
     methods: {
@@ -119,6 +146,13 @@ export default {
         put_artFamily_type(value) {
             this.artFam_type = value;
         },
+        genericSetter(ref, design, variableCharac) {
+            this.generic = {
+                variablesCharac: variableCharac,
+                genRef: ref,
+                genDesign: design,
+            };
+        }
     }
 }
 </script>
