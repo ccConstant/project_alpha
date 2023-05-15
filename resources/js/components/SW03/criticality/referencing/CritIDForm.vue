@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <div v-else-if="this.crit_id!==null">
-                        <SaveButtonForm @add="addCriticality" @update="updateDocControl"
+                        <SaveButtonForm @add="addCriticality" @update="updateCriticality"
                                         :consultMod="this.isInConsultMod" :modifMod="this.modifMod"
                                         :savedAs="crit_validate"/>
                     </div>
@@ -270,7 +270,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateDocControl(savedAs, reason, lifesheet_created) { // TODO: update
+        updateCriticality(savedAs, reason, lifesheet_created) { // TODO: update
             axios.post('/artFam/criticality/verif', {
                 crit_artCriticality: this.crit_artCriticality,
                 crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
