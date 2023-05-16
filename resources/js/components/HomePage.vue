@@ -8,7 +8,7 @@
 		<br><br><br><br><br><br>
 	    <h1>Welcome to ALPHA</h1>
 		<h1 v-if="this.$userId!==''">{{this.$userId.user_firstName}} {{this.$userId.user_lastName}}</h1>
-		<div class="div_image"><img src="/images/best_wishes_2023.png" class="best_wishes_navbar" alt="Best Wishes 2023"></div>
+		<div class="div_image"><img src="/images/Homepage Alpha Software.png" class="best_wishes_navbar" alt="Best Wishes 2023"></div>
 		<br><br>  <br>  <br>  <br>  <br>  <br>
         <br><br><br><br><br><br><br><br><br>
         <br>

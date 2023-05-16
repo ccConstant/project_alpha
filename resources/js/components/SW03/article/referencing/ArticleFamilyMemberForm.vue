@@ -32,7 +32,7 @@
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="artMb_dimension"
-                    :info_text="'Article Member Dimension'"
+                    :info_text="this.infos_artFamMember[0].info_value"
                     :min="0"
                     :max="50"
                 />
@@ -41,7 +41,7 @@
                     :name="'Same value ?'"
                     :label="'sameValues'"
                     v-model="artMb_sameValues"
-                    :info_text="'Is it the same value for the designation ?'"
+                    :info_text="this.infos_artFamMember[1].info_value"
                     :inputClassName="null"
                     :Errors="errors['Active']"
                     :checkedOption="isInModifMod ? artMb_sameValues : true"
@@ -55,7 +55,7 @@
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="artMb_designation"
-                    :info_text="'Article Member Designation'"
+                    :info_text="null"
                     :min="0"
                     :max="50"
                 />
@@ -183,7 +183,13 @@ export default {
         }
     },
     created(){
-        this.loaded=true;
+        axios.get('/info/send/article_member')
+            .then(response => {
+                this.infos_artFamMember = response.data;
+                this.loaded=true;
+            })
+            .catch(error => {
+            });
     },
     methods: {
         /*Sending to the controller all the information about the article member so that it can be updated in the database
@@ -331,7 +337,6 @@ export default {
                             })
                             .catch(error => {
                                 this.errors = error.response.data.errors;
-                                console.log(error.response.data);
                             });
                     })
                     .catch(error => this.errors = error.response.data.errors);
@@ -404,7 +409,6 @@ export default {
                                     })
                                     .catch(error => {
                                         this.errors = error.response.data.errors;
-                                        console.log(error.response.data);
                                     });
                             })
                             .catch(error => this.errors = error.response.data.errors);

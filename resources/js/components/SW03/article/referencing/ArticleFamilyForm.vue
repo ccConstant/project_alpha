@@ -19,48 +19,52 @@
                 :selctedOption="artFam_type"
                 :isDisabled="this.isInConsultMod"
                 v-model="artFam_type"
-                :info_text="'Article Family Type'"
+                :info_text="null"
                 :id_actual="ArticleFamilyType"
             />
             <div v-if="artFam_type!=''">
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_ref"
-                    name="artFam_ref" label="Article Reference"
+                    name="artFam_ref"
+                    label="Article Reference"
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="artFam_ref"
-                    :info_text="'Reference of the article'"
+                    :info_text="this.infos_artFam[0].info_value"
                     :min="3"
                     :max="255"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_design"
-                    name="artFam_design" label="Article Designation"
+                    name="artFam_design"
+                    label="Article Designation"
                     :isDisabled="isInConsultMod"
                     isRequired
                     v-model="artFam_design"
-                    :info_text="'Designation of the component'"
+                    :info_text="this.infos_artFam[1].info_value"
                     :min="3"
                     :max="255"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_drawingPath"
-                    name="artFam_drawingPath" label="Article Drawing Path"
+                    name="artFam_drawingPath"
+                    label="Article Drawing Path"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_drawingPath"
-                    :info_text="'Drawing path of the article'"
+                    :info_text="this.infos_artFam[2].info_value"
                     :max="255"
                 />
                 <InputTextForm v-if="artFam_type=='COMP' || artFam_type=='CONS'"
                     :inputClassName="null"
                     :Errors="errors.artFam_version"
-                    name="artFam_version" label="Article Version"
+                    name="artFam_version"
+                    label="Article Version"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_version"
-                    :info_text="'Version of the art'"
+                    :info_text="this.infos_artFam[5].info_value"
                     :max="4"
                 />
                 <RadioGroupForm
@@ -68,7 +72,7 @@
                     :name="'Active ?'"
                     :label="'Active'"
                     v-model="artFam_active"
-                    :info_text="'Is article currently use?'"
+                    :info_text="null"
                     :inputClassName="null"
                     :Errors="errors['Active']"
                     :checkedOption="isInModifMod ? artFam_active : true"
@@ -82,7 +86,7 @@
                     :selctedOption="artFam_purchasedBy"
                     :isDisabled="!!isInConsultMod"
                     v-model="artFam_purchasedBy"
-                    :info_text="'Article Family Purchased By'"
+                    :info_text="this.infos_artFam[3].info_value"
                     :id_actual="purchasedBy"
                 />
                 <h2>
@@ -91,10 +95,11 @@
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_variablesCharac"
-                    name="artFam_variablesCharac" label="Article Variable Characteristic"
+                    name="artFam_variablesCharac"
+                    label="Article Variable Characteristic"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_variablesCharac"
-                    :info_text="'Variables Characteristic of the article'"
+                    :info_text="this.infos_artFam[4].info_value"
                     :max="255"
                 />
                 <p>
@@ -110,7 +115,7 @@
                                     name="artFam_genDesign" label="Member Generic Reference"
                                     :isDisabled="isInConsultMod"
                                     v-model="artFam_genRef"
-                                    :info_text="'Generic Reference of the member'"
+                                    :info_text="this.infos_artFam[6].info_value"
                                     :max="255"
                                 />
                             </td>
@@ -123,7 +128,7 @@
                     name="artFam_genDesign" label="Member Generic Designation"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_genDesign"
-                    :info_text="'Generic Designation of the member'"
+                    :info_text="this.infos_artFam[7].info_value"
                     :max="255"
                 />
                 <SaveButtonForm v-if="this.addSuccess==false"
@@ -182,7 +187,8 @@ export default {
     ---------------------------------------------------*/
     props: {
         reference: {
-            type: String
+            type: String,
+            default: null
         },
         designation: {
             type: String
@@ -282,6 +288,10 @@ export default {
         }
     },
     created() {
+        axios.get('/info/send/articleFamily')
+            .then(response => {
+                this.infos_artFam = response.data;
+            })
         /*Ask for the controller different purchased by option */
         axios.get('/artFam/enum/purchasedBy')
             .then(response => this.enum_purchasedBy = response.data)
@@ -289,10 +299,14 @@ export default {
 
         /*Ask for the controller different storage condition option */
         axios.get('/artFam/enum/storageCondition')
-            .then(response => this.enum_storageCondition = response.data)
+            .then(response => {
+                this.enum_storageCondition = response.data;
+                if (this.artFam_genRef != null) {
+                    this.artFam_genRef = this.artFam_genRef.substring(this.artFam_ref.length+1);
+                }
+                this.loaded=true;
+            })
             .catch(error => this.errors = error.response.data.errors);
-            this.loaded=true
-        this.artFam_genRef = this.artFam_genRef.substring(this.artFam_ref.length+1);
     },
 
     /*--------Declaration of the different methods:--------*/
@@ -487,7 +501,7 @@ export default {
                                 axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 }).catch(error => {
-                                   console.log(error.response.data);
+                                    this.errors = error.response.data.errors;
                                 });
                                 window.location.reload();
                             }
@@ -517,6 +531,13 @@ export default {
         clearAllError() {
             this.errors = {};
         },
+    },
+    beforeUpdate() {
+        console.log('beforeUpdate');
+        console.log(this.artFam_type);
+        if (this.artFam_ref === null && this.artFam_type !== "") {
+            this.artFam_ref = 'G_' + this.artFam_type;
+        }
     }
 }
 </script>

@@ -174,7 +174,7 @@ Route::middleware('auth')->group(function () {
         return view('welcomeSW01');
     });
 
-    Route::get('/infos', function () {
+    Route::get('/SW01/infos', function () {
         return view('welcome');
     });
 

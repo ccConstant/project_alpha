@@ -111,17 +111,6 @@
                 :max="50"
                 :isDisabled="isInConsultMod"
             />
-            <RadioGroupForm
-                :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
-                :name="'Real ?'"
-                :label="'Real'"
-                :value="supplr_real"
-                :info_text="'SupplierController is real or not ?'"
-                :inputClassName="null"
-                :Errors="errors.supplr_real"
-                :checked-option="true"
-                :isDisabled="isInConsultMod"
-            />
             <InputTextForm
                 :name="'VATNumber'"
                 :label="'VAT Number'"
@@ -135,13 +124,34 @@
             />
             <RadioGroupForm
                 :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
+                :name="'Real ?'"
+                :label="'Real'"
+                v-model="supplr_real"
+                :info_text="'SupplierController is real or not ?'"
+                :inputClassName="null"
+                :Errors="errors.supplr_real"
+                :checked-option="isInModifMod ? supplr_real : true"
+                :isDisabled="isInConsultMod"
+            />
+            <RadioGroupForm
+                :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
+                :name="'Active ?'"
+                :label="'Active'"
+                v-model="supplr_active"
+                :info_text="null"
+                :inputClassName="null"
+                :Errors="errors['Active']"
+                :checkedOption="isInModifMod ? supplr_active : true"
+            />
+            <RadioGroupForm
+                :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                 :name="'Critical ?'"
                 :label="'Critical'"
-                :value="supplr_critical"
+                v-model="supplr_critical"
                 :info_text="'SupplierController is critical or not ?'"
                 :inputClassName="null"
                 :Errors="errors.supplr_critical"
-                :checked-option="false"
+                :checked-option="isInModifMod ? supplr_critical : false"
                 :isDisabled="isInConsultMod"
             />
             <InputTextForm

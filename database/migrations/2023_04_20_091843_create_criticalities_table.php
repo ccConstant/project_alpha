@@ -41,6 +41,7 @@ class CreateCriticalitiesTable extends Migration
             $table->foreign('consFam_id')->references('id')->on('cons_families') ;
             $table->unsignedBigInteger('rawFam_id') ->nullable();
             $table->foreign('rawFam_id')->references('id')->on('raw_families') ;
+            $table->string('crit_justification')->nullable();
         });
     }
 

@@ -17,7 +17,7 @@
                     label="Complementary Test Name :"
                     v-model="compTest_name"
                     :isDisabled="isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_compTest[0].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -42,7 +42,7 @@
                     label="Expected Method :"
                     v-model="compTest_expectedMethod"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_compTest[4].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -55,7 +55,7 @@
                     label="Expected Value :"
                     v-model="compTest_expectedValue"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_compTest[3].info_value"
                     :inputClassName="null"
                     isRequired
                     :Errors="errors.compTest_expectedValue"
@@ -66,7 +66,7 @@
                     label="Unit Value :"
                     v-model="compTest_unitValue"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_compTest[5].info_value"
                     :min="1"
                     :max="10"
                     :inputClassName="null"
@@ -101,9 +101,9 @@
                         {id_enum: 'CompSeverityLevel', value: 'IV', text: 'IV'}
                     ]"
                     :selctedOption="compTest_severityLevel"
-                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'Statistics
+                    :isDisabled="this.isInConsultedMod || compTest_sampling !== 'Statistics'"
                     v-model="compTest_severityLevel"
-                    :info_text="'CompSeverityLevel'"
+                    :info_text="this.info_compTest[1].info_value"
                     :id_actual="'CompSeverityLevel'"
                 />
                 <InputSelectForm
@@ -118,7 +118,7 @@
                     ]"
                     :isDisabled="this.isInConsultedMod || compTest_sampling !== 'Statistics'"
                     v-model="compTest_controlLevel"
-                    :info_text="null"
+                    :info_text="this.info_compTest[2].info_value"
                     :Errors="errors.compTest_levelOfControl"
                     :selctedOption="compTest_controlLevel"
                     :id_actual="'CompControlLevel'"
@@ -283,6 +283,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            info_compTest: [],
         }
     },
     methods: {
@@ -424,7 +425,13 @@ export default {
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/compTest')
+            .then(response => {
+                this.info_compTest = response.data;
+                this.loaded = true;
+            })
+            .catch(error => {
+            });
     }
 }
 </script>

@@ -17,7 +17,7 @@
                     label="Functional Test Name :"
                     v-model="funcTest_name"
                     :isDisabled="isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_funcTest[5].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -42,7 +42,7 @@
                     label="Expected Method :"
                     v-model="funcTest_expectedMethod"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_funcTest[2].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -55,7 +55,7 @@
                     label="Expected Value :"
                     v-model="funcTest_expectedValue"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_funcTest[3].info_value"
                     :inputClassName="null"
                     isRequired
                     :Errors="errors.funcTest_expectedValue"
@@ -66,7 +66,7 @@
                     label="Unit Value :"
                     v-model="funcTest_unitValue"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_funcTest[4].info_value"
                     :min="1"
                     :max="10"
                     :inputClassName="null"
@@ -103,7 +103,7 @@
                     :selctedOption="funcTest_severityLevel"
                     :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'Statistics'"
                     v-model="funcTest_severityLevel"
-                    :info_text="'SeverityLevel'"
+                    :info_text="this.info_funcTest[0].info_value"
                     :id_actual="'SeverityLevel'"
                 />
                 <InputSelectForm
@@ -118,7 +118,7 @@
                     ]"
                     :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'Statistics'"
                     v-model="funcTest_controlLevel"
-                    :info_text="null"
+                    :info_text="this.info_funcTest[1].info_value"
                     :Errors="errors.funcTest_levelOfControl"
                     :selctedOption="funcTest_controlLevel"
                     :id_actual="'ControlLevel'"
@@ -283,6 +283,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            info_funcTest: []
         }
     },
     methods: {
@@ -424,7 +425,13 @@ export default {
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/funcTest')
+            .then(response => {
+                this.info_funcTest = response.data;
+                this.loaded = true;
+            })
+            .catch(error => {
+            });
     }
 }
 </script>

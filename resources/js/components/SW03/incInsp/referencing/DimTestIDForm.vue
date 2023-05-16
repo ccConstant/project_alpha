@@ -16,7 +16,7 @@
                     label="Dimensional Test Name :"
                     v-model="dimTest_name"
                     :isDisabled="isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_dimTest[5].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -40,7 +40,7 @@
                     label="Expected Method :"
                     v-model="dimTest_expectedMethod"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_dimTest[2].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -52,7 +52,7 @@
                     label="Expected Value :"
                     v-model="dimTest_expectedValue"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_dimTest[3].info_value"
                     :inputClassName="null"
                     isRequired
                     :Errors="errors.dimTest_expectedValue"
@@ -62,7 +62,7 @@
                     label="Unit Value :"
                     v-model="dimTest_unitValue"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_dimTest[4].info_value"
                     :min="1"
                     :max="10"
                     :inputClassName="null"
@@ -99,7 +99,7 @@
                     :selctedOption="dimTest_severityLevel"
                     :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'Statistics'"
                     v-model="dimTest_severityLevel"
-                    :info_text="'DimSeverityLevel'"
+                    :info_text="this.info_dimTest[0].info_value"
                     :id_actual="'DimSeverityLevel'"
                 />
                 <InputSelectForm
@@ -114,7 +114,7 @@
                     ]"
                     :isDisabled="this.isInConsultedMod || dimTest_sampling !== 'Statistics'"
                     v-model="dimTest_controlLevel"
-                    :info_text="null"
+                    :info_text="this.info_dimTest[1].info_value"
                     :Errors="errors.dimTest_levelOfControl"
                     :selctedOption="dimTest_controlLevel"
                     :id_actual="'DimControlLevel'"
@@ -279,6 +279,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            info_dimTest: []
         }
     },
     methods: {
@@ -420,7 +421,11 @@ export default {
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/dimTest')
+            .then(response => {
+                this.info_dimTest = response.data;
+                this.loaded = true;
+            })
     }
 }
 </script>

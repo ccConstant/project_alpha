@@ -65,7 +65,7 @@ export default {
                 return
             }
             console.log(this.returnedInfo)
-            const postUrlAdd = (id) => `info/update/${id}`;
+            const postUrlAdd = (id) => `/info/update/${id}`;
             axios.post(postUrlAdd(this.info_id),{
                     info_value:this.returnedInfo
                 })

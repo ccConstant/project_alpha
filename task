@@ -8,11 +8,10 @@ TODO:
             - Specification
         + le bouton add pour en ajouter des vides
     ------------------------------------------------------------------------------------------------------
-    Ajouter un champs description de la variable générique dans la fiche article
+    Ajouter un champs description de la variable générique dans la fiche article !!!
     Pouvoir enregistrer plusieurs variables génériques pour un article
     Faire un lien entre le fournisseur et ses articles
     Compléter la partie Purchasing Specifications de la fiche article
-    Info
     Commentaires
     Tests
     Tests SW01
@@ -21,7 +20,18 @@ TODO:
 FIXME:
     Changer expected value du funcTest en String et en 'Expected Acceptance Criteria' ??
     Empêcher Html2pdf de couper les tableaux de la fiche consultation article => On le fera plus tard quand des données auront été saisies par l\'entreprise
-    Séparer les signatures en 2 fonctions dans ArticleConsultV3.vue
+    Infos manquantes :
+        - Article Family :
+            - Type
+            - Active
+        - Family Member :
+            - Designation
+        - Test :
+            - Sampling
+            - Description
+            - Document specification
+        - Article Famiy Storage Condition :
+            - Storage Condition
     */
 
 DONE:

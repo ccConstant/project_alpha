@@ -16,7 +16,7 @@
                     label="Aspect Test Name :"
                     v-model="aspTest_name"
                     :isDisabled="isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_aspTest[3].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -40,7 +40,7 @@
                     label="Expected Aspect :"
                     v-model="aspTest_expectedAspect"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_aspTest[2].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -77,7 +77,7 @@
                     :selctedOption="aspTest_severityLevel"
                     :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'Statistics'"
                     v-model="aspTest_severityLevel"
-                    :info_text="'SeverityLevel'"
+                    :info_text="this.info_aspTest[0].info_value"
                     :id_actual="'SeverityLevel'"
                 />
                 <InputSelectForm
@@ -92,7 +92,7 @@
                     ]"
                     :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'Statistics'"
                     v-model="aspTest_controlLevel"
-                    :info_text="null"
+                    :info_text="this.info_aspTest[1].info_value"
                     :Errors="errors.aspTest_levelOfControl"
                     :selctedOption="aspTest_controlLevel"
                     :id_actual="'ControlLevel'"
@@ -247,6 +247,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            info_aspTest: [],
         }
     },
     methods: {
@@ -376,7 +377,13 @@ export default {
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/aspectTest')
+            .then(response => {
+                this.info_aspTest = response.data;
+                this.loaded = true;
+            })
+            .catch(error => {
+            });
     }
 }
 </script>

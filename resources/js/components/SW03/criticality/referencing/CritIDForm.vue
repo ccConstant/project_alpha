@@ -12,6 +12,7 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <InputSelectForm
+                    v-if="this.articleType!=='cons'"
                     :name="'Criticality'"
                     :label="this.articleType.toUpperCase() + ' Criticality :'"
                     isRequired
@@ -22,7 +23,7 @@
                     ]"
                     :isDisabled="this.isInConsultMod"
                     v-model="crit_artCriticality"
-                    :info_text="null"
+                    :info_text="this.infos_crit[0].info_value"
                     :Errors="errors.crit_artCriticality"
                     :selctedOption="crit_artCriticality"
                     :id_actual="'Criticality'"
@@ -38,7 +39,7 @@
                     ]"
                     :isDisabled="this.isInConsultMod"
                     v-model="crit_artMaterialContactCriticality"
-                    :info_text="null"
+                    :info_text="this.infos_crit[1].info_value"
                     :Errors="errors.crit_artMaterialContactCriticality"
                     :selctedOption="crit_artMaterialContactCriticality"
                     :id_actual="'MaterialContactCriticality'"
@@ -54,12 +55,13 @@
                     ]"
                     :isDisabled="this.isInConsultMod"
                     v-model="crit_artMaterialFunctionCriticality"
-                    :info_text="null"
+                    :info_text="this.infos_crit[2].info_value"
                     :Errors="errors.crit_artMaterialFunctionCriticality"
                     :selctedOption="crit_artMaterialFunctionCriticality"
                     :id_actual="'MaterialFunctionCriticality'"
                 />
                 <InputSelectForm
+                    v-if="this.articleType!=='cons'"
                     :name="'ProcessCriticality'"
                     :label="this.articleType.toUpperCase() + ' Process Criticality :'"
                     isRequired
@@ -70,17 +72,28 @@
                     ]"
                     :isDisabled="this.isInConsultMod"
                     v-model="crit_artProcessCriticality"
-                    :info_text="null"
+                    :info_text="this.infos_crit[3].info_value"
                     :Errors="errors.crit_artProcessCriticality"
                     :selctedOption="crit_artProcessCriticality"
                     :id_actual="'ProcessCriticality'"
+                />
+                <InputTextForm
+                    name="Justification"
+                    label="Justification :"
+                    v-model="crit_justification"
+                    :isDisabled="isInConsultMod"
+                    :info_text="null"
+                    :min="0"
+                    :max="255"
+                    :inputClassName="null"
+                    :Errors="errors.crit_justification"
                 />
                 <InputTextForm
                     name="Remarks"
                     label="Remarks :"
                     v-model="crit_remarks"
                     :isDisabled="isInConsultMod"
-                    :info_text="null"
+                    :info_text="this.infos_crit[4].info_value"
                     :min="0"
                     :max="255"
                     :inputClassName="null"
@@ -88,15 +101,15 @@
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
-                    <!--If this file doesn't have a id the addCriticality is called function else the updateDocControl function is called -->
+                    <!--If this file doesn't have a id the addCriticality is called function else the updateCriticality function is called -->
                     <div v-if="this.crit_id==null ">
                         <div v-if="modifMod==true">
-                            <SaveButtonForm @add="addCriticality" @update="updateDocControl"
+                            <SaveButtonForm @add="addCriticality" @update="updateCriticality"
                                             :consultMod="this.isInConsultMod" :savedAs="crit_validate"
                                             :AddinUpdate="true"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addCriticality" @update="updateDocControl"
+                            <SaveButtonForm @add="addCriticality" @update="updateCriticality"
                                             :consultMod="this.isInConsultMod" :savedAs="crit_validate"/>
                         </div>
                     </div>
@@ -157,6 +170,9 @@ export default {
         artProcessCriticality: {
             type: String
         },
+        justification: {
+            type: String
+        },
         remarks: {
             type: String
         },
@@ -205,6 +221,7 @@ export default {
             crit_artMaterialFunctionCriticality: this.artMaterialFunctionCriticality,
             crit_artProcessCriticality: this.artProcessCriticality,
             crit_artCriticality: this.artCriticality,
+            crit_justification: this.justification,
             crit_remarks: this.remarks,
             errors: {},
             addSucces: false,
@@ -214,6 +231,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             crit_validate: this.validate,
+            infos_crit: null,
         }
     },
     methods: {
@@ -234,6 +252,7 @@ export default {
                     crit_validate: savedAs,
                     crit_articleType: this.data_article_type,
                     crit_articleID: this.data_article_id,
+                    crit_justification: this.crit_justification,
                 })
                 .then(response => {
                     this.errors = {};
@@ -248,6 +267,7 @@ export default {
                         crit_validate: savedAs,
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
+                        crit_justification: this.crit_justification,
                     })
                     /*If the file is added successfully*/
                     .then(response => {
@@ -280,6 +300,7 @@ export default {
                 crit_validate: savedAs,
                 crit_articleType: this.data_article_type,
                 crit_articleID: this.data_article_id,
+                crit_justification: this.crit_justification,
             })
                 .then(response => {
                     this.errors = {};
@@ -296,6 +317,7 @@ export default {
                         crit_validate: savedAs,
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
+                        crit_justification: this.crit_justification,
                     })
                         .then(response => {
                             this.crit_validate = savedAs;
@@ -332,7 +354,13 @@ export default {
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/crit')
+            .then(response => {
+                this.infos_crit = response.data;
+                console.log(this.infos_crit);
+                this.loaded = true;
+
+            });
     }
 }
 </script>

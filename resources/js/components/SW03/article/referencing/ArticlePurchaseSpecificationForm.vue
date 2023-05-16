@@ -11,19 +11,7 @@
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" >
-                <InputTextForm
-                    :inputClassName="null"
-                    :Errors="errors.purSpe_requiredDoc"
-                    name="purSpe_requiredDoc"
-                    label="Purchase Specification Required Doc"
-                    :isDisabled="this.isInConsultMod"
-                    isRequired
-                    v-model="purSpe_requiredDoc"
-                    :info_text="'Purchase Specification Required Doc'"
-                    :min="0"
-                    :max="255"
-                />
-<!--                <InputSelectForm
+                <InputSelectForm
                     @clearSelectError='clearSelectError'
                     name="supplier"
                     :Errors="errors.artFam_purchasedBy"
@@ -32,10 +20,11 @@
                     :selctedOption="purSpe_supplier_id"
                     :isDisabled="!!isInConsultMod"
                     v-model="purSpe_supplier_id"
-                    :info_text="'Supplier'"
+                    :info_text="null"
                     :id_actual="supplier_id"
                 />
                 <InputTextForm
+                    v-if="this.purSpe_supplier_id !== 'Alpha'"
                     :inputClassName="null"
                     :Errors="errors.supplr_ref"
                     name="purSpe_supplrRef"
@@ -43,11 +32,24 @@
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="purSpe_supplier_ref"
-                    :info_text="'Supplier\'s Reference'"
+                    :info_text="null"
                     :min="2"
                     :max="255"
-                />-->
-                <SaveButtonForm v-if="this.addSucces==false"
+                />
+                <InputTextForm
+                    v-if="this.purSpe_supplier_id !== 'Alpha'"
+                    :inputClassName="null"
+                    :Errors="errors.purSpe_requiredDoc"
+                    name="purSpe_requiredDoc"
+                    label="Purchase Specification Required Doc"
+                    :isDisabled="this.isInConsultMod"
+                    isRequired
+                    v-model="purSpe_requiredDoc"
+                    :info_text="this.infos_purSpe[0].info_value"
+                    :min="0"
+                    :max="255"
+                />
+                <SaveButtonForm v-if="this.addSucces===false"
                     ref="saveButton"
                     @add="addPurchaseSpecification"
                     @update="updatePurchaseSpecification"
@@ -176,6 +178,8 @@ export default {
                 axios.post('/purSpe/verif', {
                     purSpe_requiredDoc: this.purSpe_requiredDoc,
                     purSpe_validate: savedAs,
+                    purSpe_supplier_id: this.purSpe_supplier_id,
+                    purSpe_supplier_ref: this.purSpe_supplier_ref,
                 })
                 /*If the data are correct, we send them to the controller for add them in the database*/
                 .then(response => {
@@ -185,6 +189,8 @@ export default {
                         purSpe_requiredDoc: this.purSpe_requiredDoc,
                         purSpe_validate: savedAs,
                         artFam_type : this.artFam_type.toUpperCase(),
+                        purSpe_supplier_id: this.purSpe_supplier_id,
+                        purSpe_supplier_ref: this.purSpe_supplier_ref,
                     })
                     /*If the data have been added in the database, we show a success message*/
                     .then(response => {
@@ -208,7 +214,9 @@ export default {
             The name, location and validate option are sent to the controller*/
             axios.post('/purSpe/verif', {
                 purSpe_requiredDoc: this.purSpe_requiredDoc,
-                purSpe_validate: savedAs
+                purSpe_validate: savedAs,
+                purSpe_supplier_id: this.purSpe_supplier_id,
+                purSpe_supplier_ref: this.purSpe_supplier_ref,
             })
                 .then(response => {
                     this.errors = {};
@@ -217,7 +225,9 @@ export default {
                     In the post url the id correspond to the id of the file who will be updated*/
                     axios.post('/purSpe/update/' + this.artFam_type + '/' + this.purSpe_id, {
                         purSpe_requiredDoc: this.purSpe_requiredDoc,
-                        purSpe_validate: savedAs
+                        purSpe_validate: savedAs,
+                        purSpe_supplier_id: this.purSpe_supplier_id,
+                        purSpe_supplier_ref: this.purSpe_supplier_ref,
                     })
                         .then(response => {
                             this.file_validate = savedAs;
@@ -274,20 +284,36 @@ export default {
         }
     },
     created() {
-        axios.get('/supplier/active/send')
+        axios.get('/info/send/purSpe')
             .then(response => {
-                for (let i = 0; i < response.data.length; i++) {
-                    this.suppliers.push({
-                        id_enum: 'suppliers',
-                        value: response.data[i].id,
-                        text: response.data[i].supplr_name,
-                    });
-                }
+                this.infos_purSpe = response.data;
             })
             .catch(error => {
             });
-        this.loaded=true;
+        axios.get('/supplier/active/send')
+            .then(response => {
+                this.suppliers.push({
+                    id_enum: 'suppliers',
+                    value: 'Alpha',
+                    text: -1,
+                })
+                for (let i = 0; i < response.data.length; i++) {
+                    this.suppliers.push({
+                        id_enum: 'suppliers',
+                        value: response.data[i].supplr_name,
+                        text: response.data[i].id,
+                    });
+                }
+                this.loaded=true;
+            })
+            .catch(error => {
+            });
+
     },
+    updated() {
+        console.log(typeof this.purSpe_supplier_id);
+        console.log(this.purSpe_supplier_id);
+    }
 }
 </script>
 

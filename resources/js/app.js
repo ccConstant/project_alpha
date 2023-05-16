@@ -109,7 +109,7 @@ const router = new VueRouter({
         name: 'url_eq_reform',
         component: require('./components/SW01/equipment/consultation/EquipmentReform.vue').default
     }, {
-        path: '/infos',
+        path: '/SW01/infos_SW01',
         name: 'url_infos',
         component: require('./components/SW01/infos/InfosManagment.vue').default
     }, {

@@ -17,7 +17,7 @@
                     label="Doc Control Name :"
                     v-model="docControl_name"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_docControl[1].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -29,7 +29,7 @@
                     label="Doc Control Reference :"
                     v-model="docControl_reference"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_docControl[0].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -42,7 +42,7 @@
                     label="Doc Control Material Certificate Specifications :"
                     v-model="docControl_materialCertiSpec"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_docControl[2].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -55,7 +55,7 @@
                     label="Doc Control FDS :"
                     v-model="docControl_fds"
                     :isDisabled="!!isInConsultedMod"
-                    :info_text="null"
+                    :info_text="this.info_docControl[3].info_value"
                     :min="2"
                     :max="255"
                     :inputClassName="null"
@@ -182,6 +182,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            info_docControl: []
         }
     },
     methods: {
@@ -299,7 +300,13 @@ export default {
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/docControl')
+            .then(response => {
+                this.info_docControl = response.data;
+                this.loaded = true;
+            })
+            .catch(error => {
+            });
     }
 }
 </script>
