@@ -102,6 +102,16 @@
                     :info_text="this.infos_artFam[4].info_value"
                     :max="255"
                 />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_variablesCharacDesign"
+                    name="artFam_variablesCharacDesign"
+                    label="Article Variable Characteristic Designations"
+                    :isDisabled="isInConsultMod"
+                    v-model="artFam_variablesCharacDesign"
+                    :info_text="null"
+                    :max="255"
+                />
                 <p>
                     <table>
                         <tr>
@@ -202,6 +212,9 @@ export default {
         variablesCharac: {
             type: String
         },
+        variablesCharacDesign: {
+            type: String
+        },
         version: {
             type: String
         },
@@ -261,6 +274,7 @@ export default {
             artFam_drawingPath: this.drawingPath,
             artFam_purchasedBy: this.purchasedBy,
             artFam_variablesCharac: this.variablesCharac,
+            artFam_variablesCharacDesign: this.variablesCharacDesign,
             artFam_version: this.version,
             artFam_storageCondition : this.storageCondition,
             artFam_active: this.active,
@@ -322,6 +336,7 @@ export default {
                         artFam_drawingPath: this.artFam_drawingPath,
                         artFam_purchasedBy: this.artFam_purchasedBy,
                         artFam_variablesCharac: this.artFam_variablesCharac,
+                        artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
@@ -338,6 +353,7 @@ export default {
                                     artFam_drawingPath: this.artFam_drawingPath,
                                     artFam_purchasedBy: this.artFam_purchasedBy,
                                     artFam_variablesCharac: this.artFam_variablesCharac,
+                                    artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                     artFam_version: this.artFam_version,
                                     artFam_active: this.artFam_active,
                                     artFam_validate: savedAs,
@@ -369,6 +385,7 @@ export default {
                             artFam_drawingPath: this.artFam_drawingPath,
                             artFam_purchasedBy: this.artFam_purchasedBy,
                             artFam_variablesCharac: this.artFam_variablesCharac,
+                            artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                             artFam_active: this.artFam_active,
                             artFam_validate: savedAs,
                             artFam_id: this.artFam_id,
@@ -384,6 +401,7 @@ export default {
                                 artFam_drawingPath: this.artFam_drawingPath,
                                 artFam_purchasedBy: this.artFam_purchasedBy,
                                 artFam_variablesCharac: this.artFam_variablesCharac,
+                                artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
                                 artFam_id: this.artFam_id,
@@ -415,6 +433,7 @@ export default {
                                 artFam_purchasedBy: this.artFam_purchasedBy,
                                 artFam_version: this.artFam_version,
                                 artFam_variablesCharac: this.artFam_variablesCharac,
+                                artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
                                 artFam_id: this.artFam_id,
@@ -430,6 +449,7 @@ export default {
                                     artFam_drawingPath: this.artFam_drawingPath,
                                     artFam_purchasedBy: this.artFam_purchasedBy,
                                     artFam_variablesCharac: this.artFam_variablesCharac,
+                                    artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                     artFam_active: this.artFam_active,
                                     artFam_version: this.artFam_version,
                                     artFam_validate: savedAs,
@@ -469,6 +489,7 @@ export default {
                 artFam_drawingPath: this.artFam_drawingPath,
                 artFam_purchasedBy: this.artFam_purchasedBy,
                 artFam_variablesCharac: this.artFam_variablesCharac,
+                artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                 artFam_version: this.artFam_version,
                 artFam_active: this.artFam_active,
                 artFam_validate: savedAs,
@@ -486,6 +507,7 @@ export default {
                         artFam_drawingPath: this.artFam_drawingPath,
                         artFam_purchasedBy: this.artFam_purchasedBy,
                         artFam_variablesCharac: this.artFam_variablesCharac,
+                        artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
