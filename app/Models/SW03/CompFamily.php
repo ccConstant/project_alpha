@@ -38,8 +38,8 @@ class CompFamily extends Model
          'compFam_signatureDate',
          'compFam_validate',
          'compFam_version',
-         'compFam_active', '
-         compFam_genDesign',
+         'compFam_active',
+         'compFam_genDesign',
          'compFam_genRef'] ;
 
      //Define the relation between a compFamily and its compFamilyMember : a compFamilyMember can correspond to only one compFamily

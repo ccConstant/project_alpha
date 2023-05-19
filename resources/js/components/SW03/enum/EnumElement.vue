@@ -314,7 +314,6 @@ export default {
                     this.reason = "";
                 })
                 .catch(error => {
-                    console.log(error.response.data);
                 });
         },
         handleSubmitDisable() {

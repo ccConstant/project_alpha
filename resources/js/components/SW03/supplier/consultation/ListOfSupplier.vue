@@ -60,11 +60,11 @@ export default {
     created() {
         axios.get('/supplier/send')
             .then(response => {
-                console.log(response.data)
                 this.suppliers = response.data;
                 this.loaded = true;
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+            });
     },
     methods: {
         technicalValidation(id) {

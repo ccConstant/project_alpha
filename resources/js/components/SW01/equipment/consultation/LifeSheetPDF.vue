@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="equipement_pdf_index">
-                    <h5>Version : {{eq_idCard.eq_internalReference}}_LS-D_V{{eq_idCard.eq_version}} </h5>
+                    <h5>Version : {{eq_idCard.eq_internalReference}}_LS-D_V{{eq_idCard.eq_version[1]}}.{{eq_idCard.eq_version[0]}} </h5>
                 </div>
                 <div class="equipment_revued_by">
                     <p >Technical Review <b class="text-primary">{{ eq_idCard.eq_technicalVerifier_firstName}} {{eq_idCard.eq_technicalVerifier_lastName}} </b></p>
@@ -33,7 +33,7 @@
                     <p>Equipment unique ID :</p>
                     <h5 class="text-primary">{{eq_idCard.eq_internalReference}}</h5>
                 </div>
-                
+
 
             </div>
 
@@ -48,7 +48,7 @@
                         <div class="content_Ecme_assoc_pdf" >
                             <b class="text-primary" v-for="(mme,index) in eq_mme " :key="index">
                                 {{mme.mme_internalReference}} : {{mme.mme_name}} <br>
-        
+
                             </b>
 
                         </div>
@@ -69,7 +69,7 @@
                             Designation and type : <b class="text-primary"> {{ eq_idCard.eq_name}} - {{ eq_idCard.eq_type}} </b>
                         </p>
                         <p>
-                            
+
                         </p>
                     </div>
             </div>
@@ -92,7 +92,7 @@
                         </div>
                         <div class="eq_usage_precaution_pdf">
                             <b>
-                                Associated Precaution: 
+                                Associated Precaution:
                             </b>
                             <br>
                             <b class="text-primary">
@@ -132,7 +132,7 @@
                         {{file.file_name}} : {{file.file_location}}<br>
 
                     </p>
-                </div>   
+                </div>
             </div>
 
             <div class="eq_carac_infos_pdf">
@@ -176,9 +176,9 @@
                                     </div>
                                 </div>
                                 <div>
-                                    
+
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -206,12 +206,12 @@
                     <p class="text-primary">
                         {{eq_idCard.eq_remarks}}
                     </p>
-                </div>   
+                </div>
             </div>
 
              <div class="eq_specProc_infos_pdf">
                 <div class="title_spProc_pdf">
-                    SPECIAL PROCESS? 
+                    SPECIAL PROCESS?
                 </div>
                 <div class="eq_specProc_pdf" v-for="(spProc,index) in eq_spProc " :key="index">
                     <div v-if="spProc.spProc_exist==true">
@@ -229,7 +229,7 @@
                             {{spProc.spProc_remarksOrPrecaution}}
                         </p>
                     </div>
-                </div> 
+                </div>
             </div>
 
             <div class="eq_risk_infos_pdf">
@@ -237,7 +237,7 @@
                     <p>RISK RELATED TO THE EQUIPMENT</p>
                 </div>
                 <div v-for="(risk,index) in eq_risk " :key="index" class="eq_risk_pdf" >
-                    
+
                     <div class="eq_risk_for_pdf">
                         <p> Risk for <b class="text-primary"> {{risk.risk_for}}</b> </p>
                     </div>
@@ -256,8 +256,8 @@
                         <p class="text-primary">
                             {{risk.risk_remarks}}
                         </p>
-                    </div>                    
-                </div> 
+                    </div>
+                </div>
             </div>
 
             <div class="eq_prvMtnOp_infos_pdf">
@@ -283,10 +283,10 @@
                         </b-col >
                         <b-col cols="1" class="prvMtnOp_table_risk">
                             Assoc Risk identified?
-                        </b-col>   
+                        </b-col>
                         <b-col cols="1" class="prvMtnOp_table_reformed">
                             Reformed?
-                        </b-col>                   
+                        </b-col>
                     </b-row>
                     <div v-for="(prvMtnOp,index) in eq_prvMtnOp " :key="index">
                         <b-row>
@@ -308,10 +308,10 @@
                             </b-col>
                             <b-col  cols="1" class="prvMtnOp_table_risk">
                                 <p class="text-primary">{{prvMtnOp.Risk}}</p>
-                            </b-col>    
+                            </b-col>
                             <b-col  cols="1" class="prvMtnOp_table_reformed">
                                 <p class="text-primary">{{prvMtnOp.Reformed}}</p>
-                            </b-col>                  
+                            </b-col>
                         </b-row>
                     </div>
                 </div>
@@ -333,7 +333,7 @@
                         </b-col>
                         <b-col cols="4"  class="risk_prvMtnOp_table_wayOfControl">
                             Way of control
-                        </b-col>              
+                        </b-col>
                     </b-row>
                     <div v-for="(prvMtnOp_risk,index) in eq_prvMtnOp_risk " :key="index">
                         <b-row>
@@ -345,7 +345,7 @@
                             </b-col>
                             <b-col cols="4"  class="risk_prvMtnOp_table_wayOfControl">
                                 <p class="text-primary">{{prvMtnOp_risk.risk_wayOfControl}}</p>
-                            </b-col>                  
+                            </b-col>
                         </b-row>
                     </div>
                 </div>
@@ -368,7 +368,7 @@
 						</b-col>
 						<b-col cols="4"  class="history_table_Date">
 							Date of the update
-						</b-col>                  
+						</b-col>
 					</b-row>
 					<div v-for="(history,index) in eq_history " :key="index">
 						<b-row>
@@ -383,7 +383,7 @@
 							</b-col>
 							<b-col cols="4"  class="history_table_Date">
 								<p class="text-primary"> {{history.history_date}}</p>
-							</b-col>                 
+							</b-col>
 						</b-row>
 					</div>
 				</div>
@@ -393,7 +393,7 @@
 			<div class="eq_historyRecordTemplateRefPdf">
 			<div class="eqHistory_table_recordTemplateRefPdf">
 					<div class="eqHistory_index_recordTemplateRefPdf">
-					Record Template Ref :  REC-IWE01
+					Record Template Ref :  REC-IWE12
 				</div>
 				<div class="eqHistory_confidential_recordTemplateRefPdf">
 					This document contains CONFIDENTIAL information
@@ -402,13 +402,13 @@
 			</div>
 		</div>
 		<button class="btn btn-primary" @click="generateReport()" >Generate PDF</button>
-	</div>   
+	</div>
 
 </template>
 
 <script>
 import html2PDF from 'jspdf-html2canvas';
-export default { 
+export default {
     data(){
         return{
             eq_id:this.$route.params.id,
@@ -428,9 +428,9 @@ export default {
     },
 
     components: {
-        
+
     },
-    methods: { 
+    methods: {
 
         generateReport () {
             let page = document.getElementById('page');
@@ -453,7 +453,7 @@ export default {
                     bottom: 40,
                     left: 10,
                 },
-                output: this.eq_idCard.eq_internalReference+'_LS-D'+'_V'+this.eq_idCard.eq_version+'.pdf', 
+                output: this.eq_idCard.eq_internalReference+'_LS-D'+'_V'+this.eq_idCard.eq_version+'.pdf',
             });
         },
 
@@ -502,7 +502,7 @@ export default {
             });
             this.generateReport();
         },
-        
+
     },
     created(){
         var consultUrl = (id) => `/equipment/${id}`;
@@ -518,7 +518,7 @@ export default {
         axios.get(consultUrlDim(this.eq_id))
             .then (response=> {this.eq_dimensions=response.data;console.log(response.data)})
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlPow = (id) => `/power/send/ByType/${id}`;
         axios.get(consultUrlPow(this.eq_id))
             .then (response=> {this.eq_powers=response.data;console.log(this.eq_powers) })
@@ -535,7 +535,7 @@ export default {
                 console.log(response.data)
             })
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlUsg = (id) => `/usage/send/${id}`;
         console.log(this.eq_id)
         axios.get(consultUrlUsg(this.eq_id))
@@ -546,14 +546,14 @@ export default {
         axios.get(consultUrlFile(this.eq_id))
             .then (response=>this.eq_file=response.data)
             .catch(error => console.log(error)) ;
-    
+
         var consultUrlRisk = (id) => `/equipment/risk/send/${id}`;
         axios.get(consultUrlRisk(this.eq_id))
             .then (response=>{
                 this.eq_risk=response.data
             })
             .catch(error => console.log(error)) ;
-        
+
         var consultUrlPrvMtnOp = (id) => `/prvMtnOps/send/lifesheet/${id}`;
         axios.get(consultUrlPrvMtnOp(this.eq_id))
             .then (response=>{
@@ -618,11 +618,11 @@ export default {
                     height: 170px;
                     margin-left:100px ;
                     margin-top: 00px;
-                    
+
                     .logo{
                         margin-top:30px;
                     }
-                    
+
                 }
                 .equipement_pdf_titre{
                     border: solid 0.5px black;
@@ -633,9 +633,9 @@ export default {
                     left:300px;
                     height: 87px;
                     text-align:center;
-                   
-                    
-                    
+
+
+
                 }
                 .equipement_fiche_de_vie_titre{
                     text-align: center;
@@ -649,7 +649,7 @@ export default {
                     top: 0px;
                     height: 86px;
                     width: 200px;
-                    
+
                 }
                 .equipment_revued_by{
                     border: solid 0.5px black;
@@ -698,7 +698,7 @@ export default {
                         margin-bottom : 0px ;
                     }
                 }
-            
+
                 .Ecme_assoc_pdf{
                     border: solid 0.5px black;
                     position: relative;
@@ -713,7 +713,7 @@ export default {
                     margin-bottom: 20px;
                     float: left;
                     margin-left: 42px;
-                    
+
                 }
                 .eq_externalReference_pdf{
                     border: solid 1px black;
@@ -733,7 +733,7 @@ export default {
                     border: solid 1px black;
                     width: 500px;
                     height: 60px;
-                    float: left; 
+                    float: left;
                 }
 
             }
@@ -760,7 +760,7 @@ export default {
                     .eq_usage_precaution_pdf{
                         border: solid 1px black;
                         margin-bottom: 20px;
-                        height: auto ; 
+                        height: auto ;
                         width: 1042px;
                         position: relative;
                     }
@@ -799,15 +799,15 @@ export default {
                 .power_title_pdf{
                     position: relative;
                     margin-top: 0px;
-                
+
 
                 .eq_power_pdf{
                     position: relative;
                     height: auto;
-                    width: 1042px;   
+                    width: 1042px;
                     margin-bottom: 30px;
                     .eq_power_type_pdf{
-                        
+
                         position: relative;
                         height: auto;
                         margin-bottom:0px;
@@ -817,28 +817,28 @@ export default {
                             position: relative;
                             height: auto;
                             margin-bottom: 0px;
-                            
+
                             .eq_power_name_pdf{
                                 border: solid 1px black;
                                 position: relative;
                                 height: auto;
-                                width: 1042px;   
-                                
+                                width: 1042px;
+
                             }
                             .eq_power_value_pdf{
                                 border: solid 1px black;
                                 position: relative;
                                 height: auto;
-                                width: 521px;   
+                                width: 521px;
                             }
                             .eq_power_consumption_pdf{
                                 border: solid 1px black;
                                 position: relative;
                                 height: auto;
-                                width: 521px;   
+                                width: 521px;
                                 float: right;
                             }
-                        }   
+                        }
                     }
                 }
             }
@@ -859,7 +859,7 @@ export default {
             .eq_dimension_pdf{
                 position: relative;
                 height: auto;
-                width: 1060px;   
+                width: 1060px;
                 margin-bottom: 30px;
                 .eq_dimension_type_pdf{
                     p{
@@ -884,11 +884,11 @@ export default {
                             position: relative;
                             height: auto;
                             width: 340px;
-                            margin-right: 10px;   
-                            
+                            margin-right: 10px;
+
                         }
-                        
-                    }   
+
+                    }
                 }
             }
             .eq_mass_set_mobility_pdf{
@@ -897,7 +897,7 @@ export default {
                     font-size: 20px;
                     margin-top: 3px;
                     margin-left: 10px;
-                    
+
                 }
                 .eq_mass_pdf{
                     border: solid 1px black;
@@ -945,26 +945,26 @@ export default {
             .eq_risk_pdf{
                 position: relative;
                 height: auto;
-                width: 1042px;   
+                width: 1042px;
             }
             .eq_risk_for_pdf{
                 border: solid 1px black;
                 position: relative;
                 height: auto;
-                width: 1042px;   
+                width: 1042px;
             }
             .eq_risk_remarks_pdf{
                 border: solid 1px black;
                 position: relative;
                 height: auto;
-                width: 521px;   
-                
+                width: 521px;
+
             }
             .eq_risk_wayOfControl_pdf{
                 border: solid 1px black;
                 position: relative;
                 height: auto;
-                width: 521px;   
+                width: 521px;
                 float: right;
             }
 
@@ -981,14 +981,14 @@ export default {
                 border: solid 1px black;
                 position: relative;
                 height: auto;
-                width: 1042px;   
+                width: 1042px;
             }
         }
         .eq_prvMtnOp_infos_pdf{
             position: relative;
             margin-top:10px ;
             width : 1112px;
-            
+
             .title_prvMtnOp_pdf{
                 width: 400px;
                 font-size : 20px;
@@ -1017,7 +1017,7 @@ export default {
                     border: solid 1px black;
                     text-align: center;
                     width:380px;
-                }                    
+                }
                 .prvMtnOp_table_periodicity{
                     border: solid 1px black;
                     text-align: center;
@@ -1061,7 +1061,7 @@ export default {
                 .risk_prvMtnOp_table_wayOfControl{
                     border: solid 1px black;
                     text-align: center;
-                }                    
+                }
             }
         }
 
@@ -1070,7 +1070,7 @@ export default {
             left:150px;
             margin-top:10px ;
             width: 1042px;
-            
+
 
             .eq_table_recordTemplateRefPdf{
                 .eq_confidential_recordTemplateRefPdf{
@@ -1096,7 +1096,7 @@ export default {
             margin-top:10px ;
             width : 1112px;
 			margin-top : 50px;
-            
+
             .title_history_pdf{
                 width: 400px;
                 font-size : 20px;
@@ -1125,7 +1125,7 @@ export default {
                     border: solid 1px black;
                     text-align: center;
                     width:200px;
-                }                    
+                }
             }
         }
 
@@ -1134,7 +1134,7 @@ export default {
             left:150px;
             margin-top:10px ;
             width: 1042px;
-            
+
 
             .eqHistory_table_recordTemplateRefPdf{
                 .eqHistory_confidential_recordTemplateRefPdf{
@@ -1156,9 +1156,9 @@ export default {
         }
     }
 
-        
-        
 
-    
+
+
+
 
 </style>

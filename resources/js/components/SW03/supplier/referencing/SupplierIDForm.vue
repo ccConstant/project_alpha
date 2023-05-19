@@ -18,7 +18,7 @@
                 :isDisabled="isInConsultMod"
                 isRequired
                 v-model="supplr_name"
-                :info_text="'SupplierControllerName'"
+                :info_text="infos_idCard[0].info_value"
                 :min="2"
                 :max="255"
             />
@@ -26,7 +26,7 @@
                 :name="'SupplierReceptionPhoneNumber'"
                 :label="'Reception Phone Number'"
                 v-model="supplr_receptionNumber"
-                :info_text="'SupplierController Reception Phone Number'"
+                :info_text="infos_idCard[1].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_receptionNumber"
                 :min="10"
@@ -37,7 +37,7 @@
                 :name="'Form ID'"
                 :label="'Form ID'"
                 v-model="supplr_formId"
-                :info_text="'SupplierController\'s Form ID'"
+                :info_text="infos_idCard[2].info_value"
                 :input-class-name="null"
                 :Errors="errors.supplr_formId"
                 :min="2"
@@ -49,7 +49,7 @@
                 :name="'AgreementNumber'"
                 :label="'Agreement Number'"
                 v-model="supplr_agreementNumber"
-                :info_text="'SupplierController Agreement Number'"
+                :info_text="infos_idCard[3].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_agreementNumber"
                 :min="2"
@@ -60,7 +60,7 @@
                 :name="'QualityCertificateNumber'"
                 :label="'Quality Certificate Number'"
                 v-model="supplr_qualityCertificateNumber"
-                :info_text="'SupplierController Quality Certificate Number'"
+                :info_text="infos_idCard[4].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_qualityCertificateNumber"
                 :min="2"
@@ -71,7 +71,7 @@
                 :name="'Specific Instructions'"
                 :label="'Specific Instruction'"
                 v-model="supplr_specificsInstructions"
-                :info_text="'Specific Instructions'"
+                :info_text="infos_idCard[5].info_value"
                 :input-class-name="null"
                 :Errors="errors.supplr_specificsInstructions"
                 :min="0"
@@ -82,7 +82,7 @@
                 :name="'SIRET/DUNS'"
                 :label="'SIRET/DUNS'"
                 v-model="supplr_siret"
-                :info_text="'SupplierController SIRET/DUNS'"
+                :info_text="infos_idCard[7].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_siret"
                 :min="2"
@@ -93,7 +93,7 @@
                 :name="'WebSite'"
                 :label="'Web Site'"
                 v-model="supplr_webSite"
-                :info_text="'SupplierController Web Site'"
+                :info_text="infos_idCard[8].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_webSite"
                 :min="0"
@@ -104,7 +104,7 @@
                 :name="'Activity(ies)'"
                 :label="'Activity(ies)'"
                 v-model="supplr_activity"
-                :info_text="'SupplierController Activity(ies)'"
+                :info_text="infos_idCard[9].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_activity"
                 :min="2"
@@ -115,7 +115,7 @@
                 :name="'VATNumber'"
                 :label="'VAT Number'"
                 v-model="supplr_VatNumber"
-                :info_text="'SupplierController VAT Number'"
+                :info_text="infos_idCard[11].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_VatNumber"
                 :min="2"
@@ -127,7 +127,7 @@
                 :name="'Real ?'"
                 :label="'Real'"
                 v-model="supplr_real"
-                :info_text="'SupplierController is real or not ?'"
+                :info_text="infos_idCard[10].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_real"
                 :checked-option="isInModifMod ? supplr_real : true"
@@ -138,7 +138,7 @@
                 :name="'Active ?'"
                 :label="'Active'"
                 v-model="supplr_active"
-                :info_text="null"
+                :info_text="infos_idCard[14].info_value"
                 :inputClassName="null"
                 :Errors="errors['Active']"
                 :checkedOption="isInModifMod ? supplr_active : true"
@@ -148,7 +148,7 @@
                 :name="'Critical ?'"
                 :label="'Critical'"
                 v-model="supplr_critical"
-                :info_text="'SupplierController is critical or not ?'"
+                :info_text="infos_idCard[12].info_value"
                 :inputClassName="null"
                 :Errors="errors.supplr_critical"
                 :checked-option="isInModifMod ? supplr_critical : false"
@@ -158,7 +158,7 @@
                 :name="'End Link to Folder'"
                 :label="'End Link to Folder'"
                 v-model="supplr_endLinkToFolder"
-                :info_text="'End Link to Folder'"
+                :info_text="infos_idCard[13].info_value"
                 :input-class-name="null"
                 :Errors="errors.supplr_endLinkToFolder"
                 :min="2"
@@ -368,18 +368,23 @@ export default {
             infos_idCard: [],
             addSuccess: false,
             loaded: false,
-            isInConsultMod: this.consultMod
+            isInConsultMod: this.consultMod,
+            isInModifMod: this.modifMod,
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/supplier')
+            .then(response => {
+                this.infos_idCard = response.data;
+                this.loaded = true;
+            })
+            .catch(error => {
+            });
     },
 
     /*--------Declaration of the different methods:--------*/
     methods: {
         addSupplier(savedAs) {
-            console.log("addSupplier");
-            console.log(this.supplr_name);
             axios.post('/supplier/verif', {
                 supplr_name: this.supplr_name,
                 supplr_receptionNumber: this.supplr_receptionNumber,

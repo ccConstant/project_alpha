@@ -243,6 +243,11 @@ export default {
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
+                console.log("addCriticality");
+                console.log("crit_artCriticality : " + this.crit_artCriticality);
+                console.log("crit_artMaterialContactCriticality : " + this.crit_artMaterialContactCriticality);
+                console.log("crit_artMaterialFunctionCriticality : " + this.crit_artMaterialFunctionCriticality);
+                console.log("crit_artProcessCriticality : " + this.crit_artProcessCriticality);
                 axios.post('/artFam/criticality/verif', {
                     crit_artCriticality: this.crit_artCriticality,
                     crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
@@ -324,9 +329,6 @@ export default {
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
                             if (lifesheet_created == true) {
-                                console.log("lifesheet_created");
-                                console.log(this.data_article_type);
-                                console.log(this.data_article_id);
                                 axios.post('/artFam/history/add/' + this.data_article_type.toLowerCase() + '/' + this.data_article_id, {
                                     history_reasonUpdate: reason,
                                 });
@@ -337,7 +339,6 @@ export default {
                         })
                         /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
-                            console.log(error.response.data);
                         });
                 })
                 /*If the controller sends errors, we put it in the error object*/
@@ -357,7 +358,6 @@ export default {
         axios.get('/info/send/crit')
             .then(response => {
                 this.infos_crit = response.data;
-                console.log(this.infos_crit);
                 this.loaded = true;
 
             });

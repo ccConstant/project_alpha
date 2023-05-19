@@ -65,8 +65,8 @@ const router = new VueRouter({
         name: 'url_eq_list_pdf',
         component: require('./components/SW01/equipment/consultation/ListOfEquipmentPDF.vue').default
     }, {
-        path: '/enum',
-        name: 'url_enum',
+        path: '/SW01/enum',
+        name: 'url_enum_SW01',
         component: require('./components/SW01/enum/EnumManagment.vue').default
     }, {
         path: '/equipment/life_event',
@@ -109,8 +109,8 @@ const router = new VueRouter({
         name: 'url_eq_reform',
         component: require('./components/SW01/equipment/consultation/EquipmentReform.vue').default
     }, {
-        path: '/SW01/infos_SW01',
-        name: 'url_infos',
+        path: '/SW01/infos',
+        name: 'url_infos_SW01',
         component: require('./components/SW01/infos/InfosManagment.vue').default
     }, {
         path: '/SW03/infos',

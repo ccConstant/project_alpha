@@ -26,6 +26,7 @@
                                 :genRef="this.generic.genRef"
                                 :genDesign="this.generic.genDesign"
                                 :varCharac="this.generic.variablesCharac"
+                                :varCharacDesign="this.generic.variablesCharacDesign"
                             />
                         </div>
                     </div>
@@ -146,9 +147,10 @@ export default {
         put_artFamily_type(value) {
             this.artFam_type = value;
         },
-        genericSetter(ref, design, variableCharac) {
+        genericSetter(ref, design, variableCharac, variableCharacDesign) {
             this.generic = {
                 variablesCharac: variableCharac,
+                variablesCharacDesign: variableCharacDesign,
                 genRef: ref,
                 genDesign: design,
             };

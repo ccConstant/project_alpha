@@ -23,7 +23,7 @@ class Criticality extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['crit_artCriticality, crit_artMaterialContactCriticality', 'crit_artMaterialFunctionCriticality', 'crit_artProcessCriticality', 'crit_qualityApproverId', 'crit_technicalReviewerId', 'crit_signatureDate', 'crit_validate', 'crit_remarks', 'compFam_id', 'consFam_id', 'rawFam_id', 'crit_justification'] ;
+    protected $fillable = ['crit_artCriticality', 'crit_artMaterialContactCriticality', 'crit_artMaterialFunctionCriticality', 'crit_artProcessCriticality', 'crit_qualityApproverId', 'crit_technicalReviewerId', 'crit_signatureDate', 'crit_validate', 'crit_remarks', 'compFam_id', 'consFam_id', 'rawFam_id', 'crit_justification'] ;
 
     //Define the relation between a compCriticality and the comp_family which he is linked : a compCriticality can be linked to only one comp_family
     public function comp_family(){

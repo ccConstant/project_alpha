@@ -31,6 +31,7 @@
                 :genRef="data_genRef"
                 :genDesign="data_genDesign"
                 :varCharac="data_varCharac"
+                :varCharacDesign="data_varCharacDesign"
                 @deleteStorageCondition="getContent(key)"/>
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
@@ -96,6 +97,9 @@ export default {
         varCharac: {
             type: String
         },
+        varCharacDesign: {
+            type: String
+        },
     },
     /*--------Declaration of the different returned data:--------
         components: Array in which will be added the data of a component
@@ -118,6 +122,7 @@ export default {
             data_genRef: this.genRef,
             data_genDesign: this.genDesign,
             data_varCharac: this.varCharac,
+            data_varCharacDesign: this.varCharacDesign,
             loaded: false,
             familyMember: [],
         };

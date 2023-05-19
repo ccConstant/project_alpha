@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="le_eq_pdf_titre">
-                        <h2 id="le_eq_titre">LIST OF REGISTERED LIFE EVENTS</h2>
+                        <h2 id="le_eq_titre">EQUIPMENT LIFE SHEET EVENT PART</h2>
                     </div>
 
                     <div class="le_eq_pdf_index">
@@ -107,7 +107,7 @@
                 <div class="le_eq_recordTemplateRefPdf">
                 <div class="le_eq_table_recordTemplateRefPdf">
                      <div class="le_eq_index_recordTemplateRefPdf">
-                        Record Template Ref :  REC-IWE04
+                        Record Template Ref :  REC-IWE13
                     </div>
                     <div class="le_eq_confidential_recordTemplateRefPdf">
                         This document contains CONFIDENTIAL information

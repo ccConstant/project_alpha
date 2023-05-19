@@ -39,6 +39,7 @@ class CompFamilyController extends Controller
                     'artFam_design' => 'required|min:3|max:255|string',
                     'artFam_drawingPath' => 'required|min:3|max:255|string',
                     'artFam_variablesCharac' => 'required|min:2|max:255|string',
+                    'artFam_variablesCharacDesign' => 'required|min:2|max:255|string',
                     'artFam_version' => 'required|min:2|max:4|string',
                     'artFam_genRef' => 'required|min:3|max:255|string',
                     'artFam_genDesign' => 'required|min:3|max:255|string',
@@ -49,26 +50,37 @@ class CompFamilyController extends Controller
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
                     'artFam_ref.string' => 'You must enter a string ',
+
                     'artFam_design.required' => 'You must enter a design for your comp family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
                     'artFam_design.string' => 'You must enter a string ',
+
                     'artFam_drawingPath.required' => 'You must enter a drawing path for your comp family ',
                     'artFam_drawingPath.min' => 'You must enter at least three characters ',
                     'artFam_drawingPath.max' => 'You must enter less than 255 characters ',
                     'artFam_drawingPath.string' => 'You must enter a string ',
+
                     'artFam_variablesCharac.required' => 'You must enter variables characteristics for your comp family ',
                     'artFam_variablesCharac.min' => 'You must enter at least two characters ',
                     'artFam_variablesCharac.max' => 'You must enter less than 255 characters ',
                     'artFam_variablesCharac.string' => 'You must enter a string ',
+
+                    'artFam_variablesCharacDesign.required' => 'You must enter variables characteristics design for your comp family ',
+                    'artFam_variablesCharacDesign.min' => 'You must enter at least two characters ',
+                    'artFam_variablesCharacDesign.max' => 'You must enter less than 255 characters ',
+                    'artFam_variablesCharacDesign.string' => 'You must enter a string ',
+
                     'artFam_version.required' => 'You must enter a version for your comp family ',
                     'artFam_version.min' => 'You must enter at least two characters ',
                     'artFam_version.max' => 'You must enter less than 4 characters ',
                     'artFam_version.string' => 'You must enter a string ',
+
                     'artFam_genRef.required' => 'You must enter a general reference for your comp family ',
                     'artFam_genRef.min' => 'You must enter at least three characters ',
                     'artFam_genRef.max' => 'You must enter less than 255 characters ',
                     'artFam_genRef.string' => 'You must enter a string ',
+
                     'artFam_genDesign.required' => 'You must enter a general design for your comp family ',
                     'artFam_genDesign.min' => 'You must enter at least three characters ',
                     'artFam_genDesign.max' => 'You must enter less than 255 characters ',
@@ -93,6 +105,7 @@ class CompFamilyController extends Controller
                     'artFam_design' => 'required|min:3|max:255|string',
                     'artFam_drawingPath' => 'max:255',
                     'artFam_variablesCharac' => 'max:255',
+                    'artFam_variablesCharacDesign' => 'max:255',
                     'artFam_version' => 'max:4',
                     'artFam_genRef' => 'max:255',
                     'artFam_genDesign' => 'max:255',
@@ -102,18 +115,27 @@ class CompFamilyController extends Controller
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artFam_ref.string' => 'You must enter a string ',
+
                     'artFam_design.required' => 'You must enter a designation for your comp family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
                     'artFam_design.string' => 'You must enter a string ',
+
                     'artFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
                     'artFam_drawingPath.string' => 'You must enter a string ',
+
                     'artFam_variablesCharac.max' => 'You must enter a maximum of 255 characters',
                     'artFam_variablesCharac.string' => 'You must enter a string ',
+
+                    'artFam_variablesCharacDesign.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_variablesCharacDesign.string' => 'You must enter a string ',
+
                     'artFam_version.max' => 'You must enter a maximum of 4 characters',
                     'artFam_version.string' => 'You must enter a string ',
+
                     'artFam_genRef.max' => 'You must enter a maximum of 255 characters',
                     'artFam_genRef.string' => 'You must enter a string ',
+
                     'artFam_genDesign.max' => 'You must enter a maximum of 255 characters',
                     'artFam_genDesign.string' => 'You must enter a string ',
 
@@ -151,6 +173,7 @@ class CompFamilyController extends Controller
             'compFam_drawingPath'=> $request->artFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
             'compFam_variablesCharac' => $request->artFam_variablesCharac,
+            'compFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,
             'compFam_validate' => $request->artFam_validate,
             'compFam_version' => $request->artFam_version,
             'compFam_active' => $request->artFam_active,
@@ -191,6 +214,7 @@ class CompFamilyController extends Controller
                 'compFam_design' => $compFamily->compFam_design,
                 'compFam_drawingPath' => $compFamily->compFam_drawingPath,
                 'compFam_variablesCharac' => $compFamily->compFam_variablesCharac,
+                'compFam_variablesCharacDesign' => $compFamily->compFam_variablesCharacDesign,
                 'compFam_version' => $compFamily->compFam_version,
                 'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
                 'compFam_validate' => $compFamily->compFam_validate,
@@ -237,6 +261,7 @@ class CompFamilyController extends Controller
             'compFam_design' => $compFamily->compFam_design,
             'compFam_drawingPath' => $compFamily->compFam_drawingPath,
             'compFam_variablesCharac' => $compFamily->compFam_variablesCharac,
+            'compFam_variablesCharacDesign' => $compFamily->compFam_variablesCharacDesign,
             'compFam_version' => $compFamily->compFam_version,
             'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
             'compFam_validate' => $compFamily->compFam_validate,
@@ -272,6 +297,7 @@ class CompFamilyController extends Controller
             'compFam_design' => $request->artFam_design,
             'compFam_drawingPath' => $request->artFam_drawingPath,
             'compFam_variablesCharac' => $request->artFam_variablesCharac,
+            'compFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,
             'compFam_version' => $request->artFam_version,
             'compFam_qualityApproverId' => null,
             'compFam_technicalReviewerId' => null,

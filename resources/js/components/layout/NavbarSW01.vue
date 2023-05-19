@@ -78,7 +78,7 @@ export default {
 		},
 		info_acces(){
 			if(this.$userId.user_updateInformationRight==true){
-				this.$router.push({ name: "url_infos" }).catch(() => {})
+				this.$router.push({ name: "url_infos_SW01" }).catch(() => {})
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}

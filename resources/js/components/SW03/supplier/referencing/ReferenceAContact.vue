@@ -103,7 +103,6 @@ export default {
             });
         },
         addImportedContact(contactName, contactFunction, contactEmail, contactPhoneNumber, contactPrincipal, contactId, contactValidate, className) {
-            console.log(contactName);
             this.components.push({
                 comp: "ContactIDForm",
                 key: this.uniqueKey++,
@@ -162,19 +161,14 @@ export default {
                     this.importedContact = response.data;
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         }
         this.loaded = true;
-        console.log(this.contacts);
-        console.log(this.components.length)
     },
     mounted() {
         if (this.isInConsultMod || this.isInModifMod) {
-            console.log("import");
             this.importContact();
         }
-        console.log(this.components.length)
     }
 }
 </script>

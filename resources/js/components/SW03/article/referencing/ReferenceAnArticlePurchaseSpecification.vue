@@ -14,11 +14,22 @@
             <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
             <!--ref="ask_dim_data" is used to call the child elements in this component-->
             <!--The emitted deleteDim is caught here and call the function getContent -->
-            <ArticlePurchaseSpecificationForm ref="ask_purchaseSpecification_data" v-for="(component, key) in components" :key="component.key"
-                                              :is="component.comp" :requiredDoc="component.requiredDoc" :divClass="component.className"
-                                              :id="component.id" :consultMod="isInConsultMod" :modifMod="component.id !== null"
-                                              :art_type="data_art_type" :art_id="data_art_id"
-                                              @deleteStorageCondition="getContent(key)"/>
+            <ArticlePurchaseSpecificationForm
+                ref="ask_purchaseSpecification_data"
+                v-for="(component, key) in components"
+                :key="component.key"
+                :is="component.comp"
+                :requiredDoc="component.requiredDoc"
+                :supplier_id="component.supplier"
+                :supplier_ref="component.supplierRef"
+                :divClass="component.className"
+                :id="component.id"
+                :consultMod="isInConsultMod"
+                :modifMod="component.id !== null"
+                :art_type="data_art_type"
+                :art_id="data_art_id"
+                @deleteStorageCondition="getContent(key)"
+            />
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->
@@ -106,15 +117,18 @@ export default {
         /*Function for adding an imported dimension form with his data*/
         addImportedComponent(
             purchaseSpecification_requiredDoc,
+            purchaseSpecification_supplier,
+            purchaseSpecification_supplierRef,
             purchaseSpecification_className, id) {
             this.components.push({
                 comp: 'ArticlePurchaseSpecificationForm',
                 key: this.uniqueKey++,
-                requiredDoc: purchaseSpecification_requiredDoc.toString(),
+                requiredDoc: purchaseSpecification_requiredDoc,
+                supplier: purchaseSpecification_supplier,
+                supplierRef: purchaseSpecification_supplierRef,
                 className: purchaseSpecification_className,
                 id: id
-            });
-        },
+            });},
         /*Suppression of a dimension component from the vue*/
         getContent(key) {
             this.components.splice(key, 1);
@@ -127,6 +141,8 @@ export default {
                     const className = "importedPurSpe" + dt.id;
                     this.addImportedComponent(
                         dt.purSpe_requiredDoc,
+                        dt.purSpe_supplier_id,
+                        dt.purSpe_supplier_ref,
                         className,
                         dt.id
                     );

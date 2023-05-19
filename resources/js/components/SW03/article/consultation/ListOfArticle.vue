@@ -68,7 +68,7 @@
                                 <!--                            <td><b-checkbox disabled :checked="elem.active === 1"></b-checkbox></td>-->
                                 <td>{{elem.active === 1 ? "Yes": "No"}}</td>
                                 <!--                            <td><b-checkbox disabled :checked="elem.signatureDate === null"></b-checkbox></td>-->
-                                <td>{{elem.signatureDate === undefined ? "No": elem.signatureDate}}</td>
+                                <td>{{elem.signatureDate === null ? "No": elem.signatureDate}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -218,11 +218,11 @@ export default {
             let res = [];
             if (this.searchTermRef !== "" && this.searchTermDesign === "") {
                 res = this.globalList.filter(option => {
-                    return option.ref.toLowerCase().includes(this.searchTermRef);
+                    return option.ref.toLowerCase().includes(this.searchTermRef.toLowerCase());
                 });
             } else if (this.searchTermDesign !== "" && this.searchTermRef === "") {
                 res = this.globalList.filter(option => {
-                    return option.design.toLowerCase().includes(this.searchTermDesign);
+                    return option.design.toLowerCase().includes(this.searchTermDesign.toLowerCase());
                 });
             } else {
                 res = this.globalList.filter(option => {
@@ -237,9 +237,9 @@ export default {
             if (this.searchTermValidate !== -1) {
                 res = res.filter(option => {
                     if (this.searchTermValidate === 0)
-                        return option.signatureDate === undefined;
+                        return option.signatureDate === null;
                     else if (this.searchTermValidate === 1)
-                        return option.signatureDate !== undefined;
+                        return option.signatureDate !== null;
                 });
             }
             return res;

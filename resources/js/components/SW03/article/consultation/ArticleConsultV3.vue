@@ -171,7 +171,11 @@
                             </p>
                         </td>
                         <td class="tableValue">
-                            <p id="severity">
+                            <p v-if="criticality.length > 0" id="severity">
+                                {{ criticality[0].crit_artCriticality === null ? "/" : criticality[0].crit_artCriticality }}
+                            </p>
+                            <p v-else>
+                                /
                             </p>
                         </td>
                     </tr>
@@ -237,7 +241,7 @@
                         </td>
                         <td>
                             <p>
-                                TODO &#9888;
+                                {{ this.articleData.variablesCharacDesign }}
                             </p>
                         </td>
                     </tr>
@@ -315,56 +319,52 @@
                                 Storage Conditions
                             </h2>
                         </td>
-                        <td>
-                            <ul>
-                                <li v-for="storage in stoConds" :key="storage.id">
-                                    {{ storage.value }}
-                                </li>
-                            </ul>
-                        </td>
                     </tr>
                     <tr>
-                        <td class="tableName" rowspan="3" style="text-align: center;">
+                        <td class="tableName" :rowspan="3*purSpes.length" style="text-align: center;">
                             <h2>
                                 Purchasing specifications
                             </h2>
                         </td>
-                        <td class="tableDesc">
-                            <p>
-                                Name of supplier
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <p id="supplierName">
-                            </p>
-                        </td>
                     </tr>
-                    <tr>
-                        <td class="tableDesc">
-                            <p>
-                                Supplier article reference
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <p id="supplierRef">
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tableDesc">
-                            <p>
-                                Required document(s)
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <ul>
-                                <li v-for="spec in purSpes" :key="spec.id">
-                                    {{ spec.purSpe_requiredDoc }}
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-
+                    <div v-for="spec in purSpes" :key="spec.id" style="margin: auto; width: 100%; display: table">
+                        <tr>
+                            <td class="tableDesc">
+                                <p>
+                                    Name of supplier
+                                </p>
+                            </td>
+                            <td class="tableValue">
+                                <p id="supplierName">
+                                    {{ spec.purSpe_supplier_id }}
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tableDesc">
+                                <p>
+                                    Supplier article reference
+                                </p>
+                            </td>
+                            <td class="tableValue">
+                                <p id="supplierRef">
+                                    {{ spec.purSpe_supplier_id !== "Alpha" ? spec.purSpe_supplier_ref : "/" }}
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tableDesc">
+                                <p>
+                                    Required document(s)
+                                </p>
+                            </td>
+                            <td class="tableValue">
+                                <p id="supplierRef">
+                                    {{ spec.purSpe_supplier_id !== "Alpha" ? spec.purSpe_requiredDoc : "/" }}
+                                </p>
+                            </td>
+                        </tr>
+                    </div>
                     </tbody>
                 </table>
                 <h2 v-if="docControls.length > 0 ||
@@ -970,6 +970,7 @@ export default {
             purSpes: [],
             stoConds: [],
             histories: [],
+            criticality: [],
             supplier: null,
             familyMembers: [],
             validationMethod: null,
@@ -1057,6 +1058,7 @@ export default {
                         technicalReviewerName: response.data.rawFam_technicalReviewerName,
                         validate: response.data.rawFam_validate,
                         variablesCharac: response.data.rawFam_variablesCharac,
+                        variablesCharacDesign: response.data.rawFam_variablesCharacDesign,
                         version: '/',
                         created_at: response.data.rawFam_created_at,
                         updated_at: response.data.rawFam_updated_at,
@@ -1089,6 +1091,7 @@ export default {
                         technicalReviewerName: response.data.compFam_technicalReviewerName,
                         validate: response.data.compFam_validate,
                         variablesCharac: response.data.compFam_variablesCharac,
+                        variablesCharacDesign: response.data.compFam_variablesCharacDesign,
                         version: response.data.compFam_version,
                         created_at: response.data.compFam_created_at,
                         updated_at: response.data.compFam_updated_at,
@@ -1121,6 +1124,7 @@ export default {
                         technicalReviewerName: response.data.consFam_technicalReviewerName,
                         validate: response.data.consFam_validate,
                         variablesCharac: response.data.consFam_variablesCharac,
+                        variablesCharacDesign: response.data.consFam_variablesCharacDesign,
                         version: response.data.consFam_version,
                         created_at: response.data.consFam_created_at,
                         updated_at: response.data.consFam_updated_at,
@@ -1137,6 +1141,12 @@ export default {
                 .catch(error => {
                 });
         }
+        axios.get('/artFam/criticality/send/' + this.articleType + '/' + this.articleId)
+            .then(response => {
+                this.criticality = response.data;
+            })
+            .catch(error => {
+            });
         axios.get('/artFam/history/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.histories = response.data;
@@ -1199,6 +1209,7 @@ export default {
         axios.get('/purSpe/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.purSpes = response.data;
+                console.log(this.purSpes);
                 this.loaded = true;
             })
             .catch(error => {

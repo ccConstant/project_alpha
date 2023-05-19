@@ -99,7 +99,7 @@ export default {
             type: String
         },
         supplier_id: {
-            type: Number
+            type: String
         },
         supplier_ref: {
             type: String
@@ -200,7 +200,9 @@ export default {
                         this.purSpe_id = response.data;
                         this.purSpe_validate=savedAs;
                     })
-                    .catch(error => this.errors = error.response.data.errors);
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                    });
                 })
                 .catch(error => this.errors = error.response.data.errors);
             }
@@ -292,11 +294,11 @@ export default {
             });
         axios.get('/supplier/active/send')
             .then(response => {
-                this.suppliers.push({
+                /*this.suppliers.push({
                     id_enum: 'suppliers',
                     value: 'Alpha',
                     text: -1,
-                })
+                })*/
                 for (let i = 0; i < response.data.length; i++) {
                     this.suppliers.push({
                         id_enum: 'suppliers',
@@ -309,10 +311,6 @@ export default {
             .catch(error => {
             });
 
-    },
-    updated() {
-        console.log(typeof this.purSpe_supplier_id);
-        console.log(this.purSpe_supplier_id);
     }
 }
 </script>
