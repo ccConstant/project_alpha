@@ -17,7 +17,6 @@ TODO:
 
 FIXME:
     Soon:
-        Changer expected value du funcTest en String et en "Expected Acceptance Criteria" ??
         Infos manquantes :
             - Article Family :
                 - Type
@@ -53,4 +52,6 @@ DONE:
     Ajouter un champs description de la variable générique dans la fiche article
     Faire un lien entre le fournisseur et ses articles
     Compléter la partie Purchasing Specifications de la fiche article
+    Script PHP d'insertion de l'ancienne base de données dans la nouvelle via CSV
+    Changer expected value du funcTest en String et en "Expected Acceptance Criteria"
     */

@@ -1,7 +1,7 @@
-<!--File name : EquipmentFileForm.vue-->
-<!--Creation date : 10 May 2022-->
-<!--Update date : 4 Apr 2023-->
-<!--Vue Component of the Form of the equipment file who call all the input component-->
+<!--File name : DimTestIDForm.vue-->
+<!--Creation date : 22 May 2023-->
+<!--Update date : 22 May 2023-->
+<!--Vue Component of the Form of a dimensional test for an article-->
 
 <template>
     <div :class="divClass">
@@ -9,7 +9,6 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <InputTextForm
                     name="name"
@@ -49,7 +48,7 @@
                 />
                 <InputNumberForm
                     name="expectedValue"
-                    label="Expected Value :"
+                    label="Expected Acceptance Criteria :"
                     v-model="dimTest_expectedValue"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_dimTest[3].info_value"
@@ -132,26 +131,23 @@
                     isRequired
                     :Errors="errors.dimTest_desc"
                 />
-                <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces===false ">
-                    <!--If this file doesn't have a id the addDocControl is called function else the updateDocControl function is called -->
                     <div v-if="this.incmgInsp_id===null ">
                         <div v-if="modifMod===true">
-                            <SaveButtonForm @add="addDocControl" @update="updateDocControl"
+                            <SaveButtonForm @add="addDimTest" @update="updateDimTest"
                                             :consultMod="this.isInConsultedMod" :savedAs="'validated'"
                                             :AddinUpdate="true"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addDocControl" @update="updateDocControl"
+                            <SaveButtonForm @add="addDimTest" @update="updateDimTest"
                                             :consultMod="this.isInConsultedMod" :savedAs="'validated'"/>
                         </div>
                     </div>
                     <div v-else-if="this.incmgInsp_id!==null">
-                        <SaveButtonForm @add="addDocControl" @update="updateDocControl"
+                        <SaveButtonForm @add="addDimTest" @update="updateDimTest"
                                         :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
                                         :savedAs="'validated'"/>
                     </div>
-                    <!-- If the user is not in the consultation mode, the delete button appear -->
                     <DeleteComponentButton :validationMode="'validated'" :consultMod="this.isInConsultedMod"
                                            @deleteOk="deleteComponent"/>
                 </div>
@@ -162,7 +158,6 @@
 </template>
 
 <script>
-/*Importation of the Other Components who will be used here*/
 import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
@@ -171,7 +166,6 @@ import InputSelectForm from "../../../input/InputSelectForm.vue";
 import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 
 export default {
-    /*--------Declaration of the Others Components:--------*/
     components: {
         InputNumberForm,
         InputSelectForm,
@@ -180,16 +174,6 @@ export default {
         DeleteComponentButton,
         SucessAlert
     },
-    /*--------Declaration of the different props:--------
-        name : File name given by the database we will put this data in the corresponding field as default value
-        location : File location given by the database we will put this data in the corresponding field as default value
-        validate: Validation option of the file
-        consultMod: If this props is present the form is in consult mode we disable all the field
-        modifMod: If this props is present the form is in modification mode we disable save button and show update button
-        divClass: Class name of this file form
-        id: ID of an already created file
-        article_id: ID of the equipment in which the file will be added
-    ---------------------------------------------------*/
     props: {
         severityLevel: {
             type: String
@@ -248,17 +232,6 @@ export default {
             default: null
         },
     },
-    /*--------Declaration of the different returned data:--------
-    file_name: Name of the file who will be appeared in the field and updated dynamically
-    file_location: Location of the file who will be appeared in the field and updated dynamically
-    file_validate: Validation option of the file
-    file_id: ID oh this file
-    equipment_id_add: ID of the equipment in which the file will be added
-    equipment_id_update: ID of the equipment in which the file will be updated
-    errors: Object of errors in which will be stores the different error occurred when adding in database
-    addSucces: Boolean who tell if this file has been added successfully
-    isInConsultedMod: data of the consultMod prop
------------------------------------------------------------*/
     data() {
         return {
             dimTest_id: this.id,
@@ -283,14 +256,8 @@ export default {
         }
     },
     methods: {
-        /*Sending to the controller all the information about the equipment so that it can be updated in the database
-        @param savedAs Value of the validation option: drafted, to_be_validated or validated
-        @param reason The reason of the modification
-        @param lifesheet_created */
-        addDocControl(savedAs, reason, lifesheet_created) {
+        addDimTest(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
-                /*The First post to verify if all the fields are filled correctly
-                Name, location and validate option is sent to the controller*/
                 axios.post('/incmgInsp/dimTest/verif', {
                     dimTest_name: this.dimTest_name,
                     dimTest_severityLevel: this.dimTest_severityLevel,
@@ -309,8 +276,6 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
-                    /*If all the verifications passed, a new post this time to add the file in the database
-                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
                     axios.post('/incmgInsp/dimTest/add', {
                         dimTest_name: this.dimTest_name,
                         dimTest_severityLevel: this.dimTest_severityLevel,
@@ -327,31 +292,23 @@ export default {
                         id: this.dimTest_id,
                         article_id: this.data_article_id,
                     })
-                    /*If the file is added successfully*/
                     .then(response => {
                         this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);
                         if (!this.modifMod) {
-                            /*The form pass in consulting mode and addSucces pass to True*/
                             this.isInConsultedMod = true;
                             this.addSucces = true
                         }
                     })
-                    /*If the controller sends errors, we put it in the error object*/
                     .catch(error => {
                         this.errors = error.response.data.errors;
                     });
                 })
-                //If the controller sends errors, we put it in the error object
                 .catch(error => {
                     this.errors = error.response.data.errors;
                 });
             }
         },
-        /*Sending to the controller all the information about the equipment so that it can be updated in the database
-        @param savedAs Value of the validation option: drafted, to_be_validated or validated
-        @param reason The reason of the modification
-        @param lifesheet_created */
-        updateDocControl(savedAs, reason, artSheet_created) {
+        updateDimTest(savedAs, reason, artSheet_created) {
             axios.post('/incmgInsp/dimTest/verif', {
                 dimTest_name: this.dimTest_name,
                 dimTest_severityLevel: this.dimTest_severityLevel,
@@ -370,8 +327,6 @@ export default {
             })
                 .then(response => {
                     this.errors = {};
-                    /*If all the verifications passed, a new post this time to add the file in the database
-                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
                     axios.post('/incmgInsp/dimTest/update/' + this.dimTest_id, {
                         dimTest_name: this.dimTest_name,
                         dimTest_severityLevel: this.dimTest_severityLevel,
@@ -388,7 +343,6 @@ export default {
                         id: this.dimTest_id,
                         article_id: this.data_article_id,
                     })
-                        /*If the file is added successfully*/
                         .then(response => {
                             if (artSheet_created == true) {
                                 axios.post('/artFam/history/add/' + this.articleType.toLowerCase() + '/' + this.articleID, {
@@ -400,21 +354,17 @@ export default {
                             this.isInConsultedMod = true;
                             this.addSucces = true
                         })
-                        /*If the controller sends errors, we put it in the error object*/
                         .catch(error => {
                             this.errors = error.response.data.errors;
                         });
                 })
-                //If the controller sends errors, we put it in the error object
                 .catch(error => {
                     this.errors = error.response.data.errors;
                 });
         },
-        /*Clears all the error of the targeted field*/
         clearError(event) {
             delete this.errors[event.target.name];
         },
-        /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
             this.$emit('deleteDimTest', '')
             this.$refs.sucessAlert.showAlert(`Empty Aspect Test Form deleted successfully`);

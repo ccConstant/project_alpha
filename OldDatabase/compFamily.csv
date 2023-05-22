@@ -1,0 +1,2 @@
+Reference;Designation;PurchasedBy;Drawing;Version;Characteristic;Characteristic Designation;GenRef;GenDesign;Component Crit;Component Material Crit;Component Material Function;Number of members;Number of supplier
+G_COMP0001;ACE Distal tubing;home made;drawing is not relevant for this ref;A;III;"Length in millimeter";G_COMP0001(_lll);ACE Distal tubing - length lll mm;DETECTABLE;CRITICAL;DETECTABLE;1;1
