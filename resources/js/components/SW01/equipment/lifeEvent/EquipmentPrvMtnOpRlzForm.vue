@@ -1,6 +1,6 @@
 <!--File name : EquipmentPrvMtnOpRlz.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component to show the form of a preventive maintenance already realized-->
 
 <template>
@@ -11,15 +11,17 @@
         <div v-if="loaded==true">
             <form class="container prvMtnOpRlz-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <PrvMtnOpChooseModal v-if="isInModifMod==false && isInConsultMod==false" :prvMtnOps="prvMtnOps" @choosedOpe="choosedOpe"/>
+                <PrvMtnOpChooseModal
+                    v-if="isInModifMod==false && isInConsultMod==false"
+                    :prvMtnOps="prvMtnOps"
+                    :number="number"
+                    @choosedOpe="choosedOpe"
+                />
                 <div v-if="prvMtnOp_number!==null  ">
                     <InputTextForm inputClassName="form-control w-50"  name="prvMtnOp_number" label="Number :" isDisabled  isRequired v-model="prvMtnOp_number" :info_text="infos_prvMtnOp[3].info_value"/>
                     <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_description" label="Description :" isDisabled  isRequired v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
                     <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_protocol" label="Protocol :" isDisabled  isRequired v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
-
-
-
                 <InputTextForm inputClassName="form-control w-50" :Errors="errors.prvMtnOpRlz_reportNumber" name="prvMtnOpRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="prvMtnOpRlz_reportNumber" :info_text="infos_prvMtnOpRlz[0].info_value"/>
                 <div class="input-group">
                     <InputTextForm inputClassName="form-control" :placeholer="'Operation date :'+prvMtnOp_startDate_placeholer" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
@@ -29,7 +31,7 @@
                     <InputTextForm inputClassName="form-control" :Errors="errors.prvMtnOpRlz_endDate" name="prvMtnOpRlz_endDate" label="End date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_endDate" :info_text="infos_prvMtnOpRlz[2].info_value"/>
                     <InputDateForm  inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  isRequired v-model="selected_endDate"/>
                 </div>
-                <div v-if="this.prvMtnOp_id!==null">
+                <div v-if="this.prvMtnOp_number!==null">
                     <div v-if="this.addSucces==false">
                         <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOpRlzMtnOp is called function else the updateEquipmentPrvMtnOpRlz function is called -->
                         <div v-if="this.prvMtnOpRlz_id==null ">
@@ -334,30 +336,35 @@ export default {
         }
     },
     created(){
-        if(this.isInConsultMod==false && this.isInModifMod==false){
-            console.log("creation");
-            console.log(this.eq_id);
-            const consultUrl = (id) => `/prvMtnOp/send/validated/${id}`;
-            axios.get(consultUrl(this.eq_id))
-                .then (response =>{
-                    this.prvMtnOps=response.data;
-                    console.log(response.data);
-                    })
-                .catch(error => console.log(error));
-        }
+        console.log("creation");
+        console.log(this.eq_id);
+        const consultUrl = (id) => `/prvMtnOp/send/validated/${id}`;
+        axios.get(consultUrl(this.eq_id))
+            .then (response =>{
+                this.prvMtnOps=response.data;
+                console.log(response.data);
+                for(let i=0; i<this.prvMtnOps.length; i++){
+                    if (this.prvMtnOps[i].prvMtnOp_number == this.prvMtnOp_number){
+                        this.prvMtnOp_number=this.prvMtnOps[i].prvMtnOp_number;
+                        this.prvMtnOp_description=this.prvMtnOps[i].prvMtnOp_description;
+                        this.prvMtnOp_protocol=this.prvMtnOps[i].prvMtnOp_protocol;
+                        this.prvMtnOp_startDate_placeholer=this.prvMtnOps[i].prvMtnOp_nextDate;
+                        this.prvMtnOp_id=this.prvMtnOps[i].id;
+                    }
+                }
+                })
+            .catch(error => console.log(error));
         axios.get('/info/send/preventiveMaintenanceOperation')
         .then (response=> {
             this.infos_prvMtnOp=response.data;
         })
         .catch(error => console.log(error)) ;
-
         axios.get('/info/send/preventiveMaintenanceOperationRealized')
             .then (response=> {
                 this.infos_prvMtnOpRlz=response.data;
                 this.loaded=true;
                 })
             .catch(error => console.log(error)) ;
-
     }
 
 }

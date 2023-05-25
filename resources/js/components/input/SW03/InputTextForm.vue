@@ -5,18 +5,16 @@
 
 
 <template>
-    <div :class="divClassName">
+    <div>
         <!--Initializing of the number type input with his props initialized in the parent component-->
         <b-form-group
-            :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"
             type="text"
-            label-for="input-1"
             :disabled="isDisabled"
             :placeholder="placeholer"
             :invalid-feedback="invalidFeedBack"
             :state="state"
         >
-            <label slot="label" :for="name">
+            <label slot="label" :for="name" class="col-sm-2 col-form-label">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>

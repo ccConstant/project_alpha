@@ -1,6 +1,6 @@
 <!--File name : EquipmentFileForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 4 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of the Form of the equipment file who call all the input component-->
 
 <template>
@@ -12,10 +12,10 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputTextForm inputClassName="form-control" :Errors="errors.file_name" name="file_name"
+                <InputTextForm inputClassName="form-control w-50" :Errors="errors.file_name" name="file_name"
                                label="File name :" v-model="file_name" :isDisabled="!!isInConsultedMod"
                                :info_text="infos_file[0].info_value"/>
-                <InputTextForm inputClassName="form-control" :Errors="errors.file_location" name="file_location"
+                <InputTextForm inputClassName="form-control w-50" :Errors="errors.file_location" name="file_location"
                                label="File location :" v-model="file_location" :isDisabled="!!isInConsultedMod"
                                :info_text="infos_file[1].info_value"/>
                 <!--If addSucces is equal to false, the buttons appear -->

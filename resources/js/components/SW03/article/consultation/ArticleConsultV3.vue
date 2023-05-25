@@ -1,3 +1,8 @@
+<!--File name : ArticleConsultV3.vue-->
+<!--Creation date : 25 May 2023-->
+<!--Update date : 25 May 2023-->
+<!--Vue Component of the consultation sheet of an article-->
+
 <template>
     <div>
         <div v-if="loaded==false">
@@ -23,7 +28,7 @@
                     <tr class="ignored" rowspan="3">
                         <td class="ignored" rowspan="3"
                             style="text-align: center; vertical-align: middle; border: none!important;">
-                            <img alt="logo Alpha" src="/images/logo.png"
+                            <img alt="logo Alpha" src="/images/logo.jpg"
                                  style="width: max-content; height: max-content">
                         </td>
                         <td class="lightGray">

@@ -1,27 +1,29 @@
 <!--File name : InputSelectForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of a scrolling menu (select with option) called in the different forms-->
 
 <template>
     <div>
-        <!--Label of the input-->
-        <label class="form-label" :for="name">
-            {{label}}
-        </label>
-        <!--InputInfo component is called here, we send to him the help test initialized in a parent component if he is not equal to null-->
-        <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
-        <!--Initializing of the select with his props initialized in the parent component-->
-        <select  v-model="this.selctedOption" @change="clearError" :class="[selectClassName, hasError(this.Errors)?'is-invalid':'']" :name="name" :disabled="!!isDisabled"
-         :required="!!isRequired" v-on:input="updateValue($event.target.value)">
-            <option value="" selected>---Select---</option>
-            <!--Options of the select, the for loop here is used to initialize them with an array of the differents value-->
-             <option v-for="(type,index) in options " :key="index" :id="type.id_enum" bind:value="type.value" :value="type.value">
-                {{type.value}}
-            </option>
-        </select>
-        <div v-if="hasError(this.Errors)" class="invalid-feedback">
-            {{this.Errors[0]}}
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" :for="name">
+                {{label}}
+                <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
+            </label>
+            <!--InputInfo component is called here, we send to him the help test initialized in a parent component if he is not equal to null-->
+            <div class="col-sm-10">
+                <select  v-model="this.selctedOption" @change="clearError" :class="[selectClassName, hasError(this.Errors)?'is-invalid':'']" :name="name" :disabled="!!isDisabled"
+                         :required="!!isRequired" v-on:input="updateValue($event.target.value)">
+                    <option value="" selected>---Select---</option>
+                    <!--Options of the select, the for loop here is used to initialize them with an array of the differents value-->
+                    <option v-for="(type,index) in options " :key="index" :id="type.id_enum" bind:value="type.value" :value="type.value">
+                        {{type.value}}
+                    </option>
+                </select>
+                <div v-if="hasError(this.Errors)" class="invalid-feedback">
+                    {{this.Errors[0]}}
+                </div>
+            </div>
         </div>
     </div>
 </template>

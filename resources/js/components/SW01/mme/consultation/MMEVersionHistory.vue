@@ -1,6 +1,6 @@
 <!--File name : MMEVersionHistory.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to display the version history for a specific MME, we can export this page in PDF-->
 
 <template>
@@ -9,7 +9,7 @@
 			<p>'</p>
 			<div class="mme_top_infos">
 				<div class=" mme_pdf_logo ">
-					<img src="/images/logo.png" alt="Alpha logo" class="logo" >
+					<img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
 				</div>
 
 				<div class="mme_pdf_titre">

@@ -1,6 +1,6 @@
 <!--File name : EquipmentAllEventList.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component to show the different event for an equipment-->
 
 <template>
@@ -13,7 +13,7 @@
                 <p>'</p>
                 <div class="le_eq_top_infos">
                     <div class="le_eq_pdf_logo">
-                     <img src="/images/logo.png" alt="Alpha logo" class="le_eq_logo" >
+                     <img src="/images/logo.jpg" alt="Alpha logo" class="le_eq_logo" >
                     </div>
 
                     <div class="le_eq_pdf_titre">

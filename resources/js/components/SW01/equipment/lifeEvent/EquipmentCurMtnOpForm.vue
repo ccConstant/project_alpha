@@ -1,6 +1,6 @@
 <!--File name : EquipmentCurMtnOpForm.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component to show the form of a curative maintenance operation-->
 
 <template>
@@ -26,10 +26,10 @@
                 </div>
                 <div v-if="this.addSucces==false ">
                     <!--If this curative maintenance operation doesn't have a id the addEquipmentCurMtnOp is called function else the updateEquipmentCurMtnOp function is called -->
-                    <div v-if="this.curMtnOp_id==null ">
+                    <div v-if="this.curMtnOp_number==null ">
                         <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate" @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
                     </div>
-                    <div v-else-if="this.curMtnOp_id!==null">
+                    <div v-else-if="this.curMtnOp_number!==null">
                         <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate"  @add="addEquipmentCurMtnOp" @update="updateEquipmentCurMtnOp" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="curMtnOp_validate"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
@@ -152,7 +152,7 @@ export default {
     updated() {
         if(this.selected_startDate!==null){
             this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY');
-        };
+        }
         if(this.selected_endDate!==null){
             this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }

@@ -22,7 +22,7 @@
                 :min="2"
                 :max="255"
             />
-            <InputNumberForm
+            <InputTextForm
                 :name="'SupplierReceptionPhoneNumber'"
                 :label="'Reception Phone Number'"
                 v-model="supplr_receptionNumber"

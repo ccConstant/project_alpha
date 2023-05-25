@@ -1,7 +1,7 @@
 <!--
 * Filename : LifeSheetPDF.vue
 * Creation date : 6 Jul 2022
-* Update date : 9 Jan 2022
+* Update date : 25 May 2023
 * The document allows us to create the life sheet of an equipment and to export it in PDF.
 -->
 
@@ -11,7 +11,7 @@
             <p>'</p>
             <div class="eq_top_infos">
                 <div class=" equipement_pdf_logo ">
-                  <img src="/images/logo.png" alt="Alpha logo" class="logo" >
+                  <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
                 </div>
 
                 <div class="equipement_pdf_titre">

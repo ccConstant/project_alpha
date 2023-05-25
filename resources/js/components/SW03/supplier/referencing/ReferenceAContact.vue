@@ -18,7 +18,7 @@
                 :name="component.name"
                 :function="component.function"
                 :email="component.email"
-                :phoneNumber="component.phoneNumber"
+                :phoneNumbers="component.phoneNumber"
                 :principal="component.principal"
                 :validated="component.validate"
                 :id="component.id"

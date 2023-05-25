@@ -1,2 +1,45 @@
-Reference;Designation;PurchasedBy;Drawing;Version;Characteristic;Characteristic Designation;GenRef;GenDesign;Component Crit;Component Material Crit;Component Material Function;Number of members;Number of supplier
-G_COMP0001;ACE Distal tubing;home made;drawing is not relevant for this ref;A;III;"Length in millimeter";G_COMP0001(_lll);ACE Distal tubing - length lll mm;DETECTABLE;CRITICAL;DETECTABLE;1;1
+Reference;Designation;PurchasedBy;Drawing;Version;Characteristic;GenRef;GenDesign;Component Crit;Component Material Crit;Component Material Function;Number of members;Number of supplier
+G_COMP0001;ACE Distal tubing;Alpha;drawing is not relevant for this ref;;III;G_COMP0001_(lll);ACE Distal tubing - length (lll) mm;DETECTABLE;CRITICAL;DETECTABLE;1;1
+G_COMP0002;ACE Reinforcement tubing ;ACE producer;G_COMP0002;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;3
+G_COMP0003;Ring contact;ACE producer;G_COMP0003;;ll;G_COMP0003_(ll);Ring contact - width (ll) mm;DETECTABLE;CRITICAL;DETECTABLE;0;2
+G_COMP0004;Signal wire PtIr;ACE producer;drawing is not relevant for this ref;;lll;G_COMP0004_(lll);Signal wire PtIr - cut at (lll) mm;DETECTABLE;DETECTABLE;DETECTABLE;1;1
+G_COMP0005;Cyanoacrylate Glue (medical grade USP VI);ACE producer;G_COMP0005-TDS (Technical Data Sheet) G_COMP0005-SDS (Safety Data Sheet);;/;/;/;DETECTABLE;CRITICAL;DETECTABLE;0;1
+G_COMP0006;Fixed Stylet;See detailed ref;G_COMP0006;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;0
+G_COMP0006-S;Fixed Stylet - Straigthened;ACE producer;G_COMP0006;;lll;G_COMP0006-S_(lll);Fixed Stylet - Straigthened length (lll) mm;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0006-SS;Fixed Stylet - Straigthened&Shaped;Alpha;G_COMP0006;;lll;G_COMP0006-SS_(lll);Fixed Stylet - Straigthened&Shaped length (lll) mm;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0006-SSI;Fixed Stylet - Straigthened&Shaped&Insulated;ACE producer;G_COMP0006;;lll;G_COMP0006-SSI_(lll);Fixed Stylet - SS&Insulated length (llll) mm;DETECTABLE;DETECTABLE;DETECTABLE;0;2
+G_COMP0007;Distal stud;ACE producer;G_COMP0007;;/;/;/;DETECTABLE;CRITICAL;DETECTABLE;0;3
+G_COMP0008;UV Glue 3301;ACE producer;G_COMP0008-TDS (Technical Data Sheet) G_COMP0008-SDS (Safety Data Sheet);;/;/;/;DETECTABLE;CRITICAL;DETECTABLE;0;1
+G_COMP0009;Safety wire for ACE;Alpha;drawing is not relevant for this ref;;lll;G_COMP0009_(lll);Safety wire (cut at (lll) mm);DETECTABLE;DETECTABLE;DETECTABLE;1;1
+G_COMP0010;ACE Body tubing;Alpha;drawing is not relevant for this ref;;lll;G_COMP00010_(lll);ACE Body tubing - length (lll) mm;DETECTABLE;DETECTABLE;DETECTABLE;1;1
+G_COMP0011;Male connector - 20 pins;ACE producer;G_COMP0011-TDS (Technical Drawing Sheet);;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0011-H;ACE Housing part of Male Connector ;ACE producer;G_COMP0011-TDS (Technical Drawing Sheet);;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0011-P;ACE Pins part of Male Connector ;ACE producer;G_COMP0011-TDS (Technical Drawing Sheet);;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0012;Locking rod;ACE producer;G_COMP0012;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0013;Conductive glue H20E;ACE producer;G_COMP0013-TDS (Technical Data Sheet) G_COMP0013-SDS (Safety Data Sheet);;lll;G_COMP0013_(lll);Conductive glue H20E - (lll)  (2 components);DETECTABLE;DETECTABLE;DETECTABLE;4;1
+G_COMP0014;Marked Housing;ACE producer;G_COMP0014;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0014-R;Raw Housing;ACE producer;G_COMP0014;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0014-S;Housing blue spot (from RAW006);ACE producer;G_COMP0014;;/;/;/;DETECTABLE;DETECTABLE;NOT_CRITICAL;0;1
+G_COMP0015;Body Protection tubing ;Alpha;drawing is not relevant for this ref;;lll;G_COMP0015-(lll);Body Protection tubing - cut at (lll) mm;DETECTABLE;DETECTABLE;DETECTABLE;1;1
+G_COMP0016;ALPHA Transition sleeve ;Alpha;drawing is not relevant for this ref;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0017;ACE Seal;Alpha;drawing is not relevant for this ref;;/;/;/;DETECTABLE;CRITICAL;DETECTABLE;0;1
+G_COMP0018;ACE Caps;ACE producer;G_COMP0018;;/;/;/;DETECTABLE;CRITICAL;DETECTABLE;0;1
+G_COMP0019;Protecting tube;ACE producer;G_COMP0019;;lll;G_COMP0019-C(lll);Protecting tube cut to length (lll) mm;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0020;ACE Packing Sheet;ACE producer;G_COMP0020;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0021;Pouch 1 (260 x 120 mm / Tyvek);ACE producer;G_COMP0021;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0022;Pouch 2 (350 x 150 mm / Tyvek);ACE producer;G_COMP0022;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0023;Unitary protective box (148x19x296);ACE producer;G_COMP0023;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0024;Female connector - 20 pins;Connection cable producer;G_COMP0024;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0024-H;ACE Housing part of Female Connector ;Connection cable producer;G_COMP0024;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0024-P;ACE Pins part of Female Connector ;Connection cable producer;G_COMP0024;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0025;Housing for extension cable;/;/;;/;/;/;TO_BE_DEFINED;TO_BE_DEFINED;TO_BE_DEFINED;0;0
+G_COMP0026;Cable assembling pin;/;/;;/;/;/;TO_BE_DEFINED;TO_BE_DEFINED;TO_BE_DEFINED;0;0
+G_COMP0027;AGS Standard type screw (in bulk);AGS producer;G_COMP0027;;ll;G_COMP0027-(ll);AGS Standard type screw  (in bulk) useful length (ll) mm;DETECTABLE;CRITICAL;DETECTABLE;5;2
+G_COMP0028;Clamshell blister;TBD;/;/;/;/;/;TO_BE_DEFINED;TO_BE_DEFINED;TO_BE_DEFINED;0;0
+G_COMP0029;Tyvek Pouc;Device or component producer;See detailed ref;;LlllWwww;G_COMP0029 (LlllWwww);Tyvek Pouch - Chevron - (LlllWwww) mm;DETECTABLE;DETECTABLE;DETECTABLE;2;1
+G_COMP0030;Screwdriver main rod;SCD producer;G_COMP0030;;lll;G_COMP0030_L(lll);Screwdriver main rod - nominal length (lll);DETECTABLE;DETECTABLE;DETECTABLE;2;1
+G_COMP0031;Screwdriver centering rod;SCD producer;G_COMP0031;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_COMP0032;Screwdriver handle;SCD producer;G_COMP0032;;Ccc_Mn;G_COMP0032_(Ccc_Mn);Screwdriver handle (Ccc_Mn);DETECTABLE;DETECTABLE;NOT_CRITICAL;4;1
+G_COMP0033;Screwdriver locking pin;SCD producer;G_COMP0033;;/;/;/;DETECTABLE;NOT_CRITICAL;NOT_CRITICAL;0;1
+G_COMP0034;FRIENDSHIP Transition sleeve;Alpha;G_COMP0016;;/;/;/;DETECTABLE;CRITICAL;DETECTABLE;0;1
+G_COMP0035;UV Glue PHOTOBOND;Device or component producer;G_COMP0035-TDS (Technical Data Sheet) G_COMP0035-SDS (Safety Data Sheet);;spec;G_COMP0035((spec));UV Glue PHOTOBOND (spec);DETECTABLE;CRITICAL;DETECTABLE;3;1

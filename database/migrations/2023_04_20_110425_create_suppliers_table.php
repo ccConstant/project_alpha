@@ -3,7 +3,7 @@
 /*
 * Filename: 2023_04_20_110425_create_suppliers_table.php
 * Creation date: 20 Apr 2023
-* Update date: 20 Apr 2023
+* Update date: 25 May 2023
 * This file is used to create the table "suppliers" in the data base. In this file, we can see the different
 * attribute of this table (reference, designation..) and how they are defined (string, boolean, unique or not)
 */
@@ -25,7 +25,7 @@ class CreateSuppliersTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('supplr_name');
-            $table->integer('supplr_receptionNumber')->nullable();
+            $table->string('supplr_receptionNumber')->nullable();
             $table->string('supplr_formID');
 
             $table->unsignedBigInteger('supplr_consFam_id')->nullable();

@@ -1,6 +1,6 @@
 <!--File name : InfosElement.vue-->
 <!--Creation date : 12 Jul 2022-->
-<!--Update date : 17 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component representing an info called in the different forms-->
 
 
@@ -65,7 +65,7 @@ export default {
                 return
             }
             console.log(this.returnedInfo)
-            const postUrlAdd = (id) => `info/update/${id}`;
+            const postUrlAdd = (id) => `/info/update/${id}`;
             axios.post(postUrlAdd(this.info_id),{
                     info_value:this.returnedInfo
                 })

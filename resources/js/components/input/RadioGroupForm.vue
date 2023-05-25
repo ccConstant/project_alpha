@@ -1,26 +1,30 @@
 <!--File name : RadioGroupForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 09 May 2022-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of a radio group called in the different forms-->
 
 <template>
     <div>
-        <!--Label of the radio group-->
-        <label class="form-label" for="radio-button-group">
-            {{label}}
-        </label>
-        <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
-        <div class="radio-button-group" :class="[hasError(this.Errors)?'is-invalid':'']">
-            <!--Label of options, the for loop here is used to initialize them with an array of the differents value-->
-            <label v-for="(option,index) in options " :key="index">
-                <!--Initializing of the radio type input with his props initialized in the parent component-->
-                <input type="radio" :label="label" name="radio-input" :value="option.value" :id="option.id"
-                 :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)" />
-                {{ option.text }}
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" :for="name">
+                {{label}}
+                <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
             </label>
-        </div>
-        <div v-if="hasError(this.Errors)" class="invalid-feedback">
-            {{this.Errors[0]}}
+            <!--InputInfo component is called here, we send to him the help test initialized in a parent component if he is not equal to null-->
+            <div class="col-sm-10">
+                <div class="radio-button-group" :class="[hasError(this.Errors)?'is-invalid':'']">
+                    <!--Label of options, the for loop here is used to initialize them with an array of the differents value-->
+                    <p v-for="(option,index) in options " :key="index">
+                        <!--Initializing of the radio type input with his props initialized in the parent component-->
+                        <input type="radio" :label="label" name="radio-input" :value="option.value" :id="option.id"
+                               :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)" />
+                        {{ option.text }}
+                    </p>
+                </div>
+                <div v-if="hasError(this.Errors)" class="invalid-feedback">
+                    {{this.Errors[0]}}
+                </div>
+            </div>
         </div>
     </div>
 </template>

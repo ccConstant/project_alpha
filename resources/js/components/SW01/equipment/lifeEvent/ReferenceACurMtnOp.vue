@@ -1,6 +1,6 @@
 <!--File name : ReferenceACurMtnOp.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to reference a curative maintenance operation-->
 
 <template>
@@ -37,24 +37,27 @@ export default {
         eq_id: ID of the equipment in which the curative maintenance operation will be added
     ---------------------------------------------------*/
     props:{
-            consultMod:{
-                type:Boolean,
-                default:false
-            },
-            modifMod:{
-                type:Boolean,
-                default:false
-            },
-            importedCurMtnOp:{
-                type:Array,
-                default:null
-            },
-            eq_id:{
-                type:Number
-            },
-            state_id:{
-                type:Number
-            }
+        consultMod:{
+            type:Boolean,
+            default:false
+        },
+        modifMod:{
+            type:Boolean,
+            default:false
+        },
+        importedCurMtnOp:{
+            type:Array,
+            default:null
+        },
+        eq_id:{
+            type:Number
+        },
+        state_id:{
+            type:Number
+        },
+        number:{
+            type:Number
+        }
     },
     /*--------Declaration of the differents returned data:--------
     components: Array in which will be added the data of a component
@@ -82,6 +85,9 @@ export default {
             this.components.push({
                 comp:'EquipmentCurMtnOpForm',
                 key : this.uniqueKey++,
+                prvMtnOp_number:this.number,
+                prvMtnOp_id:this.id,
+                id:this.id,
             });
         },
         //Function for adding an imported curative maintenance operation form with his data

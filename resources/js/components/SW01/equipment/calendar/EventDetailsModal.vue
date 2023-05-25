@@ -12,20 +12,32 @@
                     <div>
                         <b-card>
                             <h3>{{option.eq_internalReference}}</h3>
-                            <p class="card-text">
-                                Operation number: {{option.prvMtnOp_number}}<br>
-                                Description : {{option.prvMtnOp_description}}<br>
-                                Protocol : {{option.prvMtnOp_protocol}}<br>
-                                Operation date : {{option.prvMtnOp_nextDate}}<br>
-                                Periodicity : {{option.prvMtnOp_periodicity}} {{option.prvMtnOp_symbolPeriodicity}}
-                            </p>
+                            <div class="card-text">
+                                <p>
+                                    Operation number: {{option.prvMtnOp_number}}
+                                </p>
+                                <p>
+                                    Description : {{option.prvMtnOp_description}}
+                                </p>
+                                <p>
+                                    Protocol : {{option.prvMtnOp_protocol}}
+                                </p>
+                                <p>
+                                    Operation date :
+                                    {{ new Date(option.prvMtnOp_nextDate.slice(6), option.prvMtnOp_nextDate.slice(3, 5), option.prvMtnOp_nextDate.slice(0, 2)).getDate() }}
+                                    {{ new Date(option.prvMtnOp_nextDate.slice(6), option.prvMtnOp_nextDate.slice(3, 5), option.prvMtnOp_nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
+                                    {{ new Date(option.prvMtnOp_nextDate.slice(6), option.prvMtnOp_nextDate.slice(3, 5), option.prvMtnOp_nextDate.slice(0, 2)).getFullYear() }}
+                                </p>
+                                <p>
+                                    Periodicity : {{option.prvMtnOp_periodicity}} {{option.prvMtnOp_symbolPeriodicity}}
+                                </p>
+                            </div>
                             <div v-if="makeEqOpValidationRight==true">
-                                <b-button variant="primary" @click="redirect_to_preventive(option.eq_id,option.state_id)">Record it</b-button>
+                                <b-button variant="primary" @click="redirect_to_preventive(option.eq_id, option.state_id, option.prvMtnOp_number, option.id)">Record it</b-button>
                             </div>
                             <div v-else>
                                 <b-button variant="primary" disabled >Record it</b-button>
                             </div>
-
                         </b-card>
                     </div>
                 </div>
@@ -61,7 +73,7 @@ export default {
         resetModal() {
             this.$emit('modalClosed','')
         },
-        redirect_to_preventive(eq_id,state_id){
+        redirect_to_preventive(eq_id, state_id, number, id){
             if(this.$userId.user_makeEqOpValidationRight!=true){
             this.$refs.errorAlert.showAlert("You don't have the right");
 
@@ -71,7 +83,7 @@ export default {
                 eq_id:eq_id
             })
             .then(response =>{
-                this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id,state_id:state_id }, query: {type:"preventive"}})
+                this.$router.replace({ name: "url_life_event_reference", params: {id:eq_id,state_id:state_id }, query: {type:"preventive", number: number, id: id}})
             ;})
             //If the controller sends errors we put it in the errors object
             .catch(error => {

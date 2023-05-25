@@ -1,6 +1,6 @@
 <!--File name : EquipmentConsult.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 11 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of the consultation of equipments-->
 
 <template>
@@ -43,85 +43,85 @@
                     </div>
                 </div>
                 <div class="accordion-item" v-if="eq_powers.length>0">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         Equipment Power source(s)
                         </button>
                     </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceAPow :importedPow="eq_powers" consultMod/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item" v-if="eq_spProc.length>0">
-                    <h2 class="accordion-header" id="headingFour">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         Equipment Special Process
                         </button>
                     </h2>
-                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceASpecProc  :importedSpProc="eq_spProc" consultMod/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item" v-if="eq_usg.length>0">
-                    <h2 class="accordion-header" id="headingFive">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                             Equipment Usage
                         </button>
                     </h2>
-                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive">
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceAUsage  :importedUsg="eq_usg" consultMod/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item" v-if="eq_file.length>0">
-                    <h2 class="accordion-header" id="headingSix">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         Equipment File
                         </button>
                     </h2>
-                    <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix">
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceAFile :importedFile="eq_file" consultMod/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item" v-if="eq_risk.length>0">
-                    <h2 class="accordion-header" id="headingEight">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         Equipment's due Risk(s)
 
                         </button>
                     </h2>
-                    <div id="collapseEight"  class="accordion-collapse collapse" aria-labelledby="headingEight">
+                    <div id="collapseTwo"  class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceARisk  :importedRisk="eq_risk" :riskForEq="true" consultMod/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item" v-if="eq_prvMtnOp.length>0">
-                    <h2 class="accordion-header" id="headingNine">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         Equipment Preventive Maintenance Operation
                         </button>
                     </h2>
-                    <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceAPrvMtnOp  :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
                         </div>
                     </div>
                 </div>
                     <div class="accordion-item" v-if="eq_mme.length>0">
-                    <h2 class="accordion-header" id="headingTen">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         Equipment Associated MME
                         </button>
                     </h2>
-                    <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen">
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceAMme  :importedMme="eq_mme" consultMod/>
                         </div>
@@ -190,7 +190,7 @@ export default {
         }else if(this.validationMethod=='quality' && this.$userId.user_makeQualityValidationRight!=true){
             this.$router.replace({ name: "url_eq_list"})
         }
-        
+
         var consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
             .then (response => {

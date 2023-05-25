@@ -1,6 +1,6 @@
 <!--File name : UpdateState.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to update a state-->
 
 <template>
@@ -33,7 +33,15 @@
                     <InputTextForm  inputClassName="form-control" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate" :info_text="infos_state[2].info_value"/>
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate" />
                 </div>
-                <RadioGroupForm label="is Ok?:" :options="isOkOptions" :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" :info_text="infos_state[3].info_value"/>
+                <RadioGroupForm
+                    label="is Ok?:"
+                    :options="isOkOptions"
+                    :Errors="errors.state_isOk"
+                    :checkedOption="state_isOk"
+                    :isDisabled="!!isInConsultMod"
+                    v-model="state_isOk"
+                    :info_text="infos_state[3].info_value"
+                />
                 <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
             <SuccesAlert ref="succesAlert"/>
@@ -122,8 +130,8 @@ export default {
                 {id_enum:'StateName',value:"Lost"},
             ],
             isOkOptions :[
-                {id: 'Yes', value:true},
-                {id : 'No', value:false}
+                {text: 'Yes', value:true},
+                {text : 'No', value:false}
             ],
             isInConsultMod:this.consultMod,
             eq_id:this.$route.params.id,
@@ -183,7 +191,7 @@ export default {
                         .then(response =>{
                             this.$refs.succesAlert.showAlert(`Equipment state added successfully and saved as ${savedAs}`);
                             console.log(response.data)
-                                this.$router.replace({ name: "url_life_event" })
+                                this.$router.replace({ name: "url_eq_list" })
                                 this.addSucces=true;
                                 this.isInConsultMod=true;
                                 this.state_validate=savedAs
