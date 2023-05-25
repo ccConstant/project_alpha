@@ -59,7 +59,7 @@ const router = new VueRouter({
     }, {
         path: '/equipment/list',
         name: 'url_eq_list',
-        component: require('./components/SW01/equipment/consultation/ListOfEquipment.vue').default
+        component: require('./components/SW01/equipment/consultation/ListOfEquipmentV2.vue').default
     }, {
         path: '/equipment/list/PDF',
         name: 'url_eq_list_pdf',
@@ -140,7 +140,7 @@ const router = new VueRouter({
     }, {
         path: '/mme/list',
         name: 'url_mme_list',
-        component: require('./components/SW01/mme/consultation/ListOfMME.vue').default
+        component: require('./components/SW01/mme/consultation/ListOfMMEV2.vue').default
     }, {
         path: '/mme/list/consult/:id(\\d+)',
         name: 'url_mme_consult',
@@ -196,7 +196,7 @@ const router = new VueRouter({
     }, {
         path: '/supplier/list',
         name: 'supplier_url_list',
-        component: require('./components/SW03/supplier/consultation/ListOfSupplier.vue').default
+        component: require('./components/SW03/supplier/consultation/ListOfSupplierV2.vue').default
     },{
         path: '/supplier/list/consult/:id(\\d+)',
         name: 'supplier_url_consult',
