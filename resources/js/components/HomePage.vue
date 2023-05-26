@@ -17,11 +17,13 @@ export default {
 
 <style scoped>
 .main{
+    background-color: #212529;
     background-image: url("/images/Homepage_Alpha_Software.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     height: 85vh;
-    z-index: 1;
+    margin: 0;
+    padding: 0;
 }
 h1{
 	text-align:left;

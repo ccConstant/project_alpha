@@ -34,6 +34,7 @@
                     :info_text="this.infos_artFam[0].info_value"
                     :min="3"
                     :max="255"
+                    v-on:input="checkRef"
                 />
                 <InputTextForm
                     :inputClassName="null"
@@ -112,26 +113,16 @@
                     :info_text="null"
                     :max="255"
                 />
-                <p>
-                    <table>
-                        <tr>
-                            <td style="width: 10%; text-align: right; vertical-align: bottom!important;">
-                                {{ artFam_ref }}_
-                            </td>
-                            <td>
-                                <InputTextForm
-                                    :inputClassName="null"
-                                    :Errors="errors.artFam_genRef"
-                                    name="artFam_genDesign" label="Member Generic Reference"
-                                    :isDisabled="isInConsultMod"
-                                    v-model="artFam_genRef"
-                                    :info_text="this.infos_artFam[6].info_value"
-                                    :max="255"
-                                />
-                            </td>
-                        </tr>
-                    </table>
-                </p>
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_genRef"
+                    name="artFam_genDesign" label="Member Generic Reference"
+                    :isDisabled="isInConsultMod"
+                    v-model="artFam_genRef"
+                    :info_text="this.infos_artFam[6].info_value"
+                    :max="255"
+                    :value="artFam_genRef"
+                />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_genDesign"
@@ -315,12 +306,10 @@ export default {
         axios.get('/artFam/enum/storageCondition')
             .then(response => {
                 this.enum_storageCondition = response.data;
-                if (this.artFam_genRef != null) {
-                    this.artFam_genRef = this.artFam_genRef.substring(this.artFam_ref.length+1);
-                }
                 this.loaded=true;
             })
             .catch(error => this.errors = error.response.data.errors);
+
     },
 
     /*--------Declaration of the different methods:--------*/
@@ -341,7 +330,7 @@ export default {
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
                         artFam_id: this.artFam_id,
-                        artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                        artFam_genRef: this.artFam_genRef,
                         artFam_genDesign: this.artFam_genDesign,
                     })
                         /*If the data are correct, we send them to the controller for add them in the database*/
@@ -358,7 +347,7 @@ export default {
                                     artFam_active: this.artFam_active,
                                     artFam_validate: savedAs,
                                     artFam_id: this.artFam_id,
-                                    artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                    artFam_genRef: this.artFam_genRef,
                                     artFam_genDesign: this.artFam_genDesign,
 
                                 })
@@ -389,7 +378,7 @@ export default {
                             artFam_active: this.artFam_active,
                             artFam_validate: savedAs,
                             artFam_id: this.artFam_id,
-                            artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                            artFam_genRef: this.artFam_genRef,
                             artFam_genDesign: this.artFam_genDesign,
                         })
                         /*If the data are correct, we send them to the controller for add them in the database*/
@@ -405,7 +394,7 @@ export default {
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
                                 artFam_id: this.artFam_id,
-                                artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                artFam_genRef: this.artFam_genRef,
                                 artFam_genDesign: this.artFam_genDesign,
 
                             })
@@ -437,7 +426,7 @@ export default {
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
                                 artFam_id: this.artFam_id,
-                                artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                artFam_genRef: this.artFam_genRef,
                                 artFam_genDesign: this.artFam_genDesign,
                             })
                             /*If the data are correct, we send them to the controller for add them in the database*/
@@ -454,7 +443,7 @@ export default {
                                     artFam_version: this.artFam_version,
                                     artFam_validate: savedAs,
                                     artFam_id: this.artFam_id,
-                                    artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                    artFam_genRef: this.artFam_genRef,
                                     artFam_genDesign: this.artFam_genDesign,
                                 })
                                 /*If the data have been added in the database, we show a success message*/
@@ -494,7 +483,7 @@ export default {
                 artFam_active: this.artFam_active,
                 artFam_validate: savedAs,
                 artFam_id: this.artFam_id,
-                artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                artFam_genRef: this.artFam_genRef,
                 artFam_genDesign: this.artFam_genDesign,
             })
                 /*If the data are correct, we send them to the controller for update data in the database*/
@@ -512,7 +501,7 @@ export default {
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
                         artFam_id: this.artFam_id,
-                        artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                        artFam_genRef: this.artFam_genRef,
                         artFam_genDesign: this.artFam_genDesign,
                     })
                         .then(response => {
@@ -553,10 +542,34 @@ export default {
         clearAllError() {
             this.errors = {};
         },
+        checkRef() {
+            /*if (this.artFam_genRef !== undefined) {
+                let a = this.artFam_genRef.split('_');
+                this.artFam_genRef = this.artFam_ref + '_' + a[2];
+            } else {
+                this.artFam_genRef = this.artFam_ref + '_';
+            }*/
+        }
     },
     beforeUpdate() {
         if (this.artFam_ref === null && this.artFam_type !== "") {
             this.artFam_ref = 'G_' + this.artFam_type;
+        }
+        if (this.artFam_genRef !== undefined) {
+            let a = this.artFam_genRef.split('_');
+            if (a[2] !== undefined) {
+                console.log(a[0]);
+                console.log(a[1]);
+                console.log(a[2]);
+                console.log(this.artFam_ref);
+                console.log(typeof a[2]);
+                this.artFam_genRef = this.artFam_ref + '_' + a[2];
+                console.log(this.artFam_genRef);
+            } else {
+                this.artFam_genRef = this.artFam_ref + '_';
+            }
+        } else {
+            this.artFam_genRef = this.artFam_ref + '_';
         }
     }
 }

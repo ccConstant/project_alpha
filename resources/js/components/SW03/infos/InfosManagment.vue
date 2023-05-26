@@ -4,8 +4,8 @@
 <!--Vue Component with all infos called in the info menu-->
 
 <template>
-    <div class="infoManagment">
-        <div v-if="loaded==false">
+    <div class="infoManagement">
+        <div v-if="loaded===false">
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
@@ -27,14 +27,14 @@
                                          title="Article Family Drawing Path"/>
                             <InfoElement :info_content="infos_artFam[3].info_value" :info_id="infos_artFam[3].id"
                                          title="Article Family Purchased By"/>
-                            <InfoElement :info_content="infos_artFam[4].info_value"
-                                         :info_id="infos_artFam[4].id" title="Article Family Variable Characteristic"/>
+                            <InfoElement :info_content="infos_artFam[4].info_value" :info_id="infos_artFam[4].id"
+                                         title="Article Family Variable Characteristic"/>
                             <InfoElement :info_content="infos_artFam[5].info_value" :info_id="infos_artFam[5].id"
                                          title="Article Family Version"/>
-                            <InfoElement :info_content="infos_artFam[6].info_value"
-                                         :info_id="infos_artFam[6].id" title="Article Family Generic Designation"/>
-                            <InfoElement :info_content="infos_artFam[7].info_value"
-                                         :info_id="infos_artFam[7].id" title="Article Family Generic Reference"/>
+                            <InfoElement :info_content="infos_artFam[6].info_value" :info_id="infos_artFam[6].id"
+                                         title="Article Family Generic Designation"/>
+                            <InfoElement :info_content="infos_artFam[7].info_value" :info_id="infos_artFam[7].id"
+                                         title="Article Family Generic Reference"/>
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,6 @@
                         <div class="accordion-body">
                             <InfoElement :info_content="infos_purSpe[0].info_value" :info_id="infos_purSpe[0].id"
                                          title="Required doc"/>
-
                         </div>
                     </div>
                 </div>
@@ -80,12 +79,12 @@
                         <div class="accordion-body">
                             <InfoElement :info_content="infos_crit[0].info_value" :info_id="infos_crit[0].id"
                                          title="Article Criticality"/>
-                            <InfoElement :info_content="infos_crit[1].info_value"
-                                         :info_id="infos_crit[1].id" title="Article material Contact Criticality"/>
-                            <InfoElement :info_content="infos_crit[2].info_value"
-                                         :info_id="infos_crit[2].id" title="Article Material Function Criticality doc"/>
-                            <InfoElement :info_content="infos_crit[3].info_value"
-                                         :info_id="infos_crit[3].id" title="Article Process Criticality doc"/>
+                            <InfoElement :info_content="infos_crit[1].info_value" :info_id="infos_crit[1].id"
+                                         title="Article material Contact Criticality"/>
+                            <InfoElement :info_content="infos_crit[2].info_value" :info_id="infos_crit[2].id"
+                                         title="Article Material Function Criticality doc"/>
+                            <InfoElement :info_content="infos_crit[3].info_value" :info_id="infos_crit[3].id"
+                                         title="Article Process Criticality doc"/>
                             <InfoElement :info_content="infos_crit[4].info_value" :info_id="infos_crit[4].id"
                                          title="Remarks"/>
                         </div>
@@ -108,10 +107,10 @@
                                          title="Supplier Alpha form Id"/>
                             <InfoElement :info_content="infos_supplier[3].info_value" :info_id="infos_supplier[3].id"
                                          title="Supplier agreement number"/>
-                            <InfoElement :info_content="infos_supplier[4].info_value"
-                                         :info_id="infos_supplier[4].id" title="Supplier quality certificate number"/>
-                            <InfoElement :info_content="infos_supplier[5].info_value"
-                                         :info_id="infos_supplier[5].id" title="Supplier specifics instructions"/>
+                            <InfoElement :info_content="infos_supplier[4].info_value" :info_id="infos_supplier[4].id"
+                                         title="Supplier quality certificate number"/>
+                            <InfoElement :info_content="infos_supplier[5].info_value" :info_id="infos_supplier[5].id"
+                                         title="Supplier specifics instructions"/>
                             <InfoElement :info_content="infos_supplier[6].info_value" :info_id="infos_supplier[6].id"
                                          title="Supplier version"/>
                             <InfoElement :info_content="infos_supplier[7].info_value" :info_id="infos_supplier[7].id"
@@ -148,14 +147,11 @@
                                          title="Supplier Address Street"/>
                             <InfoElement :info_content="infos_supplierAdr[2].info_value" :info_id="infos_supplierAdr[2].id"
                                          title="Supplier Address Town"/>
-                            <InfoElement :info_content="infos_supplierAdr[3].info_value"
-                                         :info_id="infos_supplierAdr[3].id"
+                            <InfoElement :info_content="infos_supplierAdr[3].info_value" :info_id="infos_supplierAdr[3].id"
                                          title="Supplier Address Country"/>
-                            <InfoElement :info_content="infos_supplierAdr[4].info_value"
-                                         :info_id="infos_supplierAdr[4].id"
+                            <InfoElement :info_content="infos_supplierAdr[4].info_value" :info_id="infos_supplierAdr[4].id"
                                          title="Supplier Address PostalCode"/>
-                            <InfoElement :info_content="infos_supplierAdr[5].info_value"
-                                         :info_id="infos_supplierAdr[5].id"
+                            <InfoElement :info_content="infos_supplierAdr[5].info_value" :info_id="infos_supplierAdr[5].id"
                                          title="Supplier Address principal"/>
                         </div>
                     </div>
@@ -169,20 +165,15 @@
                     </h2>
                     <div id="collapseSeven" aria-labelledby="headingSeven" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <InfoElement :info_content="infos_supplierContact[0].info_value"
-                                         :info_id="infos_supplierContact[0].id"
+                            <InfoElement :info_content="infos_supplierContact[0].info_value" :info_id="infos_supplierContact[0].id"
                                          title="Supplier Contact Name"/>
-                            <InfoElement :info_content="infos_supplierContact[1].info_value"
-                                         :info_id="infos_supplierContact[1].id"
+                            <InfoElement :info_content="infos_supplierContact[1].info_value" :info_id="infos_supplierContact[1].id"
                                          title="Supplier Contact Function"/>
-                            <InfoElement :info_content="infos_supplierContact[2].info_value"
-                                         :info_id="infos_supplierContact[2].id"
+                            <InfoElement :info_content="infos_supplierContact[2].info_value" :info_id="infos_supplierContact[2].id"
                                          title="Supplier Contact PhoneNumber"/>
-                            <InfoElement :info_content="infos_supplierContact[3].info_value"
-                                         :info_id="infos_supplierContact[3].id"
+                            <InfoElement :info_content="infos_supplierContact[3].info_value" :info_id="infos_supplierContact[3].id"
                                          title="Supplier Contact Email"/>
-                            <InfoElement :info_content="infos_supplierContact[4].info_value"
-                                         :info_id="infos_supplierContact[4].id"
+                            <InfoElement :info_content="infos_supplierContact[4].info_value" :info_id="infos_supplierContact[4].id"
                                          title="Supplier Contact principam"/>
                         </div>
                     </div>
@@ -198,11 +189,9 @@
                         <div class="accordion-body">
                             <InfoElement :info_content="infos_incmgInsp[0].info_value" :info_id="infos_incmgInsp[0].id"
                                          title="Remarks"/>
-                            <InfoElement :info_content="infos_incmgInsp[1].info_value"
-                                         :info_id="infos_incmgInsp[1].id"
+                            <InfoElement :info_content="infos_incmgInsp[1].info_value" :info_id="infos_incmgInsp[1].id"
                                          title="Part Material Compliance Certificate"/>
-                            <InfoElement :info_content="infos_incmgInsp[2].info_value"
-                                         :info_id="infos_incmgInsp[2].id"
+                            <InfoElement :info_content="infos_incmgInsp[2].info_value" :info_id="infos_incmgInsp[2].id"
                                          title="Raw Material Compliance Certificate"/>
                         </div>
                     </div>
@@ -224,7 +213,6 @@
                                          title="Expected Aspect"/>
                             <InfoElement :info_content="infos_aspTest[3].info_value" :info_id="infos_aspTest[3].id"
                                          title="Name"/>
-
                         </div>
                     </div>
                 </div>
@@ -249,7 +237,6 @@
                                          title="Unit Value"/>
                             <InfoElement :info_content="infos_dimTest[5].info_value" :info_id="infos_dimTest[5].id"
                                          title="Name"/>
-
                         </div>
                     </div>
                 </div>
@@ -274,7 +261,6 @@
                                          title="Unit Value"/>
                             <InfoElement :info_content="infos_funcTest[5].info_value" :info_id="infos_funcTest[5].id"
                                          title="Name"/>
-
                         </div>
                     </div>
                 </div>
@@ -295,11 +281,9 @@
                                          title="Material certif spe"/>
                             <InfoElement :info_content="infos_docControl[3].info_value" :info_id="infos_docControl[3].id"
                                          title="FDS "/>
-
                         </div>
                     </div>
                 </div>
-
                 <div class="accordion-item">
                     <h2 id="headingThirteen" class="accordion-header">
                         <button aria-controls="collapseThirteen" aria-expanded="true" class="accordion-button"
@@ -308,8 +292,7 @@
                             Complementary Test infos
                         </button>
                     </h2>
-                    <div id="collapseThirteen" aria-labelledby="headingThirteen"
-                         class="accordion-collapse collapse show">
+                    <div id="collapseThirteen" aria-labelledby="headingThirteen" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <InfoElement :info_content="infos_compTest[0].info_value" :info_id="infos_compTest[0].id"
                                          title="Severity Level"/>
@@ -326,7 +309,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -379,7 +361,6 @@ export default {
         axios.get('/info/send/purSpe')
             .then(response => {
                 this.infos_purSpe = response.data;
-
             })
             .catch(error => {
             });
@@ -387,7 +368,6 @@ export default {
         axios.get('/info/send/crit')
             .then(response => {
                 this.infos_crit = response.data;
-
             })
             .catch(error => {
             });
@@ -409,8 +389,6 @@ export default {
         axios.get('/info/send/supplierContact')
             .then(response => {
                 this.infos_supplierContact = response.data;
-
-
             })
             .catch(error => {
             });
@@ -418,7 +396,6 @@ export default {
         axios.get('/info/send/IncmgInsp')
             .then(response => {
                 this.infos_incmgInsp = response.data;
-
             })
             .catch(error => {
             });

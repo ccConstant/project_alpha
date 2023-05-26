@@ -153,7 +153,7 @@ export default {
         return {
             articleID: Number(this.$route.params.id),
             articleType: this.$route.params.type,
-            article: null,
+            article: [],
             validationMethod: this.$route.query.method,
             errors: [],
             loaded: false,
@@ -184,14 +184,12 @@ export default {
                         genDesign: response.data.rawFam_genDesign,
                         supplier: response.data.supplr_id,
                     };
-                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null && this.article.variablesCharacDesign !== null) {
-                        this.generic = {
-                            variablesCharac: this.article.variablesCharac,
-                            variablesCharacDesign: this.article.variablesCharacDesign,
-                            genRef: this.article.genRef,
-                            genDesign: this.article.genDesign,
-                        };
-                    }
+                    this.generic = {
+                        variablesCharac: this.article.variablesCharac,
+                        variablesCharacDesign: this.article.variablesCharacDesign,
+                        genRef: this.article.genRef,
+                        genDesign: this.article.genDesign,
+                    };
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
                 })
@@ -215,14 +213,13 @@ export default {
                         genDesign: response.data.compFam_genDesign,
                         supplier: response.data.supplr_id,
                     };
-                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null && this.article.variablesCharacDesign !== null) {
-                        this.generic = {
-                            variablesCharac: this.article.variablesCharac,
-                            variablesCharacDesign: this.article.variablesCharacDesign,
-                            genRef: this.article.genRef,
-                            genDesign: this.article.genDesign,
-                        };
-                    }
+                    console.log(this.article);
+                    this.generic = {
+                        variablesCharac: this.article.variablesCharac,
+                        variablesCharacDesign: this.article.variablesCharacDesign,
+                        genRef: this.article.genRef,
+                        genDesign: this.article.genDesign,
+                    };
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
                 })
@@ -246,14 +243,12 @@ export default {
                         genDesign: response.data.consFam_genDesign,
                         supplier: response.data.supplr_id,
                     };
-                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null && this.article.variablesCharacDesign !== null) {
-                        this.generic = {
-                            variablesCharac: this.article.variablesCharac,
-                            variablesCharacDesign: this.article.variablesCharacDesign,
-                            genRef: this.article.genRef,
-                            genDesign: this.article.genDesign,
-                        };
-                    }
+                    this.generic = {
+                        variablesCharac: this.article.variablesCharac,
+                        variablesCharacDesign: this.article.variablesCharacDesign,
+                        genRef: this.article.genRef,
+                        genDesign: this.article.genDesign,
+                    };
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;
                 })
