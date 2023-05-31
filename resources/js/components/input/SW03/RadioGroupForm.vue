@@ -1,6 +1,6 @@
  <!--File name : RadioGroupForm.vue-->
 <!--Creation date : 25 Apr 2023-->
-<!--Update date : 25 Apr 2023-->
+<!--Update date : 30 May 2023-->
 <!--Vue Component of a radio group called in the different forms-->
 
 <template>
@@ -20,7 +20,9 @@
                 v-for="(option, key) in options"
                 :key="key"
                 v-model="data"
-                :value="option.value">
+                :value="option.value"
+                :disabled="isDisabled"
+            >
             {{ option.text }}
             </b-form-radio>
         </b-form-radio-group>

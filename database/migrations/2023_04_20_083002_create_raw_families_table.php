@@ -16,7 +16,7 @@ class CreateRawFamiliesTable extends Migration
 {
     /**
      * Run the migrations.
-     * Create the table raw_families in the data base
+     * Create the table raw_families in the database
      * @return void
      */
     public function up()
@@ -37,16 +37,15 @@ class CreateRawFamiliesTable extends Migration
             $table->date('rawFam_signatureDate')->nullable();
             $table->enum('rawFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->boolean('rawFam_active')->default(true);
-            $table->string('rawFam_genDesign')->nullable();
-            $table->string('rawFam_genRef')->nullable();
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
+            $table->string('rawFam_mainRef')->nullable();
         });
     }
 
     /**
      * Reverse the migrations.
-     * Delete the table raw_families if it already exist
+     * Delete the table raw_families if it already exists
      * @return void
      */
     public function down()

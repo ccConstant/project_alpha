@@ -160,14 +160,14 @@ function importCons($cons, $db): void
             }
             $pb = $purchasedBy['id'];
             // Add the family to the database
-            $db->query("INSERT INTO cons_families (consFam_ref, consFam_design, enumPurchasedBy_id, consFam_drawingPath, consFam_version, consFam_variablesCharac, consFam_variablesCharacDesign, consFam_genRef, consFam_genDesign, compFam_validate, created_at, updated_at)
-                            VALUES ('" . $value[0] . "', '" . $value[1] . "', '" . $pb . "', '" . $value[3] . "', '" . $value[4] . "', '" . $value[5] . "', null, '" . $value[7] . "', '" . $value[8] . "', 'validated', '$now', '$now')");
+            $db->query("INSERT INTO cons_families (consFam_ref, consFam_design, enumPurchasedBy_id, consFam_drawingPath, consFam_version, consFam_variablesCharac, consFam_variablesCharacDesign, consFam_genRef, consFam_genDesign, consFam_validate, created_at, updated_at)
+                            VALUES ('" . $value[0] . "', '" . $value[1] . "', '" . $pb . "', '" . $value[3] . "', '" . $value[4] . "', '" . $value[5] . "', null, '" . $value[6] . "', '" . $value[7] . "', 'validated', '$now', '$now')");
             $consFamilyId = mysqli_insert_id($db);
             // Add the criticality to the database
             $db->query("INSERT INTO criticalities (crit_artCriticality, crit_artMaterialContactCriticality, crit_artMaterialFunctionCriticality, crit_artProcessCriticality, crit_validate, crit_remarks, consFam_id,crit_justification, created_at, updated_at)
-                            VALUES ('" . $value[9] . "', '" . $value[10] . "', '" . $value[11] . "', '" . $value[9] . "', 'validated', null, '" . $consFamilyId . "', null, '$now', '$now')");
+                            VALUES ('" . $value[8] . "', '" . $value[9] . "', '" . $value[10] . "', 'TO_BE_DEFINED', 'validated', null, '" . $consFamilyId . "', null, '$now', '$now')");
             // Add each member of the family to the database
-            for ($i = $startMember; $i < $value[12] + $startMember; $i++) {
+            for ($i = $startMember; $i < $value[11] + $startMember; $i++) {
                 if ($consMember[$i][1] === 'yes') {
                     $db->query("INSERT INTO cons_family_members (consMb_dimension, consMb_design, consMb_sameValues, consFam_id, created_at, updated_at)
                                     VALUES ('" . $consMember[$i][0] . "', null, '1', '" . $consFamilyId . "', '$now', '$now')");
@@ -176,9 +176,9 @@ function importCons($cons, $db): void
                                     VALUES ('" . $consMember[$i][0] . "', '" . $consMember[$i][2] . "', '0', '" . $consFamilyId . "', '$now', '$now')");
                 }
             }
-            $startMember += $value[12];
+            $startMember += $value[11];
             // Add each supplier of the family to the database
-            for ($i = $startSupplier; $i < $value[13] + $startSupplier; $i++) {
+            for ($i = $startSupplier; $i < $value[12] + $startSupplier; $i++) {
                 if ($consSupplier[$i][0] === 'Alpha') {
                     $db->query("INSERT INTO purchase_specifications (purSpe_requiredDoc, purSpe_validate, consFam_id, created_at, updated_at)
                                 VALUES (null, 'validated', '" . $consFamilyId . "', '$now', '$now')");
@@ -193,7 +193,7 @@ function importCons($cons, $db): void
                             VALUES ('" . $consFamilyId . "', '" . $supplierId['id'] . "', '" . $consSupplier[$i][1] . "', LAST_INSERT_ID(), '$now', '$now')");
                 }
             }
-            $startSupplier += $value[13];
+            $startSupplier += $value[12];
         }
     }
 }
@@ -282,7 +282,7 @@ $cons = [
     'consMember.csv',
     'consSupplier.csv'
 ];
-/*importCons($cons, $db);*/
+importCons($cons, $db);
 $raw = [
     'rawFamily.csv',
     'rawMember.csv',

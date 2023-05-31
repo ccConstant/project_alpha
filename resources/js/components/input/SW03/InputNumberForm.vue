@@ -1,6 +1,6 @@
 <!--File name : InputNumberForm.vue-->
 <!--Creation date : 25 Apr 2023-->
-<!--Update date : 25 Apr 2023-->
+<!--Update date : 30 May 2023-->
 <!--Vue Component of an input type number called in the different forms-->
 
 <template>
@@ -20,6 +20,7 @@
                         id="input"
                         v-model="data"
                         v-on:input="updateValue(data)"
+                        :disabled="isDisabled"
                     >
                 </div>
             </div>

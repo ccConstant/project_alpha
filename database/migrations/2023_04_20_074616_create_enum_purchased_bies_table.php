@@ -23,7 +23,7 @@ class CreateEnumPurchasedBiesTable extends Migration
     {
         Schema::create('enum_purchased_bies', function (Blueprint $table) {
             $table->id();
-            $table->string('value') ;
+            $table->string('value');
             $table->boolean('caduc')->default(false);
             $table->timestamps();
         });

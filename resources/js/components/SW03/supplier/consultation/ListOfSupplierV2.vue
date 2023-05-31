@@ -70,6 +70,14 @@
                                         <option :value="-1">All</option>
                                     </select>
                                 </th>
+                                <th scope="col">
+                                Concern QMS or PROD ?
+                                <select v-model="searchTermConcern" class="form-control search_bar align-self-center" type="text">
+                                    <option :value="1">Yes</option>
+                                    <option :value="0">No</option>
+                                    <option :value="-1">All</option>
+                                </select>
+                            </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,6 +89,7 @@
                                 <td>{{elem.critical === 1 ? "Yes": "No"}}</td>
                                 <td>{{elem.real === 1 ? "Yes": "No"}}</td>
                                 <td>{{elem.signatureDate === null ? "No": elem.signatureDate}}</td>
+                                <td>{{elem.concern === 1 ? "Yes": "No"}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -111,6 +120,7 @@ export default {
             searchTermActive: -1,
             searchTermCritical: -1,
             searchTermReal: -1,
+            searchTermConcern: -1,
             searchTermValidate: -1,
         }
     },
@@ -166,6 +176,9 @@ export default {
         resetRealFilter() {
             this.searchTermReal = -1;
         },
+        resetConcernFilter() {
+            this.searchTermConcern = -1;
+        },
         resetValidateFilter() {
             this.searchTermValidate = -1;
         },
@@ -203,6 +216,11 @@ export default {
                     return option.real === this.searchTermReal;
                 });
             }
+            if (this.searchTermConcern !== -1) {
+                res = res.filter(option => {
+                    return option.concern === this.searchTermConcern;
+                });
+            }
             if (this.searchTermValidate !== -1) {
                 res = res.filter(option => {
                     if (this.searchTermValidate === 0)
@@ -223,11 +241,11 @@ export default {
                     active: response.data[i].supplr_active,
                     critical: response.data[i].supplr_critical,
                     real: response.data[i].supplr_real,
+                    concern: response.data[i].supplr_concern,
                     signatureDate: response.data[i].supplr_signatureDate,
                     id: response.data[i].id
                 });
             }
-            console.log(this.supplierList);
             this.loaded = true;
         }).catch(error => {
         });

@@ -30,7 +30,7 @@ class CreateAspectTestsTable extends Migration
             $table->unsignedBigInteger('incmgInsp_id');
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             $table->string('aspTest_name');
-            $table->enum('aspTest_sampling',  ['Statistics', '100%', 'Other']);
+            $table->enum('aspTest_sampling', ['Statistics', '100%', 'Other']);
             $table->string('aspTest_desc')->nullable();
             $table->string('aspTest_specDoc')->nullable();
         });

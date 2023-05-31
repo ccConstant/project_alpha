@@ -40,7 +40,7 @@ class CreateIncomingInspectionsTable extends Migration
             $table->unsignedBigInteger('incmgInsp_rawFam_id')->nullable();
             $table->foreign('incmgInsp_rawFam_id')->references('id')->on('raw_families');
 
-            $table->enum('incmgInsp_validate',  ['drafted', 'to_be_validated', 'validated']);
+            $table->enum('incmgInsp_validate', ['drafted', 'to_be_validated', 'validated']);
         });
     }
 

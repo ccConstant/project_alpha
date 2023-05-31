@@ -6,7 +6,9 @@
         <ErrorAlert ref="errorAlert"/>
         <SuccessAlert ref="successAlert"/>
         <h1>Supplier Consultation</h1>
-<!--        <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>-->
+        <button v-if="supplr_idCard.supplr_technicalReviewerId === null" class="btn btn-primary"
+                @click="validate">Technical Review
+        </button>
         <SupplierIDForm
             :ID="this.supplr_id"
             :Name="this.supplr_idCard.supplr_name"
@@ -26,6 +28,7 @@
             :critical="this.supplr_idCard.supplr_critical"
             :endTinkToFolder="this.supplr_idCard.supplr_endTinkToFolder"
             :active="this.supplr_idCard.supplr_active"
+            :concern="this.supplr_idCard.supplr_concern"
             consultMod
         />
         <div class="accordion" v-if="supplr_id != null">
@@ -111,10 +114,27 @@ export default {
     },
     methods: {
         validate() {
-            if(this.validationMethod=='technical' && this.$userId.user_makeTechnicalValidationRight!=true){
+            if (this.$userId.user_makeTechnicalValidationRight != true) {
                 this.$refs.errorAlert.showAlert("You don't have the right");
             } else {
-                // TODO: Validation
+                const validVerifUrl = (id) => `/supplier/verifValidation/${id}`;
+                axios.get(validVerifUrl(this.supplr_id))
+                    .then(response => {
+                        const techVeriftUrl = (id) => `/supplier/validate/${id}`;
+                        axios.post(techVeriftUrl(this.supplr_id), {
+                            user_id: this.$userId.id,
+                        })
+                            .then(response => {
+                                this.$refs.successAlert.showAlert(`Technical review made successfully`);
+                                window.location.reload();
+                            })
+                            //If the controller sends errors we put it in the errors object
+                            .catch(error => this.errors = error.response.data.errors);
+                    })
+                    //If the controller sends errors we put it in the errors object
+                    .catch(error => {
+                        this.$refs.errorAlert.showAlert(error.response.data['error']);
+                    });
             }
         }
     }

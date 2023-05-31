@@ -29,7 +29,7 @@ class CreateSupplierAdrsTable extends Migration
             $table->string('supplrAdr_country')->nullable();
             $table->unsignedBigInteger('supplr_id');
             $table->foreign('supplr_id')->references('id')->on('suppliers');
-            $table->enum('supplrAdr_validate',  ['drafted', 'to_be_validated', 'validated']);
+            $table->enum('supplrAdr_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('supplrAdr_name');
             $table->boolean('supplrAdr_principal')->default(true);
         });

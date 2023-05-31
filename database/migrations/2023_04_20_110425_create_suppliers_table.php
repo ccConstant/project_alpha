@@ -42,7 +42,7 @@ class CreateSuppliersTable extends Migration
             $table->unsignedBigInteger('supplr_technicalReviewerId')->nullable();
             $table->foreign('supplr_technicalReviewerId')->references('id')->on('users');
             $table->date('supplr_signatureDate')->nullable();
-            $table->enum('supplr_validate',  ['drafted', 'to_be_validated', 'validated']);
+            $table->enum('supplr_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('supplr_siret')->unique()->nullable();
             $table->string('supplr_website')->nullable();
             $table->string('supplr_activity')->nullable();
@@ -51,6 +51,7 @@ class CreateSuppliersTable extends Migration
             $table->boolean('supplr_critical')->default(false);
             $table->string('supplr_endLinkToFolder')->nullable();
             $table->boolean('supplr_active')->default(true);
+            $table->boolean('supplr_concern')->default(true);
         });
     }
 

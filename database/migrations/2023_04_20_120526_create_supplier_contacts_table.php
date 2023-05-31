@@ -30,7 +30,7 @@ class CreateSupplierContactsTable extends Migration
             $table->string('supplrContact_email')->nullable();
             $table->unsignedBigInteger('supplr_id');
             $table->foreign('supplr_id')->references('id')->on('suppliers');
-            $table->enum('supplrContact_validate',  ['drafted', 'to_be_validated', 'validated']);
+            $table->enum('supplrContact_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->boolean('supplrContact_principal')->default(true);
         });
     }

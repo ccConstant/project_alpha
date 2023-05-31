@@ -16,7 +16,7 @@ class CreateConsFamiliesTable extends Migration
 {
     /**
      * Run the migrations.
-     * Create the table cons_families in the data base
+     * Create the table cons_families in the database
      * @return void
      */
     public function up()
@@ -38,16 +38,15 @@ class CreateConsFamiliesTable extends Migration
             $table->enum('consFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('consFam_version')->nullable();
             $table->boolean('consFam_active')->default(true);
-            $table->string('consFam_genDesign')->nullable();
-            $table->string('consFam_genRef')->nullable();
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
+            $table->string('consFam_mainRef')->nullable();
         });
     }
 
     /**
      * Reverse the migrations.
-     * Delete the table cons_families if it already exist
+     * Delete the table cons_families if it already exists
      * @return void
      */
     public function down()

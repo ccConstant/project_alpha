@@ -1,6 +1,6 @@
 <!--File name : InputTextForm.vue-->
 <!--Creation date : 25 Apr 2023-->
-<!--Update date : 25 Apr 2023-->
+<!--Update date : 30 May 2023-->
 <!--Vue Component of an input type text called in the different forms-->
 
 
@@ -22,6 +22,7 @@
                         :placeholder="placeholer"
                         v-model="data"
                         v-on:input="updateValue(data)"
+                        :disabled="isDisabled"
                     >
                     <div v-if="!this.state()" class="invalid-feedback">
                         {{this.invalidFeedBack()}}

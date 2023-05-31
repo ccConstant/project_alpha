@@ -243,11 +243,6 @@ export default {
             if (!this.addSucces) {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
-                console.log("addCriticality");
-                console.log("crit_artCriticality : " + this.crit_artCriticality);
-                console.log("crit_artMaterialContactCriticality : " + this.crit_artMaterialContactCriticality);
-                console.log("crit_artMaterialFunctionCriticality : " + this.crit_artMaterialFunctionCriticality);
-                console.log("crit_artProcessCriticality : " + this.crit_artProcessCriticality);
                 axios.post('/artFam/criticality/verif', {
                     crit_artCriticality: this.crit_artCriticality,
                     crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,

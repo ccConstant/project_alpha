@@ -27,7 +27,8 @@ class RawFamily extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['rawFam_ref',
+    protected $fillable = [
+        'rawFam_ref',
         'rawFam_design',
         'rawFam_drawingPath',
         'enumPurchasedBy_id',
@@ -39,12 +40,13 @@ class RawFamily extends Model
         'rawFam_signatureDate',
         'rawFam_validate',
         'rawFam_active',
-        'rawFam_genDesign',
-        'rawFam_genRef'] ;
+        'rawFam_mainRef',
+    ];
 
-    //Define the relation between a rawFamily and its rawFamilyMember : a rawFamilyMember can correspond to only one rawFamily
-    public function raw_family_member(){
-        return $this->hasMany(RawFamilyMember::class) ;
+    /*Define the relation between a raw_family and its raw_sub_family:
+     a raw_sub_family can correspond to only one raw_family*/
+    public function raw_sub_family(){
+        return $this->hasMany(RawSubFamily::class) ;
     }
 
     //Define the relation between a rawFamily and the user who approved it : a rawFamily has only one qualityApprover

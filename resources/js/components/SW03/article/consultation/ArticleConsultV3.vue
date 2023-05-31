@@ -25,8 +25,8 @@
                 <p></p>
                 <table class="header">
                     <tbody>
-                    <tr class="ignored" rowspan="3">
-                        <td class="ignored" rowspan="3"
+                    <tr class="ignored">
+                        <td class="ignored" rowspan="4"
                             style="text-align: center; vertical-align: middle; border: none!important;">
                             <img alt="logo Alpha" src="/images/logo.jpg"
                                  style="width: max-content; height: max-content">
@@ -76,38 +76,48 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: left; vertical-align: text-top">
+                            <p>
+                                Article main reference :
+                            </p>
+                            {{ articleData.mainRef }}
+                        </td>
+                        <td colspan="2" style="text-align: left; vertical-align: top">
+                            <p>
+                                Article main designation :
+                            </p>
+                            {{ articleData.mainRefDesignation }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left; vertical-align: text-top">
                             <p class="ignored">
                                 Verified by (Name and Date) :
-                                <br>
-                                <span v-if="articleData.signatureDate !== null">
-                                    {{ articleData.technicalReviewerName }}
-                                </span>
-                                <br>
-                                <span v-if="articleData.signatureDate !== null">
-                                    {{
-                                        new Date(articleData.signatureDate).getDate()
-                                    }} {{
-                                        new Date(articleData.signatureDate).toDateString().slice(4, 7)
-                                    }} {{ new Date(articleData.signatureDate).getFullYear() }}
-                                </span>
                             </p>
+                            <h2 v-if="articleData.signatureDate !== null">
+                                {{ articleData.technicalReviewerName }}
+                            </h2>
+                            <h2 v-if="articleData.signatureDate !== null">
+                                {{
+                                    new Date(articleData.signatureDate).getDate()
+                                }} {{
+                                    new Date(articleData.signatureDate).toDateString().slice(4, 7)
+                                }} {{ new Date(articleData.signatureDate).getFullYear() }}
+                            </h2>
                         </td>
                         <td colspan="2" style="text-align: left; vertical-align: top">
                             <p class="ignored">
                                 Approved by (Name and Date) :
-                                <br>
-                                <span v-if="articleData.signatureDate !== null">
-                                    {{ articleData.qualityApproverName }}
-                                </span>
-                                <br>
-                                <span v-if="articleData.signatureDate !== null">
-                                    {{
-                                        new Date(articleData.signatureDate).getDate()
-                                    }} {{
-                                        new Date(articleData.signatureDate).toDateString().slice(4, 7)
-                                    }} {{ new Date(articleData.signatureDate).getFullYear() }}
-                                </span>
                             </p>
+                            <h2 v-if="articleData.signatureDate !== null">
+                                {{ articleData.qualityApproverName }}
+                            </h2>
+                            <h2 v-if="articleData.signatureDate !== null">
+                                {{
+                                    new Date(articleData.signatureDate).getDate()
+                                }} {{
+                                    new Date(articleData.signatureDate).toDateString().slice(4, 7)
+                                }} {{ new Date(articleData.signatureDate).getFullYear() }}
+                            </h2>
                         </td>
                     </tr>
                     </tbody>
@@ -117,38 +127,26 @@
                 <table>
                     <tbody>
                     <tr>
-                        <td class="tableName" rowspan="8">
+                        <td class="tableName" rowspan="9">
                             <h2>
                                 Family Article Identification
                             </h2>
                         </td>
                         <td class="tableDesc">
                             <p>
-                                Family reference
-                            </p>
-                        </td>
-                        <td class="tableValue">
-                            <p id="references">
-                                {{ articleData.ref === null ? "/" : articleData.ref }}
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tableDesc">
-                            <p>
-                                Designation
+                                Drawing Path
                             </p>
                         </td>
                         <td class="tableValue">
                             <p id="designation">
-                                {{ articleData.design === null ? "/" : articleData.design }}
+                                {{ articleData.drawingPath === null ? "/" : articleData.drawingPath }}
                             </p>
                         </td>
                     </tr>
                     <tr>
                         <td class="tableDesc">
                             <p>
-                                Purchased By
+                                Purchased Or Made By
                             </p>
                         </td>
                         <td class="tableValue">
@@ -172,12 +170,42 @@
                     <tr>
                         <td class="tableDesc">
                             <p>
-                                Severity of the article
+                                Article material contact severity
                             </p>
                         </td>
                         <td class="tableValue">
                             <p v-if="criticality.length > 0" id="severity">
-                                {{ criticality[0].crit_artCriticality === null ? "/" : criticality[0].crit_artCriticality }}
+                                {{ criticality[0].crit_artMaterialContactCriticality === null ? "/" : criticality[0].crit_artMaterialContactCriticality }}
+                            </p>
+                            <p v-else>
+                                /
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableDesc">
+                            <p>
+                                Article material function severity
+                            </p>
+                        </td>
+                        <td class="tableValue">
+                            <p v-if="criticality.length > 0" id="severity">
+                                {{ criticality[0].crit_artMaterialFunctionCriticality === null ? "/" : criticality[0].crit_artMaterialFunctionCriticality }}
+                            </p>
+                            <p v-else>
+                                /
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tableDesc">
+                            <p>
+                                Article process severity
+                            </p>
+                        </td>
+                        <td class="tableValue">
+                            <p v-if="criticality.length > 0" id="severity">
+                                {{ criticality[0].crit_artProcessCriticality === null ? "/" : criticality[0].crit_artProcessCriticality }}
                             </p>
                             <p v-else>
                                 /
@@ -193,7 +221,25 @@
                     <tr>
                         <td colspan="3">
                             <h2>
-                                Article Variable Caracteristics
+                                Article Variable Characteristics
+                            </h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <p>
+                                Generic Reference :
+                            </p>
+                            <h2>
+                                {{ articleData.genRef }}
+                            </h2>
+                        </td>
+                        <td>
+                            <p>
+                                Generic Designation :
+                            </p>
+                            <h2>
+                                {{ articleData.genDesign }}
                             </h2>
                         </td>
                     </tr>
@@ -205,34 +251,34 @@
                         </td>
                         <td>
                             <h2>
-                                Reference
+                                Variable reference
                             </h2>
                         </td>
                         <td>
                             <h2>
-                                Designation
+                                Variable designation
                             </h2>
                         </td>
                     </tr>
                     </thead>
                     <tbody>
-                    <!--                        <tr v-for="(variable, index) in articleData.variablesCharac">
-                                                <td>
-                                                    <p>
-                                                        {{ index + 1 }}
-                                                    </p>
-                                                </td>
-                                                <td>
-                                                    <p>
-                                                        {{ variable.variable }}
-                                                    </p>
-                                                </td>
-                                                <td>
-                                                    <p>
-                                                        {{ variable.design }}
-                                                    </p>
-                                                </td>
-                                            </tr>-->
+<!--                    <tr v-for="(variable, index) in articleData.variablesCharac">
+                        <td>
+                            <p>
+                                {{ index + 1 }}
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                {{ variable.variable }}
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                {{ variable.design }}
+                            </p>
+                        </td>
+                    </tr>-->
                     <tr>
                         <td>
                             <p>
@@ -276,38 +322,25 @@
                                 Designation
                             </p>
                         </td>
-                        <td>
-                            <p>
-                                {{ articleData.variablesCharac === null ? "/" : articleData.variablesCharac }}
-                            </p>
-                        </td>
                     </tr>
                     <tr v-for="member in familyMembers">
                         <td>
                             <p>
                                 {{
-                                    articleData.genRef.replace('(' + articleData.variablesCharac + ')', member.dimension)
+                                    articleData.genRef.replace(needle, member.dimension)
                                 }}
                             </p>
                         </td>
                         <td>
                             <p v-if="member.sameValues">
                                 {{
-                                    articleData.genDesign.replace('(' + articleData.variablesCharac + ')', member.dimension)
+                                    articleData.genDesign.replace(needle, member.dimension)
                                 }}
                             </p>
                             <p v-else>
                                 {{
-                                    articleData.genDesign.replace('(' + articleData.variablesCharac + ')', member.designation)
+                                    articleData.genDesign.replace(needle, member.designation)
                                 }}
-                            </p>
-                        </td>
-                        <td>
-                            <p v-if="member.sameValues">
-                                {{ member.dimension }}
-                            </p>
-                            <p v-else>
-                                {{ member.designation }}
                             </p>
                         </td>
                     </tr>
@@ -319,10 +352,15 @@
                 <table class="header">
                     <tbody>
                     <tr>
-                        <td class="gray" colspan="2" style="text-align: center;">
+                        <td class="tableName" style="text-align: center;">
                             <h2>
                                 Storage Conditions
                             </h2>
+                        </td>
+                        <td class="tableValue">
+                            <p>
+                                {{ articleData.storageCondition === null ? "N/A" : articleData.storageCondition }}
+                            </p>
                         </td>
                     </tr>
                     <tr>
@@ -979,6 +1017,7 @@ export default {
             supplier: null,
             familyMembers: [],
             validationMethod: null,
+            needle: null,
         }
     },
     methods: {
@@ -1069,6 +1108,8 @@ export default {
                         updated_at: response.data.rawFam_updated_at,
                         genRef: response.data.rawFam_genRef,
                         genDesign: response.data.rawFam_genDesign,
+                        mainRef: response.data.rawFam_mainRef,
+                        mainRefDesignation: response.data.rawFam_mainRefDesign,
                     };
                 })
                 .catch(error => {
@@ -1102,6 +1143,8 @@ export default {
                         updated_at: response.data.compFam_updated_at,
                         genRef: response.data.compFam_genRef,
                         genDesign: response.data.compFam_genDesign,
+                        mainRef: response.data.compFam_mainRef,
+                        mainRefDesignation: response.data.compFam_mainRefDesign,
                     };
                 })
                 .catch(error => {
@@ -1135,6 +1178,8 @@ export default {
                         updated_at: response.data.consFam_updated_at,
                         genRef: response.data.consFam_genRef,
                         genDesign: response.data.consFam_genDesign,
+                        mainRef: response.data.consFam_mainRef,
+                        mainRefDesignation: response.data.consFam_mainRefDesign,
                     };
                 })
                 .catch(error => {
@@ -1148,6 +1193,7 @@ export default {
         }
         axios.get('/artFam/criticality/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
+                this.needle = '(' + this.articleData.variablesCharac + ')';
                 this.criticality = response.data;
             })
             .catch(error => {
@@ -1214,7 +1260,6 @@ export default {
         axios.get('/purSpe/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.purSpes = response.data;
-                console.log(this.purSpes);
                 this.loaded = true;
             })
             .catch(error => {

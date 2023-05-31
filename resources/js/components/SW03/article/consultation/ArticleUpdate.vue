@@ -1,5 +1,5 @@
 <template>
-    <div v-if="loaded===false" >
+    <div v-if="loaded===false">
         <b-spinner variant="primary"></b-spinner>
     </div>
     <div v-else class="supplier_consultation">
@@ -8,76 +8,77 @@
         <h1>Article Update</h1>
         <!--        <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>-->
         <ArticleFamilyForm
-            :reference="article.ref"
+            :active="article.active === 1"
             :designation="article.design"
             :drawingPath="article.drawingPath"
+            :genDesign="article.genDesign"
+            :genRef="article.genRef"
+            :mainRef="article.mainRef"
             :purchasedBy="article.purchasedBy"
+            :reference="article.ref"
+            :type="articleType.toUpperCase()"
             :variablesCharac="article.variablesCharac"
             :variablesCharacDesign="article.variablesCharacDesign"
             :version="article.version"
-            :type="articleType.toUpperCase()"
-            :active="article.active === 1"
-            :genRef="article.genRef"
-            :genDesign="article.genDesign"
-            @generic="genericSetter"
             modifMod
+            @generic="genericSetter"
         />
         <div class="accordion">
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Article Family Member
+                <h2 id="headingOne" class="accordion-header">
+                    <button aria-controls="collapseOne" aria-expanded="true" class="accordion-button"
+                            data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">
+                        Article Sub Family
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                <div id="collapseOne" aria-labelledby="headingOne" class="accordion-collapse collapse show">
                     <div class="accordion-body">
-                        <ReferenceAnArticleFamilyMember
-                            modifMod
-                            :artType="this.articleType"
+                        <ReferenceAnArticleSubFamily
                             :artFam_id="this.articleID"
-                            :import_id="this.articleID"
-                            :genRef="this.generic.genRef"
+                            :artType="this.articleType"
                             :genDesign="this.generic.genDesign"
+                            :genRef="this.generic.genRef"
+                            :import_id="this.articleID"
                             :varCharac="this.generic.variablesCharac"
                             :varCharacDesign="this.generic.variablesCharacDesign"
+                            modifMod
                         />
                     </div>
                 </div>
             </div>
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <h2 id="headingTwo" class="accordion-header">
+                    <button aria-controls="collapseTwo" aria-expanded="true" class="accordion-button"
+                            data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
                         Criticality
                     </button>
                 </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
+                <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse show">
                     <div class="accordion-body">
                         <ReferenceACrit
-                            modifMod
                             :articleType="this.articleType"
                             :article_id="this.articleID"
                             :import_id="this.articleID"
+                            modifMod
                         />
                     </div>
                 </div>
             </div>
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                    <h2 id="headingThree" class="accordion-header">
+                        <button aria-controls="collapseThree" aria-expanded="true" class="accordion-button"
+                                data-bs-target="#collapseThree" data-bs-toggle="collapse" type="button">
                             Article Purchase Specification
                         </button>
                     </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
+                    <div id="collapseThree" aria-labelledby="headingThree" class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             <ReferenceAnArticlePurchaseSpecification
-                                modifMod
-                                :artType="this.articleType"
                                 :artFam_id="this.articleID"
+                                :artType="this.articleType"
                                 :import_id="this.articleID"
+                                modifMod
                             />
                         </div>
                     </div>
@@ -85,19 +86,19 @@
             </div>
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFour">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                    <h2 id="headingFour" class="accordion-header">
+                        <button aria-controls="collapseFour" aria-expanded="true" class="accordion-button"
+                                data-bs-target="#collapseFour" data-bs-toggle="collapse" type="button">
                             Incoming Inspection
                         </button>
                     </h2>
-                    <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour">
+                    <div id="collapseFour" aria-labelledby="headingFour" class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             <ReferenceAnIncmgInsp
-                                modifMod
                                 :articleType="this.articleType"
                                 :article_id="this.articleID"
                                 :import_id="this.articleID"
+                                modifMod
                             />
                         </div>
                     </div>
@@ -105,19 +106,19 @@
             </div>
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFive">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                    <h2 id="headingFive" class="accordion-header">
+                        <button aria-controls="collapseFive" aria-expanded="true" class="accordion-button"
+                                data-bs-target="#collapseFive" data-bs-toggle="collapse" type="button">
                             Article Storage Condition
                         </button>
                     </h2>
-                    <div id="collapseFive" class="accordion-collapse collapse show" aria-labelledby="headingFive">
+                    <div id="collapseFive" aria-labelledby="headingFive" class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             <ReferenceAStorageCondition
-                                modifMod
-                                :artType="this.articleType"
                                 :artFam_id="this.articleID"
+                                :artType="this.articleType"
                                 :import_id="this.articleID"
+                                modifMod
                             />
                         </div>
                     </div>
@@ -134,14 +135,15 @@ import ValidationButton from "../../../button/ValidationButton.vue";
 import ArticleFamilyForm from "../referencing/ArticleFamilyForm.vue";
 import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp.vue";
 import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
-import ReferenceAnArticleFamilyMember from "../referencing/ReferenceAnArticleFamilyMember.vue";
+import ReferenceAnArticleSubFamily from "../referencing/ReferenceAnArticleSubFamily.vue";
 import ReferenceAnArticlePurchaseSpecification from "../referencing/ReferenceAnArticlePurchaseSpecification.vue";
 import ReferenceAStorageCondition from "../referencing/ReferenceAStorageCondition.vue";
+
 export default {
     components: {
         ReferenceAStorageCondition,
         ReferenceAnArticlePurchaseSpecification,
-        ReferenceAnArticleFamilyMember,
+        ReferenceAnArticleSubFamily,
         ReferenceACrit,
         ReferenceAnIncmgInsp,
         ArticleFamilyForm,
@@ -161,101 +163,46 @@ export default {
         }
     },
     created() {
-        if(this.validationMethod === 'technical' && this.$userId.user_makeTechnicalValidationRight !== true){
-            this.$router.replace({ name: "article_url_list"})
+        if (this.validationMethod === 'technical' && this.$userId.user_makeTechnicalValidationRight !== true) {
+            this.$router.replace({name: "article_url_list"})
         }
-        if (this.validationMethod === 'quality' && this.$userID.user_makeQualityValidationRight !== true){
-            this.$router.replace({ name: "article_url_list"})
+        if (this.validationMethod === 'quality' && this.$userID.user_makeQualityValidationRight !== true) {
+            this.$router.replace({name: "article_url_list"})
         }
-        if (this.articleType === 'raw') {
-            axios.get('/raw/family/send/' + this.articleID)
-                .then(response => {
-                    this.article = {
-                        ref: response.data.rawFam_ref,
-                        design: response.data.rawFam_design,
-                        drawingPath: response.data.rawFam_drawingPath,
-                        nbrVersion: response.data.rawFam_nbrVersion,
-                        variablesCharac: response.data.rawFam_variablesCharac,
-                        variablesCharacDesign: response.data.rawFam_variablesCharacDesign,
-                        active: response.data.rawFam_active,
-                        purchasedBy: response.data.rawFam_purchasedBy,
-                        version: null,
-                        genRef: response.data.rawFam_genRef,
-                        genDesign: response.data.rawFam_genDesign,
-                        supplier: response.data.supplr_id,
-                    };
-                    this.generic = {
-                        variablesCharac: this.article.variablesCharac,
-                        variablesCharacDesign: this.article.variablesCharacDesign,
-                        genRef: this.article.genRef,
-                        genDesign: this.article.genDesign,
-                    };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.rawFam_signatureDate != null}});
-                    this.loaded = true;
-                })
-                .catch(error => {
-                    this.$refs.errorAlert.showAlert(error.response.data.message);
+        axios.get('/' + this.articleType + '/family/send/' + this.articleID)
+            .then(response => {
+                this.article = {
+                    ref: response.data.rawFam_ref,
+                    design: response.data.rawFam_design,
+                    drawingPath: response.data.rawFam_drawingPath,
+                    nbrVersion: response.data.rawFam_nbrVersion,
+                    variablesCharac: response.data.rawFam_variablesCharac,
+                    variablesCharacDesign: response.data.rawFam_variablesCharacDesign,
+                    active: response.data.rawFam_active,
+                    purchasedBy: response.data.rawFam_purchasedBy,
+                    version: null,
+                    genRef: response.data.rawFam_genRef,
+                    genDesign: response.data.rawFam_genDesign,
+                    supplier: response.data.supplr_id,
+                    mainRef: response.data.rawFam_mainRef,
+                };
+                this.generic = {
+                    variablesCharac: this.article.variablesCharac,
+                    variablesCharacDesign: this.article.variablesCharacDesign,
+                    genRef: this.article.genRef,
+                    genDesign: this.article.genDesign,
+                };
+                this.$router.push({
+                    name: 'article_url_update',
+                    params: {id: this.articleID, type: this.articleType, generic: this.generic},
+                    query: {signed: response.data.rawFam_signatureDate != null}
                 });
-        } else if (this.articleType === 'comp') {
-            axios.get('/comp/family/send/' + this.articleID)
-                .then(response => {
-                    this.article = {
-                        ref: response.data.compFam_ref,
-                        design: response.data.compFam_design,
-                        drawingPath: response.data.compFam_drawingPath,
-                        nbrVersion: response.data.compFam_nbrVersion,
-                        variablesCharac: response.data.compFam_variablesCharac,
-                        variablesCharacDesign: response.data.compFam_variablesCharacDesign,
-                        active: response.data.compFam_active,
-                        purchasedBy: response.data.compFam_purchasedBy,
-                        version: response.data.compFam_version,
-                        genRef: response.data.compFam_genRef,
-                        genDesign: response.data.compFam_genDesign,
-                        supplier: response.data.supplr_id,
-                    };
-                    console.log(this.article);
-                    this.generic = {
-                        variablesCharac: this.article.variablesCharac,
-                        variablesCharacDesign: this.article.variablesCharacDesign,
-                        genRef: this.article.genRef,
-                        genDesign: this.article.genDesign,
-                    };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.compFam_signatureDate != null}});
-                    this.loaded = true;
-                })
-                .catch(error => {
-                    this.$refs.errorAlert.showAlert(error.response.data.message);
-                });
-        } else if (this.articleType === 'cons') {
-            axios.get('/cons/family/send/' + this.articleID)
-                .then(response => {
-                    this.article = {
-                        ref: response.data.consFam_ref,
-                        design: response.data.consFam_design,
-                        drawingPath: response.data.consFam_drawingPath,
-                        nbrVersion: response.data.consFam_nbrVersion,
-                        variablesCharac: response.data.consFam_variablesCharac,
-                        variablesCharacDesign: response.data.consFam_variablesCharacDesign,
-                        active: response.data.consFam_active,
-                        purchasedBy: response.data.consFam_purchasedBy,
-                        version: response.data.consFam_version,
-                        genRef: response.data.consFam_genRef,
-                        genDesign: response.data.consFam_genDesign,
-                        supplier: response.data.supplr_id,
-                    };
-                    this.generic = {
-                        variablesCharac: this.article.variablesCharac,
-                        variablesCharacDesign: this.article.variablesCharacDesign,
-                        genRef: this.article.genRef,
-                        genDesign: this.article.genDesign,
-                    };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.consFam_signatureDate != null}});
-                    this.loaded = true;
-                })
-                .catch(error => {
-                    this.$refs.errorAlert.showAlert(error.response.data.message);
-                });
-        }
+                this.loaded = true;
+            })
+            .catch(error => {
+                console.log(error.response.data);
+                this.$refs.errorAlert.showAlert(error.response.data.message);
+            });
     },
     methods: {
         genericSetter(ref, design, variableCharac, variableCharacDesign) {

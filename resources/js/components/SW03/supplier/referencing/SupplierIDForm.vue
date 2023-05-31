@@ -165,17 +165,16 @@
                 :max="55"
                 :isDisabled="isInConsultMod"
             />
-<!--            <RadioGroupForm
+            <RadioGroupForm
                 :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
-                :name="'Active ?'"
-                :label="'Active'"
-                :value="Active"
-                :info_text="'SupplierController is active or not ?'"
+                :name="'Concern QM Or Product ?'"
+                :label="'Concern QM Or Product ?'"
+                v-model="supplr_concern"
+                :info_text="null"
                 :inputClassName="null"
-                :Errors="errors['Active']"
-                :checked-option="false"
-            />-->
-
+                :Errors="errors.supplr_concern"
+                :checked-option="isInModifMod ? supplr_concern : false"
+            />
             <SaveButtonForm
                 ref="saveButton"
                 v-if="this.addSuccess === false"
@@ -297,6 +296,10 @@ export default {
         active : {
             type: Boolean
         },
+        concern : {
+            type: Boolean,
+            default: true
+        },
         consultMod : {
             type: Boolean,
             default: false
@@ -364,6 +367,7 @@ export default {
             supplr_critical: this.critical,
             supplr_endLinkToFolder: this.endLinkToFolder,
             supplr_active: this.active,
+            supplr_concern: this.concern,
             errors: [],
             infos_idCard: [],
             addSuccess: false,
@@ -403,7 +407,8 @@ export default {
                 supplr_VATnumber: this.supplr_VatNumber,
                 supplr_critical: this.supplr_critical,
                 supplr_endLinkToFolder: this.supplr_endLinkToFolder,
-                supplr_active: this.supplr_active
+                supplr_active: this.supplr_active,
+                supplr_concern: this.supplr_concern,
             }).then(response => {
                 this.errors = [];
                 axios.post('/supplier/add', {
@@ -424,7 +429,8 @@ export default {
                     supplr_VATnumber: this.supplr_VatNumber,
                     supplr_critical: this.supplr_critical,
                     supplr_endLinkToFolder: this.supplr_endLinkToFolder,
-                    supplr_active: this.supplr_active
+                    supplr_active: this.supplr_active,
+                    supplr_concern: this.supplr_concern,
                 }).then(response => {
                     this.$snotify.success('Supplier\'s ID card is correctly added in the database as ' + savedAs);
                     this.addSuccess = true;
@@ -439,7 +445,75 @@ export default {
             });
         },
         updateSupplier(savedAs, reason, lifeSheetExist) {
-
+            axios.post('/supplier/verif', {
+                supplr_name: this.supplr_name,
+                supplr_receptionNumber: this.supplr_receptionNumber,
+                supplr_formId: this.supplr_formId,
+                supplr_consFam_id: this.supplr_consFam_id,
+                supplr_compFam_id: this.supplr_compFam_id,
+                supplr_rawFam_id: this.supplr_rawFam_id,
+                supplr_agreementNumber: this.supplr_agreementNumber,
+                supplr_qualityCertificateNumber: this.supplr_qualityCertificateNumber,
+                supplr_specificsInstructions: this.supplr_specificsInstructions,
+                supplr_validate: savedAs,
+                supplr_siret: this.supplr_siret,
+                supplr_webSite: this.supplr_webSite,
+                supplr_activity: this.supplr_activity,
+                supplr_real: this.supplr_real,
+                supplr_VATnumber: this.supplr_VatNumber,
+                supplr_critical: this.supplr_critical,
+                supplr_endLinkToFolder: this.supplr_endLinkToFolder,
+                supplr_active: this.supplr_active,
+                supplr_concern: this.supplr_concern,
+            })
+                /*If the data are correct, we send them to the controller for update data in the database*/
+                .then(response => {
+                    this.errors = {};
+                    const consultUrl = (id) => '/supplier/update/' + id;
+                    axios.post(consultUrl(this.supplr_id), {
+                        supplr_name: this.supplr_name,
+                        supplr_receptionNumber: this.supplr_receptionNumber,
+                        supplr_formId: this.supplr_formId,
+                        supplr_consFam_id: this.supplr_consFam_id,
+                        supplr_compFam_id: this.supplr_compFam_id,
+                        supplr_rawFam_id: this.supplr_rawFam_id,
+                        supplr_agreementNumber: this.supplr_agreementNumber,
+                        supplr_qualityCertificateNumber: this.supplr_qualityCertificateNumber,
+                        supplr_specificsInstructions: this.supplr_specificsInstructions,
+                        supplr_validate: savedAs,
+                        supplr_siret: this.supplr_siret,
+                        supplr_webSite: this.supplr_webSite,
+                        supplr_activity: this.supplr_activity,
+                        supplr_real: this.supplr_real,
+                        supplr_VATnumber: this.supplr_VatNumber,
+                        supplr_critical: this.supplr_critical,
+                        supplr_endLinkToFolder: this.supplr_endLinkToFolder,
+                        supplr_active: this.supplr_active,
+                        supplr_concern: this.supplr_concern,
+                    })
+                        .then(response => {
+                            /*We test if an article sheet has been already created*/
+                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                            if (lifeSheetExist == true) {
+                                axios.post('/supplier/history/add/' + this.supplr_id, {
+                                    history_reasonUpdate: reason,
+                                }).catch(error => {
+                                    this.errors = error.response.data.errors;
+                                });
+                                window.location.reload();
+                            }
+                            this.isInConsultMod = true;
+                            /*If the data have been updated in the database, we show a success message*/
+                            this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
+                            this.supplr_validate = savedAs;
+                        })
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
         },
 
     }

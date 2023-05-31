@@ -16,7 +16,7 @@ class CreateCompFamiliesTable extends Migration
 {
     /**
      * Run the migrations.
-     * Create the table comp_families in the data base
+     * Create the table comp_families in the database
      * @return void
      */
     public function up()
@@ -38,17 +38,16 @@ class CreateCompFamiliesTable extends Migration
             $table->enum('compFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('compFam_version')->nullable();
             $table->boolean('compFam_active')->default(true);
-            $table->string('compFam_genDesign')->nullable();
-            $table->string('compFam_genRef')->nullable();
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
+            $table->string('compFam_mainRef')->nullable();
 
         });
     }
 
     /**
      * Reverse the migrations.
-     * Delete the table comp_families if it already exist
+     * Delete the table comp_families if it already exists
      * @return void
      */
     public function down()

@@ -22,7 +22,30 @@ class Supplier extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['supplr_name', 'supplr_receptionNumber', 'supplr_formID', 'supplr_consFam_id', 'supplr_compFam_id', 'supplr_rawFam_id', 'supplr_agreementNumber', 'supplr_qualityCertificationNumber', 'supplr_specificInstructions', 'supplr_version', 'supplr_technicalReviewer_id', 'supplr_validate', 'supplr_signatureDate', 'supplr_siret', 'supplr_website', 'supplr_activity', 'supplr_real', 'supplr_VATNumber', 'supplr_critical', 'supplr_endLinkToFolder', 'supplr_active'];
+    protected $fillable = [
+        'supplr_name',
+        'supplr_receptionNumber',
+        'supplr_formID',
+        'supplr_consFam_id',
+        'supplr_compFam_id',
+        'supplr_rawFam_id',
+        'supplr_agreementNumber',
+        'supplr_qualityCertificationNumber',
+        'supplr_specificInstructions',
+        'supplr_version',
+        'supplr_technicalReviewerId',
+        'supplr_validate',
+        'supplr_signatureDate',
+        'supplr_siret',
+        'supplr_website',
+        'supplr_activity',
+        'supplr_real',
+        'supplr_VATNumber',
+        'supplr_critical',
+        'supplr_endLinkToFolder',
+        'supplr_active',
+        'supplr_concern',
+    ];
 
     //Define the relation between a consFamily and its supplier: a supplier can correspond to only one consFamily
     public function cons_family(){

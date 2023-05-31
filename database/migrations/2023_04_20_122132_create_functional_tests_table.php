@@ -32,7 +32,7 @@ class CreateFunctionalTestsTable extends Migration
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             $table->string('funcTest_name');
             $table->string('funcTest_unitValue');
-            $table->enum('funcTest_sampling',  ['Statistics', '100%', 'Other']);
+            $table->enum('funcTest_sampling', ['Statistics', '100%', 'Other']);
             $table->string('funcTest_desc')->nullable();
             $table->string('funcTest_specDoc')->nullable();
         });

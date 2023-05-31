@@ -1,7 +1,7 @@
 <!--File name : ArticleFamilyMemberForm.vue -->
 <!--Creation date : 2 May 2023-->
 <!--Update date : 2 May 2023 -->
-<!--Vue Component of the Form of the article storage condition who call all the input component-->
+<!--Vue Component of the Form of the article family members who call all the input component-->
 
 <template>
     <div :class="divClass">
@@ -82,7 +82,6 @@
 /*Importation of the other Components who will be used here*/
 import InputTextForm from '../../../input/SW03/InputTextForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
-import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from '../../../input/InputSelectForm.vue'
 import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue";
@@ -95,7 +94,6 @@ export default {
         RadioGroupForm,
         InputTextForm,
         SaveButtonForm,
-        DeleteComponentButton,
         SucessAlert,
         InputSelectForm
 
@@ -217,92 +215,32 @@ export default {
                     id = this.art_id_update;
                 }
                 /*We begin by checking if the data entered by the user are correct*/
-                if (this.artFam_type=="COMP"){
-                    axios.post('/comp/mb/verif', {
+                axios.post('/'+ this.artFam_type + '/mb/verif', {
+                    artMb_dimension: this.artMb_dimension,
+                    artFam_validate: savedAs,
+                    artMb_sameValues: this.artMb_sameValues,
+                    artMb_designation: this.artMb_designation,
+                })
+                /*If the data are correct, we send them to the controller for add them in the database*/
+                .then(response => {
+                    this.errors = {};
+                    const consultUrl = (id) => `/'+ this.artFam_type + '/mb/add/${id}`;
+                    axios.post(consultUrl(id), {
                         artMb_dimension: this.artMb_dimension,
                         artFam_validate: savedAs,
                         artMb_sameValues: this.artMb_sameValues,
                         artMb_designation: this.artMb_designation,
                     })
-                    /*If the data are correct, we send them to the controller for add them in the database*/
+                    /*If the data have been added in the database, we show a success message*/
                     .then(response => {
-                        this.errors = {};
-                        const consultUrl = (id) => `/comp/mb/add/${id}`;
-                        axios.post(consultUrl(id), {
-                            artMb_dimension: this.artMb_dimension,
-                            artFam_validate: savedAs,
-                            artMb_sameValues: this.artMb_sameValues,
-                            artMb_designation: this.artMb_designation,
-                        })
-                        /*If the data have been added in the database, we show a success message*/
-                        .then(response => {
-                            this.addSuccess = true;
-                            this.isInConsultMod = true;
-                            this.$snotify.success(`CompFamMember added successfully and saved as ${savedAs}`);
-                            this.artFamMember_id = response.data;
-                        })
-                        .catch(error => this.errors = error.response.data.errors);
+                        this.addSuccess = true;
+                        this.isInConsultMod = true;
+                        this.$snotify.success(this.artFam_type + `FamMember added successfully and saved as ${savedAs}`);
+                        this.artFamMember_id = response.data;
                     })
                     .catch(error => this.errors = error.response.data.errors);
-                }else{
-                    if (this.artFam_type=="RAW"){
-                        axios.post('/raw/mb/verif', {
-                        artMb_dimension: this.artMb_dimension,
-                        artFam_validate: savedAs,
-                        artMb_sameValues: this.artMb_sameValues,
-                        artMb_designation: this.artMb_designation,
-                    })
-                    /*If the data are correct, we send them to the controller for add them in the database*/
-                    .then(response => {
-                        this.errors = {};
-                        const consultUrl = (id) => `/raw/mb/add/${id}`;
-                        axios.post(consultUrl(id), {
-                            artMb_dimension: this.artMb_dimension,
-                            artFam_validate: savedAs,
-                            artMb_sameValues: this.artMb_sameValues,
-                            artMb_designation: this.artMb_designation,
-                        })
-                        /*If the data have been added in the database, we show a success message*/
-                        .then(response => {
-                            this.addSuccess = true;
-                            this.isInConsultMod = true;
-                            this.$snotify.success(`CompFamMember added successfully and saved as ${savedAs}`);
-                            this.artFamMember_id = response.data;
-                        })
-                        .catch(error => this.errors = error.response.data.errors);
-                    })
-                    .catch(error => this.errors = error.response.data.errors);
-                    }else{
-                        if (this.artFam_type=="CONS"){
-                            axios.post('/cons/mb/verif', {
-                                artMb_dimension: this.artMb_dimension,
-                                artFam_validate: savedAs,
-                                artMb_sameValues: this.artMb_sameValues,
-                                artMb_designation: this.artMb_designation,
-                            })
-                            /*If the data are correct, we send them to the controller for add them in the database*/
-                            .then(response => {
-                                this.errors = {};
-                                const consultUrl = (id) => `/cons/mb/add/${id}`;
-                                axios.post(consultUrl(id), {
-                                    artMb_dimension: this.artMb_dimension,
-                                    artFam_validate: savedAs,
-                                    artMb_sameValues: this.artMb_sameValues,
-                                    artMb_designation: this.artMb_designation,
-                                })
-                                /*If the data have been added in the database, we show a success message*/
-                                .then(response => {
-                                    this.addSuccess = true;
-                                    this.isInConsultMod = true;
-                                    this.$snotify.success(`ConsFamMember added successfully and saved as ${savedAs}`);
-                                    this.artFamMember_id = response.data;
-                                })
-                                .catch(error => this.errors = error.response.data.errors);
-                            })
-                            .catch(error => this.errors = error.response.data.errors);
-                        }
-                    }
-                }
+                })
+                .catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -314,149 +252,43 @@ export default {
             The name, location and validate option are sent to the controller*/
             let id = this.artFamMember_id;
             /*We begin by checking if the data entered by the user are correct*/
-            if (this.artFam_type=="COMP"){
-                axios.post('/comp/mb/verif', {
-                    artMb_dimension: this.artMb_dimension,
-                    artFam_validate: savedAs,
-                    artMb_sameValues: this.artMb_sameValues,
-                    artMb_designation: this.artMb_designation,
-                })
-                    /*If the data are correct, we send them to the controller for add them in the database*/
-                    .then(response => {
-                        this.errors = {};
-                        const consultUrl = (id) => `/comp/mb/update/${id}`;
-                        axios.post(consultUrl(id), {
-                            artMb_dimension: this.artMb_dimension,
-                            artFam_validate: savedAs,
-                            artMb_sameValues: this.artMb_sameValues,
-                            artMb_designation: this.artMb_designation,
-                        })
-                            /*If the data have been added in the database, we show a success message*/
-                            .then(response => {
-                                this.addSuccess = true;
-                                this.isInConsultMod = true;
-                                if (artSheet_created == true) {
-                                    axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
-                                        history_reasonUpdate: reason,
-                                    });
-                                    window.location.reload();
-                                }
-                                this.$snotify.success(`CompFamMember updated successfully and saved as ${savedAs}`);
-                                this.artFamMember_id = response.data;
-                            })
-                            .catch(error => {
-                                this.errors = error.response.data.errors;
-                            });
-                    })
-                    .catch(error => this.errors = error.response.data.errors);
-            }else{
-                if (this.artFam_type=="RAW"){
-                    axios.post('/raw/mb/verif', {
+            axios.post('/' + this.artFam_type + '/mb/verif', {
+                artMb_dimension: this.artMb_dimension,
+                artFam_validate: savedAs,
+                artMb_sameValues: this.artMb_sameValues,
+                artMb_designation: this.artMb_designation,
+            })
+                /*If the data are correct, we send them to the controller for add them in the database*/
+                .then(response => {
+                    this.errors = {};
+                    const consultUrl = (id) => `/` + this.artFam_type + `/mb/update/${id}`;
+                    axios.post(consultUrl(id), {
                         artMb_dimension: this.artMb_dimension,
                         artFam_validate: savedAs,
                         artMb_sameValues: this.artMb_sameValues,
                         artMb_designation: this.artMb_designation,
                     })
-                        /*If the data are correct, we send them to the controller for add them in the database*/
+                        /*If the data have been added in the database, we show a success message*/
                         .then(response => {
-                            this.errors = {};
-                            const consultUrl = (id) => `/raw/mb/update/${id}`;
-                            axios.post(consultUrl(id), {
-                                artMb_dimension: this.artMb_dimension,
-                                artFam_validate: savedAs,
-                                artMb_sameValues: this.artMb_sameValues,
-                                artMb_designation: this.artMb_designation,
-                            })
-                                /*If the data have been added in the database, we show a success message*/
-                                .then(response => {
-                                    this.addSuccess = true;
-                                    this.isInConsultMod = true;
-                                    if (artSheet_created == true) {
-                                        axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
-                                            history_reasonUpdate: reason,
-                                        });
-                                        window.location.reload();
-                                    }
-                                    this.$snotify.success(`CompFamMember updated successfully and saved as ${savedAs}`);
-                                    this.artFamMember_id = response.data;
-                                })
-                                .catch(error => {
-                                    this.errors = error.response.data.errors;
+                            this.addSuccess = true;
+                            this.isInConsultMod = true;
+                            if (artSheet_created == true) {
+                                axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
+                                    history_reasonUpdate: reason,
                                 });
+                                window.location.reload();
+                            }
+                            this.$snotify.success(this.artFam_type + `FamMember updated successfully and saved as ${savedAs}`);
+                            this.artFamMember_id = response.data;
                         })
-                        .catch(error => this.errors = error.response.data.errors);
-                }else{
-                    if (this.artFam_type=="CONS"){
-                        axios.post('/cons/mb/verif', {
-                            artMb_dimension: this.artMb_dimension,
-                            artFam_validate: savedAs,
-                            artMb_sameValues: this.artMb_sameValues,
-                            artMb_designation: this.artMb_designation,
-                        })
-                            /*If the data are correct, we send them to the controller for add them in the database*/
-                            .then(response => {
-                                this.errors = {};
-                                const consultUrl = (id) => `/cons/mb/update/${id}`;
-                                axios.post(consultUrl(id), {
-                                    artMb_dimension: this.artMb_dimension,
-                                    artFam_validate: savedAs,
-                                    artMb_sameValues: this.artMb_sameValues,
-                                    artMb_designation: this.artMb_designation,
-                                })
-                                    /*If the data have been added in the database, we show a success message*/
-                                    .then(response => {
-                                        this.addSuccess = true;
-                                        this.isInConsultMod = true;
-                                        if (artSheet_created == true) {
-                                            axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
-                                                history_reasonUpdate: reason,
-                                            });
-                                            window.location.reload();
-                                        }
-                                        this.$snotify.success(`ConsFamMember updated successfully and saved as ${savedAs}`);
-                                        this.artFamMember_id = response.data;
-                                    })
-                                    .catch(error => {
-                                        this.errors = error.response.data.errors;
-                                    });
-                            })
-                            .catch(error => this.errors = error.response.data.errors);
-                    }
-                }
-            }
+                        .catch(error => {
+                            this.errors = error.response.data.errors;
+                        });
+                })
+                .catch(error => this.errors = error.response.data.errors);
         },
         clearSelectError(value) {
             delete this.errors[value];
-        },
-        /*Function for deleting a file from the view and the database*/
-        deleteComponent(reason, lifesheet_created) {
-            /*If the user is in update mode and the file exist in the database*/
-            if (this.modifMod == true && this.file_id !== null) {
-                /*Send a post-request with the id of the file who will be deleted in the url*/
-                const consultUrl = (id) => `/equipment/delete/file/${id}`;
-                axios.post(consultUrl(this.file_id), {
-                    eq_id: this.equipment_id_update
-                })
-                .then(response => {
-                    const id = this.equipment_id_update;
-                    /*We test if a life sheet has been already created*/
-                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                    if (lifesheet_created == true) {
-                        axios.post(`/history/add/equipment/${id}`, {
-                            history_reasonUpdate: reason,
-                        });
-                        window.location.reload();
-                    }
-                    /*Emit to the parent component that we want to delete this component*/
-                    this.$emit('deleteFile', '')
-                    this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
-            }else {
-                this.$emit('deleteFile', '')
-                this.$refs.sucessAlert.showAlert(`Empty Equipment file deleted successfully`);
-            }
         },
     },
 }

@@ -13,12 +13,12 @@
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Article Family Member
+                            Article Sub Family
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                         <div class="accordion-body">
-                            <ReferenceAnArticleFamilyMember
+                            <ReferenceAnArticleSubFamily
                                 modifMod
                                 :artType="this.artFam_type"
                                 :artFam_id="this.artFam_id"
@@ -116,7 +116,7 @@
 
 <script>
 import ArticleFamilyForm from "./ArticleFamilyForm";
-import ReferenceAnArticleFamilyMember from "./ReferenceAnArticleFamilyMember.vue";
+import ReferenceAnArticleSubFamily from "./ReferenceAnArticleSubFamily.vue";
 import ReferenceAStorageCondition from "./ReferenceAStorageCondition";
 import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp.vue";
 import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
@@ -129,7 +129,7 @@ export default {
         ReferenceAnIncmgInsp,
         ArticleFamilyForm,
         ReferenceAStorageCondition,
-        ReferenceAnArticleFamilyMember,
+        ReferenceAnArticleSubFamily,
         ReferenceAnArticlePurchaseSpecification,
     },
     data() {

@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\SW03\Supplier;
+use App\Models\SW03\SupplierAdr;
+use App\Models\SW03\SupplierContact;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class SupplierController extends Controller
 {
@@ -13,8 +18,8 @@ class SupplierController extends Controller
      * This function is used to check if all the fields are correctly filled in the form
      * It's called through the route /supplier/verif
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function verif_supplier(Request $request)
     {
@@ -153,7 +158,8 @@ class SupplierController extends Controller
         }
     }
 
-    public function add_supplier(Request $request) {
+    public function add_supplier(Request $request)
+    {
         $supplier = Supplier::create([
             'supplr_name' => $request->supplr_name,
             'supplr_receptionNumber' => $request->supplr_receptionNumber,
@@ -174,11 +180,13 @@ class SupplierController extends Controller
             'supplr_critical' => $request->supplr_critical,
             'supplr_endLinkToFolder' => $request->supplr_endLinkToFolder,
             'supplr_active' => $request->supplr_active,
+            'supplr_concern' => $request->supplr_concern,
         ]);
         return response()->json($supplier);
     }
 
-    public function send_supplier($id) {
+    public function send_supplier($id)
+    {
         $supplier = Supplier::findOrfail($id);
         return response()->json([
             'supplr_name' => $supplier->supplr_name,
@@ -205,20 +213,24 @@ class SupplierController extends Controller
             'supplr_created_at' => $supplier->supplr_created_at,
             'supplr_updated_at' => $supplier->supplr_updated_at,
             'supplr_id' => $supplier->id,
+            'supplr_concern' => $supplier->supplr_concern,
         ]);
     }
 
-    public function send_suppliers() {
+    public function send_suppliers()
+    {
         $suppliers = Supplier::all();
         return response()->json($suppliers);
     }
 
-    public function send_active_suppliers() {
+    public function send_active_suppliers()
+    {
         $suppliers = Supplier::all()->where('supplr_active', '=', 1);
         return response()->json($suppliers);
     }
 
-    public function update_supplier(Request $request, $id) {
+    public function update_supplier(Request $request, $id)
+    {
         $supplier = Supplier::findOrfail($id);
         if ($supplier->supplr_technicalReviewerId !== null) {
             $supplier->update([
@@ -230,19 +242,78 @@ class SupplierController extends Controller
         $supplier->update([
             'supplr_name' => $request->supplr_name,
             'supplr_receptionNumber' => $request->supplr_receptionNumber,
-            'supplr_formId' => $request->supplr_formId,
-            'supplr_agreementNumber' => $request->supplr_agreementNumber,
-            'supplr_qualityCertificateNumber' => $request->supplr_qualityCertificateNumber,
-            'supplr_specificInstructions' => $request->supplr_specificInstructions,
-            'supplr_siret' => $request->supplr_siret,
-            'supplr_website' => $request->supplr_website,
-            'supplr_activity' => $request->supplr_activity,
-            'supplr_VATnumber' => $request->supplr_VATnumber,
-            'supplr_endLinkToFolder' => $request->supplr_endLinkToFolder,
+            'supplr_formID' => $request->supplr_formId,
             'supplr_consFam_id' => $request->supplr_consFam_id,
             'supplr_compFam_id' => $request->supplr_compFam_id,
             'supplr_rawFam_id' => $request->supplr_rawFam_id,
-            'supplr_validate' => $request->supplr_validate
+            'supplr_agreementNumber' => $request->supplr_agreementNumber,
+            'supplr_qualityCertificationNumber' => $request->supplr_qualityCertificateNumber,
+            'supplr_specificInstructions' => $request->supplr_specificInstructions,
+            'supplr_version' => 1,
+            'supplr_validate' => $request->supplr_validate,
+            'supplr_siret' => $request->supplr_siret,
+            'supplr_website' => $request->supplr_website,
+            'supplr_activity' => $request->supplr_activity,
+            'supplr_real' => $request->supplr_real,
+            'supplr_VATNumber' => $request->supplr_VATnumber,
+            'supplr_critical' => $request->supplr_critical,
+            'supplr_endLinkToFolder' => $request->supplr_endLinkToFolder,
+            'supplr_active' => $request->supplr_active,
+            'supplr_concern' => $request->supplr_concern,
+
+        ]);
+        return response()->json($supplier);
+    }
+
+    public function verifValidation_supplier($id)
+    {
+        $supplier = Supplier::findOrfail($id);
+        if ($supplier->supplr_signatureDate !== null) {
+            return response()->json([
+                'error' => 'This supplier is already validated'
+            ], 429);
+        }
+        if ($supplier->supplr_validate !== 'validated') {
+            return response()->json([
+                'error' => 'This supplier ID card is not validated'
+            ], 429);
+        }
+        $supplierAdress = SupplierAdr::all()->where('supplr_id', '=', $id);
+        if ($supplierAdress->isEmpty()) {
+            return response()->json([
+                'error' => 'This supplier has no address'
+            ], 429);
+        }
+        foreach ($supplierAdress as $adress) {
+            if ($adress->supplrAdr_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This supplier has an address not validated'
+                ], 429);
+            }
+        }
+        $supplierContact = SupplierContact::all()->where('supplr_id', '=', $id);
+        if ($supplierContact->isEmpty()) {
+            return response()->json([
+                'error' => 'This supplier has no contact'
+            ], 429);
+        }
+        foreach ($supplierContact as $contact) {
+            if ($contact->supplrContact_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This supplier has a contact not validated'
+                ], 429);
+            }
+        }
+    }
+
+    public function validate_supplier(Request $request, $id)
+    {
+        $supplier = Supplier::findOrfail($id);
+        $supplier->update([
+            'supplr_technicalReviewerId' => $request->user_id,
+        ]);
+        $supplier->update([
+            'supplr_signatureDate' => Carbon::now(),
         ]);
         return response()->json($supplier);
     }

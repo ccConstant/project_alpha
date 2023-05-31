@@ -994,6 +994,8 @@ Route::post('/supplier/contact/verif', [SupplierContactController::class, 'verif
 Route::post('/supplier/contact/add', [SupplierContactController::class, 'add_contact']);
 Route::get('/supplier/contact/send/{id}', [SupplierContactController::class, 'send_contact']);
 Route::post('/supplier/contact/update/{id}', [SupplierContactController::class, 'update_contact']);
+Route::get('/supplier/verifValidation/{id}', [SupplierController::class, 'verifValidation_supplier']);
+Route::post('/supplier/validate/{id}', [SupplierController::class, 'validate_supplier']);
 
 //ArticleController
 Route::post('/comp/family/verif', [CompFamilyController::class, 'verif_compFamily']);
@@ -1115,3 +1117,5 @@ Route::get('/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 
 //History for article
 Route::post('/artFam/history/add/{type}/{id}', [HistoryController::class, 'add_history_for_article']);
 Route::get('/artFam/history/send/{type}/{id}', [HistoryController::class, 'send_history_for_article']);
+Route::post('/supplier/history/add/{id}', [HistoryController::class, 'add_history_for_supplier']);
+Route::get('/supplier/history/send/{id}', [HistoryController::class, 'send_history_for_supplier']);

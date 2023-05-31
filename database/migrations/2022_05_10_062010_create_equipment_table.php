@@ -1,4 +1,3 @@
-
 <?php
 
 /*
@@ -14,7 +13,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-Class CreateEquipmentTable extends Migration
+class CreateEquipmentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -25,17 +24,17 @@ Class CreateEquipmentTable extends Migration
     public function up()
     {
         Schema::create('equipment', function (Blueprint $table) {
-            $table->id('id') ;
-            $table->string('eq_internalReference') -> unique ;
-            $table->string('eq_externalReference') ;
-            $table->string('eq_name') -> nullable() ;
-            $table->string('eq_serialNumber') -> nullable() ;
-            $table->string('eq_constructor') -> nullable() ;
-            $table->string('eq_set') -> nullable();
-            $table->unsignedTinyInteger('eq_nbrVersion') -> default(1) ;
-            $table->timestamps() ;
-            $table->unsignedBigInteger('state_id') ->nullable();
-            $table->foreign('state_id')->references('id')->on('states') ;
+            $table->id('id');
+            $table->string('eq_internalReference')->unique;
+            $table->string('eq_externalReference');
+            $table->string('eq_name')->nullable();
+            $table->string('eq_serialNumber')->nullable();
+            $table->string('eq_constructor')->nullable();
+            $table->string('eq_set')->nullable();
+            $table->unsignedTinyInteger('eq_nbrVersion')->default(1);
+            $table->timestamps();
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->foreign('state_id')->references('id')->on('states');
         });
     }
 
@@ -48,7 +47,7 @@ Class CreateEquipmentTable extends Migration
     {
         Schema::dropIfExists('equipment');
     }
-};
+}
 
 
 

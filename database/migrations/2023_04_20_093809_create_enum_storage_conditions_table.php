@@ -6,7 +6,7 @@
 * Update date : 20 Apr 2023
 * This file is used to create the table "enum_storage_conditions" in the data base. In this file, we can see the different
 * attribute of this table (id, value..) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -23,7 +23,7 @@ class CreateEnumStorageConditionsTable extends Migration
     {
         Schema::create('enum_storage_conditions', function (Blueprint $table) {
             $table->id();
-            $table->string('value') ; 
+            $table->string('value');
             $table->timestamps();
         });
     }

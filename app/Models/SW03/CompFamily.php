@@ -26,7 +26,8 @@ class CompFamily extends Model
     use HasFactory;
 
      //Data which can be added, updated or deleted by us in the data base.
-     protected $fillable = ['compFam_ref',
+     protected $fillable = [
+         'compFam_ref',
          'compFam_design',
          'compFam_drawingPath',
          'enumPurchasedBy_id',
@@ -39,13 +40,14 @@ class CompFamily extends Model
          'compFam_validate',
          'compFam_version',
          'compFam_active',
-         'compFam_genDesign',
-         'compFam_genRef'] ;
+         'compFam_mainRef',
+     ];
 
-     //Define the relation between a compFamily and its compFamilyMember : a compFamilyMember can correspond to only one compFamily
-     public function comp_family_member(){
-         return $this->hasMany(CompFamilyMember::class) ;
-     }
+     /*Define the relation between a comp_family and its comp_sub_family:
+     a comp_sub_family can correspond to only one comp_family*/
+    public function comp_sub_family(){
+        return $this->hasMany(CompSubFamily::class) ;
+    }
 
     //Define the relation between a compFamily and the user who approved it : a compFamily has only one qualityApprover
      public function quality_approver(){

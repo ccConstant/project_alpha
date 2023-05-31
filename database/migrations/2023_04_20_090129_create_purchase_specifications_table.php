@@ -24,19 +24,19 @@ class CreatePurchaseSpecificationsTable extends Migration
         Schema::create('purchase_specifications', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->longText('purSpe_requiredDoc') ->nullable();
-            $table->unsignedBigInteger('purSpe_qualityApproverId') ->nullable();
-            $table->foreign('purSpe_qualityApproverId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('purSpe_technicalReviewerId') ->nullable();
-            $table->foreign('purSpe_technicalReviewerId')->references('id')->on('users') ;
-            $table->date('purSpe_signatureDate') -> nullable() ;
-            $table->enum('purSpe_validate',  ['drafted', 'to_be_validated', 'validated']) ;
-            $table->unsignedBigInteger('consFam_id') ->nullable();
-            $table->foreign('consFam_id')->references('id')->on('cons_families') ;
-            $table->unsignedBigInteger('compFam_id') ->nullable();
-            $table->foreign('compFam_id')->references('id')->on('comp_families') ;
-            $table->unsignedBigInteger('rawFam_id') ->nullable();
-            $table->foreign('rawFam_id')->references('id')->on('raw_families') ;
+            $table->longText('purSpe_requiredDoc')->nullable();
+            $table->unsignedBigInteger('purSpe_qualityApproverId')->nullable();
+            $table->foreign('purSpe_qualityApproverId')->references('id')->on('users');
+            $table->unsignedBigInteger('purSpe_technicalReviewerId')->nullable();
+            $table->foreign('purSpe_technicalReviewerId')->references('id')->on('users');
+            $table->date('purSpe_signatureDate')->nullable();
+            $table->enum('purSpe_validate', ['drafted', 'to_be_validated', 'validated']);
+            $table->unsignedBigInteger('consFam_id')->nullable();
+            $table->foreign('consFam_id')->references('id')->on('cons_families');
+            $table->unsignedBigInteger('compFam_id')->nullable();
+            $table->foreign('compFam_id')->references('id')->on('comp_families');
+            $table->unsignedBigInteger('rawFam_id')->nullable();
+            $table->foreign('rawFam_id')->references('id')->on('raw_families');
 
 
         });

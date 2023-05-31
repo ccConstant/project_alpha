@@ -11,6 +11,7 @@
 
 namespace App\Models;
 
+use App\Models\SW03\Supplier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW01\EquipmentTemp ;
@@ -24,7 +25,16 @@ class History extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['history_numVersion', 'history_reasonUpdate', 'equipmentTemp_id', 'mmeTemp_id', 'consFam_id', 'compFam_id', 'rawFam_id'] ;
+    protected $fillable = [
+        'history_numVersion',
+        'history_reasonUpdate',
+        'equipmentTemp_id',
+        'mmeTemp_id',
+        'consFam_id',
+        'compFam_id',
+        'rawFam_id',
+        'supplier_id',
+    ] ;
 
     //Define the relation between an equipment_temp and its histories : an equipment temps can correspond to many histories
     public function equipment_temps(){
@@ -49,5 +59,10 @@ class History extends Model
     //Define the relation between a raw_family and its histories : a raw_family can correspond to many histories
     public function raw_families(){
         return $this->belongsTo(RawFamily::class, 'rawFam_id') ;
+    }
+
+    //Define the relation between a supplier and its histories : a supplier can correspond to many histories
+    public function suppliers(){
+        return $this->belongsTo(Supplier::class, 'supplier_id') ;
     }
 }

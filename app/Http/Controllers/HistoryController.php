@@ -151,4 +151,17 @@ class HistoryController extends Controller
              return response()->json($hist);
          }
     }
+
+    public function add_history_for_supplier(Request $request, $id) {
+            $supplier = Supplier::findOrfail($id);
+            $hist = History::create([
+                'history_numVersion' => $supplier->supp_nbrVersion-1,
+                'history_reasonUpdate' => $request->history_reasonUpdate,
+                'supplier_id' => $id
+            ]);
+    }
+
+    public function send_history_for_supplier($id) {
+
+    }
 }

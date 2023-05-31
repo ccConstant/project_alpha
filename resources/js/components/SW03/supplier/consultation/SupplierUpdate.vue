@@ -5,8 +5,6 @@
     <div v-else class="supplier_consultation">
         <ErrorAlert ref="errorAlert"/>
         <SuccessAlert ref="successAlert"/>
-        <h1>Supplier Consultation</h1>
-        <!--        <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>-->
         <SupplierIDForm
             :ID="this.supplr_id"
             :Name="this.supplr_idCard.supplr_name"
@@ -25,6 +23,7 @@
             :vatNumber="this.supplr_idCard.supplr_VATNumber"
             :critical="this.supplr_idCard.supplr_critical"
             :endTinkToFolder="this.supplr_idCard.supplr_endTinkToFolder"
+            :concern="this.supplr_idCard.supplr_concern === 1"
             :active="this.supplr_idCard.supplr_active"
             modifMod
         />
@@ -108,7 +107,6 @@ export default {
                 this.supplr_address = response.data;
                 this.loaded = true
             })
-        console.log(this.supplr_id);
     },
     methods: {
         validate() {

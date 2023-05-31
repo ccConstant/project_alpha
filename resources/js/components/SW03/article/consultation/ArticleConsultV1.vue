@@ -21,6 +21,7 @@
             :version="article.version"
             :type="articleType.toUpperCase()"
             :active="article.active === 1"
+            :mainRef="article.mainRef"
             consultMod
         />
         <div>
@@ -178,6 +179,7 @@ export default {
                         variablesCharac: response.data.rawFam_variablesCharac,
                         active: response.data.rawFam_active,
                         purchasedBy: response.data.rawFam_purchasedBy,
+                        mainRef: response.data.rawFam_mainRef,
                         version: null
                     };
                     this.loaded = true;
@@ -196,6 +198,7 @@ export default {
                         variablesCharac: response.data.compFam_variablesCharac,
                         active: response.data.compFam_active,
                         purchasedBy: response.data.compFam_purchasedBy,
+                        mainRef: response.data.compFam_mainRef,
                         version: response.data.compFam_version
                     };
                     this.loaded = true;
@@ -214,7 +217,8 @@ export default {
                         variablesCharac: response.data.consFam_variablesCharac,
                         active: response.data.consFam_active,
                         purchasedBy: response.data.consFam_purchasedBy,
-                        version: response.data.consFam_version
+                        version: response.data.consFam_version,
+                        mainRef: response.data.consFam_mainRef
                     };
                     this.loaded = true;
                 })
