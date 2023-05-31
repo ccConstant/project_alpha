@@ -115,9 +115,9 @@
 </template>
 
 <script>
-import ArticleFamilyForm from "./ArticleFamilyForm";
+import ArticleFamilyForm from "./ArticleFamilyForm.vue";
 import ReferenceAnArticleSubFamily from "./ReferenceAnArticleSubFamily.vue";
-import ReferenceAStorageCondition from "./ReferenceAStorageCondition";
+import ReferenceAStorageCondition from "./ReferenceAStorageCondition.vue";
 import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp.vue";
 import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
 import ReferenceAnArticlePurchaseSpecification from "./ReferenceAnArticlePurchaseSpecification";
