@@ -4,10 +4,10 @@
 <!--Vue Component of the navigation bar, up of the website-->
 
 <template>
-	<div>
+	<div class="main">
 		<b-navbar type="dark" variant="dark">
 			<b-navbar-nav>
-				<b-navbar-brand href="/"><img src="/images/logo.png" class="logo_navbar" alt="Alpha Logo"></b-navbar-brand>
+				<b-navbar-brand href="/"><img src="/images/logo.jpg" class="logo_navbar" alt="Alpha Logo"></b-navbar-brand>
 <!--				<b-navbar-brand href="/">Home</b-navbar-brand>-->
 				<!-- Navbar dropdowns -->
                 <!-- For the Equipment drop-down menu -->
@@ -81,18 +81,15 @@ export default {
 }
 </script>
 
-<style>
-	/*.navbar{
-		width:1042px;
-		height:60px;
-		position:fixed;
-	}*/
-
-	.logo_navbar{
-		width: 80px;
-		height: 40px;
-	}
-
-
+<style scoped>
+.main{
+    width: 100%;
+    max-height: 5vh;
+    margin-bottom: 10px;
+}
+.logo_navbar{
+    width: 80px;
+    height: 40px;
+}
 </style>
 

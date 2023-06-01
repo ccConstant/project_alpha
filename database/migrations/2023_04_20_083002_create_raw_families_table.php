@@ -22,24 +22,25 @@ class CreateRawFamiliesTable extends Migration
     public function up()
     {
         Schema::create('raw_families', function (Blueprint $table) {
-            $table->id('id') ;
-            $table->string('rawFam_ref') -> unique ;
-            $table->string('rawFam_design') ;
-            $table->string('rawFam_drawingPath') -> nullable() ;
-            $table->integer('rawFam_nbrVersion') -> default(1) ;
-            $table->string('rawFam_variablesCharac') -> nullable();
-            $table->timestamps() ;
-            $table->unsignedBigInteger('rawFam_qualityApproverId') ->nullable();
-            $table->foreign('rawFam_qualityApproverId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('rawFam_technicalReviewerId') ->nullable();
-            $table->foreign('rawFam_technicalReviewerId')->references('id')->on('users') ;
-            $table->date('rawFam_signatureDate') -> nullable() ;
-            $table->enum('rawFam_validate',  ['drafted', 'to_be_validated', 'validated']) ;
+            $table->id('id');
+            $table->string('rawFam_ref')->unique();
+            $table->string('rawFam_design');
+            $table->string('rawFam_drawingPath')->nullable();
+            $table->integer('rawFam_nbrVersion')->default(1);
+            $table->string('rawFam_variablesCharac')->nullable();
+            $table->string('rawFam_variablesCharacDesign')->nullable();
+            $table->timestamps();
+            $table->unsignedBigInteger('rawFam_qualityApproverId')->nullable();
+            $table->foreign('rawFam_qualityApproverId')->references('id')->on('users');
+            $table->unsignedBigInteger('rawFam_technicalReviewerId')->nullable();
+            $table->foreign('rawFam_technicalReviewerId')->references('id')->on('users');
+            $table->date('rawFam_signatureDate')->nullable();
+            $table->enum('rawFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->boolean('rawFam_active')->default(true);
             $table->string('rawFam_genDesign')->nullable();
             $table->string('rawFam_genRef')->nullable();
-            $table->unsignedBigInteger('enumPurchasedBy_id') ->nullable();
-            $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies') -> onDelete('restrict') ;
+            $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
+            $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
         });
     }
 

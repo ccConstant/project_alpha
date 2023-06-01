@@ -1,6 +1,6 @@
 <!--File name : MonthlyMMEPlanning.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to show the annually planning of maintenance linked to the different MME-->
 
 <template>
@@ -9,7 +9,7 @@
             <p>'</p>
             <div class="list_mme_top_infos">
                 <div class="list_mme_pdf_logo ">
-                  <img src="/images/logo.png" alt="Alpha logo" class="logo" >
+                  <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
                 </div>
                 <div class="list_mme_pdf_titre">
                     <h2 id="list_mme_fiche_de_vie_titre"> Planning of mme calibration and maintenance </h2>

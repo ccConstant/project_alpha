@@ -1,6 +1,6 @@
 <!--File name : InfosManagement.vue-->
 <!--Creation date : 12 Jul 2022-->
-<!--Update date : 11 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component with all infos called in the info menu-->
 
 <template>
@@ -121,8 +121,7 @@
                             <InfoElement title="Number" :info_content="infos_prvMtnOp[3].info_value" :info_id="infos_prvMtnOp[3].id"/>
                             <InfoElement title="Protocol" :info_content="infos_prvMtnOp[4].info_value" :info_id="infos_prvMtnOp[4].id"/>
                             <InfoElement title="Reform date" :info_content="infos_prvMtnOp[5].info_value" :info_id="infos_prvMtnOp[5].id"/>
-                             <InfoElement title="Putting into Service" :info_content="infos_prvMtnOp[6].info_value" :info_id="infos_prvMtnOp[6].id"/>
-
+                            <InfoElement title="Putting into Service" :info_content="infos_prvMtnOp[6].info_value" :info_id="infos_prvMtnOp[6].id"/>
                         </div>
                     </div>
                 </div>
@@ -167,7 +166,6 @@
                             <InfoElement title="Report number" :info_content="infos_prvMtnOpRlz[0].info_value" :info_id="infos_prvMtnOpRlz[0].id"/>
                             <InfoElement title="Start date" :info_content="infos_prvMtnOpRlz[1].info_value" :info_id="infos_prvMtnOpRlz[1].id"/>
                             <InfoElement title="End date" :info_content="infos_prvMtnOpRlz[2].info_value" :info_id="infos_prvMtnOpRlz[2].id"/>
-
                         </div>
                     </div>
                 </div>
@@ -184,7 +182,6 @@
                             <InfoElement title="Description" :info_content="infos_curMtnOp[2].info_value" :info_id="infos_curMtnOp[2].id"/>
                             <InfoElement title="Start date" :info_content="infos_curMtnOp[2].info_value" :info_id="infos_curMtnOp[2].id"/>
                             <InfoElement title="End date" :info_content="infos_curMtnOp[2].info_value" :info_id="infos_curMtnOp[2].id"/>
-
                         </div>
                     </div>
                 </div>
@@ -227,7 +224,6 @@
                             <InfoElement title="FormationEqDate" :info_content="infos_person[28].info_value" :info_id="infos_person[28].id"/>
                             <InfoElement title="PersonTrainedToGeneralPrinciplesOfMMEManagementRight" :info_content="infos_person[29].info_value" :info_id="infos_person[29].id"/>
                             <InfoElement title="FormationMmeDate" :info_content="infos_person[30].info_value" :info_id="infos_person[30].id"/>
-
                         </div>
                     </div>
                 </div>

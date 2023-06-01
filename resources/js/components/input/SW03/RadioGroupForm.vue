@@ -1,4 +1,4 @@
-<!--File name : RadioGroupForm.vue-->
+ <!--File name : RadioGroupForm.vue-->
 <!--Creation date : 25 Apr 2023-->
 <!--Update date : 25 Apr 2023-->
 <!--Vue Component of a radio group called in the different forms-->
@@ -13,7 +13,7 @@
             v-model="data"
         >
             <label>
-                {{label}}
+                {{ label }}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>
             <b-form-radio

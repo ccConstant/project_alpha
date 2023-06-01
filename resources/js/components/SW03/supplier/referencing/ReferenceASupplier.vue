@@ -58,9 +58,7 @@ export default {
     },
     methods: {
         put_supplier_id(value) {
-            console.log(value);
             this.supplier_id = value;
-            console.log(this.supplier_id);
         },
         put_import_id(value) {
             this.importation_id = value;

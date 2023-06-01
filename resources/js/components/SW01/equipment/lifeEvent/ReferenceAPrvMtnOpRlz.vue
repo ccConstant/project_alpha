@@ -1,6 +1,6 @@
 <!--File name : ReferenceAPrvMtnOpRlz.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to reference a preventive maintenance operation already realized-->
 
 <template>
@@ -16,7 +16,8 @@
             :divClass="component.className" :id="component.id" :state_id="data_state_id" :prvMtnOp_id_prop="component.prvMtnOp_id"
             :prvMtnOp_description_prop="component.prvMtnOp_description" :prvMtnOp_number_prop="component.prvMtnOp_number" :prvMtnOp_protocol_prop="component.prvMtnOp_protocol"
             :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"
-            @deletePrvMtnOpRlz="getContent(key)" @addSucces="addSucces()" />
+            @deletePrvMtnOpRlz="getContent(key)" @addSucces="addSucces()"
+        />
 
         <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
     </div>
@@ -49,6 +50,12 @@ export default {
         },
         state_id:{
             type:Number
+        },
+        id:{
+            type:Number
+        },
+        number:{
+            type:Number
         }
     },
     data() {
@@ -64,11 +71,13 @@ export default {
         }
     },
     methods:{
-
         addComponent() {
             this.components.push({
                 comp:'EquipmentPrvMtnOpRlzForm',
                 key : this.uniqueKey++,
+                prvMtnOp_number:this.number,
+                prvMtnOp_id:this.id,
+                id:this.id,
             });
         },
 

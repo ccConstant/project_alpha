@@ -1,27 +1,51 @@
+Information : J'ai déposé sur une branche "subFam" pour éviter de pourrir ce qui est déjà fait le temps de tout changer
+
 TODO:
     Ajouter les formulaires si pas déjà remplis:
         Compliance Certificate inspection (To ensure Raw Material Compliance)
         Compliance Certificate inspection (Related to article Compliance)
+        !! Si raw material critique ou detectable
         Chacun contient les champs:
             - Name
             - Reference
             - Specification
         + le bouton add pour en ajouter des vides
     ------------------------------------------------------------------------------------------------------
-    Ajouter un champs description de la variable générique dans la fiche article
     Pouvoir enregistrer plusieurs variables génériques pour un article
-    Faire un lien entre le fournisseur et ses articles
-    Compléter la partie Purchasing Specifications de la fiche article
-    Info
     Commentaires
-    Tests
     Tests SW01
+    Tests SW03
+    ------------------------------------------------------------------------------------------------------
+    Import :
+        - Mettre les suppliers en majuscule
+    ------------------------------------------------------------------------------------------------------
+    Ajouter un niveau entre famille et membre de famille : sous famille, peux contenir un ou plusieurs membres de famille :
+        - changer controller
+            - Ajouter nvx controller pour subFam
+            - Changer les insertions de genRef et genDesign en les passant dans subFam
+        - changer vue
+    ------------------------------------------------------------------------------------------------------
+    Changer script insertion SQL afin de se conformer à la nouvelle structure de famille, sous famille et membre de famille
     */
 
 FIXME:
-    Changer expected value du funcTest en String et en 'Expected Acceptance Criteria' ??
-    Empêcher Html2pdf de couper les tableaux de la fiche consultation article => On le fera plus tard quand des données auront été saisies par l\'entreprise
-    Séparer les signatures en 2 fonctions dans ArticleConsultV3.vue
+    Soon:
+        Infos manquantes :
+            - Article Family :
+                - Type
+                - Active
+            - Family Member :
+                - Designation
+            - Test :
+                - Sampling
+                - Description
+                - Document specification
+            - Article Famiy Storage Condition :
+                - Storage Condition
+        + d'autres infos dans les autres fiches
+    ------------------------------------------------------------------------------------------------------
+    Later:
+        Empêcher Html2pdf de couper les tableaux de la fiche consultation article => On le fera plus tard quand des données auront été saisies par l'entreprise
     */
 
 DONE:
@@ -34,8 +58,22 @@ DONE:
     Ajout d'un membre générique de famille article
     Ajout d'un membre non générique (adapté au générique) de famille article
     Fiche consultation article :
-            - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé specDoc)
+        - Ajouter les champs Document specifications pour chaque test et ajouter un drawing path pour aspTest, funcTest, dimTest et compTest (champ nommé specDoc)
     Delete actif/inactif
     Signature + gestion historique
     Update des membres de familles d'articles
+    Ajouter un champs description de la variable générique dans la fiche article
+    Faire un lien entre le fournisseur et ses articles
+    Compléter la partie Purchasing Specifications de la fiche article
+    Script PHP d'insertion de l'ancienne base de données dans la nouvelle via CSV
+    Changer expected value du funcTest en String et en "Expected Acceptance Criteria"
+    !! mettre en face les titres avec les champs
+    Ajouter main ref pour chaque famille d'article : saisie + affichage dans fiche article
+    Ajouter un niveau entre famille et membre de famille : sous famille, peux contenir un ou plusieurs membres de famille :
+        - Model fait
+            - Liens à confirmer
+        - Migration mises à jour
+            - Modification des existantes finie
+            - Ajout des nouvelles
     */
+

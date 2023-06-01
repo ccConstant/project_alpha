@@ -183,7 +183,6 @@ export default {
                     this.loaded = true;
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         }
     },

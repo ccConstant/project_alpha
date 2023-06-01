@@ -1,6 +1,6 @@
 <!--File name : MMEAllEventList.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to show all the event linked to one specific MME, we can export this screen in PDF-->
 
 <template>
@@ -13,7 +13,7 @@
                 <p>'</p>
                 <div class="le_mme_top_infos">
                     <div class="le_mme_pdf_logo">
-                     <img src="/images/logo.png" alt="Alpha logo" class="le_mme_logo" >
+                     <img src="/images/logo.jpg" alt="Alpha logo" class="le_mme_logo" >
                     </div>
 
                     <div class="le_mme_pdf_titre">

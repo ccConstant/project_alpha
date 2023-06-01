@@ -10,9 +10,15 @@
     <link href="{{mix('css/app.css')}}" rel="stylesheet">
     <body>
         <div id="app">
-        <navbar_sw01></navbar_sw01>
-        <router-view></router-view>
+            <navbar_sw01></navbar_sw01>
+            <br>
+            <router-view style="height: auto; min-height:80vh;"></router-view>
         </div>
         <script src="{{mix('js/app.js')}}"></script>
     </body>
+    <footer style="height: 10vh; background-color: #212529;">
+        <div style="margin-left: 10px; color : #ffffff;">
+            <p> SW01 Version : 0.0.0  (last update Apr 2023)</p>
+        </div>
+    </footer>
 </html>

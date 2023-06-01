@@ -1,17 +1,19 @@
 <?php
 
 /*
-* Filename : MmeController.php 
+* Filename : MmeController.php
 * Creation date : 14 Jun 2022
-* Update date : 7 Mar 2023
-* This file is used to link the view files and the database that concern the mme table. 
-* For example : add the identity card of an mme in the database, update the identity card, delete the identity card... 
-*/ 
+* Update date : 25 May 2023
+* This file is used to link the view files and the database that concern the mme table.
+* For example : add the identity card of an mme in the database, update the identity card, delete the identity card...
+*/
 
 namespace App\Http\Controllers\SW01;
 
-use Illuminate\Http\Request ; 
-use Illuminate\Support\Facades\DB ; 
+use App\Models\SW01\CurativeMaintenanceOperation;
+use App\Models\SW01\PreventiveMaintenanceOperationRealized;
+use Illuminate\Http\Request ;
+use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\Mme;
 use App\Models\File;
 use App\Models\SW01\MmeUsage;
@@ -30,42 +32,71 @@ class MmeController extends Controller{
     /**
      * Function call by ListOfMme.vue with the route : /mme/mmes (get)
      * Get all the internalReference and the id of mme in the data base for print them in the vue
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
 
     public function send_internalReferences_ids (){
         $mmes= Mme::orderBy('mme_internalReference', 'asc')->get() ;
-        $container=array() ; 
+        $container=array() ;
         foreach($mmes as $mme){
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
             $states=$mostRecentlyMmeTmp->states;
             $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
             foreach($states as $state){
-                $date=$state->created_at ; 
+                $date=$state->created_at ;
                 $date2=$mostRecentlyState->created_at;
                if ($date>=$date2){
-                     $mostRecentlyState=$state ; 
+                     $mostRecentlyState=$state ;
                 }
             }
-            $isAlreadyQualityValidated=false ; 
+            $isAlreadyQualityValidated=false ;
             if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL){
-                $isAlreadyQualityValidated=true ; 
+                $isAlreadyQualityValidated=true ;
             }
 
-            $isAlreadyTechnicalValidated=false ; 
+            $isAlreadyTechnicalValidated=false ;
             if ($mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
-                $isAlreadyTechnicalValidated=true ; 
+                $isAlreadyTechnicalValidated=true ;
             }
-        
+
+            $needToBeRealized = false;
+            $needToBeApprove = false;
+            $pre = PreventiveMaintenanceOperationRealized::all()->where('state_id', '=', $mostRecentlyState->id);
+            foreach ($pre as $p) {
+                if ($p->realizedBy_id  === null) {
+                    $needToBeRealized = true;
+                }
+                if ($p->approvedBy_id  === null) {
+                    $needToBeApprove = true;
+                }
+                break;
+            }
+            if ($needToBeRealized === false && $needToBeApprove === false) {
+                $cur = CurativeMaintenanceOperation::all()->where('state_id', '=', $mostRecentlyState->id);
+                foreach ($cur as $c) {
+                    if ($c->realizedBy_id  === null) {
+                        $needToBeRealized = true;
+                    }
+                    if ($c->approvedBy_id  === null) {
+                        $needToBeApprove = true;
+                    }
+                    break;
+                }
+            }
+
             $obj=([
                 'id' => $mme->id,
                 'mme_internalReference' => $mme->mme_internalReference,
+                'mme_externalReference' => $mme->mme_externalReference,
+                'mme_name' => $mme->mme_name,
                 'mme_state' =>  $mostRecentlyState->state_name,
                 'state_id' => $mostRecentlyState->id,
                 'mmeTemp_lifeSheetCreated' => $mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated,
                 'alreadyValidatedQuality' =>$isAlreadyQualityValidated,
                 'alreadyValidatedTechnical' =>$isAlreadyTechnicalValidated,
                 'mme_version' => $mostRecentlyMmeTmp->mmeTemp_version,
+                'needToBeRealized' => $needToBeRealized,
+                'needToBeApprove' => $needToBeApprove,
             ]);
             array_push($container,$obj);
         }
@@ -80,7 +111,7 @@ class MmeController extends Controller{
     public function send_mme_not_linked(){
         //$mmes=DB::select(DB::raw('SELECT DISTINCT mme_internalReference FROM mmes WHERE equipmentTemp_id LIKE NULL'));
         $mmes= Mme::where('equipmentTemp_id', '=', NULL)->get() ;
-        $container=array() ; 
+        $container=array() ;
         foreach($mmes as $mme){
             $obj=([
                 'internalReference' => $mme->mme_internalReference,
@@ -88,7 +119,7 @@ class MmeController extends Controller{
                 'name' => $mme->mme_name,
                 'id' => $mme->id,
 
-            ]) ; 
+            ]) ;
             array_push($container,$obj);
         }
         return response()->json($container) ;
@@ -96,13 +127,13 @@ class MmeController extends Controller{
 
     /**
      * Function call by ?? with the route : /mme/eq_linked/{id} (get)
-     * Get the internal reference of the equipment in which the mme is linked  
+     * Get the internal reference of the equipment in which the mme is linked
      * @return \Illuminate\Http\Response
      */
     public function send_eq_linked_mme($id){
         $mme= Mme::findOrFail($id);
         if ($mme->equipmentTemp_id!=NULL){
-            $eqTemp=EquipmentTemp::findOrFail($mme->equipmentTemp_id) ; 
+            $eqTemp=EquipmentTemp::findOrFail($mme->equipmentTemp_id) ;
             $eq=Equipment::findOrFail($eqTemp->equipment_id);
             $array=[];
             $obj=([
@@ -120,7 +151,7 @@ class MmeController extends Controller{
      * Link a mme to an equipment in the data base
      */
     public function link_mme_to_equipment(Request $request, $id){
-        $mme=Mme::where('mme_internalReference','=', $request->mme_internalReference) ; 
+        $mme=Mme::where('mme_internalReference','=', $request->mme_internalReference) ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $mme->update([
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
@@ -139,16 +170,16 @@ class MmeController extends Controller{
             ]);
         }
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
 
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
            //update of equipment temp
            $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
@@ -182,16 +213,16 @@ class MmeController extends Controller{
             ]);
         }
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
 
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
            //update of equipment temp
            $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
@@ -205,13 +236,13 @@ class MmeController extends Controller{
      /**
      * Function call by ImportationModal.vue with the route : /mmes/same_set/{$set} (get)
      * Get the MMEs with the same set as the one in parameters
-     * The set in parameter correspond of the set of mme we actually create : this set allow us to import many characteritics from another mme if the set is the same 
+     * The set in parameter correspond of the set of mme we actually create : this set allow us to import many characteritics from another mme if the set is the same
      * @return \Illuminate\Http\Response
      */
 
     public function send_mmes_same_set($set){
         $mmes_same_set=Mme::where('mme_set', $set)->get();
-        return response()->json($mmes_same_set) ;    
+        return response()->json($mmes_same_set) ;
     }
 
     /**
@@ -224,24 +255,24 @@ class MmeController extends Controller{
     public function send_mme ($id){
         $mme= Mme::findOrFail($id) ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $validate=NULL ; 
+        $validate=NULL ;
         if ($mostRecentlyMmeTmp!=NULL){
 
             $states=$mostRecentlyMmeTmp->states;
             $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
             foreach($states as $state){
-                $date=$state->created_at ; 
+                $date=$state->created_at ;
                 $date2=$mostRecentlyState->created_at;
                if ($date>=$date2){
-                     $mostRecentlyState=$state ; 
+                     $mostRecentlyState=$state ;
                 }
             }
-            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ; 
+            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ;
             $remarks=$mostRecentlyMmeTmp->mmeTemp_remarks ;
 
-            $version=0 ; 
+            $version=0 ;
             if ($mostRecentlyMmeTmp->mmeTemp_version<10){
-                $version="0".(String)$mostRecentlyMmeTmp->mmeTemp_version ; 
+                $version="0".(String)$mostRecentlyMmeTmp->mmeTemp_version ;
             }
 
             $technicalVerifier_firstName=NULL;
@@ -250,19 +281,19 @@ class MmeController extends Controller{
             $qualityVerifier_lastName=NULL;
 
             if ($mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
-                $technicalVerifier=User::findOrFail($mostRecentlyMmeTmp->technicalVerifier_id) ; 
+                $technicalVerifier=User::findOrFail($mostRecentlyMmeTmp->technicalVerifier_id) ;
                 $technicalVerifier_firstName=$technicalVerifier->user_firstName;
                 $technicalVerifier_lastName=$technicalVerifier->user_lastName;
             }
             if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL){
-                $qualityVerifier=User::findOrFail($mostRecentlyMmeTmp->qualityVerifier_id) ; 
-                $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
-                $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                $qualityVerifier=User::findOrFail($mostRecentlyMmeTmp->qualityVerifier_id) ;
+                $qualityVerifier_firstName=$qualityVerifier->user_firstName ;
+                $qualityVerifier_lastName=$qualityVerifier->user_lastName ;
             }
 
-            $isAlreadyTechnicalValidated=false ; 
+            $isAlreadyTechnicalValidated=false ;
             if ($mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
-                $isAlreadyTechnicalValidated=true ; 
+                $isAlreadyTechnicalValidated=true ;
             }
         }
         return response()->json([
@@ -280,7 +311,7 @@ class MmeController extends Controller{
             'mme_qualityVerifier_firstName' => $qualityVerifier_firstName,
             'mme_qualityVerifier_lastName' => $qualityVerifier_lastName,
             'mme_lifeSheetCreated' => $mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated,
-           
+
         ]);
     }
 
@@ -294,10 +325,10 @@ class MmeController extends Controller{
     public function send_mmes($id) {
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
         $mmes = Mme::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
-        $container=array() ; 
+        $container=array() ;
         foreach ($mmes as $mme) {
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->latest()->first();
-            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ; 
+            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ;
             $remarks=$mostRecentlyMmeTmp->mmeTemp_remarks ;
             $obj=([
                 'id' => $mme->id,
@@ -318,7 +349,7 @@ class MmeController extends Controller{
 
      /**
      * Function call by MmeIDForm.vue with the route : /mme/sets (get)
-     * Get all the differents sets in the data base and send them to the vue 
+     * Get all the differents sets in the data base and send them to the vue
      * @return \Illuminate\Http\Response
      */
 
@@ -347,7 +378,7 @@ class MmeController extends Controller{
                 [
                     'mme_internalReference' => 'required|min:3|max:16',
                     'mme_externalReference' => 'required|min:3|max:100',
-                    'mme_name'  => 'required|min:3|max:100', 
+                    'mme_name'  => 'required|min:3|max:100',
                     'mme_serialNumber'  => 'required|min:3|max:50',
                     'mme_constructor'  => 'required|min:3|max:30',
                     'mme_remarks'  => 'required|min:3|max:400',
@@ -366,11 +397,11 @@ class MmeController extends Controller{
                     'mme_name.min' => 'You must enter at least 3 characters ',
                     'mme_name.max' => 'You must enter a maximum of 100 characters',
 
-                    'mme_serialNumber.required'  => 'You must enter a serial number', 
+                    'mme_serialNumber.required'  => 'You must enter a serial number',
                     'mme_serialNumber.min'  => 'You must enter at least 3 characters ',
                     'mme_serialNumber.max'  =>  'You must enter a maximum of 50 characters',
 
-                    'mme_constructor.required'  => 'You must enter a constructor', 
+                    'mme_constructor.required'  => 'You must enter a constructor',
                     'mme_constructor.min'  => 'You must enter at least 3 characters ',
                     'mme_constructor.max'  =>  'You must enter a maximum of 30 characters',
 
@@ -381,7 +412,7 @@ class MmeController extends Controller{
                     'mme_set.required'  => 'You must enter a set',
                     'mme_set.min'  => 'You must enter at least 1 characters ',
                     'mme_set.max'  => 'You must enter a maximum of 20 characters',
-                     
+
                 ]
             );
         }else{
@@ -392,14 +423,14 @@ class MmeController extends Controller{
                 [
                     'mme_internalReference' => 'required|min:3|max:16',
                     'mme_externalReference' => 'required|min:3|max:100',
-                    'mme_name'  => 'max:100', 
+                    'mme_name'  => 'max:100',
                     'mme_serialNumber'  => 'max:50',
                     'mme_constructor'  => 'max:30',
                     'mme_remarks'  => 'max:400',
                     'mme_set'  => 'max:20',
                 ],
                 [
-                    
+
                     'mme_internalReference.required' => 'You must enter an internal reference ',
                     'mme_internalReference.min' => 'You must enter at least 3 characters ',
                     'mme_internalReference.max' => 'You must enter a maximum of 16 characters',
@@ -416,10 +447,10 @@ class MmeController extends Controller{
                 ]
             );
         }
-        
+
         if ($request->reason=="update"){
             //we checked if the internal reference entered is already used for another mme
-            $mme_already_exist=Mme::where('mme_internalReference', '=', $request->mme_internalReference, 'and')->where('id', '<>', $request->mme_id)->first() ; 
+            $mme_already_exist=Mme::where('mme_internalReference', '=', $request->mme_internalReference, 'and')->where('id', '<>', $request->mme_id)->first() ;
             if ($mme_already_exist!=NULL){
                 return response()->json([
                     'errors' => [
@@ -428,12 +459,12 @@ class MmeController extends Controller{
                 ], 429);
             }
 
-            //We search the most recently mme temp of the mme 
+            //We search the most recently mme temp of the mme
             $mme= Mme::findOrFail($request->mme_id) ;
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyMmeTmp!=NULL){
                 //we checked if a you have already validated the id card, ff it's the case we can't update the internalReference
-                if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated"){                
+                if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
                     if($mme->mme_internalReference!=$request->mme_internalReference){
                         return response()->json([
                             'errors' => [
@@ -480,14 +511,14 @@ class MmeController extends Controller{
                             ], 429);
                         }
                     }
-                } 
+                }
             }
         }
         else{
             if ($request->reason=="add"){
                 //we checked if the internal reference entered is already used for another mme
-                $mme_already_exist=Mme::where('mme_internalReference', '=', $request->mme_internalReference)->first() ; 
-                
+                $mme_already_exist=Mme::where('mme_internalReference', '=', $request->mme_internalReference)->first() ;
+
                if ($mme_already_exist!=null){
                     return response()->json([
                         'errors' => [
@@ -501,7 +532,7 @@ class MmeController extends Controller{
 
      /**
      * Function call by MmeIDForm.vue when the form is submitted for insert with the route : /mme/add (post)
-     * Add a new enregistrement of mme and mme_temp in the data base with the informations entered in the form 
+     * Add a new enregistrement of mme and mme_temp in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new mme
      */
     public function add_mme(Request $request){
@@ -509,16 +540,16 @@ class MmeController extends Controller{
         //Creation of a new mme
         $mme=Mme::create([
             'mme_internalReference' => $request->mme_internalReference,
-            'mme_externalReference' => $request->mme_externalReference, 
+            'mme_externalReference' => $request->mme_externalReference,
             'mme_name' => $request->mme_name,
             'mme_serialNumber' => $request->mme_serialNumber,
             'mme_constructor' => $request->mme_constructor,
             'mme_set' => $request->mme_set,
-        ]) ; 
+        ]) ;
 
-        $mme_id=$mme->id ; 
-            
-        
+        $mme_id=$mme->id ;
+
+
         //Creation of a new mme temp
         $new_mmeTemp=MmeTemp::create([
             'mme_id'=> $mme_id,
@@ -527,7 +558,7 @@ class MmeController extends Controller{
             'mmeTemp_validate' => $request->mme_validate,
             'mmeTemp_remarks' => $request->mme_remarks,
         ]);
-        
+
         //Creation of a new state
         $newState=MmeState::create([
             'state_remarks' => "State by default",
@@ -535,23 +566,23 @@ class MmeController extends Controller{
             'state_isOk' => true,
             'state_validate' => "validated",
             'state_name' => "Waiting_for_referencing"
-        ]) ; 
-        
+        ]) ;
+
         $newState->mme_temps()->attach($new_mmeTemp);
-        return response()->json($mme->id) ; 
+        return response()->json($mme->id) ;
     }
 
 
 
     /**
      * Function call by MmeIDForm.vue when the form is submitted for update with the route : /mme/update (post)
-     * Update an enregistrement of mme and mme_temp in the data base with the informations entered in the form 
+     * Update an enregistrement of mme and mme_temp in the data base with the informations entered in the form
      * The id parameter correspond to the id of the mme we want to update
      * */
     public function update_mme(Request $request, $id){
         $mme= Mme::findOrFail($id) ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        
+
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
             $mostRecentlyMmeTmp->update([
                 'qualityVerifier_id' => NULL,
@@ -567,14 +598,14 @@ class MmeController extends Controller{
         //If the mme temp is validated and a life sheet has been already created, we need to update the number of version
         if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated===true && $request->mme_remarks!=$mostRecentlyMmeTmp->mmeTemp_remarks){
             //We need to increase the number of mme temp linked to the mme
-            $version_mme=$mme->mme_nbrVersion+1 ; 
+            $version_mme=$mme->mme_nbrVersion+1 ;
             //Update of mme
             $mme->update([
                 'mme_nbrVersion' =>$version_mme,
             ]);
-            
+
             //We need to increase the version of the mme temp (because we create a new mme temp)
-            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ;
             //Creation of a new mme temp
             $mostRecentlyMmeTmp->update([
                 'mmeTemp_version' => $version,
@@ -590,7 +621,7 @@ class MmeController extends Controller{
             //Update of mme
             $mme->update([
                 'mme_internalReference' => $request->mme_internalReference,
-                'mme_externalReference' => $request->mme_externalReference, 
+                'mme_externalReference' => $request->mme_externalReference,
                 'mme_name' => $request->mme_name,
                 'mme_serialNumber' => $request->mme_serialNumber,
                 'mme_constructor' => $request->mme_constructor,
@@ -614,28 +645,28 @@ class MmeController extends Controller{
      * */
     public function send_mme_verif_for_planning(){
         $mmes=Mme::all() ;
-        $container=array() ; 
+        $container=array() ;
         foreach($mmes as $mme){
             $containerVerif=array() ;
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->where('verif_reformDate','=',NULL)->get() ; 
+                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->where('verif_reformDate','=',NULL)->get() ;
                 foreach( $verifs as $verif){
                     $AllnextDate=array() ;
                     if ($verif->verif_preventiveOperation){
-                        $dates=explode(' ', $verif->verif_nextDate) ; 
+                        $dates=explode(' ', $verif->verif_nextDate) ;
                         $ymd=explode('-', $dates[0]);
-                        $year=$ymd[0] ; 
+                        $year=$ymd[0] ;
                         $month=$ymd[1] ;
                         $day=$ymd[2] ;
 
-                        $time=explode(':', $dates[1]); 
+                        $time=explode(':', $dates[1]);
                         $hour=$time[0] ;
-                        $min=$time[1] ; 
+                        $min=$time[1] ;
                         $sec=$time[2] ;
-                    
+
                         $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
-                        $endDate=Carbon::now('Europe/Paris'); 
+                        $endDate=Carbon::now('Europe/Paris');
                         $endDate->addMonths(24);
                         $dateForPush=Carbon::create($nextDate->year, $nextDate->month, $nextDate->day, $nextDate->hour, $nextDate->minute, $nextDate->second) ;
                         $monthForPush=$dateForPush->month ;
@@ -645,16 +676,16 @@ class MmeController extends Controller{
                         array_push($AllnextDate,$monthForPush."-".$dateForPush->year) ;
                         while($nextDate<$endDate){
                             if ($verif->verif_symbolPeriodicity=='Y'){
-                                $nextDate->addYears($verif->verif_periodicity) ; 
+                                $nextDate->addYears($verif->verif_periodicity) ;
                             }
                             if ($verif->verif_symbolPeriodicity=='M'){
-                                $nextDate->addMonths($verif->verif_periodicity) ; 
+                                $nextDate->addMonths($verif->verif_periodicity) ;
                             }
                             if ($verif->verif_symbolPeriodicity=='D'){
-                                $nextDate->addDays($verif->verif_periodicity) ; 
+                                $nextDate->addDays($verif->verif_periodicity) ;
                             }
                             if ($verif->verif_symbolPeriodicity=='H'){
-                                $nextDate->addHours($verif->verif_periodicity) ; 
+                                $nextDate->addHours($verif->verif_periodicity) ;
                             }
                             if ($nextDate<$endDate) {
                                 $dateForPush2=Carbon::create($nextDate->year, $nextDate->month, $nextDate->day, $nextDate->hour, $nextDate->minute, $nextDate->second) ;
@@ -673,7 +704,7 @@ class MmeController extends Controller{
                             "verif_periodicity" => (string)$verif->verif_periodicity,
                             "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
                             "verif_nextDate" => $AllnextDate,
-                            
+
                         ]);
                         array_push($containerVerif,$opVerif);
 
@@ -685,7 +716,7 @@ class MmeController extends Controller{
                             "verif_periodicity" => "N/A",
                             "verif_symbolPeriodicity" => "",
                             "verif_nextDate" => $AllnextDate,
-                            
+
                         ]);
                         array_push($containerVerif,$opVerif);
                     }
@@ -696,7 +727,7 @@ class MmeController extends Controller{
                     "internalReference" => $mme->mme_internalReference,
                     "name" => $mme->mme_name,
                     "verifications" => $containerVerif,
-                ]) ; 
+                ]) ;
 
                 array_push($container,$mme);
 
@@ -706,9 +737,9 @@ class MmeController extends Controller{
         return response()->json($container) ;
     }
 
-    
 
-    
+
+
     /**
      * Function call by MmeConsult.vue when the form is submitted for update with the route : /mme/verifValidation{id} (post)
      * Tell if the mme is ready to be validated
@@ -716,9 +747,9 @@ class MmeController extends Controller{
      * @return \Illuminate\Http\Response
      * */
     public function verif_validation($id){
-        $container=array() ; 
-        $container2=array() ; 
-        
+        $container=array() ;
+        $container2=array() ;
+
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyMmeTmp->mmeTemp_validate!="validated"){
             $obj=([
@@ -727,13 +758,13 @@ class MmeController extends Controller{
             array_push($container2,$obj);
         }
 
-        $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
         if (count($files)<1){
             $obj2=([
                 'validation' => ["You can't validate an mme that doesn't have at least one file"]
             ]);
             array_push($container2,$obj2);
-            
+
         }else{
             foreach($files as $file){
                 if ($file->file_validate != "validated"){
@@ -744,8 +775,8 @@ class MmeController extends Controller{
                 }
             }
         }
-        
-        $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+
+        $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
         if (count($usages)<1){
             $obj4=([
                 'validation' => ["You can't validate an mme that doesn't have at least one usage"]
@@ -754,7 +785,7 @@ class MmeController extends Controller{
         }else{
             foreach($usages as $usage){
                 if ($usage->usg_validate != "validated"){
-                    
+
                     $obj5=([
                         'validation' => ["You can't validate an mme that have at least one usage in draft or in to be validated, you have to validated it"]
                     ]);
@@ -762,7 +793,7 @@ class MmeController extends Controller{
                 }
             }
         }
-        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
         if (count($verifs)<1){
             $obj9=([
                 'validation' => ["You can't validate an mme that doesn't have at least one verification "]
@@ -792,39 +823,45 @@ class MmeController extends Controller{
      * The id parameter is the id of the mme in which we want to validate
      * @return \Illuminate\Http\Response
      * */
-    
+
     public function validation(Request $request, $id){
-        $mme=Mme::findOrFail($id) ; 
+        $mme=Mme::findOrFail($id) ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        
+
         if ($request->reason=="technical"){
             $mostRecentlyMmeTmp->update([
                 'technicalVerifier_id' => $request->enteredBy_id,
             ]);
+            $newState=MmeState::create([
+                'state_remarks' => "This mme has been validated by a technical verifier",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_isOk' => true,
+                'state_validate' => "validated",
+                'state_name' => "Waiting_to_be_in_use"
+            ]) ;
+
+            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
 
         if ($request->reason=="quality"){
             $mostRecentlyMmeTmp->update([
                 'qualityVerifier_id'=> $request->enteredBy_id,
             ]);
+            $newState=MmeState::create([
+                'state_remarks' => "This mme has been validated by a quality verifier",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_isOk' => true,
+                'state_validate' => "validated",
+                'state_name' => "In_use"
+            ]) ;
+
+            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
 
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL && $mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
             $mostRecentlyMmeTmp->update([
                  'mmeTemp_lifeSheetCreated' => true,
             ]);
-
-            
-            //Creation of a new state
-            $newState=MmeState::create([
-                'state_remarks' => "This mme has been validated",
-                'state_startDate' =>  Carbon::now('Europe/Paris'),
-                'state_isOk' => true,
-                'state_validate' => "drafted",
-                'state_name' => "Waiting_to_be_in_use"
-            ]) ; 
-
-            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
     }
 
@@ -835,18 +872,18 @@ class MmeController extends Controller{
      * */
     public function send_mme_verif_for_monthly_planning(){
         $mmes=Mme::all() ;
-        $containerVerif=array() ; 
+        $containerVerif=array() ;
         foreach($mmes as $mme){
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->where('verif_reformDate','=',NULL)->where('verif_preventiveOperation','=', true)->get() ; 
+                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->where('verif_reformDate','=',NULL)->where('verif_preventiveOperation','=', true)->get() ;
                 foreach( $verifs as $verif){
                     $now=Carbon::now('Europe/Paris');
                     $oneMonthLater=Carbon::now('Europe/Paris');
                     $oneMonthLater->addMonths(1);
-                    $dates=explode(' ', $verif->verif_nextDate) ; 
+                    $dates=explode(' ', $verif->verif_nextDate) ;
                     $ymd=explode('-', $dates[0]);
-                    $year_nextDate=$ymd[0] ; 
+                    $year_nextDate=$ymd[0] ;
                     $month_nextDate=$ymd[1] ;
                     $day_nextDate=$ymd[2] ;
                     $nextDate=$day_nextDate." ".$month_nextDate." ".$year_nextDate;
@@ -854,13 +891,13 @@ class MmeController extends Controller{
                     $states=$mostRecentlyMmeTmp->states;
                     $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
                     foreach($states as $state){
-                        $date=$state->created_at ; 
+                        $date=$state->created_at ;
                         $date2=$mostRecentlyState->created_at;
                         if ($date>=$date2){
-                            $mostRecentlyState=$state ; 
+                            $mostRecentlyState=$state ;
                         }
                     }
-                    
+
                     if ($verif->verif_validate=="validated" && $nextDateCarbon>=$now && $nextDateCarbon<=$oneMonthLater){
                         $verification=([
                             "id" => $verif->id,
@@ -886,7 +923,7 @@ class MmeController extends Controller{
     }
 
 
-    
+
      /**
      * Function call by UpdateState when we delete an mme in the reform state : /mme/delete/{id} (post)
      * Delete a mme and its attributes
@@ -894,17 +931,17 @@ class MmeController extends Controller{
      * */
 
     public function delete_mme($id, Request $request){
-        $mme=Mme::findOrFail($id) ; 
+        $mme=Mme::findOrFail($id) ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $mme->update([
             'mmeTemp_id' => null,
         ]);
-        $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
         foreach ($files as $file){
             $file->delete() ;
         }
 
-        $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
         foreach ($usages as $usage){
             $precs=Precaution::where('mmeUsage_id', '=', $usage->id)->get() ;
             foreach($precs as $prec){
@@ -927,16 +964,16 @@ class MmeController extends Controller{
             ]);
         }
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
 
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
            //update of equipment temp
            $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
@@ -949,26 +986,26 @@ class MmeController extends Controller{
 
     /**
      * Function call by MmeIDForm.vue when the form is submitted for insert with the route : /state/mme/${id}   (post)
-     * Add a new enregistrement of mme and mme_temp in the data base with the informations entered in the form 
+     * Add a new enregistrement of mme and mme_temp in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new mme
      */
     public function add_mme_from_state(Request $request, $id){
 
-        
+
         //Creation of a new mme
         $mme=Mme::create([
             'mme_internalReference' => $request->mme_internalReference,
-            'mme_externalReference' => $request->mme_externalReference, 
+            'mme_externalReference' => $request->mme_externalReference,
             'mme_name' => $request->mme_name,
             'mme_serialNumber' => $request->mme_serialNumber,
             'mme_constructor' => $request->mme_constructor,
             'mme_set' => $request->mme_set,
             'state_id' => $id,
-        ]) ; 
+        ]) ;
 
-        $mme_id=$mme->id ; 
+        $mme_id=$mme->id ;
 
-        
+
         //Creation of a new mme temp
         $new_mmeTemp=MmeTemp::create([
             'mme_id'=> $mme_id,
@@ -985,10 +1022,10 @@ class MmeController extends Controller{
             'state_isOk' => true,
             'state_validate' => "drafted",
             'state_name' => "Waiting_for_referencing"
-        ]) ; 
-        
+        ]) ;
+
         $newState->mme_temps()->attach($new_mmeTemp);
-        return response()->json($mme_id) ; 
+        return response()->json($mme_id) ;
     }
 
     /**
@@ -999,15 +1036,15 @@ class MmeController extends Controller{
      */
     //COMMENTAIRE A CHANGER
     public function send_mme_from_state($state_id){
-        $mme=Mme::where('state_id', '=', $state_id)->first() ; 
-        $validate=NULL ; 
+        $mme=Mme::where('state_id', '=', $state_id)->first() ;
+        $validate=NULL ;
         $massUnit=NULL;
-        $type = NULL ; 
+        $type = NULL ;
         $mobility=NULL;
-        $lifeSheetCreated=$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated ; 
+        $lifeSheetCreated=$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyMmeTmp!=NULL){
-            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ; 
+            $validate=$mostRecentlyMmeTmp->mmeTemp_validate ;
             $remarks=$mostRecentlyMmeTmp->mmeTemp_remarks ;
         }
         $obj=([
@@ -1023,7 +1060,7 @@ class MmeController extends Controller{
         ]);
         return response()->json($obj) ;
 
-        
+
     }
 
     /**
@@ -1033,12 +1070,12 @@ class MmeController extends Controller{
      * */
     public function send_mme_verif_revisionDatePassed(){
         $mmes=Mme::all() ;
-        $container=array() ; 
+        $container=array() ;
         foreach($mmes as $mme){
             $containerVerif=array() ;
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;  
+                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;
                 $today=Carbon::now() ;
                 foreach( $verifs as $verif){
                     if (($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL) && $verif->verif_nextDate<$today ){
@@ -1064,10 +1101,10 @@ class MmeController extends Controller{
                 $states=$mostRecentlyMmeTmp->states;
                 $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
                 foreach($states as $state){
-                    $date=$state->created_at ; 
+                    $date=$state->created_at ;
                     $date2=$mostRecentlyState->created_at;
                     if ($date>=$date2){
-                        $mostRecentlyState=$state ; 
+                        $mostRecentlyState=$state ;
                     }
                 }
 
@@ -1077,7 +1114,7 @@ class MmeController extends Controller{
                         "internalReference" => $mme->mme_internalReference,
                         "verifications" => $containerVerif,
                         "state_id" => $mostRecentlyState->id,
-                    ]) ; 
+                    ]) ;
                     array_push($container,$mme);
                 }
             }
@@ -1092,27 +1129,27 @@ class MmeController extends Controller{
      * */
     public function send_mme_verif_revisionLimitPassed(){
         $mmes=Mme::all() ;
-        $container=array() ; 
+        $container=array() ;
         foreach($mmes as $mme){
             $containerVerif=array() ;
             $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;    
+                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;
                 $today=Carbon::now('Europe/London') ;
                 foreach( $verifs as $verif){
-                    $dates=explode(' ', $verif->verif_nextDate) ; 
+                    $dates=explode(' ', $verif->verif_nextDate) ;
                     $ymd=explode('-', $dates[0]);
-                    $year=$ymd[0] ; 
+                    $year=$ymd[0] ;
                     $month=$ymd[1] ;
                     $day=$ymd[2] ;
 
-                    $time=explode(':', $dates[1]); 
+                    $time=explode(':', $dates[1]);
                     $hour=$time[0] ;
-                    $min=$time[1] ; 
+                    $min=$time[1] ;
                     $sec=$time[2] ;
-                
+
                     $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
-                    $OneWeekLater=$nextDate->addDays(7) ; 
+                    $OneWeekLater=$nextDate->addDays(7) ;
                     if (($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL) && $OneWeekLater<$today ){
                         $verif=([
                             "id" => $verif->id,
@@ -1128,7 +1165,7 @@ class MmeController extends Controller{
                             'verif_expectedResult' => $verif->verif_expectedResult,
                             'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
                             'verif_validate' => $verif->verif_validate,
-                            
+
                         ]);
                         array_push($containerVerif,$verif);
                     }
@@ -1136,10 +1173,10 @@ class MmeController extends Controller{
                 $states=$mostRecentlyMmeTmp->states;
                 $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
                 foreach($states as $state){
-                    $date=$state->created_at ; 
+                    $date=$state->created_at ;
                     $date2=$mostRecentlyState->created_at;
                     if ($date>=$date2){
-                        $mostRecentlyState=$state ; 
+                        $mostRecentlyState=$state ;
                     }
                 }
 
@@ -1149,8 +1186,8 @@ class MmeController extends Controller{
                         "internalReference" => $mme->mme_internalReference,
                         "verifications" => $containerVerif,
                         "state_id" => $mostRecentlyState->id,
-                    ]) ; 
-    
+                    ]) ;
+
                     array_push($container,$mme);
                 }
             }

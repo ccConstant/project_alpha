@@ -1,23 +1,25 @@
 <!--File name : InputNumberForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of an input type number called in the different forms-->
 
 <template>
     <div>
-        <!--Label of the input-->
-        <label class="form-label" :for="name">
-            {{label}}
-        </label>
-        <!--InputInfo component is called here, we send to him the help test initialized in a parent component if he is not equal to null-->
-        <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
-        <!--Initializing of the number type input with his props initialized in the parent component-->
-        <input :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"
-         :name="name" type="number" :step="stepOfInput" :disabled="!!isDisabled" :required="!!isRequired"
-          :value="value" v-on:input="updateValue($event.target.value)" >
-        <!--If this field has an error this div appear with the error described inside -->
-        <div v-if="hasError(this.Errors)" class="invalid-feedback">
-            {{this.Errors[0]}}
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" :for="name">
+                {{label}}
+                <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
+            </label>
+            <!--InputInfo component is called here, we send to him the help test initialized in a parent component if he is not equal to null-->
+            <div class="col-sm-10">
+                <input :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"
+                       :name="name" type="number" :step="stepOfInput" :disabled="!!isDisabled" :required="!!isRequired"
+                       :value="value" v-on:input="updateValue($event.target.value)" >
+                <!--If this field has an error this div appear with the error described inside -->
+                <div v-if="hasError(this.Errors)" class="invalid-feedback">
+                    {{this.Errors[0]}}
+                </div>
+            </div>
         </div>
     </div>
 </template>

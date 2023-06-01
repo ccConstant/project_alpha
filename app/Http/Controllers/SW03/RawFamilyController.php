@@ -10,7 +10,11 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Models\SW03\Criticality;
+use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\PurchaseSpecification;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SW03\RawFamily;
@@ -35,6 +39,7 @@ class RawFamilyController extends Controller
                     'artFam_design' => 'required|min:3|max:255|string',
                     'artFam_drawingPath' => 'required|min:3|max:255|string',
                     'artFam_variablesCharac' => 'required|min:2|max:255|string',
+                    'artFam_variablesCharacDesign' => 'required|min:2|max:255|string',
                     'artFam_genRef' => 'required|min:3|max:255|string',
                     'artFam_genDesign' => 'required|min:3|max:255|string',
                 ],
@@ -44,23 +49,33 @@ class RawFamilyController extends Controller
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
                     'artFam_ref.string' => 'You must enter a string ',
+
                     'artFam_design.required' => 'You must enter a design for your raw family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
                     'artFam_design.string' => 'You must enter a string ',
+
                     'artFam_drawingPath.required' => 'You must enter a drawing path for your raw family ',
                     'artFam_drawingPath.min' => 'You must enter at least three characters ',
                     'artFam_drawingPath.max' => 'You must enter less than 255 characters ',
                     'artFam_drawingPath.string' => 'You must enter a string ',
+
                     'artFam_variablesCharac.required' => 'You must enter variables characteristics for your raw family ',
                     'artFam_variablesCharac.min' => 'You must enter at least two characters ',
                     'artFam_variablesCharac.max' => 'You must enter less than 255 characters ',
                     'artFam_variablesCharac.string' => 'You must enter a string ',
-                    'artFam_genRef.required' => 'You must enter a general reference for your comp family ',
+
+                    'artFam_variablesCharacDesign.required' => 'You must enter variables characteristics design for your raw family ',
+                    'artFam_variablesCharacDesign.min' => 'You must enter at least two characters ',
+                    'artFam_variablesCharacDesign.max' => 'You must enter less than 255 characters ',
+                    'artFam_variablesCharacDesign.string' => 'You must enter a string ',
+
+                    'artFam_genRef.required' => 'You must enter a general reference for your raw family ',
                     'artFam_genRef.min' => 'You must enter at least three characters ',
                     'artFam_genRef.max' => 'You must enter less than 255 characters ',
                     'artFam_genRef.string' => 'You must enter a string ',
-                    'artFam_genDesign.required' => 'You must enter a general design for your comp family ',
+
+                    'artFam_genDesign.required' => 'You must enter a general design for your raw family ',
                     'artFam_genDesign.min' => 'You must enter at least three characters ',
                     'artFam_genDesign.max' => 'You must enter less than 255 characters ',
                     'artFam_genDesign.string' => 'You must enter a string ',
@@ -87,6 +102,7 @@ class RawFamilyController extends Controller
                     'artFam_design' => 'required|min:3|max:255|string',
                     'artFam_drawingPath' => 'max:255|string',
                     'artFam_variablesCharac' => 'max:255|string',
+                    'artFam_variablesCharacDesign' => 'max:255|string',
                     'artFam_genRef' => 'max:255|string',
                     'artFam_genDesign' => 'max:255|string',
                 ],
@@ -95,16 +111,24 @@ class RawFamilyController extends Controller
                     'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artFam_ref.string' => 'You must enter a string ',
+
                     'artFam_design.required' => 'You must enter a designation for your raw family ',
                     'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
                     'artFam_design.string' => 'You must enter a string ',
+
                     'artFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
                     'artFam_drawingPath.string' => 'You must enter a string ',
+
                     'artFam_variablesCharac.max' => 'You must enter a maximum of 255 characters',
                     'artFam_variablesCharac.string' => 'You must enter a string ',
+
+                    'artFam_variablesCharacDesign.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_variablesCharacDesign.string' => 'You must enter a string ',
+
                     'artFam_genRef.max' => 'You must enter a maximum of 255 characters',
                     'artFam_genRef.string' => 'You must enter a string ',
+
                     'artFam_genDesign.max' => 'You must enter a maximum of 255 characters',
                     'artFam_genDesign.string' => 'You must enter a string ',
                 ]
@@ -141,6 +165,7 @@ class RawFamilyController extends Controller
             'rawFam_drawingPath'=> $request->artFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
             'rawFam_variablesCharac' => $request->artFam_variablesCharac,
+            'rawFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,
             'rawFam_validate' => $request->artFam_validate,
             'rawFam_active' => $request->artFam_active,
             'rawFam_genRef' => $request->artFam_genRef,
@@ -180,6 +205,7 @@ class RawFamilyController extends Controller
                 'rawFam_design' => $rawFamily->rawFam_design,
                 'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
                 'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
+                'rawFam_variablesCharacDesign' => $rawFamily->rawFam_variablesCharacDesign,
                 'rawFam_validate' => $rawFamily->rawFam_validate,
                 'rawFam_active' => $rawFamily->rawFam_active,
                 'rawFam_purchasedBy' => $purchaseBy,
@@ -225,6 +251,7 @@ class RawFamilyController extends Controller
             'rawFam_design' => $rawFamily->rawFam_design,
             'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
             'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
+            'rawFam_variablesCharacDesign' => $rawFamily->rawFam_variablesCharacDesign,
             'rawFam_validate' => $rawFamily->rawFam_validate,
             'rawFam_active' => $rawFamily->rawFam_active,
             'rawFam_purchasedBy' => $purchaseBy,
@@ -259,6 +286,7 @@ class RawFamilyController extends Controller
             'rawFam_design' => $request->artFam_design,
             'rawFam_drawingPath' => $request->artFam_drawingPath,
             'rawFam_variablesCharac' => $request->artFam_variablesCharac,
+            'rawFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,
             'rawFam_version' => $request->artFam_version,
             'rawFam_qualityApproverId' => null,
             'rawFam_technicalReviewerId' => null,
@@ -270,5 +298,56 @@ class RawFamilyController extends Controller
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($rawFamily);
+    }
+
+    public function verifValidation_rawFamily($id) {
+        $article = RawFamily::all()->where('id', '==', $id)->first();
+        if ($article->rawFam_validate !== 'validated') {
+            return response()->json([
+                'error' => 'This article family is not validated'
+            ], 429);
+        }
+        $criticalities = Criticality::all()->where('rawFam_id', '==', $id);
+        foreach ($criticalities as $criticality) {
+            if ($criticality->crit_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This article family has not validated criticalities'
+                ], 429);
+            }
+        }
+        $purSpes = PurchaseSpecification::all()->where('rawFam_id', '==', $id);
+        foreach ($purSpes as $purSpe) {
+            if ($purSpe->purSpe_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This article family has not validated purchase specifications'
+                ], 429);
+            }
+        }
+        $incmgInsp = IncomingInspection::all()->where('rawFam_id', '==', $id);
+        foreach ($incmgInsp as $incmg) {
+            if ($incmg->incmgInsp_validate !== 'validated') {
+                return response()->json([
+                    'error' => 'This article family has not validated incoming inspections'
+                ], 429);
+            }
+        }
+    }
+
+    public function validate_rawFamily(Request $request, $id) {
+        $rawFamily = RawFamily::findOrfail($id);
+        if ($request->reason === 'technical') {
+            $rawFamily->update([
+                'rawFam_technicalReviewerId' => $request->user_id,
+            ]);
+        } else if ($request->reason === 'quality') {
+            $rawFamily->update([
+                'rawFam_qualityApproverId' => $request->user_id,
+            ]);
+        }
+        if ($rawFamily->rawFam_technicalReviewerId != null && $rawFamily->rawFam_qualityApproverId != null) {
+            $rawFamily->update([
+                'rawFam_signatureDate' => Carbon::now(),
+            ]);
+        }
     }
 }

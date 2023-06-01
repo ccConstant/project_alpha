@@ -26,7 +26,21 @@ class ConsFamily extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['consFam_ref', 'consFam_design', 'consFam_drawingPath','enumPurchasedBy_id', 'consFam_nbrVersion', 'consFam_variablesCharac', 'consFam_qualityApproverId', 'consFam_technicalReviewerId', 'consFam_signatureDate', 'consFam_validate', 'consFam_version', 'consFam_active', 'consFam_genDesign', 'consFam_genRef'] ;
+    protected $fillable = ['consFam_ref',
+        'consFam_design',
+        'consFam_drawingPath',
+        'enumPurchasedBy_id',
+        'consFam_nbrVersion',
+        'consFam_variablesCharac',
+        'consFam_variablesCharacDesign',
+        'consFam_qualityApproverId',
+        'consFam_technicalReviewerId',
+        'consFam_signatureDate',
+        'consFam_validate',
+        'consFam_version',
+        'consFam_active',
+        'consFam_genDesign',
+        'consFam_genRef'] ;
 
     //Define the relation between a consFamily and its consFamilyMember : a consFamilyMember can correspond to only one consFamily
     public function cons_family_member(){

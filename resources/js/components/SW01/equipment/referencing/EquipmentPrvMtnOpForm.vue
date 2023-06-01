@@ -1,6 +1,6 @@
 <!--File name : EquipmentPrvMtnOpForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 4 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of the Form of the equipment preventive maintenance operation who call all the input component-->
 
 <template>
@@ -12,9 +12,8 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <div
-                    v-if="isInConsultedMod==true && this.prvMtnOp_number!==null || this.modifMod==true && this.prvMtnOp_number!==null">
-                    <InputNumberForm inputClassName="form-control w-25" :Errors="errors.prvMtnOp_number"
+                <div v-if="isInConsultedMod==true && this.prvMtnOp_number!==null || this.modifMod==true && this.prvMtnOp_number!==null">
+                    <InputNumberForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_number"
                                      name="prvMtnOp_number" label="Number :" :stepOfInput="1" v-model="prvMtnOp_number"
                                      isDisabled :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
@@ -35,18 +34,16 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description"
                                    name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod"
                                    v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
-                <div class="input-group">
-                    <InputNumberForm inputClassName="form-control" :Errors="errors.prvMtnOp_periodicity"
-                                     name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1"
-                                     v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod"
-                                     :info_text="infos_prvMtnOp[1].info_value"/>
-                    <InputSelectForm @clearSelectError='clearSelectError' name="prvMtnOp_symbolPeriodicity"
-                                     label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity"
-                                     :options="enum_periodicity_symbol" :number="this.prvMtnOp_id"
-                                     :id_actual="SymbolPeriodicity" :selctedOption="prvMtnOp_symbolPeriodicity"
-                                     :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass"
-                                     v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
-                </div>
+                <InputNumberForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_periodicity"
+                                 name="prvMtnOp_periodicity" label="Periodicity :" :stepOfInput="1"
+                                 v-model="prvMtnOp_periodicity" :isDisabled="!!isInConsultedMod"
+                                 :info_text="infos_prvMtnOp[1].info_value"/>
+                <InputSelectForm selectClassName="form-control w-50"@clearSelectError='clearSelectError' name="prvMtnOp_symbolPeriodicity"
+                                 label="Symbol :" :Errors="errors.prvMtnOp_symbolPeriodicity"
+                                 :options="enum_periodicity_symbol" :number="this.prvMtnOp_id"
+                                 :id_actual="SymbolPeriodicity" :selctedOption="prvMtnOp_symbolPeriodicity"
+                                 :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass"
+                                 v-model="prvMtnOp_symbolPeriodicity" :info_text="infos_prvMtnOp[2].info_value"/>
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol"
                                    name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod"
                                    v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>

@@ -33,6 +33,9 @@
                 <div class="title_planning_pdf">
                     MONTHLY EQUIPMENT PLANNING
                 </div>
+                <p style="margin-left: 150px;">
+                    Click on line concerned to record a preventive maintenance operation
+                </p>
                 <div class="planning_table">
                     <b-row>
                         <b-col cols="1" class="planning_table_internalReference">
@@ -49,7 +52,7 @@
                         </b-col>
                     </b-row>
                     <div v-for="(prvMtnOp,index) in eq_nextMonth " :key="index">
-                        <b-row>
+                        <b-row @click="handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)">
                             <b-col cols="1"   class="planning_table_internalReference">
                                  <p class="text-primary">{{prvMtnOp.Internal_Ref}}</p>
                             </b-col>
@@ -57,18 +60,20 @@
                                 <p class="text-primary">{{prvMtnOp.Description}}</p>
                             </b-col>
                             <b-col cols="4"  class="planning_table_number">
-                               <p class="text-primary" @click="handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)"> {{prvMtnOp.Number}}</p>
+                               <p class="text-primary"> {{prvMtnOp.Number}}</p>
                             </b-col>
                             <b-col cols="4"  class="planning_table_nextDate">
-                                <p class="text-primary"> {{prvMtnOp.nextDate}}</p>
+                                <p class="text-primary">
+                                    {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getDate() }}
+                                    {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
+                                    {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getFullYear() }}
+                                </p>
                             </b-col>
                         </b-row>
                     </div>
                 </div>
             </div>
             <EventDetailsModal ref="event_details" :prvMtnOp="prvMtnOp" @modalClosed="modalClosed"></EventDetailsModal>
-
-
         </div>
     </div>
 </template>

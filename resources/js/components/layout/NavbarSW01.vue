@@ -4,10 +4,10 @@
 <!--Vue Component of the navigation bar, up of the website-->
 
 <template>
-	<div>
+	<div class="main">
 		<b-navbar type="dark" variant="dark">
 			<b-navbar-nav>
-				<b-navbar-brand href="/"><img src="/images/logo.png" class="logo_navbar" alt="Alpha Logo"></b-navbar-brand>
+				<b-navbar-brand href="/"><img src="/images/logo.jpg" class="logo_navbar" alt="Alpha Logo"></b-navbar-brand>
 <!--				<b-navbar-brand href="/">Home</b-navbar-brand>-->
 				<!-- Navbar dropdowns -->
                 <!-- For the Equipment drop-down menu -->
@@ -64,7 +64,7 @@ export default {
 			if(this.$userId.user_addEnumRight==true ||
 			this.$userId.user_deleteEnumRight==true ||
 			this.$userId.user_updateEnumRight==true){
-				this.$router.push({ name: "url_enum" }).catch(() => {})
+				this.$router.push({ name: "url_enum_SW01" }).catch(() => {})
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}
@@ -78,7 +78,7 @@ export default {
 		},
 		info_acces(){
 			if(this.$userId.user_updateInformationRight==true){
-				this.$router.push({ name: "url_infos" }).catch(() => {})
+				this.$router.push({ name: "url_infos_SW01" }).catch(() => {})
 			}else{
 				this.$refs.errorAlert.showAlert("You don't have the right");
 			}
@@ -87,18 +87,15 @@ export default {
 }
 </script>
 
-<style>
-	/*.navbar{
-		width:1042px;
-		height:60px;
-		position:fixed;
-	}*/
-
-	.logo_navbar{
-		width: 80px;
-		height: 40px;
-	}
-
-
+<style scoped>
+.main{
+    width: 100%;
+    max-height: 5vh;
+    margin-bottom: 10px;
+}
+.logo_navbar{
+    width: 80px;
+    height: 40px;
+}
 </style>
 

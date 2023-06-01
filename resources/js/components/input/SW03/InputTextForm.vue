@@ -5,35 +5,34 @@
 
 
 <template>
-    <div :class="divClassName">
-        <!--Initializing of the number type input with his props initialized in the parent component-->
-        <b-form-group
-            :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"
-            type="text"
-            label-for="input-1"
-            :disabled="isDisabled"
-            :placeholder="placeholer"
-            :invalid-feedback="invalidFeedBack"
-            :state="state"
+    <div>
+        <div
+            class="form-group row"
         >
-            <label slot="label" :for="name">
+            <label for="input" class="col-sm-2 col-form-label">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>
-            <b-form-input
-                :disabled="isDisabled"
-                v-model="data"
-                v-on:input="updateValue(data)"
-                :state="state"
-                trim
-            ></b-form-input>
-        </b-form-group>
-        <!--If this field has an error this div appear with the error described inside -->
-        <div v-if="hasError(this.Errors)" class="invalid-feedback">
-            {{this.Errors[0]}}
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        :class="'form-control' + (state() ? '' : ' is-invalid')"
+                        id="input"
+                        :placeholder="placeholer"
+                        v-model="data"
+                        v-on:input="updateValue(data)"
+                    >
+                    <div v-if="!this.state()" class="invalid-feedback">
+                        {{this.invalidFeedBack()}}
+                    </div>
+                    <div v-else class="valid-feedback">
+                        {{this.invalidFeedBack()}}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -121,11 +120,6 @@ export default {
         },
         hasError(errors){
             return(errors.length>0);
-        }
-    },
-    computed: {
-        InputInfo() {
-            return InputInfo
         },
         state() {
             if (this.isRequired) {
@@ -157,6 +151,11 @@ export default {
                 }
             }
         }
+    },
+    computed: {
+        InputInfo() {
+            return InputInfo
+        },
     }
 }
 </script>

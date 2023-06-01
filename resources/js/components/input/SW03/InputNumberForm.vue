@@ -5,27 +5,24 @@
 
 <template>
     <div>
-        <b-form-group
-            :class="[inputClassName, hasError(this.Errors)?'is-invalid':'']"
-            :name="name"
-            type="number"
-            :disabled="isDisabled"
-            :invalid-feedback="invalidFeedBack"
-            :state="state">
-            <label slot="label" :for="name">
+        <div
+            class="form-group row"
+        >
+            <label for="input" class="col-sm-2 col-form-label">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>
-            <b-form-input
-                type="number"
-                v-model="data"
-                :state="state"
-                v-on:input="updateValue(Number(data))">
-            </b-form-input>
-        </b-form-group>
-        <!--If this field has an error this div appear with the error described inside -->
-        <div v-if="hasError(this.Errors)" class="invalid-feedback">
-            {{this.Errors[0]}}
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input
+                        type="number"
+                        class="form-control is-valid"
+                        id="input"
+                        v-model="data"
+                        v-on:input="updateValue(data)"
+                    >
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -70,7 +67,6 @@ export default {
         stepOfInput:{
             type :Number,
             default:1
-
         },
         isDisabled:{
             type : Boolean,

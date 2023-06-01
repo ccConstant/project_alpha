@@ -1,6 +1,6 @@
 <!--File name : EquipmentAllEventList.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component to show the different event for an equipment-->
 
 <template>
@@ -13,11 +13,11 @@
                 <p>'</p>
                 <div class="le_eq_top_infos">
                     <div class="le_eq_pdf_logo">
-                     <img src="/images/logo.png" alt="Alpha logo" class="le_eq_logo" >
+                     <img src="/images/logo.jpg" alt="Alpha logo" class="le_eq_logo" >
                     </div>
 
                     <div class="le_eq_pdf_titre">
-                        <h2 id="le_eq_titre">LIST OF REGISTERED LIFE EVENTS</h2>
+                        <h2 id="le_eq_titre">EQUIPMENT LIFE SHEET EVENT PART</h2>
                     </div>
 
                     <div class="le_eq_pdf_index">
@@ -107,7 +107,7 @@
                 <div class="le_eq_recordTemplateRefPdf">
                 <div class="le_eq_table_recordTemplateRefPdf">
                      <div class="le_eq_index_recordTemplateRefPdf">
-                        Record Template Ref :  REC-IWE04
+                        Record Template Ref :  REC-IWE13
                     </div>
                     <div class="le_eq_confidential_recordTemplateRefPdf">
                         This document contains CONFIDENTIAL information

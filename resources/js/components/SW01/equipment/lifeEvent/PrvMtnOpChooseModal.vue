@@ -1,6 +1,6 @@
 <!--File name : PrvMtnOpChooseModal.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component to make the modal to choose the preventive maintenance operation to realize-->
 
 <template>
@@ -24,7 +24,6 @@
                                 Description : {{option.prvMtnOp_description}}<br>
                                 Protocol : {{option.prvMtnOp_protocol}}<br>
                                 Next Date : {{option.prvMtnOp_nextDate}}
-
                             </p>
                             </b-card>
                         </b-collapse>
@@ -43,19 +42,23 @@ export default {
     props:{
         prvMtnOps:{
             type:Array
+        },
+        number:{
+            type:String
         }
     },
     data(){
         return{
-            radio_value:'',
+            radio_value: this.number,
             prvMtnOps_data:this.prvMtnOps
         }
     },
     methods: {
         chooseEquipment(){
             if(this.radio_value!=''){
-                this.$emit('choosedOpe',this.radio_value)
-
+                console.log(this.radio_value);
+                console.log(typeof(this.radio_value));
+                this.$emit('choosedOpe',this.radio_value);
             }
             this.$bvModal.hide('modal-1')
         }
@@ -64,6 +67,8 @@ export default {
         for (var i=0;i<this.prvMtnOps_data.length;i++) {
             this.prvMtnOps_data[i].prvMtnOp_nextDate=moment(this.prvMtnOps_data[i].prvMtnOp_nextDate).format('D MMM YYYY ');
         }
+        console.log(this.prvMtnOps_data);
+        console.log(this.number);
     }
 
 }

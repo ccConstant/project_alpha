@@ -15,7 +15,7 @@
                     name="street"
                     label="Street"
                     v-model="supplrAdr_street"
-                    :info_text="null"
+                    :info_text="info_adr[1].info_value"
                     :inputClassName="null"
                     :Errors="Errors.supplrAdr_street"
                     :min="2"
@@ -26,7 +26,7 @@
                     name="town"
                     label="Town"
                     v-model="supplrAdr_town"
-                    :info_text="null"
+                    :info_text="info_adr[2].info_value"
                     :inputClassName="null"
                     :Errors="Errors.supplrAdr_town"
                     :min="2"
@@ -37,7 +37,7 @@
                     name="country"
                     label="Country"
                     v-model="supplrAdr_country"
-                    :info_text="null"
+                    :info_text="info_adr[3].info_value"
                     :inputClassName="null"
                     :Errors="Errors.supplrAdr_country"
                     :min="2"
@@ -49,7 +49,7 @@
                     label="Name"
                     isRequired
                     v-model="supplrAdr_name"
-                    :info_text="null"
+                    :info_text="info_adr[0].info_value"
                     :inputClassName="null"
                     :Errors="Errors.supplrAdr_name"
                     :min="2"
@@ -60,7 +60,7 @@
                     :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                     isRequired
                     v-model="supplrAdr_principal"
-                    :info_text="null"
+                    :info_text="info_adr[5].info_value"
                     :inputClassName="null"
                     :Errors="Errors.supplrAdr_principal"
                     name="principal"
@@ -204,6 +204,7 @@ export default {
             adr_id: this.id,
             loaded: false,
             isInConsultMod: this.consultMod,
+            info_adr: null,
         }
     },
     methods: {
@@ -280,7 +281,11 @@ export default {
         },
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/supplierAdr')
+            .then(response => {
+                this.info_adr = response.data;
+                this.loaded = true;
+            });
     },
 }
 </script>

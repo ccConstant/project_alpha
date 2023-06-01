@@ -25,6 +25,7 @@
                 :artMaterialContactCriticality="component.crit_artMaterialContactCriticality"
                 :artMaterialFunctionCriticality="component.crit_artMaterialFunctionCriticality"
                 :artProcessCriticality="component.crit_artProcessCriticality"
+                :justification="component.crit_justification"
                 :remarks="component.crit_remarks"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
@@ -130,6 +131,7 @@ export default {
             crit_artMaterialContactCriticality,
             crit_artMaterialFunctionCriticality,
             crit_artProcessCriticality,
+            crit_justification,
             crit_remarks,
             crit_validate,
             incmgInsp_id, id, className) {
@@ -140,6 +142,7 @@ export default {
                 crit_artMaterialContactCriticality: crit_artMaterialContactCriticality,
                 crit_artMaterialFunctionCriticality: crit_artMaterialFunctionCriticality,
                 crit_artProcessCriticality: crit_artProcessCriticality,
+                crit_justification: crit_justification,
                 crit_remarks: crit_remarks,
                 validate: crit_validate,
                 incmgInsp_id: incmgInsp_id,
@@ -163,6 +166,7 @@ export default {
                         dt.crit_artMaterialContactCriticality,
                         dt.crit_artMaterialFunctionCriticality,
                         dt.crit_artProcessCriticality,
+                        dt.crit_justification,
                         dt.crit_remarks,
                         dt.crit_validate,
                         dt.incmgInsp_id,

@@ -13,6 +13,7 @@
             :drawingPath="article.drawingPath"
             :purchasedBy="article.purchasedBy"
             :variablesCharac="article.variablesCharac"
+            :variablesCharacDesign="article.variablesCharacDesign"
             :version="article.version"
             :type="articleType.toUpperCase()"
             :active="article.active === 1"
@@ -39,6 +40,7 @@
                             :genRef="this.generic.genRef"
                             :genDesign="this.generic.genDesign"
                             :varCharac="this.generic.variablesCharac"
+                            :varCharacDesign="this.generic.variablesCharacDesign"
                         />
                     </div>
                 </div>
@@ -151,7 +153,7 @@ export default {
         return {
             articleID: Number(this.$route.params.id),
             articleType: this.$route.params.type,
-            article: null,
+            article: [],
             validationMethod: this.$route.query.method,
             errors: [],
             loaded: false,
@@ -174,6 +176,7 @@ export default {
                         drawingPath: response.data.rawFam_drawingPath,
                         nbrVersion: response.data.rawFam_nbrVersion,
                         variablesCharac: response.data.rawFam_variablesCharac,
+                        variablesCharacDesign: response.data.rawFam_variablesCharacDesign,
                         active: response.data.rawFam_active,
                         purchasedBy: response.data.rawFam_purchasedBy,
                         version: null,
@@ -181,13 +184,12 @@ export default {
                         genDesign: response.data.rawFam_genDesign,
                         supplier: response.data.supplr_id,
                     };
-                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
-                        this.generic = {
-                            variablesCharac: this.article.variablesCharac,
-                            genRef: this.article.genRef,
-                            genDesign: this.article.genDesign,
-                        };
-                    }
+                    this.generic = {
+                        variablesCharac: this.article.variablesCharac,
+                        variablesCharacDesign: this.article.variablesCharacDesign,
+                        genRef: this.article.genRef,
+                        genDesign: this.article.genDesign,
+                    };
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
                 })
@@ -203,6 +205,7 @@ export default {
                         drawingPath: response.data.compFam_drawingPath,
                         nbrVersion: response.data.compFam_nbrVersion,
                         variablesCharac: response.data.compFam_variablesCharac,
+                        variablesCharacDesign: response.data.compFam_variablesCharacDesign,
                         active: response.data.compFam_active,
                         purchasedBy: response.data.compFam_purchasedBy,
                         version: response.data.compFam_version,
@@ -210,13 +213,13 @@ export default {
                         genDesign: response.data.compFam_genDesign,
                         supplier: response.data.supplr_id,
                     };
-                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
-                        this.generic = {
-                            variablesCharac: this.article.variablesCharac,
-                            genRef: this.article.genRef,
-                            genDesign: this.article.genDesign,
-                        };
-                    }
+                    console.log(this.article);
+                    this.generic = {
+                        variablesCharac: this.article.variablesCharac,
+                        variablesCharacDesign: this.article.variablesCharacDesign,
+                        genRef: this.article.genRef,
+                        genDesign: this.article.genDesign,
+                    };
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
                 })
@@ -232,6 +235,7 @@ export default {
                         drawingPath: response.data.consFam_drawingPath,
                         nbrVersion: response.data.consFam_nbrVersion,
                         variablesCharac: response.data.consFam_variablesCharac,
+                        variablesCharacDesign: response.data.consFam_variablesCharacDesign,
                         active: response.data.consFam_active,
                         purchasedBy: response.data.consFam_purchasedBy,
                         version: response.data.consFam_version,
@@ -239,13 +243,12 @@ export default {
                         genDesign: response.data.consFam_genDesign,
                         supplier: response.data.supplr_id,
                     };
-                    if (this.article.genRef !== null && this.article.genDesign !== null && this.article.variablesCharac !== null) {
-                        this.generic = {
-                            variablesCharac: this.article.variablesCharac,
-                            genRef: this.article.genRef,
-                            genDesign: this.article.genDesign,
-                        };
-                    }
+                    this.generic = {
+                        variablesCharac: this.article.variablesCharac,
+                        variablesCharacDesign: this.article.variablesCharacDesign,
+                        genRef: this.article.genRef,
+                        genDesign: this.article.genDesign,
+                    };
                     this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;
                 })
@@ -255,9 +258,10 @@ export default {
         }
     },
     methods: {
-        genericSetter(ref, design, variableCharac) {
+        genericSetter(ref, design, variableCharac, variableCharacDesign) {
             this.generic = {
                 variablesCharac: variableCharac,
+                variablesCharacDesign: variableCharacDesign,
                 genRef: ref,
                 genDesign: design,
             };

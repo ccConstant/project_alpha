@@ -1,7 +1,7 @@
 <!--
 * Filename : LifeSheetPDFMME.vue
 * Creation date : 11 Jul 2022
-* Update date : 9 Jan 2022
+* Update date : 25 May 2023
 * The document allows us to create the life sheet of a mme and to export it in PDF.
 -->
 
@@ -11,7 +11,7 @@
             <p>'</p>
             <div class="mme_top_infos">
                 <div class="mme_pdf_logo ">
-                  <img src="/images/logo.png" alt="Alpha logo" class="logo"/>
+                  <img src="/images/logo.jpg" alt="Alpha logo" class="logo"/>
                 </div>
 
                 <div class="mme_pdf_titre">
@@ -33,7 +33,7 @@
                     <p>MME unique ID:</p>
                     <h5 class="text-primary">{{mme_idCard.mme_internalReference}}</h5>
                 </div>
-                
+
 
             </div>
 
@@ -41,13 +41,13 @@
                     <div class="title_identification_pdf">
                         <p>IDENTIFICATION</p>
                     </div>
-                    
+
                     <div class="mme_designation_type_pdf">
                         <p>
                             Designation : <b class="text-primary"> {{ mme_idCard.mme_name}}</b>
                         </p>
                         <p>
-                            
+
                         </p>
                     </div>
                     <div class="mme_externalReference_pdf">
@@ -86,7 +86,7 @@
                                 </b-col>
                                 <b-col cols="6"  class="mme_usage_metrologicalLevel_pdf">
                                     Metrological Level
-                                </b-col>             
+                                </b-col>
                             </b-row>
                             <div v-for="(usage,index) in mme_usg " :key="index">
                                 <b-row>
@@ -104,7 +104,7 @@
                                     </b-col>
                                     <b-col cols="4"  class="mme_usage_metrologicalLevel_pdf">
                                     <p class="text-primary"> {{usage.usg_metrologicalLevel}}</p>
-                                    </b-col>               
+                                    </b-col>
                                 </b-row>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                                 </b-col>
                                 <b-col cols="1" class="mme_usg_prctn_description_pdf">
                                     Description
-                                </b-col>                
+                                </b-col>
                             </b-row>
                             <div v-for="(precaution,index) in mme_usg_prctn " :key="index">
                                 <b-row>
@@ -134,7 +134,7 @@
                                     </b-col>
                                     <b-col cols="1" class="mme_usg_prctn_description_pdf">
                                     <p class="text-primary"> {{precaution.prctn_description}} </p>
-                                    </b-col>             
+                                    </b-col>
                                 </b-row>
                             </div>
                         </div>
@@ -155,7 +155,7 @@
                         {{file.file_name}} : {{file.file_location}}<br>
 
                     </p>
-                </div>   
+                </div>
             </div>
 
             <div class="mme_carac_infos_pdf">
@@ -172,7 +172,7 @@
                     <p class="text-primary">
                         {{mme_idCard.mme_remarks}}
                     </p>
-                </div>   
+                </div>
             </div>
 
             <div class="mme_verif_infos_pdf">
@@ -185,8 +185,8 @@
                             N°
                         </b-col>
                         <b-col cols="7" class="verif_puttingIntoService_pdf">
-                            For PIS? 
-                        </b-col >   
+                            For PIS?
+                        </b-col >
                         <b-col cols="2" class="verif_table_name">
                             Name of the verification
                         </b-col>
@@ -201,13 +201,13 @@
                         </b-col >
                         <b-col cols="1" class="verif_table_requiredSkill">
                             Required Skill
-                        </b-col>    
+                        </b-col>
                         <b-col cols="7" class="mme_verifAcceptanceAuthority_pdf">
                                     Verification Acceptance Authority
-                        </b-col >  
+                        </b-col >
                         <b-col cols="7" class="mme_verifReformed">
                                 Reformed?
-                        </b-col >                     
+                        </b-col >
                     </b-row>
                     <div v-for="(verif,index) in mme_verif " :key="index">
                         <b-row>
@@ -216,7 +216,7 @@
                             </b-col>
                             <b-col  cols="1" class="verif_puttingIntoService_pdf">
                                         <p class="text-primary">{{verif.verif_puttingIntoService}} </p>
-                            </b-col>  
+                            </b-col>
                             <b-col cols="1" class="verif_table_name">
                                <p class="text-primary"> {{verif.verif_name}} </p>
                             </b-col>
@@ -232,13 +232,13 @@
                             </b-col>
                             <b-col  cols="1" class="verif_table_requiredSkill">
                                 <p class="text-primary">{{verif.verif_requiredSkill}}</p>
-                            </b-col>  
+                            </b-col>
                              <b-col  cols="1" class="mme_verifAcceptanceAuthority_pdf">
                                         <p class="text-primary">{{verif.verif_verifAcceptanceAuthority}} </p>
-                            </b-col>  
+                            </b-col>
                             <b-col  cols="1" class="mme_verifReformed">
                                         <p class="text-primary">{{verif.verif_reformed}} </p>
-                            </b-col>                     
+                            </b-col>
                         </b-row>
                     </div>
                 </div>
@@ -274,7 +274,7 @@
 						</b-col>
 						<b-col cols="4"  class="history_table_Date">
 							Date of the update
-						</b-col>                  
+						</b-col>
 					</b-row>
 					<div v-for="(history,index) in mme_history " :key="index">
 						<b-row>
@@ -289,7 +289,7 @@
 							</b-col>
 							<b-col cols="4"  class="history_table_Date">
 								<p class="text-primary"> {{history.history_date}}</p>
-							</b-col>                 
+							</b-col>
 						</b-row>
 					</div>
 				</div>
@@ -308,13 +308,13 @@
 			</div>
 		</div>
         <button @click="generateReport" class="btn btn-primary">Generate PDF</button>
-    </div>  
+    </div>
 
 </template>
 
 <script>
 import html2PDF from 'jspdf-html2canvas';
-export default { 
+export default {
     data(){
         return{
             mme_id:this.$route.params.id,
@@ -329,9 +329,9 @@ export default {
     },
 
     components: {
-        
+
     },
-    methods: { 
+    methods: {
         generateReport () {
             let page = document.getElementById('page');
             html2PDF(page, {
@@ -353,7 +353,7 @@ export default {
                     bottom: 10,
                     left: 10,
                 },
-                output: this.mme_idCard.mme_internalReference+'MME LS-D'+'_'+this.mme_idCard.mme_version+'.pdf', 
+                output: this.mme_idCard.mme_internalReference+'MME LS-D'+'_'+this.mme_idCard.mme_version+'.pdf',
             });
         }
     },
@@ -365,7 +365,7 @@ export default {
                 console.log(this.mme_idCard)
             })
             .catch(error => console.log(error));
-        
+
         var consultUrlUsg = (id) => `/mme_usage/send/${id}`;
         console.log(this.mme_id)
         axios.get(consultUrlUsg(this.mme_id))
@@ -376,9 +376,9 @@ export default {
         axios.get(consultUrlFile(this.mme_id))
             .then (response=>this.mme_file=response.data)
             .catch(error => console.log(error)) ;
-    
-        
-        
+
+
+
         var consultUrlVerif = (id) => `/verifs/send/lifesheet/${id}`;
         axios.get(consultUrlVerif(this.mme_id))
             .then (response=>{
@@ -386,13 +386,13 @@ export default {
                 console.log(response.data)
             })
             .catch(error => console.log(error)) ;
-        
+
 
         var consultUrlPrctn = (id) => `/prctn/send/pdf/${id}`;
         axios.get(consultUrlPrctn(this.mme_id))
             .then (response=>{
                 this.mme_usg_prctn=response.data
-                
+
             })
             .catch(error => console.log(error)) ;
 
@@ -440,7 +440,7 @@ export default {
                       .logo{
                         margin-top:30px;
                     }
-                    
+
                 }
                 .mme_pdf_titre{
                     border: solid 0.5px black;
@@ -451,9 +451,9 @@ export default {
                     left:300px;
                     height: 87px;
                     text-align:center;
-                   
-                    
-                    
+
+
+
                 }
                 .mme_fiche_de_vie_titre{
                     text-align: center;
@@ -512,15 +512,15 @@ export default {
                         margin-bottom : 0px ;
                     }
                 }
-            
-                
+
+
                 .mme_designation_type_pdf{
                     border: solid 1px black;
                     width: 500px;
                     height: 60px;
                     margin-bottom: 20px;
                     float: left;
-                    
+
                 }
                 .mme_externalReference_pdf{
                     border: solid 1px black;
@@ -541,7 +541,7 @@ export default {
                     margin-left: 42px;
                     width: 500px;
                     height: 60px;
-                    float: left; 
+                    float: left;
                 }
 
             }
@@ -557,7 +557,7 @@ export default {
                         margin-bottom : 0px ;
                     }
                 }
-                
+
 
                 .usg_table{
                     margin-left: 150px;
@@ -610,7 +610,7 @@ export default {
                         margin-bottom : 0px ;
                     }
                 }
-                
+
 
                 .prctn_table{
                     margin-left: 150px;
@@ -662,17 +662,17 @@ export default {
                     font-weight: bold;
                     margin-bottom:0px;
                 }
-               
-    
-                
+
+
+
                 .mme_set_pdf{
                     position: relative;
-                    
+
                     p{
                         ///margin-top: 3px;
                          margin-bottom:0px;
                         margin-left: 10px;
-                        
+
                     }
                     .mme_set_pdf{
                         display: inline-block;
@@ -693,7 +693,7 @@ export default {
                     width: 1042px;
                 }
             }
-            
+
             .mme_verif_infos_pdf{
                 position: relative;
                 margin-top:10px ;
@@ -743,13 +743,13 @@ export default {
                         text-align: center;
                         width:174.4px;
                         height:auto;
-                    }                  
+                    }
                     .verif_table_periodicity{
                         border: solid 1px black;
                         width:65px;
                         text-align: center;
                         height:auto;
-                    
+
                     }
                     .mme_verifAcceptanceAuthority_pdf{
                          border: solid 1px black;
@@ -799,7 +799,7 @@ export default {
             margin-top:10px ;
             width : 1112px;
 			margin-top : 50px;
-            
+
             .title_history_pdf{
                 width: 400px;
                 font-size : 20px;
@@ -828,7 +828,7 @@ export default {
                     border: solid 1px black;
                     text-align: center;
                     width:200px;
-                }                    
+                }
             }
         }
 
@@ -837,7 +837,7 @@ export default {
             left:150px;
             margin-top:10px ;
             width: 1042px;
-            
+
 
             .mmeHistory_table_recordTemplateRefPdf{
                 .mmeHistory_confidential_recordTemplateRefPdf{
@@ -859,9 +859,9 @@ export default {
         }
     }
 
-        
-        
 
-    
+
+
+
 
 </style>

@@ -93,7 +93,6 @@ export default {
         axios.get('/supplier/send/' + this.supplr_id)
         .then(response => {
             this.supplr_idCard = response.data;
-            console.log(this.supplr_idCard);
         })
         .catch(error => {
             this.$refs.errorAlert.showAlert(error.response.data.message);
@@ -102,15 +101,11 @@ export default {
         axios.get('/supplier/contact/send/' + this.supplr_id)
         .then(response => {
             this.supplr_contact = response.data;
-            console.log('contact');
-            console.log(this.supplr_contact);
         })
 
         axios.get('/supplier/adr/send/' + this.supplr_id)
         .then(response => {
             this.supplr_address = response.data;
-            console.log('address');
-            console.log(this.supplr_address);
             this.loaded = true
         })
     },

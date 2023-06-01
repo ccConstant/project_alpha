@@ -1,0 +1,17 @@
+Reference;SameValue;Designation
+30;yes;/
+50;yes;/
+100;yes;/
+200;yes;/
+01;no;01 (220x104 with 50x20 Q5)
+02;no;02 (102x76 Ø25 mandrel)
+03;no;03 (20x12 Ø25 mandrel)
+04;no;04 (51x25 Ø25 mandrel)
+057;yes;/
+110;yes;/
+0400x0090;no;Ø 04,00 x Ø 00,90 mm
+0500x0090;no;Ø 05,00 x Ø 00,90 mm
+0080;no;00.80
+0120;no;01.20
+0250;no;02.50
+0400;no;04.00

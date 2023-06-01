@@ -22,25 +22,26 @@ class CreateCompFamiliesTable extends Migration
     public function up()
     {
         Schema::create('comp_families', function (Blueprint $table) {
-            $table->id('id') ;
-            $table->string('compFam_ref') -> unique ;
-            $table->string('compFam_design') ;
-            $table->string('compFam_drawingPath') -> nullable() ;
-            $table->integer('compFam_nbrVersion') -> default(1) ;
-            $table->string('compFam_variablesCharac') -> nullable();
-            $table->timestamps() ;
-            $table->unsignedBigInteger('compFam_qualityApproverId') ->nullable();
-            $table->foreign('compFam_qualityApproverId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('compFam_technicalReviewerId') ->nullable();
-            $table->foreign('compFam_technicalReviewerId')->references('id')->on('users') ;
-            $table->date('compFam_signatureDate') -> nullable() ;
-            $table->enum('compFam_validate',  ['drafted', 'to_be_validated', 'validated']) ;
+            $table->id('id');
+            $table->string('compFam_ref')->unique();
+            $table->string('compFam_design');
+            $table->string('compFam_drawingPath')->nullable();
+            $table->integer('compFam_nbrVersion')->default(1);
+            $table->string('compFam_variablesCharac')->nullable();
+            $table->string('compFam_variablesCharacDesign')->nullable();
+            $table->timestamps();
+            $table->unsignedBigInteger('compFam_qualityApproverId')->nullable();
+            $table->foreign('compFam_qualityApproverId')->references('id')->on('users');
+            $table->unsignedBigInteger('compFam_technicalReviewerId')->nullable();
+            $table->foreign('compFam_technicalReviewerId')->references('id')->on('users');
+            $table->date('compFam_signatureDate')->nullable();
+            $table->enum('compFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('compFam_version')->nullable();
             $table->boolean('compFam_active')->default(true);
             $table->string('compFam_genDesign')->nullable();
             $table->string('compFam_genRef')->nullable();
-            $table->unsignedBigInteger('enumPurchasedBy_id') ->nullable();
-            $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies') -> onDelete('restrict') ;
+            $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
+            $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
 
         });
     }

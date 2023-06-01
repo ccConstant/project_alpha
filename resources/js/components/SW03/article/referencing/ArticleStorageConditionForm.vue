@@ -20,7 +20,7 @@
                     :selctedOption="artFam_storageCondition"
                     :isDisabled="this.isInConsultMod"
                     v-model="artFam_storageCondition"
-                    :info_text="'Article Family Storage Condition value'"
+                    :info_text="null"
                     :id_actual="'ArticleFamilyStorageCondition'"
                 />
                 <SaveButtonForm v-if="this.addSucces==false"

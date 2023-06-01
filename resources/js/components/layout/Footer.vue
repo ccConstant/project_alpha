@@ -1,10 +1,14 @@
-<!--File name : FooterAlpha.vue-->
+<!--File name : Footer.vue-->
 <!--Creation date : 27 Apr 2022-->
 <!--Update date : 12 Apr 2023-->
 <!--Vue Component of the website footer-->
 
 <template>
-  <footer>
+    <div class="main">
+        <p> SW01 Version : 0.0.0  (last update Apr 2023)</p>
+        <p> SW03 Version : 0.0.0  (last update Apr 2023)</p>
+    </div>
+<!--  <footer>
 		<div class="container">
 			<div class="row text-center text-xs-center text-sm-left text-md-left">
 				<div class="col-xs-12 col-sm-12 col-md-12">
@@ -23,7 +27,7 @@
 				<hr>
 			</div>
 		</div>
-	</footer>
+	</footer>-->
 </template>
 
 <script>
@@ -33,7 +37,13 @@ export default {
 </script>
 
 <style lang="scss">
-    footer{
+    .main{
         background-color: skyblue;
+        height: 5vh;
+        text-align: center;
+        vertical-align: bottom;
     }
 </style>
+
+
+handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)

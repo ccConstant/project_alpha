@@ -19,48 +19,53 @@
                 :selctedOption="artFam_type"
                 :isDisabled="this.isInConsultMod"
                 v-model="artFam_type"
-                :info_text="'Article Family Type'"
+                :info_text="null"
                 :id_actual="ArticleFamilyType"
             />
             <div v-if="artFam_type!=''">
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_ref"
-                    name="artFam_ref" label="Article Reference"
+                    name="artFam_ref"
+                    label="Article Reference"
                     :isDisabled="this.isInConsultMod"
                     isRequired
                     v-model="artFam_ref"
-                    :info_text="'Reference of the article'"
+                    :info_text="this.infos_artFam[0].info_value"
                     :min="3"
                     :max="255"
+                    v-on:input="checkRef"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_design"
-                    name="artFam_design" label="Article Designation"
+                    name="artFam_design"
+                    label="Article Designation"
                     :isDisabled="isInConsultMod"
                     isRequired
                     v-model="artFam_design"
-                    :info_text="'Designation of the component'"
+                    :info_text="this.infos_artFam[1].info_value"
                     :min="3"
                     :max="255"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_drawingPath"
-                    name="artFam_drawingPath" label="Article Drawing Path"
+                    name="artFam_drawingPath"
+                    label="Article Drawing Path"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_drawingPath"
-                    :info_text="'Drawing path of the article'"
+                    :info_text="this.infos_artFam[2].info_value"
                     :max="255"
                 />
                 <InputTextForm v-if="artFam_type=='COMP' || artFam_type=='CONS'"
                     :inputClassName="null"
                     :Errors="errors.artFam_version"
-                    name="artFam_version" label="Article Version"
+                    name="artFam_version"
+                    label="Article Version"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_version"
-                    :info_text="'Version of the art'"
+                    :info_text="this.infos_artFam[5].info_value"
                     :max="4"
                 />
                 <RadioGroupForm
@@ -68,7 +73,7 @@
                     :name="'Active ?'"
                     :label="'Active'"
                     v-model="artFam_active"
-                    :info_text="'Is article currently use?'"
+                    :info_text="null"
                     :inputClassName="null"
                     :Errors="errors['Active']"
                     :checkedOption="isInModifMod ? artFam_active : true"
@@ -82,7 +87,7 @@
                     :selctedOption="artFam_purchasedBy"
                     :isDisabled="!!isInConsultMod"
                     v-model="artFam_purchasedBy"
-                    :info_text="'Article Family Purchased By'"
+                    :info_text="this.infos_artFam[3].info_value"
                     :id_actual="purchasedBy"
                 />
                 <h2>
@@ -91,39 +96,40 @@
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_variablesCharac"
-                    name="artFam_variablesCharac" label="Article Variable Characteristic"
+                    name="artFam_variablesCharac"
+                    label="Article Variable Characteristic"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_variablesCharac"
-                    :info_text="'Variables Characteristic of the article'"
+                    :info_text="this.infos_artFam[4].info_value"
                     :max="255"
                 />
-                <p>
-                    <table>
-                        <tr>
-                            <td style="width: 10%; text-align: right; vertical-align: bottom!important;">
-                                {{ artFam_ref }}_
-                            </td>
-                            <td>
-                                <InputTextForm
-                                    :inputClassName="null"
-                                    :Errors="errors.artFam_genRef"
-                                    name="artFam_genDesign" label="Member Generic Reference"
-                                    :isDisabled="isInConsultMod"
-                                    v-model="artFam_genRef"
-                                    :info_text="'Generic Reference of the member'"
-                                    :max="255"
-                                />
-                            </td>
-                        </tr>
-                    </table>
-                </p>
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_variablesCharacDesign"
+                    name="artFam_variablesCharacDesign"
+                    label="Article Variable Characteristic Designations"
+                    :isDisabled="isInConsultMod"
+                    v-model="artFam_variablesCharacDesign"
+                    :info_text="null"
+                    :max="255"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_genRef"
+                    name="artFam_genDesign" label="Member Generic Reference"
+                    :isDisabled="isInConsultMod"
+                    v-model="artFam_genRef"
+                    :info_text="this.infos_artFam[6].info_value"
+                    :max="255"
+                    :value="artFam_genRef"
+                />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_genDesign"
                     name="artFam_genDesign" label="Member Generic Designation"
                     :isDisabled="isInConsultMod"
                     v-model="artFam_genDesign"
-                    :info_text="'Generic Designation of the member'"
+                    :info_text="this.infos_artFam[7].info_value"
                     :max="255"
                 />
                 <SaveButtonForm v-if="this.addSuccess==false"
@@ -182,7 +188,8 @@ export default {
     ---------------------------------------------------*/
     props: {
         reference: {
-            type: String
+            type: String,
+            default: null
         },
         designation: {
             type: String
@@ -194,6 +201,9 @@ export default {
             type: String
         },
         variablesCharac: {
+            type: String
+        },
+        variablesCharacDesign: {
             type: String
         },
         version: {
@@ -255,6 +265,7 @@ export default {
             artFam_drawingPath: this.drawingPath,
             artFam_purchasedBy: this.purchasedBy,
             artFam_variablesCharac: this.variablesCharac,
+            artFam_variablesCharacDesign: this.variablesCharacDesign,
             artFam_version: this.version,
             artFam_storageCondition : this.storageCondition,
             artFam_active: this.active,
@@ -282,6 +293,10 @@ export default {
         }
     },
     created() {
+        axios.get('/info/send/articleFamily')
+            .then(response => {
+                this.infos_artFam = response.data;
+            })
         /*Ask for the controller different purchased by option */
         axios.get('/artFam/enum/purchasedBy')
             .then(response => this.enum_purchasedBy = response.data)
@@ -289,10 +304,12 @@ export default {
 
         /*Ask for the controller different storage condition option */
         axios.get('/artFam/enum/storageCondition')
-            .then(response => this.enum_storageCondition = response.data)
+            .then(response => {
+                this.enum_storageCondition = response.data;
+                this.loaded=true;
+            })
             .catch(error => this.errors = error.response.data.errors);
-            this.loaded=true
-        this.artFam_genRef = this.artFam_genRef.substring(this.artFam_ref.length+1);
+
     },
 
     /*--------Declaration of the different methods:--------*/
@@ -308,11 +325,12 @@ export default {
                         artFam_drawingPath: this.artFam_drawingPath,
                         artFam_purchasedBy: this.artFam_purchasedBy,
                         artFam_variablesCharac: this.artFam_variablesCharac,
+                        artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
                         artFam_id: this.artFam_id,
-                        artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                        artFam_genRef: this.artFam_genRef,
                         artFam_genDesign: this.artFam_genDesign,
                     })
                         /*If the data are correct, we send them to the controller for add them in the database*/
@@ -324,11 +342,12 @@ export default {
                                     artFam_drawingPath: this.artFam_drawingPath,
                                     artFam_purchasedBy: this.artFam_purchasedBy,
                                     artFam_variablesCharac: this.artFam_variablesCharac,
+                                    artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                     artFam_version: this.artFam_version,
                                     artFam_active: this.artFam_active,
                                     artFam_validate: savedAs,
                                     artFam_id: this.artFam_id,
-                                    artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                    artFam_genRef: this.artFam_genRef,
                                     artFam_genDesign: this.artFam_genDesign,
 
                                 })
@@ -340,8 +359,8 @@ export default {
                                         this.artFam_id = response.data;
                                         this.$emit('ArtFamID', this.artFam_id);
                                         this.$emit('ArtFamType', this.artFam_type);
-                                        if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                            this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                                        if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
+                                            this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
                                         }
                                     })
                                     .catch(error => this.errors = error.response.data.errors);
@@ -355,10 +374,11 @@ export default {
                             artFam_drawingPath: this.artFam_drawingPath,
                             artFam_purchasedBy: this.artFam_purchasedBy,
                             artFam_variablesCharac: this.artFam_variablesCharac,
+                            artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                             artFam_active: this.artFam_active,
                             artFam_validate: savedAs,
                             artFam_id: this.artFam_id,
-                            artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                            artFam_genRef: this.artFam_genRef,
                             artFam_genDesign: this.artFam_genDesign,
                         })
                         /*If the data are correct, we send them to the controller for add them in the database*/
@@ -370,10 +390,11 @@ export default {
                                 artFam_drawingPath: this.artFam_drawingPath,
                                 artFam_purchasedBy: this.artFam_purchasedBy,
                                 artFam_variablesCharac: this.artFam_variablesCharac,
+                                artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
                                 artFam_id: this.artFam_id,
-                                artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                artFam_genRef: this.artFam_genRef,
                                 artFam_genDesign: this.artFam_genDesign,
 
                             })
@@ -385,8 +406,8 @@ export default {
                                 this.artFam_id = response.data;
                                 this.$emit('ArtFamID', this.artFam_id);
                                 this.$emit('ArtFamType', this.artFam_type);
-                                if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                    this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                                if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
+                                    this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
                                 }
                             })
                             .catch(error => this.errors = error.response.data.errors);
@@ -401,10 +422,11 @@ export default {
                                 artFam_purchasedBy: this.artFam_purchasedBy,
                                 artFam_version: this.artFam_version,
                                 artFam_variablesCharac: this.artFam_variablesCharac,
+                                artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
                                 artFam_id: this.artFam_id,
-                                artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                artFam_genRef: this.artFam_genRef,
                                 artFam_genDesign: this.artFam_genDesign,
                             })
                             /*If the data are correct, we send them to the controller for add them in the database*/
@@ -416,11 +438,12 @@ export default {
                                     artFam_drawingPath: this.artFam_drawingPath,
                                     artFam_purchasedBy: this.artFam_purchasedBy,
                                     artFam_variablesCharac: this.artFam_variablesCharac,
+                                    artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                                     artFam_active: this.artFam_active,
                                     artFam_version: this.artFam_version,
                                     artFam_validate: savedAs,
                                     artFam_id: this.artFam_id,
-                                    artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                                    artFam_genRef: this.artFam_genRef,
                                     artFam_genDesign: this.artFam_genDesign,
                                 })
                                 /*If the data have been added in the database, we show a success message*/
@@ -431,8 +454,8 @@ export default {
                                     this.artFam_id = response.data;
                                     this.$emit('ArtFamID', this.artFam_id);
                                     this.$emit('ArtFamType', this.artFam_type);
-                                    if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                        this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                                    if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
+                                        this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
                                     }
                                 })
                                 .catch(error => this.errors = error.response.data.errors);
@@ -455,11 +478,12 @@ export default {
                 artFam_drawingPath: this.artFam_drawingPath,
                 artFam_purchasedBy: this.artFam_purchasedBy,
                 artFam_variablesCharac: this.artFam_variablesCharac,
+                artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                 artFam_version: this.artFam_version,
                 artFam_active: this.artFam_active,
                 artFam_validate: savedAs,
                 artFam_id: this.artFam_id,
-                artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                artFam_genRef: this.artFam_genRef,
                 artFam_genDesign: this.artFam_genDesign,
             })
                 /*If the data are correct, we send them to the controller for update data in the database*/
@@ -472,11 +496,12 @@ export default {
                         artFam_drawingPath: this.artFam_drawingPath,
                         artFam_purchasedBy: this.artFam_purchasedBy,
                         artFam_variablesCharac: this.artFam_variablesCharac,
+                        artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
                         artFam_id: this.artFam_id,
-                        artFam_genRef: this.artFam_ref+'_'+this.artFam_genRef,
+                        artFam_genRef: this.artFam_genRef,
                         artFam_genDesign: this.artFam_genDesign,
                     })
                         .then(response => {
@@ -487,7 +512,7 @@ export default {
                                 axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 }).catch(error => {
-                                   console.log(error.response.data);
+                                    this.errors = error.response.data.errors;
                                 });
                                 window.location.reload();
                             }
@@ -495,8 +520,8 @@ export default {
                             /*If the data have been updated in the database, we show a success message*/
                             this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
                             this.artFam_validate = savedAs;
-                            if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null) {
-                                this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac);
+                            if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
+                                this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
                             }
                         })
                         .catch(error => {
@@ -517,6 +542,35 @@ export default {
         clearAllError() {
             this.errors = {};
         },
+        checkRef() {
+            /*if (this.artFam_genRef !== undefined) {
+                let a = this.artFam_genRef.split('_');
+                this.artFam_genRef = this.artFam_ref + '_' + a[2];
+            } else {
+                this.artFam_genRef = this.artFam_ref + '_';
+            }*/
+        }
+    },
+    beforeUpdate() {
+        if (this.artFam_ref === null && this.artFam_type !== "") {
+            this.artFam_ref = 'G_' + this.artFam_type;
+        }
+        if (this.artFam_genRef !== undefined) {
+            let a = this.artFam_genRef.split('_');
+            if (a[2] !== undefined) {
+                console.log(a[0]);
+                console.log(a[1]);
+                console.log(a[2]);
+                console.log(this.artFam_ref);
+                console.log(typeof a[2]);
+                this.artFam_genRef = this.artFam_ref + '_' + a[2];
+                console.log(this.artFam_genRef);
+            } else {
+                this.artFam_genRef = this.artFam_ref + '_';
+            }
+        } else {
+            this.artFam_genRef = this.artFam_ref + '_';
+        }
     }
 }
 </script>

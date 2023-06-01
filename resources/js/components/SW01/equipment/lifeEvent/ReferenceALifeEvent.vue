@@ -1,12 +1,26 @@
 <!--File name : ReferenceALifeEvent.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to reference a life event, it use ReferenceACurMtnOp and ReferenceAPrvMtnOpRlz-->
 
 <template>
     <div>
-        <ReferenceACurMtnOp v-if="operation_type=='curative'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
-        <ReferenceAPrvMtnOpRlz v-if="operation_type=='preventive'" @addSucces="addSucces()" :eq_id="this.eq_id" :state_id="this.state_id"/>
+        <ReferenceACurMtnOp
+            v-if="operation_type=='curative'"
+            @addSucces="addSucces()"
+            :eq_id="this.eq_id"
+            :state_id="this.state_id"
+            :number="this.number"
+            :id="this.id"
+        />
+        <ReferenceAPrvMtnOpRlz
+            v-if="operation_type=='preventive'"
+            @addSucces="addSucces()"
+            :eq_id="this.eq_id"
+            :state_id="this.state_id"
+            :number="this.number"
+            :id="this.id"
+        />
         <div v-if="isInConsultMod==true">
             <button type="button" @click="referenceAnother()">Reference another operation</button>
         </div>
@@ -29,7 +43,9 @@ export default {
             state_id:parseInt(this.$route.params.state_id),
             selected_reference:'',
             isInConsultMod:false,
-            operation_type:this.$route.query.type
+            operation_type:this.$route.query.type,
+            number: this.$route.query.number,
+            id: this.$route.query.id,
         }
     },
     methods:{

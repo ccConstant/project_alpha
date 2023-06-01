@@ -1,3 +1,8 @@
+<!--File name : ArticleConsultV1.vue-->
+<!--Creation date : 25 May 2023-->
+<!--Update date : 25 May 2023-->
+<!--Vue Component of the consultation sheet of an article-->
+
 <template>
     <div v-if="loaded===false" >
         <b-spinner variant="primary"></b-spinner>

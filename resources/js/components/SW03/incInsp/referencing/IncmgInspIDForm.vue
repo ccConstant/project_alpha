@@ -18,7 +18,7 @@
                     label="Incoming Inspection Remarks :"
                     v-model="incmgInsp_remarks"
                     :isDisabled="!!isInConsultMod || addSucces"
-                    :info_text="null"
+                    :info_text="this.infos_incmgInsp[0].info_value"
                     :max="255"
                 />
                 <InputTextForm
@@ -27,7 +27,7 @@
                     label="Incoming Inspection Part Material Compliance Certificate :"
                     v-model="incmgInsp_partMaterialCertif"
                     :isDisabled="!!isInConsultMod || addSucces"
-                    :info_text="null"
+                    :info_text="this.infos_incmgInsp[1].info_value"
                     :max="255"
                 />
                 <InputTextForm
@@ -36,7 +36,7 @@
                     label="Incoming Inspection Raw Material Certificate :"
                     v-model="incmgInsp_rawMaterialCertif"
                     :isDisabled="!!isInConsultMod || addSucces"
-                    :info_text="null"
+                    :info_text="this.infos_incmgInsp[2].info_value"
                     :max="255"
                 />
                 <!--If addSucces is equal to false, the buttons appear -->
@@ -266,7 +266,7 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             loaded: false,
-            infos_file: [],
+            infos_incmgInsp: [],
             rawFam_id: null,
             consFam_id: null,
             compFam_id: null
@@ -418,7 +418,13 @@ export default {
         }
     },
     created() {
-        this.loaded = true;
+        axios.get('/info/send/IncmgInsp')
+            .then(response => {
+                this.infos_incmgInsp = response.data;
+                this.loaded = true;
+            })
+            .catch(error => {
+            });
     }
 }
 </script>

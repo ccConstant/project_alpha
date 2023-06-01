@@ -6,7 +6,7 @@
                     label="Name"
                     isRequired
                     v-model="supplrContact_name"
-                    :info_text="null"
+                    :info_text="info_contact[0].info_value"
                     :inputClassName="null"
                     :isDisabled="isInConsultMod"
                     :Errors="Errors.supplrContact_name"
@@ -17,7 +17,7 @@
                 <InputTextForm
                     label="Function"
                     v-model="supplrContact_function"
-                    :info_text="null"
+                    :info_text="info_contact[1].info_value"
                     :inputClassName="null"
                     :isDisabled="isInConsultMod"
                     :Errors="Errors.supplrContact_function"
@@ -28,7 +28,7 @@
                 <InputTextForm
                     label="Phone Numbers"
                     v-model="supplrContact_phoneNumber"
-                    :info_text="null"
+                    :info_text="info_contact[2].info_value"
                     :inputClassName="null"
                     :isDisabled="isInConsultMod"
                     :Errors="Errors.supplrContact_phoneNumber"
@@ -39,7 +39,7 @@
                 <InputTextForm
                     label="Email"
                     v-model="supplrContact_email"
-                    :info_text="null"
+                    :info_text="info_contact[3].info_value"
                     :inputClassName="null"
                     :isDisabled="isInConsultMod"
                     :Errors="Errors.supplrContact_email"
@@ -51,7 +51,7 @@
                     :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                     :isRequired="true"
                     v-model="supplrContact_principal"
-                    :info_text="null"
+                    :info_text="info_contact[4].info_value"
                     :inputClassName="null"
                     :isDisabled="isInConsultMod"
                     :Errors="Errors.supplrContact_principal"
@@ -205,11 +205,17 @@ export default {
             contact_id: this.id,
             loaded: false,
             isInConsultMod: this.consultMod,
+            info_contact: null,
         }
     },
     created() {
-        this.loaded = true;
-        console.log(this.supplrContact_name);
+        axios.get('/info/send/supplierContact')
+            .then(response => {
+                this.info_contact = response.data;
+                this.loaded = true;
+            })
+            .catch(error => {
+            });
     },
     methods: {
         addSupplierContact(savedAs) {

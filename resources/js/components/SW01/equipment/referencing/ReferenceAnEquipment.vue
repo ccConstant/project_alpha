@@ -1,6 +1,6 @@
 <!--File name :ReferenceAnEquipment.vue-->
 <!--Creation date : 12 Jul 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to reference an other equipment in the equipment-->
 
 <template>
@@ -15,72 +15,72 @@
                             Equipment Characteristic(s)
                         </button>
                     </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <ReferenceADim :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
+                    <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Equipment Power source(s)
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <ReferenceAPow :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
+                    <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Equipment Special Procces
                         </button>
                     </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <ReferenceASpecProc :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFour">
+                    <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Equipment Usage
                         </button>
                     </h2>
-                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <ReferenceAUsage :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFive">
+                    <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Equipment File
                         </button>
                     </h2>
-                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <ReferenceAFile :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingSix">
+                    <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Equipment's due Risk(s)
                         </button>
                     </h2>
-                    <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
 
                             <ReferenceARisk :eq_id="this.eq_id" :import_id="this.importation_id" :riskForEq="true"/>
@@ -88,26 +88,26 @@
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingSeven">
+                    <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Equipment Preventive maintenance operation
                         </button>
                     </h2>
-                    <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <ReferenceAPrvMtnOp :eq_id="this.eq_id" :import_id="this.importation_id"/>
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingHeight">
+                    <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Equipment Associated MME
                         </button>
                     </h2>
-                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingHeight">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
                         <div class="accordion-body">
                             <ReferenceAMme :eq_id="this.eq_id"/>
                         </div>

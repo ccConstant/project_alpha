@@ -1,6 +1,6 @@
 <!--File name : EquipmentPowForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 4 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of the Form of the equipment power who call all the input component-->
 
 <template>
@@ -19,23 +19,19 @@
                 <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.pow_name" name="pow_name"
                                          label="Power Name " :options="pow_names" v-model="pow_name"
                                          :isDisabled="!!isInConsultedMod" :info_text="infos_power[1].info_value"/>
-                <div class="input-group">
-                    <InputNumberForm inputClassName="form-control" :Errors="errors.pow_value" name="pow_value"
-                                     label="Power value :" :stepOfInput="0.01" v-model="pow_value"
-                                     :isDisabled="!!isInConsultedMod" :info_text="infos_power[2].info_value"/>
-                    <InputTextForm inputClassName="form-control" name="pow_unit" label="Unit :"
-                                   :Errors="errors.pow_unit" :isDisabled="!!isInConsultedMod" v-model="pow_unit"
-                                   :info_text="infos_power[3].info_value"/>
-                </div>
-                <div class="input-group">
-                    <InputNumberForm inputClassName="form-control" :Errors="errors.pow_consumptionValue"
-                                     name="pow_consumptionValue" label="Consumption value :" :stepOfInput="0.01"
-                                     v-model="pow_consumptionValue" :isDisabled="!!isInConsultedMod"
-                                     :info_text="infos_power[4].info_value"/>
-                    <InputTextForm inputClassName="form-control" name="pow_consumptionUnit" label="Unit :"
-                                   :Errors="errors.pow_consumptionUnit" :isDisabled="!!isInConsultedMod"
-                                   v-model="pow_consumptionUnit" :info_text="infos_power[5].info_value"/>
-                </div>
+                <InputNumberForm inputClassName="form-control w-50" :Errors="errors.pow_value" name="pow_value"
+                                 label="Power value :" :stepOfInput="0.01" v-model="pow_value"
+                                 :isDisabled="!!isInConsultedMod" :info_text="infos_power[2].info_value"/>
+                <InputTextForm inputClassName="form-control w-50" name="pow_unit" label="Unit :"
+                               :Errors="errors.pow_unit" :isDisabled="!!isInConsultedMod" v-model="pow_unit"
+                               :info_text="infos_power[3].info_value"/>
+                <InputNumberForm inputClassName="form-control w-50" :Errors="errors.pow_consumptionValue"
+                                 name="pow_consumptionValue" label="Consumption value :" :stepOfInput="0.01"
+                                 v-model="pow_consumptionValue" :isDisabled="!!isInConsultedMod"
+                                 :info_text="infos_power[4].info_value"/>
+                <InputTextForm inputClassName="form-control w-50" name="pow_consumptionUnit" label="Unit :"
+                               :Errors="errors.pow_consumptionUnit" :isDisabled="!!isInConsultedMod"
+                               v-model="pow_consumptionUnit" :info_text="infos_power[5].info_value"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
                 <div v-if="this.addSuccess==false ">
                     <!--If this power doesn't have a id the addEquipmentPow is called function else the updateEquipmentPow function is called -->

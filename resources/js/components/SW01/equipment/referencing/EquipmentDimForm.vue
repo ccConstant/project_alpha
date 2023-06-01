@@ -1,6 +1,6 @@
 <!--File name : EquipmentDimForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 4 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of the Form of the equipment dimension who call all the input component-->
 
 <template>
@@ -22,16 +22,14 @@
                                  selectClassName="form-select w-50" :isDisabled="!!isInConsultedMod"
                                  :selectedDivName="this.divClass" v-model="dim_name"
                                  :info_text="infos_dimension[1].info_value" :id_actual="dimensionName"/>
-                <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.dim_value" name="dim_value"
-                                   label="Dimension value :" v-model="dim_value" :isDisabled="!!isInConsultedMod"
-                                   :info_text="infos_dimension[2].info_value"/>
-                    <InputSelectForm @clearSelectError='clearSelectError' name="dim_unit" label="Unit :"
-                                     :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit"
-                                     :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass"
-                                     v-model="dim_unit" :info_text="infos_dimension[3].info_value"
-                                     :id_actual="dimensionUnit"/>
-                </div>
+                <InputTextForm inputClassName="form-control w-50" :Errors="errors.dim_value" name="dim_value"
+                                     label="Dimension value :" v-model="dim_value" :isDisabled="!!isInConsultedMod"
+                                     :info_text="infos_dimension[2].info_value"/>
+                <InputSelectForm selectClassName="form-select w-50" @clearSelectError='clearSelectError' name="dim_unit" label="Unit :"
+                                 :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit"
+                                 :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass"
+                                 v-model="dim_unit" :info_text="infos_dimension[3].info_value"
+                                 :id_actual="dimensionUnit"/>
                 <!--If addSuccess is set on false, the buttons are show -->
                 <div v-if="this.addSuccess==false ">
                     <div v-if="this.dim_id==null ">

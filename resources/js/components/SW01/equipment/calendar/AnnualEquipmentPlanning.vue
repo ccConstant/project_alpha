@@ -9,7 +9,7 @@
             <p>'</p>
             <div class="list_eq_top_infos">
                 <div class="list_eq_pdf_logo ">
-                  <img src="/images/logo.png" alt="Alpha logo" class="logo" >
+                  <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
                 </div>
 
                 <div class="list_eq_pdf_titre">
@@ -139,122 +139,146 @@
                                         <p class="info">Operation {{eq_prvMtnOp.prvMtnOp_number}}</p>
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[0].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[0].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[0])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[1].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[1].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[1])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col  v-if="maintenancePlanned(periode[2].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col  v-if="maintenancePlanned(periode[2].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                        @click="handleClick(eq, periode[2])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col  v-if="maintenancePlanned(periode[3].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col  v-if="maintenancePlanned(periode[3].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                        @click="handleClick(eq, periode[3])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[4].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[4].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[4])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[5].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[5].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[5])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[6].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[6].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[6])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[7].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[7].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[7])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[8].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[8].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[8])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[9].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[9].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[9])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[10].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[10].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[10])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[11].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[11].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[11])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[12].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[12].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[12])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[13].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[13].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[13])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[14].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[14].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[14])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[15].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[15].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[15])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[16].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[16].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[16])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[17].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[17].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[17])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[18].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[18].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[18])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[19].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[19].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[19])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[20].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[20].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[20])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[21].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[21].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[21])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[22].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[22].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[22])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
 
-                                <b-col v-if="maintenancePlanned(periode[23].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color">
+                                <b-col v-if="maintenancePlanned(periode[23].id,eq_prvMtnOp.prvMtnOp_nextDate)" cols="4" class="eq_planning_annual_plannification_date_value_color"
+                                       @click="handleClick(eq, periode[23])">
                                 </b-col>
                                 <b-col v-else cols="4" class="eq_planning_annual_plannification_date_value">
                                 </b-col>
@@ -358,12 +382,14 @@
                 </div>
             </div>
         </div>
-         <button class="btn btn-primary" @click="generateReport" >Generate PDF</button>
+        <button class="btn btn-primary" @click="generateReport" >Generate PDF</button>
+        <EventDetailsModal ref="event_details" :prvMtnOp="prvMtnOp" @modalClosed="modalClosed"></EventDetailsModal>
     </div>
 </template>
 
 <script>
 import html2PDF from 'jspdf-html2canvas';
+import EventDetailsModal from "./EventDetailsModal.vue";
 export default {
     data(){
         return{
@@ -371,15 +397,15 @@ export default {
             loaded:true,
             eq:[],
             periode:[],
-
+            prvMtnOp:[],
         }
     },
 
     components: {
+        EventDetailsModal
 
     },
     methods: {
-
         maintenancePlanned(id_periode, AllnextDate){
             let res=false ;
             if (AllnextDate.length==0)
@@ -391,7 +417,6 @@ export default {
             });
             return res;
         },
-
         generateReport () {
             let page = document.getElementById('page');
             html2PDF(page, {
@@ -417,10 +442,25 @@ export default {
                 output: 'AnnualEquipmentCalendar.pdf',
             });
         },
-
-
-
-
+        handleClick(eq, index) {
+            console.log(eq);
+            console.log(index);
+            this.prvMtnOp.push({
+                    eq_internalReference: eq.internalReference,
+                    prvMtnOp_number: eq.preventive_maintenance_operations[0].prvMtnOp_number,
+                    eq_id:eq.id,
+                    state_id:eq.state_id,
+                    prvMtnOp_description:eq.preventive_maintenance_operations[0].prvMtnOp_description,
+                    prvMtnOp_protocol:eq.preventive_maintenance_operations[0].prvMtnOp_protocol,
+                    prvMtnOp_nextDate:eq.preventive_maintenance_operations[0].prvMtnOp_day + '-' + index.id,
+                    prvMtnOp_periodicity:eq.preventive_maintenance_operations[0].prvMtnOp_periodicity,
+                    prvMtnOp_symbolPeriodicity:eq.preventive_maintenance_operations[0].prvMtnOp_symbolPeriodicity,
+                });
+            this.$refs.event_details.$bvModal.show('modal-event_details');
+        },
+        modalClosed(){
+            this.prvMtnOp=[]
+        },
     },
     created(){
         axios.get('/equipment/prvMtnOp/planning')
@@ -604,7 +644,7 @@ export default {
                 width:75px;
                 height:auto;
                 font-size : 9px;
-                color:#20bbd8;       
+                color:#20bbd8;
             }
 
             .eq_planning_annual_plannification{

@@ -23,10 +23,12 @@ class PivotCompFamSupplr extends Migration
     {
         Schema::create('pivot_comp_fam_supplr', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('compFam_id') ; 
-            $table->foreign('compFam_id')->references('id')->on('comp_families') ->onDelete('cascade') ;
-            $table->unsignedBigInteger('supplr_id') ; 
-            $table->foreign('supplr_id')->references('id')->on('suppliers') ->onDelete('cascade') ;
+            $table->unsignedBigInteger('compFam_id');
+            $table->foreign('compFam_id')->references('id')->on('comp_families')->onDelete('cascade');
+            $table->unsignedBigInteger('supplr_id');
+            $table->foreign('supplr_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->string('supplr_ref')->nullable();
+            $table->unsignedBigInteger('purSpec_id');
             $table->timestamps();
         });
     }

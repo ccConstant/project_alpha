@@ -1,6 +1,6 @@
 <!--File name : ListOfEquipmentPDF.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 11 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component to generate a pdf version of the equipment list-->
 
 <template>
@@ -9,7 +9,7 @@
             <p>'</p>
             <div class="list_eq_top_infos">
                 <div class="list_eq_pdf_logo ">
-                  <img src="/images/logo.png" alt="Alpha logo" class="logo" >
+                  <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
                 </div>
 
                 <div class="list_eq_pdf_titre">

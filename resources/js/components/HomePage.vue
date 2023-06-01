@@ -1,49 +1,39 @@
 <!--File name : HomePage.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component of the main page of the website-->
 
 <template>
-    <div>
-		<br><br><br><br><br><br>
-	    <h1>Welcome to ALPHA</h1>
-		<h1 v-if="this.$userId!==''">{{this.$userId.user_firstName}} {{this.$userId.user_lastName}}</h1>
-		<div class="div_image"><img src="/images/best_wishes_2023.png" class="best_wishes_navbar" alt="Best Wishes 2023"></div>
-		<br><br>  <br>  <br>  <br>  <br>  <br>
-        <br><br><br><br><br><br><br><br><br>
-        <br>
-        <br>
-        <p> SW01 Version : 0.0.0  (last update Apr 2023)</p>
-		<p> SW03 Version : 0.0.0  (last update Apr 2023)</p>
+    <div class="main">
+        <br><br>
+		<h1 v-if="this.$userId!==''">Welcome {{this.$userId.user_firstName}},</h1>
 	</div>
 </template>
 
 <script>
 export default {
-	created(){
-		console.log(this.$userId)
-	}
 }
 </script>
 
-<style>
+<style scoped>
+.main{
+    background-color: #212529;
+    background-image: url("/images/Homepage_Alpha_Software.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 85vh;
+    margin: 0;
+    padding: 0;
+}
 h1{
-	text-align:center;
+	text-align:left;
 	font-family : 'Times New Roman', Times, serif;
-	color : #20dad3;
+	color : #000000;
 	font-size:50px;
+    margin-bottom: 5px;
+    margin-left: 10px;
 }
-.div_image{
-	text-align:center;
+p{
+    vertical-align: bottom;
 }
-
-.best_wishes_navbar{
-	width: 50%;
-	height: 50%;
-	margin-top : 80px;
-	top: 0;
-	left: 0;
-	z-index: -1;
-}
-
 </style>

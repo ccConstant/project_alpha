@@ -23,6 +23,7 @@ class CriticalityController extends Controller
                     'crit_remarks' => 'required|max:255',
                     'crit_articleID' => 'required',
                     'crit_articleType' => 'required',
+                    'crit_justification' => 'required|max:255',
                 ],
                 [
                     'crit_artCriticality.required' => 'You must enter an article criticality',
@@ -35,6 +36,13 @@ class CriticalityController extends Controller
 
                     'crit_remarks.required' => 'You must enter a remark',
                     'crit_remarks.max' => 'You must enter a maximum of 255 characters',
+
+                    'crit_articleID.required' => 'You must enter an article ID',
+
+                    'crit_articleType.required' => 'You must enter an article type',
+
+                    'crit_justification.required' => 'You must enter a justification',
+                    'crit_justification.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         } else {
@@ -42,9 +50,12 @@ class CriticalityController extends Controller
                 $request,
                 [
                     'crit_remarks' => 'max:255',
+                    'crit_justification' => 'max:255',
                 ],
                 [
                     'crit_remarks.max' => 'You must enter a maximum of 255 characters',
+
+                    'crit_justification.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
@@ -66,6 +77,7 @@ class CriticalityController extends Controller
             'crit_artMaterialContactCriticality' => $request->crit_artMaterialContactCriticality,
             'crit_artMaterialFunctionCriticality' => $request->crit_artMaterialFunctionCriticality,
             'crit_artProcessCriticality' => $request->crit_artProcessCriticality,
+            'crit_justification' => $request->crit_justification,
             'crit_remarks' => $request->crit_remarks,
             'crit_validate' => $request->crit_validate,
             'consFam_id' => $consFam_id,
@@ -124,6 +136,7 @@ class CriticalityController extends Controller
             'crit_artMaterialContactCriticality' => $request->crit_artMaterialContactCriticality,
             'crit_artMaterialFunctionCriticality' => $request->crit_artMaterialFunctionCriticality,
             'crit_artProcessCriticality' => $request->crit_artProcessCriticality,
+            'crit_justification' => $request->crit_justification,
             'crit_remarks' => $request->crit_remarks,
             'crit_validate' => $request->crit_validate,
             'consFam_id' => $consFam_id,
@@ -140,6 +153,7 @@ class CriticalityController extends Controller
             'crit_artMaterialContactCriticality' => $crit->crit_artMaterialContactCriticality,
             'crit_artMaterialFunctionCriticality' => $crit->crit_artMaterialFunctionCriticality,
             'crit_artProcessCriticality' => $crit->crit_artProcessCriticality,
+            'crit_justification' => $crit->crit_justification,
             'crit_remarks' => $crit->crit_remarks,
             'crit_validate' => $crit->crit_validate,
             'consFam_id' => $crit->consFam_id,
@@ -164,6 +178,7 @@ class CriticalityController extends Controller
                 'crit_artMaterialContactCriticality' => $crit->crit_artMaterialContactCriticality,
                 'crit_artMaterialFunctionCriticality' => $crit->crit_artMaterialFunctionCriticality,
                 'crit_artProcessCriticality' => $crit->crit_artProcessCriticality,
+                'crit_justification' => $crit->crit_justification,
                 'crit_remarks' => $crit->crit_remarks,
                 'crit_validate' => $crit->crit_validate,
                 'consFam_id' => $crit->consFam_id,

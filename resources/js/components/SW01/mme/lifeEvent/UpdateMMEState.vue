@@ -1,6 +1,6 @@
 <!--File name : UpdateMMEState.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 13 Apr 2023-->
+<!--Update date : 25 May 2023-->
 <!--Vue Component used to update the state of a specific MME-->
 
 <template>
@@ -181,7 +181,7 @@ export default {
                         .then(response =>{
                             console.log("add ok")
                             this.$refs.succesAlert.showAlert(`MME state added successfully and saved as ${savedAs}`);
-                            this.$router.replace({ name: "url_mme_life_event" })
+                            this.$router.replace({ name: "url_mme_list" })
                             this.addSucces=true;
                             this.isInConsultMod=true;
                             this.state_validate=savedAs
