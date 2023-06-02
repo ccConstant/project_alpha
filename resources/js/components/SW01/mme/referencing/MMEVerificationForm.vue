@@ -16,18 +16,28 @@
                     <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.verif_number" name="verif_number" label="Number :" :stepOfInput="1" v-model="verif_number" isDisabled />
                 </div>
                 <!--<RadioGroupForm @clearRadioError="clearRadioError" label="Does the verification is realized during putting into service? :" :options="existOptionVerif" :Errors="errors.verif_puttingIntoService"  :info_text="infos_verif[0].info_value" :checkedOption="verif_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="verif_puttingIntoService"/>-->
-                <div> {{infos_verif[0].info_value}}
+                <RadioGroupForm label="Putting Into Service ?:" :options="existOptionPIS" :Errors="errors.verif_puttingIntoService"
+                                :checkedOption="verif_puttingIntoService" :isDisabled="!!isInConsultMod" v-model="verif_puttingIntoService"
+                                :info_text="infos_verif[0].info_value"
+                                name="verif_puttingIntoService"
+                />
+                <RadioGroupForm label="Preventive Operation ?:" :options="existOptionPO" :Errors="errors.verif_preventiveOperation"
+                                :checkedOption="verif_preventiveOperation" :isDisabled="!!isInConsultMod" v-model="verif_preventiveOperation"
+                                :info_text="infos_verif[1].info_value"
+                                name="verif_preventiveOperation"
+                />
+<!--                <div> {{infos_verif[0].info_value}}
                     <b-form-group>
                     <b-form-radio-group v-model="verif_puttingIntoService" :options="existOptionPIS" >
                     </b-form-radio-group>
                     </b-form-group>
-                </div>
-                <div> {{infos_verif[1].info_value}}
+                </div>-->
+<!--                <div> {{infos_verif[1].info_value}}
                     <b-form-group>
                      <b-form-radio-group v-model="verif_preventiveOperation" :options="existOptionPO" >
                     </b-form-radio-group>
                     </b-form-group>
-                </div>
+                </div>-->
                 <InputTextForm
                     inputClassName="form-control w-50"
                     :info_text="infos_verif[3].info_value"

@@ -17,7 +17,17 @@
                                      name="prvMtnOp_number" label="Number :" :stepOfInput="1" v-model="prvMtnOp_number"
                                      isDisabled :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
-                <div> {{ infos_prvMtnOp[6].info_value }}
+                <RadioGroupForm label="Putting Into Service ?:" :options="existOptionPIS" :Errors="errors.prvMtnOp_puttingIntoService"
+                                :checkedOption="prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultMod" v-model="prvMtnOp_puttingIntoService"
+                                :info_text="infos_prvMtnOp[6].info_value"
+                                name="prvMtnOp_puttingIntoService"
+                />
+                <RadioGroupForm label="Preventive Operation ?:" :options="existOptionPO" :Errors="errors.prvMtnOp_preventiveOperation"
+                                :checkedOption="prvMtnOp_preventiveOperation" :isDisabled="!!isInConsultMod" v-model="prvMtnOp_preventiveOperation"
+                                :info_text="infos_prvMtnOp[7].info_value"
+                                name="prvMtnOp_preventiveOperation"
+                />
+<!--                <div> {{ infos_prvMtnOp[6].info_value }}
                     <b-form-group>
                         <b-form-radio-group v-model="prvMtnOp_puttingIntoService" :options="existOptionPIS">
                         </b-form-radio-group>
@@ -28,7 +38,7 @@
                         <b-form-radio-group v-model="prvMtnOp_preventiveOperation" :options="existOptionPO">
                         </b-form-radio-group>
                     </b-form-group>
-                </div>
+                </div>-->
                 <!--<RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized during putting into service? :" :info_text="infos_prvMtnOp[6].info_value" :options="existOptionPIS" :Errors="errors.prvMtnOp_puttingIntoService"  :checkedOption="this.prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_puttingIntoService"/>
                 <RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized regularly? :" :info_text="infos_prvMtnOp[3].info_value" :options="existOptionPO" :Errors="errors.prvMtnOp_preventiveOperation"  :checkedOption="this.prvMtnOp_preventiveOperation" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_preventiveOperation"/>-->
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description"

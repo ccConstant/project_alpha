@@ -575,7 +575,7 @@ class EquipmentController extends Controller{
     }
 
     /**
-     * Function call by AnnualEquipmentPlanning.vue with the route : /equipment/prvMtnOp/planning (post)
+     * Function call by AnnualEquipmentPlanningV1.vue with the route : /equipment/prvMtnOp/planning (post)
      * Send all the equipments validated in the data base with the preventive maintenance operations linked
      * @return \Illuminate\Http\Response
      * */
