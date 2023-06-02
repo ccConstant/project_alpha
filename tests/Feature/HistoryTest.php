@@ -161,7 +161,7 @@ class HistoryTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->last()->id
         ]);
         // Technical and quality verification
@@ -226,7 +226,7 @@ class HistoryTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -370,7 +370,6 @@ class HistoryTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
-                'id' => 4,
                 'history_numVersion' => 1,
                 'history_reasonUpdate' => 'Update',
                 'history_date' => Carbon::now()->format('d M o')

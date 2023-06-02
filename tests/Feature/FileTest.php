@@ -452,7 +452,7 @@ class FileTest extends TestCase
         $this->assertDatabaseHas('files', [
             'file_name' => 'File',
             'file_validate' => 'drafted',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
     }
 
@@ -516,7 +516,7 @@ class FileTest extends TestCase
         $this->assertDatabaseHas('files', [
             'file_name' => 'File',
             'file_validate' => 'to_be_validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
     }
 
@@ -583,7 +583,7 @@ class FileTest extends TestCase
             'file_name' => 'File',
             'file_validate' => 'validated',
             'file_location' => 'FilePath',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
     }
 
@@ -651,7 +651,7 @@ class FileTest extends TestCase
         $this->assertDatabaseHas('files', [
             'file_name' => 'File',
             'file_validate' => 'drafted',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addDraftEqVTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addDraftEqVTest')->last()->technicalVerifier_id);
@@ -725,7 +725,7 @@ class FileTest extends TestCase
         $this->assertDatabaseHas('files', [
             'file_name' => 'File',
             'file_validate' => 'to_be_validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addTBVEqVTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addTBVEqVTest')->last()->technicalVerifier_id);
@@ -802,7 +802,7 @@ class FileTest extends TestCase
             'file_name' => 'File',
             'file_location' => "FilePath",
             'file_validate' => 'validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValEqVTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValEqVTest')->last()->technicalVerifier_id);
@@ -858,7 +858,7 @@ class FileTest extends TestCase
             $response = $this->post('file/verif', [
                 'file_validate' => 'validated',
                 'file_name' => 'File',
-                'file_location' => "FilePath"
+                'file_location' => 'FilePath'
             ]);
             $response->assertStatus(200);
             $countFile = File::all()->count();
@@ -866,15 +866,15 @@ class FileTest extends TestCase
                 'file_validate' => 'validated',
                 'eq_id' => $equipment->id,
                 'file_name' => 'File',
-                'file_location' => "FilePath"
+                'file_location' => 'FilePath'
             ]);
             $response->assertStatus(200);
             $this->assertEquals($countFile+1, File::all()->count());
             $this->assertDatabaseHas('files', [
                 'file_name' => 'File',
-                'file_location' => "FilePath",
+                'file_location' => 'FilePath',
                 'file_validate' => 'validated',
-                'equipmentTemp_id' => $equipment->id
+                'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
             ]);
             return $equipment;
         }
@@ -883,7 +883,7 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => "FilePath"
+            'file_location' => 'FilePath'
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -891,15 +891,15 @@ class FileTest extends TestCase
             'file_validate' => 'validated',
             'eq_id' => $equipment->id,
             'file_name' => 'File',
-            'file_location' => "FilePath"
+            'file_location' => 'FilePath'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countFile+1, File::all()->count());
         $this->assertDatabaseHas('files', [
             'file_name' => 'File',
-            'file_location' => "FilePath",
+            'file_location' => 'FilePath',
             'file_validate' => 'validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->make_an_eq_verif($equipment->id);
         return $equipment;
@@ -978,7 +978,7 @@ class FileTest extends TestCase
             'file_location' => "NewFilePath"
         ]);
         $response->assertStatus(200);
-        $file = File::all()->where('equipmentTemp_id', '==', $equipment->id)->last();
+        $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
         $this->post('/equipment/update/file/'.$file->id, [
             'file_validate' => 'drafted',
             'file_name' => 'NewFile',
@@ -990,7 +990,7 @@ class FileTest extends TestCase
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
             'file_validate' => 'drafted',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
     }
 
@@ -1044,7 +1044,7 @@ class FileTest extends TestCase
             'file_location' => "NewFilePath"
         ]);
         $response->assertStatus(200);
-        $file = File::all()->where('equipmentTemp_id', '==', $equipment->id)->last();
+        $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
         $this->post('/equipment/update/file/'.$file->id, [
             'file_validate' => 'to_be_validated',
             'file_name' => 'NewFile',
@@ -1056,7 +1056,7 @@ class FileTest extends TestCase
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
             'file_validate' => 'to_be_validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
     }
 
@@ -1110,7 +1110,7 @@ class FileTest extends TestCase
             'file_location' => "NewFilePath"
         ]);
         $response->assertStatus(200);
-        $file = File::all()->where('equipmentTemp_id', '==', $equipment->id)->last();
+        $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
         $this->post('/equipment/update/file/'.$file->id, [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
@@ -1122,7 +1122,7 @@ class FileTest extends TestCase
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
             'file_validate' => 'validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
     }
 
@@ -1177,7 +1177,7 @@ class FileTest extends TestCase
             'file_location' => "NewFilePath"
         ]);
         $response->assertStatus(200);
-        $file = File::all()->where('equipmentTemp_id', '==', $equipment->id)->last();
+        $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
         $this->post('/equipment/update/file/'.$file->id, [
             'file_validate' => 'drafted',
             'file_name' => 'NewFile',
@@ -1189,7 +1189,7 @@ class FileTest extends TestCase
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
             'file_validate' => 'drafted',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => $equipment->id,
@@ -1256,7 +1256,7 @@ class FileTest extends TestCase
             'file_location' => "NewFilePath"
         ]);
         $response->assertStatus(200);
-        $file = File::all()->where('equipmentTemp_id', '==', $equipment->id)->last();
+        $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
         $this->post('/equipment/update/file/'.$file->id, [
             'file_validate' => 'to_be_validated',
             'file_name' => 'NewFile',
@@ -1268,7 +1268,7 @@ class FileTest extends TestCase
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
             'file_validate' => 'to_be_validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => $equipment->id,
@@ -1335,7 +1335,7 @@ class FileTest extends TestCase
             'file_location' => "NewFilePath"
         ]);
         $response->assertStatus(200);
-        $file = File::all()->where('equipmentTemp_id', '==', $equipment->id)->last();
+        $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
         $this->post('/equipment/update/file/'.$file->id, [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
@@ -1347,7 +1347,7 @@ class FileTest extends TestCase
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
             'file_validate' => 'validated',
-            'equipmentTemp_id' => $equipment->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => $equipment->id,

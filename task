@@ -16,9 +16,6 @@ TODO:
     Tests SW01
     Tests SW03
     ------------------------------------------------------------------------------------------------------
-    Import :
-        - Mettre les suppliers en majuscule
-    ------------------------------------------------------------------------------------------------------
     Ajouter un niveau entre famille et membre de famille : sous famille, peux contenir un ou plusieurs membres de famille :
         - changer controller
             - Ajouter nvx controller pour subFam
