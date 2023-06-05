@@ -6,7 +6,7 @@
 * Update date : 15 Feb 2023
 * This file is used to create the table "preventive_maintenance_operations" in the data base. In this file, we can see the different
 * attribute of this table (number, description, periodicity...) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 
 
@@ -26,18 +26,19 @@ return new class extends Migration
         Schema::create('preventive_maintenance_operations', function (Blueprint $table) {
             $table->id();
             $table->boolean('prvMtnOp_puttingIntoService')->nullable();
-            $table->boolean('prvMtnOp_preventiveOperation')->nullable(); 
-            $table->unsignedTinyInteger('prvMtnOp_number')  ; 
-            $table->string('prvMtnOp_description') ; 
-            $table->unsignedMediumInteger('prvMtnOp_periodicity') ->nullable(); 
-            $table->enum('prvMtnOp_symbolPeriodicity', ['Y', 'M', 'D', 'H']) ->nullable();  
-            $table->mediumText('prvMtnOp_protocol') ->nullable(); 
-            $table->timestamp('prvMtnOp_startDate') ; 
-            $table->timestamp('prvMtnOp_nextDate') ->nullable(); 
-            $table->date('prvMtnOp_reformDate') ->nullable() ; 
-            $table->enum('prvMtnOp_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
-            $table->unsignedBigInteger('equipmentTemp_id') ->nullable() ;
-            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') ->onDelete('cascade')  ;
+            $table->boolean('prvMtnOp_preventiveOperation')->nullable();
+            $table->unsignedTinyInteger('prvMtnOp_number')  ;
+            $table->string('prvMtnOp_description') ;
+            $table->unsignedMediumInteger('prvMtnOp_periodicity')->nullable();
+            $table->enum('prvMtnOp_symbolPeriodicity', ['Y', 'M', 'D', 'H'])->nullable();
+            $table->mediumText('prvMtnOp_protocol')->nullable();
+            $table->timestamp('prvMtnOp_startDate') ;
+            $table->timestamp('prvMtnOp_nextDate')->nullable();
+            $table->date('prvMtnOp_reformDate')->nullable() ;
+            $table->enum('prvMtnOp_validate',  ['drafted', 'to_be_validated', 'validated']) ;
+            $table->unsignedBigInteger('equipmentTemp_id')->nullable() ;
+            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps')->onDelete('cascade')  ;
+            $table->boolean('typeValidation')->nullable();
             $table->timestamps();
         });
     }

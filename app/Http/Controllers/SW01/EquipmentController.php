@@ -109,6 +109,8 @@ class EquipmentController extends Controller{
                 'eq_version' => $mostRecentlyEqTmp->eqTemp_version,
                 'needToBeRealized' => $needToBeRealized,
                 'needToBeApprove' => $needToBeApprove,
+                'validated' => $mostRecentlyEqTmp->eqTemp_validate,
+                'signed' => $mostRecentlyEqTmp->qualityVerifier_id != null && $mostRecentlyEqTmp->technicalVerifier_id != null,
             ]);
             array_push($container,$obj);
         }

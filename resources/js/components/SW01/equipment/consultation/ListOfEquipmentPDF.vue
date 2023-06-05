@@ -1,98 +1,203 @@
 <!--File name : ListOfEquipmentPDF.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 05 Jun 2023-->
 <!--Vue Component to generate a pdf version of the equipment list-->
 
 <template>
     <div v-if="loaded==true">
-        <div id="page">
-            <p>'</p>
-            <div class="list_eq_top_infos">
-                <div class="list_eq_pdf_logo ">
-                  <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
-                </div>
-
-                <div class="list_eq_pdf_titre">
-                    <h2 id="list_eq_fiche_de_vie_titre">LIST OF EQUIPMENT USED BY ALPHA </h2>
-                </div>
-
-                <div class="list_eq_pdf_index">
-                    <h5> </h5>
-                </div>
-
-
-            </div>
-            <div class="eq_infos_pdf">
-                <div class="eq_table">
-                    <b-row>
-                        <b-col cols="1" class="eq_table_internalReference">
-                            Internal Reference
-                        </b-col>
-                        <b-col cols="1" class="eq_table_externalReference">
-                            External Reference
-                        </b-col>
-                        <b-col cols="1" class="eq_table_name">
-                            Name
-                        </b-col >
-                        <b-col cols="4" class="eq_table_state">
-                            Actual State
-                        </b-col>
-                    </b-row>
-                    <div v-for="(eq,index) in list_eq " :key="index">
-                        <b-row>
-                            <b-col cols="1" class="eq_table_internalReference">
-                               <p class="text-primary"> {{eq.eq_internalReference}} </p>
-                            </b-col>
-                            <b-col cols="1" class="eq_table_externalReference">
-                                <p class="text-primary">{{eq.eq_externalReference}}</p>
-                            </b-col>
-                            <b-col cols="4" class="eq_table_name">
-                                <p class="text-primary">{{eq.eq_name}}</p>
-                            </b-col>
-                            <b-col cols="4"  class="eq_table_state">
-                               <p class="text-primary"> {{eq.eq_state}}</p>
-                            </b-col>
-                        </b-row>
-
-
+        <div id="page" class="page">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Filters
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                            <table class="ignored">
+                                <tbody>
+                                <tr class="ignored">
+                                    <td class="ignored">
+                                        <input v-model="searchTermInternRef" class="form-control search_bar align-self-center"
+                                               placeholder="Filter the equipments by the internal ref" type="text">
+                                    </td>
+                                </tr>
+                                <tr class="ignored">
+                                    <td class="ignored">
+                                        <input v-model="searchTermExternRef" class="form-control search_bar align-self-center"
+                                               placeholder="Filter the equipments by the external ref" type="text">
+                                    </td>
+                                </tr>
+                                <tr class="ignored">
+                                    <td class="ignored">
+                                        <input v-model="searchTermName" class="form-control search_bar align-self-center"
+                                               placeholder="Filter the equipments by the designation" type="text">
+                                    </td>
+                                </tr>
+                                <tr class="ignored">
+                                    <td class="ignored">
+                                        <select v-model="searchStatus" class="form-control search_bar align-self-center">
+                                            <option :value="-1">Filter the equipments by the actual state</option>
+                                            <option :value="1">Waiting_for_referencing</option>
+                                            <option :value="2">Waiting_for_installation</option>
+                                            <option :value="3">In_use</option>
+                                            <option :value="4">Under_maintenance</option>
+                                            <option :value="5">On_hold</option>
+                                            <option :value="6">Under_repair</option>
+                                            <option :value="7">Broken</option>
+                                            <option :value="8">Downgraded</option>
+                                            <option :value="9">Reformed</option>
+                                            <option :value="10">Lost</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="ignored">
+                                    <td class="ignored">
+                                        <select v-model="searchSaveStatus" class="form-control search_bar align-self-center">
+                                            <option :value="-1">Filter the equipments by the save status</option>
+                                            <option :value="1">Drafted</option>
+                                            <option :value="2">To Be Validated</option>
+                                            <option :value="3">Validated</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="ignored">
+                                    <td class="ignored">
+                                        <select v-model="searchSigned" class="form-control search_bar align-self-center">
+                                            <option :value="-1">Filter the equipments by the validation status</option>
+                                            <option :value="0">Signed</option>
+                                            <option :value="1">Not Signed</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div id="printable">
+                <table style="border: 1px solid black; text-align: center;">
+                    <tbody>
+                    <tr style="border: 1px solid black;">
+                        <td style="text-align: center; vertical-align: middle; border: 1px solid black;">
+                            <img alt="logo Alpha" src="/images/logo.jpg"
+                                 style="width: max-content; height: max-content">
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <h2>
+                                LIST OF EQUIPMENT USED BY ALPHA
+                            </h2>
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <p>
+                                Date :
+                            </p>
+                            <h2>
+                                {{ new Date().getDate() }} {{ new Date().toString().substring(4, 7) }} {{ new Date().getFullYear() }}
+                            </h2>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>
+                </p>
+                <table style="border: 1px solid black; text-align: center;">
+                    <thead>
+                    <tr style="border: 1px solid black;">
+                        <th style="border: 1px solid black;">
+                            <h2>
+                                Internal Reference
+                            </h2>
+                        </th>
+                        <th style="border: 1px solid black;">
+                            <h2>
+                                External Reference
+                            </h2>
+                        </th>
+                        <th style="border: 1px solid black;">
+                            <h2>
+                                Designation
+                            </h2>
+                        </th>
+                        <th style="border: 1px solid black;">
+                            <h2>
+                                State
+                            </h2>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(eq,index) in pageOfItems " :key="index" style="color: blue; border: 1px solid black;">
+                        <td style="border: 1px solid black;">
+                            <p>
+                                {{ eq.eq_internalReference }}
+                            </p>
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <p>
+                                {{ eq.eq_externalReference }}
+                            </p>
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <p>
+                                {{ eq.eq_name }}
+                            </p>
+                        </td>
+                        <td style="border: 1px solid black;">
+                            <p>
+                                {{ eq.eq_state }}
+                            </p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-         <button class="btn btn-primary" @click="generateReport" >Generate PDF</button>
+        <jw-pagination :items="filterByTerm" :pageSize=25 class="eq_list_pagination"
+                       @changePage="onChangePage"></jw-pagination>
+        <button class="btn btn-primary" @click="generateReport">Generate PDF</button>
     </div>
 </template>
 
 <script>
 import html2PDF from 'jspdf-html2canvas';
+import ReferenceAnArticleFamilyMember from "../../../SW03/article/referencing/ReferenceAnArticleFamilyMember.vue";
+
 export default {
-    data(){
-        return{
-            eq_id:this.$route.params.id,
-            list_eq:null,
-            loaded:false,
+    data() {
+        return {
+            eq_id: this.$route.params.id,
+            list_eq: null,
+            pageOfItems: [],
+            loaded: false,
+            searchTermInternRef: "",
+            searchTermExternRef: "",
+            searchTermName: "",
+            searchStatus: -1,
+            searchSaveStatus: -1,
+            searchSigned: -1,
         }
     },
 
-    components: {
-
-    },
+    components: {ReferenceAnArticleFamilyMember},
     methods: {
-
-        generateReport () {
-            let page = document.getElementById('page');
+        generateReport() {
+            let page = document.getElementById('printable');
             html2PDF(page, {
                 jsPDF: {
                     unit: 'px',
                     format: 'a4',
-                    width : 100
+                    width: 100
                 },
                 html2canvas: {
                     imageTimeout: 15000,
                     logging: true,
                     useCORS: false,
                 },
-                  imageType: 'image/jpeg',
+                imageType: 'image/jpeg',
                 imageQuality: 1,
                 margin: {
                     top: 40,
@@ -103,162 +208,123 @@ export default {
                 output: 'listOfAllEquipmentUsedByAlph.pdf',
             });
         },
-
-
+        onChangePage(pageOfItems) {
+            this.pageOfItems = pageOfItems;
+        },
     },
-    created(){
+    created() {
         axios.get('/equipment/equipments')
-			.then (response=>{
-				console.log(response.data)
-				this.list_eq=response.data;
-				this.loaded=true;
-			})
-			.catch(error => console.log(error));
-	},
+            .then(response => {
+                console.log(response.data)
+                this.list_eq = response.data;
+                this.loaded = true;
+            })
+            .catch(error => console.log(error.response.data));
+    },
+    computed: {
+        filterByTerm() {
+            let res = this.list_eq;
+            if (this.searchTermInternRef !== "") {
+                res = this.list_eq.filter(option => {
+                    if (option.eq_internalReference !== null) {
+                        return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
+                    }
+                    return  false;
+                });
+            }
+            if (this.searchTermExternRef !== "") {
+                res = this.list_eq.filter(option => {
+                    if (option.eq_externalReference !== null) {
+                        return option.eq_externalReference.toLowerCase().includes(this.searchTermExternRef.toLowerCase());
+                    }
+                    return false;
+                });
+            }
+            if (this.searchTermName !== "") {
+                res = this.list_eq.filter(option => {
+                    if (option.eq_name !== null) {
+                        return option.eq_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    }
+                    return false;
+                });
+            }
+            if (this.searchStatus !== -1) {
+                res = res.filter(option => {
+                    if (this.searchStatus === 1)
+                        return option.eq_state === 'Waiting_for_referencing';
+                    else if (this.searchStatus === 2)
+                        return option.eq_state === 'Waiting_for_installation';
+                    else if (this.searchStatus === 3)
+                        return option.eq_state === 'In_use';
+                    else if (this.searchStatus === 4)
+                        return option.eq_state === 'Under_maintenance';
+                    else if (this.searchStatus === 5)
+                        return option.eq_state === 'On_hold';
+                    else if (this.searchStatus === 6)
+                        return option.eq_state === 'Under_repair';
+                    else if (this.searchStatus === 7)
+                        return option.eq_state === 'Broken';
+                    else if (this.searchStatus === 8)
+                        return option.eq_state === 'Downgraded';
+                    else if (this.searchStatus === 9)
+                        return option.eq_state === 'Reformed';
+                    else if (this.searchStatus === 10)
+                        return option.eq_state === 'Lost';
+                });
+            }
+            if (this.searchSaveStatus !== -1) {
+                res = res.filter(option => {
+                    if (this.searchSaveStatus === 1)
+                        return option.validated === 'drafted';
+                    else if (this.searchSaveStatus === 2)
+                        return option.validated === 'to_be_validated';
+                    else if (this.searchSaveStatus === 3)
+                        return option.validated === 'validated';
+                });
+            }
+            if (this.searchSigned !== -1) {
+                res = res.filter(option => {
+                    if (this.searchSigned === 0)
+                        return option.signed;
+                    else if (this.searchSigned === 1)
+                        return option.signed === false;
+                });
+            }
+            return res;
+        }
+    },
 }
 </script>
 
-<style lang="scss">
-        #page{
-            width:1329px;
-            font-size : 10px ;
-            .text-primary{
-                font-size : 20px ;
-            }
-            .list_eq_top_infos{
-                position: absolute;
-                margin-top: 0px;
-                margin-left:50px;
-
-                h5{
-                        margin-top :auto;
-                        width: auto;
-                        font-size:25px;
-                        text-align:center;
-                        font-weight: bold;
-                    }
-
-                .list_eq_pdf_logo{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    width: 200px;
-                    height: 170px;
-                    margin-left:100px ;
-                    margin-top: 00px;
-
-                    .logo{
-                        margin-top:30px;
-                    }
-
-                }
-                .list_eq_pdf_titre{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    width: 642px;
-                    top: 00px;
-                    left:300px;
-                    height: 87px;
-                    text-align:center;
-
-
-
-                }
-                .list_eq_fiche_de_vie_titre{
-                    text-align: center;
-                    position: relative;
-                }
-                .list_eq_pdf_index{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    left: 942px;
-                    top: 0px;
-                    height: 86px;
-                    width: 200px;
-
-                }
-                .equipment_revued_by{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-
-                    left :300px;
-                    top: 86px;
-                    height: 84px;
-                    width: 400px;
-
-                }
-                .equipment_approuved_by{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-
-
-                    left :700px;
-                    top: 86px;
-                    height: 84px;
-                    width: 242px;
-                }
-                .eq_internalReference_pdf{
-                    border: solid 0.5px black;
-                    margin: auto;
-                    position: absolute;
-                    left :942px;
-                    top: 86px;
-                    width: 200px;
-                    height: 84px;
-                }
-
-            }
-
-
-        .eq_infos_pdf{
-            position: relative;
-            margin-top:300px ;
-            width : 1112px;
-
-            .title_eq_pdf{
-                width: 400px;
-                font-size : 20px;
-                font-weight: bold;
-                margin-left:150px;
-            }
-            .eq_table{
-                margin-left:163px;
-                width:1042px;
-                .eq_table_internalReference{
-                    border: solid 1px black;
-                    text-align: center;
-                    width:300px;
-                    height:auto;
-                }
-                .eq_table_externalReference{
-                    border: solid 1px black;
-                    text-align: center;
-                    width:300px;
-                    height:auto;
-                }
-                .eq_table_name{
-                    border: solid 1px black;
-                    text-align: center;
-                    width:200px;
-                    height:auto;
-                }
-                .eq_table_state{
-                    border: solid 1px black;
-                    text-align: center;
-                    width:242px;
-                    height:auto;
-                }
-            }
-        }
-    }
-
-
-
-
-
-
+<style scoped>
+.page {
+    display: block;
+    margin: auto;
+    page-break-inside: auto;
+}
+/*table {
+    border: 1px solid black;
+    text-align: center;
+}
+table tr{
+    border: 1px solid black;
+}
+table td{
+    border: 1px solid black;
+}
+table th{
+    border: 1px solid black;
+    text-weight: bold;
+    font-size: large;
+}*/
+h2 {
+    margin: auto;
+}
+p {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    font-family: Calibri;
+    marign-left: 10px;
+}
 </style>

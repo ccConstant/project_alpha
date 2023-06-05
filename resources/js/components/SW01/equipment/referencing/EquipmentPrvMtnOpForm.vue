@@ -27,20 +27,6 @@
                                 :info_text="infos_prvMtnOp[7].info_value"
                                 name="prvMtnOp_preventiveOperation"
                 />
-<!--                <div> {{ infos_prvMtnOp[6].info_value }}
-                    <b-form-group>
-                        <b-form-radio-group v-model="prvMtnOp_puttingIntoService" :options="existOptionPIS">
-                        </b-form-radio-group>
-                    </b-form-group>
-                </div>
-                <div> {{ infos_prvMtnOp[7].info_value }}
-                    <b-form-group>
-                        <b-form-radio-group v-model="prvMtnOp_preventiveOperation" :options="existOptionPO">
-                        </b-form-radio-group>
-                    </b-form-group>
-                </div>-->
-                <!--<RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized during putting into service? :" :info_text="infos_prvMtnOp[6].info_value" :options="existOptionPIS" :Errors="errors.prvMtnOp_puttingIntoService"  :checkedOption="this.prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_puttingIntoService"/>
-                <RadioGroupForm @clearRadioError="clearRadioError" label="Does the preventive maintenance operation is realized regularly? :" :info_text="infos_prvMtnOp[3].info_value" :options="existOptionPO" :Errors="errors.prvMtnOp_preventiveOperation"  :checkedOption="this.prvMtnOp_preventiveOperation" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_preventiveOperation"/>-->
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_description"
                                    name="prvMtnOp_description" label="Description :" :isDisabled="!!isInConsultedMod"
                                    v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
@@ -57,6 +43,9 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol"
                                    name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod"
                                    v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>
+                <RadioGroupForm label="Type of Validation" :options="typeValidationOptions" :Errors="errors.typeValidation"
+                                :checkedOption="typeValidation" :isDisabled="isInConsultedMod" v-model="typeValidation"
+                                :info_text="null"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
                 <div v-if="this.addSuccess==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOp is called function else the updateEquipmentPrvMtnOp function is called -->
@@ -211,6 +200,10 @@ export default {
             type: Boolean,
             default: false
         },
+        typeValidation: {
+            type: Boolean,
+            default: true
+        }
     },
     /*--------Declaration of the different returned data:--------
         prvMtnOp_number:
@@ -256,6 +249,10 @@ export default {
                 {id: 'PO', value: true, text: 'Yes'},
                 {id: 'PO', value: false, text: 'No'}
             ],
+            typeValidationOption: [
+                {id: 'typeValidation', value: true, text: 'Technical'},
+                {id: 'typeValidation', value: false, text: 'Quality'}
+            ],
             importedOpRisk: [],
             errors: {},
             addSuccess: false,
@@ -295,6 +292,7 @@ export default {
                     prvMtnOp_validate: savedAs,
                     prvMtnOp_puttingIntoService: this.prvMtnOp_puttingIntoService,
                     prvMtnOp_preventiveOperation: this.prvMtnOp_preventiveOperation,
+                    typeValidation: this.typeValidation
                 })
                     .then(response => {
                         this.errors = {};
@@ -309,6 +307,7 @@ export default {
                             eq_id: id,
                             prvMtnOp_puttingIntoService: this.prvMtnOp_puttingIntoService,
                             prvMtnOp_preventiveOperation: this.prvMtnOp_preventiveOperation,
+                            typeValidation: this.typeValidation
 
                         })
                             /*If the preventive maintenance operation is added successfully*/
@@ -355,6 +354,7 @@ export default {
                 prvMtnOp_validate: savedAs,
                 prvMtnOp_puttingIntoService: this.prvMtnOp_puttingIntoService,
                 prvMtnOp_preventiveOperation: this.prvMtnOp_preventiveOperation,
+                typeValidation: this.typeValidation
             })
                 .then(response => {
                     this.errors = {};
@@ -372,6 +372,7 @@ export default {
                         prvMtnOp_validate: savedAs,
                         prvMtnOp_puttingIntoService: this.prvMtnOp_puttingIntoService,
                         prvMtnOp_preventiveOperation: this.prvMtnOp_preventiveOperation,
+                        typeValidation: this.typeValidation
                     })
                         .then(response => {
                             const id = this.equipment_id_update;

@@ -1,22 +1,22 @@
 <?php
 
 /*
-* Filename : PreventiveMaintenanceOperationController.php 
+* Filename : PreventiveMaintenanceOperationController.php
 * Creation date : 17 May 2022
 * Update date : 7 Mar 2023
-* This file is used to link the view files and the database that concern the preventiveMaintenanceOperation table. 
+* This file is used to link the view files and the database that concern the preventiveMaintenanceOperation table.
 * For example : add a preventiveMaintenanceOperation for an equipment in the data base, update it, delete it...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\PreventiveMaintenanceOperation ; 
-use App\Models\SW01\PreventiveMaintenanceOperationRealized ; 
-use App\Models\SW01\Equipment ; 
-use App\Models\SW01\Risk ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\PreventiveMaintenanceOperation ;
+use App\Models\SW01\PreventiveMaintenanceOperationRealized ;
+use App\Models\SW01\Equipment ;
+use App\Models\SW01\Risk ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
@@ -70,13 +70,13 @@ class PreventiveMaintenanceOperationController extends Controller
                         'prvMtnOp_protocol.min' => 'You must enter at least three characters ',
                         'prvMtnOp_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your preventive maintenance operation',
 
-                    
+
                     ]
                 );
             }
         }else{
              //-----CASE prvMtnOp->validate=drafted or prvMtnOp->validate=to be validate----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -89,7 +89,7 @@ class PreventiveMaintenanceOperationController extends Controller
                     'prvMtnOp_description.max' => 'You must enter a maximum of 255 characters',
                     'prvMtnOp_periodicity.max' => 'You must enter a maximum of 4 characters',
 
-                
+
                 ]
             );
         }
@@ -125,50 +125,50 @@ class PreventiveMaintenanceOperationController extends Controller
 
     /**
      * Function call by EquipmenPrvMtnOpForm.vue when the form is submitted for insert with the route : /equipment/add/prvMtnOp(post)
-     * Add a new enregistrement of preventive maintenance operation in the data base with the informations entered in the form 
+     * Add a new enregistrement of preventive maintenance operation in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : the id of the new prvMtnOp
      */
     public function add_prvMtnOp(Request $request){
-        
-        $id_eq=intval($request->eq_id) ; 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
+
+        $id_eq=intval($request->eq_id) ;
+        $equipment=Equipment::findOrfail($request->eq_id) ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
-        $max_number=1 ; 
+        $max_number=1 ;
         if (count($prvMtnOpsInEq)!=0){
             foreach ($prvMtnOpsInEq as $prvMtnOpInEq){
-                $number=intval($prvMtnOpInEq->prvMtnOp_number) ; 
+                $number=intval($prvMtnOpInEq->prvMtnOp_number) ;
                 if ($number>$max_number){
-                    $max_number=$prvMtnOpInEq->prvMtnOp_number ; 
+                    $max_number=$prvMtnOpInEq->prvMtnOp_number ;
                 }
             }
             $max_number=$max_number+1 ;
         }
 
-        $nextDate=NULL ; 
+        $nextDate=NULL ;
         if ($request->prvMtnOp_preventiveOperation){
             $startDate=Carbon::now('Europe/Paris');
             if ($request->prvMtnOp_symbolPeriodicity!='' && $request->prvMtnOp_symbolPeriodicity!=NULL && $request->prvMtnOp_periodicity!='' && $request->prvMtnOp_periodicity!=NULL ){
                 $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
-            
+
                 if ($request->prvMtnOp_symbolPeriodicity=='Y'){
-                    $nextDate->addYears($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addYears($request->prvMtnOp_periodicity) ;
                 }
 
                 if ($request->prvMtnOp_symbolPeriodicity=='M'){
-                    $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addMonths($request->prvMtnOp_periodicity) ;
                 }
 
                 if ($request->prvMtnOp_symbolPeriodicity=='D'){
-                    $nextDate->addDays($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addDays($request->prvMtnOp_periodicity) ;
                 }
 
                 if ($request->prvMtnOp_symbolPeriodicity=='H'){
-                    $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addHours($request->prvMtnOp_periodicity) ;
                 }
             }
         }
-        
+
         //Creation of a new preventive maintenance operation
         $prvMtnOp=PreventiveMaintenanceOperation::create([
             'prvMtnOp_number' => $max_number,
@@ -179,11 +179,12 @@ class PreventiveMaintenanceOperationController extends Controller
             'prvMtnOp_startDate' => Carbon::now('Europe/Paris'),
             'prvMtnOp_nextDate' => $nextDate,
             'prvMtnOp_validate' => $request->prvMtnOp_validate,
-            'prvMtnOp_puttingIntoService' => $request->prvMtnOp_puttingIntoService, 
+            'prvMtnOp_puttingIntoService' => $request->prvMtnOp_puttingIntoService,
             'prvMtnOp_preventiveOperation' => $request->prvMtnOp_preventiveOperation,
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
-        ]) ; 
-            
+            'typeValidation' => $request->typeValidation,
+        ]) ;
+
         $prvMtnOp_id=$prvMtnOp->id;
         if ($mostRecentlyEqTmp!=NULL){
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -198,16 +199,16 @@ class PreventiveMaintenanceOperationController extends Controller
             }
              //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add prvMtnOp
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
-                
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                 //update of equipment temp
                 $mostRecentlyEqTmp->update([
                  'eqTemp_version' => $version,
@@ -216,19 +217,19 @@ class PreventiveMaintenanceOperationController extends Controller
                 ]);
             }
         }
-        return response()->json($prvMtnOp_id) ; 
+        return response()->json($prvMtnOp_id) ;
     }
 
 
     /**
      * Function call by EquipmentPrvMtnOpForm.vue when the form is submitted for update with the route :/equipment/update/prvMtnOp/{id} (post)
-     * Update an enregistrement of preventive maintenance operation in the data base with the informations entered in the form 
+     * Update an enregistrement of preventive maintenance operation in the data base with the informations entered in the form
      * The id parameter correspond to the id of the preventive maintenance operation we want to update
      * */
     public function update_prvMtnOp(Request $request, $id){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        $oldPrvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        $oldPrvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -244,16 +245,16 @@ class PreventiveMaintenanceOperationController extends Controller
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update prvMtnOp
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
 
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                //update of equipment temp
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
@@ -263,33 +264,33 @@ class PreventiveMaintenanceOperationController extends Controller
             }
 
             if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity || $oldPrvMtnOp->prvMtnOp_preventiveOperation!=$request->prvMtnOp_preventiveOperation)){
-                
-                $dates=explode(' ', $oldPrvMtnOp->prvMtnOp_startDate) ; 
+
+                $dates=explode(' ', $oldPrvMtnOp->prvMtnOp_startDate) ;
                 $ymd=explode('-', $dates[0]);
-                $year=$ymd[0] ; 
+                $year=$ymd[0] ;
                 $month=$ymd[1] ;
                 $day=$ymd[2] ;
 
-                $time=explode(':', $dates[1]); 
+                $time=explode(':', $dates[1]);
                 $hour=$time[0] ;
-                $min=$time[1] ; 
+                $min=$time[1] ;
                 $sec=$time[2] ;
-                
+
                 $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
 
                 if ($request->prvMtnOp_symbolPeriodicity=='Y'){
-                    $nextDate->addYears($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addYears($request->prvMtnOp_periodicity) ;
                 }
-    
+
                 if ($request->prvMtnOp_symbolPeriodicity=='M'){
-                    $nextDate->addMonths($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addMonths($request->prvMtnOp_periodicity) ;
                 }
-                
+
                 if ($request->prvMtnOp_symbolPeriodicity=='D'){
-                    $nextDate->addDays($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addDays($request->prvMtnOp_periodicity) ;
                 }
                  if ($request->prvMtnOp_symbolPeriodicity=='H'){
-                    $nextDate->addHours($request->prvMtnOp_periodicity) ; 
+                    $nextDate->addHours($request->prvMtnOp_periodicity) ;
                 }
                  $oldPrvMtnOp->update([
                     'prvMtnOp_nextDate' => $nextDate,
@@ -303,6 +304,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 'prvMtnOp_validate' => $request->prvMtnOp_validate,
                 'prvMtnOp_puttingIntoService' => $request->prvMtnOp_puttingIntoService,
                 'prvMtnOp_preventiveOperation' => $request->prvMtnOp_preventiveOperation,
+                'typeValidation' => $request->typeValidation,
             ]) ;
 
         }
@@ -310,20 +312,20 @@ class PreventiveMaintenanceOperationController extends Controller
 
     /**
      * Function call by ConsultationLifeSheetPdf.vue with the route : /prvMtnOps/send/lifesheet/{id} (get)
-     * Get the preventive maintenance operations of the equipment whose id is passed in parameter for the lifesheet 
-     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations 
+     * Get the preventive maintenance operations of the equipment whose id is passed in parameter for the lifesheet
+     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations
      * @return \Illuminate\Http\Response
      */
 
     public function send_prvMtnOps_lifesheet($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
        foreach ($prvMtnOps as $prvMtnOp) {
-            $riskExist="no" ; 
-            $risks=Risk::where('preventiveMaintenanceOperation_id', '=', $prvMtnOp->id)->get() ; 
+            $riskExist="no" ;
+            $risks=Risk::where('preventiveMaintenanceOperation_id', '=', $prvMtnOp->id)->get() ;
             if (count($risks)>0){
-                $riskExist="yes" ; 
+                $riskExist="yes" ;
             }
 
             $puttinIntoService="no";
@@ -352,6 +354,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 "PuttingIntoService"=>$puttinIntoService,
                 "PreventiveOperation"=>$preventiveOperation,
                 "Reformed"=>$reformed,
+                'typeValidation' => $prvMtnOp->typeValidation,
             ]);
             array_push($container,$obj);
        }
@@ -362,14 +365,14 @@ class PreventiveMaintenanceOperationController extends Controller
     /**
      * Function call by ReferenceAPrvMtnOp.vue with the route : /prvMtnOps/send/{id} (get)
      * Get the preventive maintenance operations of the equipment whose id is passed in parameter
-     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations 
+     * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations
      * @return \Illuminate\Http\Response
      */
 
     public function send_prvMtnOps($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
        foreach ($prvMtnOps as $prvMtnOp) {
             $obj=([
                 "id" => $prvMtnOp->id,
@@ -384,7 +387,8 @@ class PreventiveMaintenanceOperationController extends Controller
                 "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
                 "prvMtnOp_puttingIntoService" => (boolean)$prvMtnOp->prvMtnOp_puttingIntoService,
                 "prvMtnOp_preventiveOperation" => (boolean)$prvMtnOp->prvMtnOp_preventiveOperation,
-                
+                'typeValidation' => $prvMtnOp->typeValidation,
+
             ]);
             array_push($container,$obj);
        }
@@ -399,8 +403,8 @@ class PreventiveMaintenanceOperationController extends Controller
      */
 
     public function send_prvMtnOp($id) {
-        $container=array() ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
+        $container=array() ;
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
         $obj=([
             "id" => $prvMtnOp->id,
             "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -414,7 +418,8 @@ class PreventiveMaintenanceOperationController extends Controller
             "prvMtnOp_validate" => $prvMtnOp->prvMtnOp_validate,
             "prvMtnOp_puttingIntoService" => (boolean)$prvMtnOp->prvMtnOp_puttingIntoService,
             "prvMtnOp_preventiveOperation" => (boolean)$prvMtnOp->prvMtnOp_preventiveOperation,
-            
+            'typeValidation' => $prvMtnOp->typeValidation,
+
         ]);
         array_push($container,$obj);
         return response()->json($container) ;
@@ -427,14 +432,14 @@ class PreventiveMaintenanceOperationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_prvMtnOp_from_eq_revisionTimeLimitPassed($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ;
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
             if ($prvMtnOp_preventiveOperation){
-                $OneWeekLater=$prvMtnOp->prvMtnOp_nextDate->addDays(7) ; 
+                $OneWeekLater=$prvMtnOp->prvMtnOp_nextDate->addDays(7) ;
                 if (($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL) && $OneWeekLater<$today ){
                         $obj=([
                             "id" => $prvMtnOp->id,
@@ -442,6 +447,7 @@ class PreventiveMaintenanceOperationController extends Controller
                             "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
                             "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
                             "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                            'typeValidation' => $prvMtnOp->typeValidation,
                         ]);
                         array_push($container,$obj);
                 }
@@ -457,9 +463,9 @@ class PreventiveMaintenanceOperationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_prvMtnOp_from_eq_revisionDatePassed($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ;
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
@@ -471,6 +477,7 @@ class PreventiveMaintenanceOperationController extends Controller
                             "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
                             "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
                             "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                            'typeValidation' => $prvMtnOp->typeValidation,
                         ]);
                         array_push($container,$obj);
                 }
@@ -487,9 +494,9 @@ class PreventiveMaintenanceOperationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_prvMtnOp_from_eq_validated($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ; 
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;
 
        foreach ($prvMtnOps as $prvMtnOp) {
            if ($prvMtnOp->prvMtnOp_reformDate=='' || $prvMtnOp->prvMtnOp_reformDate===NULL){
@@ -500,6 +507,7 @@ class PreventiveMaintenanceOperationController extends Controller
                         "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
                         "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
                         "prvMtnOp_nextDate" => $prvMtnOp->prvMtnOp_nextDate,
+                        'typeValidation' => $prvMtnOp->typeValidation,
                     ]);
                     array_push($container,$obj);
                 }
@@ -515,10 +523,10 @@ class PreventiveMaintenanceOperationController extends Controller
      * The id parameter correspond to the id of the preventive maintenance operation we want to delete
      * */
     public function delete_prvMtnOp(Request $request, $id){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
-        
+
         if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
             $mostRecentlyEqTmp->update([
                 'qualityVerifier_id' => NULL,
@@ -529,19 +537,19 @@ class PreventiveMaintenanceOperationController extends Controller
                 'technicalVerifier_id' => NULL,
             ]);
         }
-        
+
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update prvMtnOp
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
 
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
             //update of equipment temp
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
@@ -549,21 +557,21 @@ class PreventiveMaintenanceOperationController extends Controller
             'eqTemp_lifeSheetCreated' => false,
             ]);
         }
-        
-        $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $request->eq_id)->get() ; 
-        $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('prvMtnOp_id', '=', $id)->get() ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
+
+        $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $request->eq_id)->get() ;
+        $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('prvMtnOp_id', '=', $id)->get() ;
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
         if (count($prvMtnOpRlzs)==0){
             foreach($prvMtnOpsInEq as $prvMtnOpInEq){
                 if ($prvMtnOpInEq->prvMtnOp_number>$prvMtnOp->prvMtnOp_number){
-                    $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ; 
-                    $prvMtnOpInDB=PreventiveMaintenanceOperation::findOrFail($prvMtnOpInEq->id) ; 
+                    $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ;
+                    $prvMtnOpInDB=PreventiveMaintenanceOperation::findOrFail($prvMtnOpInEq->id) ;
                     $prvMtnOpInDB->update([
                         'prvMtnOp_number' =>  $prvMtnOpInEq->prvMtnOp_number,
                     ]);
                 }
             }
-            $prvMtnOp->delete() ; 
+            $prvMtnOp->delete() ;
         }else{
             return response()->json([
                 'errors' => [
@@ -577,20 +585,20 @@ class PreventiveMaintenanceOperationController extends Controller
      * Function call by ReferenceAPrvMtnOp.vue when we want to reform a prvMtnOp with the route : '/equipment/reform/prvMtnOp/{id} (post)
      * Reform a prvMtnOp thanks to the id given in parameter
      * The id parameter correspond to the id of the prvMtnOp we want to reform
-     * 
+     *
      * */
 
     public function reform_prvMtnOp(Request $request, $id){
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ; 
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
         if ($request->prvMtnOp_reformDate<$prvMtnOp->prvMtnOp_startDate){
             return response()->json([
                 'errors' => [
-                    'prvMtnOp_reformDate' => ["You must entered a reformDate that is after the startDate"] 
+                    'prvMtnOp_reformDate' => ["You must entered a reformDate that is after the startDate"]
                 ]
             ], 429);
         }
 
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->prvMtnOp_reformDate!=NULL && $request->prvMtnOp_reformDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -598,7 +606,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }
-        
+
         $prvMtnOp->update([
             'prvMtnOp_reformDate' => $request->prvMtnOp_reformDate,
         ]) ;

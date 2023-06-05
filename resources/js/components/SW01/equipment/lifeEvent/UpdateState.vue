@@ -41,6 +41,7 @@
                     :isDisabled="!!isInConsultMod"
                     v-model="state_isOk"
                     :info_text="infos_state[3].info_value"
+                    name="state_isOk"
                 />
                 <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
@@ -55,7 +56,12 @@
                         consultMod/>
                     </div>
                     <div v-else>
-                        <RadioGroupForm label="Do you want to reference a new equipment ?:" :options="radioOption" v-model="new_eq"/>
+                        <RadioGroupForm
+                            label="Do you want to reference a new equipment ?:"
+                            :options="radioOption"
+                            v-model="new_eq"
+                            name="new_eq"
+                        />
                         <EquipmentIDForm :disableImport="true" v-if="new_eq==true" :state_id="state_id"
                         :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
                         :name="eq_idCard.eq_name" :type="eq_idCard.eq_type" :serialNumber="eq_idCard.eq_serialNumber"
@@ -130,8 +136,8 @@ export default {
                 {id_enum:'StateName',value:"Lost"},
             ],
             isOkOptions :[
-                {text: 'Yes', value:true},
-                {text : 'No', value:false}
+                {id: 'isOK', text: 'Yes', value:true},
+                {id: 'isOK', text : 'No', value:false}
             ],
             isInConsultMod:this.consultMod,
             eq_id:this.$route.params.id,
@@ -143,8 +149,8 @@ export default {
             current_state:'',
             current_startDate:'',
             radioOption :[
-                {id: 'Yes', value:true, text:'Yes'},
-                {id : 'No', value:false, text:'No'}
+                {id: 'isOK', value:true, text:'Yes'},
+                {id : 'isOK', value:false, text:'No'}
             ],
             new_eq:null,
             eq_idCard:[],
