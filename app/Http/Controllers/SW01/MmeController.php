@@ -746,7 +746,7 @@ class MmeController extends Controller{
      * The id parameter is the id of the mme in which we want to validate
      * @return \Illuminate\Http\Response
      * */
-    public function verif_validation($id){
+    public function verif_validation(Request $request, $id){
         $container=array() ;
         $container2=array() ;
 
@@ -809,6 +809,29 @@ class MmeController extends Controller{
                 }
             }
         }
+        $states=$mostRecentlyMmeTmp->states;
+        $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
+        foreach($states as $state){
+            $date=$state->created_at ;
+            $date2=$mostRecentlyState->created_at;
+            if ($date>=$date2){
+                    $mostRecentlyState=$state ;
+            }
+        }
+
+        if ($request->reason=="quality" && $mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_to_be_in_use"){
+            $obj19=([
+                'validation' => ["You can't realize quality validation only in use and waiting to be in use state"]
+            ]);
+            array_push($container2,$obj19);
+        }
+
+        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_to_be_in_use"){
+            $obj20=([
+                'validation' => ["You can't realize technical validation only in waiting for referencing and waiting to be in use state"]
+            ]);
+            array_push($container2,$obj20);
+        }
 
         if (count($container2)>0){
             return response()->json([
@@ -832,30 +855,66 @@ class MmeController extends Controller{
             $mostRecentlyMmeTmp->update([
                 'technicalVerifier_id' => $request->enteredBy_id,
             ]);
-            $newState=MmeState::create([
-                'state_remarks' => "This mme has been validated by a technical verifier",
-                'state_startDate' =>  Carbon::now('Europe/Paris'),
-                'state_isOk' => true,
-                'state_validate' => "validated",
-                'state_name' => "Waiting_to_be_in_use"
-            ]) ;
 
-            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
+            $states=$mostRecentlyMmeTmp->states;
+            $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ;
+                $date2=$mostRecentlyState->created_at;
+                if ($date>=$date2){
+                        $mostRecentlyState=$state ;
+                }
+            }
+
+            if ($mostRecentlyState->state_name!="Waiting_to_be_in_use"){
+                if ($mostRecentlyState!=NULL){
+                    $now=Carbon::now('Europe/Paris');
+                    $mostRecentlyState->update([
+                        'state_endDate' => $now,
+                    ]);
+                }
+                $newState=MmeState::create([
+                    'state_remarks' => "This mme has been validated by a technical verifier",
+                    'state_startDate' =>  Carbon::now('Europe/Paris'),
+                    'state_isOk' => true,
+                    'state_validate' => "validated",
+                    'state_name' => "Waiting_to_be_in_use"
+                ]) ;
+                $newState->mme_temps()->attach($mostRecentlyMmeTmp);
+                
+            }
         }
 
         if ($request->reason=="quality"){
             $mostRecentlyMmeTmp->update([
                 'qualityVerifier_id'=> $request->enteredBy_id,
             ]);
-            $newState=MmeState::create([
-                'state_remarks' => "This mme has been validated by a quality verifier",
-                'state_startDate' =>  Carbon::now('Europe/Paris'),
-                'state_isOk' => true,
-                'state_validate' => "validated",
-                'state_name' => "In_use"
-            ]) ;
 
-            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
+            $states=$mostRecentlyMmeTmp->states;
+            $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ;
+                $date2=$mostRecentlyState->created_at;
+                if ($date>=$date2){
+                        $mostRecentlyState=$state ;
+                }
+            }
+            if ($mostRecentlyState->state_name!="In_use"){
+                if ($mostRecentlyState!=NULL){
+                    $now=Carbon::now('Europe/Paris');
+                    $mostRecentlyState->update([
+                        'state_endDate' => $now,
+                    ]);
+                }
+                $newState=MmeState::create([
+                    'state_remarks' => "This mme has been validated by a quality verifier",
+                    'state_startDate' =>  Carbon::now('Europe/Paris'),
+                    'state_isOk' => true,
+                    'state_validate' => "validated",
+                    'state_name' => "In_use"
+                ]) ;
+                $newState->mme_temps()->attach($mostRecentlyMmeTmp);
+            } 
         }
 
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL && $mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
@@ -897,24 +956,44 @@ class MmeController extends Controller{
                             $mostRecentlyState=$state ;
                         }
                     }
-
-                    if ($verif->verif_validate=="validated" && $nextDateCarbon>=$now && $nextDateCarbon<=$oneMonthLater){
-                        $verification=([
-                            "id" => $verif->id,
-                            "Number" => (string)$verif->verif_number,
-                            "Description" => $verif->verif_description,
-                            "verif_periodicity" => (string)$verif->verif_periodicity,
-                            "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
-                            "nextDate" => $nextDate,
-                            "Protocol" => $verif->verif_protocol,
-                            "Internal_Ref" => $mme->mme_internalReference,
-                            "Name" => $mme->mme_name,
-                            "mme_id" => $mme->id,
-                            "state_id" => $mostRecentlyState->id,
-                            "verif_expectedResult" => $verif->verif_expectedResult,
-                            "verif_nonComplianceLimit" => $verif->verif_nonComplianceLimit,
-                        ]);
-                        array_push($containerVerif,$verification);
+                    if ($verif->verif_validate=="validated" && $nextDateCarbon<=$oneMonthLater){
+                        if ($nextDateCarbon>=$now){
+                            $verification=([
+                                "id" => $verif->id,
+                                "Number" => (string)$verif->verif_number,
+                                "Description" => $verif->verif_description,
+                                "verif_periodicity" => (string)$verif->verif_periodicity,
+                                "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
+                                "nextDate" => $nextDate,
+                                "Protocol" => $verif->verif_protocol,
+                                "Internal_Ref" => $mme->mme_internalReference,
+                                "Name" => $mme->mme_name,
+                                "mme_id" => $mme->id,
+                                "state_id" => $mostRecentlyState->id,
+                                "verif_expectedResult" => $verif->verif_expectedResult,
+                                "verif_nonComplianceLimit" => $verif->verif_nonComplianceLimit,
+                                "passed" => false,
+                            ]);
+                            array_push($containerVerif,$verification);
+                        }else{
+                            $verification=([
+                                "id" => $verif->id,
+                                "Number" => (string)$verif->verif_number,
+                                "Description" => $verif->verif_description,
+                                "verif_periodicity" => (string)$verif->verif_periodicity,
+                                "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
+                                "nextDate" => $nextDate,
+                                "Protocol" => $verif->verif_protocol,
+                                "Internal_Ref" => $mme->mme_internalReference,
+                                "Name" => $mme->mme_name,
+                                "mme_id" => $mme->id,
+                                "state_id" => $mostRecentlyState->id,
+                                "verif_expectedResult" => $verif->verif_expectedResult,
+                                "verif_nonComplianceLimit" => $verif->verif_nonComplianceLimit,
+                                "passed" => true,
+                            ]);
+                            array_push($containerVerif,$verification);
+                        }
                     }
                 }
             }

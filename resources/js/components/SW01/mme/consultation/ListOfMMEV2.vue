@@ -1,6 +1,6 @@
 <!--File name : ListOfMMEV2.vue-->
 <!--Creation date : 25 May 2023-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 5 Jun 2023-->
 <!--Vue Component of the list of mme menu-->
 
 <template>
@@ -71,8 +71,8 @@
                         <thead>
                         <tr>
                             <th scope="col"></th>
-                            <th scope="col">EQ Intern Ref</th>
-                            <th scope="col">EQ Name</th>
+                            <th scope="col">MME Intern Ref</th>
+                            <th scope="col">MME Name</th>
                             <th scope="col">Actual State</th>
                             <th scope="col">
                                 Technical Reviewed ?
@@ -307,7 +307,7 @@ export default {
             if (this.checked.length === 1) {
                 this.MMEs.forEach(element => {
                     if (element.mme_internalReference === this.checked[0]) {
-                        window.location.href = "/equipment/lifesheet_pdf/" + element.id;
+                        window.location.href = "/mme/lifesheet_pdf/" + element.id;
                     }
                 });
             } else {

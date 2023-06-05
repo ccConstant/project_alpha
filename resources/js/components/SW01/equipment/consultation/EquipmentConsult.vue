@@ -282,9 +282,12 @@ export default {
                 this.$refs.errorAlert.showAlert("You don't have the right");
             }else{
                 var validVerifUrl = (id) => `/equipment/verifValidation/${id}`;
+                console.log(this.validationMethod)
                 axios.post(validVerifUrl(this.eq_id),{
+                    reason:this.validationMethod
                     })
                     .then(response =>{
+                        console.log("COUCOU")
                         console.log(this.validationMethod)
                         console.log(this.$userId.id)
                         var techVeriftUrl = (id) => `/equipment/validation/${id}`;

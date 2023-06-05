@@ -1022,7 +1022,7 @@ class EquipmentController extends Controller{
      * @return \Illuminate\Http\Response
      * */
 
-    public function verif_validation($id){
+    public function verif_validation(Request $request, $id){
         $container=array() ;
         $container2=array() ;
 
@@ -1181,12 +1181,36 @@ class EquipmentController extends Controller{
                 }
             }
         }
+
+        $states=$mostRecentlyEqTmp->states;
+        $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+        foreach($states as $state){
+            $date=$state->created_at ;
+            $date2=$mostRecentlyState->created_at;
+            if ($date>=$date2){
+                    $mostRecentlyState=$state ;
+            }
+        }
+
+        if ($request->reason=="quality" && $mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_for_installation"){
+            $obj19=([
+                'validation' => ["You can't realize quality validation only in use and waiting for installation state"]
+            ]);
+            array_push($container2,$obj19);
+        }
+
+        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_for_installation"){
+            $obj20=([
+                'validation' => ["You can't realize technical validation only in waiting for referencing and waiting for installation state"]
+            ]);
+            array_push($container2,$obj20);
+        }
+
         if (count($container2)>0){
             return response()->json([
                     'errors' => $container2
             ], 429);
         }
-
     }
 
     /**
@@ -1204,28 +1228,67 @@ class EquipmentController extends Controller{
             $mostRecentlyEqTmp->update([
                 'technicalVerifier_id' => $request->enteredBy_id,
             ]);
-            $newState=State::create([
-                'state_remarks' => "This equipment has been validated by a technical verifier",
-                'state_startDate' =>  Carbon::now('Europe/Paris'),
-                'state_isOk' => true,
-                'state_validate' => "validated",
-                'state_name' => "Waiting_for_installation",
-            ]);
-            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
+
+            $states=$mostRecentlyEqTmp->states;
+            $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ;
+                $date2=$mostRecentlyState->created_at;
+                if ($date>=$date2){
+                        $mostRecentlyState=$state ;
+                }
+            }
+
+            
+            if ($mostRecentlyState->state_name!="Waiting_for_installation"){
+                if ($mostRecentlyState!=NULL){
+                    $now=Carbon::now('Europe/Paris');
+                    $mostRecentlyState->update([
+                        'state_endDate' => $now,
+                    ]);
+                }
+                $newState=State::create([
+                    'state_remarks' => "This equipment has been validated by a technical verifier",
+                    'state_startDate' =>  $now,
+                    'state_isOk' => true,
+                    'state_validate' => "validated",
+                    'state_name' => "Waiting_for_installation",
+                ]);
+                $newState->equipment_temps()->attach($mostRecentlyEqTmp);
+            }
         }
 
         if ($request->reason=="quality"){
             $mostRecentlyEqTmp->update([
                 'qualityVerifier_id'=> $request->enteredBy_id,
             ]);
-            $newState=State::create([
-                'state_remarks' => "This equipment has been validated by a quality verifier",
-                'state_startDate' =>  Carbon::now('Europe/Paris'),
-                'state_isOk' => true,
-                'state_validate' => "validated",
-                'state_name' => "In_use",
-            ]);
-            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
+
+            $states=$mostRecentlyEqTmp->states;
+            $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+            foreach($states as $state){
+                $date=$state->created_at ;
+                $date2=$mostRecentlyState->created_at;
+               if ($date>=$date2){
+                     $mostRecentlyState=$state ;
+                }
+            }
+            if ($mostRecentlyState->state_name!="In_use"){
+                if ($mostRecentlyState!=NULL){
+                    $now=Carbon::now('Europe/Paris');
+                    $mostRecentlyState->update([
+                        'state_endDate' => $now,
+                    ]);
+                }
+                $newState=State::create([
+                    'state_remarks' => "This equipment has been validated by a quality verifier",
+                    'state_startDate' =>  $now,
+                    'state_isOk' => true,
+                    'state_validate' => "validated",
+                    'state_name' => "In_use",
+                ]);
+                $newState->equipment_temps()->attach($mostRecentlyEqTmp);
+            } 
+            
         }
        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier_id!=NULL){
             $mostRecentlyEqTmp->update([

@@ -9,25 +9,6 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <!--<div class="remind_containers">
-                <div class="remindOpeLate_container">
-                    <h2>Maintenance late</h2>
-                    <li v-for="(prvMtnOp, index) in  pageOfItems_LimitPassed" :key="index" class="list-group-item"
-                    @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                        {{prvMtnOp.internalReference}}
-                    </li>
-                    <jw-pagination class="eq_list_pagination" :pageSize=7 :items="prvMtnOp_LimitPassed" @changePage="onChangePage_limitPassed"></jw-pagination>
-                </div>
-
-                <div class="remindOpeToDo_container">
-                    <h2>Maintenance to do</h2>
-                    <li v-for="(prvMtnOp, index) in  pageOfItems_ToDo" :key="index" class="list-group-item"
-                    @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                        {{prvMtnOp.internalReference}}
-                    </li>
-                    <jw-pagination class="eq_list_pagination" :pageSize=7 :items="prvMtnOp_ToDo" @changePage="onChangePage_ToDo"></jw-pagination>
-                </div>
-            </div>-->
 
             <div class="eq_planning_pdf">
                 <div class="title_planning_pdf">
@@ -49,20 +30,38 @@
                         </b-col>
                     </b-row>
                     <div v-for="(verif,index) in mme_nextMonth " :key="index">
+                        <div v-if="verif.passed==true"> 
                         <b-row>
                             <b-col cols="1"   class="planning_table_internalReference">
-                                 <p class="text-primary">{{verif.Internal_Ref}}</p>
+                                 <p class="redText">{{verif.Internal_Ref}}</p>
                             </b-col>
                             <b-col cols="4" class="planning_table_name">
-                                <p class="text-primary">{{verif.Description}}</p>
+                                <p class="redText">{{verif.Description}}</p>
                             </b-col>
                             <b-col cols="4"  class="planning_table_number">
-                               <p class="text-primary" @click="handleListClick(verif.mme_id,verif.Internal_Ref,verif.state_id,verif.Number, verif.Description, verif.Protocol, verif.nextDate, verif.verif_periodicity, verif.verif_symbolPeriodicity, verif.verif_expectedResult, verif.verif_nonComplianceLimit)"> {{verif.Number}}</p>
+                               <p class="redText" @click="handleListClick(verif.mme_id,verif.Internal_Ref,verif.state_id,verif.Number, verif.Description, verif.Protocol, verif.nextDate, verif.verif_periodicity, verif.verif_symbolPeriodicity, verif.verif_expectedResult, verif.verif_nonComplianceLimit)"> {{verif.Number}}</p>
                             </b-col>
                             <b-col cols="4"  class="planning_table_nextDate">
-                                <p class="text-primary"> {{verif.nextDate}}</p>
+                                <p class="redText"> {{verif.nextDate}}</p>
                             </b-col>
                         </b-row>
+                        </div>
+                        <div v-else> 
+                            <b-row>
+                                <b-col cols="1"   class="planning_table_internalReference">
+                                    <p class="text-primary">{{verif.Internal_Ref}}</p>
+                                </b-col>
+                                <b-col cols="4" class="planning_table_name">
+                                    <p class="text-primary">{{verif.Description}}</p>
+                                </b-col>
+                                <b-col cols="4"  class="planning_table_number">
+                                <p class="text-primary" @click="handleListClick(verif.mme_id,verif.Internal_Ref,verif.state_id,verif.Number, verif.Description, verif.Protocol, verif.nextDate, verif.verif_periodicity, verif.verif_symbolPeriodicity, verif.verif_expectedResult, verif.verif_nonComplianceLimit)"> {{verif.Number}}</p>
+                                </b-col>
+                                <b-col cols="4"  class="planning_table_nextDate">
+                                    <p class="text-primary"> {{verif.nextDate}}</p>
+                                </b-col>
+                            </b-row>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,10 +91,6 @@ export default {
     data() {
         return {
             verif:[],
-            verif_LimitPassed:[],
-            verif_ToDo:[],
-            pageOfItems_LimitPassed: [],
-            pageOfItems_ToDo: [],
             loaded:false,
             eq_nextMonth:[],
         }
@@ -118,27 +113,8 @@ export default {
         modalClosed(){
             this.verif=[]
         },
-        onChangePage_limitPassed(pageOfItems) {
-            // update page of items
-            this.pageOfItems_LimitPassed = pageOfItems;
-		},
-        onChangePage_ToDo(pageOfItems){
-            this.pageOfItems_ToDo = pageOfItems;
-        }
     },
     created(){
-        /*axios.get('/equipment/prvMtnOp/revisionLimitPassed')
-        .then (response=>{
-            console.log(response.data)
-            this.prvMtnOp_LimitPassed=response.data;
-
-        });
-        axios.get('/equipment/prvMtnOp/revisionDatePassed')
-        .then (response=>{
-            console.log(response.data)
-            this.prvMtnOp_ToDo=response.data;
-        })*/
-
         axios.get('/mme/verif/planning_monthly')
         .then (response=>{
             console.log(response.data)

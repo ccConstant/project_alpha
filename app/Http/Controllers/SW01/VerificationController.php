@@ -522,8 +522,8 @@ class VerificationController extends Controller
                 'verif_puttingIntoService'=> $verifPuttingIntoService,
                 'verif_preventiveOperation'=> $verifPreventiveOperation,
                 'verif_reformed' => $reformed,
-                'verif_mesureUncert' => $request->verif_mesureUncert,
-                'verif_mesureRange' => $request->verif_mesureRange,
+                'verif_mesureUncert' => $verif->verif_mesureUncert,
+                'verif_mesureRange' => $verif->verif_mesureRange,
             ]);
             array_push($container,$obj);
        }
@@ -573,8 +573,8 @@ class VerificationController extends Controller
                 'verif_validate' => $verif->verif_validate,
                 'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
                 'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
-                'verif_mesureUncert' => $request->verif_mesureUncert,
-                'verif_mesureRange' => $request->verif_mesureRange,
+                'verif_mesureUncert' => $verif->verif_mesureUncert,
+                'verif_mesureRange' => $verif->verif_mesureRange,
             ]);
             array_push($container,$obj);
        }
@@ -620,8 +620,8 @@ class VerificationController extends Controller
             'verif_validate' => $verif->verif_validate,
             'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
             'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
-            'verif_mesureUncert' => $request->verif_mesureUncert,
-            'verif_mesureRange' => $request->verif_mesureRange,
+            'verif_mesureUncert' => $verif->verif_mesureUncert,
+            'verif_mesureRange' => $verif->verif_mesureRange,
 
         ]);
         array_push($container,$obj);
