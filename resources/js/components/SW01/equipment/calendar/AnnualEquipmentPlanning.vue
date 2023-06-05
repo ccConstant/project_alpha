@@ -3,6 +3,7 @@
 <!--Update date : 11 Apr 2023-->
 <!--Vue Component of the annual maintenance of equipment-->
 
+
 <template>
     <div v-if="loaded==true">
         <div id="page">
@@ -406,6 +407,7 @@ export default {
 
     },
     methods: {
+
         maintenancePlanned(id_periode, AllnextDate){
             let res=false ;
             if (AllnextDate.length==0)
@@ -461,6 +463,7 @@ export default {
         modalClosed(){
             this.prvMtnOp=[]
         },
+       
     },
     created(){
         axios.get('/equipment/prvMtnOp/planning')
@@ -473,7 +476,6 @@ export default {
                 this.periode = response.data;
                 console.log(response.data);
         });
-
 	},
 }
 </script>
