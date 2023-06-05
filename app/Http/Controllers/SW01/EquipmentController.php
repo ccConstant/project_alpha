@@ -723,21 +723,40 @@ class EquipmentController extends Controller{
                         }
                     }
 
-                    if ($prvMtnOp->prvMtnOp_validate=="validated" && $nextDateCarbon>=$now && $nextDateCarbon<=$oneMonthLater){
-                        $opMtn=([
-                            "id" => $prvMtnOp->id,
-                            "Number" => (string)$prvMtnOp->prvMtnOp_number,
-                            "Description" => $prvMtnOp->prvMtnOp_description,
-                            "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
-                            "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
-                            "nextDate" => $nextDate,
-                            "Protocol" => $prvMtnOp->prvMtnOp_protocol,
-                            "Internal_Ref" => $equipment->eq_internalReference,
-                            "Name" => $equipment->eq_name,
-                            "eq_id" => $equipment->id,
-                            "state_id" => $mostRecentlyState->id,
-                        ]);
-                        array_push($containerOp,$opMtn);
+                    if ($prvMtnOp->prvMtnOp_validate=="validated" && $nextDateCarbon<=$oneMonthLater){
+                        if ($nextDateCarbon>=$now){
+                            $opMtn=([
+                                "id" => $prvMtnOp->id,
+                                "Number" => (string)$prvMtnOp->prvMtnOp_number,
+                                "Description" => $prvMtnOp->prvMtnOp_description,
+                                "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
+                                "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
+                                "nextDate" => $nextDate,
+                                "Protocol" => $prvMtnOp->prvMtnOp_protocol,
+                                "Internal_Ref" => $equipment->eq_internalReference,
+                                "Name" => $equipment->eq_name,
+                                "eq_id" => $equipment->id,
+                                "state_id" => $mostRecentlyState->id,
+                                "passed" => false,
+                            ]);
+                            array_push($containerOp,$opMtn);
+                        }else{
+                            $opMtn=([
+                                "id" => $prvMtnOp->id,
+                                "Number" => (string)$prvMtnOp->prvMtnOp_number,
+                                "Description" => $prvMtnOp->prvMtnOp_description,
+                                "prvMtnOp_periodicity" => (string)$prvMtnOp->prvMtnOp_periodicity,
+                                "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
+                                "nextDate" => $nextDate,
+                                "Protocol" => $prvMtnOp->prvMtnOp_protocol,
+                                "Internal_Ref" => $equipment->eq_internalReference,
+                                "Name" => $equipment->eq_name,
+                                "eq_id" => $equipment->id,
+                                "state_id" => $mostRecentlyState->id,
+                                "passed" => true,
+                            ]);
+                            array_push($containerOp,$opMtn);
+                        }
                     }
                 }
             }

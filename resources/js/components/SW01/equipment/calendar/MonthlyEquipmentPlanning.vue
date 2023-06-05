@@ -9,26 +9,6 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <!--<div class="remind_containers">
-                <div class="remindOpeLate_container">
-                    <h2>Maintenance late</h2>
-                    <li v-for="(prvMtnOp, index) in  pageOfItems_LimitPassed" :key="index" class="list-group-item"
-                    @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                        {{prvMtnOp.internalReference}}
-                    </li>
-                    <jw-pagination class="eq_list_pagination" :pageSize=7 :items="prvMtnOp_LimitPassed" @changePage="onChangePage_limitPassed"></jw-pagination>
-                </div>
-
-                <div class="remindOpeToDo_container">
-                    <h2>Maintenance to do</h2>
-                    <li v-for="(prvMtnOp, index) in  pageOfItems_ToDo" :key="index" class="list-group-item"
-                    @click="handleListClick(prvMtnOp.id,prvMtnOp.internalReference,prvMtnOp.state_id,prvMtnOp.preventive_maintenance_operations)">
-                        {{prvMtnOp.internalReference}}
-                    </li>
-                    <jw-pagination class="eq_list_pagination" :pageSize=7 :items="prvMtnOp_ToDo" @changePage="onChangePage_ToDo"></jw-pagination>
-                </div>
-            </div>-->
-
             <div class="eq_planning_pdf">
                 <div class="title_planning_pdf">
                     MONTHLY EQUIPMENT PLANNING
@@ -52,24 +32,46 @@
                         </b-col>
                     </b-row>
                     <div v-for="(prvMtnOp,index) in eq_nextMonth " :key="index">
-                        <b-row @click="handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)">
-                            <b-col cols="1"   class="planning_table_internalReference">
-                                 <p class="text-primary">{{prvMtnOp.Internal_Ref}}</p>
-                            </b-col>
-                            <b-col cols="4" class="planning_table_name">
-                                <p class="text-primary">{{prvMtnOp.Description}}</p>
-                            </b-col>
-                            <b-col cols="4"  class="planning_table_number">
-                               <p class="text-primary"> {{prvMtnOp.Number}}</p>
-                            </b-col>
-                            <b-col cols="4"  class="planning_table_nextDate">
-                                <p class="text-primary">
-                                    {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getDate() }}
-                                    {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
-                                    {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getFullYear() }}
-                                </p>
-                            </b-col>
-                        </b-row>
+                        <div v-if="prvMtnOp.passed==true"> 
+                            <b-row @click="handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)">
+                                <b-col cols="1"   class="planning_table_internalReference">
+                                    <p class="redText">{{prvMtnOp.Internal_Ref+"coucou"}}</p>
+                                </b-col>
+                                <b-col cols="4" class="planning_table_name">
+                                    <p class="redText">{{prvMtnOp.Description}}</p>
+                                </b-col>
+                                <b-col cols="4"  class="planning_table_number">
+                                <p class="redText"> {{prvMtnOp.Number}}</p>
+                                </b-col>
+                                <b-col cols="4"  class="planning_table_nextDate">
+                                    <p class="redText">
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getDate() }}
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getFullYear() }}
+                                    </p>
+                                </b-col>
+                            </b-row>
+                        </div>
+                        <div v-else>
+                            <b-row @click="handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)">
+                                <b-col cols="1"   class="planning_table_internalReference">
+                                    <p class="text-primary">{{prvMtnOp.Internal_Ref}}</p>
+                                </b-col>
+                                <b-col cols="4" class="planning_table_name">
+                                    <p class="text-primary">{{prvMtnOp.Description}}</p>
+                                </b-col>
+                                <b-col cols="4"  class="planning_table_number">
+                                <p class="text-primary"> {{prvMtnOp.Number}}</p>
+                                </b-col>
+                                <b-col cols="4"  class="planning_table_nextDate">
+                                    <p class="text-primary">
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getDate() }}
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getFullYear() }}
+                                    </p>
+                                </b-col>
+                            </b-row>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -125,43 +127,9 @@ export default {
         modalClosed(){
             this.prvMtnOp=[]
         },
-        onChangePage_limitPassed(pageOfItems) {
-            // update page of items
-            this.pageOfItems_LimitPassed = pageOfItems;
-		},
-        onChangePage_ToDo(pageOfItems){
-            this.pageOfItems_ToDo = pageOfItems;
-        }
     },
     created(){
-        axios.get('/equipment/prvMtnOp/planning')
-            .then (response=>{
-                console.log(response.data)
-                for (const data of response.data) {
-                    this.calendarOptions.resources.push({title:data.internalReference,id:data.internalReference});
-                    for(const operation of data.preventive_maintenance_operations){
-                        this.calendarOptions.events.push({title:data.internalReference,date:operation.prvMtnOp_nextDate,
-                         eq_id:data.id,state_id:data.state_id,
-                         number:operation.prvMtnOp_number,id:operation.id,
-                         description:operation.prvMtnOp_description,
-                         operation_date:moment(operation.prvMtnOp_nextDate).format('D MMM YYYY hh:mm a'),
-                         protocol:operation.prvMtnOp_protocol,
-                         resourceId:data.internalReference});
-                    }
-                }
-        })
-        axios.get('/equipment/prvMtnOp/revisionLimitPassed')
-        .then (response=>{
-            console.log(response.data)
-            this.prvMtnOp_LimitPassed=response.data;
-
-        });
-        axios.get('/equipment/prvMtnOp/revisionDatePassed')
-        .then (response=>{
-            console.log(response.data)
-            this.prvMtnOp_ToDo=response.data;
-        })
-
+        
         axios.get('/equipment/prvMtnOp/planning_monthly')
         .then (response=>{
             console.log(response.data)
@@ -175,6 +143,10 @@ export default {
 </script>
 
 <style lang="scss">
+
+.redText{
+        color:red;
+    }
 .eq_maintenance_page{
     .remind_containers{
         float:left;
