@@ -379,15 +379,24 @@ export default {
             let res = [];
             if (this.searchTermInternRef !== "" && this.searchTermName === "") {
                 res = this.equipments.filter(option => {
-                    return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
+                    if (option.eq_internalReference !== null) {
+                        return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
+                    }
+                    return false;
                 });
             } else if (this.searchTermInternRef === "" && this.searchTermName !== "") {
                 res = this.equipments.filter(option => {
-                    return option.eq_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    if (option.eq_name !== null) {
+                        return option.eq_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    }
+                    return false;
                 });
             } else {
                 res = this.equipments.filter(option => {
-                    return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase()) && option.eq_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    if (option.eq_internalReference !== null && option.eq_name !== null) {
+                        return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase()) && option.eq_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    }
+                    return false;
                 });
             }
             if (this.searchTermTechReview !== -1) {

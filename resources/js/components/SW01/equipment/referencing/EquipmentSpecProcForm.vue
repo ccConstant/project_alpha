@@ -87,7 +87,7 @@ export default {
         },
         exist: {
             type: Boolean,
-            default: null
+            default: false
         },
         validate: {
             type: String

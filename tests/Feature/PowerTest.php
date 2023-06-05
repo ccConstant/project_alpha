@@ -244,7 +244,7 @@ class PowerTest extends TestCase
             'pow_unit' => null,
             'pow_consumptionValue' => null,
             'pow_consumptionUnit' => null,
-            'equipmentTemp_id' => Equipment::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id
         ]);
     }
 
@@ -321,13 +321,13 @@ class PowerTest extends TestCase
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
-            'enumPowerType_id' => EnumPowerType::all()->last()->id,
+            'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Electric')->first()->id,
             'pow_name' => 'three',
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id
         ]);
     }
 
@@ -552,7 +552,7 @@ class PowerTest extends TestCase
             'pow_unit' => null,
             'pow_consumptionValue' => null,
             'pow_consumptionUnit' => null,
-            'equipmentTemp_id' => Equipment::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id
         ]);
     }
 
@@ -629,13 +629,13 @@ class PowerTest extends TestCase
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'to_be_validated',
-            'enumPowerType_id' => EnumPowerType::all()->last()->id,
+            'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Electric')->first()->id,
             'pow_name' => 'three',
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id
         ]);
     }
 
@@ -962,8 +962,8 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
-            'enumPowerType_id' => EnumPowerType::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
+            'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Electric')->first()->id
         ]);
     }
 
@@ -1045,8 +1045,8 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
-            'enumPowerType_id' => EnumPowerType::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
+            'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Electric')->first()->id
         ]);
         // Update the power type
         $countPower = Power::all()->count();
@@ -1065,7 +1065,7 @@ class PowerTest extends TestCase
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
             'pow_name' => 'three',
-            'equipmentTemp_id' => Equipment::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
     }
@@ -1148,8 +1148,8 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
-            'enumPowerType_id' => EnumPowerType::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
+            'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Electric')->first()->id
         ]);
         // Add a new power type
         $response=$this->post('/power/enum/type/add', [
@@ -1198,7 +1198,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'w',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'wH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -1282,7 +1282,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Update the power type
@@ -1302,7 +1302,7 @@ class PowerTest extends TestCase
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'three',
-            'equipmentTemp_id' => Equipment::all()->last()->id
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
     }
@@ -1385,7 +1385,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Add a new power type
@@ -1436,7 +1436,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'w',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'wH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -1520,7 +1520,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Add a new power type
@@ -1571,7 +1571,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'w',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'wH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -1712,7 +1712,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
@@ -1777,7 +1777,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -1931,7 +1931,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
@@ -1980,7 +1980,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -2133,7 +2133,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
@@ -2182,7 +2182,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -2335,7 +2335,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
@@ -2384,7 +2384,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'w',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -2537,7 +2537,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
@@ -2586,7 +2586,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -2739,7 +2739,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
@@ -2788,7 +2788,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'wH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
@@ -2946,7 +2946,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->eqTemp_version);
@@ -3026,7 +3026,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Consult the power of this equipment
@@ -3131,7 +3131,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Consult the power of this equipment
@@ -3244,7 +3244,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $countPower = Power::all()->count();
@@ -3278,7 +3278,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $countPower = Power::all()->count();
@@ -3312,7 +3312,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Consult the power of this equipment
@@ -3320,13 +3320,13 @@ class PowerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
-                'pow_name' => 'three'
+                'pow_name' => 'Electric source'
             ],
             '1' => [
-                'pow_name' => 'Example'
+                'pow_name' => 'three'
             ],
             '2' => [
-                'pow_name' => 'Electric source'
+                'pow_name' => 'Example'
             ]
         ]);
     }
@@ -3402,7 +3402,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Delete the power
@@ -3547,7 +3547,7 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
             'pow_consumptionUnit' => 'kwH',
-            'equipmentTemp_id' => Equipment::all()->last()->id,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification

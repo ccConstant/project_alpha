@@ -16,30 +16,143 @@
                     <InputNumberForm  inputClassName="form-control w-25" :Errors="errors.verif_number" name="verif_number" label="Number :" :stepOfInput="1" v-model="verif_number" isDisabled />
                 </div>
                 <!--<RadioGroupForm @clearRadioError="clearRadioError" label="Does the verification is realized during putting into service? :" :options="existOptionVerif" :Errors="errors.verif_puttingIntoService"  :info_text="infos_verif[0].info_value" :checkedOption="verif_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="verif_puttingIntoService"/>-->
-                <div> {{infos_verif[0].info_value}}
+                <RadioGroupForm label="Putting Into Service ?:" :options="existOptionPIS" :Errors="errors.verif_puttingIntoService"
+                                :checkedOption="verif_puttingIntoService" :isDisabled="!!isInConsultMod" v-model="verif_puttingIntoService"
+                                :info_text="infos_verif[0].info_value"
+                                name="verif_puttingIntoService"
+                />
+                <RadioGroupForm label="Preventive Operation ?:" :options="existOptionPO" :Errors="errors.verif_preventiveOperation"
+                                :checkedOption="verif_preventiveOperation" :isDisabled="!!isInConsultMod" v-model="verif_preventiveOperation"
+                                :info_text="infos_verif[1].info_value"
+                                name="verif_preventiveOperation"
+                />
+<!--                <div> {{infos_verif[0].info_value}}
                     <b-form-group>
                     <b-form-radio-group v-model="verif_puttingIntoService" :options="existOptionPIS" >
                     </b-form-radio-group>
                     </b-form-group>
-                </div>
-                <div> {{infos_verif[1].info_value}}
+                </div>-->
+<!--                <div> {{infos_verif[1].info_value}}
                     <b-form-group>
                      <b-form-radio-group v-model="verif_preventiveOperation" :options="existOptionPO" >
                     </b-form-radio-group>
                     </b-form-group>
-                </div>
-                <InputTextForm  inputClassName="form-control w-50" :info_text="infos_verif[3].info_value" :Errors="errors.verif_name" name="verif_name" label="Name :" v-model="verif_name" :isDisabled="!!isInConsultedMod"/>
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[4].info_value" :Errors="errors.verif_expectedResult" name="verif_expectedResult" label="Expected Result :" :isDisabled="!!isInConsultedMod" v-model="verif_expectedResult" />
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[5].info_value" :Errors="errors.verif_nonComplianceLimit" name="verif_nonComplianceLimit" label="Non compliance limit :" :isDisabled="!!isInConsultedMod" v-model="verif_nonComplianceLimit" />
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[6].info_value" selectClassName="form-select w-50" name="verif_requiredSkill"  label="Required Skill :" :Errors="errors.verif_requiredSkill" :options="enum_requiredSkill" :selctedOption="this.verif_requiredSkill" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_requiredSkill" :id_actual="RequiredSkill"/>
-                <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[7].info_value" selectClassName="form-select w-50"  name="verif_verifAcceptanceAuthority"  label="Verification acceptance authority :" :Errors="errors.verif_verifAcceptanceAuthority" :options="enum_verifAcceptanceAuthority" :selctedOption="this.verif_verifAcceptanceAuthority" :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_verifAcceptanceAuthority" :id_actual="VerifAcceptanceAuthority"/>
-
-                <div class="input-group">
-                    <InputNumberForm  inputClassName="form-control " :info_text="infos_verif[8].info_value" :Errors="errors.verif_periodicity" name="verif_periodicity" label="Periodicity :" :stepOfInput="1" v-model="verif_periodicity" :isDisabled="!!isInConsultedMod"/>
-                    <InputSelectForm @clearSelectError='clearSelectError' :info_text="infos_verif[9].info_value"  name="verif_symbolPeriodicity"  label="Symbol :" :Errors="errors.verif_symbolPeriodicity" :options="enum_periodicity_symbol" :selctedOption="this.verif_symbolPeriodicity" :id_actual="SymbolPeriodicity"  :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass" v-model="verif_symbolPeriodicity"/>
-                </div>
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[10].info_value" :Errors="errors.verif_description" name="verif_description" label="Description :" :isDisabled="!!isInConsultedMod" v-model="verif_description" />
-                <InputTextAreaForm inputClassName="form-control w-50" :info_text="infos_verif[11].info_value" :Errors="errors.verif_protocol" name="verif_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod" v-model="verif_protocol" />
+                </div>-->
+                <InputTextForm
+                    inputClassName="form-control w-50"
+                    :info_text="infos_verif[3].info_value"
+                    :Errors="errors.verif_name"
+                    name="verif_name"
+                    label="Name :"
+                    v-model="verif_name"
+                    :isDisabled="!!isInConsultedMod"
+                />
+                <InputTextAreaForm
+                    inputClassName="form-control w-50"
+                    :info_text="infos_verif[4].info_value"
+                    :Errors="errors.verif_expectedResult"
+                    name="verif_expectedResult"
+                    label="Expected Result :"
+                    :isDisabled="!!isInConsultedMod"
+                    v-model="verif_expectedResult"
+                />
+                <InputTextAreaForm
+                    inputClassName="form-control w-50"
+                    :info_text="infos_verif[5].info_value"
+                    :Errors="errors.verif_nonComplianceLimit"
+                    name="verif_nonComplianceLimit"
+                    label="Non compliance limit :"
+                    :isDisabled="!!isInConsultedMod"
+                    v-model="verif_nonComplianceLimit"
+                />
+                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    :info_text="infos_verif[6].info_value"
+                    selectClassName="form-select w-50"
+                    name="verif_requiredSkill"
+                    label="Required Skill :"
+                    :Errors="errors.verif_requiredSkill"
+                    :options="enum_requiredSkill"
+                    :selctedOption="this.verif_requiredSkill"
+                    :isDisabled="!!isInConsultedMod"
+                    :selectedDivName="this.divClass"
+                    v-model="verif_requiredSkill"
+                    :id_actual="RequiredSkill"
+                />
+                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    :info_text="infos_verif[7].info_value"
+                    selectClassName="form-select w-50"
+                    name="verif_verifAcceptanceAuthority"
+                    label="Verification acceptance authority :"
+                    :Errors="errors.verif_verifAcceptanceAuthority"
+                    :options="enum_verifAcceptanceAuthority"
+                    :selctedOption="this.verif_verifAcceptanceAuthority"
+                    :isDisabled="!!isInConsultedMod"
+                    :selectedDivName="this.divClass"
+                    v-model="verif_verifAcceptanceAuthority"
+                    :id_actual="VerifAcceptanceAuthority"
+                />
+                <InputNumberForm
+                    inputClassName="form-control w-50"
+                    :info_text="infos_verif[8].info_value"
+                    :Errors="errors.verif_periodicity"
+                    name="verif_periodicity"
+                    label="Periodicity :"
+                    :stepOfInput="1"
+                    v-model="verif_periodicity"
+                    :isDisabled="!!isInConsultedMod"
+                />
+                <InputSelectForm
+                    @clearSelectError='clearSelectError'
+                    selectClassName="form-control w-50"
+                    :info_text="infos_verif[9].info_value"
+                    name="verif_symbolPeriodicity"
+                    label="Symbol :"
+                    :Errors="errors.verif_symbolPeriodicity"
+                    :options="enum_periodicity_symbol"
+                    :selctedOption="this.verif_symbolPeriodicity"
+                    :id_actual="SymbolPeriodicity"
+                    :isDisabled="!!isInConsultedMod"
+                    :selectedDivName="this.divClass"
+                    v-model="verif_symbolPeriodicity"
+                />
+                <InputTextAreaForm
+                    inputClassName="form-control w-50"
+                    :info_text="infos_verif[10].info_value"
+                    :Errors="errors.verif_description"
+                    name="verif_description"
+                    label="Description :"
+                    :isDisabled="!!isInConsultedMod"
+                    v-model="verif_description"
+                />
+                <InputTextAreaForm
+                    inputClassName="form-control w-50"
+                    :info_text="infos_verif[11].info_value"
+                    :Errors="errors.verif_protocol"
+                    name="verif_protocol"
+                    label="Protocol :"
+                    :isDisabled="!!isInConsultedMod"
+                    v-model="verif_protocol"
+                />
+                <InputTextForm
+                    inputClassName="form-control w-50"
+                    :info_text="null"
+                    :Errors="errors.verif_mesureRange"
+                    name="verif_mesureRange"
+                    label="Measurement Range :"
+                    v-model="verif_mesureRange"
+                    :isDisabled="!!isInConsultedMod"
+                />
+                <InputTextForm
+                    inputClassName="form-control w-50"
+                    :info_text="null"
+                    :Errors="errors.verif_mesureUncert"
+                    name="verif_mesureUncert"
+                    label="Measurement Uncertainty :"
+                    v-model="verif_mesureUncert"
+                    :isDisabled="!!isInConsultedMod"
+                />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this verification doesn't have a id the addMmeVerif is called function else the updateMmeVerif function is called -->
@@ -173,7 +286,15 @@ export default {
         preventiveOperation:{
             type:Boolean,
             default:true,
-        }
+        },
+        mesureUncert:{
+            type:String,
+            default:null
+        },
+        mesureRange:{
+            type:String,
+            default:null
+        },
     },
     data(){
         return{
@@ -192,6 +313,8 @@ export default {
             verif_validate:this.validate,
             verif_reformDate:this.reformDate,
             verif_reformBy:this.reformBy,
+            verif_mesureUncert: this.mesureUncert,
+            verif_mesureRange: this.mesureRange,
             verif_id:this.id,
             mme_id_add:this.mme_id,
             mme_id_update:this.$route.params.id,
@@ -273,6 +396,8 @@ export default {
                     verif_validate :savedAs,
                     verif_puttingIntoService:this.verif_puttingIntoService,
                     verif_preventiveOperation:this.verif_preventiveOperation,
+                    verif_mesureUncert: this.verif_mesureUncert,
+                    verif_mesureRange: this.verif_mesureRange,
                 })
                 .then(response =>{
                     this.errors={};
@@ -290,6 +415,8 @@ export default {
                         mme_id:id,
                         verif_puttingIntoService:this.verif_puttingIntoService,
                         verif_preventiveOperation:this.verif_preventiveOperation,
+                        verif_mesureUncert: this.verif_mesureUncert,
+                        verif_mesureRange:this.verif_mesureRange,
 
                     })
                     //If the verification is added successfully
@@ -342,6 +469,8 @@ export default {
                     verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
                     verif_puttingIntoService:this.verif_puttingIntoService,
                     verif_preventiveOperation:this.verif_preventiveOperation,
+                    verif_mesureUncert: this.verif_mesureUncert,
+                    verif_mesureRange:this.verif_mesureRange,
                 })
                 .then(response =>{
                     this.errors={};
@@ -360,6 +489,8 @@ export default {
                         verif_verifAcceptanceAuthority:this.verif_verifAcceptanceAuthority,
                         verif_puttingIntoService:this.verif_puttingIntoService,
                         verif_preventiveOperation:this.verif_preventiveOperation,
+                        verif_mesureUncert: this.verif_mesureUncert,
+                        verif_mesureRange:this.verif_mesureRange,
                     })
                     .then(response =>{
                         const id = this.mme_id_update;

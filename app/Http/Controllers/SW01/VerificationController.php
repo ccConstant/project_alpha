@@ -1,23 +1,23 @@
 <?php
 
 /*
-* Filename : VerificationController.php 
+* Filename : VerificationController.php
 * Creation date : 15 Jun 2022
 * Update date : 22 Feb 2023
-* This file is used to link the view files and the database that concern the verification table. 
+* This file is used to link the view files and the database that concern the verification table.
 * For example : add a verification for an mme in the data base, update it, delete it...
-*/ 
+*/
 
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\MmeTemp ; 
-use App\Models\SW01\Verification ; 
-use App\Models\SW01\VerificationRealized ; 
-use App\Models\SW01\EnumVerificationRequiredSkill ; 
-use App\Models\SW01\Mme ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\MmeTemp ;
+use App\Models\SW01\Verification ;
+use App\Models\SW01\VerificationRealized ;
+use App\Models\SW01\EnumVerificationRequiredSkill ;
+use App\Models\SW01\Mme ;
 use App\Models\SW01\EnumVerifAcceptanceAuthority;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
@@ -45,6 +45,8 @@ class VerificationController extends Controller
                         'verif_protocol' => 'required|min:3|max:255',
                         'verif_puttingIntoService' => 'required',
                         'verif_preventiveOperation' => 'required',
+                        'verif_mesureUncert' => 'required',
+                        'verif_mesureRange' => 'required',
                     ],
                     [
                         'verif_puttingIntoService.required' => 'You must enter if the verification is realized during the comissioning',
@@ -68,6 +70,10 @@ class VerificationController extends Controller
                         'verif_protocol.required' => 'You must enter a protocol for your verification',
                         'verif_protocol.min' => 'You must enter at least three characters ',
                         'verif_protocol.max' => 'You must enter a maximum of 255 characters ',
+
+                        'verif_mesureUncert.required' => 'You must enter a mesureUncert for your verification',
+
+                        'verif_mesureRange.required' => 'You must enter a mesureRange for your verification',
                     ]
                 );
 
@@ -100,6 +106,8 @@ class VerificationController extends Controller
                         'verif_symbolPeriodicity' => 'required',
                         'verif_puttingIntoService' => 'required',
                         'verif_preventiveOperation' => 'required',
+                        'verif_mesureUncert' => 'required',
+                        'verif_mesureRange' => 'required',
                     ],
                     [
                         'verif_puttingIntoService.required' => 'You must enter if the verification is realized during the comissioning',
@@ -129,6 +137,10 @@ class VerificationController extends Controller
                         'verif_protocol.max' => 'You must enter a maximum of 255 characters ',
 
                         'verif_symbolPeriodicity.required' => 'You must enter a periodicity symbol for your verification',
+
+                        'verif_mesureUncert.required' => 'You must enter a mesureUncert for your verification',
+
+                        'verif_mesureRange.required' => 'You must enter a mesureRange for your verification',
                     ]
                 );
 
@@ -151,7 +163,7 @@ class VerificationController extends Controller
             }
         }else{
              //-----CASE verif->validate=drafted or verif->validate=to be validate----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -210,7 +222,7 @@ class VerificationController extends Controller
 
     /**
      * Function call by MmeVerifForm.vue when the form is submitted for insert with the route : /mme/add/verif(post)
-     * Add a new enregistrement of verification in the data base with the informations entered in the form 
+     * Add a new enregistrement of verification in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : the id of the new verification
      */
     public function add_verif(Request $request){
@@ -220,7 +232,7 @@ class VerificationController extends Controller
         $verifAcceptanceAuthority_id=NULL ;
         if ($request->verif_verifAcceptanceAuthority!=''){
             $verifAcceptanceAuthority= EnumVerifAcceptanceAuthority::where('value', '=', $request->verif_verifAcceptanceAuthority)->first() ;
-            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ; 
+            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ;
         }
         //A verification is linked to its required skill. So we need to find the id of the required skill choosen by the user and write it in the attribute of the verification.
         //But if no one required skill is choosen by the user we define this id to NULL
@@ -228,47 +240,47 @@ class VerificationController extends Controller
         $requiredSkill_id=NULL ;
         if ($request->verif_requiredSkill!=''){
             $requiredSkill= EnumVerificationRequiredSkill::where('value', '=', $request->verif_requiredSkill)->first() ;
-            $requiredSkill_id=$requiredSkill->id ; 
+            $requiredSkill_id=$requiredSkill->id ;
         }
 
-        $id_mme=intval($request->mme_id) ; 
-        $mme=Mme::findOrfail($request->mme_id) ; 
+        $id_mme=intval($request->mme_id) ;
+        $mme=Mme::findOrfail($request->mme_id) ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
         $verifInMmes=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get();
-        $max_number=1 ; 
+        $max_number=1 ;
         if (count($verifInMmes)!=0){
             foreach ($verifInMmes as $verifInMme){
-                $number=intval($verifInMme->verif_number) ; 
+                $number=intval($verifInMme->verif_number) ;
                 if ($number>$max_number){
-                    $max_number=$verifInMme->verif_number ; 
+                    $max_number=$verifInMme->verif_number ;
                 }
             }
             $max_number=$max_number+1 ;
         }
-        $nextDate=NULL ; 
+        $nextDate=NULL ;
         if ($request->verif_preventiveOperation){
             $startDate=Carbon::now('Europe/Paris');
             if ($request->verif_symbolPeriodicity!='' && $request->verif_symbolPeriodicity!=NULL && $request->verif_periodicity!='' && $request->verif_periodicity!=NULL ){
                 $nextDate=Carbon::create($startDate->year, $startDate->month, $startDate->day, $startDate->hour, $startDate->minute, $startDate->second);
-            
+
                 if ($request->verif_symbolPeriodicity=='Y'){
-                    $nextDate->addYears($request->verif_periodicity) ; 
+                    $nextDate->addYears($request->verif_periodicity) ;
                 }
 
                 if ($request->verif_symbolPeriodicity=='M'){
-                    $nextDate->addMonths($request->verif_periodicity) ; 
+                    $nextDate->addMonths($request->verif_periodicity) ;
                 }
 
                 if ($request->verif_symbolPeriodicity=='D'){
-                    $nextDate->addDays($request->verif_periodicity) ; 
+                    $nextDate->addDays($request->verif_periodicity) ;
                 }
 
                 if ($request->verif_symbolPeriodicity=='H'){
-                    $nextDate->addHours($request->verif_periodicity) ; 
+                    $nextDate->addHours($request->verif_periodicity) ;
                 }
             }
         }
-        
+
         //Creation of a new verification
         $verif=Verification::create([
             'verif_number' => $max_number,
@@ -287,7 +299,9 @@ class VerificationController extends Controller
             'mmeTemp_id' => $mostRecentlyMmeTmp->id,
             'verif_puttingIntoService' => $request->verif_puttingIntoService,
             'verif_preventiveOperation' => $request->verif_preventiveOperation,
-        ]) ; 
+            'verif_mesureUncert' => $request->verif_mesureUncert,
+            'verif_mesureRange' => $request->verif_mesureRange,
+        ]) ;
 
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
             $mostRecentlyMmeTmp->update([
@@ -299,21 +313,21 @@ class VerificationController extends Controller
                 'technicalVerifier_id' => NULL,
             ]);
         }
-    
+
         $verif_id=$verif->id;
         if ($mostRecentlyMmeTmp!=NULL){
              //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add verif
             if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
-                
+
                 //We need to increase the number of mme temp linked to the mme
-                $version_mme=$mme->mme_nbrVersion+1 ; 
+                $version_mme=$mme->mme_nbrVersion+1 ;
                 //Update of mme
                 $mme->update([
                     'mme_nbrVersion' =>$version_mme,
                 ]);
-                
+
                 //We need to increase the version of the mme temp (because we create a new mme temp)
-                $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+                $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ;
                 //update of mme temp
                 $mostRecentlyMmeTmp->update([
                  'mmeTemp_version' => $version,
@@ -322,13 +336,13 @@ class VerificationController extends Controller
                 ]);
             }
         }
-        return response()->json($verif_id) ; 
+        return response()->json($verif_id) ;
     }
 
 
     /**
      * Function call by MmeVerifForm.vue when the form is submitted for update with the route :/mme/update/verif/{id} (post)
-     * Update an enregistrement of verification in the data base with the informations entered in the form 
+     * Update an enregistrement of verification in the data base with the informations entered in the form
      * The id parameter correspond to the id of the verification we want to update
      * */
     public function update_verif(Request $request, $id){
@@ -338,7 +352,7 @@ class VerificationController extends Controller
         $verifAcceptanceAuthority_id=NULL ;
         if ($request->verif_verifAcceptanceAuthority!=''){
             $verifAcceptanceAuthority= EnumVerifAcceptanceAuthority::where('value', '=', $request->verif_verifAcceptanceAuthority)->first() ;
-            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ; 
+            $verifAcceptanceAuthority_id=$verifAcceptanceAuthority->id ;
         }
         //A verification is linked to its required skill. So we need to find the id of the required skill choosen by the user and write it in the attribute of the verification.
         //But if no one required skill is choosen by the user we define this id to NULL
@@ -346,13 +360,13 @@ class VerificationController extends Controller
         $requiredSkill_id=NULL ;
         if ($request->verif_requiredSkill!=''){
             $requiredSkill= EnumVerificationRequiredSkill::where('value', '=', $request->verif_requiredSkill)->first() ;
-            $requiredSkill_id=$requiredSkill->id ; 
+            $requiredSkill_id=$requiredSkill->id ;
         }
-        
-        
-        $mme=Mme::findOrfail($request->mme_id) ; 
-        $oldVerif=Verification::findOrFail($id) ; 
-        //We search the most recently mme temp of the mme 
+
+
+        $mme=Mme::findOrfail($request->mme_id) ;
+        $oldVerif=Verification::findOrFail($id) ;
+        //We search the most recently mme temp of the mme
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
         if ($mostRecentlyMmeTmp!=NULL){
 
@@ -370,16 +384,16 @@ class VerificationController extends Controller
             //We checked if the most recently mme temp is validate and if a life sheet has been already created.
            //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update verification
             if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
-            
+
                 //We need to increase the number of mme temp linked to the mme
-                $version_mme=$mme->mme_nbrVersion+1 ; 
+                $version_mme=$mme->mme_nbrVersion+1 ;
                 //Update of mme
                 $mme->update([
                     'mme_nbrVersion' =>$version_mme,
                 ]);
 
                 //We need to increase the version of the mme temp (because we create a new mme temp)
-               $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+               $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ;
                //update of mme temp
                $mostRecentlyMmeTmp->update([
                 'mmeTemp_version' => $version,
@@ -390,41 +404,41 @@ class VerificationController extends Controller
 
             if ($request->verif_preventiveOperation){
                 if ($request->verif_periodicity!=NULL && $request->verif_symbolPeriodicity!=NULL && ($oldVerif->verif_periodicity!=$request->verif_periodicity || $oldVerif->verif_symbolPeriodicity!=$request->verif_symbolPeriodicity || $oldVerif->verif_preventiveOperation!=$request->verif_preventiveOperation)){
-                    
-                    $dates=explode(' ', $oldVerif->verif_startDate) ; 
+
+                    $dates=explode(' ', $oldVerif->verif_startDate) ;
                     $ymd=explode('-', $dates[0]);
-                    $year=$ymd[0] ; 
+                    $year=$ymd[0] ;
                     $month=$ymd[1] ;
                     $day=$ymd[2] ;
 
-                    $time=explode(':', $dates[1]); 
+                    $time=explode(':', $dates[1]);
                     $hour=$time[0] ;
-                    $min=$time[1] ; 
+                    $min=$time[1] ;
                     $sec=$time[2] ;
-                    
+
                     $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
 
                     if ($request->verif_symbolPeriodicity=='Y'){
-                        $nextDate->addYears($request->verif_periodicity) ; 
+                        $nextDate->addYears($request->verif_periodicity) ;
                     }
-        
+
                     if ($request->verif_symbolPeriodicity=='M'){
-                        $nextDate->addMonths($request->verif_periodicity) ; 
+                        $nextDate->addMonths($request->verif_periodicity) ;
                     }
-                    
+
                     if ($request->verif_symbolPeriodicity=='D'){
-                        $nextDate->addDays($request->verif_periodicity) ; 
+                        $nextDate->addDays($request->verif_periodicity) ;
                         return response()->json($nextDate) ;
                     }
                     if ($request->verif_symbolPeriodicity=='H'){
-                        $nextDate->addHours($request->verif_periodicity) ; 
+                        $nextDate->addHours($request->verif_periodicity) ;
                     }
                     $oldVerif->update([
                         'verif_nextDate' => $nextDate,
                     ]);
                 }
             }
-            
+
             $oldVerif->update([
                 'verif_name' => $request->verif_name,
                 'verif_expectedResult' => $request->verif_expectedResult,
@@ -439,6 +453,8 @@ class VerificationController extends Controller
                 'enumVerifAcceptanceAuthority_id' => $verifAcceptanceAuthority_id,
                 'verif_puttingIntoService' => $request->verif_puttingIntoService,
                 'verif_preventiveOperation' => $request->verif_preventiveOperation,
+                'verif_mesureUncert' => $request->verif_mesureUncert,
+                'verif_mesureRange' => $request->verif_mesureRange,
             ]) ;
 
         }
@@ -446,45 +462,45 @@ class VerificationController extends Controller
 
     /**
      * Function call by ConsultationLifeSheetPdf.vue with the route : /verifs/send/lifesheet/{id} (get)
-     * Get the verifications of the mme whose id is passed in parameter for the lifesheet 
+     * Get the verifications of the mme whose id is passed in parameter for the lifesheet
      * The id parameter corresponds to the id of the mme from which we want the verifications
      * @return \Illuminate\Http\Response
      */
 
     public function send_verifs_lifesheet($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->first();
-        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
        foreach ($verifs as $verif) {
 
             $requiredSkill=NULL;
             if ($verif->enumRequiredSkill_id!=NULL){
-                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
-                $requiredSkill=$requiredSkillEnum->value ; 
+                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ;
+                $requiredSkill=$requiredSkillEnum->value ;
             }
             $verifAcceptanceAuthority = NULL ;
             if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
                 $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id)->first() ;
-                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ;
             }
 
-            $verifPuttingIntoService = NULL ; 
+            $verifPuttingIntoService = NULL ;
             if ($verif->verif_puttingIntoService==1){
-                $verifPuttingIntoService = 'Yes' ; 
+                $verifPuttingIntoService = 'Yes' ;
             }else{
-                $verifPuttingIntoService = 'No' ; 
+                $verifPuttingIntoService = 'No' ;
             }
 
-            $verifPreventiveOperation = NULL ; 
+            $verifPreventiveOperation = NULL ;
             if ($verif->verif_preventiveOperation==1){
-                $verifPreventiveOperation = 'Yes' ; 
+                $verifPreventiveOperation = 'Yes' ;
             }else{
-                $verifPreventiveOperation = 'No' ; 
+                $verifPreventiveOperation = 'No' ;
             }
 
-            $reformed="no" ; 
+            $reformed="no" ;
             if ($verif->verif_reformDate!=NULL){
-                $reformed="yes" ; 
+                $reformed="yes" ;
             }
 
             $obj=([
@@ -506,6 +522,8 @@ class VerificationController extends Controller
                 'verif_puttingIntoService'=> $verifPuttingIntoService,
                 'verif_preventiveOperation'=> $verifPreventiveOperation,
                 'verif_reformed' => $reformed,
+                'verif_mesureUncert' => $request->verif_mesureUncert,
+                'verif_mesureRange' => $request->verif_mesureRange,
             ]);
             array_push($container,$obj);
        }
@@ -521,21 +539,21 @@ class VerificationController extends Controller
      */
 
     public function send_verifs($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->latest()->first();
-        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ; 
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
        foreach ($verifs as $verif) {
 
             $requiredSkill=NULL;
             if ($verif->enumRequiredSkill_id!=NULL){
-                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
-                $requiredSkill=$requiredSkillEnum->value ; 
+                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ;
+                $requiredSkill=$requiredSkillEnum->value ;
             }
 
             $verifAcceptanceAuthority = NULL ;
             if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
                 $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id) ;
-                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ;
             }
             $obj=([
                 "id" => $verif->id,
@@ -555,6 +573,8 @@ class VerificationController extends Controller
                 'verif_validate' => $verif->verif_validate,
                 'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
                 'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
+                'verif_mesureUncert' => $request->verif_mesureUncert,
+                'verif_mesureRange' => $request->verif_mesureRange,
             ]);
             array_push($container,$obj);
        }
@@ -569,18 +589,18 @@ class VerificationController extends Controller
      */
 
     public function send_verif($id) {
-        $container=array() ; 
-        $verif=Verification::findOrFail($id) ; 
+        $container=array() ;
+        $verif=Verification::findOrFail($id) ;
         $requiredSkill=NULL;
         if ($verif->enumRequiredSkill_id!=NULL){
-            $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
-            $requiredSkill=$requiredSkillEnum->value ; 
+            $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ;
+            $requiredSkill=$requiredSkillEnum->value ;
         }
 
         $verifAcceptanceAuthority = NULL ;
             if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
                 $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id)->first() ;
-                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ;
             }
         $obj=([
             "id" => $verif->id,
@@ -600,7 +620,9 @@ class VerificationController extends Controller
             'verif_validate' => $verif->verif_validate,
             'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
             'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
-            
+            'verif_mesureUncert' => $request->verif_mesureUncert,
+            'verif_mesureRange' => $request->verif_mesureRange,
+
         ]);
         array_push($container,$obj);
         return response()->json($container) ;
@@ -614,23 +636,23 @@ class VerificationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_verif_from_mme_validated($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ; 
+        $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;
 
        foreach ($verifs as $verif) {
            if ($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL){
-                
+
             $requiredSkill=NULL;
             if ($verif->enumRequiredSkill_id!=NULL){
-                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ; 
-                $requiredSkill=$requiredSkillEnum->value ; 
+                $requiredSkillEnum = EnumVerificationRequiredSkill::findOrFail($verif->enumRequiredSkill_id) ;
+                $requiredSkill=$requiredSkillEnum->value ;
             }
 
             $verifAcceptanceAuthority = NULL ;
             if ($verif->enumVerifAcceptanceAuthority_id!=NULL){
                 $verifAcceptanceAuthority_enum= EnumVerifAcceptanceAuthority::findOrFail($verif->enumVerifAcceptanceAuthority_id)->first() ;
-                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ; 
+                $verifAcceptanceAuthority = $verifAcceptanceAuthority_enum->value ;
             }
                 $obj=([
                     "id" => $verif->id,
@@ -649,7 +671,9 @@ class VerificationController extends Controller
                     'verif_verifAcceptanceAuthority' => $verifAcceptanceAuthority,
                     'verif_validate' => $verif->verif_validate,
                     'verif_puttingIntoService'=> (boolean)$verif->verif_puttingIntoService,
-                    'verif_preventiveOperation'=> (boolean)$verif->verif_preventiveOperation,
+                    'verif_preventiveOperation' => (boolean)$verif->verif_preventiveOperation,
+                    'verif_mesureUncert' => $verif->verif_mesureUncert,
+                    'verif_mesureRange' => $verif->verif_mesureRange,
                 ]);
                 array_push($container,$obj);
            }
@@ -663,10 +687,10 @@ class VerificationController extends Controller
      * The id parameter correspond to the id of the verification we want to delete
      * */
     public function delete_verif(Request $request, $id){
-        $mme=Mme::findOrfail($request->mme_id) ; 
-        //We search the most recently mme temp of the mme 
+        $mme=Mme::findOrfail($request->mme_id) ;
+        //We search the most recently mme temp of the mme
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
-        
+
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
             $mostRecentlyMmeTmp->update([
                 'qualityVerifier_id' => NULL,
@@ -677,19 +701,19 @@ class VerificationController extends Controller
                 'technicalVerifier_id' => NULL,
             ]);
         }
-        
+
         //We checked if the most recently mme temp is validate and if a life sheet has been already created.
         //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update verification
         if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
             //We need to increase the number of mme temp linked to the mme
-            $version_mme=$mme->mme_nbrVersion+1 ; 
+            $version_mme=$mme->mme_nbrVersion+1 ;
             //Update of mme
             $mme->update([
                 'mme_nbrVersion' =>$version_mme,
             ]);
 
             //We need to increase the version of the mme temp (because we create a new mme temp)
-            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ;
             //update of mme temp
             $mostRecentlyMmeTmp->update([
             'mmeTemp_version' => $version,
@@ -697,21 +721,21 @@ class VerificationController extends Controller
             'mmeTemp_lifeSheetCreated' => false,
             ]);
         }
-        
-        $verifsInMme=Verification::where('mmeTemp_id', '=', $request->mme_id)->get() ; 
-        $verifRlzs=VerificationRealized::where('verif_id', '=', $id)->get() ; 
-        $verif=Verification::findOrFail($id) ; 
+
+        $verifsInMme=Verification::where('mmeTemp_id', '=', $request->mme_id)->get() ;
+        $verifRlzs=VerificationRealized::where('verif_id', '=', $id)->get() ;
+        $verif=Verification::findOrFail($id) ;
         if (count($verifRlzs)==0){
             foreach($verifsInMme as $verifInMme){
                 if ($verifInMme->verif_number>$verif->verif_number){
-                    $verifInMme->verif_number=$verifInMme->verif_number-1 ; 
-                    $verifInDB=Verification::findOrFail($verifInMme->id) ; 
+                    $verifInMme->verif_number=$verifInMme->verif_number-1 ;
+                    $verifInDB=Verification::findOrFail($verifInMme->id) ;
                     $verifInDB->update([
                         'verif_number' =>  $verifInMme->verif_number,
                     ]);
                 }
             }
-            $verif->delete() ; 
+            $verif->delete() ;
         }else{
             return response()->json([
                 'errors' => [
@@ -725,20 +749,20 @@ class VerificationController extends Controller
      * Function call by ReferenceAVerif.vue when we want to reform a verif with the route : '/mme/reform/verif/{id} (post)
      * Reform a verif thanks to the id given in parameter
      * The id parameter correspond to the id of the verif we want to reform
-     * 
+     *
      * */
 
     public function reform_verif(Request $request, $id){
-        $verif=Verification::findOrFail($id) ; 
+        $verif=Verification::findOrFail($id) ;
         if ($request->verif_reformDate<$verif->verif_startDate){
             return response()->json([
                 'errors' => [
-                    'verif_reformDate' => ["You must entered a reformDate that is after the startDate"] 
+                    'verif_reformDate' => ["You must entered a reformDate that is after the startDate"]
                 ]
             ], 429);
         }
 
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->verif_reformDate!=NULL && $request->verif_reformDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -746,7 +770,7 @@ class VerificationController extends Controller
                 ]
             ], 429);
         }
-        
+
         $verif->update([
             'verif_reformDate' => $request->verif_reformDate,
         ]) ;

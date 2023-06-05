@@ -95,7 +95,7 @@ const router = new VueRouter({
     }, {
         path: '/equipment/annual/planning',
         name: 'url_annual_planning',
-        component: require('./components/SW01/equipment/calendar/AnnualEquipmentPlanning.vue').default
+        component: require('./components/SW01/equipment/calendar/AnnualEquipmentPlanningV2.vue').default
     }, {
         path: '/equipment/monthly/planning',
         name: 'url_monthly_planning',
@@ -180,7 +180,7 @@ const router = new VueRouter({
     }, {
         path: '/mme/annual/planning',
         name: 'url_mme_annual_planning',
-        component: require('./components/SW01/mme/calendar/AnnualMMEPlanning.vue').default
+        component: require('./components/SW01/mme/calendar/AnnualMMEPlanningV2.vue').default
     }, {
         path: '/mme/monthly/planning',
         name: 'url_mme_monthly_planning',

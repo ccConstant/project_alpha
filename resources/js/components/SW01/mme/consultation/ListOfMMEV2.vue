@@ -379,15 +379,24 @@ export default {
             let res = [];
             if (this.searchTermInternRef !== "" && this.searchTermName === "") {
                 res = this.MMEs.filter(option => {
-                    return option.mme_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
+                    if (option.mme_internalReference !== null) {
+                        return option.mme_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
+                    }
+                    return  false;
                 });
             } else if (this.searchTermInternRef === "" && this.searchTermName !== "") {
                 res = this.MMEs.filter(option => {
-                    return option.mme_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    if (option.mme_name !== null) {
+                        return option.mme_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    }
+                    return false;
                 });
             } else {
                 res = this.MMEs.filter(option => {
-                    return option.mme_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase()) && option.mme_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    if (option.mme_internalReference !== null && option.mme_name !== null) {
+                        return option.mme_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase()) && option.mme_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                    }
+                    return false;
                 });
             }
             if (this.searchTermTechReview !== -1) {

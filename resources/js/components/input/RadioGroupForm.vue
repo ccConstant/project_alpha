@@ -6,7 +6,7 @@
 <template>
     <div>
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label" :for="name">
+            <label class="col-sm-2 col-form-label" :for="'radio-input'+name">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
             </label>
@@ -16,8 +16,10 @@
                     <!--Label of options, the for loop here is used to initialize them with an array of the differents value-->
                     <p v-for="(option,index) in options " :key="index">
                         <!--Initializing of the radio type input with his props initialized in the parent component-->
-                        <input type="radio" :label="label" name="radio-input" :value="option.value" :id="option.id"
-                               :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)" />
+                        <input type="radio" :label="label" :name="'radio-input'+name" :value="option.value" :id="option.id"
+                               :required="!!isRequired" :disabled="!!isDisabled" @change="emitAndClear(option.value)"
+                               :checked="option.value === checkedOption"
+                        />
                         {{ option.text }}
                     </p>
                 </div>
@@ -68,6 +70,10 @@ export default {
         info_text:{
             type:String,
             default:null
+        },
+        name: {
+            type: String,
+            default: ''
         }
     },
     data(){
@@ -76,13 +82,13 @@ export default {
         }
     },
     mounted(){
-        //Here we put the checked attribute in the option corresponding with the prop checkedOption
+        /*//Here we put the checked attribute in the option corresponding with the prop checkedOption
         const radio = document.getElementsByName('radio-input');
         for (var i = 0; i < radio.length; i++) {
             if (`${radio[i].id}`==`${this.options[0].id}`&& `${radio[i].value}` == `${this.checkedOption}`) {
                 radio[i].setAttribute("checked", "checked");
             }
-        }
+        }*/
     },
     methods: {
         hasError(errors){

@@ -9,15 +9,34 @@
         <!--Adding to the vue MMEVerificationForm by going through the components array with the v-for-->
         <!--ref="ask_verif_data" is used to call the child elements in this component-->
         <!--The emitted deleteVerif is caught here and call the function getContent -->
-        <MMEVerificationForm ref="ask_verif_data" v-for="(component, key) in components" :key="component.key"
-            :is="component.comp" :number="component.number" :name="component.name" :description="component.description"
-            :nonComplianceLimit="component.nonComplianceLimit" :expectedResult="component.expectedResult"
-             :verifAcceptanceAuthority="component.verifAcceptanceAuthority"
-            :periodicity="component.periodicity" :symbolPeriodicity="component.symbolPeriodicity" :reformMod="isInReformMod"
-            :protocol="component.protocol" :divClass="component.className" :id="component.id" :requiredSkill="component.requiredSkill"
-            :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :mme_id="data_mme_id"
-            :reformDate="component.reformDate" :reformBy="component.reformBy"
-            :puttingIntoService="component.puttingIntoService" :preventiveOperation="component.preventiveOperation"
+        <MMEVerificationForm
+            ref="ask_verif_data"
+            v-for="(component, key) in components"
+            :key="component.key"
+            :is="component.comp"
+            :number="component.number"
+            :name="component.name"
+            :description="component.description"
+            :nonComplianceLimit="component.nonComplianceLimit"
+            :expectedResult="component.expectedResult"
+            :verifAcceptanceAuthority="component.verifAcceptanceAuthority"
+            :periodicity="component.periodicity"
+            :symbolPeriodicity="component.symbolPeriodicity"
+            :reformMod="isInReformMod"
+            :protocol="component.protocol"
+            :divClass="component.className"
+            :id="component.id"
+            :requiredSkill="component.requiredSkill"
+            :validate="component.validate"
+            :consultMod="isInConsultMod"
+            :modifMod="isInModifMod"
+            :mme_id="data_mme_id"
+            :reformDate="component.reformDate"
+            :reformBy="component.reformBy"
+            :puttingIntoService="component.puttingIntoService"
+            :preventiveOperation="component.preventiveOperation"
+            :mesureUncert="component.mesureUncert"
+            :mesureRange="component.mesureRange"
             @deleteVerif="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -108,7 +127,7 @@ export default {
         //Function for adding an imported verification form with his data
         addImportedComponent(verif_number,verif_name,verif_nonComplianceLimit,verif_expectedResult,verif_description,verif_periodicity,
         verif_symbolPeriodicity,verif_requiredSkill,verif_verifAcceptanceAuthority,verif_protocol,
-        verif_className,verif_validate,id,verif_reformDate,verif_reformBy, verif_puttingIntoService, verif_preventiveOperation) {
+        verif_className,verif_validate,id,verif_reformDate,verif_reformBy, verif_puttingIntoService, verif_preventiveOperation, verif_mesureUncert, verif_mesureRange) {
             this.components.push({
                 comp:'MMEVerificationForm',
                 key : this.uniqueKey++,
@@ -128,7 +147,9 @@ export default {
                 reformDate:verif_reformDate,
                 reformBy:verif_reformBy,
                 puttingIntoService:verif_puttingIntoService,
-                preventiveOperation:verif_preventiveOperation
+                preventiveOperation:verif_preventiveOperation,
+                mesureUncert: verif_mesureUncert,
+                mesureRange: verif_mesureRange,
             });
         },
         //Suppression of a verification component from the vue
@@ -144,7 +165,7 @@ export default {
                     var className="importedVerif"+verif.id
                     this.addImportedComponent(verif.verif_number, verif.verif_name, verif.verif_nonComplianceLimit, verif.verif_expectedResult, verif.verif_description, verif.verif_periodicity,
         verif.verif_symbolPeriodicity,verif.verif_requiredSkill,verif.verif_verifAcceptanceAuthority,verif.verif_protocol,
-        verif.verif_className,verif.verif_validate,verif.id,verif.verif_reformDate,verif.verif_reformBy, verif.verif_puttingIntoService, verif.verif_preventiveOperation);
+        verif.verif_className,verif.verif_validate,verif.id,verif.verif_reformDate,verif.verif_reformBy, verif.verif_puttingIntoService, verif.verif_preventiveOperation, verif.verif_mesureUncert, verif.verif_mesureRange);
                 }
             }
             this.verifs=null
