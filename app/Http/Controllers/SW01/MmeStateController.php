@@ -390,6 +390,7 @@ class MmeStateController extends Controller
                         "verifRlz_endDate" => $verifRlz->verifRlz_endDate,
                         "verifRlz_entryDate" => $verifRlz->verifRlz_entryDate,
                         "verifRlz_validate" => $verifRlz->verifRlz_validate,
+                        "veriRlz_comment" => $verifRlz->verifRlz_comment,
                         "verif_id" => $verifRlz->verif_id,
                         "verif_number" => (string)$verif->verif_number,
                         "verif_description" => $verif->verif_description,

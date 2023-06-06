@@ -13,6 +13,7 @@
         <MMEVerifRlzForm ref="ask_verifRlz_data" v-for="(component, key) in components" :key="component.key"
             :is="component.comp" :number="component.number" :isPassed="component.isPassed"
             :reportNumber="component.reportNumber" :startDate="component.startDate" :endDate="component.endDate"
+                         :comment="component.verifRlz_comment"
             :divClass="component.className" :id="component.id" :state_id="data_state_id" :verif_id_prop="component.verif_id"
             :verif_expectedResult_prop="component.verif_expectedResult" :verif_nonComplianceLimit_prop="component.verif_nonComplianceLimit"
             :verif_description_prop="component.verif_description" :verif_number_prop="component.verif_number" :verif_protocol_prop="component.verif_protocol"
@@ -72,7 +73,7 @@ export default {
         },
         addImportedComponent(verifRlz_number,verifRlz_reportNumber,verifRlz_startDate,
         verifRlz_endDate,verifRlz_isPassed,verifRlz_validate,verifRlz_className,id,
-        verif_id,verif_expectedResult,verif_nonComplianceLimit,verif_description,verif_number,verif_protocol) {
+        verif_id,verif_expectedResult,verif_nonComplianceLimit,verif_description,verif_number,verif_protocol, verif_comment) {
             this.components.push({
                 comp:'MMEVerifRlzForm',
                 key : this.uniqueKey++,
@@ -89,7 +90,8 @@ export default {
                 verif_nonComplianceLimit:verif_nonComplianceLimit,
                 verif_description:verif_description,
                 verif_number:verif_number,
-                verif_protocol:verif_protocol
+                verif_protocol:verif_protocol,
+                verif_comment: verif_comment
             });
         },
         //Suppression of the verification component from the vue
@@ -102,7 +104,7 @@ export default {
                 this.addImportedComponent(verifRlz.verifRlz_number,verifRlz.verifRlz_reportNumber,verifRlz.verifRlz_startDate,
                     verifRlz.verifRlz_endDate,verifRlz.verifRlz_isPassed,verifRlz.verifRlz_validate,className,verifRlz.id,
                     verifRlz.verif_id,verifRlz.verif_expectedResult,verifRlz.verif_nonComplianceLimit,
-                    verifRlz.verif_description,verifRlz.verif_number,verifRlz.verif_protocol);
+                    verifRlz.verif_description,verifRlz.verif_number,verifRlz.verif_protocol, verifRlz.verifRlz_comment);
             }
             this.verifsRlz=null
         },

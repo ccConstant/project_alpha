@@ -79,6 +79,7 @@
                                             Report Number : {{verifRlz.verifRlz_reportNumber}} <br>
                                             Description : {{verifRlz.verif_description}} <br>
                                             Protocol : {{verifRlz.verif_protocol}} <br>
+                                            Comment : {{verifRlz.verifRlz_comment}} <br>
                                             Start Date : {{verifRlz.verifRlz_startDate}} <br>
                                             End date : {{verifRlz.verifRlz_endDate}}<br>
                                             Saved as : {{verifRlz.verifRlz_validate}} <br>
