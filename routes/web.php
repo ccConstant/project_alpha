@@ -371,6 +371,8 @@ Route::get('/send/state/equipment/{state_id} ', [EquipmentController::class, 'se
 
 Route::get('/send/equipment/planning/periode', [EquipmentController::class, 'send_periode_for_planning']);
 
+Route::get('/send/equipment/mme/{id}', [EquipmentController::class, 'send_mme']);
+
 /* Dimension Form Routes */
 
 Route::post('/equipment/add/dim', [DimensionController::class, 'add_dimension']);

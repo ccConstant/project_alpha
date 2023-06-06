@@ -1459,6 +1459,18 @@ class EquipmentController extends Controller{
 
     }
 
+    /**
+     * Function call by UpdateState.vue when the form is submitted for add a new state with the route : /send/equipment/mme/ (get)
+     * Send the different mme linked to the equipment in which we update the state 
+     * @return \Illuminate\Http\Response : MMES linked to the equipment
+     */
+    public function send_mme($eq_id){
+        $eq=Equipment::findOrFail($eq_id) ;
+        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $eq_id)->orderBy('created_at', 'desc')->first();
+        $mmes=Mme::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
+        return response()->json($mmes) ;
+    }
+
 }
 
 

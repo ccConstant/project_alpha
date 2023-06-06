@@ -156,11 +156,11 @@ export default {
                 },
                 html2canvas: {
                     imageTimeout: 15000,
-                    logging: true,
+                    logging: false,
                     useCORS: false,
                     dpi: 600,
                 },
-                  imageType: 'image/jpeg',
+                imageType: 'image/jpeg',
                 imageQuality: 1,
                 margin: {
                     top: 20,

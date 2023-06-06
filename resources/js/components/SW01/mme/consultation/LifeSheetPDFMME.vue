@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="mme_pdf_index">
-                    <h5>Version : MME LS-D {{mme_idCard.mme_version}}</h5>
+                    <h5>Version : MME LS-D_V{{mme_idCard.mme_version[1]}}.{{mme_idCard.mme_version[0]}} </h5>
                 </div>
                 <div class="mme_revued_by">
                     <p >Technical Review <b class="text-primary">{{ mme_idCard.mme_technicalVerifier_firstName}} {{mme_idCard.mme_technicalVerifier_lastName}} </b></p>
@@ -246,16 +246,7 @@
 
 
 
-             <div class="recordTemplateRefPdf">
-                <div class="table_recordTemplateRefPdf">
-                     <div class="index_recordTemplateRefPdf">
-                        Record Template Ref :  REC-IWE02
-                    </div>
-                    <div class="confidential_recordTemplateRefPdf">
-                        This document contains CONFIDENTIAL information
-                    </div>
-                </div>
-             </div>
+             
 
         <div class="mme_history_pdf">
 				<div class="title_history_pdf">
@@ -299,7 +290,7 @@
 			<div class="mme_historyRecordTemplateRefPdf">
 			<div class="mmeHistory_table_recordTemplateRefPdf">
 					<div class="mmeHistory_index_recordTemplateRefPdf">
-					Record Template Ref :  REC-IWE01
+					Record Template Ref :  REC-IWE16_V1.0
 				</div>
 				<div class="mmeHistory_confidential_recordTemplateRefPdf">
 					This document contains CONFIDENTIAL information
