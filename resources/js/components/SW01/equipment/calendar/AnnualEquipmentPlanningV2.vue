@@ -183,6 +183,7 @@ export default {
                     prvMtnOp_nextDate: tmp + '-' + index.id,
                     prvMtnOp_periodicity:eq.preventive_maintenance_operations[0].prvMtnOp_periodicity,
                     prvMtnOp_symbolPeriodicity:eq.preventive_maintenance_operations[0].prvMtnOp_symbolPeriodicity,
+                    prvMtnOp_lastComment:eq.prvMtnOp_lastComment,
                 });
             this.$refs.event_details.$bvModal.show('modal-event_details');
         },
@@ -199,7 +200,6 @@ export default {
         .then (response=>{
                 this.periode = response.data;
         });
-
 	},
 }
 </script>

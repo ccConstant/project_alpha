@@ -65,11 +65,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
             $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ;
         }
-
-        $prvMtnOp->update([
-            'prvMtnOp_nextDate' => $nextDate,
-        ]);
-
+        if ($request->prvMtnOpRlz_validate === 'validated') {
+            $prvMtnOp->update([
+                'prvMtnOp_nextDate' => $nextDate,
+            ]);
+        }
 
         $prvMtnOpRlz_id=$prvMtnOpRlz->id;
         return response()->json($prvMtnOpRlz_id) ;
@@ -247,10 +247,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
             $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ;
         }
-
-        $prvMtnOp->update([
-            'prvMtnOp_nextDate' => $nextDate,
-        ]);
+        if ($request->prvMtnOpRlz_validate === 'validated') {
+            $prvMtnOp->update([
+                'prvMtnOp_nextDate' => $nextDate,
+            ]);
+        }
     }
 
 

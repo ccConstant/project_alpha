@@ -255,7 +255,7 @@ export default {
                 axios.post(consultUrl(state_id), {})
                     .then(response => {
                         this.$router.replace({
-                            name: "url_life_event_change_state",
+                            name: "url_mme_life_event_change_state",
                             params: {id: mme_id},
                             query: {currentState: state_id}
                         });
@@ -272,13 +272,13 @@ export default {
                 this.$refs.errorAlert.showAlert("You don't have the right");
                 return;
             }
-            const consultUrl = (state_id) => `/state/verif/beforeReferenceCurOp/${state_id}`;
+            const consultUrl = (state_id) => `/mme_state/verif/beforeReferenceCurOp/${state_id}`;
             axios.post(consultUrl(state_id), {
                 mme_id: mme_id_to_send
             })
                 .then(response => {
                     this.$router.push({
-                        name: "url_life_event_reference",
+                        name: "url_mme_life_event_reference",
                         params: {id: mme_id_to_send, state_id: state_id},
                         query: {type: "curative"}
                     });
@@ -291,7 +291,7 @@ export default {
             if (this.$userId.user_makeEqOpValidationRight != true) {
                 this.$refs.errorAlert.showAlert("You don't have the right");
             } else {
-                this.$router.push({name: "url_life_event_update", params: {id: mme_id_to_send, state_id: state_id}})
+                this.$router.push({name: "url_mme_life_event_update", params: {id: mme_id_to_send, state_id: state_id}})
             }
         },
         verifBeforeUpdateState(mme_id_to_send, state_id) {
@@ -300,7 +300,7 @@ export default {
 
             } else {
                 this.$router.push({
-                    name: "url_life_event_update_state",
+                    name: "url_mme_life_event_update_state",
                     params: {id: mme_id_to_send, state_id: state_id}
                 })
             }
@@ -324,7 +324,7 @@ export default {
                 this.MMEs.forEach(element => {
                     if (element.mme_internalReference === this.checked[0]) {
                         this.$router.push({
-                            name: "url_life_event_all",
+                            name: "url_mme_life_event_all",
                             params: {id: element.id},
                             query: {internalReference: element.mme_internalReference}
                         });

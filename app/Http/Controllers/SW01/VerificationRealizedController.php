@@ -67,11 +67,11 @@ class VerificationRealizedController extends Controller
             $nextDate->addHours($verif->verif_periodicity) ;
         }
 
-        $verif->update([
-            'verif_nextDate' => $nextDate,
-        ]);
-
-
+        if ($request->verifRlz_validate === "validated") {
+            $verif->update([
+                'verif_nextDate' => $nextDate,
+            ]);
+        }
         $verifRlz_id=$verifRlz->id;
         return response()->json($verifRlz_id) ;
     }
@@ -255,10 +255,11 @@ class VerificationRealizedController extends Controller
         if ($verif->verif_symbolPeriodicity=='H'){
             $nextDate->addHours($verif->verif_periodicity) ;
         }
-
-        $verif->update([
-            'verif_nextDate' => $nextDate,
-        ]);
+        if ($request->verifRlz_validate === 'validated') {
+            $verif->update([
+                'verif_nextDate' => $nextDate,
+            ]);
+        }
     }
 
 

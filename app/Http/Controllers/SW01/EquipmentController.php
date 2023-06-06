@@ -588,7 +588,9 @@ class EquipmentController extends Controller{
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;
+                $comment = null;
                 foreach( $prvMtnOps as $prvMtnOp){
+                    $comment = $prvMtnOp->prvMtnOp_comment;
                     $AllnextDate=array() ;
                     if ($prvMtnOp->prvMtnOp_preventiveOperation){
                         $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ;
@@ -680,6 +682,7 @@ class EquipmentController extends Controller{
                     "name" => $equipment->eq_name,
                     "preventive_maintenance_operations" => $containerOp,
                     "state_id" => $mostRecentlyState->id,
+                    "prvMtnOp_lastComment" => $comment !== null ? $comment : "N/A",
                 ]) ;
 
                 array_push($container,$eq);
@@ -723,7 +726,6 @@ class EquipmentController extends Controller{
                             $mostRecentlyState=$state ;
                         }
                     }
-
                     if ($prvMtnOp->prvMtnOp_validate=="validated" && $nextDateCarbon<=$oneMonthLater){
                         if ($nextDateCarbon>=$now){
                             $opMtn=([
