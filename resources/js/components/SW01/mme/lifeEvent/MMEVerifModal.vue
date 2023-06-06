@@ -36,6 +36,7 @@
             :verif_expectedResult_prop="verif_expectedResult" :verif_nonComplianceLimit_prop="verif_nonComplianceLimit"
             :verif_description_prop="verif_description" :verif_protocol_prop="verif_protocol" :isPassed="verifRlz_isPassed"
             :reportNumber="verifRlz_reportNumber" :startDate="verifRlz_startDate"  :endDate="verifRlz_endDate"
+                             :comment="verifRlz_comment"
             :validate="verifRlz_validate" @deleteverifRlz="closeModal()"/>
         </b-modal>
 
@@ -44,6 +45,7 @@
             :verif_description_prop="verif_description" :verif_protocol_prop="verif_protocol" :isPassed="verifRlz_isPassed"
             :verif_expectedResult_prop="verif_expectedResult" :verif_nonComplianceLimit_prop="verif_nonComplianceLimit"
             :reportNumber="verifRlz_reportNumber" :startDate="verifRlz_startDate"  :endDate="verifRlz_endDate"
+                             :comment="verifRlz_comment"
             :validate="verifRlz_validate" @deleteverifRlz="closeModal()"/>
             <h4>Please enter your Username and your password to approve</h4>
             <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
@@ -55,6 +57,7 @@
             :verif_description_prop="verif_description" :verif_protocol_prop="verif_protocol" :isPassed="verifRlz_isPassed"
             :verif_expectedResult_prop="verif_expectedResult" :verif_nonComplianceLimit_prop="verif_nonComplianceLimit"
             :reportNumber="verifRlz_reportNumber" :startDate="verifRlz_startDate"  :endDate="verifRlz_endDate"
+                             :comment="verifRlz_comment"
             :validate="verifRlz_validate" @deleteverifRlz="closeModal()"/>
             <h4>Please enter your Username and your password to realize</h4>
             <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
@@ -126,6 +129,9 @@ export default {
             type:String
         },
         realizedBy_lastName:{
+            type:String
+        },
+        verifRlz_comment : {
             type:String
         },
     },

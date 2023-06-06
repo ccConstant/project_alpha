@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\PreventiveMaintenanceOperationRealized ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\Equipment ; 
-use App\Models\SW01\State ; 
-use App\Models\User ; 
-use App\Models\SW01\PreventiveMaintenanceOperation ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\PreventiveMaintenanceOperationRealized ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\Equipment ;
+use App\Models\SW01\State ;
+use App\Models\User ;
+use App\Models\SW01\PreventiveMaintenanceOperation ;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
@@ -17,16 +17,16 @@ use App\Http\Controllers\Controller;
 
 class PreventiveMaintenanceOperationRealizedController extends Controller
 {
-    
+
 
     /**
      * Function call by EquipmentPrvMtnOpRlzForm.vue when the form is submitted for insert with the route :/equipment/add/state/prvMtnOpRlz (post)
-     * Add a new enregistrement of preventive maintenance operation realized in the data base with the informations entered in the form 
+     * Add a new enregistrement of preventive maintenance operation realized in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : the id of the new prvMtnOpRlz
      */
     public function add_prvMtnOpRlz(Request $request){
-        $state=State::findOrFail($request->state_id) ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
+        $state=State::findOrFail($request->state_id) ;
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ;
 
         //Creation of a new preventive maintenance operation realized
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::create([
@@ -38,38 +38,39 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             'state_id' => $request->state_id,
             'prvMtnOp_id' => $request->prvMtnOp_id,
             'enteredBy_id' => $request->enteredBy_id,
+            'prvMtnOpRlz_comment' => $request->prvMtnOpRlz_comment,
 
-        ]) ; 
+        ]) ;
 
-        // On update la nextDate dans prvMtnOp 
+        // On update la nextDate dans prvMtnOp
 
-        $ymd=explode('-', $request->prvMtnOpRlz_startDate) ; 
-        $year=$ymd[0] ; 
+        $ymd=explode('-', $request->prvMtnOpRlz_startDate) ;
+        $year=$ymd[0] ;
         $month=$ymd[1] ;
         $day=$ymd[2] ;
-        
+
         $nextDate=Carbon::create($year, $month, $day, 0, 0, 0);
 
         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
-            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
+            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ;
         }
 
         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
-            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
-        }
-        
-        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
-            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
-        }
-        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
-            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ;
         }
 
-        $prvMtnOp->update([
-            'prvMtnOp_nextDate' => $nextDate,
-        ]);
-    
-        
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
+            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ;
+        }
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
+            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ;
+        }
+        if ($request->prvMtnOpRlz_validate === 'validated') {
+            $prvMtnOp->update([
+                'prvMtnOp_nextDate' => $nextDate,
+            ]);
+        }
+
         $prvMtnOpRlz_id=$prvMtnOpRlz->id;
         return response()->json($prvMtnOpRlz_id) ;
     }
@@ -79,9 +80,9 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * Function call by EquipmentPrvMtnOpRlzForm.vue when the form is submitted for check data with the route : /prvMtnOpRlz/verif'(post)
      * Check the informations entered in the form and send errors if it exists
      */
-    public function verif_prvMtnOpRlz(Request $request){        
-        $state=State::findOrFail($request->state_id) ; 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ; 
+    public function verif_prvMtnOpRlz(Request $request){
+        $state=State::findOrFail($request->state_id) ;
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ;
 
         if ($request->prvMtnOpRlz_validate=="validated"){
             if ($request->prvMtnOpRlz_endDate=='' || $request->prvMtnOpRlz_endDate===NULL){
@@ -93,7 +94,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             }
 
             if ($request->reason=="update"){
-                $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($request->prvMtnOpRlz_id) ; 
+                $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($request->prvMtnOpRlz_id) ;
                 if ($prvMtnOpRlz->realizedBy_id==NULL){
                     return response()->json([
                         'errors' => [
@@ -101,7 +102,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                         ]
                     ], 429);
                 }
-    
+
                 if ($prvMtnOpRlz->approvedBy_id==NULL){
                     return response()->json([
                         'errors' => [
@@ -116,7 +117,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                         'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
                     ]
                 ], 429);
-            
+
                 return response()->json([
                     'errors' => [
                         'prvMtnOpRlz_validate' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
@@ -124,18 +125,19 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ], 429);
             }
         }
-        
+
         $this->validate(
             $request,
             [
                 'prvMtnOpRlz_reportNumber' => 'required|min:3|max:255',
+                'prvMtnOpRlz_comment' => 'max:255',
             ],
             [
                 'prvMtnOpRlz_reportNumber.required' => 'You must enter a report number for the preventive maintenance operation realized ',
                 'prvMtnOpRlz_reportNumber.min' => 'You must enter at least three characters ',
                 'prvMtnOpRlz_reportNumber.max' => 'You must enter a maximum of 255 characters',
 
-            
+                'prvMtnOpRlz_comment.max' => 'You must enter a maximum of 255 characters',
             ]
         );
         if ($request->prvMtnOpRlz_startDate=='' || $request->prvMtnOpRlz_startDate===NULL){
@@ -145,7 +147,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ]
             ], 429);
         }
-    
+
         if ($request->reason=="update"){
             $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::FindOrFail($request->prvMtnOpRlz_id ) ;
             if ($prvMtnOpRlz->prvMtnOpRlz_validate=="validated"){
@@ -157,7 +159,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             }
         }
 
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->prvMtnOpRlz_startDate!=NULL && $request->prvMtnOpRlz_startDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -207,7 +209,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
 
     /**
      * Function call by EquipmentPrvMtnOpRlzForm.vue when the form is submitted for update with the route :/equipment/update/prvMtnOpRlz/{id} (post)
-     * Update an enregistrement of preventive maintenance operation realized in the data base with the informations entered in the form 
+     * Update an enregistrement of preventive maintenance operation realized in the data base with the informations entered in the form
      * The id parameter correspond to the id of the preventive maintenance operation realized we want to update
      * */
     public function update_prvMtnOpRlz(Request $request, $id){
@@ -217,37 +219,39 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             'prvMtnOpRlz_validate' => $request->prvMtnOpRlz_validate,
             'prvMtnOpRlz_startDate' => $request->prvMtnOpRlz_startDate,
             'prvMtnOpRlz_endDate' => $request->prvMtnOpRlz_endDate,
+            'prvMtnOpRlz_comment' => $request->prvMtnOpRlz_comment,
         ]);
 
-        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ;
 
-        // On update la nextDate dans prvMtnOp 
+        // On update la nextDate dans prvMtnOp
 
-        $ymd=explode('-', $request->prvMtnOpRlz_startDate) ; 
-        $year=$ymd[0] ; 
+        $ymd=explode('-', $request->prvMtnOpRlz_startDate) ;
+        $year=$ymd[0] ;
         $month=$ymd[1] ;
         $day=$ymd[2] ;
-        
+
         $nextDate=Carbon::create($year, $month, $day, 0, 0, 0);
 
         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
-            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ; 
+            $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ;
         }
 
         if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='M'){
-            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ; 
-        }
-        
-        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
-            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ; 
-        }
-        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
-            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ; 
+            $nextDate->addMonths($prvMtnOp->prvMtnOp_periodicity) ;
         }
 
-        $prvMtnOp->update([
-            'prvMtnOp_nextDate' => $nextDate,
-        ]);
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='D'){
+            $nextDate->addDays($prvMtnOp->prvMtnOp_periodicity) ;
+        }
+        if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='H'){
+            $nextDate->addHours($prvMtnOp->prvMtnOp_periodicity) ;
+        }
+        if ($request->prvMtnOpRlz_validate === 'validated') {
+            $prvMtnOp->update([
+                'prvMtnOp_nextDate' => $nextDate,
+            ]);
+        }
     }
 
 
@@ -265,7 +269,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ]
             ], 429);
         }else{
-            $prvMtnOpRlz->delete() ; 
+            $prvMtnOpRlz->delete() ;
         }
     }
 
@@ -278,35 +282,35 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
 
     public function send_prvMtnOpRlz($id) {
         $state = State::findOrFail($id);
-        $container=array() ; 
+        $container=array() ;
         if (count($state->preventive_maintenance_operation_realizeds)>0){
-            $prvMtnOpRlzs=$state->preventive_maintenance_operation_realizeds ; 
+            $prvMtnOpRlzs=$state->preventive_maintenance_operation_realizeds ;
             foreach ($prvMtnOpRlzs as $prvMtnOpRlz) {
-                $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
-               
+                $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ;
+
                 $enteredBy_firstName=NULL;
                 $enteredBy_lastName=NULL;
                 $realizedBy_firstName=NULL;
-                $realizedBy_lastName=NULL ; 
+                $realizedBy_lastName=NULL ;
                 $approvedBy_firstName=NULL;
                 $approvedBy_lastName=NULL ;
 
                 if ($prvMtnOpRlz->realizedBy_id!=NULL){
-                    $realizedBy=User::findOrFail($prvMtnOpRlz->realizedBy_id) ; 
-                    $realizedBy_firstName=$realizedBy->user_firstName ; 
-                    $realizedBy_lastName=$realizedBy->user_lastName ; 
+                    $realizedBy=User::findOrFail($prvMtnOpRlz->realizedBy_id) ;
+                    $realizedBy_firstName=$realizedBy->user_firstName ;
+                    $realizedBy_lastName=$realizedBy->user_lastName ;
                 }
                 if ($prvMtnOpRlz->enteredBy_id!=NULL){
-                    $enteredBy=User::findOrFail($prvMtnOpRlz->enteredBy_id) ; 
-                    $enteredBy_firstName=$enteredBy->user_firstName ; 
-                    $enteredBy_lastName=$enteredBy->user_lastName ; 
+                    $enteredBy=User::findOrFail($prvMtnOpRlz->enteredBy_id) ;
+                    $enteredBy_firstName=$enteredBy->user_firstName ;
+                    $enteredBy_lastName=$enteredBy->user_lastName ;
                 }
                 if ($prvMtnOpRlz->approvedBy_id!=NULL){
-                    $approvedBy=User::findOrFail($prvMtnOpRlz->approvedBy_id) ; 
-                    $approvedBy_firstName=$approvedBy->user_firstName ; 
-                    $approvedBy_lastName=$approvedBy->user_lastName ; 
+                    $approvedBy=User::findOrFail($prvMtnOpRlz->approvedBy_id) ;
+                    $approvedBy_firstName=$approvedBy->user_firstName ;
+                    $approvedBy_lastName=$approvedBy->user_lastName ;
                 }
-               
+
                 $obj=([
                     "id" => $prvMtnOpRlz->id,
                     "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
@@ -314,10 +318,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                     "prvMtnOpRlz_endDate" => $prvMtnOpRlz->prvMtnOpRlz_endDate,
                     "prvMtnOpRlz_entryDate" => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
                     "prvMtnOpRlz_validate" => $prvMtnOpRlz->prvMtnOpRlz_validate,
+                    "prvMtnOpRlz_comment" => $prvMtnOpRlz->prvMtnOpRlz_comment,
                     "prvMtnOp_id" => $prvMtnOpRlz->prvMtnOp_id,
-                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number, 
-                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description, 
-                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol, 
+                    "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                    "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                    "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
                     "realizedBy_firstName" => $realizedBy_firstName,
                     "realizedBy_lastName" => $realizedBy_lastName,
                     "enteredBy_firstName" => $enteredBy_firstName,
@@ -329,17 +334,17 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 array_push($container,$obj);
             }
         }
-        return response()->json($container) ; 
-    }    
+        return response()->json($container) ;
+    }
 
      /**
      * Function call by PrvMtnOpRlzManagementModal.vue when we want to approuve a preventive maintenance operation realized with the route : /prvMtnOpRlz/approve/{id}
-     * Approuve a preventive maintenance operation realized 
+     * Approuve a preventive maintenance operation realized
      * The id parameter correspond to the id of the preventive maintenance operation realized we want to approuve
      * */
     public function approve_prvMtnOpRlz(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
+        $user=User::findOrFail($request->user_id) ;
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -347,21 +352,21 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 ]
             ], 429);
         }
-        
-        $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id) ; 
+
+        $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id) ;
         $prvMtnOpRlz->update([
-            'approvedBy_id' => $user->id, 
+            'approvedBy_id' => $user->id,
         ]);
     }
 
      /**
      * Function call by PrvMtnOpRlzManagementModal.vue when we want to tell that we are the realizator of a preventive maintenance operation realized with the route : /prvMtnOpRlz/realize/{id}
-     * Tell that you have realize a preventive maintenance operation realized 
+     * Tell that you have realize a preventive maintenance operation realized
      * The id parameter correspond to the id of the preventive maintenance operation realized we want to entered the realizator
      * */
     public function realize_prvMtnOpRlz(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
+        $user=User::findOrFail($request->user_id) ;
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -370,9 +375,9 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
             ], 429);
         }
 
-        $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id) ; 
+        $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id) ;
         $prvMtnOpRlz->update([
-            'realizedBy_id' => $user->id, 
+            'realizedBy_id' => $user->id,
         ]);
     }
 }

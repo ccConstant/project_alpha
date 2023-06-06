@@ -28,6 +28,7 @@
                                         Description : {{verifRlz.verif_description}} <br>
                                         Protocol : {{verifRlz.verif_protocol}} <br>
                                         Report Number : {{verifRlz.verifRlz_reportNumber}} <br>
+                                        Comment : {{verifRlz.verifRlz_comment}} <br>
                                     </div>
                                     <div v-if="verifRlz.verifRlz_isPassed==true">
                                         Passed : Yes
@@ -61,6 +62,7 @@
                                     :verifRlz_startDate="verifRlz.verifRlz_startDate" :verifRlz_endDate="verifRlz.verifRlz_endDate"
                                     :verifRlz_validate="verifRlz.verifRlz_validate" :mme_id="mme_id" :state_id="state_id" @okReload="reloadPage"
                                     :approvedBy_lastName="verifRlz.approvedBy_lastName" :realizedBy_lastName="verifRlz.realizedBy_lastName"
+                                                   :verifRlz_comment="verifRlz.verifRlz_comment"
                                      />
                                 </li>
                             </div>
@@ -134,7 +136,6 @@ export default {
     },
     data(){
         return{
-            state_id:this.$route.params.state_id,
             mme_curMtnOp:null,
             mme_verifRlz:null,
             loaded:false,

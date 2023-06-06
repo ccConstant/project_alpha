@@ -19,7 +19,7 @@
                     <InputTextAreaForm :info_text="infos_verif[7].info_value" inputClassName="form-control w-50" name="verif_description" label="Description :" isDisabled   v-model="verif_description" />
                     <InputTextAreaForm :info_text="infos_verif[8].info_value" inputClassName="form-control w-50" name="verif_protocol" label="Protocol :" isDisabled   v-model="verif_protocol"/>
                 </div>
-
+                <InputTextAreaForm :info_text="null" inputClassName="form-control w-50" name="verif_comment" label="Comment :" :isDisabled="!!isInConsultMod"   v-model="verif_comment"/>
                 <InputTextForm :info_text="infos_verifRlz[0].info_value" inputClassName="form-control w-50" :Errors="errors.verifRlz_reportNumber" name="verifRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  v-model="verifRlz_reportNumber"/>
                 <div class="input-group">
                     <InputTextForm :info_text="infos_verifRlz[1].info_value" inputClassName="form-control" :placeholer="'Operation date :'+verif_startDate_placeholer" :Errors="errors.verifRlz_startDate" name="verifRlz_startDate" label="Start date :" :isDisabled="true" v-model="verifRlz_startDate" />
@@ -29,7 +29,7 @@
                     <InputTextForm :info_text="infos_verifRlz[2].info_value" inputClassName="form-control" :Errors="errors.verifRlz_endDate" name="verifRlz_endDate" label="End date :" :isDisabled="true" v-model="verifRlz_endDate" />
                     <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod" v-model="selected_endDate"/>
                 </div>
-                <RadioGroupForm :info_text="infos_verifRlz[3].info_value" label="is Passed?:"  :options="isPassedOption" :Errors="errors.verifRlz_isPassed" :checkedOption="verifRlz_isPassed" :isDisabled="!!isInConsultMod" v-model="verifRlz_isPassed"/> 
+                <RadioGroupForm :info_text="infos_verifRlz[3].info_value" label="is Passed?:"  :options="isPassedOption" :Errors="errors.verifRlz_isPassed" :checkedOption="verifRlz_isPassed" :isDisabled="!!isInConsultMod" v-model="verifRlz_isPassed"/>
                 <div v-if="this.verif_id!==null">
                     <div v-if="this.addSucces==false">
                         <!--If this verification doesn't have a id the addMmeVerifRlz is called function else the updateMmeVerifRlz function is called -->
@@ -43,7 +43,7 @@
                         <div v-if="isInModifMod==true">
                             <DeleteComponentButton :Errors="errors.verifRlz_delete" :consultMod="this.isInConsultMod" @deleteOk="deleteComponent"/>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </form>
         </div>
@@ -89,7 +89,8 @@ export default {
             default:null
         },
         isPassed:{
-            type:Boolean
+            type:Boolean,
+            default:false
         },
         validate:{
             type:String
@@ -138,7 +139,11 @@ export default {
         verif_id_prop:{
             type:Number,
             default:null
-        }
+        },
+        comment: {
+            type:String,
+            default:null
+        },
     },
     data(){
         return{
@@ -152,8 +157,8 @@ export default {
             verifRlz_id:this.id,
             verifs:[],
             isPassedOption:[
-                {id: 'Yes', value:true},
-                {id : 'No', value:false}
+                {id: 'Yes', value:true, text: 'Yes'},
+                {id : 'No', value:false, text: 'No'}
             ],
             mme_id_add:this.mme_id,
             mme_state_id:this.state_id,
@@ -171,47 +176,48 @@ export default {
             verif_id:this.verif_id_prop,
             infos_verif:[],
             infos_verifRlz:[],
-            verif_startDate_placeholer:''
+            verif_startDate_placeholer:'',
+            verif_comment:this.comment,
         }
     },
     mounted() {
         if(this.selected_startDate!==null){
-            this.verifRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.verifRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.verifRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.verifRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     updated() {
         if(this.selected_startDate!==null){
-            this.verifRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY'); 
+            this.verifRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY');
         };
         if(this.selected_endDate!==null){
-            this.verifRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY'); 
+            this.verifRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
     },
     methods:{
         /*Sending to the controller all the information about the verification so that it can be added to the database
-        Params : 
-            savedAs : Value of the validation option : drafted, to_be_validated or validated  */ 
+        Params :
+            savedAs : Value of the validation option : drafted, to_be_validated or validated  */
         addMmeVerifRlz(savedAs){
             if(!this.addSucces){
                 //Id of the mme in which the verification will be added
                 let id;
-                //If the user is not in the modification mode, we set the id with the value of mme_id_add 
+                //If the user is not in the modification mode, we set the id with the value of mme_id_add
                 if(!this.modifMod){
                         id=this.mme_id_add
                 //else the user is in the update menu, we set the id with the value of mme_id_update
                 }else{
                     id=this.mme_id_update;
                 }
-				
+
 				console.log(this.verif_id)
                 console.log(this.mme_state_id)
                 console.log(savedAs)
-				
+
                 /*First post to verify if all the fields are filled correctly
-                The reportNumber, startDate, endDate, isPassed, validate options, the id of the mme affected, the id of his state and the id of the verification are sent to the controller*/			
+                The reportNumber, startDate, endDate, isPassed, validate options, the id of the mme affected, the id of his state and the id of the verification are sent to the controller*/
                 axios.post('/verifRlz/verif',{
                     verifRlz_reportNumber:this.verifRlz_reportNumber,
                     verifRlz_startDate:this.selected_startDate,
@@ -237,7 +243,7 @@ export default {
                         mme_id:id,
                         state_id:this.mme_state_id,
                         verif_id:this.verif_id,
-                        enteredBy_id:this.$userId.id   
+                        enteredBy_id:this.$userId.id
                     })
                     //If the verification is added succesfuly
                     .then(response =>{
@@ -260,8 +266,8 @@ export default {
             }
         },
         /*Sending to the controller all the information about the mme so that it can be updated in the database
-        Params: 
-            savedAs: Value of the validation option: drafted, to_be_validated or validated  */ 
+        Params:
+            savedAs: Value of the validation option: drafted, to_be_validated or validated  */
         updateMmeVerifRlz(savedAs){
             /*First post to verify if all the fields are filled correctly
                 The reportNumber, startDate, endDate, isPassed, validate options, the id of the affected mme, the id of his current state, and the id of the verification are sent to the controller*/
@@ -319,7 +325,7 @@ export default {
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteVerifRlz','')
                 })
-                //If the controller sends errors we put it in the errors object 
+                //If the controller sends errors we put it in the errors object
                 .catch(error => this.errors=error.response.data.errors) ;
             }
         },
@@ -347,13 +353,13 @@ export default {
             .then (response=> {
                 this.infos_verif=response.data;
 
-                }) 
+                })
             .catch(error => console.log(error)) ;
         axios.get('/info/send/verifRlz')
             .then (response=> {
                 this.loaded=true;
                 this.infos_verifRlz=response.data;
-                }) 
+                })
             .catch(error => console.log(error)) ;
     }
 }

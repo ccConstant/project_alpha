@@ -32,10 +32,10 @@
                         </b-col>
                     </b-row>
                     <div v-for="(prvMtnOp,index) in eq_nextMonth " :key="index">
-                        <div v-if="prvMtnOp.passed==true"> 
+                        <div v-if="prvMtnOp.passed==true">
                             <b-row @click="handleListClick(prvMtnOp.eq_id,prvMtnOp.Internal_Ref,prvMtnOp.state_id,prvMtnOp.Number, prvMtnOp.Description, prvMtnOp.Protocol, prvMtnOp.nextDate, prvMtnOp.prvMtnOp_periodicity, prvMtnOp.prvMtnOp_symbolPeriodicity)">
                                 <b-col cols="1"   class="planning_table_internalReference">
-                                    <p class="redText">{{prvMtnOp.Internal_Ref+"coucou"}}</p>
+                                    <p class="redText">{{prvMtnOp.Internal_Ref}}</p>
                                 </b-col>
                                 <b-col cols="4" class="planning_table_name">
                                     <p class="redText">{{prvMtnOp.Description}}</p>
@@ -46,7 +46,7 @@
                                 <b-col cols="4"  class="planning_table_nextDate">
                                     <p class="redText">
                                         {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getDate() }}
-                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5)-1, prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
                                         {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getFullYear() }}
                                     </p>
                                 </b-col>
@@ -66,7 +66,7 @@
                                 <b-col cols="4"  class="planning_table_nextDate">
                                     <p class="text-primary">
                                         {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getDate() }}
-                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
+                                        {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5)-1, prvMtnOp.nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
                                         {{ new Date(prvMtnOp.nextDate.slice(6), prvMtnOp.nextDate.slice(3, 5), prvMtnOp.nextDate.slice(0, 2)).getFullYear() }}
                                     </p>
                                 </b-col>
@@ -129,7 +129,7 @@ export default {
         },
     },
     created(){
-        
+
         axios.get('/equipment/prvMtnOp/planning_monthly')
         .then (response=>{
             console.log(response.data)

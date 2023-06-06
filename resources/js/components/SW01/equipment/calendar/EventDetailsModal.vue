@@ -23,6 +23,9 @@
                                     Protocol : {{option.prvMtnOp_protocol}}
                                 </p>
                                 <p>
+                                    Last Operation Comment : {{option.prvMtnOp_lastComment}}
+                                </p>
+                                <p>
                                     Operation date :
                                     {{ new Date(option.prvMtnOp_nextDate.slice(6), option.prvMtnOp_nextDate.slice(3, 5), option.prvMtnOp_nextDate.slice(0, 2)).getDate() }}
                                     {{ new Date(option.prvMtnOp_nextDate.slice(6), option.prvMtnOp_nextDate.slice(3, 5)-1, option.prvMtnOp_nextDate.slice(0, 2)).toDateString().slice(4, 7) }}

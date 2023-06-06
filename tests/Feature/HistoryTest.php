@@ -349,7 +349,6 @@ class HistoryTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
-                'id' => 3,
                 'history_numVersion' => 1,
                 'history_reasonUpdate' => 'Update',
                 'history_date' => Carbon::now()->format('d M o')

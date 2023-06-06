@@ -34,6 +34,7 @@
             <EquipmentPrvMtnOpRlzForm modifMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number"
             :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
             :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
+                                      :comment="prvMtnOpRlz_comment"
             :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
         </b-modal>
 
@@ -41,6 +42,7 @@
             <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number"
             :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
             :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
+                                      :comment="prvMtnOpRlz_comment"
             :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
             <h4>Please enter your Username and your password to approve</h4>
             <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
@@ -51,6 +53,7 @@
             <EquipmentPrvMtnOpRlzForm consultMod  :eq_id="eq_id" :state_id="state_id" :id="prvMtnOpRlz_id" :prvMtnOp_id_prop="prvMtnOp_id" :prvMtnOp_number_prop="prvMtnOp_number"
             :prvMtnOp_description_prop="prvMtnOp_description" :prvMtnOp_protocol_prop="prvMtnOp_protocol"
             :reportNumber="prvMtnOpRlz_reportNumber" :startDate="prvMtnOpRlz_startDate"  :endDate="prvMtnOpRlz_endDate"
+                                      :comment="prvMtnOpRlz_comment"
             :validate="prvMtnOpRlz_validate" @deletePrvMtnOpRlz="closeModal()"/>
             <h4>Please enter your Username and your password to realize</h4>
             <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control "/>
@@ -113,6 +116,9 @@ export default {
         realizedBy_lastName:{
             type:String
         },
+        prvMtnOpRlz_comment:{
+            type:String
+        },
     },
     data(){
         return{
@@ -122,26 +128,23 @@ export default {
             compId:this.$userId.id
         }
     },
-
     methods:{
         closeModal(modal){
             this.$bvModal.hide(modal);
             this.resetModal();
-            this.$emit('okReload','')
-
+            this.$emit('okReload','');
         },
         handleOkUpdate(){
-            this.$emit('okReload','')
+            this.$emit('okReload','');
         },
         resetModal(){
             this.errors={};
-            this.user_pseudo='',
-            this.user_password=''
+            this.user_pseudo='';
+            this.user_password='';
         },
         handleOkApprove(bvModalEvent){
             // Prevent modal from closing
             bvModalEvent.preventDefault()
-            console.log()
             const postUrlAdd = (id) => `/prvMtnOpRlz/approve/${id}`;
             axios.post(postUrlAdd(this.prvMtnOpRlz_id),{
                     user_pseudo:this.user_pseudo,
@@ -151,9 +154,10 @@ export default {
             .then(response =>{
                 this.closeModal(bvModalEvent.target.id);
             })
-            .catch(error =>{this.errors=error.response.data.errors});
+            .catch(error =>{
+                this.errors=error.response.data.errors
+            });
         },
-
         handleOkRealize(bvModalEvent){
             // Trigger submit handler
             bvModalEvent.preventDefault()
@@ -167,10 +171,8 @@ export default {
                 this.closeModal(bvModalEvent.target.id);
             })
             .catch(error =>{this.errors=error.response.data.errors});
-
         }
     }
-
 }
 </script>
 

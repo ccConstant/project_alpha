@@ -109,6 +109,8 @@ class EquipmentController extends Controller{
                 'eq_version' => $mostRecentlyEqTmp->eqTemp_version,
                 'needToBeRealized' => $needToBeRealized,
                 'needToBeApprove' => $needToBeApprove,
+                'validated' => $mostRecentlyEqTmp->eqTemp_validate,
+                'signed' => $mostRecentlyEqTmp->qualityVerifier_id != null && $mostRecentlyEqTmp->technicalVerifier_id != null,
             ]);
             array_push($container,$obj);
         }
@@ -472,7 +474,6 @@ class EquipmentController extends Controller{
         $newState=State::create([
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
-            'state_isOk' => true,
             'state_validate' => "validated",
             'state_name' => "Waiting_for_referencing"
         ]) ;
@@ -587,7 +588,9 @@ class EquipmentController extends Controller{
             $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $equipment->id)->orderBy('created_at', 'desc')->first();
             if ($mostRecentlyEqTmp->eqTemp_validate==="validated"){
                 $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;
+                $comment = null;
                 foreach( $prvMtnOps as $prvMtnOp){
+                    $comment = $prvMtnOp->prvMtnOp_comment;
                     $AllnextDate=array() ;
                     if ($prvMtnOp->prvMtnOp_preventiveOperation){
                         $dates=explode(' ', $prvMtnOp->prvMtnOp_nextDate) ;
@@ -679,6 +682,7 @@ class EquipmentController extends Controller{
                     "name" => $equipment->eq_name,
                     "preventive_maintenance_operations" => $containerOp,
                     "state_id" => $mostRecentlyState->id,
+                    "prvMtnOp_lastComment" => $comment !== null ? $comment : "N/A",
                 ]) ;
 
                 array_push($container,$eq);
@@ -722,7 +726,6 @@ class EquipmentController extends Controller{
                             $mostRecentlyState=$state ;
                         }
                     }
-
                     if ($prvMtnOp->prvMtnOp_validate=="validated" && $nextDateCarbon<=$oneMonthLater){
                         if ($nextDateCarbon>=$now){
                             $opMtn=([
@@ -1239,7 +1242,7 @@ class EquipmentController extends Controller{
                 }
             }
 
-            
+
             if ($mostRecentlyState->state_name!="Waiting_for_installation"){
                 if ($mostRecentlyState!=NULL){
                     $now=Carbon::now('Europe/Paris');
@@ -1250,7 +1253,6 @@ class EquipmentController extends Controller{
                 $newState=State::create([
                     'state_remarks' => "This equipment has been validated by a technical verifier",
                     'state_startDate' =>  $now,
-                    'state_isOk' => true,
                     'state_validate' => "validated",
                     'state_name' => "Waiting_for_installation",
                 ]);
@@ -1282,13 +1284,12 @@ class EquipmentController extends Controller{
                 $newState=State::create([
                     'state_remarks' => "This equipment has been validated by a quality verifier",
                     'state_startDate' =>  $now,
-                    'state_isOk' => true,
                     'state_validate' => "validated",
                     'state_name' => "In_use",
                 ]);
                 $newState->equipment_temps()->attach($mostRecentlyEqTmp);
-            } 
-            
+            }
+
         }
        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier_id!=NULL){
             $mostRecentlyEqTmp->update([
@@ -1405,7 +1406,6 @@ class EquipmentController extends Controller{
         $newState=State::create([
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
-            'state_isOk' => true,
             'state_validate' => "drafted",
             'state_name' => "Waiting_for_referencing"
         ]) ;

@@ -563,7 +563,6 @@ class MmeController extends Controller{
         $newState=MmeState::create([
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
-            'state_isOk' => true,
             'state_validate' => "validated",
             'state_name' => "Waiting_for_referencing"
         ]) ;
@@ -876,12 +875,11 @@ class MmeController extends Controller{
                 $newState=MmeState::create([
                     'state_remarks' => "This mme has been validated by a technical verifier",
                     'state_startDate' =>  Carbon::now('Europe/Paris'),
-                    'state_isOk' => true,
                     'state_validate' => "validated",
                     'state_name' => "Waiting_to_be_in_use"
                 ]) ;
                 $newState->mme_temps()->attach($mostRecentlyMmeTmp);
-                
+
             }
         }
 
@@ -909,12 +907,11 @@ class MmeController extends Controller{
                 $newState=MmeState::create([
                     'state_remarks' => "This mme has been validated by a quality verifier",
                     'state_startDate' =>  Carbon::now('Europe/Paris'),
-                    'state_isOk' => true,
                     'state_validate' => "validated",
                     'state_name' => "In_use"
                 ]) ;
                 $newState->mme_temps()->attach($mostRecentlyMmeTmp);
-            } 
+            }
         }
 
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=NULL && $mostRecentlyMmeTmp->technicalVerifier_id!=NULL){
@@ -1098,7 +1095,6 @@ class MmeController extends Controller{
         $newState=MmeState::create([
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
-            'state_isOk' => true,
             'state_validate' => "drafted",
             'state_name' => "Waiting_for_referencing"
         ]) ;

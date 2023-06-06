@@ -221,6 +221,10 @@ Route::middleware('auth')->group(function () {
         return view('welcomeSW01');
     });
 
+    Route::get('/mme/list/PDF', function () {
+        return view('welcomeSW01');
+    });
+
     Route::get('/mme/life_event', function () {
         return view('welcomeSW01');
     });
