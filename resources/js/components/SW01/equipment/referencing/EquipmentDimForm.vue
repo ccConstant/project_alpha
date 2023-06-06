@@ -219,7 +219,6 @@ export default {
                             dim_unit: this.dim_unit,
                             dim_validate: savedAs,
                             eq_id: id
-
                         })
                             /*If the dimension is added successfully*/
                             .then(response => {
@@ -239,7 +238,7 @@ export default {
                                     this.addSuccess = true
                                 }
                                 /*the id of the dimensions take the value of the newly created id*/
-                                this.dim_id = response.data;
+                                this.dim_id = response.data.dim_id;
                                 /*The validate option of this dimension takes the value of savedAs*/
                                 this.dim_validate = savedAs;
                             })

@@ -331,9 +331,15 @@ export default {
                         this.prvMtnOpRlz_validate=savedAs;
 
                     })
-                    .catch(error => this.errors=error.response.data.errors) ;
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
+                    }) ;
                 })
-                .catch(error => this.errors=error.response.data.errors) ;
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                }) ;
             }
 
         },

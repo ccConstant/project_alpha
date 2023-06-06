@@ -44,7 +44,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
 
         // On update la nextDate dans prvMtnOp
 
-        $ymd=explode('-', $request->prvMtnOpRlz_startDate) ;
+        $ymd=explode('-', $request->prvMtnOpRlz_startDate);
         $year=$ymd[0] ;
         $month=$ymd[1] ;
         $day=$ymd[2] ;

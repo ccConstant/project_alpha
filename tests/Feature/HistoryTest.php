@@ -99,9 +99,9 @@ class HistoryTest extends TestCase
         // Add a user
         $countUser = User::all()->count();
         $response = $this->post('register', [
-            'user_firstName' => 'VerifierHist',
-            'user_lastName' => 'VerifierHist',
-            'user_pseudo' => 'VerifierHist',
+            'user_firstName' => 'Verifier',
+            'user_lastName' => 'Verifier',
+            'user_pseudo' => 'Verifier',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -167,13 +167,13 @@ class HistoryTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->last()->id,
         ]);
         // Add a new power type
         $response = $this->post('/power/enum/type/add', [
@@ -192,8 +192,8 @@ class HistoryTest extends TestCase
             'value' => 'Example'
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'HistAddTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierHist')->last()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'HistAddTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'VerifierHist')->last()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'HistAddTest')->last()->technicalVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->last()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'HistAddTest')->last()->qualityVerifier_id);
+        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->last()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'HistAddTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -280,9 +280,9 @@ class HistoryTest extends TestCase
         // Add a user
         $countUser = User::all()->count();
         $response = $this->post('register', [
-            'user_firstName' => 'VerifierHist',
-            'user_lastName' => 'VerifierHist',
-            'user_pseudo' => 'VerifierHist',
+            'user_firstName' => 'Verifier',
+            'user_lastName' => 'Verifier',
+            'user_pseudo' => 'Verifier',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
@@ -293,7 +293,7 @@ class HistoryTest extends TestCase
             $response->assertStatus(429);
             $this->assertEquals($countUser, User::all()->count());
         }
-        $user = User::all()->where('user_pseudo', '==', 'VerifierHist')->last();
+        $user = User::all()->where('user_pseudo', '==', 'Verifier')->last();
         // validation
         $response = $this->post('/mme/validation/' . $Mme->id, [
             'reason' => 'technical',
