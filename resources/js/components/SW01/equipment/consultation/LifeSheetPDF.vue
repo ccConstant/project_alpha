@@ -393,7 +393,7 @@
 			<div class="eq_historyRecordTemplateRefPdf">
 			<div class="eqHistory_table_recordTemplateRefPdf">
 					<div class="eqHistory_index_recordTemplateRefPdf">
-					Record Template Ref :  REC-IWE12
+					Record Template Ref :  REC-IWE12_V1.0
 				</div>
 				<div class="eqHistory_confidential_recordTemplateRefPdf">
 					This document contains CONFIDENTIAL information

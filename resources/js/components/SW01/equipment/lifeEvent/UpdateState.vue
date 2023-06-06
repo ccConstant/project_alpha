@@ -42,7 +42,12 @@
                     v-model="state_isOk"
                     :info_text="infos_state[3].info_value"
                 />
-                <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
+                <div v-if="this.state_name=='Downgraded' || this.state_name=='Broken' || this.state_name=='Reformed'"> 
+                    <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="verifBeforeDelete" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
+                </div>
+                <div v-else>
+                    <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
+                </div>
             </form>
             <SuccesAlert ref="succesAlert"/>
             <div v-if="state_name=='Downgraded'">
@@ -64,6 +69,21 @@
                     </div>
                 </div>
             </div>
+
+            <b-modal :id="`modal-mme`"  @ok="addEquipmentStateDelete()">
+                        <p class="my-4">Are you sure you want to go in this state? 
+                            Equipment data will be deleted. What do we do about the following equipment related MMEs?  </p>
+
+                        <div  v-for="(component, key) in this.mme" :key="component.key">
+                            <p> Reference : {{component.mme_internalReference}} || Name : {{component.mme_name}}</p>
+                        </div>
+                        
+                        <input type="radio" id="one" value="One" v-model="mme_decision" />
+                        <label for="one">Unlink it</label>
+
+                        <input type="radio" id="two" value="Two" v-model="mme_decision" />
+                        <label for="two">Delete it</label>
+            </b-modal>
 
         </div>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
@@ -149,7 +169,10 @@ export default {
             new_eq:null,
             eq_idCard:[],
             infos_state:[],
-            StateName:"StateName"
+            StateName:"StateName",
+            mme:[],
+            mme_decision:'',
+            savedAs:''
         }
     },
     updated() {
@@ -198,6 +221,75 @@ export default {
 
                             })
                         .catch(error => this.errors=error.response.data.errors) ;
+                    })
+                .catch(error => this.errors=error.response.data.errors) ;
+            }
+        },
+
+        verifBeforeDelete(savedAs){
+            this.savedAs=savedAs
+            axios.post('/state/verif',{
+                    state_name:this.state_name,
+                    state_remarks:this.state_remarks,
+                    state_startDate:this.selected_startDate,
+                    state_isOk:this.state_isOk,
+                    state_validate:this.savedAs,
+                    eq_id:this.eq_id,
+                    reason:'add',
+                    user_id:this.$userId.id
+            })
+            .then(response =>{
+                console.log("deb function")
+                if(this.$userId.user_declareNewStateRight!=true){
+                    console.log("bad")
+                    this.$refs.errorAlert.showAlert("You don't have the right");
+                    return;
+                }
+                
+                console.log("suite function")
+                if (this.state_name=='Downgraded' || this.state_name=='Broken' || this.state_name=='Reformed'){
+                    if (true){
+                        this.$bvModal.show(`modal-mme`)
+                    }   
+                }
+            });
+        },
+
+        addEquipmentStateDelete(){
+            if (this.mme_decision=='One'){
+                console.log("One") 
+                this.mme.forEach(element => {
+                    const deleteUrl = (id) => `/mme/delete/link_to_eq/${id}`;
+                    axios.post(deleteUrl(element.id)),{
+                    }
+                });
+                console.log("mme unlunked")
+            }
+            if (this.mme_decision=='Two'){
+                console.log("Two") 
+            }
+            console.log(this.$userId.id)
+            if(!this.addSucces){
+                this.errors={}
+                axios.post('/equipment/add/state',{
+                    state_name:this.state_name,
+                    state_remarks:this.state_remarks,
+                    state_startDate:this.selected_startDate,
+                    state_isOk:this.state_isOk,
+                    state_validate:this.savedAs,
+                    eq_id:this.eq_id,
+                    enteredBy_id:this.$userId.id
+
+                })
+                .then(response =>{
+                    console.log("state added")
+                    this.$refs.succesAlert.showAlert(`Equipment state added successfully and saved as ${savedAs}`);
+                    console.log(response.data)
+                        this.$router.replace({ name: "url_eq_list" })
+                        this.addSucces=true;
+                        this.isInConsultMod=true;
+                        this.state_validate=this.savedAs
+
                     })
                 .catch(error => this.errors=error.response.data.errors) ;
             }
@@ -293,6 +385,14 @@ export default {
         axios.get('/info/send/state')
             .then (response=> {
                 this.infos_state=response.data;
+            })
+            .catch(error => console.log(error)) ;
+
+        const UrlState = (id) => `/send/equipment/mme/${id}`;
+        axios.get(UrlState(this.eq_id))
+            .then (response=> {
+                this.mme=response.data;
+                console.log(response.data)
                 this.loaded=true;
             })
             .catch(error => console.log(error)) ;
