@@ -18,18 +18,89 @@
                     @choosedOpe="choosedOpe"
                 />
                 <div v-if="prvMtnOp_number!==null  ">
-                    <InputTextForm inputClassName="form-control w-50"  name="prvMtnOp_number" label="Number :" isDisabled  isRequired v-model="prvMtnOp_number" :info_text="infos_prvMtnOp[3].info_value"/>
-                    <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_description" label="Description :" isDisabled  isRequired v-model="prvMtnOp_description" :info_text="infos_prvMtnOp[0].info_value"/>
-                    <InputTextAreaForm inputClassName="form-control w-50" name="prvMtnOp_protocol" label="Protocol :" isDisabled  isRequired v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[4].info_value"/>
+                    <InputTextForm
+                        inputClassName="form-control w-50"
+                        name="prvMtnOp_number" label="Number :"
+                        isDisabled
+                        isRequired
+                        v-model="prvMtnOp_number"
+                        :info_text="infos_prvMtnOp[3].info_value"
+                    />
+                    <InputTextAreaForm
+                        inputClassName="form-control w-50"
+                        name="prvMtnOp_description"
+                        label="Description :"
+                        isDisabled
+                        isRequired
+                        v-model="prvMtnOp_description"
+                        :info_text="infos_prvMtnOp[0].info_value"
+                    />
+                    <InputTextAreaForm
+                        inputClassName="form-control w-50"
+                        name="prvMtnOp_protocol"
+                        label="Protocol :"
+                        isDisabled
+                        isRequired
+                        v-model="prvMtnOp_protocol"
+                        :info_text="infos_prvMtnOp[4].info_value"
+                    />
                 </div>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.prvMtnOpRlz_reportNumber" name="prvMtnOpRlz_reportNumber" label="Report number :" :isDisabled="!!isInConsultMod"  isRequired v-model="prvMtnOpRlz_reportNumber" :info_text="infos_prvMtnOpRlz[0].info_value"/>
+                <InputTextForm
+                    inputClassName="form-control w-50"
+                    :Errors="errors.prvMtnOpRlz_reportNumber"
+                    name="prvMtnOpRlz_reportNumber"
+                    label="Report number :"
+                    :isDisabled="!!isInConsultMod"
+                    isRequired
+                    v-model="prvMtnOpRlz_reportNumber"
+                    :info_text="infos_prvMtnOpRlz[0].info_value"
+                />
+                <InputTextAreaForm
+                    inputClassName="form-control w-50"
+                    name="prvMtnOp_remarks"
+                    label="Comment :"
+                    :isDisabled="!!isInConsultMod"
+                    v-model="prvMtnOp_remarks"
+                    :info_text="null"
+                />
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :placeholer="'Operation date :'+prvMtnOp_startDate_placeholer" :Errors="errors.prvMtnOpRlz_startDate" name="prvMtnOpRlz_startDate" label="Start date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_startDate" :info_text="infos_prvMtnOpRlz[1].info_value"/>
-                    <InputDateForm  inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod"  isRequired v-model="selected_startDate"/>
+                    <InputTextForm
+                        inputClassName="form-control"
+                        :placeholer="'Operation date :'+prvMtnOp_startDate_placeholer"
+                        :Errors="errors.prvMtnOpRlz_startDate"
+                        name="prvMtnOpRlz_startDate"
+                        label="Start date :"
+                        :isDisabled="true"
+                        isRequired
+                        v-model="prvMtnOpRlz_startDate"
+                        :info_text="infos_prvMtnOpRlz[1].info_value"
+                    />
+                    <InputDateForm
+                        inputClassName="form-control  date-selector"
+                        name="selected_startDate"
+                        :isDisabled="!!isInConsultMod"
+                        isRequired
+                        v-model="selected_startDate"
+                    />
                 </div>
                 <div class="input-group">
-                    <InputTextForm inputClassName="form-control" :Errors="errors.prvMtnOpRlz_endDate" name="prvMtnOpRlz_endDate" label="End date :" :isDisabled="true"  isRequired v-model="prvMtnOpRlz_endDate" :info_text="infos_prvMtnOpRlz[2].info_value"/>
-                    <InputDateForm  inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  isRequired v-model="selected_endDate"/>
+                    <InputTextForm
+                        inputClassName="form-control"
+                        :Errors="errors.prvMtnOpRlz_endDate"
+                        name="prvMtnOpRlz_endDate"
+                        label="End date :"
+                        :isDisabled="true"
+                        isRequired
+                        v-model="prvMtnOpRlz_endDate"
+                        :info_text="infos_prvMtnOpRlz[2].info_value"
+                    />
+                    <InputDateForm
+                        inputClassName="form-control date-selector"
+                        name="selected_endDate"
+                        :isDisabled="!!isInConsultMod"
+                        isRequired
+                        v-model="selected_endDate"
+                    />
                 </div>
                 <div v-if="this.prvMtnOp_number!==null">
                     <div v-if="this.addSucces==false">
@@ -147,6 +218,10 @@ export default {
         prvMtnOp_id_prop:{
             type:Number,
             default:null
+        },
+        comment : {
+            type:String,
+            default:null
         }
 
     },
@@ -174,13 +249,14 @@ export default {
             prvMtnOp_id:this.prvMtnOp_id_prop,
             infos_prvMtnOp:[],
             infos_prvMtnOpRlz:[],
-            prvMtnOp_startDate_placeholer:''
+            prvMtnOp_startDate_placeholer:'',
+            prvMtnOp_remarks:this.comment,
         }
     },
     mounted() {
         if(this.selected_startDate!==null){
             this.prvMtnOpRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY');
-        };
+        }
         if(this.selected_endDate!==null){
             this.prvMtnOpRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
@@ -188,7 +264,7 @@ export default {
     updated() {
         if(this.selected_startDate!==null){
             this.prvMtnOpRlz_startDate=moment(this.selected_startDate).format('D MMM YYYY');
-        };
+        }
         if(this.selected_endDate!==null){
             this.prvMtnOpRlz_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }

@@ -1,27 +1,27 @@
 <?php
 
 /*
-* Filename : MmeStateController.php 
+* Filename : MmeStateController.php
 * Creation date : 16 Jun 2022
 * Update date : 16 Jun 2022
-* This file is used to link the view files and the database that concern the mme state table. 
+* This file is used to link the view files and the database that concern the mme state table.
 * For example : add a state for an mme in the data base, update a file, delete it...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\MmeTemp ; 
-use App\Models\SW01\MmeState ; 
-use App\Models\User ; 
-use App\Models\SW01\Mme ; 
-use App\Models\SW01\VerificationRealized ; 
-use App\Models\SW01\CurativeMaintenanceOperation ; 
-use App\Models\SW01\Verification ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\MmeTemp ;
+use App\Models\SW01\MmeState ;
+use App\Models\User ;
+use App\Models\SW01\Mme ;
+use App\Models\SW01\VerificationRealized ;
+use App\Models\SW01\CurativeMaintenanceOperation ;
+use App\Models\SW01\Verification ;
 use Carbon\Carbon;
-use App\Http\Controllers\SW01\MmeController ; 
+use App\Http\Controllers\SW01\MmeController ;
 use App\Http\Controllers\Controller;
 
 class MmeStateController extends Controller
@@ -35,18 +35,18 @@ class MmeStateController extends Controller
 
         //-----CASE state->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his state, so he must enter all the attributes
-       
+
         $this->validate(
             $request,
             [
                 'state_remarks' => 'required|min:3|max:255',
-                
+
             ],
             [
                 'state_remarks.required' => 'You must enter a remark about the state ',
                 'state_remarks.min' => 'You must enter at least three characters ',
                 'state_remarks.max' => 'You must enter a maximum of 255 characters',
-            
+
             ]
         );
 
@@ -67,7 +67,7 @@ class MmeStateController extends Controller
             ], 429);
         }
 
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->state_startDate!=NULL && $request->state_startDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -81,17 +81,17 @@ class MmeStateController extends Controller
         if ($states!==NULL){
             if ($request->reason=='update'){
                 $mostRecentlyState=NULL ;
-                $first=true ; 
+                $first=true ;
                 foreach($states as $state){
                     if ($state->id !=$request->state_id){
                         if ($first){
-                            $mostRecentlyState=$state ; 
+                            $mostRecentlyState=$state ;
                             $first=false;
                         }else{
-                            $date=$state->created_at ; 
+                            $date=$state->created_at ;
                             $date2=$mostRecentlyState->created_at;
                             if ($date>=$date2){
-                                $mostRecentlyState=$state ; 
+                                $mostRecentlyState=$state ;
                             }
                         }
                     }
@@ -107,16 +107,16 @@ class MmeStateController extends Controller
                 }
             }else{
                 $mostRecentlyState=NULL ;
-                $first=true ; 
+                $first=true ;
                 foreach($states as $state){
                     if ($first){
-                        $mostRecentlyState=$state ; 
+                        $mostRecentlyState=$state ;
                         $first=false;
                     }else{
-                        $date=$state->created_at ; 
+                        $date=$state->created_at ;
                         $date2=$mostRecentlyState->created_at;
                         if ($date>=$date2){
-                            $mostRecentlyState=$state ; 
+                            $mostRecentlyState=$state ;
                         }
                     }
                 }
@@ -130,7 +130,7 @@ class MmeStateController extends Controller
                     }
                 }
                 switch($mostRecentlyState->state_name){
-                    case "Waiting_for_referencing" : 
+                    case "Waiting_for_referencing" :
                         if ($request->state_name!="Waiting_to_be_in_use"){
                             return response()->json([
                                 'errors' => [
@@ -139,7 +139,7 @@ class MmeStateController extends Controller
                             ], 429);
                         }
                         break;
-                    case "Waiting_to_be_in_use" : 
+                    case "Waiting_to_be_in_use" :
                         if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="In_use" && $request->state_name!="In_quarantine" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
                             return response()->json([
                                 'errors' => [
@@ -148,7 +148,7 @@ class MmeStateController extends Controller
                             ], 429);
                         }
                         break;
-                    case "In_use" : 
+                    case "In_use" :
                         if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="Under_verification" && $request->state_name!="In_quarantine" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
                             return response()->json([
                                 'errors' => [
@@ -157,7 +157,7 @@ class MmeStateController extends Controller
                             ], 429);
                         }
                         break;
-                    case "Under_verification" : 
+                    case "Under_verification" :
                         if ($request->state_name!="In_use" && $request->state_name!="In_quarantine" && $request->state_name!="Lost"){
                             return response()->json([
                                 'errors' => [
@@ -198,7 +198,7 @@ class MmeStateController extends Controller
                             ]
                         ], 429);
                         break;
-                    case "Reformed" : 
+                    case "Reformed" :
                         return response()->json([
                             'errors' => [
                                 'state_name' => ["You can't go in another state"]
@@ -256,7 +256,7 @@ class MmeStateController extends Controller
 
     /**
      * Function call by MmeStateForm.vue when the form is submitted for insert with the route :/mme/add/state (post)
-     * Add a new enregistrement of state in the data base with the informations entered in the form 
+     * Add a new enregistrement of state in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new state
      */
     public function add_state(Request $request){
@@ -264,23 +264,23 @@ class MmeStateController extends Controller
         //If the user has not entered a date we take the date of the current day
         $date=Carbon::now('Europe/Paris');
         if ($request->state_startDate!='' && $request->state_startDate!=NULL){
-            $date=$request->state_startDate ; 
+            $date=$request->state_startDate ;
         }
 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
         $states=$mostRecentlyMmeTmp->states;
         if ($states!==NULL){
             $mostRecentlyState=NULL ;
-            $first=true ; 
+            $first=true ;
             foreach($states as $state){
                 if ($first){
-                    $mostRecentlyState=$state ; 
+                    $mostRecentlyState=$state ;
                     $first=false;
                 }else{
-                    $date=$state->created_at ; 
+                    $date=$state->created_at ;
                     $date2=$mostRecentlyState->created_at;
                     if ($date>=$date2){
-                        $mostRecentlyState=$state ; 
+                        $mostRecentlyState=$state ;
                     }
                 }
             }
@@ -290,15 +290,14 @@ class MmeStateController extends Controller
                 ]);
             }
         }
-        
+
         //Creation of a new state
         $state=MmeState::create([
             'state_remarks' => $request->state_remarks,
             'state_validate' => $request->state_validate,
-            'state_isOk' => $request->state_isOk,
             'state_startDate' => $date,
             'state_name' => $request->state_name,
-        ]) ; 
+        ]) ;
 
         if ($request->state_name=="Reformed"){
             $state->update([
@@ -307,23 +306,23 @@ class MmeStateController extends Controller
         }
 
         if ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed"){
-             $MmeController= new MmeController() ; 
-             $MmeController->delete_mme($request->mme_id) ; 
+             $MmeController= new MmeController() ;
+             $MmeController->delete_mme($request->mme_id) ;
         }
-        
+
         $state_id=$state->id;
-        $id_mme=intval($request->mme_id) ; 
-        $mme=Mme::findOrfail($request->mme_id) ; 
+        $id_mme=intval($request->mme_id) ;
+        $mme=Mme::findOrfail($request->mme_id) ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
         $state->mme_temps()->attach($mostRecentlyMmeTmp) ;
 
-        return response()->json($state_id) ; 
+        return response()->json($state_id) ;
     }
 
 
     /**
      * Function call by MmeStateForm.vue when the form is submitted for update with the route :/mme/update/state/{id} (post)
-     * Update an enregistrement of state in the data base with the informations entered in the form 
+     * Update an enregistrement of state in the data base with the informations entered in the form
      * The id parameter correspond to the id of the state we want to update
      * */
     public function update_state(Request $request, $id){
@@ -331,14 +330,13 @@ class MmeStateController extends Controller
         //If the user has not entered a date we take the date of the current day
         $date=Carbon::now('Europe/Paris');
         if ($request->state_startDate!='' && $request->state_startDate!=NULL){
-            $date=$request->state_startDate ; 
+            $date=$request->state_startDate ;
         }
-        
-        $state=MmeState::findOrFail($id) ; 
+
+        $state=MmeState::findOrFail($id) ;
         $state->update([
             'state_remarks' => $request->state_remarks,
             'state_validate' => $request->state_validate,
-            'state_isOk' => $request->state_isOk,
             'state_startDate' => $date,
             'state_name' => $request->state_name,
         ]) ;
@@ -353,38 +351,38 @@ class MmeStateController extends Controller
 
     public function send_states($id) {
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $container=array() ; 
+        $container=array() ;
         if (count($mostRecentlyMmeTmp->states)>0){
-            $states=$mostRecentlyMmeTmp->states ; 
+            $states=$mostRecentlyMmeTmp->states ;
             foreach ($states as $state) {
 
-                $verifRlzs=VerificationRealized::where('state_id', '=', $state->id)->get() ; 
-                $container_verifRlz=array() ; 
+                $verifRlzs=VerificationRealized::where('state_id', '=', $state->id)->get() ;
+                $container_verifRlz=array() ;
                 foreach($verifRlzs as $verifRlz){
-                    $verif=Verification::findOrFail($verifRlz->verif_id) ; 
+                    $verif=Verification::findOrFail($verifRlz->verif_id) ;
                     $enteredBy_firstName=NULL;
                     $enteredBy_lastName=NULL;
                     $realizedBy_firstName=NULL;
-                    $realizedBy_lastName=NULL ; 
+                    $realizedBy_lastName=NULL ;
                     $approvedBy_firstName=NULL;
                     $approvedBy_lastName=NULL ;
 
                     if ($verifRlz->realizedBy_id!=NULL){
-                        $realizedBy=User::findOrFail($verifRlz->realizedBy_id) ; 
-                        $realizedBy_firstName=$realizedBy->user_firstName ; 
-                        $realizedBy_lastName=$realizedBy->user_lastName ; 
+                        $realizedBy=User::findOrFail($verifRlz->realizedBy_id) ;
+                        $realizedBy_firstName=$realizedBy->user_firstName ;
+                        $realizedBy_lastName=$realizedBy->user_lastName ;
                     }
                     if ($verifRlz->enteredBy_id!=NULL){
-                        $enteredBy=User::findOrFail($verifRlz->enteredBy_id) ; 
-                        $enteredBy_firstName=$enteredBy->user_firstName ; 
-                        $enteredBy_lastName=$enteredBy->user_lastName ; 
+                        $enteredBy=User::findOrFail($verifRlz->enteredBy_id) ;
+                        $enteredBy_firstName=$enteredBy->user_firstName ;
+                        $enteredBy_lastName=$enteredBy->user_lastName ;
                     }
                     if ($verifRlz->approvedBy_id!=NULL){
-                        $approvedBy=User::findOrFail($verifRlz->approvedBy_id) ; 
-                        $approvedBy_firstName=$approvedBy->user_firstName ; 
-                        $approvedBy_lastName=$approvedBy->user_lastName ; 
+                        $approvedBy=User::findOrFail($verifRlz->approvedBy_id) ;
+                        $approvedBy_firstName=$approvedBy->user_firstName ;
+                        $approvedBy_lastName=$approvedBy->user_lastName ;
                     }
-                    
+
                     $obj=([
                         "id" => $verifRlz->id,
                         "verifRlz_reportNumber" => $verifRlz->verifRlz_reportNumber,
@@ -393,10 +391,10 @@ class MmeStateController extends Controller
                         "verifRlz_entryDate" => $verifRlz->verifRlz_entryDate,
                         "verifRlz_validate" => $verifRlz->verifRlz_validate,
                         "verif_id" => $verifRlz->verif_id,
-                        "verif_number" => (string)$verif->verif_number, 
-                        "verif_description" => $verif->verif_description, 
-                        "verif_protocol" => $verif->verif_protocol, 
-                        "verif_expectedResult" => $verif->verif_expectedResult, 
+                        "verif_number" => (string)$verif->verif_number,
+                        "verif_description" => $verif->verif_description,
+                        "verif_protocol" => $verif->verif_protocol,
+                        "verif_expectedResult" => $verif->verif_expectedResult,
                         'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
                         "realizedBy_firstName" => $realizedBy_firstName,
                         "realizedBy_lastName" => $realizedBy_lastName,
@@ -405,11 +403,11 @@ class MmeStateController extends Controller
                         "approvedBy_firstName" => $approvedBy_firstName,
                         "approvedBy_lastName" => $approvedBy_lastName,
                     ]);
-                    array_push($container_verifRlz, $obj); 
+                    array_push($container_verifRlz, $obj);
                 }
-                
-                $curMtnOps=CurativeMaintenanceOperation::where('mme_state_id', '=', $state->id)->get() ; 
-                $container_curMtnOp=array() ; 
+
+                $curMtnOps=CurativeMaintenanceOperation::where('mme_state_id', '=', $state->id)->get() ;
+                $container_curMtnOp=array() ;
                 foreach($curMtnOps as $curMtnOp){
                     $technicalVerifier_firstName=NULL;
                     $technicalVerifier_lastName=NULL;
@@ -418,27 +416,27 @@ class MmeStateController extends Controller
                     $enteredBy_firstName=NULL;
                     $enteredBy_lastName=NULL;
                     $realizedBy_firstName=NULL;
-                    $realizedBy_lastName=NULL ; 
+                    $realizedBy_lastName=NULL ;
 
                     if ($curMtnOp->technicalVerifier_id!=NULL){
-                        $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                        $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ;
                         $technicalVerifier_firstName=$technicalVerifier->user_firstName;
                         $technicalVerifier_lastName=$technicalVerifier->user_lastName;
                     }
                     if ($curMtnOp->qualityVerifier_id!=NULL){
-                        $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
-                        $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
-                        $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                        $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ;
+                        $qualityVerifier_firstName=$qualityVerifier->user_firstName ;
+                        $qualityVerifier_lastName=$qualityVerifier->user_lastName ;
                     }
                     if ($curMtnOp->realizedBy_id!=NULL){
-                        $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
-                        $realizedBy_firstName=$realizedBy->user_firstName ; 
-                        $realizedBy_lastName=$realizedBy->user_lastName ; 
+                        $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ;
+                        $realizedBy_firstName=$realizedBy->user_firstName ;
+                        $realizedBy_lastName=$realizedBy->user_lastName ;
                     }
                     if ($curMtnOp->enteredBy_id!=NULL){
-                        $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
-                        $enteredBy_firstName=$enteredBy->user_firstName ; 
-                        $enteredBy_lastName=$enteredBy->user_lastName ; 
+                        $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ;
+                        $enteredBy_firstName=$enteredBy->user_firstName ;
+                        $enteredBy_lastName=$enteredBy->user_lastName ;
                     }
 
 
@@ -460,10 +458,10 @@ class MmeStateController extends Controller
                         "technicalVerifier_firstName" => $technicalVerifier_firstName,
                         "technicalVerifier_lastName" => $technicalVerifier_lastName,
                     ]);
-                    array_push($container_curMtnOp, $obj); 
+                    array_push($container_curMtnOp, $obj);
                 }
 
-                $reformedBy_id=NULL ; 
+                $reformedBy_id=NULL ;
                 if ($state->reformedBy_id!=NULL){
                     $reformedBy_id=$state->reformedBy_id;
                 }
@@ -471,7 +469,6 @@ class MmeStateController extends Controller
                     "id" => $state->id,
                     'state_remarks' => $state->state_remarks,
                     'state_validate' => $state->state_validate,
-                    'state_isOk' => (boolean)$state->state_isOk,
                     'state_startDate' => $state->state_startDate,
                     'state_endDate' => $state->state_endDate,
                     'state_name' => $state->state_name,
@@ -494,13 +491,12 @@ class MmeStateController extends Controller
 
     public function send_state($id) {
         $state=MmeState::findOrFail($id) ;
-        $container=array() ; 
+        $container=array() ;
 
         $obj=([
             "id" => $state->id,
             'state_remarks' => $state->state_remarks,
             'state_validate' => $state->state_validate,
-            'state_isOk' => (boolean)$state->state_isOk,
             'state_startDate' => $state->state_startDate,
             'state_endDate' => $state->state_endDate,
             'state_name' => $state->state_name,
@@ -512,12 +508,12 @@ class MmeStateController extends Controller
 
     /**
      * Function call by ListOfMmeLifeEvent with the route : /mme_state/verif/beforeReferenceVerif/{id} (post)
-     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
-     * The id parameter is the id of the actual state 
+     * Check if we can create a new state (the previous state is validated, it has a endDate...)
+     * The id parameter is the id of the actual state
      * @return \Illuminate\Http\Response
      */
     public function verif_before_reference_verif(Request $request, $id){
-        $state=MmeState::findOrFail($id) ; 
+        $state=MmeState::findOrFail($id) ;
         if ($state->state_name!="In_use" && $state->state_name!="Under_verification" && $state->state_name!="In_quarantine"){
             return response()->json([
                 'errors' => [
@@ -538,12 +534,12 @@ class MmeStateController extends Controller
 
      /**
      * Function call by ListOfMMELifeEvent with the route : /mme_state/verif/beforeReferenceCurOp/{id} (post)
-     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
-     * The id parameter is the id of the actual state 
+     * Check if we can create a new state (the previous state is validated, it has a endDate...)
+     * The id parameter is the id of the actual state
      * @return \Illuminate\Http\Response
      */
     public function verif_before_reference_cur_op(Request $request, $id){
-        $state=MmeState::findOrFail($id) ; 
+        $state=MmeState::findOrFail($id) ;
         if ($state->state_name!="In_quarantine" && $state->state_name!="Under_repair"){
             return response()->json([
                 'errors' => [
@@ -564,20 +560,20 @@ class MmeStateController extends Controller
 
     /**
      * Function call by ListOfMmeLifeEvent with the route : /state/verif/beforeChangingState/{id} (post)
-     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
-     * The id parameter is the id of the actual state 
+     * Check if we can create a new state (the previous state is validated, it has a endDate...)
+     * The id parameter is the id of the actual state
      * @return \Illuminate\Http\Response
      */
     public function verif_before_changing_state($id){
-        $state=MmeState::findOrFail($id) ; 
-        $verifRlzs=VerificationRealized::where('state_id', '=', $id)->get() ; 
+        $state=MmeState::findOrFail($id) ;
+        $verifRlzs=VerificationRealized::where('state_id', '=', $id)->get() ;
         foreach ($verifRlzs as $verifRlz){
             if ($verifRlz->verifRlz_validate!="validated"){
                 return response()->json([
                     'errors' => [
                         'state_verif' => ["You must validate all your verification realized before add a new state"]
                     ]
-                ], 429);    
+                ], 429);
 
             }
         }
@@ -590,7 +586,7 @@ class MmeStateController extends Controller
             ], 429);
         }
 
-        
+
     }
 
     /**
@@ -600,7 +596,7 @@ class MmeStateController extends Controller
      * */
     public function delete_state($id){
         $state=MmeState::findOrFail($id);
-        $state->delete() ; 
+        $state->delete() ;
     }
 }
 

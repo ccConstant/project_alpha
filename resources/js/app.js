@@ -142,6 +142,10 @@ const router = new VueRouter({
         name: 'url_mme_list',
         component: require('./components/SW01/mme/consultation/ListOfMMEV2.vue').default
     }, {
+        path: '/mme/list/PDF',
+        name: 'url_mme_list_pdf',
+        component: require('./components/SW01/mme/consultation/ListOfMMEPDF.vue').default
+    }, {
         path: '/mme/list/consult/:id(\\d+)',
         name: 'url_mme_consult',
         component: require('./components/SW01/mme/consultation/MMEConsult.vue').default

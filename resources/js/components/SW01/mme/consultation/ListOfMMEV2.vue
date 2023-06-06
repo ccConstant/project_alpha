@@ -58,7 +58,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td>
+                            <button class="btn btn-primary" @click="mmePrintableList">View the printable list</button>
+                        </td>
                         <td>
                             <button class="btn btn-primary" @click="reviewMME">Validate lifesheet descriptive part</button>
                         </td>
@@ -371,6 +373,11 @@ export default {
         resetValidateFilter() {
             this.searchTermValidate = -1;
         },
+        mmePrintableList() {
+            this.$router.replace({
+                name: "url_mme_list_pdf"
+            });
+        }
     },
     mounted() {
     },

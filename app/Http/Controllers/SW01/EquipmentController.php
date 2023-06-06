@@ -474,7 +474,6 @@ class EquipmentController extends Controller{
         $newState=State::create([
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
-            'state_isOk' => true,
             'state_validate' => "validated",
             'state_name' => "Waiting_for_referencing"
         ]) ;
@@ -1241,7 +1240,7 @@ class EquipmentController extends Controller{
                 }
             }
 
-            
+
             if ($mostRecentlyState->state_name!="Waiting_for_installation"){
                 if ($mostRecentlyState!=NULL){
                     $now=Carbon::now('Europe/Paris');
@@ -1252,7 +1251,6 @@ class EquipmentController extends Controller{
                 $newState=State::create([
                     'state_remarks' => "This equipment has been validated by a technical verifier",
                     'state_startDate' =>  $now,
-                    'state_isOk' => true,
                     'state_validate' => "validated",
                     'state_name' => "Waiting_for_installation",
                 ]);
@@ -1284,13 +1282,12 @@ class EquipmentController extends Controller{
                 $newState=State::create([
                     'state_remarks' => "This equipment has been validated by a quality verifier",
                     'state_startDate' =>  $now,
-                    'state_isOk' => true,
                     'state_validate' => "validated",
                     'state_name' => "In_use",
                 ]);
                 $newState->equipment_temps()->attach($mostRecentlyEqTmp);
-            } 
-            
+            }
+
         }
        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier_id!=NULL){
             $mostRecentlyEqTmp->update([
@@ -1407,7 +1404,6 @@ class EquipmentController extends Controller{
         $newState=State::create([
             'state_remarks' => "State by default",
             'state_startDate' =>  Carbon::now('Europe/Paris'),
-            'state_isOk' => true,
             'state_validate' => "drafted",
             'state_name' => "Waiting_for_referencing"
         ]) ;

@@ -35,7 +35,6 @@
                     <InputTextForm  inputClassName="form-control" :info_text="infos_state[2].info_value" :Errors="errors.state_startDate" name="state_startDate" label="Start date :" :isDisabled="true" v-model="state_startDate" />
                     <InputDateForm @clearDateError="clearDateError" inputClassName="form-control  date-selector"  name="selected_startDate" :isDisabled="!!isInConsultMod" v-model="selected_startDate" />
                 </div>
-                <RadioGroupForm label="is Ok?:" :info_text="infos_state[4].info_value" :options="isOkOptions"  :Errors="errors.state_isOk" :checkedOption="state_isOk" :isDisabled="!!isInConsultMod" v-model="state_isOk" />
                 <SaveButtonForm :is_state="true" :Errors="errors.mme_delete" v-if="this.addSucces==false" @add="addMmeState" @update="updateMmeState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
 
@@ -107,7 +106,6 @@ export default {
             selected_startDate:null,
             state_startDate :'',
             state_validate:'',
-            state_isOk:null,
             enum_state_name :[
                 {id_enum:"StateName",value:"Waiting_for_referencing"},
                 {id_enum:"StateName",value:"Waiting_to_be_in_use"},
@@ -119,10 +117,6 @@ export default {
                 {id_enum:"StateName",value:"Downgraded"},
                 {id_enum:"StateName",value:"Reformed"},
                 {id_enum:"StateName",value:"Lost"},
-            ],
-            isOkOptions :[
-                {id: 'Yes', value:true},
-                {id: 'No', value:false}
             ],
             isInConsultMod:this.consultMod,
             mme_id:this.$route.params.id,
@@ -158,7 +152,6 @@ export default {
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
                     state_startDate:this.selected_startDate,
-                    state_isOk:this.state_isOk,
                     state_validate:savedAs,
                     mme_id:this.mme_id,
                     reason:'add',
@@ -172,7 +165,6 @@ export default {
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,
                             state_startDate:this.selected_startDate,
-                            state_isOk:this.state_isOk,
                             state_validate:savedAs,
                             mme_id:this.mme_id,
                             enteredBy_id:this.$userId.id
@@ -198,7 +190,6 @@ export default {
                     state_name:this.state_name,
                     state_remarks:this.state_remarks,
                     state_startDate:this.selected_startDate,
-                    state_isOk:this.state_isOk,
                     state_validate:savedAs,
                     state_id:this.state_id,
                     mme_id:this.mme_id,
@@ -213,7 +204,6 @@ export default {
                             state_name:this.state_name,
                             state_remarks:this.state_remarks,
                             state_startDate:this.selected_startDate,
-                            state_isOk:this.state_isOk,
                             state_validate:savedAs,
                             mme_id:this.mme_id
 
@@ -263,7 +253,6 @@ export default {
                     this.state_name=response.data[0].state_name;
                     this.state_remarks=response.data[0].state_remarks;
                     this.selected_startDate=response.data[0].state_startDate;
-                    this.state_isOk=response.data[0].state_isOk;
                     this.state_validate=response.data[0].state_validate;
                     if(this.state_name=="Downgraded"){
                         const consultUrl = (state_id) => `/send/mme_state/mme/${state_id}`;

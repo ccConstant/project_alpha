@@ -1,26 +1,26 @@
 <?php
 
 /*
-* Filename : StateController.php 
+* Filename : StateController.php
 * Creation date : 17 May 2022
 * Update date : 17 May 2022
-* This file is used to link the view files and the database that concern the state table. 
+* This file is used to link the view files and the database that concern the state table.
 * For example : add a state for an equipment in the data base, update a file, delete it...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW01;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\State ; 
-use App\Models\User ; 
-use App\Models\SW01\Equipment ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\State ;
+use App\Models\User ;
+use App\Models\SW01\Equipment ;
 use App\Models\SW01\PreventiveMaintenanceOperationRealized;
 use App\Models\SW01\PreventiveMaintenanceOperation;
 use App\Models\SW01\CurativeMaintenanceOperation;
-use App\Http\Controllers\SW01\EquipmentController ; 
+use App\Http\Controllers\SW01\EquipmentController ;
 use App\Http\Controllers\Controller;
 
 
@@ -39,18 +39,18 @@ class StateController extends Controller
 
         //-----CASE state->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his state, so he must enter all the attributes
-       
+
         $this->validate(
             $request,
             [
                 'state_remarks' => 'required|min:3|max:255',
-                
+
             ],
             [
                 'state_remarks.required' => 'You must enter a remark about the state ',
                 'state_remarks.min' => 'You must enter at least three characters ',
                 'state_remarks.max' => 'You must enter a maximum of 255 characters',
-            
+
             ]
         );
 
@@ -70,7 +70,7 @@ class StateController extends Controller
                 ]
             ], 429);
         }
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->state_startDate!=NULL && $request->state_startDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -84,17 +84,17 @@ class StateController extends Controller
         if ($states!==NULL){
             if ($request->reason=='update'){
                 $mostRecentlyState=NULL ;
-                $first=true ; 
+                $first=true ;
                 foreach($states as $state){
                     if ($state->id !=$request->state_id){
                         if ($first){
-                            $mostRecentlyState=$state ; 
+                            $mostRecentlyState=$state ;
                             $first=false;
                         }else{
-                            $date=$state->created_at ; 
+                            $date=$state->created_at ;
                             $date2=$mostRecentlyState->created_at;
                             if ($date>=$date2){
-                                $mostRecentlyState=$state ; 
+                                $mostRecentlyState=$state ;
                             }
                         }
                     }
@@ -110,16 +110,16 @@ class StateController extends Controller
                 }
             }else{
                 $mostRecentlyState=NULL ;
-                $first=true ; 
+                $first=true ;
                 foreach($states as $state){
                     if ($first){
-                        $mostRecentlyState=$state ; 
+                        $mostRecentlyState=$state ;
                         $first=false;
                     }else{
-                        $date=$state->created_at ; 
+                        $date=$state->created_at ;
                         $date2=$mostRecentlyState->created_at;
                         if ($date>=$date2){
-                            $mostRecentlyState=$state ; 
+                            $mostRecentlyState=$state ;
                         }
                     }
                 }
@@ -133,7 +133,7 @@ class StateController extends Controller
                     }
                 }
                 switch($mostRecentlyState->state_name){
-                    case "Waiting_for_referencing" : 
+                    case "Waiting_for_referencing" :
                         if ($request->state_name!="Waiting_for_installation"){
                             return response()->json([
                                 'errors' => [
@@ -142,7 +142,7 @@ class StateController extends Controller
                             ], 429);
                         }
                         break;
-                    case "Waiting_for_installation" : 
+                    case "Waiting_for_installation" :
                         if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="In_use" && $request->state_name!="On_hold" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
                             return response()->json([
                                 'errors' => [
@@ -151,7 +151,7 @@ class StateController extends Controller
                             ], 429);
                         }
                         break;
-                    case "In_use" : 
+                    case "In_use" :
                         if ($request->state_name!="Waiting_for_referencing" && $request->state_name!="Under_maintenance" && $request->state_name!="On_hold" && $request->state_name!="Reformed" && $request->state_name!="Lost"){
                             return response()->json([
                                 'errors' => [
@@ -160,7 +160,7 @@ class StateController extends Controller
                             ], 429);
                         }
                         break;
-                    case "Under_maintenance" : 
+                    case "Under_maintenance" :
                         if ($request->state_name!="In_use" && $request->state_name!="On_hold" && $request->state_name!="Lost"){
                             return response()->json([
                                 'errors' => [
@@ -201,7 +201,7 @@ class StateController extends Controller
                             ]
                         ], 429);
                         break;
-                    case "Reformed" : 
+                    case "Reformed" :
                         return response()->json([
                             'errors' => [
                                 'state_name' => ["You can't go in another state"]
@@ -234,7 +234,7 @@ class StateController extends Controller
 
     /**
      * Function call by EquipmentStateForm.vue when the form is submitted for insert with the route :/equipment/add/state (post)
-     * Add a new enregistrement of state in the data base with the informations entered in the form 
+     * Add a new enregistrement of state in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new state
      */
     public function add_state(Request $request){
@@ -242,23 +242,23 @@ class StateController extends Controller
         //If the user has not entered a date we take the date of the current day
         $date=Carbon::now('Europe/Paris');
         if ($request->state_startDate!='' && $request->state_startDate!=NULL){
-            $date=$request->state_startDate ; 
+            $date=$request->state_startDate ;
         }
 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         $states=$mostRecentlyEqTmp->states;
         if ($states!==NULL){
             $mostRecentlyState=NULL ;
-            $first=true ; 
+            $first=true ;
             foreach($states as $state){
                 if ($first){
-                    $mostRecentlyState=$state ; 
+                    $mostRecentlyState=$state ;
                     $first=false;
                 }else{
-                    $date=$state->created_at ; 
+                    $date=$state->created_at ;
                     $date2=$mostRecentlyState->created_at;
                     if ($date>=$date2){
-                        $mostRecentlyState=$state ; 
+                        $mostRecentlyState=$state ;
                     }
                 }
             }
@@ -268,15 +268,14 @@ class StateController extends Controller
                 ]);
             }
         }
-        
+
         //Creation of a new state
         $state=State::create([
             'state_remarks' => $request->state_remarks,
             'state_validate' => $request->state_validate,
-            'state_isOk' => $request->state_isOk,
             'state_startDate' => $date,
             'state_name' => $request->state_name,
-        ]) ; 
+        ]) ;
 
         if ($request->state_name=="Reformed"){
             $state->update([
@@ -285,13 +284,13 @@ class StateController extends Controller
         }
 
         if ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed"){
-            $EquipmentController= new EquipmentController() ; 
-            $EquipmentController->delete_equipment($request) ; 
+            $EquipmentController= new EquipmentController() ;
+            $EquipmentController->delete_equipment($request) ;
        }
-        
+
         $state_id=$state->id;
-        $id_eq=intval($request->eq_id) ; 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        $id_eq=intval($request->eq_id) ;
+        $equipment=Equipment::findOrfail($request->eq_id) ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         $state->equipment_temps()->attach($mostRecentlyEqTmp) ;
 
@@ -301,7 +300,7 @@ class StateController extends Controller
 
     /**
      * Function call by EquipmentStateForm.vue when the form is submitted for update with the route :/equipment/update/state/{id} (post)
-     * Update an enregistrement of state in the data base with the informations entered in the form 
+     * Update an enregistrement of state in the data base with the informations entered in the form
      * The id parameter correspond to the id of the state we want to update
      * */
     public function update_state(Request $request, $id){
@@ -309,14 +308,13 @@ class StateController extends Controller
         //If the user has not entered a date we take the date of the current day
         $date=Carbon::now('Europe/Paris');
         if ($request->state_startDate!='' && $request->state_startDate!=NULL){
-            $date=$request->state_startDate ; 
+            $date=$request->state_startDate ;
         }
-        
-        $state=State::findOrFail($id) ; 
+
+        $state=State::findOrFail($id) ;
         $state->update([
             'state_remarks' => $request->state_remarks,
             'state_validate' => $request->state_validate,
-            'state_isOk' => $request->state_isOk,
             'state_startDate' => $date,
             'state_name' => $request->state_name,
         ]) ;
@@ -331,38 +329,38 @@ class StateController extends Controller
 
     public function send_states($id) {
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $container=array() ; 
+        $container=array() ;
         if (count($mostRecentlyEqTmp->states)>0){
-            $states=$mostRecentlyEqTmp->states ; 
+            $states=$mostRecentlyEqTmp->states ;
             foreach ($states as $state) {
 
-                $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $state->id)->get() ; 
-                $container_prvMtnOpRlz=array() ; 
+                $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $state->id)->get() ;
+                $container_prvMtnOpRlz=array() ;
                 foreach($prvMtnOpRlzs as $prvMtnOpRlz){
-                    $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ; 
+                    $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($prvMtnOpRlz->prvMtnOp_id) ;
                     $enteredBy_firstName=NULL;
                     $enteredBy_lastName=NULL;
                     $realizedBy_firstName=NULL;
-                    $realizedBy_lastName=NULL ; 
+                    $realizedBy_lastName=NULL ;
                     $approvedBy_firstName=NULL;
                     $approvedBy_lastName=NULL ;
 
                     if ($prvMtnOpRlz->realizedBy_id!=NULL){
-                        $realizedBy=User::findOrFail($prvMtnOpRlz->realizedBy_id) ; 
-                        $realizedBy_firstName=$realizedBy->user_firstName ; 
-                        $realizedBy_lastName=$realizedBy->user_lastName ; 
+                        $realizedBy=User::findOrFail($prvMtnOpRlz->realizedBy_id) ;
+                        $realizedBy_firstName=$realizedBy->user_firstName ;
+                        $realizedBy_lastName=$realizedBy->user_lastName ;
                     }
                     if ($prvMtnOpRlz->enteredBy_id!=NULL){
-                        $enteredBy=User::findOrFail($prvMtnOpRlz->enteredBy_id) ; 
-                        $enteredBy_firstName=$enteredBy->user_firstName ; 
-                        $enteredBy_lastName=$enteredBy->user_lastName ; 
+                        $enteredBy=User::findOrFail($prvMtnOpRlz->enteredBy_id) ;
+                        $enteredBy_firstName=$enteredBy->user_firstName ;
+                        $enteredBy_lastName=$enteredBy->user_lastName ;
                     }
                     if ($prvMtnOpRlz->approvedBy_id!=NULL){
-                        $approvedBy=User::findOrFail($prvMtnOpRlz->approvedBy_id) ; 
-                        $approvedBy_firstName=$approvedBy->user_firstName ; 
-                        $approvedBy_lastName=$approvedBy->user_lastName ; 
+                        $approvedBy=User::findOrFail($prvMtnOpRlz->approvedBy_id) ;
+                        $approvedBy_firstName=$approvedBy->user_firstName ;
+                        $approvedBy_lastName=$approvedBy->user_lastName ;
                     }
-                    
+
                     $obj=([
                         "id" => $prvMtnOpRlz->id,
                         "prvMtnOpRlz_reportNumber" => $prvMtnOpRlz->prvMtnOpRlz_reportNumber,
@@ -370,10 +368,11 @@ class StateController extends Controller
                         "prvMtnOpRlz_endDate" => $prvMtnOpRlz->prvMtnOpRlz_endDate,
                         "prvMtnOpRlz_entryDate" => $prvMtnOpRlz->prvMtnOpRlz_entryDate,
                         "prvMtnOpRlz_validate" => $prvMtnOpRlz->prvMtnOpRlz_validate,
+                        "prvMtnOpRlz_comment" => $prvMtnOpRlz->prvMtnOpRlz_comment,
                         "prvMtnOp_id" => $prvMtnOpRlz->prvMtnOp_id,
-                        "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number, 
-                        "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description, 
-                        "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol, 
+                        "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
+                        "prvMtnOp_description" => $prvMtnOp->prvMtnOp_description,
+                        "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
                         "realizedBy_firstName" => $realizedBy_firstName,
                         "realizedBy_lastName" => $realizedBy_lastName,
                         "enteredBy_firstName" => $enteredBy_firstName,
@@ -381,11 +380,11 @@ class StateController extends Controller
                         "approvedBy_firstName" => $approvedBy_firstName,
                         "approvedBy_lastName" => $approvedBy_lastName,
                     ]);
-                    array_push($container_prvMtnOpRlz, $obj); 
+                    array_push($container_prvMtnOpRlz, $obj);
                 }
-                
-                $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $state->id)->get() ; 
-                $container_curMtnOp=array() ; 
+
+                $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $state->id)->get() ;
+                $container_curMtnOp=array() ;
                 foreach($curMtnOps as $curMtnOp){
                     $technicalVerifier_firstName=NULL;
                     $technicalVerifier_lastName=NULL;
@@ -394,27 +393,27 @@ class StateController extends Controller
                     $enteredBy_firstName=NULL;
                     $enteredBy_lastName=NULL;
                     $realizedBy_firstName=NULL;
-                    $realizedBy_lastName=NULL ; 
+                    $realizedBy_lastName=NULL ;
 
                     if ($curMtnOp->technicalVerifier_id!=NULL){
-                        $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                        $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ;
                         $technicalVerifier_firstName=$technicalVerifier->user_firstName;
                         $technicalVerifier_lastName=$technicalVerifier->user_lastName;
                     }
                     if ($curMtnOp->qualityVerifier_id!=NULL){
-                        $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
-                        $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
-                        $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                        $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ;
+                        $qualityVerifier_firstName=$qualityVerifier->user_firstName ;
+                        $qualityVerifier_lastName=$qualityVerifier->user_lastName ;
                     }
                     if ($curMtnOp->realizedBy_id!=NULL){
-                        $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
-                        $realizedBy_firstName=$realizedBy->user_firstName ; 
-                        $realizedBy_lastName=$realizedBy->user_lastName ; 
+                        $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ;
+                        $realizedBy_firstName=$realizedBy->user_firstName ;
+                        $realizedBy_lastName=$realizedBy->user_lastName ;
                     }
                     if ($curMtnOp->enteredBy_id!=NULL){
-                        $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
-                        $enteredBy_firstName=$enteredBy->user_firstName ; 
-                        $enteredBy_lastName=$enteredBy->user_lastName ; 
+                        $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ;
+                        $enteredBy_firstName=$enteredBy->user_firstName ;
+                        $enteredBy_lastName=$enteredBy->user_lastName ;
                     }
 
 
@@ -436,10 +435,10 @@ class StateController extends Controller
                         "technicalVerifier_firstName" => $technicalVerifier_firstName,
                         "technicalVerifier_lastName" => $technicalVerifier_lastName,
                     ]);
-                    array_push($container_curMtnOp, $obj); 
+                    array_push($container_curMtnOp, $obj);
                 }
 
-                $reformedBy_id=NULL ; 
+                $reformedBy_id=NULL ;
                 if ($state->reformedBy_id!=NULL){
                     $reformedBy_id=$state->reformedBy_id;
                 }
@@ -447,7 +446,6 @@ class StateController extends Controller
                     "id" => $state->id,
                     'state_remarks' => $state->state_remarks,
                     'state_validate' => $state->state_validate,
-                    'state_isOk' => (boolean)$state->state_isOk,
                     'state_startDate' => $state->state_startDate,
                     'state_endDate' => $state->state_endDate,
                     'state_name' => $state->state_name,
@@ -470,13 +468,12 @@ class StateController extends Controller
 
     public function send_state($id) {
         $state=State::findOrFail($id) ;
-        $container=array() ; 
+        $container=array() ;
 
         $obj=([
             "id" => $state->id,
             'state_remarks' => $state->state_remarks,
             'state_validate' => $state->state_validate,
-            'state_isOk' => (boolean)$state->state_isOk,
             'state_startDate' => $state->state_startDate,
             'state_endDate' => $state->state_endDate,
             'state_name' => $state->state_name,
@@ -488,12 +485,12 @@ class StateController extends Controller
 
     /**
      * Function call by ListOfEquipmentLifeEvent with the route : /state/verif/beforeReferenceCurOp/{id} (post)
-     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
-     * The id parameter is the id of the actual state 
+     * Check if we can create a new state (the previous state is validated, it has a endDate...)
+     * The id parameter is the id of the actual state
      * @return \Illuminate\Http\Response
      */
     public function verif_before_reference_cur_op(Request $request, $id){
-        $state=State::findOrFail($id) ; 
+        $state=State::findOrFail($id) ;
         if ($state->state_name!="On_hold" && $state->state_name!="Under_repair"){
             return response()->json([
                 'errors' => [
@@ -514,12 +511,12 @@ class StateController extends Controller
 
      /**
      * Function call by EventDetailsModal with the route : /state/verif/beforeReferencePrvOp/{id} (post)
-     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
-     * The id parameter is the id of the actual state 
+     * Check if we can create a new state (the previous state is validated, it has a endDate...)
+     * The id parameter is the id of the actual state
      * @return \Illuminate\Http\Response
      */
     public function verif_before_reference_prv_op(Request $request, $id){
-        $state=State::findOrFail($id) ; 
+        $state=State::findOrFail($id) ;
         if ($state->state_name!="In_use" && $state->state_name!="Under_maintenance" && $state->state_name!="On_hold"){
             return response()->json([
                 'errors' => [
@@ -540,31 +537,31 @@ class StateController extends Controller
 
     /**
      * Function call by ListOfEquipmentLifeEvent with the route : /state/verif/beforeChangingState/{id} (post)
-     * Check if we can create a new state (the previous state is validated, it has a endDate...) 
-     * The id parameter is the id of the actual state 
+     * Check if we can create a new state (the previous state is validated, it has a endDate...)
+     * The id parameter is the id of the actual state
      * @return \Illuminate\Http\Response
      */
     public function verif_before_changing_state($id){
-        $state=State::findOrFail($id) ; 
-        $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $id)->get() ; 
+        $state=State::findOrFail($id) ;
+        $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('state_id', '=', $id)->get() ;
         foreach ($prvMtnOpRlzs as $prvMtnOpRlz){
             if ($prvMtnOpRlz->prvMtnOpRlz_validate!="validated"){
                 return response()->json([
                     'errors' => [
                         'state_verif' => ["You must validate all your preventive maintenance operation realized before add a new state"]
                     ]
-                ], 429);    
+                ], 429);
 
             }
         }
-        $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $id)->get() ; 
+        $curMtnOps=CurativeMaintenanceOperation::where('state_id', '=', $id)->get() ;
         foreach ($curMtnOps as $curMtnOp){
             if ($curMtnOp->curMtnOp_validate!="validated"){
                 return response()->json([
                     'errors' => [
                         'state_verif' => ["You must validate all your curative maintenance operation before add a new state"]
                     ]
-                ], 429);    
+                ], 429);
 
             }
         }
@@ -586,7 +583,7 @@ class StateController extends Controller
      * */
     public function delete_state($id){
         $state=State::findOrFail($id);
-        $state->delete() ; 
+        $state->delete() ;
     }
 }
 

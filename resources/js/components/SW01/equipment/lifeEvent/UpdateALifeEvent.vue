@@ -35,6 +35,9 @@
                                             Report Number : {{prvMtnOpRlz.prvMtnOpRlz_reportNumber}}
                                         </p>
                                         <p>
+                                            Comments : {{prvMtnOpRlz.prvMtnOpRlz_comment}}
+                                        </p>
+                                        <p>
                                             Start Date :
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).getDate() }}
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).toDateString().slice(4, 7) }}

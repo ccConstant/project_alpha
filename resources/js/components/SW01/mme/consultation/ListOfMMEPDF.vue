@@ -21,25 +21,25 @@
                                 <tr class="ignored">
                                     <td class="ignored">
                                         <input v-model="searchTermInternRef" class="form-control search_bar align-self-center"
-                                               placeholder="Filter the equipments by the internal ref" type="text">
+                                               placeholder="Filter the MME by the internal ref" type="text">
                                     </td>
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
                                         <input v-model="searchTermExternRef" class="form-control search_bar align-self-center"
-                                               placeholder="Filter the equipments by the external ref" type="text">
+                                               placeholder="Filter the MME by the external ref" type="text">
                                     </td>
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
                                         <input v-model="searchTermName" class="form-control search_bar align-self-center"
-                                               placeholder="Filter the equipments by the designation" type="text">
+                                               placeholder="Filter the MME by the designation" type="text">
                                     </td>
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
                                         <select v-model="searchStatus" class="form-control search_bar align-self-center">
-                                            <option :value="-1">Filter the equipments by the actual state</option>
+                                            <option :value="-1">Filter the MME by the actual state</option>
                                             <option :value="1">Waiting_for_referencing</option>
                                             <option :value="2">Waiting_for_installation</option>
                                             <option :value="3">In_use</option>
@@ -56,7 +56,7 @@
                                 <tr class="ignored">
                                     <td class="ignored">
                                         <select v-model="searchSaveStatus" class="form-control search_bar align-self-center">
-                                            <option :value="-1">Filter the equipments by the save status</option>
+                                            <option :value="-1">Filter the MME by the save status</option>
                                             <option :value="1">Drafted</option>
                                             <option :value="2">To Be Validated</option>
                                             <option :value="3">Validated</option>
@@ -66,7 +66,7 @@
                                 <tr class="ignored">
                                     <td class="ignored">
                                         <select v-model="searchSigned" class="form-control search_bar align-self-center">
-                                            <option :value="-1">Filter the equipments by the validation status</option>
+                                            <option :value="-1">Filter the MME by the validation status</option>
                                             <option :value="0">Signed</option>
                                             <option :value="1">Not Signed</option>
                                         </select>
@@ -88,7 +88,7 @@
                         </td>
                         <td style="border: 1px solid black;">
                             <h2>
-                                LIST OF EQUIPMENT USED BY ALPHA
+                                LIST OF MME USED BY ALPHA
                             </h2>
                         </td>
                         <td style="border: 1px solid black;">
@@ -133,22 +133,22 @@
                     <tr v-for="(eq,index) in pageOfItems " :key="index" style="color: blue; border: 1px solid black;">
                         <td style="border: 1px solid black;">
                             <p>
-                                {{ eq.eq_internalReference }}
+                                {{ eq.mme_internalReference }}
                             </p>
                         </td>
                         <td style="border: 1px solid black;">
                             <p>
-                                {{ eq.eq_externalReference }}
+                                {{ eq.mme_externalReference }}
                             </p>
                         </td>
                         <td style="border: 1px solid black;">
                             <p>
-                                {{ eq.eq_name }}
+                                {{ eq.mme_name }}
                             </p>
                         </td>
                         <td style="border: 1px solid black;">
                             <p>
-                                {{ eq.eq_state }}
+                                {{ eq.mme_state }}
                             </p>
                         </td>
                     </tr>
@@ -156,7 +156,7 @@
                 </table>
             </div>
         </div>
-        <jw-pagination :items="filterByTerm" :pageSize=25 class="eq_list_pagination"
+        <jw-pagination :items="filterByTerm" :pageSize=25 class="mme_list_pagination"
                        @changePage="onChangePage"></jw-pagination>
         <button class="btn btn-primary" @click="generateReport">Generate PDF</button>
     </div>
@@ -169,8 +169,8 @@ import ReferenceAnArticleFamilyMember from "../../../SW03/article/referencing/Re
 export default {
     data() {
         return {
-            eq_id: this.$route.params.id,
-            list_eq: null,
+            mme_id: this.$route.params.id,
+            list_mme: null,
             pageOfItems: [],
             loaded: false,
             searchTermInternRef: "",
@@ -214,17 +214,17 @@ export default {
         },
     },
     created() {
-        axios.get('/equipment/equipments')
+        axios.get('/mme/mmes')
             .then(response => {
                 console.log(response.data)
-                this.list_eq = response.data;
+                this.list_mme = response.data;
                 this.loaded = true;
             })
             .catch(error => console.log(error.response.data));
     },
     computed: {
         filterByTerm() {
-            this.outputName = 'EQ_LIST'
+            this.outputName = 'MME_LIST'
                                 + (this.searchTermInternRef !== "" ? '_internRef' : '')
                                 + (this.searchTermExternRef !== "" ? '_externRef' : '')
                                 + (this.searchTermName !== "" ? '_name' : '')
@@ -232,27 +232,27 @@ export default {
                                 + (this.searchSaveStatus !== -1 ? '_saveStatus' : '')
                                 + (this.searchSigned !== -1 ? '_signed' : '')
                                 + '.pdf'
-            let res = this.list_eq;
+            let res = this.list_mme;
             if (this.searchTermInternRef !== "") {
-                res = this.list_eq.filter(option => {
-                    if (option.eq_internalReference !== null) {
-                        return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
+                res = this.list_mme.filter(option => {
+                    if (option.mme_internalReference !== null) {
+                        return option.mme_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
                     }
                     return  false;
                 });
             }
             if (this.searchTermExternRef !== "") {
-                res = this.list_eq.filter(option => {
-                    if (option.eq_externalReference !== null) {
-                        return option.eq_externalReference.toLowerCase().includes(this.searchTermExternRef.toLowerCase());
+                res = this.list_mme.filter(option => {
+                    if (option.mme_externalReference !== null) {
+                        return option.mme_externalReference.toLowerCase().includes(this.searchTermExternRef.toLowerCase());
                     }
                     return false;
                 });
             }
             if (this.searchTermName !== "") {
-                res = this.list_eq.filter(option => {
-                    if (option.eq_name !== null) {
-                        return option.eq_name.toLowerCase().includes(this.searchTermName.toLowerCase());
+                res = this.list_mme.filter(option => {
+                    if (option.mme_name !== null) {
+                        return option.mme_name.toLowerCase().includes(this.searchTermName.toLowerCase());
                     }
                     return false;
                 });
@@ -260,25 +260,25 @@ export default {
             if (this.searchStatus !== -1) {
                 res = res.filter(option => {
                     if (this.searchStatus === 1)
-                        return option.eq_state === 'Waiting_for_referencing';
+                        return option.mme_state === 'Waiting_for_referencing';
                     else if (this.searchStatus === 2)
-                        return option.eq_state === 'Waiting_for_installation';
+                        return option.mme_state === 'Waiting_for_installation';
                     else if (this.searchStatus === 3)
-                        return option.eq_state === 'In_use';
+                        return option.mme_state === 'In_use';
                     else if (this.searchStatus === 4)
-                        return option.eq_state === 'Under_maintenance';
+                        return option.mme_state === 'Under_maintenance';
                     else if (this.searchStatus === 5)
-                        return option.eq_state === 'On_hold';
+                        return option.mme_state === 'On_hold';
                     else if (this.searchStatus === 6)
-                        return option.eq_state === 'Under_repair';
+                        return option.mme_state === 'Under_repair';
                     else if (this.searchStatus === 7)
-                        return option.eq_state === 'Broken';
+                        return option.mme_state === 'Broken';
                     else if (this.searchStatus === 8)
-                        return option.eq_state === 'Downgraded';
+                        return option.mme_state === 'Downgraded';
                     else if (this.searchStatus === 9)
-                        return option.eq_state === 'Reformed';
+                        return option.mme_state === 'Reformed';
                     else if (this.searchStatus === 10)
-                        return option.eq_state === 'Lost';
+                        return option.mme_state === 'Lost';
                 });
             }
             if (this.searchSaveStatus !== -1) {
