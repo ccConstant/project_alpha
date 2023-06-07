@@ -3,7 +3,7 @@
 /*
 * Filename : EnumRiskForController.php 
 * Creation date : 24 May 2022
-* Update date : 14 Feb 2023
+* Update date : 7 Jun 2023
 * This file is used to link the view files and the database that concern the enumRiskFor table. 
 * For example : send the fields of the enum, add a new field...
 */ 
@@ -88,6 +88,10 @@ class EnumRiskForController extends Controller
         $risks=Risk::where('enumRiskFor_id', '=', $id)->get() ;
         $equipments=array() ; 
         $validated_eq=array() ;
+        $id_eqs=array() ;
+        $id_eqs_validated=array() ;
+        $cpt=0;
+        $cpt_validated=0;
        foreach($risks as $risk){
             $equipment_temp=$risk->equipment_temps ;
             $equipment=([
@@ -96,9 +100,27 @@ class EnumRiskForController extends Controller
                 "internalReference" => $equipment_temp->equipment->eq_internalReference,
             ]);
             if($equipment_temp->eqTemp_lifeSheetCreated==1){
-                array_push($validated_eq, $equipment) ;
+                foreach($id_eqs_validated as $id){
+                    if($id!=$equipment_temp->id){
+                        $cpt_validated++;
+                    }
+                }
+                if ($cpt_validated==count($id_eqs_validated)){
+                    array_push($validated_eq, $equipment) ;
+                    array_push($id_eqs_validated, $equipment_temp->id) ;
+                }
+                $cpt_validated=0;
             }else{
-                array_push($equipments, $equipment) ;
+                foreach($id_eqs as $id){
+                    if($id!=$equipment_temp->id){
+                        $cpt++;
+                    }
+                }
+                if ($cpt==count($id_eqs)){
+                    array_push($equipments, $equipment) ;
+                    array_push($id_eqs, $equipment_temp->id) ;
+                }
+                $cpt=0;
             }
             
         }
@@ -111,6 +133,8 @@ class EnumRiskForController extends Controller
         return response()->json($final) ;
     }
 
+    
+              
 
     /**
      * Function call by EnumManagement.vue with the route : /risk/enum/riskfor/update/{id} (post)
@@ -123,24 +147,26 @@ class EnumRiskForController extends Controller
         $enum_target->update([
             'value' => $request->value, 
         ]);
-        foreach ($request->validated_eq as $eq){
-            $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ; 
-            $eq=$equipment_temp->equipment ;
-            
-            $version=$eq->eq_nbrVersion+1;
-            $eq->update([
-                'eq_nbrVersion' => $version
-            ]);
-            $equipment_temp->update([
-                'eqTemp_lifeSheetCreated' => 0, 
-                'qualityVerifier_id' => NULL,
-                'technicalVerifier_id' => NULL,
-                'eqTemp_version' => $version,
-            ]);
+        if ($request->validated_eq!=NULL){
+            foreach ($request->validated_eq as $eq){
+                $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ; 
+                $eq=$equipment_temp->equipment ;
+                
+                $version=$eq->eq_nbrVersion+1;
+                $eq->update([
+                    'eq_nbrVersion' => $version
+                ]);
+                $equipment_temp->update([
+                    'eqTemp_lifeSheetCreated' => 0, 
+                    'qualityVerifier_id' => NULL,
+                    'technicalVerifier_id' => NULL,
+                    'eqTemp_version' => $version,
+                ]);
 
-            //We created a new enregistrement of history for explain the reason of the enum updates
-            $HistoryController= new HistoryController() ; 
-            $HistoryController->add_history_for_eq($eq->id, $request) ; 
+                //We created a new enregistrement of history for explain the reason of the enum updates
+                $HistoryController= new HistoryController() ; 
+                $HistoryController->add_history_for_eq($eq->id, $request) ; 
+            }
         }
 
 

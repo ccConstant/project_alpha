@@ -3,7 +3,7 @@
 /*
 * Filename : EnumUsageMetrologicalLevelController.php 
 * Creation date : 21 Jun 2022
-* Update date : 14 Feb 2023
+* Update date : 7 Jun 2023
 * This file is used to link the view files and the database that concern the enumUsageMetrologicalLevel table. 
 * For example : send the fields of the enum, add a new field...
 */ 
@@ -88,6 +88,10 @@ class EnumUsageMetrologicalLevelController extends Controller
         $usages=MmeUsage::where('enumUsageMetrologicalLevel_id', '=', $id)->get() ;
         $mmes=array() ; 
         $validated_mme=array() ;
+        $id_mmes=array() ;
+        $id_mmes_validated=array() ;
+        $cpt=0;
+        $cpt_validated=0;
         foreach($usages as $usage){
             $mme_temp=$usage->mme_temps ;
             $mme=([
@@ -96,11 +100,28 @@ class EnumUsageMetrologicalLevelController extends Controller
                 "internalReference" => $mme_temp->mme->mme_internalReference,
             ]);
             if($mme_temp->mmeTemp_lifeSheetCreated==1){
-                array_push($validated_mme, $mme) ;
+                foreach($id_mmes_validated as $id){
+                    if($id!=$mme_temp->id){
+                        $cpt_validated++;
+                    }
+                }
+                if ($cpt_validated==count($id_mmes_validated)){
+                    array_push($validated_mme, $mme) ;
+                    array_push($id_mmes_validated, $mme_temp->id) ;
+                }
+                $cpt_validated=0;
             }else{
-                array_push($mmes, $mme) ;
-            }
-            
+                foreach($id_mmes as $id){
+                    if($id!=$mme_temp->id){
+                        $cpt++;
+                    }
+                }
+                if ($cpt==count($id_mmes)){
+                    array_push($mmes, $mme) ;
+                    array_push($id_mmes, $mme_temp->id) ;
+                }
+                $cpt=0;
+            } 
         }
         $final=([
             "id" => $id,
@@ -123,24 +144,26 @@ class EnumUsageMetrologicalLevelController extends Controller
         $enum->update([
             'value' => $request->value, 
         ]);
-        foreach ($request->validated_mme as $mme){
-            $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
-            $mme=$mme_temp->mme ;
- 
-            $version=$mme->mme_nbrVersion+1;
-            $mme->update([
-                'mme_nbrVersion' => $version
-            ]);
-            $mme_temp->update([
-                'mmeTemp_lifeSheetCreated' => 0, 
-                'qualityVerifier_id' => NULL,
-                'technicalVerifier_id' => NULL,
-                'mmeTemp_version' => $version,
-            ]);
+        if ($request->validated_mme!=NULL){
+            foreach ($request->validated_mme as $mme){
+                $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
+                $mme=$mme_temp->mme ;
+    
+                $version=$mme->mme_nbrVersion+1;
+                $mme->update([
+                    'mme_nbrVersion' => $version
+                ]);
+                $mme_temp->update([
+                    'mmeTemp_lifeSheetCreated' => 0, 
+                    'qualityVerifier_id' => NULL,
+                    'technicalVerifier_id' => NULL,
+                    'mmeTemp_version' => $version,
+                ]);
 
-            //We created a new enregistrement of history for explain the reason of the enum updates
-            $HistoryController= new HistoryController() ; 
-            $HistoryController->add_history_for_mme($mme->id, $request) ; 
+                //We created a new enregistrement of history for explain the reason of the enum updates
+                $HistoryController= new HistoryController() ; 
+                $HistoryController->add_history_for_mme($mme->id, $request) ; 
+            }
         }
 
 

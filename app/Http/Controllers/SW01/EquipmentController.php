@@ -20,6 +20,7 @@ use App\Models\SW01\PreventiveMaintenanceOperation;
 use App\Models\SW01\State;
 use App\Models\File;
 use App\Models\SW01\Mme;
+use App\Models\SW01\MmeTemp;
 use App\Models\SW01\Power;
 use App\Models\SW01\Dimension;
 use App\Models\SW01\Risk;
@@ -245,7 +246,7 @@ class EquipmentController extends Controller{
                     'eq_constructor'  => 'required|min:3|max:30',
                     'eq_mass'  => 'required|max:8',
                     'eq_remarks'  => 'required|min:3|max:400',
-                    'eq_set'  => 'required|min:1|max:20',
+                    'eq_set'  => 'required|min:1|max:50',
                 ],
                 [
                     'eq_internalReference.required' => 'You must enter an internal reference ',
@@ -277,7 +278,7 @@ class EquipmentController extends Controller{
 
                     'eq_set.required'  => 'You must enter a set',
                     'eq_set.min'  => 'You must enter at least 1 characters ',
-                    'eq_set.max'  => 'You must enter a maximum of 20 characters',
+                    'eq_set.max'  => 'You must enter a maximum of 50 characters',
 
                 ]
             );
@@ -312,7 +313,7 @@ class EquipmentController extends Controller{
                     'eq_constructor'  => 'max:30',
                     'eq_mass'  => 'max:8',
                     'eq_remarks'  => 'max:400',
-                    'eq_set'  => 'max:20',
+                    'eq_set'  => 'max:50',
                 ],
                 [
 
@@ -329,7 +330,7 @@ class EquipmentController extends Controller{
                     'eq_constructor.max'  =>  'You must enter a maximum of 30 characters',
                     'eq_mass.max'  => 'You must enter a maximum of 8 characters',
                     'eq_remarks.max'  => 'You must enter a maximum of 400 characters',
-                    'eq_set.max'  => 'You must enter a maximum of 20 characters',
+                    'eq_set.max'  => 'You must enter a maximum of 50 characters',
                 ]
             );
         }
@@ -1195,18 +1196,32 @@ class EquipmentController extends Controller{
             }
         }
 
-        if ($request->reason=="quality" && $mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_for_installation"){
-            $obj19=([
-                'validation' => ["You can't realize quality validation only in use and waiting for installation state"]
-            ]);
-            array_push($container2,$obj19);
+        if ($request->reason=="quality"){
+            if ($mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_for_installation"){
+                $obj19=([
+                    'validation' => ["You can realize quality validation only in use and waiting for installation state"]
+                ]);
+                array_push($container2,$obj19);
+            }
+
+            $mmes=Mme::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
+            foreach($mmes as $mme){
+                $mme_temp=MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
+                if ($mme_temp->qualityVerifier_id==NULL || $mme_temp->technicalVerifier_id==NULL){
+                    $obj20=([
+                        'validation' => ["You can't realize quality validation when there is at least one MME not validated by a technical verifier or a quality verifier"]
+                    ]);
+                    array_push($container2,$obj20);
+                }
+            }
+
         }
 
         if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_for_installation"){
-            $obj20=([
-                'validation' => ["You can't realize technical validation only in waiting for referencing and waiting for installation state"]
+            $obj21=([
+                'validation' => ["You can realize technical validation only in waiting for referencing and waiting for installation state"]
             ]);
-            array_push($container2,$obj20);
+            array_push($container2,$obj21);
         }
 
         if (count($container2)>0){

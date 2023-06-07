@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="le_mme_pdf_titre">
-                        <h2 id="le_mme_titre">LIST OF REGISTERED LIFE EVENTS</h2>
+                        <h2 id="le_mme_titre">MME LIFE SHEETS EVENT PART</h2>
                     </div>
 
                     <div class="le_mme_pdf_index">

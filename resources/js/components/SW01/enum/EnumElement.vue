@@ -1,6 +1,6 @@
 <!--File name : EnumElement.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 7 Jun 2023-->
 <!--Vue Component to show and update a list of elements-->
 
 <template>
@@ -53,29 +53,29 @@
             <p class="my-4">Are you sure you want to delete {{returnedEnum}} from {{this.title}} enum ?</p>
         </b-modal>
         <b-modal :id="`modal-enum-update-approved-${_uid}`" @ok="handleSubmitUpdate()"  >
-            <div v-if="equipments_concerned!=null && approved_equipments!=null">
-                <div v-if="equipments_concerned.length!=0" class="my-4">
+            <div v-if="equipments_concerned!=null || approved_equipments!=null">
+                <div v-if="equipments_concerned!=null && equipments_concerned.length!=0" class="my-4">
                 <p>Are you sure you want to update this Enum? The following not signed equipments will be concerned : </p>
                 <p v-for="(element,index) in this.equipments_concerned" :key="index">
                     Internal Reference : {{element.internalReference}}, Name : {{element.name}}
                 </p>
                 </div>
-                <div v-if="approved_equipments.length!=0" class="my-4">
+                <div v-if="approved_equipments!=null && approved_equipments.length!=0" class="my-4">
                 <p>You will have to re validate the following equipments : </p>
-                <p v-for="(element2,index2) in this.approved_equipments" :key="index2">
-                    Internal Reference : {{element2.internalReference}}, Name : {{element2.name}}
+                <p v-for="(element,index) in this.approved_equipments" :key="index">
+                    Internal Reference : {{element.internalReference}}, Name : {{element.name}}
                 </p>
                  <InputTextForm  inputClassName="form-control" :Errors="errors.history_reason" name="reason" label="Reason" v-model="reason" />
                 </div>
             </div>
-            <div v-else-if="mmes_concerned!=null && approved_mmes!=null">
-                 <div v-if="mmes_concerned.length!=0" class="my-4">
+            <div v-else-if="mmes_concerned!=null || approved_mmes!=null">
+                 <div v-if="mmes_concerned!=null && mmes_concerned.length!=0" class="my-4">
                 <p>Are you sure you want to update this Enum? The following not signed mmes will be concerned :  </p>
                 <p v-for="(element,index) in this.mmes_concerned" :key="index">
                     Internal Reference : {{element.internalReference}}, Name : {{element.name}}
                 </p>
                 </div>
-                <div v-if="approved_mmes.length!=0" class="my-4">
+                <div v-if="approved_mmes!=null && approved_mmes.length!=0" class="my-4">
                 <p class="my-4"> You will have to re validate the following mmes :   </p>
                 <p v-for="(element2,index2) in this.approved_mmes" :key="index2">
                     Internal Reference : {{element2.internalReference}}, Name : {{element2.name}}
@@ -145,6 +145,7 @@ export default {
             enumId:'',
             reason:'',
             errors:{},
+            cpt:0,
         }
     },
     methods: {
@@ -191,7 +192,7 @@ export default {
         handleSubmitVerifUpdate() {
             // Exit when the form isn't valid
             if (!this.checkFormValidity()) {
-                return
+                return ;
             }
             const postUrlAdd = (url,id) => `${url}verif/${id}`;
             axios.post(postUrlAdd(this.url,this.sendedEnumId),{
@@ -206,25 +207,37 @@ export default {
                     })
                     .then(response =>{
                         console.log(response.data);
-                        if (response.data.validated_eq!=null){
+                        if (response.data.validated_eq!=null && response.data.validated_eq.length!=0 ){
                             console.log("cas1")
+                            this.cpt++;
+                            console.log(response.data.validated_eq)
                             this.approved_equipments=response.data.validated_eq ;
                         }
-                        if (response.data.equipments!=null)
-                         console.log("cas2")
+                        if (response.data.equipments!=null && response.data.equipments.length!=0){
+                            console.log("cas2")
+                            this.cpt++;
+                            console.log(response.data.equipments)
                             this.equipments_concerned=response.data.equipments;
-                        if (response.data.validated_mme!=null){
+                        }
+                        if (response.data.validated_mme!=null && response.data.validated_mme.length!=0){
                              console.log("cas3")
+                            this.cpt++;
                             this.approved_mmes=response.data.validated_mme;
                         }
-                        if (response.data.mmes!=null){
+                        if (response.data.mmes!=null && response.data.mmes.length!=0){
                              console.log("cas4")
+                            this.cpt++;
                             this.mmes_concerned=response.data.mmes;
                         }
                         this.enumId=response.data.id;
-                        this.$bvModal.show(`modal-enum-update-approved-${this.compId}`);
-                        console.log(response.data)
-                    })
+                        if (this.cpt>0){
+                            this.$bvModal.show(`modal-enum-update-approved-${this.compId}`);
+                        }else{
+                            this.cpt=0;
+                            this.handleSubmitUpdate();
+                        }
+                        console.log(response.data);
+                    });
                 })
                 .catch(error =>{
                     this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name]);
@@ -239,6 +252,8 @@ export default {
 
         handleSubmitUpdate(){
             const postUrlUpdate = (url, id) => `${url}update/${id}`;
+            console.log(this.approved_equipments)
+            console.log("before")
             axios.post(postUrlUpdate(this.url,this.enumId),{
                     value:this.returnedEnum,
                     validated_eq:this.approved_equipments,
@@ -247,6 +262,7 @@ export default {
             })
                 .then(response =>{
                     console.log(response.data)
+                    
                     window.location.reload();
                     this.enumId=null;
                     this.approved_equipments=null;

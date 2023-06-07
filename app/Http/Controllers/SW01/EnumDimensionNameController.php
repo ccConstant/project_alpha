@@ -3,7 +3,7 @@
 /*
 * Filename : EnumDimensionNameController.php
 * Creation date : 24 May 2022
-* Update date : 14 Feb 2023
+* Update date : 7 Jun 2023
 * This file is used to link the view files and the database that concern the enumDimensionName table.
 * For example : send the fields of the enum, add a new field...
 */
@@ -88,11 +88,14 @@ class EnumDimensionNameController extends Controller
      * Analyze the equipment connected to the dimension name enum we want to update
      * The id parameter correspond to the id of the enumDimensionName we want to update
      */
-    public function analyze_enum_name(Request $request, $id)
-    {
+    public function analyze_enum_name(Request $request, $id){
         $dimensions = Dimension::where('enumDimensionName_id', '=', $id)->get();
         $equipments = array();
         $validated_eq = array();
+        $id_eqs=array() ;
+        $id_eqs_validated=array() ;
+        $cpt=0;
+        $cpt_validated=0;
         foreach ($dimensions as $dimension) {
             $equipment_temp = $dimension->equipment_temps;
             $equipment = ([
@@ -100,10 +103,28 @@ class EnumDimensionNameController extends Controller
                 "name" => $equipment_temp->equipment->eq_name,
                 "internalReference" => $equipment_temp->equipment->eq_internalReference,
             ]);
-            if ($equipment_temp->eqTemp_lifeSheetCreated == 1) {
-                array_push($validated_eq, $equipment);
-            } else {
-                array_push($equipments, $equipment);
+            if($equipment_temp->eqTemp_lifeSheetCreated==1){
+                foreach($id_eqs_validated as $id){
+                    if($id!=$equipment_temp->id){
+                        $cpt_validated++;
+                    }
+                }
+                if ($cpt_validated==count($id_eqs_validated)){
+                    array_push($validated_eq, $equipment) ;
+                    array_push($id_eqs_validated, $equipment_temp->id) ;
+                }
+                $cpt_validated=0;
+            }else{
+                foreach($id_eqs as $id){
+                    if($id!=$equipment_temp->id){
+                        $cpt++;
+                    }
+                }
+                if ($cpt==count($id_eqs)){
+                    array_push($equipments, $equipment) ;
+                    array_push($id_eqs, $equipment_temp->id) ;
+                }
+                $cpt=0;
             }
 
         }
@@ -129,23 +150,25 @@ class EnumDimensionNameController extends Controller
         $enum_name->update([
             'value' => $request->value,
         ]);
-        foreach ($request->validated_eq as $eq) {
-            $equipment_temp = EquipmentTemp::findOrFail($eq['eqTemp_id']);
-            $eq = $equipment_temp->equipment;
+        if ($request->validated_eq!=NULL){
+            foreach ($request->validated_eq as $eq) {
+                $equipment_temp = EquipmentTemp::findOrFail($eq['eqTemp_id']);
+                $eq = $equipment_temp->equipment;
 
-            $version = $eq->eq_nbrVersion + 1;
-            $eq->update([
-                'eq_nbrVersion' => $version
-            ]);
-            $equipment_temp->update([
-                'eqTemp_lifeSheetCreated' => 0,
-                'qualityVerifier_id' => NULL,
-                'technicalVerifier_id' => NULL,
-                'eqTemp_version' => $version,
-            ]);
-            //We created a new enregistrement of history for explain the reason of the enum updates
-            $HistoryController = new HistoryController();
-            $HistoryController->add_history_for_eq($eq->id, $request);
+                $version = $eq->eq_nbrVersion + 1;
+                $eq->update([
+                    'eq_nbrVersion' => $version
+                ]);
+                $equipment_temp->update([
+                    'eqTemp_lifeSheetCreated' => 0,
+                    'qualityVerifier_id' => NULL,
+                    'technicalVerifier_id' => NULL,
+                    'eqTemp_version' => $version,
+                ]);
+                //We created a new enregistrement of history for explain the reason of the enum updates
+                $HistoryController = new HistoryController();
+                $HistoryController->add_history_for_eq($eq->id, $request);
+            }
         }
     }
 

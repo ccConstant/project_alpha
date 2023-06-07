@@ -3,7 +3,7 @@
 /*
 * Filename : EnumEquipmentTypeController.php 
 * Creation date : 24 May 2022
-* Update date : 14 Feb 2023
+* Update date : 7 Jun 2023
 * This file is used to link the view files and the database that concern the enumEquipmentType table. 
 * For example : send the fields of the enum, add a new field...
 */ 
@@ -87,16 +87,38 @@ class EnumEquipmentTypeController extends Controller
         $equipmentTemps=EquipmentTemp::where('enumType_id', '=', $id)->get() ;
         $equipments=array() ; 
         $validated_eq=array() ;
-       foreach($equipmentTemps as $equipmentTemp){
+        $id_eqs=array() ;
+        $id_eqs_validated=array() ;
+        $cpt=0;
+        $cpt_validated=0;
+        foreach($equipmentTemps as $equipmentTemp){
             $equipment=([
                 "eqTemp_id" => $equipmentTemp->id,
                 "name" => $equipmentTemp->equipment->eq_name,
                 "internalReference" => $equipmentTemp->equipment->eq_internalReference,
             ]);
             if($equipmentTemp->eqTemp_lifeSheetCreated==1){
-                array_push($validated_eq, $equipment) ;
+                foreach($id_eqs_validated as $id){
+                    if($id!=$equipmentTemp->id){
+                        $cpt_validated++;
+                    }
+                }
+                if ($cpt_validated==count($id_eqs_validated)){
+                    array_push($validated_eq, $equipment) ;
+                    array_push($id_eqs_validated, $equipmentTemp->id) ;
+                }
+                $cpt_validated=0;
             }else{
-                array_push($equipments, $equipment) ;
+                foreach($id_eqs as $id){
+                    if($id!=$equipmentTemp->id){
+                        $cpt++;
+                    }
+                }
+                if ($cpt==count($id_eqs)){
+                    array_push($equipments, $equipment) ;
+                    array_push($id_eqs, $equipmentTemp->id) ;
+                }
+                $cpt=0;
             }
             
         }
@@ -110,6 +132,7 @@ class EnumEquipmentTypeController extends Controller
     }
 
 
+
     /**
      * Function call by EnumManagement.vue with the route : /dimension/enum/type/update/{id} (post)
     * Update the dimension type enum in the data base
@@ -121,24 +144,26 @@ class EnumEquipmentTypeController extends Controller
         $enum_type->update([
             'value' => $request->value, 
         ]);
-        foreach ($request->validated_eq as $eq){
-            $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ; 
-            $eq=$equipment_temp->equipment ;
-            
-            $version=$eq->eq_nbrVersion+1;
-            $eq->update([
-                'eq_nbrVersion' => $version
-            ]);
-            $equipment_temp->update([
-                'eqTemp_lifeSheetCreated' => 0, 
-                'qualityVerifier_id' => NULL,
-                'technicalVerifier_id' => NULL,
-                'eqTemp_version' => $version,
-            ]);
+        if ($request->validated_eq!=NULL){
+            foreach ($request->validated_eq as $eq){
+                $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ; 
+                $eq=$equipment_temp->equipment ;
+                
+                $version=$eq->eq_nbrVersion+1;
+                $eq->update([
+                    'eq_nbrVersion' => $version
+                ]);
+                $equipment_temp->update([
+                    'eqTemp_lifeSheetCreated' => 0, 
+                    'qualityVerifier_id' => NULL,
+                    'technicalVerifier_id' => NULL,
+                    'eqTemp_version' => $version,
+                ]);
 
-            //We created a new enregistrement of history for explain the reason of the enum updates
-            $HistoryController= new HistoryController() ; 
-            $HistoryController->add_history_for_eq($eq->id, $request) ; 
+                //We created a new enregistrement of history for explain the reason of the enum updates
+                $HistoryController= new HistoryController() ; 
+                $HistoryController->add_history_for_eq($eq->id, $request) ; 
+            }
         }
 
     }
