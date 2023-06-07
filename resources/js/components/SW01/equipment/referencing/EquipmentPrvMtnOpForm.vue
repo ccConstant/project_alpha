@@ -43,7 +43,7 @@
                 <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.prvMtnOp_protocol"
                                    name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod"
                                    v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>
-                <RadioGroupForm label="Type of Validation" :options="typeValidationOptions" :Errors="errors.typeValidation"
+                <RadioGroupForm label="Type of Validation" :options="typeValidationOption" :Errors="errors.typeValidation"
                                 :checkedOption="typeValidation" :isDisabled="isInConsultedMod" v-model="typeValidation"
                                 :info_text="null"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
