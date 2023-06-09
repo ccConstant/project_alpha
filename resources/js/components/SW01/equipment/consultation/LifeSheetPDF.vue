@@ -9,7 +9,50 @@
     <div v-if="loaded==true">
         <div id="page">
             <p>'</p>
-            <div class="eq_top_infos">
+            <table>
+                <tbody>
+                <tr>
+                    <td rowspan="3">
+                        <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
+                    </td>
+                    <td colspan="2">
+                        <h2>
+                            EQUIPMENT LIFE SHEET DESCRIPTIVE PART
+                        </h2>
+                    </td>
+                    <td>
+                        <h5>
+                            Version : {{eq_idCard.eq_internalReference}}_LS-D_V{{eq_idCard.eq_version[1]}}.{{eq_idCard.eq_version[0]}}
+                        </h5>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p>
+                            Technical Review <b class="text-primary">{{ eq_idCard.eq_technicalVerifier_firstName}} {{eq_idCard.eq_technicalVerifier_lastName}} </b>
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            Quality Review <b class="text-primary">{{ eq_idCard.eq_qualityVerifier_firstName}} {{eq_idCard.eq_qualityVerifier_lastName}} </b>
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            Equipment unique ID : <b class="text-primary">{{eq_idCard.eq_internalReference}}</b>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p>
+                            Date of signature : <b class="text-primary">{{eq_idCard.eq_signatureDate}}</b> <!-- FIXME: Ajout dans la base de donnée -->
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+<!--            <div class="eq_top_infos">
                 <div class=" equipement_pdf_logo ">
                   <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
                 </div>
@@ -33,9 +76,7 @@
                     <p>Equipment unique ID :</p>
                     <h5 class="text-primary">{{eq_idCard.eq_internalReference}}</h5>
                 </div>
-
-
-            </div>
+            </div>-->
 
             <div class="eq_identification_infos_pdf">
                     <div class="title_identification_pdf">

@@ -18,12 +18,12 @@
                                      isDisabled :info_text="infos_prvMtnOp[4].info_value"/>
                 </div>
                 <RadioGroupForm label="Putting Into Service ?:" :options="existOptionPIS" :Errors="errors.prvMtnOp_puttingIntoService"
-                                :checkedOption="prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultMod" v-model="prvMtnOp_puttingIntoService"
+                                :checkedOption="prvMtnOp_puttingIntoService" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_puttingIntoService"
                                 :info_text="infos_prvMtnOp[6].info_value"
                                 name="prvMtnOp_puttingIntoService"
                 />
                 <RadioGroupForm label="Preventive Operation ?:" :options="existOptionPO" :Errors="errors.prvMtnOp_preventiveOperation"
-                                :checkedOption="prvMtnOp_preventiveOperation" :isDisabled="!!isInConsultMod" v-model="prvMtnOp_preventiveOperation"
+                                :checkedOption="prvMtnOp_preventiveOperation" :isDisabled="!!isInConsultedMod" v-model="prvMtnOp_preventiveOperation"
                                 :info_text="infos_prvMtnOp[7].info_value"
                                 name="prvMtnOp_preventiveOperation"
                 />
@@ -44,7 +44,7 @@
                                    name="prvMtnOp_protocol" label="Protocol :" :isDisabled="!!isInConsultedMod"
                                    v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>
                 <RadioGroupForm label="Type of Validation" :options="typeValidationOption" :Errors="errors.typeValidation"
-                                :checkedOption="typeValidation" :isDisabled="isInConsultedMod" v-model="typeValidation"
+                                :checkedOption="typeValidation" :isDisabled="!!isInConsultedMod" v-model="typeValidation"
                                 :info_text="null"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
                 <div v-if="this.addSuccess==false ">

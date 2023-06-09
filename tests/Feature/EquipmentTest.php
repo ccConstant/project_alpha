@@ -331,7 +331,7 @@ class EquipmentTest extends TestCase
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
-            'eq_set' => 'You must enter a maximum of 20 characters'
+            'eq_set' => 'You must enter a maximum of 50 characters'
         ]);
     }
 
@@ -684,7 +684,7 @@ class EquipmentTest extends TestCase
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
-            'eq_set' => 'You must enter a maximum of 20 characters'
+            'eq_set' => 'You must enter a maximum of 50 characters'
         ]);
     }
 

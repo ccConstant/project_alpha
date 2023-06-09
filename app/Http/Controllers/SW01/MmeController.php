@@ -697,27 +697,43 @@ class MmeController extends Controller{
                         }
 
                         $opVerif=([
-                            "id" => $verif->id,
-                            "verif_number" => (string)$verif->verif_number,
-                            "verif_description" => $verif->verif_description,
-                            "verif_periodicity" => (string)$verif->verif_periodicity,
-                            "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
-                            "verif_nextDate" => $AllnextDate,
+                            'id' => $verif->id,
+                            'verif_number' => (string)$verif->verif_number,
+                            'verif_description' => $verif->verif_description,
+                            'verif_periodicity' => (string)$verif->verif_periodicity,
+                            'verif_symbolPeriodicity' => $verif->verif_symbolPeriodicity,
+                            'verif_nextDate' => $AllnextDate,
+                            'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                            'verif_protocol' => $verif->verif_protocol,
+                            'verif_day' => $day,
 
                         ]);
                         array_push($containerVerif,$opVerif);
 
                     }else{
                         $opVerif=([
-                            "id" => $verif->id,
-                            "verif_number" => (string)$verif->verif_number,
-                            "verif_description" => $verif->verif_description,
-                            "verif_periodicity" => "N/A",
-                            "verif_symbolPeriodicity" => "",
-                            "verif_nextDate" => $AllnextDate,
+                            'id' => $verif->id,
+                            'verif_number' => (string)$verif->verif_number,
+                            'verif_description' => $verif->verif_description,
+                            'verif_periodicity' => 'N/A',
+                            'verif_symbolPeriodicity' => '',
+                            'verif_nextDate' => $AllnextDate,
+                            'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
+                            'verif_protocol' => $verif->verif_protocol,
+                            'verif_day' => 'N/A',
 
                         ]);
                         array_push($containerVerif,$opVerif);
+                    }
+                }
+
+                $states=$mostRecentlyMmeTmp->states;
+                $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
+                foreach($states as $state){
+                    $date=$state->created_at ;
+                    $date2=$mostRecentlyState->created_at;
+                    if ($date>=$date2){
+                        $mostRecentlyState=$state ;
                     }
                 }
 
@@ -726,6 +742,7 @@ class MmeController extends Controller{
                     "internalReference" => $mme->mme_internalReference,
                     "name" => $mme->mme_name,
                     "verifications" => $containerVerif,
+                    'state_id' => $mostRecentlyState->id,
                 ]) ;
 
                 array_push($container,$mme);

@@ -1242,8 +1242,6 @@ class DimensionTest extends TestCase
             'eq_type' => 'internal',
         ]);
         $response->assertStatus(200);
-        print_r(Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id);
-        print_r(User::all()->where('user_pseudo', '=', 'Verifier')->first()->id);
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
