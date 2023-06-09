@@ -91,11 +91,6 @@ class EquipmentController extends Controller{
                     break;
                 }
             }
-            /*return response()->json([
-                'state_id' => $mostRecentlyState->id,
-                'pre' => $pre,
-                'cur' => $cur,
-            ], 429);*/
 
             $obj=([
                 'id' => $equipment->id,
@@ -206,6 +201,7 @@ class EquipmentController extends Controller{
             'eq_technicalVerifier_lastName' => $technicalVerifier_lastName,
             'eq_qualityVerifier_firstName' => $qualityVerifier_firstName,
             'eq_qualityVerifier_lastName' => $qualityVerifier_lastName,
+            'eq_location'=>$mostRecentlyEqTmp->eqTemp_location,
         ]);
     }
 
@@ -247,6 +243,7 @@ class EquipmentController extends Controller{
                     'eq_mass'  => 'required|max:8',
                     'eq_remarks'  => 'required|min:3|max:400',
                     'eq_set'  => 'required|min:1|max:50',
+                    'eq_location' => 'required|max:255',
                 ],
                 [
                     'eq_internalReference.required' => 'You must enter an internal reference ',
@@ -279,6 +276,9 @@ class EquipmentController extends Controller{
                     'eq_set.required'  => 'You must enter a set',
                     'eq_set.min'  => 'You must enter at least 1 characters ',
                     'eq_set.max'  => 'You must enter a maximum of 50 characters',
+
+                    'eq_location.required' => 'You must enter a location',
+                    'eq_location.max' => 'You must enter a maximum of 255 characters ',
 
                 ]
             );
@@ -314,6 +314,7 @@ class EquipmentController extends Controller{
                     'eq_mass'  => 'max:8',
                     'eq_remarks'  => 'max:400',
                     'eq_set'  => 'max:50',
+                    'eq_location' => 'max:255',
                 ],
                 [
 
@@ -331,6 +332,7 @@ class EquipmentController extends Controller{
                     'eq_mass.max'  => 'You must enter a maximum of 8 characters',
                     'eq_remarks.max'  => 'You must enter a maximum of 400 characters',
                     'eq_set.max'  => 'You must enter a maximum of 50 characters',
+                    'eq_location.max' => 'You must enter a maximum of 255 characters ',
                 ]
             );
         }
@@ -469,6 +471,7 @@ class EquipmentController extends Controller{
             'eqTemp_mobility' => $request->eq_mobility,
             'enumType_id' => $type_id,
             'createdBy_id' => $request->createdBy_id,
+            'eqTemp_location' => $request->eq_location,
         ]);
 
         //Creation of a new state
@@ -548,6 +551,7 @@ class EquipmentController extends Controller{
                 'qualityVerifier_id' => NULL,
                 'eqTemp_lifeSheetCreated' => false,
                 'technicalVerifier_id' => NULL,
+                'eqTemp_location' => $request->eq_location,
 
             ]);
 
@@ -572,6 +576,7 @@ class EquipmentController extends Controller{
                 'eqTemp_remarks' => $request->eq_remarks,
                 'eqTemp_mobility' => $request->eq_mobility,
                 'enumType_id' => $type_id,
+                'eqTemp_location' => $request->eq_location,
             ]);
         }
     }
@@ -1313,57 +1318,6 @@ class EquipmentController extends Controller{
         }
     }
 
-
-     /**
-     * Function call by UpdateState when we delete an equipment in the reform state : /equipment/delete/{id} (post)
-     * Delete an equipment and its attributes
-     * The id parameter is the id of the equipment in which we want to reform/delete
-     * */
-
-    public function delete_equipment($request){
-
-        $equipment=Equipment::findOrFail($request->eq_id) ;
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-
-        $powers=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
-        foreach ($powers as $power){
-            $power->delete() ;
-        }
-
-        $files=File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
-        foreach ($files as $file){
-            $file->delete() ;
-        }
-
-        $dimensions=Dimension::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
-        foreach ($dimensions as $dimension){
-            $dimension->delete() ;
-        }
-
-        $risks=Risk::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
-        foreach ($risks as $risk){
-            $risk->delete() ;
-        }
-
-        $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
-        foreach ($usages as $usage){
-            $usage->delete() ;
-        }
-
-        if ($mostRecentlyEqTmp->special_process!=NULL){
-            $specialProcess=SpecialProcess::findOrFail($mostRecentlyEqTmp->special_process->id) ;
-            $mostRecentlyEqTmp->update([
-                'specialProcess_id' => NULL,
-            ]) ;
-            $specialProcess->delete() ;
-        }
-        $mmes=Mme::where('equipmentTemp_id', '=', $request->eq_id)->get();
-        foreach ($mmes as $mme){
-            $MmeController= new MmeController() ;
-            $MmeController->delete_mme($mme->id, $request) ;
-        }
-    }
-
     /**
      * Function call by EquipmentIDForm.vue when the form is submitted for insert with the route : /state/equipment/${id}   (post)
      * Add a new enregistrement of equipment and equipment_temp in the data base with the informations entered in the form
@@ -1390,6 +1344,11 @@ class EquipmentController extends Controller{
             $type_id=$type->id ;
         }
 
+        $old_equipment=Equipment::findOrFail($request->oldEq_id);
+        $old_eqTemp=EquipmentTemp::where('equipment_id', '=', $request->oldEq_id)->first() ;
+        
+        
+
         //Creation of a new equipment
         $equipment=Equipment::create([
             'eq_internalReference' => $request->eq_internalReference,
@@ -1415,6 +1374,8 @@ class EquipmentController extends Controller{
             'eqTemp_remarks' => $request->eq_remarks,
             'eqTemp_mobility' => $request->eq_mobility,
             'enumType_id' => $type_id,
+            'specialProcess_id' => $old_eqTemp->specialProcess_id,
+            'eqTemp_location' => $request->eq_location,
         ]);
 
         //Creation of a new state
@@ -1426,6 +1387,51 @@ class EquipmentController extends Controller{
         ]) ;
 
         $newState->equipment_temps()->attach($new_eqTemp);
+
+        
+        $dims=Dimension::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
+        $files=File::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
+        $powers=Power::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
+        $usages=Usage::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
+        $risks=Risk::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
+
+        foreach($dims as $dim){
+            $dim->update([
+                'equipmentTemp_id' => $new_eqTemp->id,
+                'dim_validate' => 'drafted',
+            ]);
+        }
+        foreach($files as $file){
+            $file->update([
+                'equipmentTemp_id' => $new_eqTemp->id,
+                'file_validate' => 'drafted',
+            ]);
+        }
+        foreach($powers as $power){
+            $power->update([
+                'equipmentTemp_id' => $new_eqTemp->id,
+                'power_validate' => 'drafted',
+            ]);
+        }
+        foreach($usages as $usage){
+            $usage->update([
+                'equipmentTemp_id' => $new_eqTemp->id,
+                'usg_validate' => 'drafted',
+            ]);
+        }
+        foreach($risks as $risk){
+            $risk->update([
+                'equipmentTemp_id' => $new_eqTemp->id,
+                'risk_validate' => 'drafted',
+            ]);
+        }
+        foreach($prvMtnOps as $prvMtnOp){
+            $prvMtnOp->update([
+                'equipmentTemp_id' => $new_eqTemp->id,
+                'prvMtnOp_validate' => 'drafted',
+            ]);
+        }
         return response()->json($equipment_id) ;
     }
 
@@ -1468,6 +1474,7 @@ class EquipmentController extends Controller{
             'eq_massUnit'=> $massUnit,
             'eq_mobility'=> (boolean)$mobility,
             'eq_validate' => $validate,
+            'eq_location' => $mostRecentlyEqTmp->eqTemp_location,
         ]);
         return response()->json($obj) ;
 

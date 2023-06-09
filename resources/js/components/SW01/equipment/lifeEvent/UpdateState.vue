@@ -36,7 +36,7 @@
                 <SaveButtonForm :is_state="true" v-if="this.addSucces==false" @add="addEquipmentState" @update="updateEquipmentState" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" :savedAs="state_validate"/>
             </form>
             <SuccesAlert ref="succesAlert"/>
-            <div v-if="state_name=='Downgraded'">
+            <div v-if="state_name=='Downgraded'">elU
                 <div v-if="state_validate=='validated'">
                     <div v-if="!isEmpty(eq_idCard)">
                         <EquipmentIDForm :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
@@ -52,7 +52,7 @@
                             v-model="new_eq"
                             name="new_eq"
                         />
-                        <EquipmentIDForm :disableImport="true" v-if="new_eq==true" :state_id="state_id"
+                        <EquipmentIDForm :disableImport="true" v-if="new_eq==true" :state_id="state_id" :old_eq="eq_id" 
                         :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
                         :name="eq_idCard.eq_name" :type="eq_idCard.eq_type" :serialNumber="eq_idCard.eq_serialNumber"
                         :construct="eq_idCard.eq_constructor" :mass="eq_idCard.eq_mass"  :massUnit="eq_idCard.eq_massUnit"

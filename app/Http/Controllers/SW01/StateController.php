@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\EquipmentTemp ;
 use App\Models\SW01\State ;
 use App\Models\User ;
+use App\Models\SW01\Mme ;
 use App\Models\SW01\Equipment ;
 use App\Models\SW01\PreventiveMaintenanceOperationRealized;
 use App\Models\SW01\PreventiveMaintenanceOperation;
@@ -283,10 +284,14 @@ class StateController extends Controller
             ]);
         }
 
-        if ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed"){
-            $EquipmentController= new EquipmentController() ;
-            $EquipmentController->delete_equipment($request) ;
-       }
+        if ($request->state_name=="Downgraded" || $request->state_name=="Broken" || $request->state_name=="Reformed" ){
+            $mmes=Mme::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
+            foreach($mmes as $mme){
+                $mme->update([
+                    'equipmentTemp_id' => NULL,
+                ]);
+            }
+        }
 
         $state_id=$state->id;
         $id_eq=intval($request->eq_id) ;

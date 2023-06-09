@@ -305,11 +305,6 @@ class MmeStateController extends Controller
             ]);
         }
 
-        if ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed"){
-             $MmeController= new MmeController() ;
-             $MmeController->delete_mme($request->mme_id) ;
-        }
-
         $state_id=$state->id;
         $id_mme=intval($request->mme_id) ;
         $mme=Mme::findOrfail($request->mme_id) ;

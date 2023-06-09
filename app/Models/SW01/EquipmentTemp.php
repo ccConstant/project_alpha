@@ -32,7 +32,7 @@ class EquipmentTemp extends Model{
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['eqTemp_version', 'eqTemp_date', 'eqTemp_validate', 'eqTemp_mass', 'eqTemp_remarks', 'enumMassUnit_id', 'equipment_id', 'eqTemp_mobility', 'enumType_id','qualityVerifier_id', 'technicalVerifier_id', 'createdBy_id', 'specialProcess_id', 'eqTemp_lifeSheetCreated'] ; 
+    protected $fillable = ['eqTemp_version', 'eqTemp_date', 'eqTemp_validate', 'eqTemp_location', 'eqTemp_mass', 'eqTemp_remarks', 'enumMassUnit_id', 'equipment_id', 'eqTemp_mobility', 'enumType_id','qualityVerifier_id', 'technicalVerifier_id', 'createdBy_id', 'specialProcess_id', 'eqTemp_lifeSheetCreated'] ; 
 
     
     //Define the relation between an equipment_temp and its files : an equipment_temp can have many files

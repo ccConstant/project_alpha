@@ -26,6 +26,7 @@ Class CreateEquipmentTempsTable extends Migration{
             $table->id() ;
             $table->unsignedTinyInteger('eqTemp_version') ; 
             $table->timestamp('eqTemp_date') ; 
+            $table->string('eqTemp_location');
             $table->enum('eqTemp_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->timestamps();
             $table->boolean('eqTemp_lifeSheetCreated') ->default(false) ; 

@@ -999,67 +999,6 @@ class MmeController extends Controller{
     }
 
 
-
-     /**
-     * Function call by UpdateState when we delete an mme in the reform state : /mme/delete/{id} (post)
-     * Delete a mme and its attributes
-     * The id parameter is the id of the mme in which we want to reform/delete
-     * */
-
-    public function delete_mme($id, Request $request){
-        $mme=Mme::findOrFail($id) ;
-        $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $mme->update([
-            'mmeTemp_id' => null,
-        ]);
-        $files=File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
-        foreach ($files as $file){
-            $file->delete() ;
-        }
-
-        $usages=MmeUsage::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get() ;
-        foreach ($usages as $usage){
-            $precs=Precaution::where('mmeUsage_id', '=', $usage->id)->get() ;
-            foreach($precs as $prec){
-                $prec->delete() ;
-            }
-            $usage->delete() ;
-        }
-        $equipment=Equipment::findOrFail($request->eq_id);
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-        //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-        //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
-        if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
-            $mostRecentlyEqTmp->update([
-                'qualityVerifier_id' => NULL,
-            ]);
-        }
-        if ($mostRecentlyEqTmp->technicalVerifier_id!=null){
-            $mostRecentlyEqTmp->update([
-                'technicalVerifier_id' => NULL,
-            ]);
-        }
-        if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-
-            //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ;
-            //Update of equipment
-            $equipment->update([
-                'eq_nbrVersion' =>$version_eq,
-            ]);
-
-            //We need to increase the version of the equipment temp (because we create a new equipment temp)
-           $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
-           //update of equipment temp
-           $mostRecentlyEqTmp->update([
-            'eqTemp_version' => $version,
-            'eqTemp_date' => Carbon::now('Europe/Paris'),
-            'eqTemp_lifeSheetCreated' => false,
-           ]);
-        }
-
-    }
-
     /**
      * Function call by MmeIDForm.vue when the form is submitted for insert with the route : /state/mme/${id}   (post)
      * Add a new enregistrement of mme and mme_temp in the data base with the informations entered in the form

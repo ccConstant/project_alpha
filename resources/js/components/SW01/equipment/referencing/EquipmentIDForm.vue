@@ -46,6 +46,9 @@
                                :info_text="infos_idCard[9].info_value"/>
             <InputTextForm v-if="this.eq_importFrom!== undefined " inputClassName="form-control w-50"
                            name="eq_importFrom" label="Import From :" isDisabled v-model="eq_importFrom"/>
+            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_location"
+            name="eq_location" label="Location" :isDisabled="!!isInConsultMod" isRequired
+            v-model="eq_location" :info_text="infos_idCard[0].info_value"/>
             <SaveButtonForm ref="saveButton" v-if="this.addSuccess==false" @add="addEquipment" @update="updateEquipment"
                             :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
             <div v-if="this.modifMod!=true">
@@ -133,6 +136,9 @@ export default {
         set: {
             type: String
         },
+        location:{
+            type: String
+        },
         validate: {
             type: String
         },
@@ -150,6 +156,10 @@ export default {
         },
         state_id: {
             type: String,
+            default: null
+        },
+        old_eq: {
+            type: Number,
             default: null
         }
     },
@@ -185,6 +195,7 @@ export default {
             eq_set: this.set,
             eq_validate: this.validate,
             eq_importFrom: undefined,
+            eq_location: this.location,
             eq_mobilityOption: [
                 {id: 'eq_mobil', value: true, text: 'Yes'},
                 {id: 'eq_mobil', value: false, text: 'No'}
@@ -244,12 +255,17 @@ export default {
                     eq_remarks: this.eq_remarks,
                     eq_set: this.eq_set,
                     eq_validate: savedAs,
+                    eq_location: this.eq_location,
                     reason: 'add'
                 })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
                         this.errors = {};
                         if (this.state_id !== null) {
+                            console.log("je suis ici")
+                            console.log(this.state_id)
+                            console.log(this.old_eq)
+                            console.log("hello")
                             /*case where the equipment is added from the state page*/
                             const consultUrl = (state_id) => `/state/equipment/${state_id}`;
                             axios.post(consultUrl(this.state_id), {
@@ -265,6 +281,8 @@ export default {
                                 eq_remarks: this.eq_remarks,
                                 eq_set: this.eq_set,
                                 eq_validate: savedAs,
+                                eq_location: this.eq_location,
+                                oldEq_id : this.old_eq,
                             })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -291,7 +309,8 @@ export default {
                                 eq_remarks: this.eq_remarks,
                                 eq_set: this.eq_set,
                                 eq_validate: savedAs,
-                                createdBy_id: this.$userId.id
+                                createdBy_id: this.$userId.id,
+                                eq_location: this.eq_location,
                             })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -300,6 +319,7 @@ export default {
                                     this.isInConsultMod = true;
                                     this.eq_id = response.data;
                                     this.$emit('EqID', this.eq_id);
+                                    
                                 })
                                 .catch(error => this.errors = error.response.data.errors);
                         }
@@ -327,6 +347,7 @@ export default {
                 eq_set: this.eq_set,
                 eq_validate: savedAs,
                 eq_id: this.eq_id,
+                eq_location: this.eq_location,
                 reason: 'update'
             })
                 /*If the data are correct, we send them to the controller for update data in the database*/
@@ -345,6 +366,7 @@ export default {
                         eq_mobility: this.eq_mobility,
                         eq_remarks: this.eq_remarks,
                         eq_set: this.eq_set,
+                        eq_location: this.eq_location,
                         eq_validate: savedAs,
                     })
                         .then(response => {
