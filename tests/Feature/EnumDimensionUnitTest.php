@@ -13,55 +13,52 @@ use App\Models\SW01\EquipmentTemp;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use PHPUnit\Util\Json;
-use stdClass;
 use Tests\TestCase;
 
-class EnumDimensionNameTest extends TestCase
+class EnumDimensionUnitTest extends TestCase
 {
-
     use RefreshDatabase;
     /**
      * Test Conception Number: 1
-     * Try to add a non-existent name in the database
-     * Name: Name
-     * Expected result: The name is correctly added to the database
+     * Try to add a non-existent unit in the database
+     * Unit: Unit
+     * Expected result: The unit is correctly added to the database
      * @return void
      */
-    public function test_add_non_existent_name() {
-        $oldCOunt = EnumDimensionName::all()->count();
-        $response = $this->post('/dimension/enum/name/add', [
-            'value' => 'Name'
+    public function test_add_non_existent_unit() {
+        $oldCOunt = EnumDimensionUnit::all()->count();
+        $response = $this->post('/dimension/enum/unit/add', [
+            'value' => 'Unit'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals(EnumDimensionName::all()->count(), $oldCOunt+1);
+        $this->assertEquals(EnumDimensionUnit::all()->count(), $oldCOunt+1);
     }
 
     /**
      * Test Conception Number: 2
-     * Try to add two time the same name in the database
-     * Name : Exist
+     * Try to add two time the same unit in the database
+     * Unit: Exist
      * Expected result: Receiving an error:
-     *                                      "The value of the field for the new dimension name already exist in the data base"
+     *                                      "The value of the field for the new dimension unit already exist in the data base"
      * @return void
      */
-    public function test_add_two_time_same_name() {
-        $oldCOunt = EnumDimensionName::all()->count();
-        $response = $this->post('/dimension/enum/name/add', [
+    public function test_add_two_time_same_unit() {
+        $oldCOunt = EnumDimensionUnit::all()->count();
+        $response = $this->post('/dimension/enum/unit/add', [
             'value' => 'Exist'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals(EnumDimensionName::all()->count(), $oldCOunt+1);
-        $response = $this->post('/dimension/enum/name/add', [
+        $this->assertEquals(EnumDimensionUnit::all()->count(), $oldCOunt+1);
+        $response = $this->post('/dimension/enum/unit/add', [
             'value' => 'Exist'
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'enum_dim_name' => [
-                "The value of the field for the new dimension name already exist in the data base"
+            'enum_dim_unit' => [
+                "The value of the field for the new dimension unit already exist in the data base"
             ]
         ]);
-        $this->assertEquals(EnumDimensionName::all()->count(), $oldCOunt+1);
+        $this->assertEquals(EnumDimensionUnit::all()->count(), $oldCOunt+1);
     }
 
     public function requiredForTest() {
@@ -107,10 +104,18 @@ class EnumDimensionNameTest extends TestCase
             $response->assertStatus(200);
             $this->assertCount($countDimType+1, EnumDimensionType::all());
         }
-        if (EnumDimensionUnit::all()->where('value', '=', 'mm')->count() === 0) {
+        if (EnumDimensionUnit::all()->where('value', '=', 'Unit')->count() === 0) {
             $countDimUnit=EnumDimensionUnit::all()->count();
             $response=$this->post('/dimension/enum/unit/add', [
-                'value' => 'mm',
+                'value' => 'Unit',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
+        }
+        if (EnumDimensionUnit::all()->where('value', '=', 'Exist')->count() === 0) {
+            $countDimUnit=EnumDimensionUnit::all()->count();
+            $response=$this->post('/dimension/enum/unit/add', [
+                'value' => 'Exist',
             ]);
             $response->assertStatus(200);
             $this->assertCount($countDimUnit+1, EnumDimensionUnit::all());
@@ -149,7 +154,7 @@ class EnumDimensionNameTest extends TestCase
     /**
      * Test Conception Number: 3
      * Analyze the enum 'Test' and expecting the correct data
-     * Name: Name
+     * Unit: Unit
      * Expected result: The data contain one validated equipment and one not validated
      * @returns void
      */
@@ -179,7 +184,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'TestAnalyze',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'Unit'
         ]);
         $response->assertStatus(200);
         $response=$this->post('/equipment/add/dim', [
@@ -187,7 +192,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm',
+            'dim_unit' => 'Unit',
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -196,21 +201,21 @@ class EnumDimensionNameTest extends TestCase
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
         $response=$this->post('/equipment/add', [
             'eq_validate' => 'validated',
-            'eq_internalReference' => 'Testvalidated',
-            'eq_externalReference' => 'Testvalidated',
-            'eq_name' => 'Testvalidated',
-            'eq_serialNumber' => 'Testvalidated',
-            'eq_constructor' => 'Testvalidated',
-            'eq_set' => 'Testvalidated',
+            'eq_internalReference' => 'TestvalidatedUnit',
+            'eq_externalReference' => 'TestvalidatedUnit',
+            'eq_name' => 'TestvalidatedUnit',
+            'eq_serialNumber' => 'TestvalidatedUnit',
+            'eq_constructor' => 'TestvalidatedUnit',
+            'eq_set' => 'TestvalidatedUnit',
             'eq_massUnit' => 'g',
             'eq_mass' => 12,
-            'eq_remarks' => 'Testvalidated',
+            'eq_remarks' => 'TestvalidatedUnit',
             'eq_mobility' => true,
             'eq_type' => 'Balance',
         ]);
@@ -222,7 +227,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'Unit'
         ]);
         $response->assertStatus(200);
         $response=$this->post('/equipment/add/dim', [
@@ -230,7 +235,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm',
+            'dim_unit' => 'Unit',
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -239,7 +244,7 @@ class EnumDimensionNameTest extends TestCase
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
@@ -254,7 +259,7 @@ class EnumDimensionNameTest extends TestCase
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
-        $response = $this->post('dimension/enum/name/analyze/' . EnumDimensionName::all()->where('value', '=', 'Name')->first()->id);
+        $response = $this->post('dimension/enum/unit/analyze/' . EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id);
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'id',
@@ -262,7 +267,7 @@ class EnumDimensionNameTest extends TestCase
             'validated_eq',
         ]);
         $response->assertJson([
-            'id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
+            'id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipments' => [
                 '0' => [
                     "eqTemp_id" => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'Test')->last()->id)->first()->id,
@@ -272,9 +277,9 @@ class EnumDimensionNameTest extends TestCase
             ],
             'validated_eq' => [
                 '0' => [
-                    "eqTemp_id" => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'Testvalidated')->first()->id)->first()->id,
-                    "name" => "Testvalidated",
-                    "internalReference" => "Testvalidated"
+                    "eqTemp_id" => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'TestvalidatedUnit')->first()->id)->first()->id,
+                    "name" => "TestvalidatedUnit",
+                    "internalReference" => "TestvalidatedUnit"
                 ]
             ],
         ]);
@@ -282,12 +287,12 @@ class EnumDimensionNameTest extends TestCase
 
     /**
      * Test Conception Number: 4
-     * Try to update an enum linked to drafted equipment with a non-existent name in the database
-     * Name: TestDrafted
-     * Expected result: The name is correctly updated in the database
+     * Try to update an enum linked to drafted equipment with a non-existent unit in the database
+     * Unit: TestDrafted
+     * Expected result: The unit is correctly updated in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_drafted_with_non_existent_name() {
+    public function test_update_enum_linked_to_drafted_with_non_existent_unit() {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
         $response=$this->post('/equipment/add', [
@@ -312,7 +317,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'Unit'
         ]);
         $response->assertStatus(200);
         $response=$this->post('/equipment/add/dim', [
@@ -320,7 +325,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm',
+            'dim_unit' => 'Unit',
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -329,32 +334,32 @@ class EnumDimensionNameTest extends TestCase
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $oldId = EnumDimensionName::all()->where('value', '=', 'Name')->first()->id;
-        $response = $this->post('dimension/enum/name/verif/' . EnumDimensionName::all()->where('value', '=', 'Name')->first()->id, [
+        $oldId = EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id;
+        $response = $this->post('dimension/enum/unit/verif/' . EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'TestDrafted'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/dimension/enum/name/update/'.EnumDimensionName::all()->where('value', '=', 'Name')->first()->id, [
+        $response = $this->post('/dimension/enum/unit/update/'.EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'TestDrafted',
             'validated_eq' => []
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $newId = EnumDimensionName::all()->where('value', '=', 'TestDrafted')->first()->id;
+        $newId = EnumDimensionUnit::all()->where('value', '=', 'TestDrafted')->first()->id;
         $this->assertEquals($oldId, $newId);
-        $this->assertDatabaseHas('enum_dimension_names', [
+        $this->assertDatabaseHas('enum_dimension_units', [
             'value' => 'TestDrafted',
         ]);
         $this->assertDatabaseHas('dimensions', [
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
-            'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'TestDrafted')->first()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'TestDrafted')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
@@ -362,12 +367,12 @@ class EnumDimensionNameTest extends TestCase
 
     /**
      * Test Conception Number: 5
-     * Try to update an enum linked to to_be_validated equipment with a non-existent name in the database
-     * Name: TestToBeValidated
-     * Expected result: The name is correctly updated in the database
+     * Try to update an enum linked to to_be_validated equipment with a non-existent unit in the database
+     * Unit: TestToBeValidated
+     * Expected result: The unit is correctly updated in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_toBeValidated_with_non_existent_name() {
+    public function test_update_enum_linked_to_toBeValidated_with_non_existent_unit() {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
         $response=$this->post('/equipment/add', [
@@ -392,7 +397,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'Unit'
         ]);
         $response->assertStatus(200);
         $response=$this->post('/equipment/add/dim', [
@@ -400,7 +405,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm',
+            'dim_unit' => 'Unit',
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -409,32 +414,32 @@ class EnumDimensionNameTest extends TestCase
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $response = $this->post('dimension/enum/name/verif/' . EnumDimensionName::all()->where('value', '=', 'Name')->first()->id, [
+        $response = $this->post('dimension/enum/unit/verif/' . EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'TestToBeValidated'
         ]);
         $response->assertStatus(200);
-        $oldId = EnumDimensionName::all()->where('value', '=', 'Name')->first()->id;
-        $response = $this->post('/dimension/enum/name/update/'.EnumDimensionName::all()->where('value', '=', 'Name')->first()->id, [
+        $oldId = EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id;
+        $response = $this->post('/dimension/enum/unit/update/'.EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'TestToBeValidated',
             'validated_eq' => []
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $newId = EnumDimensionName::all()->where('value', '=', 'TestToBeValidated')->first()->id;
+        $newId = EnumDimensionUnit::all()->where('value', '=', 'TestToBeValidated')->first()->id;
         $this->assertEquals($oldId, $newId);
-        $this->assertDatabaseHas('enum_dimension_names', [
+        $this->assertDatabaseHas('enum_dimension_units', [
             'value' => 'TestDrafted',
         ]);
         $this->assertDatabaseHas('dimensions', [
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
-            'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'TestToBeValidated')->first()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'TestToBeValidated')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
@@ -442,12 +447,12 @@ class EnumDimensionNameTest extends TestCase
 
     /**
      * Test Conception Number: 6
-     * Try to update an enum linked to validated equipment with a non-existent name in the database
-     * Name: TestValidated
-     * Expected result: The name is correctly updated in the database, and a history is created in the database
+     * Try to update an enum linked to validated equipment with a non-existent unit in the database
+     * Unit: TestvalidatedUnit
+     * Expected result: The unit is correctly updated in the database, and a history is created in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_validated_with_non_existent_name() {
+    public function test_update_enum_linked_to_validated_with_non_existent_unit() {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
         $response=$this->post('/equipment/add', [
@@ -472,7 +477,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'Unit'
         ]);
         $response->assertStatus(200);
         $response=$this->post('/equipment/add/dim', [
@@ -480,7 +485,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm',
+            'dim_unit' => 'Unit',
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -489,7 +494,7 @@ class EnumDimensionNameTest extends TestCase
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
@@ -515,8 +520,8 @@ class EnumDimensionNameTest extends TestCase
             'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
             'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
-        $oldId = EnumDimensionName::all()->where('value', '=', 'Name')->first()->id;
-        $response = $this->post('dimension/enum/name/analyze/' . EnumDimensionName::all()->where('value', '=', 'Name')->first()->id);
+        $oldId = EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id;
+        $response = $this->post('dimension/enum/unit/analyze/' . EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id);
         $response->assertStatus(200);
         $tab = array();
         foreach (json_decode($response->getContent())->validated_eq as $eq) {
@@ -526,27 +531,27 @@ class EnumDimensionNameTest extends TestCase
                 'internalReference' => $eq->internalReference,
             ));
         }
-        $response = $this->post('dimension/enum/name/verif/' . EnumDimensionName::all()->where('value', '=', 'Name')->first()->id, [
-            'value' => 'TestValidated'
+        $response = $this->post('dimension/enum/unit/verif/' . EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id, [
+            'value' => 'TestvalidatedUnit'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/dimension/enum/name/update/'.EnumDimensionName::all()->where('value', '=', 'Name')->first()->id, [
-            'value' => 'TestValidated',
+        $response = $this->post('/dimension/enum/unit/update/'.EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id, [
+            'value' => 'TestvalidatedUnit',
             'validated_eq' => $tab,
             'history_reasonUpdate' => 'TestUpdateEnum3',
         ]);
         $response->assertStatus(200);
         $this->assertCount($countDim+1, Dimension::all());
-        $newId = EnumDimensionName::all()->where('value', '=', 'TestValidated')->first()->id;
+        $newId = EnumDimensionUnit::all()->where('value', '=', 'TestvalidatedUnit')->first()->id;
         $this->assertEquals($oldId, $newId);
-        $this->assertDatabaseHas('enum_dimension_names', [
-            'value' => 'TestValidated',
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'TestvalidatedUnit',
         ]);
         $this->assertDatabaseHas('dimensions', [
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
-            'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'TestValidated')->first()->id,
+            'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'TestvalidatedUnit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
@@ -564,10 +569,10 @@ class EnumDimensionNameTest extends TestCase
 
     /**
      * Test Conception Number: 7
-     * Try to update an enum linked to equipment with an existent name in the database
-     * Name: /
+     * Try to update an enum linked to equipment with an existent unit in the database
+     * Unit: /
      * Expected result: Receiving an error:
-     *                                      "The value of the field for the dimension name already exist in the data base"
+     *                                      "The value of the field for the dimension unit already exist in the data base"
      * @returns void
      */
     public function test_update_enum_with_existant_value() {
@@ -595,7 +600,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'Unit'
         ]);
         $response->assertStatus(200);
         $response=$this->post('/equipment/add/dim', [
@@ -603,7 +608,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm',
+            'dim_unit' => 'Unit',
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -612,39 +617,39 @@ class EnumDimensionNameTest extends TestCase
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $response = $this->post('dimension/enum/name/verif/' . EnumDimensionName::all()->where('value', '=', 'Name')->first()->id, [
+        $response = $this->post('dimension/enum/unit/verif/' . EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'Exist'
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'enum_dim_name' => 'The value of the field for the dimension name already exist in the data base'
+            'enum_dim_unit' => 'The value of the field for the dimension unit already exist in the data base'
         ]);
     }
 
     /**
      * Test Conception Number: 8
      * Try to delete an enum not linked to an equipment
-     * Name: /
-     * Expected result: The name is correctly deleted in the database
+     * Unit: /
+     * Expected result: The unit is correctly deleted in the database
      * @returns void
      */
     public function test_delete_enum_not_linked() {
         $this->requiredForTest();
-        $countEnumDimName = EnumDimensionName::all()->count();
-        $response = $this->post('/dimension/enum/name/delete/'.EnumDimensionName::all()->where('value', '=', 'Exist')->first()->id);
+        $countEnumDimUnit = EnumDimensionUnit::all()->count();
+        $response = $this->post('/dimension/enum/unit/delete/'.EnumDimensionUnit::all()->where('value', '=', 'Exist')->first()->id);
         $response->assertStatus(200);
-        $this->assertCount($countEnumDimName-1, EnumDimensionName::all());
+        $this->assertCount($countEnumDimUnit-1, EnumDimensionUnit::all());
     }
 
     /**
      * Test Conception Number: 9
      * Try to delete an enum linked to an equipment
-     * Name: TestValidated
+     * Unit: TestvalidatedUnit
      * Expected result: Receiving an error:
      *                                      "This value is already used in the data base so you can't delete it"
      * @returns void
@@ -674,7 +679,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'Unit'
         ]);
         $response->assertStatus(200);
         $response=$this->post('/equipment/add/dim', [
@@ -682,7 +687,7 @@ class EnumDimensionNameTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value'=> '18',
-            'dim_unit' => 'mm',
+            'dim_unit' => 'Unit',
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -691,7 +696,7 @@ class EnumDimensionNameTest extends TestCase
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
@@ -717,19 +722,19 @@ class EnumDimensionNameTest extends TestCase
             'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
             'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
-        $response = $this->post('/dimension/enum/name/delete/'.EnumDimensionName::all()->where('value', '=', 'Name')->first()->id);
+        $response = $this->post('/dimension/enum/unit/delete/'.EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'enum_dim_name' => 'This value is already used in the data base so you can\'t delete it'
+            'enum_dim_unit' => 'This value is already used in the data base so you can\'t delete it'
         ]);
-        $this->assertDatabaseHas('enum_dimension_names', [
-            'value' => 'Name',
+        $this->assertDatabaseHas('enum_dimension_units', [
+            'value' => 'Unit',
         ]);
         $this->assertDatabaseHas('dimensions', [
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'External')->first()->id,
             'enumDimensionName_id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
             'dim_value' => 18,
-            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+            'enumDimensionUnit_id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
             'dim_validate' => 'drafted'
         ]);
@@ -738,48 +743,53 @@ class EnumDimensionNameTest extends TestCase
     /**
      * Test Conception Number: 10
      * Try to consult the enum list
-     * Name: TestValidated
+     * Unit: TestvalidatedUnit
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
     public function test_consult_enum() {
         $this->requiredForTest();
-        $response = $this->get('/dimension/enum/name');
+        $response = $this->get('/dimension/enum/unit');
         $response->assertJson([
             0 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'Exist')->first()->id,
-                'value' => 'Exist',
-                'id_enum' => 'DimensionName'
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'cm')->first()->id,
+                'value' => 'cm',
+                'id_enum' => 'DimensionUnit'
             ],
             1 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'Length')->first()->id,
-                'value' => 'Length',
-                'id_enum' => 'DimensionName'
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'Exist')->first()->id,
+                'value' => 'Exist',
+                'id_enum' => 'DimensionUnit'
             ],
             2 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
-                'value' => 'Name',
-                'id_enum' => 'DimensionName'
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'km')->first()->id,
+                'value' => 'km',
+                'id_enum' => 'DimensionUnit'
             ],
             3 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'TestDrafted')->first()->id,
-                'value' => 'TestDrafted',
-                'id_enum' => 'DimensionName'
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
+                'value' => 'mm',
+                'id_enum' => 'DimensionUnit'
             ],
             4 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'TestToBeValidated')->first()->id,
-                'value' => 'TestToBeValidated',
-                'id_enum' => 'DimensionName'
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'TestDrafted')->first()->id,
+                'value' => 'TestDrafted',
+                'id_enum' => 'DimensionUnit'
             ],
             5 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'TestValidated')->first()->id,
-                'value' => 'TestValidated',
-                'id_enum' => 'DimensionName'
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'TestToBeValidated')->first()->id,
+                'value' => 'TestToBeValidated',
+                'id_enum' => 'DimensionUnit'
             ],
             6 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'Width')->first()->id,
-                'value' => 'Width',
-                'id_enum' => 'DimensionName'
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'TestvalidatedUnit')->first()->id,
+                'value' => 'TestvalidatedUnit',
+                'id_enum' => 'DimensionUnit'
+            ],
+            7 => [
+                'id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
+                'value' => 'Unit',
+                'id_enum' => 'DimensionUnit'
             ],
         ]);
     }

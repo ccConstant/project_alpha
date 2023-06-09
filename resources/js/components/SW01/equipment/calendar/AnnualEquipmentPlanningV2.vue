@@ -110,7 +110,7 @@
             </table>
         </div>
         <button class="btn btn-primary" @click="generateReport" >Generate PDF</button>
-        <EventDetailsModal ref="event_details" :prvMtnOp="prvMtnOp" @modalClosed="modalClosed"></EventDetailsModal>
+        <EventDetailsModal ref="event_details" :prvMtnOp="prvMtnOp" @modalClosed="modalClosed"/>
     </div>
 </template>
 
@@ -172,6 +172,8 @@ export default {
             });
         },
         handleClick(eq, index) {
+            console.log(eq);
+            console.log(index);
             let tmp = eq.preventive_maintenance_operations[0].prvMtnOp_day < 10 ? '0' + eq.preventive_maintenance_operations[0].prvMtnOp_day : eq.preventive_maintenance_operations[0].prvMtnOp_day;
             this.prvMtnOp.push({
                     eq_internalReference: eq.internalReference,

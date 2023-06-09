@@ -5,8 +5,8 @@
 
 <template>
     <div>
-        <ErrorAlert ref="errorAlert"/>
         <b-modal id="modal-event_details" @hidden="resetModal" title="Details" hide-footer>
+            <ErrorAlert ref="errorAlert"/>
             <div>
                 <div v-for="option in verif" :key="option.id">
                     <div>
@@ -18,7 +18,10 @@
                                 Non compliance limit : {{option.verif_nonComplianceLimit}}<br>
                                 Description : {{option.verif_description}}<br>
                                 Protocol : {{option.verif_protocol}}<br>
-                                Operation date : {{option.verif_nextDate}}
+                                Operation date :
+                                {{ new Date(option.verif_nextDate.slice(6), option.verif_nextDate.slice(3, 5), option.verif_nextDate.slice(0, 2)).getDate() }}
+                                {{ new Date(option.verif_nextDate.slice(6), option.verif_nextDate.slice(3, 5)-1, option.verif_nextDate.slice(0, 2)).toDateString().slice(4, 7) }}
+                                {{ new Date(option.verif_nextDate.slice(6), option.verif_nextDate.slice(3, 5), option.verif_nextDate.slice(0, 2)).getFullYear() }}
                             </p>
                             <div v-if="makeMmeOpValidationRight==true">
                                 <b-button variant="primary" @click="redirect_to_preventive(option.mme_id,option.state_id)">Record it</b-button>
