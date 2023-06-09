@@ -21,7 +21,7 @@
                         <div class="accordion-body">
                             <MmeIdForm :internalReference="mme_idCard.mme_internalReference" :externalReference="mme_idCard.mme_externalReference"
                             :name="mme_idCard.mme_name" :serialNumber="mme_idCard.mme_serialNumber" :construct="mme_idCard.mme_constructor"
-                            :remarks="mme_idCard.mme_remarks" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
+                            :remarks="mme_idCard.mme_remarks" :location="mme_idCard.mme_location" :set="mme_idCard.mme_set" :validate="mme_idCard.mme_validate"
                             modifMod/>
                         </div>
                     </div>

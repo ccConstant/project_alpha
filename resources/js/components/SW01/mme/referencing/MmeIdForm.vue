@@ -80,6 +80,15 @@
                 label="Import From :"
                 isDisabled v-model="mme_importFrom"
             />
+
+            <InputTextForm
+                inputClassName="form-control w-50"
+                :Errors="errors.mme_location"
+                location="mme_location"
+                label="MME location :"
+                :isDisabled="!!isInConsultMod"
+                v-model="mme_location"
+            />
             <SaveButtonForm ref="saveButton" v-if="this.addSucces==false" @add="addMME" @update="updateMME" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="mme_validate" />
             <div v-if="this.modifMod!=true">
                 <div v-if="this.isInConsultMod!=true">
@@ -150,6 +159,10 @@ export default {
         state_id:{
             type:String,
             default:null
+        },
+        location:{
+            type:String,
+            default:null
         }
     },
     data(){
@@ -170,7 +183,8 @@ export default {
             addSucces:false,
             infos_idCard:[],
             info_mme_internalReference:'',
-            loaded:false
+            loaded:false,
+            mme_location:this.location
         }
     },
     /*All functions inside the created option are called after the component has been created.*/
@@ -198,7 +212,8 @@ export default {
                     mme_remarks : this.mme_remarks,
                     mme_set : this.mme_set,
                     mme_validate : savedAs,
-                    reason:'add'
+                    reason:'add',
+                    mme_location:this.mme_location
                 })
                 .then(response =>{
                         this.errors={};
@@ -213,6 +228,7 @@ export default {
                                 mme_remarks : this.mme_remarks,
                                 mme_set : this.mme_set,
                                 mme_validate : savedAs,
+                                mme_location:this.mme_location
                             })
                             .then(response =>{
                                     this.$refs.sucessAlert.showAlert(`ID card added successfully and saved as ${savedAs}`);
@@ -233,7 +249,8 @@ export default {
                                 mme_remarks : this.mme_remarks,
                                 mme_set : this.mme_set,
                                 mme_validate : savedAs,
-                                createdBy_id:this.$userId.id
+                                createdBy_id:this.$userId.id,
+                                mme_location:this.mme_location
                             })
                             .then(response =>{
                                     this.$refs.sucessAlert.showAlert(`ID card added successfully and saved as ${savedAs}`);
@@ -260,7 +277,8 @@ export default {
                     mme_set : this.mme_set,
                     mme_validate : savedAs,
                     mme_id:this.mme_id,
-                    reason:'update'
+                    reason:'update',
+                    mme_location:this.mme_location
                 })
                 .then(response =>{
                         this.errors={};
@@ -274,6 +292,7 @@ export default {
                             mme_remarks : this.mme_remarks,
                             mme_set : this.mme_set,
                             mme_validate : savedAs,
+                            mme_location:this.mme_location
                         })
                         .then(response => {
                             const id=this.mme_id;

@@ -25,6 +25,7 @@ class CreateMmeTempsTable extends Migration
             $table->id() ;
             $table->unsignedTinyInteger('mmeTemp_version') ; 
             $table->timestamp('mmeTemp_date') ; 
+            $table->string('mmeTemp_location')->nullable ;
             $table->enum('mmeTemp_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
             $table->timestamps();
             $table->boolean('mmeTemp_lifeSheetCreated') ->default(false) ; 

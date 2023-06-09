@@ -48,7 +48,7 @@
                            name="eq_importFrom" label="Import From :" isDisabled v-model="eq_importFrom"/>
             <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_location"
             name="eq_location" label="Location" :isDisabled="!!isInConsultMod" isRequired
-            v-model="eq_location" :info_text="infos_idCard[0].info_value"/>
+            v-model="eq_location"/>
             <SaveButtonForm ref="saveButton" v-if="this.addSuccess==false" @add="addEquipment" @update="updateEquipment"
                             :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
             <div v-if="this.modifMod!=true">

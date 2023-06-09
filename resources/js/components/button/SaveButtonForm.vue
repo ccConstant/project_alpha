@@ -49,15 +49,15 @@
 
                                 <b-modal :id="`modal-approved-add-to-be-validated${_uid}`"  @ok="addToBeValidated()">
                                 <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                                <input v-model="reason" placeholder="Reason for the update" />
+                                <textarea v-model="reason" rows="8" cols="40"  maxlength="191" placeholder="Explain the change and the reason of change" />
                                 </b-modal>
                                 <b-modal :id="`modal-approved-add-drafted${_uid}`"  @ok="addDraft()">
                                     <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                                    <input v-model="reason" placeholder="Reason for the update" />
+                                    <textarea v-model="reason" rows="8" cols="40"  maxlength="191" placeholder="Explain the change and the reason of change" />
                                 </b-modal>
                                 <b-modal :id="`modal-approved-add-validated${_uid}`"  @ok="addValidated()">
                                     <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                                    <input v-model="reason" placeholder="Reason for the update" />
+                                    <textarea v-model="reason" rows="8" cols="40"  maxlength="191" placeholder="Explain the change and the reason of change" />
                                 </b-modal>
                             </div>
 
@@ -128,7 +128,7 @@
                     </div>
                     <b-modal :id="`modal-approved-validated${_uid}`"  @ok="updateValidated()">
                         <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                        <input v-model="reason" placeholder="Reason for the update" />
+                        <textarea v-model="reason" rows="8" cols="40" maxlength="191" placeholder="Explain the change and the reason of change" />
                     </b-modal>
                 </div>
                 <div v-else>
@@ -163,15 +163,15 @@
 
                             <b-modal :id="`modal-approved-to-be-validated${_uid}`"  @ok="updateToBeValidated()">
                                 <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                                <input v-model="reason" placeholder="Reason for the update" />
+                                <textarea v-model="reason" rows="8" cols="40"  maxlength="191" placeholder="Explain the change and the reason of change" />
                             </b-modal>
                             <b-modal :id="`modal-approved-drafted${_uid}`"  @ok="updateDrafted()">
                                 <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                                <input v-model="reason" placeholder="Reason for the update" />
+                                <textarea v-model="reason" rows="8" cols="40"  maxlength="191" placeholder="Explain the change and the reason of change" />
                             </b-modal>
                             <b-modal :id="`modal-approved-validated${_uid}`"  @ok="updateValidated()">
                                 <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
-                                <input v-model="reason" placeholder="Reason for the update" />
+                                <textarea v-model="reason" rows="8" cols="40"  maxlength="191" placeholder="Explain the change and the reason of change" />
                             </b-modal>
                         </div>
 
