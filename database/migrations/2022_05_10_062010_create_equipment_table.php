@@ -26,7 +26,7 @@ Class CreateEquipmentTable extends Migration
     {
         Schema::create('equipment', function (Blueprint $table) {
             $table->id('id') ;
-            $table->string('eq_internalReference') -> unique ;
+            $table->string('eq_internalReference') -> unique() ;
             $table->string('eq_externalReference') ;
             $table->string('eq_name') -> nullable() ;
             $table->string('eq_serialNumber') -> nullable() ;

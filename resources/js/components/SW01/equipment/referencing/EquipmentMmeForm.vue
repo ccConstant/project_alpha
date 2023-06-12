@@ -53,7 +53,7 @@
             </div>
             <div v-else-if="this.mme_id!==null && !this.mmeAlreadyCreated">
                 <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod"
-                                :modifMod="this.modifMod" :savedAs="mme_validate"/>
+                                :modifMod="this.modifMod" :savedAs="mme_validate" :desactiveValidated="true"/>
             </div>
             <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod"
                                    @deleteOk="deleteComponent"/>
@@ -220,14 +220,19 @@ export default {
                 })
                     .then(response => {
                         this.errors = {};
+                         console.log("before add")
                         axios.post('/mme/add', {
                             mme_internalReference: this.mme_internalReference,
                             mme_externalReference: this.mme_externalReference,
                             mme_name: this.mme_name,
                             mme_validate: savedAs,
+                            mme_remarks: "",
+                            mme_location:"",
+
                         })
                             /*If the mme is added successfully*/
                             .then(response => {
+                                 console.log("add passed")
                                 /*If the user is not in modification mode*/
                                 if (!this.modifMod) {
                                     /*The form pass in consulting mode and addSuccess pass to True*/
@@ -241,6 +246,8 @@ export default {
                                 })
                                     /*If the mme is added successfully*/
                                     .then(response => {
+                                         console.log("link passed")
+                                          this.mme_validate=savedAs;
                                         /*We test if a life sheet has been already created*/
                                         /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
                                         if (lifesheet_created == true) {

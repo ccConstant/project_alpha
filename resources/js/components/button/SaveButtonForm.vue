@@ -32,7 +32,7 @@
                                 <b-button variant="primary" disabled >save as draft</b-button>
                                 <b-button variant="primary" disabled >save as to be validated</b-button>
                             </div>
-                            <div class="save_button_validated" v-if="validateDescriptiveLifeSheetDataRight==true">
+                            <div class="save_button_validated" v-if="validateDescriptiveLifeSheetDataRight==true && !this.desactiveValidated" >
                                 <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
                             </div>
                             <div class="save_button_validated" v-else>
@@ -41,11 +41,15 @@
                             <p v-if="updateDataInDraftRight==false" class="text-danger">You don't have the right to save as draft or as to be validated</p>
                             <p v-if="validateDescriptiveLifeSheetDataRight == false" class="text-danger">You don't have the right to save as validated </p>
                         </div>
+
                         <div v-else-if="this.lifesheet_created==true">
                             <div v-if="updateDescriptiveLifeSheetDataSignedRight==true" class="save_button_draft_tbv">
                                 <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-drafted${_uid}`)" >save as draft</b-button>
                                 <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-to-be-validated${_uid}`)" >save as to be validated</b-button>
-                                <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-validated${_uid}`)" >save as validated</b-button>
+                                
+                                 <div class="save_button_validated" v-if="!this.desactiveValidated" >
+                                    <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-validated${_uid}`)" >save as validated</b-button>
+                                </div>
 
                                 <b-modal :id="`modal-approved-add-to-be-validated${_uid}`"  @ok="addToBeValidated()">
                                 <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>
@@ -71,7 +75,9 @@
                     <div v-else>
                         <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
                         <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
-                        <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
+                         <div class="save_button_validated" v-if="!this.desactiveValidated" >
+                            <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
+                        </div>
                     </div>
 
 
@@ -106,7 +112,9 @@
                         <div class="save_button_draft_tbv" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
                             <button class="save btn btn-info" type="button"  disabled>save as draft</button>
                             <button class="save btn btn-info" type="button" disabled>to be validated</button>
-                            <button class="save btn btn-info" type="button" @click="$bvModal.show(`modal-approved-validated${_uid}`)" >validate</button>
+                            <div class="save_button_validated" v-if="!this.desactiveValidated" >
+                                <button class="save btn btn-info" type="button" @click="$bvModal.show(`modal-approved-validated${_uid}`)" >validate</button>
+                             </div>
                         </div>
                         <div v-else class="save_button_validated">
                             <button class="save btn btn-info" type="button"  disabled >save as draft</button>
@@ -119,7 +127,7 @@
                             <button class="save btn btn-info" disabled type="button"  value="drafted" >save as draft</button>
                             <button class="save btn btn-info" disabled type="button" value="to_be_validated" >to be validated</button>
                         </div>
-                        <div v-if="user_updateDataValidatedButNotSignedRight==true" class="save_button_validated"  >
+                        <div v-if="user_updateDataValidatedButNotSignedRight==true && !this.desactiveValidated" class="save_button_validated"  >
                             <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                         </div>
                         <div v-else class="save_button_validated">
@@ -142,7 +150,7 @@
                                 <button class="save btn btn-info" type="button" disabled >save as draft</button>
                                 <button class="save btn btn-warning" type="button" disabled >to be validated</button>
                             </div>
-                            <div v-if="user_updateDataValidatedButNotSignedRight==true" class="save_button_validated"  >
+                            <div v-if="user_updateDataValidatedButNotSignedRight==true && !this.desactiveValidated" class="save_button_validated"  >
                                 <button class="save btn btn-info" type="button" value="validated" @click="update($event)" >validate</button>
                             </div>
                             <div v-else class="save_button_validated">
@@ -150,7 +158,7 @@
                             </div>
                         </div>
                         <div v-else-if="this.lifesheet_created==true">
-                            <div class="save_button_update" v-if="updateDescriptiveLifeSheetDataSignedRight==true"  >
+                            <div class="save_button_update" v-if="updateDescriptiveLifeSheetDataSignedRight==true && !this.desactiveValidated"  >
                                 <button class="save btn btn-info" type="button"  value="drafted" @click="$bvModal.show(`modal-approved-drafted${_uid}`)" >save as draft</button>
                                 <button class="save btn btn-info" type="button" value="to_be_validated" @click="$bvModal.show(`modal-approved-to-be-validated${_uid}`)" >to be validated</button>
                                 <button class="save btn btn-info" type="button" value="validated" @click="$bvModal.show(`modal-approved-validated${_uid}`)" >validate</button>
@@ -234,6 +242,10 @@ export default {
             default: () => ([])
         },
         reformMod:{
+            type:Boolean,
+            default:false
+        },
+        desactiveValidated:{
             type:Boolean,
             default:false
         },

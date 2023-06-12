@@ -555,7 +555,6 @@ class MmeController extends Controller{
             'mme_serialNumber' => $request->mme_serialNumber,
             'mme_constructor' => $request->mme_constructor,
             'mme_set' => $request->mme_set,
-            'mme_location' => 'max:255',
         ]) ;
 
         $mme_id=$mme->id ;
