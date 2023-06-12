@@ -30,14 +30,16 @@ class FileTest extends TestCase
             $response = $this->post('equipment/verif', [
                 'eq_validate' => $validate,
                 'eq_internalReference' => $name,
-                'eq_externalReference' => $name
+                'eq_externalReference' => $name,
+                'eq_location' => $name,
             ]);
             $response->assertStatus(200);
             $response->assertSessionHasNoErrors();
             $response = $this->post('/equipment/add', [
                 'eq_validate' => $validate,
                 'eq_internalReference' => $name,
-                'eq_externalReference' => $name
+                'eq_externalReference' => $name,
+                'eq_name' => $name,
             ]);
             $response->assertStatus(200);
             $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -78,7 +80,8 @@ class FileTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => $name,
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => $name,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -94,7 +97,8 @@ class FileTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => $name,
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => $name,
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -149,7 +153,8 @@ class FileTest extends TestCase
             'mme_serialNumber' => $name,
             'mme_constructor' => $name,
             'mme_remarks' => $name,
-            'mme_set' => $name
+            'mme_set' => $name,
+            'mme_location' => $name,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -161,7 +166,8 @@ class FileTest extends TestCase
             'mme_serialNumber' => $name,
             'mme_constructor' => $name,
             'mme_remarks' => $name,
-            'mme_set' => $name
+            'mme_set' => $name,
+            'mme_location' => $name,
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countMme+1, Mme::all()->count());

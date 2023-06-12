@@ -1648,7 +1648,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upTypeTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upTypeTest',
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1664,7 +1665,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upTypeTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upTypeTest',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -1848,7 +1850,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upNameTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upNameTest'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1864,7 +1867,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upNameTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upNameTest'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -2032,7 +2036,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upValTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upValTest'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2048,7 +2053,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upValTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upValTest'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -2216,7 +2222,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upUnitTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upUnitTest',
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2232,7 +2239,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upUnitTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upUnitTest',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -2400,7 +2408,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upCValTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upCValTest',
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2416,7 +2425,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upCValTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upCValTest',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -2584,7 +2594,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upCUnitTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upCUnitTest'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2600,7 +2611,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'upCUnitTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'upCUnitTest'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -2759,7 +2771,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'addValidTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'addValidTest',
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2775,7 +2788,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'addValidTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'addValidTest',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -3035,22 +3049,44 @@ class PowerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
-                'type' => 'Electric',
-                'powers' => [[
-                    'id' => Power::all()->last()->id,
-                    'pow_name' => 'Electric source',
-                    'pow_value' => 220,
-                    'pow_unit' => 'V',
-                    'pow_consumptionValue' => 29,
-                    'pow_consumptionUnit' => 'kwH',
-                    'pow_validate' => 'validated',
-                    'pow_type' => 'Electric'
-                ]]
+                'type' => 'TestDrafted',
+                'powers' => []
             ],
             '1' => [
+                'type' => 'Exist',
+                'powers' => []
+            ],
+            '2' => [
+                'type' => 'TestToBeValidated',
+                'powers' => []
+            ],
+            '3' => [
+                'type' => 'TestvalidatedPowType',
+                'powers' => []
+            ],
+            '4' => [
+                'type' => 'Type',
+                'powers' => []
+            ],
+            '5' => [
+                'type' => 'Electric',
+                'powers' => [
+                    '0' => [
+                        'id' => Power::all()->last()->id,
+                        'pow_name' => 'Electric source',
+                        'pow_value' => '220',
+                        'pow_unit' => 'V',
+                        'pow_consumptionValue' => '29',
+                        'pow_consumptionUnit' => 'kwH',
+                        'pow_validate' => 'validated',
+                        'pow_type' => 'Electric'
+                    ]
+                ]
+            ],
+            '6' => [
                 'type' => 'Example',
                 'powers' => []
-            ]
+            ],
         ]);
     }
 
@@ -3216,12 +3252,15 @@ class PowerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
-                'pow_name' => 'Electric source'
+                'pow_name' => 'Name'
             ],
             '1' => [
-                'pow_name' => 'three'
+                'pow_name' => 'Electric source'
             ],
             '2' => [
+                'pow_name' => 'three'
+            ],
+            '3' => [
                 'pow_name' => 'Example'
             ]
         ]);
@@ -3356,7 +3395,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'removePowerTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'removePowerTest'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -3372,7 +3412,8 @@ class PowerTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'removePowerTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'removePowerTest'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());

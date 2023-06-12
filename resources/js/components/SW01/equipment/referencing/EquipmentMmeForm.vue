@@ -264,10 +264,18 @@ export default {
                                             this.addSuccess = true
                                         }
                                     })
+                                    .catch(error => {
+                                        this.errors = error.response.data.errors;
+                                    });
                             })
+                            .catch(error => {
+                                this.errors = error.response.data.errors;
+                            });
                     })
                     /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                    });
             }
         },
         /*Sending to the controller all the information about the mme so that it can be updated in the database
@@ -369,7 +377,6 @@ export default {
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the mme has been updated*/
             if (this.modifMod == true && this.mme_internalReference !== null) {
-                console.log("supression");
                 /*Send a post-request with the id of the dimension who will be deleted in the url*/
                 const consultUrl = (id) => `/mme/delete/${id}`;
                 axios.post(consultUrl(this.mme_id), {
@@ -399,11 +406,8 @@ export default {
         /*Function for unlink a component from the view and the database*/
         unlinkComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the mme has been updated*/
-            console.log(this.mme_internalReference)
             if (this.modifMod == true && this.mme_internalReference !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the component who will be deleted in the url*/
-                console.log(this.mme_id)
                 const consultUrl = (id) => `/mme/delete/link_to_eq/${id}`;
                 axios.post(consultUrl(this.mme_id), {
                     eq_id: this.equipment_id_update,
@@ -433,7 +437,6 @@ export default {
             delete this.errors[value];
         },
         clearAllError() {
-            console.log("ERROR:", this.errors)
         }
     }
 }

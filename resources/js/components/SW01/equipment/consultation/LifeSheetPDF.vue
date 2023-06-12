@@ -27,7 +27,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                    <td>
                         <p>
                             Technical Review <b class="text-primary">{{ eq_idCard.eq_technicalVerifier_firstName}} {{eq_idCard.eq_technicalVerifier_lastName}} </b>
                         </p>
@@ -46,7 +46,13 @@
                 <tr>
                     <td colspan="2">
                         <p>
-                            Date of signature : <b class="text-primary">{{eq_idCard.eq_signatureDate}}</b> <!-- FIXME: Ajout dans la base de donnée -->
+                            Date of signature : <b class="text-primary">
+                            {{
+                                new Date(eq_idCard.eq_signatureDate).getDate()
+                            }} {{
+                                new Date(eq_idCard.eq_signatureDate).toDateString().slice(4, 7)
+                            }} {{ new Date(eq_idCard.eq_signatureDate).getFullYear() }}
+                        </b>
                         </p>
                     </td>
                 </tr>
@@ -626,7 +632,7 @@ export default {
 				this.eq_history=response.data;
 				this.loaded=true;
 			})
-			.catch(error => console.log(error));
+			.catch(error => console.log(error.response.data));
     }
 }
 </script>
@@ -1153,9 +1159,10 @@ export default {
                     width:150px;
                 }
                     .history_table_reason{
-                    border: solid 1px black;
-                    text-align: center;
-                    width:540px;
+                        border: solid 1px black;
+                        text-align: center;
+                        width:540px;
+                        text-wrap: normal;
                 }
                 .history_table_versionTo{
                     border: solid 1px black;

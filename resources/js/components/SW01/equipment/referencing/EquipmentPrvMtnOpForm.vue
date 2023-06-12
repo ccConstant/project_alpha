@@ -45,7 +45,9 @@
                                    v-model="prvMtnOp_protocol" :info_text="infos_prvMtnOp[3].info_value"/>
                 <RadioGroupForm label="Type of Validation" :options="typeValidationOption" :Errors="errors.typeValidation"
                                 :checkedOption="typeValidation" :isDisabled="!!isInConsultedMod" v-model="typeValidation"
-                                :info_text="null"/>
+                                :info_text="null"
+                                name="typeValidation"
+                />
                 <!--If addSuccess is equal to false, the buttons appear -->
                 <div v-if="this.addSuccess==false ">
                     <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOp is called function else the updateEquipmentPrvMtnOp function is called -->
@@ -283,7 +285,6 @@ export default {
                 }
                 /*The First post to verify if all the fields are filled correctly,
                 The type, name, value, unit and validate option are sent to the controller*/
-                console.log(this.prvMtnOp_periodicity)
                 axios.post('/prvMtnOp/verif', {
                     prvMtnOp_description: this.prvMtnOp_description,
                     prvMtnOp_periodicity: parseInt(this.prvMtnOp_periodicity),
@@ -466,7 +467,6 @@ export default {
             axios.get(consultUrl(this.prvMtnOp_id))
                 .then(response => {
                     this.importedOpRisk = response.data;
-                    console.log(this.prvMtnOp_id)
                 })
                 .catch(error => console.log(error));
         }

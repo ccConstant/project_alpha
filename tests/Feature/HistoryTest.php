@@ -76,7 +76,8 @@ class HistoryTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'HistAddTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'HistAddTest',
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -92,7 +93,8 @@ class HistoryTest extends TestCase
             'eq_mass' => 10,
             'eq_remarks' => 'HistAddTest',
             'eq_mobility' => true,
-            'eq_type' => 'internal'
+            'eq_type' => 'internal',
+            'eq_location' => 'HistAddTest',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment + 1, Equipment::all()->count());
@@ -260,7 +262,8 @@ class HistoryTest extends TestCase
             'mme_serialNumber' => 'HistAddTestM',
             'mme_constructor' => 'HistAddTestM',
             'mme_remarks' => 'HistAddTestM',
-            'mme_set' => 'HistAddTestM'
+            'mme_set' => 'HistAddTestM',
+            'mme_location' => 'HistAddTestM',
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -272,7 +275,8 @@ class HistoryTest extends TestCase
             'mme_serialNumber' => 'HistAddTestM',
             'mme_constructor' => 'HistAddTestM',
             'mme_remarks' => 'HistAddTestM',
-            'mme_set' => 'HistAddTestM'
+            'mme_set' => 'HistAddTestM',
+            'mme_location' => 'HistAddTestM',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countMme + 1, Mme::all()->count());
