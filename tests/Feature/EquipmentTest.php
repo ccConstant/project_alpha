@@ -723,4 +723,490 @@ class EquipmentTest extends TestCase
             'eq_externalReference' => 'three'
         ]);
     }
+
+    /**
+     * Test Conception Number: 12
+     * Add a new equipment as validated with no values
+     * Internal Ref: /
+     * Name: /
+     * External Ref: /
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter an internal reference"
+     *                                      "You must enter an external reference"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_no_values()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_internalReference' => 'You must enter an internal reference',
+            'eq_externalReference' => 'You must enter an external reference',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too short internal reference
+     * Internal Ref: "in"
+     * Name: /
+     * External Ref: /
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter an external reference"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_internal_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_internalReference' => 'You must enter at least 3 characters',
+            'eq_externalReference' => 'You must enter an external reference',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too long internal reference
+     * Internal Ref: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Name: /
+     * External Ref: /
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 16 characters"
+     *                                      "You must enter an external reference"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_internal_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_internalReference' => 'You must enter a maximum of 16 characters',
+            'eq_externalReference' => 'You must enter an external reference',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too short external reference
+     * Internal Ref: "three"
+     * Name: /
+     * External Ref: "in"
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_external_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_externalReference' => 'You must enter at least 3 characters',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too long external reference
+     * Internal Ref: "three"
+     * Name: /
+     * External Ref: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 100 characters"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_external_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_externalReference' => 'You must enter a maximum of 100 characters',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too short name
+     * Internal Ref: "three"
+     * Name: "in"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_name()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_name' => 'You must enter at least 3 characters',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too long name
+     * Internal Ref: "three"
+     * Name: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 100 characters"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_name()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_name' => 'You must enter a maximum of 100 characters',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too short serial number
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "in"
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_serial_number()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You must enter at least 3 characters',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too long serial number
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 50 characters"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_serial_number()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You must enter a maximum of 50 characters',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too short constructor
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "in"
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_constructor()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_constructor' => 'You must enter at least 3 characters',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 13
+     * Add a new equipment as validated with a too long constructor
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 30 characters"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_constructor()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_constructor' => 'You must enter a maximum of 30 characters',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
 }

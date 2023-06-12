@@ -398,13 +398,15 @@ export default {
                     }
                     return false;
                 });
-            } else {
+            } else if (this.searchTermInternRef !== "" && this.searchTermName !== "") {
                 res = this.equipments.filter(option => {
                     if (option.eq_internalReference !== null && option.eq_name !== null) {
                         return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase()) && option.eq_name.toLowerCase().includes(this.searchTermName.toLowerCase());
                     }
                     return false;
                 });
+            } else {
+                res = this.equipments;
             }
             if (this.searchTermTechReview !== -1) {
                 res = res.filter(option => {

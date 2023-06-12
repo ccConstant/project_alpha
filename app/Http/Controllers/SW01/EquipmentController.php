@@ -71,21 +71,18 @@ class EquipmentController extends Controller{
             $needToBeApprove = false;
             $pre = PreventiveMaintenanceOperationRealized::all()->where('state_id', '=', $mostRecentlyState->id);
             foreach ($pre as $p) {
-                if ($p->realizedBy_id  === null) {
+                if ($p->realizedBy_id  === NULL) {
                     $needToBeRealized = true;
                 }
-                if ($p->approvedBy_id  === null) {
+                if ($p->approvedBy_id  === NULL) {
                     $needToBeApprove = true;
                 }
                 break;
             }
-            if ($needToBeRealized === false && $needToBeApprove === false) {
+            if ($needToBeApprove === false) {
                 $cur = CurativeMaintenanceOperation::all()->where('state_id', '=', $mostRecentlyState->id);
                 foreach ($cur as $c) {
-                    if ($c->realizedBy_id  === null) {
-                        $needToBeRealized = true;
-                    }
-                    if ($c->approvedBy_id  === null) {
+                    if ($c->approvedBy_id  === NULL) {
                         $needToBeApprove = true;
                     }
                     break;
@@ -622,6 +619,7 @@ class EquipmentController extends Controller{
                             $monthForPush="0".$monthForPush ;
                         }
                         array_push($AllnextDate,$monthForPush."-".$dateForPush->year) ;
+                        $day = $dateForPush->day;
                         while($nextDate<$endDate){
                             if ($prvMtnOp->prvMtnOp_symbolPeriodicity=='Y'){
                                 $nextDate->addYears($prvMtnOp->prvMtnOp_periodicity) ;
@@ -643,9 +641,9 @@ class EquipmentController extends Controller{
                                     $monthForPush2="0".$monthForPush2 ;
                                 }
                                 array_push($AllnextDate,$monthForPush2."-".$dateForPush2->year) ;
+                                $day = $dateForPush2->day;
                             }
                         }
-
                         $opMtn=([
                             "id" => $prvMtnOp->id,
                             "prvMtnOp_number" => (string)$prvMtnOp->prvMtnOp_number,
@@ -654,7 +652,7 @@ class EquipmentController extends Controller{
                             "prvMtnOp_symbolPeriodicity" => $prvMtnOp->prvMtnOp_symbolPeriodicity,
                             "prvMtnOp_nextDate" => $AllnextDate,
                             "prvMtnOp_protocol" => $prvMtnOp->prvMtnOp_protocol,
-                            "prvMtnOp_day" => $dateForPush2->day,
+                            "prvMtnOp_day" => $day,
 
                         ]);
                         array_push($containerOp,$opMtn);
