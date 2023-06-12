@@ -20,7 +20,7 @@
                                :reformDate="component.reformDate" :reformBy="component.reformBy"
                                :puttingIntoService="component.puttingIntoService"
                                :preventiveOperation="component.preventiveOperation"
-                               :typeValidation="component.typeValidation"
+                               :typeValidation="Boolean(component.typeValidation)"
                                @deletePrvMtnOp="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -136,7 +136,6 @@ export default {
                 preventiveOperation: prvMtnOp_preventiveOperation,
                 typeValidation: typeValidation,
             });
-            console.log(this.components)
         },
         /*Suppression of a preventive maintenance operation component from the vue*/
         getContent(key) {
@@ -158,10 +157,8 @@ export default {
         /*Function for saving all the data in one time*/
         saveAll(savedAs) {
             for (const component of this.$refs.ask_prvMtnOp_data) {
-                console.log("coucou37")
                 /*If the user is in modification mode*/
                 if (this.modifMod == true) {
-                    console.log("coucou38")
                     /*If the preventive maintenance operation doesn't have an id*/
                     if (component.prvMtnOp_id == null) {
                         /*AddequipmentPrvMtnOp is used*/
@@ -169,10 +166,8 @@ export default {
                     } else
                         /*Else if the preventive maintenance operation has an id and if addSucces is equal to true */
                     if (component.prvMtnOp_id != null || component.addSucces == true) {
-                        console.log("coucou39")
                         /*updateEquipmentPrvMtnOp is used*/
                         if (component.prvMtnOp_validate !== "validated") {
-                            console.log("coucou40")
                             component.updateEquipmentPrvMtnOp(savedAs);
                         }
                     }
@@ -185,11 +180,8 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("hello1")
-        console.log(this.importedPrvMtnOp)
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
-            console.log("not null")
             /*Make a get request to ask the controller the preventive maintenance operation corresponding to the id of the equipment with which data will be imported*/
             const consultUrl = (id) => `/prvMtnOps/send/${id}`;
             axios.get(consultUrl(this.import_id))
@@ -201,10 +193,8 @@ export default {
     },
     /*All functions inside the created option are called after the component has been mounted.*/
     mounted() {
-        console.log("hello2")
         /*If the user is in consultation or modification mode, preventive maintenance operation will be added to the vue automatically*/
         if (this.consultMod || this.modifMod) {
-            console.log("hello34")
             this.importPrvMtnOp();
         }
     }

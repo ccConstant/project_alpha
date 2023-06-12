@@ -32,7 +32,11 @@ class HistoryController extends Controller
      * Add a new enregistrement of history in the data base with the reason entered in the form
      */
     public function add_history_for_eq($id_eq, Request $request){
-        $eq=Equipment::findOrfail($id_eq);
+        return response()->json([
+            'request' => $request->all(),
+            'id_eq' => $id_eq,
+        ]);
+        $eq=Equipment::findOrFail($id_eq);
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id_eq)->orderBy('created_at', 'desc')->first();
         $version=$eq->eq_nbrVersion-1 ;
         $history=History::create([
@@ -41,7 +45,6 @@ class HistoryController extends Controller
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
             'mmeTemp_id' => NULL,
         ]) ;
-
     }
 
     /**

@@ -265,8 +265,13 @@ export default {
             })
                 .then(response => {
                     this.errors = {};
-                    console.log(this.dim_type, "\n", this.dim_name, "\n"
-                        , this.dim_value, "\n", this.dim_unit, "\n", savedAs, "\n", this.equipment_id_update, "\n", this.dim_id);
+                    console.log(this.dim_type, "\n",
+                        this.dim_name, "\n",
+                        this.dim_value, "\n",
+                        this.dim_unit, "\n",
+                        savedAs, "\n",
+                        this.equipment_id_update, "\n",
+                        this.dim_id);
                     /*If all the verification passed, a new post this time to add the dimension in the database
                         The type, name, value, unit, validate option and id of the equipment is sent to the controller
                         In the post url the id correspond to the id of the dimension who will be updated*/
@@ -284,8 +289,12 @@ export default {
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
                             if (lifesheet_created == true) {
+                                console.log('test add hist');
                                 axios.post(`/history/add/equipment/${id}`, {
                                     history_reasonUpdate: reason,
+                                }).then(response => {
+                                    console.log('after add hist');
+                                    console.log(response);
                                 });
                                 window.location.reload();
                             }

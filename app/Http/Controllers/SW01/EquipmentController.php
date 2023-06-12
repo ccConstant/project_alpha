@@ -107,6 +107,7 @@ class EquipmentController extends Controller{
                 'needToBeApprove' => $needToBeApprove,
                 'validated' => $mostRecentlyEqTmp->eqTemp_validate,
                 'signed' => $mostRecentlyEqTmp->qualityVerifier_id != null && $mostRecentlyEqTmp->technicalVerifier_id != null,
+                'signatureDate' => $mostRecentlyEqTmp->eqTemp_signatureDate,
             ]);
             array_push($container,$obj);
         }
@@ -202,6 +203,7 @@ class EquipmentController extends Controller{
             'eq_qualityVerifier_firstName' => $qualityVerifier_firstName,
             'eq_qualityVerifier_lastName' => $qualityVerifier_lastName,
             'eq_location'=>$mostRecentlyEqTmp->eqTemp_location,
+            'eq_signatureDate'=>$mostRecentlyEqTmp->eqTemp_signatureDate,
         ]);
     }
 
@@ -552,6 +554,7 @@ class EquipmentController extends Controller{
                 'eqTemp_lifeSheetCreated' => false,
                 'technicalVerifier_id' => NULL,
                 'eqTemp_location' => $request->eq_location,
+                'eqTemp_signatureDate' => NULL,
 
             ]);
 
@@ -1313,7 +1316,8 @@ class EquipmentController extends Controller{
         }
        if ($mostRecentlyEqTmp->qualityVerifier_id!=NULL && $mostRecentlyEqTmp->technicalVerifier_id!=NULL){
             $mostRecentlyEqTmp->update([
-                 'eqTemp_lifeSheetCreated' => true,
+                'eqTemp_lifeSheetCreated' => true,
+                'eqTemp_signatureDate' => Carbon::now('Europe/Paris'),
             ]);
         }
     }
@@ -1346,8 +1350,8 @@ class EquipmentController extends Controller{
 
         $old_equipment=Equipment::findOrFail($request->oldEq_id);
         $old_eqTemp=EquipmentTemp::where('equipment_id', '=', $request->oldEq_id)->first() ;
-        
-        
+
+
 
         //Creation of a new equipment
         $equipment=Equipment::create([
@@ -1388,7 +1392,7 @@ class EquipmentController extends Controller{
 
         $newState->equipment_temps()->attach($new_eqTemp);
 
-        
+
         $dims=Dimension::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
         $files=File::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
         $powers=Power::where('equipmentTemp_id', '=', $old_eqTemp->id)->get() ;
@@ -1475,6 +1479,7 @@ class EquipmentController extends Controller{
             'eq_mobility'=> (boolean)$mobility,
             'eq_validate' => $validate,
             'eq_location' => $mostRecentlyEqTmp->eqTemp_location,
+            'eq_signatureDate' => $equipment->eq_signatureDate,
         ]);
         return response()->json($obj) ;
 
@@ -1483,7 +1488,7 @@ class EquipmentController extends Controller{
 
     /**
      * Function call by UpdateState.vue when the form is submitted for add a new state with the route : /send/equipment/mme/ (get)
-     * Send the different mme linked to the equipment in which we update the state 
+     * Send the different mme linked to the equipment in which we update the state
      * @return \Illuminate\Http\Response : MMES linked to the equipment
      */
     public function send_mme($eq_id){

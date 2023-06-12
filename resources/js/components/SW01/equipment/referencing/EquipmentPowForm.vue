@@ -19,7 +19,7 @@
                 <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.pow_name" name="pow_name"
                                          label="Power Name " :options="pow_names" v-model="pow_name"
                                          :isDisabled="!!isInConsultedMod" :info_text="infos_power[1].info_value"/>
-                <InputNumberForm inputClassName="form-control w-50" :Errors="errors.pow_value" name="pow_value"
+                <InputTextForm inputClassName="form-control w-50" :Errors="errors.pow_value" name="pow_value"
                                  label="Power value :" :stepOfInput="0.01" v-model="pow_value"
                                  :isDisabled="!!isInConsultedMod" :info_text="infos_power[2].info_value"/>
                 <InputTextForm inputClassName="form-control w-50" name="pow_unit" label="Unit :"
@@ -192,9 +192,7 @@ export default {
             .catch(error => console.log(error));
         axios.get('/info/send/power')
             .then(response => {
-                console.log("\n Infos power")
                 this.infos_power = response.data;
-                console.log(response.data)
                 this.loaded = true;
             })
             .catch(error => console.log(error));
@@ -288,7 +286,6 @@ export default {
             })
                 .then(response => {
                     this.errors = {};
-                    console.log("update dans la base")
                     /*If all the verification passed, a new post this time to add the power in the database
                     The type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the power who will be updated*/
@@ -329,7 +326,6 @@ export default {
         /*Function for deleting a power from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
             if (this.modifMod == true && this.pow_id !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the power who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/pow/${id}`;
                 axios.post(consultUrl(this.pow_id), {
