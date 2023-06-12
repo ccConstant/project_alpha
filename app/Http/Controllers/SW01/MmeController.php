@@ -848,14 +848,14 @@ class MmeController extends Controller{
             }
         }
 
-        if ($request->reason=="quality" && $mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_to_be_in_use"){
+        if ($request->reason=="quality" && $mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_to_be_in_use" && $mostRecentlyMmeTmp->mmeTemp_version==1){
             $obj19=([
                 'validation' => ["You can't realize quality validation only in use and waiting to be in use state"]
             ]);
             array_push($container2,$obj19);
         }
 
-        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_to_be_in_use"){
+        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_to_be_in_use" && $mostRecentlyMmeTmp->mmeTemp_version==1){
             $obj20=([
                 'validation' => ["You can't realize technical validation only in waiting for referencing and waiting to be in use state"]
             ]);

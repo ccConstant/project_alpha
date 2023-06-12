@@ -1205,7 +1205,7 @@ class EquipmentController extends Controller{
         }
 
         if ($request->reason=="quality"){
-            if ($mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_for_installation"){
+            if ($mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_for_installation" && $mostRecentlyEqTmp->eqTemp_version==1){
                 $obj19=([
                     'validation' => ["You can realize quality validation only in use and waiting for installation state"]
                 ]);
@@ -1225,7 +1225,7 @@ class EquipmentController extends Controller{
 
         }
 
-        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_for_installation"){
+        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_for_installation" && $mostRecentlyEqTmp->eqTemp_version==1){
             $obj21=([
                 'validation' => ["You can realize technical validation only in waiting for referencing and waiting for installation state"]
             ]);
