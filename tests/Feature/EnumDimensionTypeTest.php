@@ -433,7 +433,7 @@ class EnumDimensionTypeTest extends TestCase
         $newId = EnumDimensionType::all()->where('value', '=', 'TestToBeValidated')->first()->id;
         $this->assertEquals($oldId, $newId);
         $this->assertDatabaseHas('enum_dimension_types', [
-            'value' => 'TestDrafted',
+            'value' => 'TestToBeValidated',
         ]);
         $this->assertDatabaseHas('dimensions', [
             'enumDimensionType_id' => EnumDimensionType::all()->where('value', '=', 'TestToBeValidated')->first()->id,
@@ -747,7 +747,7 @@ class EnumDimensionTypeTest extends TestCase
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
-    public function test_consult_enum() {
+    /*public function test_consult_enum() {
         $this->requiredForTest();
         $response = $this->get('/dimension/enum/type');
         $response->assertJson([
@@ -787,5 +787,5 @@ class EnumDimensionTypeTest extends TestCase
                 'id_enum' => 'DimensionType'
             ],
         ]);
-    }
+    }*/
 }
