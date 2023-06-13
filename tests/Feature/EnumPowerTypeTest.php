@@ -530,7 +530,6 @@ class EnumPowerTypeTest extends TestCase
             'value' => 'TestvalidatedPowType'
         ]);
         $response->assertStatus(200);
-        print_r($response->getContent());
         $response = $this->post('/power/enum/type/update/'.EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
             'value' => 'TestvalidatedPowType',
             'validated_eq' => $tab,

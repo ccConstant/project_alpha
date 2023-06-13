@@ -9,50 +9,52 @@
     <div v-if="loaded==true">
         <div id="page">
             <p>'</p>
-            <table>
+            <table style="border: solid 1px black; margin-left:50px; width: auto;">
                 <tbody>
-                <tr>
-                    <td rowspan="3">
+                <tr style="border: solid 1px black">
+                    <td rowspan="3" style="border: solid 1px black">
                         <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
                     </td>
-                    <td colspan="2">
+                    <td colspan="2" style="border: solid 1px black">
                         <h2>
                             EQUIPMENT LIFE SHEET DESCRIPTIVE PART
                         </h2>
                     </td>
-                    <td>
+                    <td style="border: solid 1px black">
                         <h5>
                             Version : {{eq_idCard.eq_internalReference}}_LS-D_V{{eq_idCard.eq_version[1]}}.{{eq_idCard.eq_version[0]}}
                         </h5>
                     </td>
                 </tr>
-                <tr>
-                    <td>
+                <tr style="border: solid 1px black">
+                    <td style="border: solid 1px black">
                         <p>
                             Technical Review <b class="text-primary">{{ eq_idCard.eq_technicalVerifier_firstName}} {{eq_idCard.eq_technicalVerifier_lastName}} </b>
                         </p>
                     </td>
-                    <td>
+                    <td style="border: solid 1px black">
                         <p>
                             Quality Review <b class="text-primary">{{ eq_idCard.eq_qualityVerifier_firstName}} {{eq_idCard.eq_qualityVerifier_lastName}} </b>
                         </p>
                     </td>
-                    <td>
+                    <td style="border: solid 1px black">
                         <p>
                             Equipment unique ID : <b class="text-primary">{{eq_idCard.eq_internalReference}}</b>
                         </p>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="2">
+                <tr style="border: solid 1px black">
+                    <td colspan="2" style="border: solid 1px black">
                         <p>
-                            Date of signature : <b class="text-primary">
-                            {{
-                                new Date(eq_idCard.eq_signatureDate).getDate()
-                            }} {{
-                                new Date(eq_idCard.eq_signatureDate).toDateString().slice(4, 7)
-                            }} {{ new Date(eq_idCard.eq_signatureDate).getFullYear() }}
-                        </b>
+                            Date of signature :
+                            <b class="text-primary" v-if="eq_idCard.eq_signatureDate !== null">
+                                {{ new Date(eq_idCard.eq_signatureDate.slice(0, 4), eq_idCard.eq_signatureDate.slice(5, 7), eq_idCard.eq_signatureDate.slice(8)).getDate() }}
+                                {{ new Date(eq_idCard.eq_signatureDate.slice(0, 4), eq_idCard.eq_signatureDate.slice(5, 7)-1, eq_idCard.eq_signatureDate.slice(8)).toDateString().slice(4, 7) }}
+                                {{ new Date(eq_idCard.eq_signatureDate.slice(0, 4), eq_idCard.eq_signatureDate.slice(5, 7), eq_idCard.eq_signatureDate.slice(8)).getFullYear() }}
+                            </b>
+                            <b v-else>
+                                /
+                            </b>
                         </p>
                     </td>
                 </tr>
