@@ -102,7 +102,7 @@
                 <div class="le_mme_recordTemplateRefPdf">
                 <div class="le_mme_table_recordTemplateRefPdf">
                      <div class="le_mme_index_recordTemplateRefPdf">
-                        Record Template Ref :  REC-IWE17
+                        Record Template Ref :  REC-IWE17_V1.0
                     </div>
                     <div class="le_mme_confidential_recordTemplateRefPdf">
                         This document contains CONFIDENTIAL information

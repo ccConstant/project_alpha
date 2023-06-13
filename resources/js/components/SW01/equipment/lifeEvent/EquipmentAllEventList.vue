@@ -107,7 +107,7 @@
                 <div class="le_eq_recordTemplateRefPdf">
                 <div class="le_eq_table_recordTemplateRefPdf">
                      <div class="le_eq_index_recordTemplateRefPdf">
-                        Record Template Ref :  REC-IWE13
+                        Record Template Ref :  REC-IWE13_V1.0
                     </div>
                     <div class="le_eq_confidential_recordTemplateRefPdf">
                         This document contains CONFIDENTIAL information
