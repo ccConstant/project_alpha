@@ -398,13 +398,15 @@ export default {
                     }
                     return false;
                 });
-            } else {
+            } else if (this.searchTermInternRef !== "" && this.searchTermName !== "") {
                 res = this.MMEs.filter(option => {
                     if (option.mme_internalReference !== null && option.mme_name !== null) {
                         return option.mme_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase()) && option.mme_name.toLowerCase().includes(this.searchTermName.toLowerCase());
                     }
                     return false;
                 });
+            } else {
+                res = this.MMEs;
             }
             if (this.searchTermTechReview !== -1) {
                 res = res.filter(option => {

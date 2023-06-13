@@ -40,13 +40,13 @@
                                         <p>
                                             Start Date :
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).getDate() }}
-                                            {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).toDateString().slice(4, 7) }}
+                                            {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7)-1, prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).toDateString().slice(4, 7) }}
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).getFullYear() }}
                                         </p>
                                         <p>
                                             End date :
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_endDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(8)).getDate() }}
-                                            {{ new Date(prvMtnOpRlz.prvMtnOpRlz_endDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(8)).toDateString().slice(4, 7) }}
+                                            {{ new Date(prvMtnOpRlz.prvMtnOpRlz_endDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(5, 7)-1, prvMtnOpRlz.prvMtnOpRlz_endDate.slice(8)).toDateString().slice(4, 7) }}
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_endDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(8)).getFullYear() }}
                                         </p>
                                         <p>
@@ -112,13 +112,13 @@
                                         <p>
                                             Start Date :
                                             {{ new Date(curMtnOp.curMtnOp_startDate.slice(0, 4), curMtnOp.curMtnOp_startDate.slice(5, 7), curMtnOp.curMtnOp_startDate.slice(8)).getDate() }}
-                                            {{ new Date(curMtnOp.curMtnOp_startDate.slice(0, 4), curMtnOp.curMtnOp_startDate.slice(5, 7), curMtnOp.curMtnOp_startDate.slice(8)).toDateString().slice(4, 7) }}
+                                            {{ new Date(curMtnOp.curMtnOp_startDate.slice(0, 4), curMtnOp.curMtnOp_startDate.slice(5, 7)-1, curMtnOp.curMtnOp_startDate.slice(8)).toDateString().slice(4, 7) }}
                                             {{ new Date(curMtnOp.curMtnOp_startDate.slice(0, 4), curMtnOp.curMtnOp_startDate.slice(5, 7), curMtnOp.curMtnOp_startDate.slice(8)).getFullYear() }}
                                         </p>
                                         <p>
                                             End date :
                                             {{ new Date(curMtnOp.curMtnOp_endDate.slice(0, 4), curMtnOp.curMtnOp_endDate.slice(5, 7), curMtnOp.curMtnOp_endDate.slice(8)).getDate() }}
-                                            {{ new Date(curMtnOp.curMtnOp_endDate.slice(0, 4), curMtnOp.curMtnOp_endDate.slice(5, 7), curMtnOp.curMtnOp_endDate.slice(8)).toDateString().slice(4, 7) }}
+                                            {{ new Date(curMtnOp.curMtnOp_endDate.slice(0, 4), curMtnOp.curMtnOp_endDate.slice(5, 7)-1, curMtnOp.curMtnOp_endDate.slice(8)).toDateString().slice(4, 7) }}
                                             {{ new Date(curMtnOp.curMtnOp_endDate.slice(0, 4), curMtnOp.curMtnOp_endDate.slice(5, 7), curMtnOp.curMtnOp_endDate.slice(8)).getFullYear() }}
                                         </p>
                                         <p>

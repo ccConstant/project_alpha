@@ -10,6 +10,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\SW01\EnumEquipmentMassUnit;
+use App\Models\SW01\EnumEquipmentType;
+use App\Models\SW01\Equipment;
+use App\Models\SW01\EquipmentTemp;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -721,6 +726,1527 @@ class EquipmentTest extends TestCase
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 23
+     * Add a new equipment as validated with no values
+     * Internal Ref: /
+     * Name: /
+     * External Ref: /
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter an internal reference"
+     *                                      "You must enter an external reference"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_no_values()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_internalReference' => 'You must enter an internal reference',
+            'eq_externalReference' => 'You must enter an external reference',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 24
+     * Add a new equipment as validated with a too short internal reference
+     * Internal Ref: "in"
+     * Name: /
+     * External Ref: /
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter an external reference"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_internal_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_internalReference' => 'You must enter at least 3 characters',
+            'eq_externalReference' => 'You must enter an external reference',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 25
+     * Add a new equipment as validated with a too long internal reference
+     * Internal Ref: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Name: /
+     * External Ref: /
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 16 characters"
+     *                                      "You must enter an external reference"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_internal_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_internalReference' => 'You must enter a maximum of 16 characters',
+            'eq_externalReference' => 'You must enter an external reference',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 26
+     * Add a new equipment as validated with a too short external reference
+     * Internal Ref: "three"
+     * Name: /
+     * External Ref: "in"
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_external_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_externalReference' => 'You must enter at least 3 characters',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 27
+     * Add a new equipment as validated with a too long external reference
+     * Internal Ref: "three"
+     * Name: /
+     * External Ref: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 100 characters"
+     *                                      "You must enter a name"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_external_reference()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_externalReference' => 'You must enter a maximum of 100 characters',
+            'eq_name' => 'You must enter a name',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 28
+     * Add a new equipment as validated with a too short name
+     * Internal Ref: "three"
+     * Name: "in"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_name()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_name' => 'You must enter at least 3 characters',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 29
+     * Add a new equipment as validated with a too long name
+     * Internal Ref: "three"
+     * Name: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: /
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 100 characters"
+     *                                      "You must enter a serial number"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_name()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_name' => 'You must enter a maximum of 100 characters',
+            'eq_serialNumber' => 'You must enter a serial number',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 30
+     * Add a new equipment as validated with a too short serial number
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "in"
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_serial_number()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You must enter at least 3 characters',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 31
+     * Add a new equipment as validated with a too long serial number
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Constructor: /
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 50 characters"
+     *                                      "You must enter a constructor"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_serial_number()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You must enter a maximum of 50 characters',
+            'eq_constructor' => 'You must enter a constructor',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 32
+     * Add a new equipment as validated with a too short constructor
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "in"
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_constructor()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_constructor' => 'You must enter at least 3 characters',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 33
+     * Add a new equipment as validated with a too long constructor
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Mass: /
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 30 characters"
+     *                                      "You must enter a mass"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_constructor()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_constructor' => 'You must enter a maximum of 30 characters',
+            'eq_mass' => 'You must enter a mass',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 34
+     * Add a new equipment as validated with a too long mass
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "three
+     * Mass: 123456789123456789
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: /
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 30 characters"
+     *                                      "You must enter a remark"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_mass()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => '123456789123456789'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_mass' => 'You must enter a maximum of 8 characters',
+            'eq_remarks' => 'You must enter a remark',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 35
+     * Add a new equipment as validated with a too short remark
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Mass: 1234
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: "in"
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_short_remark()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'in'
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_remarks' => 'You must enter at least 3 characters',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 36
+     * Add a new equipment as validated with a too long remark
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Mass: 1234
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Set: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 400 characters"
+     *                                      "You must enter a set"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_remark()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_remarks' => 'You must enter a maximum of 400 characters',
+            'eq_set' => 'You must enter a set',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 37
+     * Add a new equipment as validated with a too long set
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Mass: 1234
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: "three"
+     * Set: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 50 characters"
+     *                                      "You must enter a location"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_set()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_set' => 'You must enter a maximum of 50 characters',
+            'eq_location' => 'You must enter a location'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 38
+     * Add a new equipment as validated with a too long location
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Mass: 1234
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: "three"
+     * Set: "three"
+     * Location: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 255 characters"
+     * @returns void
+     */
+    public function test_add_equipment_validated_long_location()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'eq_location' => 'You must enter a maximum of 255 characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 39
+     * Add a new equipment as validated with correct values but no type
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: /
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Mass: 1234
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: "three"
+     * Set: "three"
+     * Location: "three"
+     * Expected Result: Receiving an error:
+     *                                      "You must choose a type"
+     * @returns void
+     */
+    public function test_add_equipment_validated_no_type()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_type' => 'You must choose a type',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 40
+     * Add a new equipment as validated with correct values but no mass unit
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: "three"
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Mass: 1234
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: "three"
+     * Set: "three"
+     * Location: "three"
+     * Expected Result: Receiving an error:
+     *                                      "You must choose a unit of mass"
+     * @returns void
+     */
+    public function test_add_equipment_validated_no_unit()
+    {
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_massUnit' => 'You must choose a unit of mass',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 41
+     * Add a new equipment as validated with correct values
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Type: "three"
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Mass: 1234
+     * Unit: "three"
+     * Mobil ? : /
+     * Remarks: "three"
+     * Set: "three"
+     * Location: "three"
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_add_equipment_validated_correct_values()
+    {
+        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+        $response=$this->post('/equipment/enum/massUnit/add', [
+            'value' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        $countEqType=EnumEquipmentType::all()->count();
+        $response=$this->post('/equipment/enum/type/add', [
+            'value' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(200);
+        $countEquipment = Equipment::all()->count();
+        $response = $this->post('/equipment/add', [
+            'eq_validate' => 'validated',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+    }
+
+    public function create_equipment($name, $validated = 'drafted') {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => $name,
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', $name)->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => $name,
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => $validated,
+            'eq_internalReference' => $name,
+            'eq_externalReference' => $name,
+            'eq_name' => $name,
+            'eq_serialNumber' => $name,
+            'eq_constructor' => $name,
+            'eq_mass' => 1234,
+            'eq_remarks' => $name,
+            'eq_set' => $name,
+            'eq_location' => $name,
+            'eq_type' => $name,
+            'eq_massUnit' => $name
+        ]);
+        $response->assertStatus(200);
+        $countEquipment = Equipment::all()->count();
+        $response = $this->post('/equipment/add', [
+            'eq_validate' => $validated,
+            'eq_internalReference' => $name,
+            'eq_externalReference' => $name,
+            'eq_name' => $name,
+            'eq_serialNumber' => $name,
+            'eq_constructor' => $name,
+            'eq_mass' => 1234,
+            'eq_remarks' => $name,
+            'eq_set' => $name,
+            'eq_location' => $name,
+            'eq_type' => $name,
+            'eq_massUnit' => $name
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+    }
+
+    /**
+     * Test Conception Number: 42
+     * Update the data of a drafted equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_equipment_drafted_correct_values()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'other',
+            'eq_mass' => 12345,
+            'eq_remarks' => 'other',
+            'eq_set' => 'other',
+            'eq_location' => 'other',
+            'eq_type' => 'other',
+            'eq_massUnit' => 'other'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/'.Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
+            'reason' => 'update',
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'other',
+            'eq_mass' => 12345,
+            'eq_remarks' => 'other',
+            'eq_set' => 'other',
+            'eq_location' => 'other',
+            'eq_type' => 'other',
+            'eq_massUnit' => 'other'
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'other',
+            'eq_set' => 'other',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'other')->last()->id,
+            'eqTemp_location' => 'other',
+            'eqTemp_validate' => 'drafted',
+            'eqTemp_mass' => 12345,
+            'eqTemp_remarks' => 'other',
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'other')->last()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'other')->last()->id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 43
+     * Update the data of a drafted equipment with existent values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_equipment_drafted_existent_values()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three');
+        $this->create_equipment('Exist');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'Exist',
+            'eq_externalReference' => 'Exist',
+            'eq_name' => 'Exist',
+            'eq_serialNumber' => 'Exist',
+            'eq_constructor' => 'Exist',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'Exist',
+            'eq_set' => 'Exist',
+            'eq_location' => 'Exist',
+            'eq_type' => 'Exist',
+            'eq_massUnit' => 'Exist'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_internalReference' => 'This internal reference is already use for another equipment'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 44
+     * Update the data of a to be validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_equipment_toBeValidated_correct_values()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'to_be_validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'other',
+            'eq_mass' => 12345,
+            'eq_remarks' => 'other',
+            'eq_set' => 'other',
+            'eq_location' => 'other',
+            'eq_type' => 'other',
+            'eq_massUnit' => 'other'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/'.Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
+            'reason' => 'update',
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'other',
+            'eq_mass' => 12345,
+            'eq_remarks' => 'other',
+            'eq_set' => 'other',
+            'eq_location' => 'other',
+            'eq_type' => 'other',
+            'eq_massUnit' => 'other'
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'other',
+            'eq_set' => 'other',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'other')->last()->id,
+            'eqTemp_location' => 'other',
+            'eqTemp_validate' => 'drafted',
+            'eqTemp_mass' => 12345,
+            'eqTemp_remarks' => 'other',
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'other')->last()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'other')->last()->id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 45
+     * Update the data of a to be validated equipment with existent values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_equipment_toBeValidated_existent_values()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'to_be_validated');
+        $this->create_equipment('Exist', 'to_be_validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'Exist',
+            'eq_externalReference' => 'Exist',
+            'eq_name' => 'Exist',
+            'eq_serialNumber' => 'Exist',
+            'eq_constructor' => 'Exist',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'Exist',
+            'eq_set' => 'Exist',
+            'eq_location' => 'Exist',
+            'eq_type' => 'Exist',
+            'eq_massUnit' => 'Exist'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_internalReference' => 'This internal reference is already use for another equipment'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 46
+     * Update the internal reference of a validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_internal_reference_equipment_validated()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+           'eq_internalReference' => 'You can\'t modify the internal reference because you have already validated the id card'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 47
+     * Update the external reference of a validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_external_reference_equipment_validated()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_externalReference' => 'You can\'t modify the external reference because you have already validated the id card'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 48
+     * Update the name of a validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_name_equipment_validated()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_name' => 'You can\'t modify the name because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 49
+     * Update the serial number of a validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_serial_number_equipment_validated()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You can\'t modify the serial number because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 50
+     * Update the constructor of a validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_constructor_equipment_validated()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'other',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You can\'t modify the serial number because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 51
+     * Update the set of a validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_set_equipment_validated()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'validated');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'other',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You can\'t modify the set because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 51
+     * Update the set of a validated equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated
+     * @returns void
+     */
+    public function test_update_value_equipment_signed()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => 'other',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+        ]);
+        $oldVersion = Equipment::all()->where('eq_internalReference', '=', 'three')->last()->eq_nbrVersion;
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'update',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 12345,
+            'eq_remarks' => 'other',
+            'eq_set' => 'three',
+            'eq_location' => 'other',
+            'eq_type' => 'other',
+            'eq_massUnit' => 'other'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/'.Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
+            'reason' => 'update',
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'other',
+            'eq_externalReference' => 'other',
+            'eq_name' => 'other',
+            'eq_serialNumber' => 'other',
+            'eq_constructor' => 'other',
+            'eq_mass' => 12345,
+            'eq_remarks' => 'other',
+            'eq_set' => 'other',
+            'eq_location' => 'other',
+            'eq_type' => 'other',
+            'eq_massUnit' => 'other'
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_set' => 'three',
+            'eq_nbrVersion' => $oldVersion + 1
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
+            'eqTemp_location' => 'other',
+            'eqTemp_validate' => 'drafted',
+            'eqTemp_mass' => 12345,
+            'eqTemp_remarks' => 'other',
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'other')->last()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'other')->last()->id,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null
         ]);
     }
 }
