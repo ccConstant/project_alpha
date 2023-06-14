@@ -14,9 +14,11 @@ use App\Models\SW01\EnumEquipmentMassUnit;
 use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\State;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class EquipmentTest extends TestCase
@@ -1612,7 +1614,7 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 42
      * Update the data of a drafted equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: The equipment is correctly saved and modified as drafted
      * @returns void
      */
     public function test_update_equipment_drafted_correct_values()
@@ -1689,7 +1691,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 43
      * Update the data of a drafted equipment with existent values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "This internal reference is already use for another equipment"
      * @returns void
      */
     public function test_update_equipment_drafted_existent_values()
@@ -1737,7 +1740,7 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 44
      * Update the data of a to be validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: The equipment is correctly saved as to_be_validated and modified as drafted
      * @returns void
      */
     public function test_update_equipment_toBeValidated_correct_values()
@@ -1814,7 +1817,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 45
      * Update the data of a to be validated equipment with existent values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "This internal reference is already use for another equipment"
      * @returns void
      */
     public function test_update_equipment_toBeValidated_existent_values()
@@ -1862,7 +1866,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 46
      * Update the internal reference of a validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the internal reference because you have already validated the id card"
      * @returns void
      */
     public function test_update_internal_reference_equipment_validated()
@@ -1909,7 +1914,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 47
      * Update the external reference of a validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the external reference because you have already validated the id card"
      * @returns void
      */
     public function test_update_external_reference_equipment_validated()
@@ -1956,7 +1962,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 48
      * Update the name of a validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the name because you have already validated the id card"
      * @returns void
      */
     public function test_update_name_equipment_validated()
@@ -2003,7 +2010,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 49
      * Update the serial number of a validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the serial number because you have already validated the id card"
      * @returns void
      */
     public function test_update_serial_number_equipment_validated()
@@ -2050,7 +2058,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 50
      * Update the constructor of a validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the constructor because you have already validated the id card"
      * @returns void
      */
     public function test_update_constructor_equipment_validated()
@@ -2097,7 +2106,8 @@ class EquipmentTest extends TestCase
     /**
      * Test Conception Number: 51
      * Update the set of a validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the set because you have already validated the id card"
      * @returns void
      */
     public function test_update_set_equipment_validated()
@@ -2142,9 +2152,9 @@ class EquipmentTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 51
-     * Update the set of a validated equipment with correct values
-     * Expected Result: The equipment is correctly saved as validated
+     * Test Conception Number: 52
+     * Update a signed equipment with correct values
+     * Expected Result: The equipment is correctly saved as validated and updated in the database
      * @returns void
      */
     public function test_update_value_equipment_signed()
@@ -2215,14 +2225,14 @@ class EquipmentTest extends TestCase
         $response = $this->post('/equipment/update/'.Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
             'reason' => 'update',
             'eq_validate' => 'drafted',
-            'eq_internalReference' => 'other',
-            'eq_externalReference' => 'other',
-            'eq_name' => 'other',
-            'eq_serialNumber' => 'other',
-            'eq_constructor' => 'other',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
             'eq_mass' => 12345,
             'eq_remarks' => 'other',
-            'eq_set' => 'other',
+            'eq_set' => 'three',
             'eq_location' => 'other',
             'eq_type' => 'other',
             'eq_massUnit' => 'other'
@@ -2247,6 +2257,175 @@ class EquipmentTest extends TestCase
             'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'other')->last()->id,
             'qualityVerifier_id' => null,
             'technicalVerifier_id' => null
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 53
+     * Send the equipmment list for the list page
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_values_for_list()
+    {
+        $this->create_equipment('three');
+        $response = $this->get('/equipment/equipments');
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => Equipment::all()->last()->id,
+                'eq_internalReference' => 'three',
+                'eq_externalReference' => 'three',
+                'eq_name' => 'three',
+                'eq_state' => 'Waiting_for_referencing',
+                'state_id' => DB::select('SELECT state_id FROM pivot_equipment_temp_state WHERE equipmentTemp_id = '.EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id)[0]->state_id,
+                'eqTemp_lifeSheetCreated' => 0,
+                'alreadyValidatedQuality' => false,
+                'alreadyValidatedTechnical' => false,
+                'eq_version' => 1,
+                'needToBeRealized' => false,
+                'needToBeApprove' => false,
+                'validated' => 'drafted',
+                'signed' => false,
+                'signatureDate' => null,
+            ]
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 54
+     * Send the equipmment list from the state
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_values_from_state()
+    {
+        $this->create_equipment('three');
+        $response = $this->get('/equipments/same_set/three');
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => Equipment::all()->last()->id,
+                'eq_internalReference' => 'three',
+                'eq_externalReference' => 'three',
+                'eq_name' => 'three',
+                'eq_serialNumber' => 'three',
+                'eq_constructor' => 'three',
+                'eq_set' => 'three',
+                'eq_nbrVersion' => 1,
+                'state_id' => null,
+            ]
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 55
+     * Send the equipmment list from the id
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_values_from_id()
+    {
+        $this->create_equipment('three');
+        $response = $this->get('/equipment/'.Equipment::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_type' => 'three',
+            'eq_version' => '01',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => '1234',
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_massUnit' => 'three',
+            'eq_mobility' => false,
+            'eq_validate' => 'drafted',
+            'eq_lifeSheetCreated' => 0,
+            'eq_technicalVerifier_firstName' => NULL,
+            'eq_technicalVerifier_lastName' => NULL,
+            'eq_qualityVerifier_firstName' => NULL,
+            'eq_qualityVerifier_lastName' => NULL,
+            'eq_location' => 'three',
+            'eq_signatureDate' => NULL,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 56
+     * Send a signed equipmment list from the id
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_values_from_id_signed()
+    {
+        $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->get('/equipment/'.Equipment::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_type' => 'three',
+            'eq_version' => '01',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => '1234',
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_massUnit' => 'three',
+            'eq_mobility' => false,
+            'eq_validate' => 'validated',
+            'eq_lifeSheetCreated' => 1,
+            'eq_technicalVerifier_firstName' => 'Verifier',
+            'eq_technicalVerifier_lastName' => 'Verifier',
+            'eq_qualityVerifier_firstName' => 'Verifier',
+            'eq_qualityVerifier_lastName' => 'Verifier',
+            'eq_location' => 'three',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 57
+     * Send the set list
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_sets()
+    {
+        $this->create_equipment('three');
+        $response = $this->get('/equipment/sets');
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'eq_set' => 'three',
+            ]
         ]);
     }
 }
