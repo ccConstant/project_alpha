@@ -963,6 +963,18 @@ class UserController extends Controller{
             ]);
         }
 
+        if ($request->user_signaturePath!=NULL){
+            $request->validate([
+                'user_signaturePath' => ['max:50'],
+            ],[
+                'user_signaturePath.string' => 'Your signature path must be of type string',
+                'user_signaturePath.max' => 'You must enter a maximum of 50 characters',
+            ]);
+            $user->update([
+                'user_signaturePath' => $request->user_signaturePath,
+            ]);
+        }
+
         if ($request->user_password!=NULL){
             $request->validate([
                'user_password' => ['required', Rules\Password::defaults()],

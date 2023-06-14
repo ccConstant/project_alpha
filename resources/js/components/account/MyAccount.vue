@@ -16,6 +16,7 @@
                     <InputTextForm :Errors="errors.user_firstName " v-model="user_firstName" name="user_firstName" label="First name :" inputClassName="form-control" divClassName="user_text_field" :info_text="infos_person[0].info_value"/>
                     <InputTextForm :Errors="errors.user_lastName " v-model="user_lastName" name="user_lastName" label="Last name :" inputClassName="form-control" divClassName="user_text_field" :info_text="infos_person[1].info_value"/>
                     <InputTextForm :Errors="errors.user_pseudo " v-model="user_pseudo" name="user_pseudo" label="Username :" inputClassName="form-control" divClassName="user_text_field" :info_text="infos_person[4].info_value"/>
+                    <InputTextForm :Errors="errors.user_signaturePath " v-model="user_signaturePath" name="user_signaturePath" label="Signature Path :" inputClassName="form-control" divClassName="user_text_field" />
                     <div class="input-group">
                         <InputTextForm :inputClassName="['form-control', !this.formation_eq_ok?'is-invalid':'']" :Errors="errors.user_eq_formation_date" name="user_eq_formation_date" label="Trained to general principles of equipment management since:" :isDisabled="true" divClassName="user_text_field" v-model="user_eq_formation_date"/>
                         <InputDateForm  inputClassName="form-control date-selector" name="selected_eq_formation_date"  isRequired v-model="selected_eq_formation_date"/>
@@ -63,6 +64,7 @@ export default {
             user_lastName:this.$userId.user_lastName,
             user_firstName:this.$userId.user_firstName,
             user_confirmation_password:'',
+            user_signaturePath:this.$userId.user_signaturePath,
             errors:[],
             infos_person:[],
             loaded:false,
@@ -85,6 +87,7 @@ export default {
 			axios.post(postUrlUpdate(this.$userId.id),{
                 user_pseudo:this.user_pseudo,
                 user_firstName:this.user_firstName,
+                user_signaturePath:this.user_signaturePath,
                 user_lastName:this.user_lastName,
                 user_password:this.user_password,
                 user_confirmation_password:this.user_confirmation_password,
