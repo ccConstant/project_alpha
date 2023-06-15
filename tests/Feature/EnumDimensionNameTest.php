@@ -742,7 +742,7 @@ class EnumDimensionNameTest extends TestCase
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
-    /*public function test_consult_enum() {
+    public function test_consult_enum() {
         $this->requiredForTest();
         $response = $this->get('/dimension/enum/name');
         $response->assertJson([
@@ -752,35 +752,10 @@ class EnumDimensionNameTest extends TestCase
                 'id_enum' => 'DimensionName'
             ],
             1 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'Length')->first()->id,
-                'value' => 'Length',
-                'id_enum' => 'DimensionName'
-            ],
-            2 => [
                 'id' => EnumDimensionName::all()->where('value', '=', 'Name')->first()->id,
                 'value' => 'Name',
                 'id_enum' => 'DimensionName'
             ],
-            3 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'TestDrafted')->first()->id,
-                'value' => 'TestDrafted',
-                'id_enum' => 'DimensionName'
-            ],
-            4 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'TestToBeValidated')->first()->id,
-                'value' => 'TestToBeValidated',
-                'id_enum' => 'DimensionName'
-            ],
-            5 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'TestValidated')->first()->id,
-                'value' => 'TestValidated',
-                'id_enum' => 'DimensionName'
-            ],
-            6 => [
-                'id' => EnumDimensionName::all()->where('value', '=', 'Width')->first()->id,
-                'value' => 'Width',
-                'id_enum' => 'DimensionName'
-            ],
         ]);
-    }*/
+    }
 }

@@ -460,7 +460,7 @@ class EnumEquipmentMassUnitTest extends TestCase
      * Unit: TestvalidatedMUnit
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
-     
+     */
     public function test_consult_enum() {
         $this->requiredForTest();
         $response = $this->get('/equipment/enum/massUnit');
@@ -471,35 +471,10 @@ class EnumEquipmentMassUnitTest extends TestCase
                 'id_enum' => 'EquipmentMassUnit'
             ],
             1 => [
-                'id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
-                'value' => 'g',
-                'id_enum' => 'EquipmentMassUnit'
-            ],
-            2 => [
-                'id' => EnumEquipmentMassUnit::all()->where('value', '=', 'kg')->first()->id,
-                'value' => 'kg',
-                'id_enum' => 'EquipmentMassUnit'
-            ],
-            3 => [
-                'id' => EnumEquipmentMassUnit::all()->where('value', '=', 'TestDrafted')->first()->id,
-                'value' => 'TestDrafted',
-                'id_enum' => 'EquipmentMassUnit'
-            ],
-            4 => [
-                'id' => EnumEquipmentMassUnit::all()->where('value', '=', 'TestToBeValidated')->first()->id,
-                'value' => 'TestToBeValidated',
-                'id_enum' => 'EquipmentMassUnit'
-            ],
-            5 => [
-                'id' => EnumEquipmentMassUnit::all()->where('value', '=', 'TestvalidatedMUnit')->first()->id,
-                'value' => 'TestvalidatedMUnit',
-                'id_enum' => 'EquipmentMassUnit'
-            ],
-            6 => [
                 'id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
                 'value' => 'Unit',
                 'id_enum' => 'EquipmentMassUnit'
             ],
         ]);
-    }*/
+    }
 }

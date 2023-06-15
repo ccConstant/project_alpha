@@ -466,50 +466,20 @@ class EnumEquipmentTypeTest extends TestCase
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
-    /*public function test_consult_enum() {
+    public function test_consult_enum() {
         $this->requiredForTest();
         $response = $this->get('/equipment/enum/type');
         $response->assertJson([
             0 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
-                'value' => 'Balance',
-                'id_enum' => 'EquipmentType'
-            ],
-            1 => [
                 'id' => EnumEquipmentType::all()->where('value', '=', 'Exist')->first()->id,
                 'value' => 'Exist',
                 'id_enum' => 'EquipmentType'
             ],
-            2 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'External')->first()->id,
-                'value' => 'External',
-                'id_enum' => 'EquipmentType'
-            ],
-            3 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'Internal')->first()->id,
-                'value' => 'Internal',
-                'id_enum' => 'EquipmentType'
-            ],
-            4 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'TestDrafted')->first()->id,
-                'value' => 'TestDrafted',
-                'id_enum' => 'EquipmentType'
-            ],
-            5 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'TestToBeValidated')->first()->id,
-                'value' => 'TestToBeValidated',
-                'id_enum' => 'EquipmentType'
-            ],
-            6 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'TestvalidatedEQType')->first()->id,
-                'value' => 'TestvalidatedEQType',
-                'id_enum' => 'EquipmentType'
-            ],
-            7 => [
+            1 => [
                 'id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
                 'value' => 'Type',
                 'id_enum' => 'EquipmentType'
             ],
         ]);
-    }*/
+    }
 }

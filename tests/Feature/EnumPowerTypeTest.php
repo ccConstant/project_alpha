@@ -760,7 +760,7 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
-    /*public function test_consult_enum() {
+    public function test_consult_enum() {
         $this->requiredForTest();
         $response = $this->get('/power/enum/type');
         $response->assertJson([
@@ -770,25 +770,10 @@ class EnumPowerTypeTest extends TestCase
                 'id_enum' => 'PowerType'
             ],
             1 => [
-                'id' => EnumPowerType::all()->where('value', '=', 'TestDrafted')->first()->id,
-                'value' => 'TestDrafted',
-                'id_enum' => 'PowerType'
-            ],
-            2 => [
-                'id' => EnumPowerType::all()->where('value', '=', 'TestToBeValidated')->first()->id,
-                'value' => 'TestToBeValidated',
-                'id_enum' => 'PowerType'
-            ],
-            3 => [
-                'id' => EnumPowerType::all()->where('value', '=', 'TestvalidatedPowType')->first()->id,
-                'value' => 'TestvalidatedPowType',
-                'id_enum' => 'PowerType'
-            ],
-            4 => [
                 'id' => EnumPowerType::all()->where('value', '=', 'Type')->first()->id,
                 'value' => 'Type',
                 'id_enum' => 'PowerType'
             ],
         ]);
-    }*/
+    }
 }

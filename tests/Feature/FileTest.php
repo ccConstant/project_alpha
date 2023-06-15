@@ -1179,7 +1179,7 @@ class FileTest extends TestCase
         $response->assertStatus(200);
         $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
         $this->post('/equipment/update/file/' . $file->id, [
-            'file_validate' => 'drafted',
+            'file_validate' => 'validated',
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
             'eq_id' => $equipment->id
@@ -1188,7 +1188,7 @@ class FileTest extends TestCase
         $this->assertDatabaseHas('files', [
             'file_name' => 'NewFile',
             'file_location' => "NewFilePath",
-            'file_validate' => 'drafted',
+            'file_validate' => 'validated',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id
         ]);
         $this->assertDatabaseHas('equipment_temps', [

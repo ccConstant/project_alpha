@@ -747,50 +747,20 @@ class EnumDimensionUnitTest extends TestCase
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
-    /*public function test_consult_enum() {
+    public function test_consult_enum() {
         $this->requiredForTest();
         $response = $this->get('/dimension/enum/unit');
         $response->assertJson([
             0 => [
-                'id' => EnumDimensionUnit::all()->where('value', '=', 'cm')->first()->id,
-                'value' => 'cm',
-                'id_enum' => 'DimensionUnit'
-            ],
-            1 => [
                 'id' => EnumDimensionUnit::all()->where('value', '=', 'Exist')->first()->id,
                 'value' => 'Exist',
                 'id_enum' => 'DimensionUnit'
             ],
-            2 => [
-                'id' => EnumDimensionUnit::all()->where('value', '=', 'km')->first()->id,
-                'value' => 'km',
-                'id_enum' => 'DimensionUnit'
-            ],
-            3 => [
-                'id' => EnumDimensionUnit::all()->where('value', '=', 'mm')->first()->id,
-                'value' => 'mm',
-                'id_enum' => 'DimensionUnit'
-            ],
-            4 => [
-                'id' => EnumDimensionUnit::all()->where('value', '=', 'TestDrafted')->first()->id,
-                'value' => 'TestDrafted',
-                'id_enum' => 'DimensionUnit'
-            ],
-            5 => [
-                'id' => EnumDimensionUnit::all()->where('value', '=', 'TestToBeValidated')->first()->id,
-                'value' => 'TestToBeValidated',
-                'id_enum' => 'DimensionUnit'
-            ],
-            6 => [
-                'id' => EnumDimensionUnit::all()->where('value', '=', 'TestvalidatedUnit')->first()->id,
-                'value' => 'TestvalidatedUnit',
-                'id_enum' => 'DimensionUnit'
-            ],
-            7 => [
+            1 => [
                 'id' => EnumDimensionUnit::all()->where('value', '=', 'Unit')->first()->id,
                 'value' => 'Unit',
                 'id_enum' => 'DimensionUnit'
             ],
         ]);
-    }*/
+    }
 }
