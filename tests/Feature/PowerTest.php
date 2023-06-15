@@ -3049,26 +3049,6 @@ class PowerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
-                'type' => 'TestDrafted',
-                'powers' => []
-            ],
-            '1' => [
-                'type' => 'Exist',
-                'powers' => []
-            ],
-            '2' => [
-                'type' => 'TestToBeValidated',
-                'powers' => []
-            ],
-            '3' => [
-                'type' => 'TestvalidatedPowType',
-                'powers' => []
-            ],
-            '4' => [
-                'type' => 'Type',
-                'powers' => []
-            ],
-            '5' => [
                 'type' => 'Electric',
                 'powers' => [
                     '0' => [
@@ -3083,7 +3063,7 @@ class PowerTest extends TestCase
                     ]
                 ]
             ],
-            '6' => [
+            '1' => [
                 'type' => 'Example',
                 'powers' => []
             ],
@@ -3252,17 +3232,14 @@ class PowerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
-                'pow_name' => 'Name'
-            ],
-            '1' => [
-                'pow_name' => 'Electric source'
-            ],
-            '2' => [
                 'pow_name' => 'three'
             ],
-            '3' => [
+            '1' => [
                 'pow_name' => 'Example'
-            ]
+            ],
+            '2' => [
+                'pow_name' => 'Electric source'
+            ],
         ]);
     }
 

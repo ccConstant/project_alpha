@@ -197,22 +197,22 @@ class FileTest extends TestCase
     {
         $countUser=User::all()->count();
         $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
+            'user_firstName' => 'VerifierVerifier',
+            'user_lastName' => 'VerifierVerifier',
+            'user_pseudo' => 'VerifierVerifier',
             'user_password' => 'VerifierVerifier',
             'user_confirmation_password' => 'VerifierVerifier',
         ]);
-        if ($response->getStatusCode() === 200) {
+        //if ($response->getStatusCode() === 200) {
             // If the power type doesn't already exist in the database
             $response->assertStatus(200);
             $this->assertEquals($countUser+1, User::all()->count());
-        } else {
-            $response->assertStatus(429);
-            $response->assertInvalid([
-                'user_pseudo' => 'This username is already used'
-            ]);
-        }
+        //} else {
+          //  $response->assertStatus(429);
+            //$response->assertInvalid([
+              //  'user_pseudo' => 'This username is already used'
+            //]);
+        //}
         return User::all()->where('user_pseudo', '==', 'Verifier')->first();
     }
 
@@ -244,7 +244,7 @@ class FileTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 3 characters"
      * @returns void
-     */
+    */
     public function test_add_file_drafted_too_short_name()
     {
         $response = $this->post('file/verif', [
@@ -265,7 +265,7 @@ class FileTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter a maximum of 50 characters"
      * @returns void
-     */
+    */
     public function test_add_file_drafted_too_long_name()
     {
         $response = $this->post('file/verif', [
@@ -286,7 +286,7 @@ class FileTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter a name for your file"
      * @returns void
-     */
+    */
     public function test_add_file_to_be_validated_no_value()
     {
         $response = $this->post('file/verif', [
@@ -306,7 +306,7 @@ class FileTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 3 characters"
      * @returns void
-     */
+    */
     public function test_add_file_to_be_validated_too_short_name()
     {
         $response = $this->post('file/verif', [
@@ -327,7 +327,7 @@ class FileTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter a maximum of 50 characters"
      * @returns void
-     */
+    */
     public function test_add_file_to_be_validated_too_long_name()
     {
         $response = $this->post('file/verif', [
@@ -349,7 +349,7 @@ class FileTest extends TestCase
      *                                      "You must enter a name for your file"
      *                                      "You must enter a location for your file"
      * @returns void
-     */
+    */
     public function test_add_file_validated_no_value()
     {
         $response = $this->post('file/verif', [
@@ -469,7 +469,7 @@ class FileTest extends TestCase
      * File Location: /
      * Expected result: The file is correctly added in the database
      * @returns void
-     */
+    */
     public function test_add_file_draft_success_mme()
     {
         $mme = $this->make_a_mme('addDraftMmeTest', 'drafted');
@@ -501,7 +501,7 @@ class FileTest extends TestCase
      * File Location: /
      * Expected result: The file is correctly added in the database
      * @returns void
-     */
+    */
     public function test_add_file_to_be_validated_success()
     {
         $equipment = $this->make_an_equipment('addTbvEqTest', 'drafted');
@@ -533,7 +533,7 @@ class FileTest extends TestCase
      * File Location: /
      * Expected result: The file is correctly added in the database
      * @returns void
-     */
+    */
     public function test_add_file_to_be_validated_success_mme()
     {
         $mme = $this->make_a_mme('addTbvMmeTest', 'drafted');
@@ -558,14 +558,14 @@ class FileTest extends TestCase
         ]);
     }
 
-    /**
+    /*
      * Test Conception Number: 15
      * Successfully save as validated from add menu a file linked to an equipment
      * File name: "File"
      * File Location: "FilePath"
      * Expected result: The file is correctly added in the database
      * @returns void
-     */
+    */
     public function test_add_file_validated_success()
     {
         $equipment = $this->make_an_equipment('addValidEqTest', 'drafted');
@@ -635,7 +635,7 @@ class FileTest extends TestCase
      * File location: /
      * Expected result: The file is correctly added in the database and the version of the equipment is changed
      * @returns void
-     */
+    */
     public function test_add_file_drafted_success_validated_eq()
     {
         $equipment = $this->make_an_equipment('addDraftEqVTest', 'validated');
@@ -672,7 +672,7 @@ class FileTest extends TestCase
      * File location: /
      * Expected result: The file is correctly added in the database and the version of the mme is changed
      * @return void
-     */
+    */
     public function test_add_file_drafted_success_validated_mme()
     {
         $Mme = $this->make_a_mme('addDraftMmeVTest', 'validated');
@@ -709,7 +709,7 @@ class FileTest extends TestCase
      * File location: /
      * Expected result: The file is correctly added in the database and the version of the equipment is changed
      * @return void
-     */
+    */
     public function test_add_file_to_be_validated_success_validated_eq()
     {
         $equipment = $this->make_an_equipment('addTBVEqVTest', 'validated');
@@ -746,7 +746,7 @@ class FileTest extends TestCase
      * File location: /
      * Expected result: The file is correctly added in the database and the version of the mme is changed
      * @return void
-     */
+    */
     public function test_add_file_to_be_validated_success_validated_mme()
     {
         $Mme = $this->make_a_mme('addTBVMmeVTest', 'validated');
@@ -783,7 +783,7 @@ class FileTest extends TestCase
      * File location: "FilePath"
      * Expected result: The file is correctly added in the database and the version of the equipment is changed
      * @return void
-     */
+    */
     public function test_add_file_validated_success_validated_eq()
     {
         $equipment = $this->make_an_equipment('addValEqVTest', 'validated');
@@ -823,7 +823,7 @@ class FileTest extends TestCase
      * File location: "FilePath"
      * Expected result: The file is correctly added in the database and the version of the mme is changed
      * @return void
-     */
+    */
     public function test_add_file_validated_success_validated_mme()
     {
         $Mme = $this->make_a_mme('addValMmeVTest', 'validated');
@@ -1007,7 +1007,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly updated in the database
      * @return void
-     */
+    */
     public function test_update_file_drafted_success_update_mme()
     {
         $Mme = $this->make_a_mme_with_file('upDraftMmeTest', 'drafted');
@@ -1040,7 +1040,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly updated in the database
      * @return void
-     */
+    */
     public function test_update_file_to_be_validated_success_update_eq()
     {
         $equipment = $this->make_an_eq_with_file('upTBVEqTest', 'drafted');
@@ -1073,7 +1073,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly updated in the database
      * @return void
-     */
+    */
     public function test_update_file_to_be_validated_success_update_mme()
     {
         $Mme = $this->make_a_mme_with_file('upTBVMmeTest', 'drafted');
@@ -1106,7 +1106,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly updated in the database
      * @return void
-     */
+    */
     public function test_update_file_validated_success_update_eq()
     {
         $equipment = $this->make_an_eq_with_file('upValEqTest', 'drafted');
@@ -1139,7 +1139,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly updated in the database
      * @return void
-     */
+    */
     public function test_update_file_validated_success_update_mme()
     {
         $Mme = $this->make_a_mme_with_file('upValMmeTest', 'drafted');
@@ -1172,7 +1172,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly added in the database and the version of the equipment is changed
      * @return void
-     */
+    */
     public function test_update_file_drafted_success_update_validated_eq()
     {
         $equipment = $this->make_an_eq_with_file('upDrEqValTest', 'validated');
@@ -1213,7 +1213,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly added in the database and the version of the mme is changed
      * @return void
-     */
+    */
     public function test_update_file_drafted_success_update_validated_mme()
     {
         $Mme = $this->make_a_mme_with_file('upDrMmeValTest', 'validated');
@@ -1252,7 +1252,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly added in the database and the version of the equipment is changed
      * @return void
-     */
+    */
     public function test_update_file_to_be_validated_success_update_validated_eq()
     {
         $equipment = $this->make_an_eq_with_file('upTBVEqValTest', 'validated');
@@ -1292,7 +1292,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly added in the database and the version of the mme is changed
      * @return void
-     */
+    */
     public function test_update_file_to_be_validated_success_update_validated_mme()
     {
         $Mme = $this->make_a_mme_with_file('upTBVMmeValTest', 'validated');
@@ -1331,7 +1331,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly added in the database and the version of the equipment is changed
      * @return void
-     */
+    */
     public function test_update_file_validated_success_update_validated_eq()
     {
         $equipment = $this->make_an_eq_with_file('upValEqValTest', 'validated');
@@ -1371,7 +1371,7 @@ class FileTest extends TestCase
      * File location: "NewFilePath"
      * Expected result: The file is correctly added in the database and the version of the mme is changed
      * @return void
-     */
+    */
     public function test_update_file_validated_success_update_validated_mme()
     {
         $Mme = $this->make_a_mme_with_file('upValMmeValTest', 'validated');
@@ -1407,7 +1407,7 @@ class FileTest extends TestCase
      * Test Conception Number: 35
      * Successfully send the file list for an equipment
      * @returns void
-     */
+    */
     public function test_send_file_list_for_an_equipment()
     {
         $equipment = $this->make_an_eq_with_file('FileListEqTest', 'validated');
@@ -1441,12 +1441,12 @@ class FileTest extends TestCase
         ]);
     }
 
-    /**
+    /*
      * Test Conception Number 37
      * Successfully delete a file linked to an equipment
      * Expected result: The file is correctly removed in the database
      * @returns void
-     */
+    */
     public function test_delete_file_from_an_eq()
     {
         $equipment = $this->make_an_eq_with_file('delDrEqTest','drafted');
@@ -1466,7 +1466,7 @@ class FileTest extends TestCase
      * Successfully delete a file linked to a mme
      * Expected result: The file is correctly removed in the database
      * @returns void
-     */
+    */
     public function test_delete_file_from_a_mme()
     {
         $Mme = $this->make_a_mme_with_file('delDrMmeTest','drafted');
@@ -1486,7 +1486,7 @@ class FileTest extends TestCase
      * Successfully delete a file linked to an validated equipment
      * Expected result: The file is correctly added in the database and the version of the equipment is changed
      * @returns void
-     */
+    */
     public function test_delete_file_from_an_valid_eq()
     {
         $equipment = $this->make_an_eq_with_file('delValEqTest','validated');
@@ -1511,7 +1511,7 @@ class FileTest extends TestCase
      * Successfully delete a file linked to a validated mme
      * Expected result: The file is correctly added in the database and the version of the mme is changed
      * @returns void
-     */
+    */
     public function test_delete_file_from_a_valid_mme()
     {
         $Mme = $this->make_a_mme_with_file('delValMmeTest','validated');

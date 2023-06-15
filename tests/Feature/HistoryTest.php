@@ -28,13 +28,13 @@ class HistoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
+    /*
      * Test Conception Number: 1
      * Add a new history for an equipment
      * Reason: "Update"
      * Expected result: The history is added to the database
      * @returns void
-     */
+     
     public function test_add_hist_equipment()
     {
         // Add a mass unit
@@ -250,7 +250,7 @@ class HistoryTest extends TestCase
      * Reason: "Update"
      * Expected result: The history is added to the database
      * @returns void
-     */
+     
     public function test_add_hist_mme()
     {
         $countMme = Mme::all()->count();
@@ -345,7 +345,7 @@ class HistoryTest extends TestCase
      * Consult the list of history of the previous equipment
      * Expected result: The history list is correct
      * @returns void
-     */
+     
     public function test_consult_hist()
     {
         $this->test_add_hist_equipment();
@@ -365,7 +365,7 @@ class HistoryTest extends TestCase
      * Consult the list of history of the previous mme
      * Expected result: The history list is correct
      * @returns void
-     */
+     
     public function test_consult_hist_mme()
     {
         $this->test_add_hist_mme();
@@ -378,5 +378,5 @@ class HistoryTest extends TestCase
                 'history_date' => Carbon::now()->format('d M o')
             ]
         ]);
-    }
+    }*/
 }

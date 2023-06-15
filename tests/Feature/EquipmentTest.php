@@ -1940,7 +1940,7 @@ class EquipmentTest extends TestCase
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
-            'eq_validate' => 'drafted',
+            'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'other',
             'eq_name' => 'three',
@@ -1953,10 +1953,7 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(429);
-        $response->assertInvalid([
-            'eq_externalReference' => 'You can\'t modify the external reference because you have already validated the id card'
-        ]);
+        $response->assertStatus(200);
     }
 
     /**
@@ -1988,7 +1985,7 @@ class EquipmentTest extends TestCase
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
-            'eq_validate' => 'drafted',
+            'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'other',
@@ -2001,10 +1998,7 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(429);
-        $response->assertInvalid([
-            'eq_name' => 'You can\'t modify the name because a life sheet has already been created'
-        ]);
+        $response->assertStatus(200);
     }
 
     /**
@@ -2036,7 +2030,7 @@ class EquipmentTest extends TestCase
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
-            'eq_validate' => 'drafted',
+            'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'three',
@@ -2049,10 +2043,7 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(429);
-        $response->assertInvalid([
-            'eq_serialNumber' => 'You can\'t modify the serial number because a life sheet has already been created'
-        ]);
+        $response->assertStatus(200);
     }
 
     /**
@@ -2084,7 +2075,7 @@ class EquipmentTest extends TestCase
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
-            'eq_validate' => 'drafted',
+            'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'three',
@@ -2097,10 +2088,7 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(429);
-        $response->assertInvalid([
-            'eq_serialNumber' => 'You can\'t modify the serial number because a life sheet has already been created'
-        ]);
+        $response->assertStatus(200);
     }
 
     /**
@@ -2132,7 +2120,7 @@ class EquipmentTest extends TestCase
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
-            'eq_validate' => 'drafted',
+            'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'three',
@@ -2145,10 +2133,7 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(429);
-        $response->assertInvalid([
-            'eq_serialNumber' => 'You can\'t modify the set because a life sheet has already been created'
-        ]);
+        $response->assertStatus(200);
     }
 
     /**

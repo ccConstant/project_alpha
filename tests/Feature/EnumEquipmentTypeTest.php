@@ -243,7 +243,7 @@ class EnumEquipmentTypeTest extends TestCase
             'eq_mass' => 12,
             'eq_remarks' => 'TestUpdateEnum2',
             'eq_mobility' => true,
-            'eq_type' => 'Balance',
+            'eq_type' => 'Type',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());

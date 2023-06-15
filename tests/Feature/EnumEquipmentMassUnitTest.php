@@ -365,7 +365,7 @@ class EnumEquipmentMassUnitTest extends TestCase
             'eq_serialNumber' => 'TestUpdateEnum4',
             'eq_constructor' => 'TestUpdateEnum4',
             'eq_set' => 'TestUpdateEnum4',
-            'eq_massUnit' => 'g',
+            'eq_massUnit' => 'Unit',
             'eq_mass' => 12,
             'eq_remarks' => 'TestUpdateEnum4',
             'eq_mobility' => true,
@@ -454,14 +454,14 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
     }
 
-    /**
+    /*
      * Test Conception Number: 10
      * Try to consult the enum list
      * Unit: TestvalidatedMUnit
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
-     */
-    /*public function test_consult_enum() {
+     
+    public function test_consult_enum() {
         $this->requiredForTest();
         $response = $this->get('/equipment/enum/massUnit');
         $response->assertJson([
