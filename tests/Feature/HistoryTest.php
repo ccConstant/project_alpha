@@ -34,7 +34,7 @@ class HistoryTest extends TestCase
      * Reason: "Update"
      * Expected result: The history is added to the database
      * @returns void
-     
+    */
     public function test_add_hist_equipment()
     {
         // Add a mass unit
@@ -177,6 +177,7 @@ class HistoryTest extends TestCase
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->last()->id,
         ]);
+        $response->assertStatus(200);
         // Add a new power type
         $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
@@ -250,7 +251,7 @@ class HistoryTest extends TestCase
      * Reason: "Update"
      * Expected result: The history is added to the database
      * @returns void
-     
+    */
     public function test_add_hist_mme()
     {
         $countMme = Mme::all()->count();
@@ -345,7 +346,7 @@ class HistoryTest extends TestCase
      * Consult the list of history of the previous equipment
      * Expected result: The history list is correct
      * @returns void
-     
+    */
     public function test_consult_hist()
     {
         $this->test_add_hist_equipment();
@@ -365,7 +366,7 @@ class HistoryTest extends TestCase
      * Consult the list of history of the previous mme
      * Expected result: The history list is correct
      * @returns void
-     
+    */
     public function test_consult_hist_mme()
     {
         $this->test_add_hist_mme();
@@ -378,5 +379,5 @@ class HistoryTest extends TestCase
                 'history_date' => Carbon::now()->format('d M o')
             ]
         ]);
-    }*/
+    }
 }

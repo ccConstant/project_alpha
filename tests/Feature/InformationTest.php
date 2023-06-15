@@ -66,9 +66,8 @@ class InformationTest extends TestCase
      */
     public function test_consult_eqIdCard_information()
     {
-        if (Information::all()->count() == 0) {
-            $this->add_all_required_information();
-        }
+        $this->assertEquals(Information::all()->count(), 0);
+        $this->add_all_required_information();
         $response = $this->get('/info/send/eqIdCard');
         $response->assertJson([
             '0' => [
@@ -558,16 +557,19 @@ class InformationTest extends TestCase
      */
     public function test_update_information()
     {
-        if (Information::all()->count() == 0) {
+        $this->assertEquals(Information::all()->count(), 0);
+        //if (Information::all()->count() == 0) {
             $this->add_all_required_information();
-        }
-        $response = $this->post('/info/update/'. 1, [
+        //}
+        $response = $this->post('/info/update/'. Information::all()->first()->id, [
             'info_value' => 'edited'
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('information', [
-            'id' => 1,
+            'id' => Information::all()->first()->id,
             'info_value' => 'edited'
         ]);
     }
+
+    
 }

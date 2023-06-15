@@ -953,7 +953,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     */
+     
     public function test_update_his_own_makeQualityValidationRight_permission()
     {
         $this->edit_own_permission('makeQualityValidationRight');
