@@ -562,7 +562,10 @@ class PreventiveMaintenanceOperationController extends Controller
         $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('prvMtnOp_id', '=', $id)->get() ;
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
         if (count($prvMtnOpRlzs)==0){
+            print_r($prvMtnOp);
+            print_r($prvMtnOpsInEq->count());
             foreach($prvMtnOpsInEq as $prvMtnOpInEq){
+                print_r($prvMtnOpInEq);
                 if ($prvMtnOpInEq->prvMtnOp_number>$prvMtnOp->prvMtnOp_number){
                     $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ;
                     $prvMtnOpInDB=PreventiveMaintenanceOperation::findOrFail($prvMtnOpInEq->id) ;

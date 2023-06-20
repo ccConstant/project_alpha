@@ -371,9 +371,16 @@ class EquipmentTest extends TestCase
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three'
         ]);
+        $response->assertStatus(200);
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three'
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
     }
 
@@ -725,9 +732,16 @@ class EquipmentTest extends TestCase
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three'
         ]);
+        $response->assertStatus(200);
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three'
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
     }
 
@@ -1558,6 +1572,21 @@ class EquipmentTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_location' => 'three',
+            'eqTemp_validate' => 'validated',
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_mass' => 1234,
+            'eqTemp_remarks' => 'three',
+            'eqTemp_mobility' => null,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'three')->first()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'three')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
     }
 
     public function create_equipment($name, $validated = 'drafted') {
@@ -1605,10 +1634,26 @@ class EquipmentTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => $name,
-            'eq_massUnit' => $name
+            'eq_massUnit' => $name,
+            'eq_mobility' => '0'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => '1',
+            'eqTemp_location' => $name,
+            'eqTemp_validate' => $validated,
+            'eqTemp_lifeSheetCreated' => '0',
+            'eqTemp_mass' => '1234',
+            'eqTemp_remarks' => $name,
+            'eqTemp_mobility' => '0',
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', $name)->first()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', $name)->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
     }
 
     /**
@@ -1937,6 +1982,29 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType+1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
@@ -1953,7 +2021,10 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_externalReference' => 'You can\'t modify the external reference because you have already validated the id card'
+        ]);
     }
 
     /**
@@ -1982,6 +2053,29 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType+1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
@@ -1998,7 +2092,10 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_name' => 'You can\'t modify the name because a life sheet has already been created'
+        ]);
     }
 
     /**
@@ -2027,6 +2124,29 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType+1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
@@ -2043,7 +2163,10 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_serialNumber' => 'You can\'t modify the serial number because a life sheet has already been created'
+        ]);
     }
 
     /**
@@ -2072,6 +2195,29 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType+1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
@@ -2088,7 +2234,10 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_constructor' => 'You can\'t modify the constructor because a life sheet has already been created'
+        ]);
     }
 
     /**
@@ -2117,6 +2266,29 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType+1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
             'reason' => 'update',
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id,
@@ -2133,7 +2305,10 @@ class EquipmentTest extends TestCase
             'eq_type' => 'three',
             'eq_massUnit' => 'three'
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_set' => 'You can\'t modify the set because a life sheet has already been created'
+        ]);
     }
 
     /**
@@ -2247,7 +2422,7 @@ class EquipmentTest extends TestCase
 
     /**
      * Test Conception Number: 53
-     * Send the equipmment list for the list page
+     * Send the equipment list for the list page
      * Expected Result: The data are correctly sent
      * @returns void
      */
@@ -2279,11 +2454,76 @@ class EquipmentTest extends TestCase
 
     /**
      * Test Conception Number: 54
-     * Send the equipmment list from the state
+     * Send the equipment list for the list page with signed equipment
      * Expected Result: The data are correctly sent
      * @returns void
      */
-    public function test_send_values_from_state()
+    public function test_send_values_for_list_signed()
+    {
+        $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $mostRecentlyEqTmp = EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last();
+        $states=$mostRecentlyEqTmp->states;
+        $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
+        foreach($states as $state){
+            $date=$state->created_at ;
+            $date2=$mostRecentlyState->created_at;
+            if ($date>=$date2){
+                $mostRecentlyState=$state ;
+            }
+        }
+        $response = $this->get('/equipment/equipments');
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => Equipment::all()->last()->id,
+                'eq_internalReference' => 'three',
+                'eq_externalReference' => 'three',
+                'eq_name' => 'three',
+                'eq_state' => 'In_use',
+                'state_id' => $mostRecentlyState->id,
+                'eqTemp_lifeSheetCreated' => 1,
+                'alreadyValidatedQuality' => true,
+                'alreadyValidatedTechnical' => true,
+                'eq_version' => 1,
+                'needToBeRealized' => false,
+                'needToBeApprove' => false,
+                'validated' => 'validated',
+                'signed' => true,
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Test Conception Number: 55
+     * Send the equipment list from the set
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_values_from_set()
     {
         $this->create_equipment('three');
         $response = $this->get('/equipments/same_set/three');
@@ -2304,8 +2544,8 @@ class EquipmentTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 55
-     * Send the equipmment list from the id
+     * Test Conception Number: 56
+     * Send the equipment list from the id
      * Expected Result: The data are correctly sent
      * @returns void
      */
@@ -2339,8 +2579,8 @@ class EquipmentTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 56
-     * Send a signed equipmment list from the id
+     * Test Conception Number: 57
+     * Send a signed equipment list from the id
      * Expected Result: The data are correctly sent
      * @returns void
      */
@@ -2397,7 +2637,7 @@ class EquipmentTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 57
+     * Test Conception Number: 58
      * Send the set list
      * Expected Result: The data are correctly sent
      * @returns void
@@ -2413,4 +2653,30 @@ class EquipmentTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * Test Conception Number: 59
+     * Send the list for annual planning
+     * Expected Result: The data are correctly sent
+     * @returns void
+     *
+    public function test_send_annual_planning()
+    {
+        $this->create_equipment('three');
+        $response = $this->get('/equipment/prvMtnOp/planning');
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => Equipment::all()->last()->id,
+                'eq_internalReference' => 'three',
+                'eq_externalReference' => 'three',
+                'eq_name' => 'three',
+                'eq_serialNumber' => 'three',
+                'eq_constructor' => 'three',
+                'eq_set' => 'three',
+                'eq_nbrVersion' => 1,
+                'state_id' => null,
+            ]
+        ]);
+    }*/
 }

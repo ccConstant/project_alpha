@@ -20,6 +20,11 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_no_warning()
+    {
+        $this->assertTrue(true);
+    }
+
     /*
      * Test Conception Number: 1
      * Save a User with no value
@@ -36,7 +41,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_an_empty_user()
     {
         $response = $this->post('register', []);
@@ -66,7 +71,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_short_first_name()
     {
         $response = $this->post('register', [
@@ -98,7 +103,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_long_first_name() {
         $response = $this->post('register', [
             'user_firstName' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
@@ -128,7 +133,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_short_last_name() {
         $response = $this->post('register', [
             'user_firstName' => 'three',
@@ -158,7 +163,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_long_last_name() {
         $response = $this->post('register', [
             'user_firstName' => 'three',
@@ -187,7 +192,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_short_pseudo() {
         $response = $this->post('register', [
             'user_firstName' => 'three',
@@ -216,7 +221,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_long_pseudo()
     {
         $response = $this->post('register', [
@@ -245,7 +250,7 @@ class UserTest extends TestCase
      *                                      "You must enter at least 8 characters"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_short_password()
     {
         $response = $this->post('register', [
@@ -273,7 +278,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 8 characters"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_too_short_confirm_password()
     {
         $response = $this->post('register', [
@@ -301,7 +306,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "These passwords are different"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_different_password_confirm_password()
     {
         $response = $this->post('register', [
@@ -329,7 +334,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your firstName must be of type string"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_non_string_first_name()
     {
         $response = $this->post('register', [
@@ -357,7 +362,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your lastName must be of type string"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_non_string_last_name()
     {
         $response = $this->post('register', [
@@ -385,7 +390,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your pseudo must be of type string"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_non_string_pseudo()
     {
         $response = $this->post('register', [
@@ -413,7 +418,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your password must be of type string"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_non_string_password()
     {
         $response = $this->post('register', [
@@ -441,7 +446,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your password must be of type string"
      * @returns void
-     
+     */
     public function test_add_a_user_with_a_non_string_confirm_password()
     {
         $response = $this->post('register', [
@@ -468,7 +473,7 @@ class UserTest extends TestCase
      * Initial: /
      * Expected result: The user is saved and correctly added in the database
      * @returns void
-     
+     */
     public function test_add_a_user_with_correct_data()
     {
         $countUsers = User::all()->count();
@@ -501,7 +506,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "This username is already used"
      * @returns void
-     
+     */
     public function test_add_a_user_with_the_same_data_as_a_previous_one()
     {
         // Add the first one
@@ -624,7 +629,7 @@ class UserTest extends TestCase
      * This function is used to edit "three" user permission by the admin user
      * @param $uri
      * @return void
-     
+     */
     private function edit_permission_of_another_user($uri): void
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -661,7 +666,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_menuUserAccessRight_permission()
     {
         $this->edit_own_permission('menuUserAcessRight');
@@ -673,7 +678,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_menuUserAccessRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('menuUserAcessRight');
@@ -684,7 +689,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the menuUserAccessRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_menuUserAccessRight()
     {
         $this->edit_permission_of_another_user('menuUserAcessRight');
@@ -696,7 +701,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_resetUserPasswordRight_permission()
     {
         $this->edit_own_permission('resetUserPasswordRight');
@@ -708,7 +713,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_resetUserPasswordRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('resetUserPasswordRight');
@@ -719,7 +724,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the resetUserPasswordRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_resetUserPasswordRight()
     {
         $this->edit_permission_of_another_user('resetUserPasswordRight');
@@ -731,7 +736,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You don't have the right to update this permission"
      * @returns void
-     
+     */
     public function test_update_a_user_permission_resetUserPasswordRight_without_the_right()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -777,7 +782,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_updateDataInDraftRight_permission()
     {
         $this->edit_own_permission('updateDataInDraftRight');
@@ -789,7 +794,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_updateDataInDraftRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('updateDataInDraftRight');
@@ -801,7 +806,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_a_user_permission_updateDataInDraftRight()
     {
         $this->edit_permission_of_another_user('updateDataInDraftRight');
@@ -813,7 +818,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_validateDescriptiveLifeSheetDataRight_permission()
     {
         $this->edit_own_permission('validateDescriptiveLifeSheetDataRight');
@@ -825,7 +830,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_validateDescriptiveLifeSheetDataRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('validateDescriptiveLifeSheetDataRight');
@@ -836,7 +841,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the validateDescriptiveLifeSheetDataRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_validateDescriptiveLifeSheetDataRight()
     {
         $this->edit_permission_of_another_user('validateDescriptiveLifeSheetDataRight');
@@ -848,7 +853,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_validateOtherDataRight_permission()
     {
         $this->edit_own_permission('validateOtherDataRight');
@@ -860,7 +865,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @return void
-     
+     */
     public function test_update_the_validateOtherDataRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('validateOtherDataRight');
@@ -871,7 +876,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the validateOtherDataRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_validateOtherDataRight()
     {
         $this->edit_permission_of_another_user('validateOtherDataRight');
@@ -883,7 +888,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_updateDataValidatedButNotSignedRight_permission()
     {
         $this->edit_own_permission('updateDataValidatedButNotSignedRight');
@@ -895,7 +900,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_updateDataValidatedButNotSignedRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('updateDataValidatedButNotSignedRight');
@@ -906,7 +911,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the updateDataValidatedButNotSignedRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_updateDataValidatedButNotSignedRight()
     {
         $this->edit_permission_of_another_user('updateDataValidatedButNotSignedRight');
@@ -918,7 +923,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_updateDescriptiveLifeSheetDataSignedRight_permission()
     {
         $this->edit_own_permission('updateDescriptiveLifeSheetDataSignedRight');
@@ -930,7 +935,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_updateDescriptiveLifeSheetDataSignedRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('updateDescriptiveLifeSheetDataSignedRight');
@@ -941,7 +946,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the updateDescriptiveLifeSheetDataSignedRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_updateDescriptiveLifeSheetDataSignedRight()
     {
         $this->edit_permission_of_another_user('updateDescriptiveLifeSheetDataSignedRight');
@@ -953,7 +958,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_makeQualityValidationRight_permission()
     {
         $this->edit_own_permission('makeQualityValidationRight');
@@ -965,7 +970,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_makeQualityValidationRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('makeQualityValidationRight');
@@ -976,7 +981,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the makeQualityValidationRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_makeQualityValidationRight()
     {
         $this->edit_permission_of_another_user('makeQualityValidationRight');
@@ -988,7 +993,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_makeTechnicalValidationRight_permission()
     {
         $this->edit_own_permission('makeTechnicalValidationRight');
@@ -1000,7 +1005,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_makeTechnicalValidationRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('makeTechnicalValidationRight');
@@ -1011,7 +1016,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the makeTechnicalValidationRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_makeTechnicalValidationRight()
     {
         $this->edit_permission_of_another_user('makeTechnicalValidationRight');
@@ -1023,7 +1028,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_makeEqOpValidation_permission()
     {
         $this->edit_own_permission('makeEqOpValidationRight');
@@ -1035,7 +1040,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_makeEqOpValidation_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('makeEqOpValidationRight');
@@ -1046,7 +1051,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the makeEqOpValidationRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_makeEqOpValidation()
     {
         $this->edit_permission_of_another_user('makeEqOpValidationRight');
@@ -1058,7 +1063,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_makeMmeOpValidation_permission()
     {
         $this->edit_own_permission('makeMmeOpValidationRight');
@@ -1070,7 +1075,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_makeMmeOpValidation_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('makeMmeOpValidationRight');
@@ -1081,7 +1086,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the makeMmeOpValidationRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_makeMmeOpValidation()
     {
         $this->edit_permission_of_another_user('makeMmeOpValidationRight');
@@ -1093,7 +1098,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_updateEnumRight_permission()
     {
         $this->edit_own_permission('updateEnumRight');
@@ -1105,7 +1110,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_updateEnumRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('updateEnumRight');
@@ -1116,7 +1121,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the updateEnumRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_updateEnumRight()
     {
         $this->edit_permission_of_another_user('updateEnumRight');
@@ -1128,7 +1133,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_deleteEnumRight_permission()
     {
         $this->edit_own_permission('deleteEnumRight');
@@ -1140,7 +1145,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_deleteEnumRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('deleteEnumRight');
@@ -1151,7 +1156,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the deleteEnumRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_deleteEnumRight()
     {
         $this->edit_permission_of_another_user('deleteEnumRight');
@@ -1163,7 +1168,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_addEnumRight_permission()
     {
         $this->edit_own_permission('addEnumRight');
@@ -1175,7 +1180,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_addEnumRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('addEnumRight');
@@ -1186,7 +1191,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the addEnumRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_addEnumRight()
     {
         $this->edit_permission_of_another_user('addEnumRight');
@@ -1198,7 +1203,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_deleteDataNotValidatedLinkedToEqOrMmeRight_permission()
     {
         $this->edit_own_permission('deleteDataNotValidatedLinkedToEqOrMmeRight');
@@ -1210,7 +1215,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_deleteDataNotValidatedLinkedToEqOrMmeRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('deleteDataNotValidatedLinkedToEqOrMmeRight');
@@ -1221,7 +1226,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the deleteDataNotValidatedLinkedToEqOrMmeRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_deleteDataNotValidatedLinkedToEqOrMmeRight()
     {
         $this->edit_permission_of_another_user('deleteDataNotValidatedLinkedToEqOrMmeRight');
@@ -1233,7 +1238,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_deleteDataValidatedLinkedToEqOrMmeRight_permission()
     {
         $this->edit_own_permission('deleteDataValidatedLinkedToEqOrMmeRight');
@@ -1245,7 +1250,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_deleteDataValidatedLinkedToEqOrMmeRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('deleteDataValidatedLinkedToEqOrMmeRight');
@@ -1256,7 +1261,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the deleteDataValidatedLinkedToEqOrMmeRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_deleteDataValidatedLinkedToEqOrMmeRight()
     {
         $this->edit_permission_of_another_user('deleteDataValidatedLinkedToEqOrMmeRight');
@@ -1268,7 +1273,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_deleteDataSignedLinkedToEqOrMmeRight_permission()
     {
         $this->edit_own_permission('deleteDataSignedLinkedToEqOrMmeRight');
@@ -1280,7 +1285,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_deleteDataSignedLinkedToEqOrMmeRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('deleteDataSignedLinkedToEqOrMmeRight');
@@ -1291,7 +1296,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the deleteDataSignedLinkedToEqOrMmeRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_deleteDataSignedLinkedToEqOrMmeRight()
     {
         $this->edit_permission_of_another_user('deleteDataSignedLinkedToEqOrMmeRight');
@@ -1303,7 +1308,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_deleteEqOrMmeRight_permission()
     {
         $this->edit_own_permission('deleteEqOrMmeRight');
@@ -1315,7 +1320,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_deleteEqOrMmeRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('deleteEqOrMmeRight');
@@ -1326,7 +1331,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the deleteEqOrMmeRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_deleteEqOrMmeRight()
     {
         $this->edit_permission_of_another_user('deleteEqOrMmeRight');
@@ -1338,7 +1343,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_updateInformationRight_permission()
     {
         $this->edit_own_permission('updateInformationRight');
@@ -1350,7 +1355,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_updateInformationRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('updateInformationRight');
@@ -1361,7 +1366,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the updateInformationRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_updateInformationRight()
     {
         $this->edit_permission_of_another_user('updateInformationRight');
@@ -1373,7 +1378,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_personTrainedToGeneralPrinciplesOfEqManagementRight_permission()
     {
         $this->edit_own_permission('personTrainedToGeneralPrinciplesOfEqManagementRight');
@@ -1385,7 +1390,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_personTrainedToGeneralPrinciplesOfEqManagementRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('personTrainedToGeneralPrinciplesOfEqManagementRight');
@@ -1396,7 +1401,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the personTrainedToGeneralPrinciplesOfEqManagementRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_personTrainedToGeneralPrinciplesOfEqManagementRight()
     {
         $this->edit_permission_of_another_user('personTrainedToGeneralPrinciplesOfEqManagementRight');
@@ -1408,7 +1413,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_personTrainedToGeneralPrinciplesOfMMEManagementRight_permission()
     {
         $this->edit_own_permission('personTrainedToGeneralPrinciplesOfMMEManagementRight');
@@ -1420,7 +1425,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_personTrainedToGeneralPrinciplesOfMMEManagementRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('personTrainedToGeneralPrinciplesOfMMEManagementRight');
@@ -1431,7 +1436,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the personTrainedToGeneralPrinciplesOfMMEManagementRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_personTrainedToGeneralPrinciplesOfMMEManagementRight()
     {
         $this->edit_permission_of_another_user('personTrainedToGeneralPrinciplesOfMMEManagementRight');
@@ -1443,7 +1448,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_makeEqRespValidationRight_permission()
     {
         $this->edit_own_permission('makeEqRespValidationRight');
@@ -1455,7 +1460,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_makeEqRespValidationRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('makeEqRespValidationRight');
@@ -1466,7 +1471,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the makeEqRespValidationRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_makeEqRespValidationRight()
     {
         $this->edit_permission_of_another_user('makeEqRespValidationRight');
@@ -1478,7 +1483,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_makeMmeRespValidationRight_permission()
     {
         $this->edit_own_permission('makeMmeRespValidationRight');
@@ -1490,7 +1495,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_makeMmeRespValidationRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('makeMmeRespValidationRight');
@@ -1501,7 +1506,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the makeMmeRespValidationRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_makeMmeRespValidationRight()
     {
         $this->edit_permission_of_another_user('makeMmeRespValidationRight');
@@ -1513,7 +1518,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_makeReformRight_permission()
     {
         $this->edit_own_permission('makeReformRight');
@@ -1525,7 +1530,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_makeReformRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('makeReformRight');
@@ -1536,7 +1541,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the makeReformRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_makeReformRight()
     {
         $this->edit_permission_of_another_user('makeReformRight');
@@ -1548,7 +1553,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update your own permission"
      * @returns void
-     
+     */
     public function test_update_his_own_declareNewStateRight_permission()
     {
         $this->edit_own_permission('declareNewStateRight');
@@ -1560,7 +1565,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't update the permission of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_declareNewStateRight_permission_of_the_admin_user()
     {
         $this->edit_permission_of_admin('declareNewStateRight');
@@ -1571,7 +1576,7 @@ class UserTest extends TestCase
      * Update the permission of a User, we put the declareNewStateRight to false
      * Expected result: The user permissions are correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_a_user_permission_declareNewStateRight()
     {
         $this->edit_permission_of_another_user('declareNewStateRight');
@@ -1589,7 +1594,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't modify your own information here, please go in myAccount menu"
      * @returns void
-     
+     */
     public function test_update_his_own_informations()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1622,7 +1627,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                     "You can't modify the information of the admin user"
      * @returns void
-     
+     */
     public function test_update_the_informations_of_the_admin_user()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1659,7 +1664,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 2 characters"
      * @returns void
-     
+     */
     public function test_update_the_initial_of_another_with_a_too_short_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1692,7 +1697,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter a maximum of 4 characters"
      * @returns void
-     
+     */
     public function test_update_the_initial_of_another_with_a_too_long_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1724,7 +1729,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "This initials is already used"
      * @returns void
-     
+     */
     public function test_update_the_initial_of_another_with_an_already_used_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1757,7 +1762,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your initials must be of type string"
      * @returns void
-     
+     */
     public function test_update_the_initials_non_string_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1792,7 +1797,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You can't entered a leave date that is before start date"
      * @returns void
-     
+     */
     public function test_update_the_working_date_of_another_with_an_end_date_before_the_start_date()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1832,7 +1837,7 @@ class UserTest extends TestCase
      * End date: Carbon::now()->addYear()
      * Expected result: The user is saved and correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_the_working_date_of_another_with_an_end_date_after_the_start_date()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1875,7 +1880,7 @@ class UserTest extends TestCase
      * EQ formation date: Carbon::now()
      * Expected result: The user is saved and correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_the_eq_formation_date_of_another_with_a_correct_date()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1918,7 +1923,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You have to entered a formation equipment date that is after the previous formation equipment date"
      * @returns void
-     
+     */
     public function test_update_the_eq_formation_date_of_another_with_an_end_date_before_the_previously_added()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -1961,7 +1966,7 @@ class UserTest extends TestCase
      * MME formation date: Carbon::now()
      * Expected result: The user is saved and correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_the_mme_formation_date_of_another_with_a_correct_date()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2004,7 +2009,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You have to entered a formation mme date that is after the previous formation mme date"
      * @returns void
-     
+     */
     public function test_update_the_mme_formation_date_of_another_with_an_end_date_before_the_previously_added()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2048,7 +2053,7 @@ class UserTest extends TestCase
      *                                      "You must enter at least 8 characters"
      *                                      "You must confirm your password"
      * @returns void
-     
+     */
     public function test_update_the_password_of_another_with_a_too_short_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2083,7 +2088,7 @@ class UserTest extends TestCase
      *                                      "You must enter a password"
      *                                      "You must enter at least 8 characters"
      * @returns void
-     
+     */
     public function test_update_the_confirmation_password_of_another_with_a_too_short_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2117,7 +2122,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "These passwords are differents"
      * @returns void
-     
+     */
     public function test_update_the_confirmation_password_of_another_with_a_differents_password_and_confirmation_password()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2151,7 +2156,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your password must be of type string"
      * @returns void
-     
+     */
     public function test_update_the_password_of_another_with_a_non_string_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2185,7 +2190,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "Your password must be of type string"
      * @returns void
-     
+     */
     public function test_update_the_confirmation_password_of_another_with_a_non_string_value()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2218,7 +2223,7 @@ class UserTest extends TestCase
      * Initials: "T1"
      * Expected result: The user is correctly saved and updated in the database
      * @returns void
-     
+     */
     public function test_update_correctly_another_user()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2257,7 +2262,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 2 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_short_first_name()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2286,7 +2291,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter a maximum of 50 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_long_first_name()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2315,7 +2320,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 2 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_short_last_name()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2344,7 +2349,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter a maximum of 50 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_long_last_name()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2373,7 +2378,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 8 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_short_password()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2402,7 +2407,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 8 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_short_confirmation_password()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2431,7 +2436,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                     "These passwords are differents"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_different_password_and_confirmation_password()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2461,7 +2466,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter at least 2 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_short_pseudo()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2490,7 +2495,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You must enter a maximum of 50 characters"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_too_long_pseudo()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2519,7 +2524,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                     "This username is already used"
      * @returns void
-     
+     */
     public function test_update_my_account_with_an_already_used_pseudo()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2562,7 +2567,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You have to entered a formation equipment date that is after the previous formation equipment date"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_formation_EQ_date_before_a_previous_one()
     {
         $this->test_update_the_eq_formation_date_of_another_with_a_correct_date();
@@ -2585,7 +2590,7 @@ class UserTest extends TestCase
      * Expected result: Receiving an error:
      *                                      "You have to entered a formation mme date that is after the previous formation mme date"
      * @returns void
-     
+     */
     public function test_update_my_account_with_a_formation_MME_date_before_a_previous_one()
     {
         $this->test_update_the_mme_formation_date_of_another_with_a_correct_date();
@@ -2613,7 +2618,7 @@ class UserTest extends TestCase
      * MME formation date: Carbon::now()
      * Expected result: The User is correctly saved and correctly updated in the database
      * @returns void
-     
+     */
     public function test_update_my_account_with_correct_data()
     {
         if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
@@ -2646,7 +2651,7 @@ class UserTest extends TestCase
      * Consult if the equipment formation is still valid, with a date set at Carbon::now()->subYear()->subYear()
      * Expected result: False
      * @returns void
-     
+     */
     public function test_consult_if_the_equipment_formation_is_still_valid_false()
     {
         $countUsers = User::all()->count();
@@ -2681,7 +2686,7 @@ class UserTest extends TestCase
      * Consult if the equipment formation is still valid, with a date set at Carbon::now()
      * Expected result: True
      * @returns void
-     
+     */
     public function test_consult_if_the_equipment_formation_is_still_valid_true()
     {
         $countUsers = User::all()->count();
@@ -2715,7 +2720,7 @@ class UserTest extends TestCase
      * Consult if the equipment formation is still valid, without date
      * Expected result: False
      * @returns void
-     
+     */
     public function test_consult_if_the_equipment_formation_is_still_valid_without_date()
     {
         $countUsers = User::all()->count();
@@ -2744,7 +2749,7 @@ class UserTest extends TestCase
      * Consult if the mme formation is still valid, with a date set at Carbon::now()->subYear()->subYear()
      * Expected result: False
      * @returns void
-     
+     */
     public function test_consult_if_the_mme_formation_is_still_valid_false()
     {
         $countUsers = User::all()->count();
@@ -2778,7 +2783,7 @@ class UserTest extends TestCase
      * Consult if the mme formation is still valid, with a date set at Carbon::now()
      * Expected result: True
      * @returns void
-     
+     */
     public function test_consult_if_the_mme_formation_is_still_valid_true()
     {
         $countUsers = User::all()->count();
@@ -2812,7 +2817,7 @@ class UserTest extends TestCase
      * Consult if the mme formation is still valid, without date
      * Expected result: False
      * @returns void
-     
+     */
     public function test_consult_if_the_mme_formation_is_still_valid_without_date()
     {
         $countUsers = User::all()->count();
@@ -2841,7 +2846,7 @@ class UserTest extends TestCase
      * Consul the User list (need be run alone)
      * Expected result: The correct list
      * @returns void
-     
+     */
     public function test_consult_the_user_list()
     {
         $this->test_add_a_user_with_correct_data();
@@ -2885,5 +2890,6 @@ class UserTest extends TestCase
                 'user_makeMmeRespValidationRight'
             ]
         ]);
-    }*/
+    }
+
 }

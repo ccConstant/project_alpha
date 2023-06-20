@@ -384,7 +384,7 @@ class MmeController extends Controller{
                     'mme_serialNumber'  => 'required|min:3|max:50',
                     'mme_constructor'  => 'required|min:3|max:30',
                     'mme_remarks'  => 'required|min:3|max:400',
-                    'mme_set'  => 'required|min:1|max:20',
+                    'mme_set'  => 'required|min:1|max:50',
                     'mme_location' => 'required|max:255',
                 ],
                 [
@@ -414,7 +414,7 @@ class MmeController extends Controller{
 
                     'mme_set.required'  => 'You must enter a set',
                     'mme_set.min'  => 'You must enter at least 1 characters ',
-                    'mme_set.max'  => 'You must enter a maximum of 20 characters',
+                    'mme_set.max'  => 'You must enter a maximum of 50 characters',
 
                     'mme_location.required' => 'You must enter a location',
                     'mme_location.max' => 'You must enter a maximum of 255 characters ',
@@ -433,9 +433,9 @@ class MmeController extends Controller{
                     'mme_serialNumber'  => 'max:50',
                     'mme_constructor'  => 'max:30',
                     'mme_remarks'  => 'max:400',
-                    'mme_set'  => 'max:20',
+                    'mme_set'  => 'max:50',
                     'mme_location' => 'max:255',
-                    
+
                 ],
                 [
 
@@ -451,7 +451,7 @@ class MmeController extends Controller{
                     'mme_serialNumber.max'  =>  'You must enter a maximum of 50 characters',
                     'mme_constructor.max'  =>  'You must enter a maximum of 30 characters',
                     'mme_remarks.max'  => 'You must enter a maximum of 400 characters',
-                    'mme_set.max'  => 'You must enter a maximum of 20 characters',
+                    'mme_set.max'  => 'You must enter a maximum of 50 characters',
 
                     'mme_location.max' => 'You must enter a maximum of 255 characters ',
                 ]

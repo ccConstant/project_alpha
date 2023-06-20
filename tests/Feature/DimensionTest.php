@@ -121,6 +121,19 @@ class DimensionTest extends TestCase
             ]);
             $response->assertStatus(200);
             $this->assertCount($countEq + 1, Equipment::all());
+            $this->assertDatabaseHas('equipment', [
+                'eq_internalReference' => $name,
+                'eq_externalReference' => $name,
+            ]);
+            $this->assertDatabaseHas('equipment_temps', [
+                'equipment_id' => Equipment::all()->last()->id,
+                'eqTemp_version' => 1,
+                'eqTemp_validate' => $validate,
+                'eqTemp_lifeSheetCreated' => 0,
+            ]);
+            $this->assertDatabaseHas('pivot_equipment_temp_state', [
+                'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+            ]);
         }
         if ($verifier !== null && User::all()->where('user_pseudo', '=', $verifier)->count() === 0) {
             $countUser = User::all()->count();

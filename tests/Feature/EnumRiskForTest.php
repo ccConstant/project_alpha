@@ -4,60 +4,78 @@ namespace Tests\Feature;
 
 use App\Models\SW01\EnumEquipmentMassUnit;
 use App\Models\SW01\EnumEquipmentType;
+use App\Models\SW01\EnumRiskFor;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\Risk;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class EnumEquipmentTypeTest extends TestCase
+class EnumRiskForTest extends TestCase
 {
     use RefreshDatabase;
     /**
      * Test Conception Number: 1
-     * Try to add a non-existent type in the database
-     * Type: Type
-     * Expected result: The type is correctly added to the database
+     * Try to add a non-existent risk in the database
+     * Risk: Risk
+     * Expected result: The risk is correctly added to the database
      * @return void
      */
-    public function test_add_non_existent_type() {
-        $oldCOunt = EnumEquipmentType::all()->count();
-        $response = $this->post('/equipment/enum/type/add', [
-            'value' => 'Type'
+    public function test_add_non_existent_risk() {
+        $oldCOunt = EnumRiskFor::all()->count();
+        $response = $this->post('/risk/enum/riskfor/add', [
+            'value' => 'Risk'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals(EnumEquipmentType::all()->count(), $oldCOunt+1);
+        $this->assertEquals(EnumRiskFor::all()->count(), $oldCOunt+1);
     }
 
     /**
      * Test Conception Number: 2
-     * Try to add two time the same type in the database
-     * Type: Exist
+     * Try to add two time the same risk in the database
+     * Risk : Exist
      * Expected result: Receiving an error:
-     *                                      "The value of the field for the new dimension type already exist in the data base"
+     *                                      "The value of the field for the new dimension risk already exist in the data base"
      * @return void
      */
-    public function test_add_two_time_same_type() {
-        $oldCOunt = EnumEquipmentType::all()->count();
-        $response = $this->post('/equipment/enum/type/add', [
+    public function test_add_two_time_same_risk() {
+        $oldCOunt = EnumRiskFor::all()->count();
+        $response = $this->post('/risk/enum/riskfor/add', [
             'value' => 'Exist'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals(EnumEquipmentType::all()->count(), $oldCOunt+1);
-        $response = $this->post('/equipment/enum/type/add', [
+        $this->assertEquals(EnumRiskFor::all()->count(), $oldCOunt+1);
+        $response = $this->post('/risk/enum/riskfor/add', [
             'value' => 'Exist'
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'enum_eq_type' => [
-                "The value of the field for the new equipment type already exist in the data base"
+            'enum_riskfor' => [
+                "The value of the field for the new risk target already exist in the data base"
             ]
         ]);
-        $this->assertEquals(EnumEquipmentType::all()->count(), $oldCOunt+1);
+        $this->assertEquals(EnumRiskFor::all()->count(), $oldCOunt+1);
     }
 
     public function requiredForTest() {
+        // Add the different enum of the risk if they didn't already exist in the database
+        if (EnumRiskFor::all()->where('value', '=', 'Risk')->count() === 0) {
+            $countDimName=EnumRiskFor::all()->count();
+            $response=$this->post('/risk/enum/riskfor/add', [
+                'value' => 'Risk',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countDimName+1, EnumRiskFor::all());
+        }
+        if (EnumRiskFor::all()->where('value', '=', 'Exist')->count() === 0) {
+            $countDimName=EnumRiskFor::all()->count();
+            $response=$this->post('/risk/enum/riskfor/add', [
+                'value' => 'Exist',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countDimName+1, EnumRiskFor::all());
+        }
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'g')->count() === 0) {
             $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
             $response=$this->post('/equipment/enum/massUnit/add', [
@@ -66,18 +84,10 @@ class EnumEquipmentTypeTest extends TestCase
             $response->assertStatus(200);
             $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
         }
-        if (EnumEquipmentType::all()->where('value', '=', 'Type')->count() === 0) {
+        if (EnumEquipmentType::all()->where('value', '=', 'Balance')->count() === 0) {
             $countEqType=EnumEquipmentType::all()->count();
             $response=$this->post('/equipment/enum/type/add', [
-                'value' => 'Type',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
-        }
-        if (EnumEquipmentType::all()->where('value', '=', 'Exist')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
-                'value' => 'Exist',
+                'value' => 'Balance',
             ]);
             $response->assertStatus(200);
             $this->assertCount($countEqType+1, EnumEquipmentType::all());
@@ -100,7 +110,7 @@ class EnumEquipmentTypeTest extends TestCase
     /**
      * Test Conception Number: 3
      * Analyze the enum 'Test' and expecting the correct data
-     * Type: Type
+     * Risk: Risk
      * Expected result: The data contain one validated equipment and one not validated
      * @returns void
      */
@@ -120,7 +130,7 @@ class EnumEquipmentTypeTest extends TestCase
             'eq_mass' => 12,
             'eq_remarks' => 'Test',
             'eq_mobility' => true,
-            'eq_type' => 'Type',
+            'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -135,54 +145,102 @@ class EnumEquipmentTypeTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
             'eqTemp_version' => 1,
-            'eqTemp_lifeSheetCreated' => 0,
             'eqTemp_validate' => 'drafted',
+            'eqTemp_lifeSheetCreated' => 0,
             'eqTemp_mass' => 12,
-            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
             'eqTemp_remarks' => 'Test',
-            'eqTemp_mobility' => 1,
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
+            'eqTemp_mobility' => true,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
         ]);
         $this->assertDatabaseHas('pivot_equipment_temp_state', [
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
+        $countDim=Risk::all()->count();
+        $response=$this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim+1, Risk::all());
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
+        ]);
         $response=$this->post('/equipment/add', [
             'eq_validate' => 'validated',
-            'eq_internalReference' => 'TestvalidatedEQType',
-            'eq_externalReference' => 'TestvalidatedEQType',
-            'eq_name' => 'TestvalidatedEQType',
-            'eq_serialNumber' => 'TestvalidatedEQType',
-            'eq_constructor' => 'TestvalidatedEQType',
-            'eq_set' => 'TestvalidatedEQType',
+            'eq_internalReference' => 'Testvalidated',
+            'eq_externalReference' => 'Testvalidated',
+            'eq_name' => 'Testvalidated',
+            'eq_serialNumber' => 'Testvalidated',
+            'eq_constructor' => 'Testvalidated',
+            'eq_set' => 'Testvalidated',
             'eq_massUnit' => 'g',
             'eq_mass' => 12,
-            'eq_remarks' => 'TestvalidatedEQType',
+            'eq_remarks' => 'Testvalidated',
             'eq_mobility' => true,
-            'eq_type' => 'Type',
+            'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+2, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
-            'eq_internalReference' => 'TestvalidatedEQType',
-            'eq_externalReference' => 'TestvalidatedEQType',
-            'eq_name' => 'TestvalidatedEQType',
-            'eq_serialNumber' => 'TestvalidatedEQType',
-            'eq_constructor' => 'TestvalidatedEQType',
-            'eq_set' => 'TestvalidatedEQType',
+            'eq_internalReference' => 'Testvalidated',
+            'eq_externalReference' => 'Testvalidated',
+            'eq_name' => 'Testvalidated',
+            'eq_serialNumber' => 'Testvalidated',
+            'eq_constructor' => 'Testvalidated',
+            'eq_set' => 'Testvalidated',
         ]);
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
             'eqTemp_version' => 1,
-            'eqTemp_lifeSheetCreated' => 0,
             'eqTemp_validate' => 'validated',
+            'eqTemp_lifeSheetCreated' => 0,
             'eqTemp_mass' => 12,
+            'eqTemp_remarks' => 'Testvalidated',
+            'eqTemp_mobility' => true,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
             'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
-            'eqTemp_remarks' => 'TestvalidatedEQType',
-            'eqTemp_mobility' => 1,
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
         ]);
         $this->assertDatabaseHas('pivot_equipment_temp_state', [
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
+        $countDim=Risk::all()->count();
+        $response=$this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim+1, Risk::all());
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
         ]);
         $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
             'reason' => 'technical',
@@ -195,7 +253,7 @@ class EnumEquipmentTypeTest extends TestCase
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
-        $response = $this->post('equipment/enum/type/analyze/' . EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id);
+        $response = $this->post('/risk/enum/riskfor/analyze/' . EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id);
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'id',
@@ -203,7 +261,7 @@ class EnumEquipmentTypeTest extends TestCase
             'validated_eq',
         ]);
         $response->assertJson([
-            'id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
+            'id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
             'equipments' => [
                 '0' => [
                     "eqTemp_id" => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'Test')->last()->id)->first()->id,
@@ -213,9 +271,9 @@ class EnumEquipmentTypeTest extends TestCase
             ],
             'validated_eq' => [
                 '0' => [
-                    "eqTemp_id" => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'TestvalidatedEQType')->first()->id)->first()->id,
-                    "name" => "TestvalidatedEQType",
-                    "internalReference" => "TestvalidatedEQType"
+                    "eqTemp_id" => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'Testvalidated')->first()->id)->first()->id,
+                    "name" => "Testvalidated",
+                    "internalReference" => "Testvalidated"
                 ]
             ],
         ]);
@@ -223,12 +281,12 @@ class EnumEquipmentTypeTest extends TestCase
 
     /**
      * Test Conception Number: 4
-     * Try to update an enum linked to drafted equipment with a non-existent type in the database
-     * Type: TestDrafted
-     * Expected result: The type is correctly updated in the database
+     * Try to update an enum linked to drafted equipment with a non-existent risk in the database
+     * Risk: TestDrafted
+     * Expected result: The risk is correctly updated in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_drafted_with_non_existent_type() {
+    public function test_update_enum_linked_to_drafted_with_non_existent_risk() {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
         $response=$this->post('/equipment/add', [
@@ -243,7 +301,7 @@ class EnumEquipmentTypeTest extends TestCase
             'eq_mass' => 12,
             'eq_remarks' => 'TestUpdateEnum1',
             'eq_mobility' => true,
-            'eq_type' => 'Type',
+            'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -258,43 +316,75 @@ class EnumEquipmentTypeTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
             'eqTemp_version' => 1,
-            'eqTemp_lifeSheetCreated' => 0,
             'eqTemp_validate' => 'drafted',
+            'eqTemp_lifeSheetCreated' => 0,
             'eqTemp_mass' => 12,
-            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
             'eqTemp_remarks' => 'TestUpdateEnum1',
-            'eqTemp_mobility' => 1,
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
+            'eqTemp_mobility' => true,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
         ]);
         $this->assertDatabaseHas('pivot_equipment_temp_state', [
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
-        $oldId = EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id;
-        $response = $this->post('/equipment/enum/type/verif/' . EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id, [
+        $countDim=Risk::all()->count();
+        $response=$this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim+1, Risk::all());
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
+        ]);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $oldId = EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id;
+        $response = $this->post('/risk/enum/riskfor/verif/' . EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id, [
             'value' => 'TestDrafted'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/equipment/enum/type/update/'.EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id, [
+        $response = $this->post('/risk/enum/riskfor/update/'.EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id, [
             'value' => 'TestDrafted',
             'validated_eq' => []
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $newId = EnumEquipmentType::all()->where('value', '=', 'TestDrafted')->first()->id;
+        $newId = EnumRiskFor::all()->where('value', '=', 'TestDrafted')->first()->id;
         $this->assertEquals($oldId, $newId);
-        $this->assertDatabaseHas('enum_equipment_types', [
+        $this->assertDatabaseHas('enum_risk_fors', [
             'value' => 'TestDrafted',
+        ]);
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'TestDrafted')->first()->id,
         ]);
     }
 
     /**
      * Test Conception Number: 5
-     * Try to update an enum linked to to_be_validated equipment with a non-existent type in the database
-     * Type: TestToBeValidated
-     * Expected result: The type is correctly updated in the database
+     * Try to update an enum linked to to_be_validated equipment with a non-existent risk in the database
+     * Risk: TestToBeValidated
+     * Expected result: The risk is correctly updated in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_toBeValidated_with_non_existent_type() {
+    public function test_update_enum_linked_to_toBeValidated_with_non_existent_risk() {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
         $response=$this->post('/equipment/add', [
@@ -309,7 +399,7 @@ class EnumEquipmentTypeTest extends TestCase
             'eq_mass' => 12,
             'eq_remarks' => 'TestUpdateEnum2',
             'eq_mobility' => true,
-            'eq_type' => 'Type',
+            'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -330,37 +420,69 @@ class EnumEquipmentTypeTest extends TestCase
             'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
             'eqTemp_remarks' => 'TestUpdateEnum2',
             'eqTemp_mobility' => 1,
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
         ]);
         $this->assertDatabaseHas('pivot_equipment_temp_state', [
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
-        $response = $this->post('/equipment/enum/type/verif/' . EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id, [
+        $countDim=Risk::all()->count();
+        $response=$this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim+1, Risk::all());
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
+        ]);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $response = $this->post('/risk/enum/riskfor/verif/' . EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id, [
             'value' => 'TestToBeValidated'
         ]);
         $response->assertStatus(200);
-        $oldId = EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id;
-        $response = $this->post('/equipment/enum/type/update/'.EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id, [
+        $oldId = EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id;
+        $response = $this->post('/risk/enum/riskfor/update/'.EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id, [
             'value' => 'TestToBeValidated',
             'validated_eq' => []
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $newId = EnumEquipmentType::all()->where('value', '=', 'TestToBeValidated')->first()->id;
+        $newId = EnumRiskFor::all()->where('value', '=', 'TestToBeValidated')->first()->id;
         $this->assertEquals($oldId, $newId);
-        $this->assertDatabaseHas('enum_equipment_types', [
+        $this->assertDatabaseHas('enum_risk_fors', [
             'value' => 'TestToBeValidated',
+        ]);
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'TestToBeValidated')->first()->id,
         ]);
     }
 
     /**
      * Test Conception Number: 6
-     * Try to update an enum linked to validated equipment with a non-existent type in the database
-     * Type: TestvalidatedEQType
-     * Expected result: The type is correctly updated in the database, and a history is created in the database
+     * Try to update an enum linked to validated equipment with a non-existent risk in the database
+     * Risk: TestValidated
+     * Expected result: The risk is correctly updated in the database, and a history is created in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_validated_with_non_existent_type() {
+    public function test_update_enum_linked_to_validated_with_non_existent_risk() {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
         $response=$this->post('/equipment/add', [
@@ -375,7 +497,7 @@ class EnumEquipmentTypeTest extends TestCase
             'eq_mass' => 12,
             'eq_remarks' => 'TestUpdateEnum3',
             'eq_mobility' => true,
-            'eq_type' => 'Type',
+            'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -396,11 +518,36 @@ class EnumEquipmentTypeTest extends TestCase
             'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
             'eqTemp_remarks' => 'TestUpdateEnum3',
             'eqTemp_mobility' => 1,
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
         ]);
         $this->assertDatabaseHas('pivot_equipment_temp_state', [
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
+        $countDim=Risk::all()->count();
+        $response=$this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim+1, Risk::all());
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
+        ]);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
         $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
@@ -422,8 +569,8 @@ class EnumEquipmentTypeTest extends TestCase
             'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
             'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
-        $oldId = EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id;
-        $response = $this->post('/equipment/enum/type/analyze/' . EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id);
+        $oldId = EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id;
+        $response = $this->post('/risk/enum/riskfor/analyze/' . EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id);
         $response->assertStatus(200);
         $tab = array();
         foreach (json_decode($response->getContent())->validated_eq as $eq) {
@@ -433,20 +580,28 @@ class EnumEquipmentTypeTest extends TestCase
                 'internalReference' => $eq->internalReference,
             ));
         }
-        $response = $this->post('/equipment/enum/type/verif/' . EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id, [
-            'value' => 'TestvalidatedEQType'
+        $response = $this->post('/risk/enum/riskfor/verif/' . EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id, [
+            'value' => 'TestValidated'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/equipment/enum/type/update/'.EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id, [
-            'value' => 'TestvalidatedEQType',
+        $response = $this->post('/risk/enum/riskfor/update/'.EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id, [
+            'value' => 'TestValidated',
             'validated_eq' => $tab,
             'history_reasonUpdate' => 'TestUpdateEnum3',
         ]);
         $response->assertStatus(200);
-        $newId = EnumEquipmentType::all()->where('value', '=', 'TestvalidatedEQType')->first()->id;
+        $this->assertCount($countDim+1, Risk::all());
+        $newId = EnumRiskFor::all()->where('value', '=', 'TestValidated')->first()->id;
         $this->assertEquals($oldId, $newId);
-        $this->assertDatabaseHas('enum_equipment_types', [
-            'value' => 'TestvalidatedEQType',
+        $this->assertDatabaseHas('enum_risk_fors', [
+            'value' => 'TestValidated',
+        ]);
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'TestValidated')->first()->id,
         ]);
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
@@ -462,10 +617,10 @@ class EnumEquipmentTypeTest extends TestCase
 
     /**
      * Test Conception Number: 7
-     * Try to update an enum linked to equipment with an existent type in the database
-     * Type: /
+     * Try to update an enum linked to equipment with an existent risk in the database
+     * Risk: /
      * Expected result: Receiving an error:
-     *                                      "The value of the field for the dimension type already exist in the data base"
+     *                                      "The value of the field for the dimension risk already exist in the data base"
      * @returns void
      */
     public function test_update_enum_with_existant_value() {
@@ -483,7 +638,7 @@ class EnumEquipmentTypeTest extends TestCase
             'eq_mass' => 12,
             'eq_remarks' => 'TestUpdateEnum4',
             'eq_mobility' => true,
-            'eq_type' => 'Type',
+            'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -504,41 +659,66 @@ class EnumEquipmentTypeTest extends TestCase
             'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
             'eqTemp_remarks' => 'TestUpdateEnum4',
             'eqTemp_mobility' => 1,
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
         ]);
         $this->assertDatabaseHas('pivot_equipment_temp_state', [
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
-        $response = $this->post('/equipment/enum/type/verif/' . EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id, [
+        $countDim=Risk::all()->count();
+        $response=$this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim+1, Risk::all());
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
+        ]);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $response = $this->post('/risk/enum/riskfor/verif/' . EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id, [
             'value' => 'Exist'
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'enum_eq_type' => 'The value of the field for the equipment type already exist in the data base'
+            'enum_riskfor' => 'The value of the field for the risk target already exist in the data base'
         ]);
     }
 
     /**
      * Test Conception Number: 8
      * Try to delete an enum not linked to an equipment
-     * Type: /
-     * Expected result: The type is correctly deleted in the database
+     * Risk: /
+     * Expected result: The risk is correctly deleted in the database
      * @returns void
      */
     public function test_delete_enum_not_linked() {
         $this->requiredForTest();
-        $countEnumDimType = EnumEquipmentType::all()->count();
-        $response = $this->post('/equipment/enum/type/delete/'.EnumEquipmentType::all()->where('value', '=', 'Exist')->first()->id);
+        $countEnumDimName = EnumRiskFor::all()->count();
+        $response = $this->post('/risk/enum/riskfor/delete/'.EnumRiskFor::all()->where('value', '=', 'Exist')->first()->id);
         $response->assertStatus(200);
-        $this->assertCount($countEnumDimType-1, EnumEquipmentType::all());
+        $this->assertCount($countEnumDimName-1, EnumRiskFor::all());
     }
 
     /**
      * Test Conception Number: 9
      * Try to delete an enum linked to an equipment
-     * Type: TestvalidatedEQType
+     * Risk: TestValidated
      * Expected result: Receiving an error:
-     *                                      "This value is already used in the data base so you can\'t delete it"
+     *                                      "This value is already used in the data base so you can't delete it"
      * @returns void
      */
     public function test_delete_enum_linked() {
@@ -556,7 +736,7 @@ class EnumEquipmentTypeTest extends TestCase
             'eq_mass' => 12,
             'eq_remarks' => 'TestUpdateEnum3',
             'eq_mobility' => true,
-            'eq_type' => 'Type',
+            'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
@@ -577,11 +757,36 @@ class EnumEquipmentTypeTest extends TestCase
             'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
             'eqTemp_remarks' => 'TestUpdateEnum3',
             'eqTemp_mobility' => 1,
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
         ]);
         $this->assertDatabaseHas('pivot_equipment_temp_state', [
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
+        $countDim=Risk::all()->count();
+        $response=$this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+        ]);
+        $response->assertStatus(200);
+        $response=$this->post('/equipment/add/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'risk_for' => 'Risk',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim+1, Risk::all());
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
+        ]);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
         $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
@@ -603,36 +808,43 @@ class EnumEquipmentTypeTest extends TestCase
             'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
             'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
-        $response = $this->post('/equipment/enum/type/delete/'.EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id);
+        $response = $this->post('/risk/enum/riskfor/delete/'.EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'enum_eq_type' => 'This value is already used in the data base so you can\'t delete it'
+            'enum_riskfor' => 'This value is already used in the data base so you can\'t delete it'
         ]);
-        $this->assertDatabaseHas('enum_equipment_types', [
-            'value' => 'Type',
+        $this->assertDatabaseHas('enum_risk_fors', [
+            'value' => 'Risk',
+        ]);
+        $this->assertDatabaseHas('risks', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id,
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'Test',
+            'risk_wayOfControl' => 'Test',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
         ]);
     }
 
     /**
      * Test Conception Number: 10
      * Try to consult the enum list
-     * Type: TestvalidatedEQType
+     * Risk: TestValidated
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
     public function test_consult_enum() {
         $this->requiredForTest();
-        $response = $this->get('/equipment/enum/type');
+        $response = $this->get('/risk/enum/riskfor');
         $response->assertJson([
             0 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'Exist')->first()->id,
+                'id' => EnumRiskFor::all()->where('value', '=', 'Exist')->first()->id,
                 'value' => 'Exist',
-                'id_enum' => 'EquipmentType'
+                'id_enum' => 'RiskFor'
             ],
             1 => [
-                'id' => EnumEquipmentType::all()->where('value', '=', 'Type')->first()->id,
-                'value' => 'Type',
-                'id_enum' => 'EquipmentType'
+                'id' => EnumRiskFor::all()->where('value', '=', 'Risk')->first()->id,
+                'value' => 'Risk',
+                'id_enum' => 'RiskFor'
             ],
         ]);
     }
