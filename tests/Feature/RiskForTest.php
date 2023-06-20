@@ -7,6 +7,8 @@ use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\EnumRiskFor;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\PreventiveMaintenanceOperation;
+use App\Models\SW01\Risk;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -614,6 +616,864 @@ class RiskForTest extends TestCase
             'eqTemp_version' => 2,
             'qualityVerifier_id' => null,
             'technicalVerifier_id' => null,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 19
+     * Update a risk linked to equipment
+     * Remarks: "other"
+     * Way Of Control: "other"
+     * Risk For: "Risk"
+     * Expected result: The risk is update in the database
+     * @return void
+     */
+    public function test_update_risk_correct_values()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'drafted');
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+        ]);
+        $response = $this->post('/equipment/update/risk/'.Risk::all()->last()->id, [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'risk_validate' => 'validated'
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 20
+     * Update a risk linked to signed equipment
+     * Remarks: "other"
+     * Way Of Control: "other"
+     * Risk For: "Risk"
+     * Expected result: The risk is update in the database, and the equipment is no longer signed
+     * @return void
+     */
+    public function test_update_risk_correct_values_signed()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+        ]);
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/risk/'.Risk::all()->last()->id, [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'risk_validate' => 'validated'
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => $eq_id,
+            'eqTemp_version' => 2,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 21
+     * Add a risk as drafted to a preventive maintenance operation with correct values
+     * Remarks: "three"
+     * Way Of Control: "three"
+     * Risk For: "Risk"
+     * Expected result: The risk is added in the database
+     * @return void
+     */
+    public function test_add_risk_correct_values_preventive_maintenance_drafted()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'drafted',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'drafted',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 22
+     * Add a risk as to be validated to a preventive maintenance operation with correct values
+     * Remarks: "three"
+     * Way Of Control: "three"
+     * Risk For: "Risk"
+     * Expected result: The risk is added in the database
+     * @return void
+     */
+    public function test_add_risk_correct_values_preventive_maintenance_to_be_validated()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'to_be_validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'to_be_validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'to_be_validated',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 23
+     * Add a risk as validated to a preventive maintenance operation with correct values
+     * Remarks: "three"
+     * Way Of Control: "three"
+     * Risk For: "Risk"
+     * Expected result: The risk is added in the database
+     * @return void
+     */
+    public function test_add_risk_correct_values_preventive_maintenance_validated()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 24
+     * Add a risk to a preventive maintenance operation linked to signed equipment
+     * Remarks: "three"
+     * Way Of Control: "three"
+     * Risk For: "Risk"
+     * Expected result: The risk is added in the database
+     * @return void
+     */
+    public function test_add_risk_correct_values_preventive_maintenance_signed()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => $eq_id,
+            'eqTemp_version' => 2,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 25
+     * Update a risk linked to a preventive maintenance operation
+     * Remarks: "other"
+     * Way Of Control: "other"
+     * Risk For: "Risk"
+     * Expected result: The risk is update in the database
+     * @return void
+     */
+    public function test_update_risk_preventive_maintenance()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'drafted');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response = $this->post('/equipment/update/prvMtnOp/risk/'.Risk::all()->last()->id, [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'risk_for' => 'Risk',
+            'risk_validate' => 'validated',
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 26
+     * Update a risk linked to a preventive maintenance and to signed equipment
+     * Remarks: "other"
+     * Way Of Control: "other"
+     * Risk For: "Risk"
+     * Expected result: The risk is update in the database, and the equipment is no longer signed
+     * @return void
+     */
+    public function test_update_risk_preventive_maintenance_signed()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/prvMtnOp/risk/'.Risk::all()->last()->id, [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'risk_for' => 'Risk',
+            'risk_validate' => 'validated',
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'other',
+            'risk_wayOfControl' => 'other',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => $eq_id,
+            'eqTemp_version' => 2,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 27
+     * Delete a risk linked to equipment
+     * Expected result: The risk is deleted from the database
+     * @return void
+     */
+    public function test_delete_risk_equipment()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+        ]);
+        $response = $this->post('/equipment/delete/risk/'.Risk::all()->last()->id, [
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+            ]);
+    }
+
+    /**
+     * Test Conception Number: 28
+     * Delete a risk linked to signed equipment
+     * Expected result: The risk is deleted from the database, and the equipment is no longer signed
+     * @return void
+     */
+    public function test_delete_risk_equipment_signed()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+        ]);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->post('/equipment/delete/risk/'.Risk::all()->last()->id, [
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('risks', [
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
+            'risk_validate' => 'validated',
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 29
+     * Send the risk list linked to equipment
+     * Expected result: The data are correctly sent
+     * @return void
+     */
+    public function test_send_risk_equipment()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id
+        ]);
+        $response->assertStatus(200);
+        $response = $this->get('/equipment/risk/send/'.$eq_id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'risk_remarks' => 'three',
+                'risk_wayOfControl' => 'three',
+                'risk_for' => 'Risk',
+                'risk_validate' => 'validated',
+                'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
+            ]
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 29
+     * Send the risk of preventive maintenance
+     * Expected result: The data are correctly sent
+     * @return void
+     */
+    public function test_send_risk_preventive()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $response = $this->get('/prvMtnOp/risk/send/'.PreventiveMaintenanceOperation::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'risk_remarks' => 'three',
+                'risk_wayOfControl' => 'three',
+                'risk_for' => 'Risk',
+                'risk_validate' => 'validated',
+                'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+            ]
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 29
+     * Send the risk in the pdf format of preventive maintenance
+     * Expected result: The data are correctly sent
+     * @return void
+     */
+    public function test_send_risk_preventive_pdf()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'validated');
+
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+        ]);
+
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk'
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp/risk', [
+            'risk_validate' => 'validated',
+            'risk_remarks' => 'three',
+            'risk_wayOfControl' => 'three',
+            'risk_for' => 'Risk',
+            'eq_id' => $eq_id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+        ]);
+        $response->assertStatus(200);
+        $response = $this->get('/prvMtnOp/risk/send/pdf/'.EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'risk_remarks' => 'three',
+                'risk_wayOfControl' => 'three',
+                'risk_for' => 'Risk',
+                'risk_validate' => 'validated',
+                'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
+            ]
         ]);
     }
 }
