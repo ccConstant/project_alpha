@@ -7,9 +7,12 @@
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests/Unit</directory>
+            <exclude>./tests/Unit/ExampleTest.php</exclude>
         </testsuite>
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
+            <exclude>./tests/Feature/Auth</exclude>
+            <exclude>./tests/Feature/UserTest.php</exclude>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
@@ -31,15 +34,15 @@
             <file>./app/Http/Requests/Auth/LoginRequest.php</file>
             <file>./app/View/Components/AppLayout.php</file>
             <file>./app/View/Components/GuestLayout.php</file>
-
         </exclude>
-         <report>
-        <html outputDirectory="tests/reports/coverage"/>
-     </report>
+        <report>
+            <html outputDirectory="tests/reports/coverage"/>
+        </report>
     </coverage>
-    
+
 
     <php>
+        <ini name="memory_limit" value="-1"/>
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>

@@ -43,7 +43,12 @@
                                     <p class="redText"> {{ verif.Number }}</p>
                                 </b-col>
                                 <b-col class="planning_table_nextDate" cols="4">
-                                    <p class="redText"> {{ verif.nextDate }}</p>
+                                    <p v-if="verif.nextDate != null">
+                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getDate() }}
+                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7)-1, verif.nextDate.slice(8)).toDateString().slice(4, 7) }}
+                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getFullYear() }}
+                                    </p>
+                                    <p v-else>/</p>
                                 </b-col>
                             </b-row>
                         </div>
@@ -62,7 +67,12 @@
                                         {{ verif.Number }}</p>
                                 </b-col>
                                 <b-col class="planning_table_nextDate" cols="4">
-                                    <p class="text-primary"> {{ verif.nextDate }}</p>
+                                    <p v-if="verif.nextDate != null">
+                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getDate() }}
+                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7)-1, verif.nextDate.slice(8)).toDateString().slice(4, 7) }}
+                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getFullYear() }}
+                                    </p>
+                                    <p v-else>/</p>
                                 </b-col>
                             </b-row>
                         </div>

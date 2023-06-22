@@ -160,14 +160,14 @@ function importCons($cons, $db): void
             }
             $pb = $purchasedBy['id'];
             // Add the family to the database
-            $db->query("INSERT INTO cons_families (consFam_ref, consFam_design, enumPurchasedBy_id, consFam_drawingPath, consFam_version, consFam_variablesCharac, consFam_variablesCharacDesign, consFam_genRef, consFam_genDesign, compFam_validate, created_at, updated_at)
+            $db->query("INSERT INTO cons_families (consFam_ref, consFam_design, enumPurchasedBy_id, consFam_drawingPath, consFam_version, consFam_variablesCharac, consFam_variablesCharacDesign, consFam_genRef, consFam_genDesign, consFam_validate, created_at, updated_at)
                             VALUES ('" . $value[0] . "', '" . $value[1] . "', '" . $pb . "', '" . $value[3] . "', '" . $value[4] . "', '" . $value[5] . "', null, '" . $value[7] . "', '" . $value[8] . "', 'validated', '$now', '$now')");
             $consFamilyId = mysqli_insert_id($db);
             // Add the criticality to the database
             $db->query("INSERT INTO criticalities (crit_artCriticality, crit_artMaterialContactCriticality, crit_artMaterialFunctionCriticality, crit_artProcessCriticality, crit_validate, crit_remarks, consFam_id,crit_justification, created_at, updated_at)
                             VALUES ('" . $value[9] . "', '" . $value[10] . "', '" . $value[11] . "', '" . $value[9] . "', 'validated', null, '" . $consFamilyId . "', null, '$now', '$now')");
             // Add each member of the family to the database
-            for ($i = $startMember; $i < $value[12] + $startMember; $i++) {
+            for ($i = $startMember; $i < $value[11] + $startMember; $i++) {
                 if ($consMember[$i][1] === 'yes') {
                     $db->query("INSERT INTO cons_family_members (consMb_dimension, consMb_design, consMb_sameValues, consFam_id, created_at, updated_at)
                                     VALUES ('" . $consMember[$i][0] . "', null, '1', '" . $consFamilyId . "', '$now', '$now')");
@@ -176,9 +176,9 @@ function importCons($cons, $db): void
                                     VALUES ('" . $consMember[$i][0] . "', '" . $consMember[$i][2] . "', '0', '" . $consFamilyId . "', '$now', '$now')");
                 }
             }
-            $startMember += $value[12];
+            $startMember += $value[11];
             // Add each supplier of the family to the database
-            for ($i = $startSupplier; $i < $value[13] + $startSupplier; $i++) {
+            for ($i = $startSupplier; $i < $value[12] + $startSupplier; $i++) {
                 if ($consSupplier[$i][0] === 'Alpha') {
                     $db->query("INSERT INTO purchase_specifications (purSpe_requiredDoc, purSpe_validate, consFam_id, created_at, updated_at)
                                 VALUES (null, 'validated', '" . $consFamilyId . "', '$now', '$now')");
@@ -189,11 +189,13 @@ function importCons($cons, $db): void
                     $db->query("INSERT INTO purchase_specifications (purSpe_requiredDoc, purSpe_validate, consFam_id, created_at, updated_at)
                                 VALUES ('" . $consSupplier[$i][2] . "', 'validated', '" . $consFamilyId . "', '$now', '$now')");
                     $supplierId = $db->query("SELECT id FROM suppliers WHERE supplr_name = '" . $consSupplier[$i][0] . "'")->fetch_assoc();
+                    print_r($supplierId);
+                    print_r($i);
                     $db->query("INSERT INTO pivot_cons_fam_supplr (consFam_id, supplr_id, supplr_ref, purSpec_id, created_at, updated_at)
                             VALUES ('" . $consFamilyId . "', '" . $supplierId['id'] . "', '" . $consSupplier[$i][1] . "', LAST_INSERT_ID(), '$now', '$now')");
                 }
             }
-            $startSupplier += $value[13];
+            $startSupplier += $value[12];
         }
     }
 }
@@ -262,7 +264,7 @@ function importRaw($raw, $db): void
 }
 
 // Connect to the alpha_app database
-$db = new mysqli('localhost', 'root', '', 'alpha_project', 3307);
+$db = new mysqli('localhost', 'root', '', 'alpha_project', 3306);
 // Set the different csv files, ordered by groups
 // The first group is the suppliers, because they are needed for the differents articles
 $supplier = [
@@ -282,7 +284,7 @@ $cons = [
     'consMember.csv',
     'consSupplier.csv'
 ];
-/*importCons($cons, $db);*/
+importCons($cons, $db);
 $raw = [
     'rawFamily.csv',
     'rawMember.csv',

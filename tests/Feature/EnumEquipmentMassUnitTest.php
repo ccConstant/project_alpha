@@ -126,6 +126,28 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'Test',
+            'eq_externalReference' => 'Test',
+            'eq_name' => 'Test',
+            'eq_serialNumber' => 'Test',
+            'eq_constructor' => 'Test',
+            'eq_set' => 'Test',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'drafted',
+            'eqTemp_mass' => 12,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
+            'eqTemp_remarks' => 'Test',
+            'eqTemp_mobility' => 1,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         $response=$this->post('/equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'TestvalidatedMUnit',
@@ -142,6 +164,28 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+2, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'TestvalidatedMUnit',
+            'eq_externalReference' => 'TestvalidatedMUnit',
+            'eq_name' => 'TestvalidatedMUnit',
+            'eq_serialNumber' => 'TestvalidatedMUnit',
+            'eq_constructor' => 'TestvalidatedMUnit',
+            'eq_set' => 'TestvalidatedMUnit',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'validated',
+            'eqTemp_mass' => 12,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
+            'eqTemp_remarks' => 'TestvalidatedMUnit',
+            'eqTemp_mobility' => 1,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
@@ -205,6 +249,28 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'TestUpdateEnum1',
+            'eq_externalReference' => 'TestUpdateEnum1',
+            'eq_name' => 'TestUpdateEnum1',
+            'eq_serialNumber' => 'TestUpdateEnum1',
+            'eq_constructor' => 'TestUpdateEnum1',
+            'eq_set' => 'TestUpdateEnum1',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'drafted',
+            'eqTemp_mass' => 12,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
+            'eqTemp_remarks' => 'TestUpdateEnum1',
+            'eqTemp_mobility' => 1,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         $oldId = EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id;
         $response = $this->post('equipment/enum/massUnit/verif/' . EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'TestDrafted'
@@ -249,6 +315,28 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'TestUpdateEnum2',
+            'eq_externalReference' => 'TestUpdateEnum2',
+            'eq_name' => 'TestUpdateEnum2',
+            'eq_serialNumber' => 'TestUpdateEnum2',
+            'eq_constructor' => 'TestUpdateEnum2',
+            'eq_set' => 'TestUpdateEnum2',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'to_be_validated',
+            'eqTemp_mass' => 12,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
+            'eqTemp_remarks' => 'TestUpdateEnum2',
+            'eqTemp_mobility' => 1,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         $oldId = EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id;
         $response = $this->post('/equipment/enum/massUnit/update/'.EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'TestToBeValidated',
@@ -289,6 +377,28 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'TestUpdateEnum3',
+            'eq_externalReference' => 'TestUpdateEnum3',
+            'eq_name' => 'TestUpdateEnum3',
+            'eq_serialNumber' => 'TestUpdateEnum3',
+            'eq_constructor' => 'TestUpdateEnum3',
+            'eq_set' => 'TestUpdateEnum3',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'validated',
+            'eqTemp_mass' => 12,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
+            'eqTemp_remarks' => 'TestUpdateEnum3',
+            'eqTemp_mobility' => 1,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
@@ -374,6 +484,28 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'TestUpdateEnum4',
+            'eq_externalReference' => 'TestUpdateEnum4',
+            'eq_name' => 'TestUpdateEnum4',
+            'eq_serialNumber' => 'TestUpdateEnum4',
+            'eq_constructor' => 'TestUpdateEnum4',
+            'eq_set' => 'TestUpdateEnum4',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'drafted',
+            'eqTemp_mass' => 12,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
+            'eqTemp_remarks' => 'TestUpdateEnum4',
+            'eqTemp_mobility' => 1,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         $response = $this->post('equipment/enum/massUnit/verif/' . EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id, [
             'value' => 'Exist'
         ]);
@@ -425,6 +557,28 @@ class EnumEquipmentMassUnitTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'TestUpdateEnum3',
+            'eq_externalReference' => 'TestUpdateEnum3',
+            'eq_name' => 'TestUpdateEnum3',
+            'eq_serialNumber' => 'TestUpdateEnum3',
+            'eq_constructor' => 'TestUpdateEnum3',
+            'eq_set' => 'TestUpdateEnum3',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'validated',
+            'eqTemp_mass' => 12,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'Unit')->first()->id,
+            'eqTemp_remarks' => 'TestUpdateEnum3',
+            'eqTemp_mobility' => 1,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'Balance')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,

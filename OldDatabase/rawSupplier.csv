@@ -1,5 +1,5 @@
 Name;Reference;Purchase Specification
-POLYFIL;?;"""Insulated platinum wire, ï¿½37?, iridium 10% in spool following attached  drawing specification G_RAW0001; insulation material following attached Technical Data Sheet G_RAW0001-TDS""
+POLYFIL;?;"""Insulated platinum wire, Ø37?, iridium 10% in spool following attached  drawing specification G_RAW0001; insulation material following attached Technical Data Sheet G_RAW0001-TDS""
 (attach to the order the latest drawing and TDS version)
 ""Certificate of analysis is requested""
 ""Certificate(s) of compliance is requested, attesting that:
@@ -45,21 +45,21 @@ AMANN GROUP;?;"""Polyester sewing thread compliant with technical spec attached"
 ""A certificate(s) of compliance from manufacturer attesting that product delivered are compliant with the technical datasheet attached to the order is requested."""
 COATES SCREEN;?;"""Ultra marine Ink for Pad printing REF TP 218/32-NT compliant to attached Datasheet G_RAW006-TDS and with EN71, Part 3, safety of toys, migration of certain elements"" (attach to the order the latest datasheet version).
 ""Request a compliance certificate to the order specifications."""
-VESTA FRANKLIN;?;"""Medical Grade Silicon Tubing ï¿½ 0.65 x ï¿½ 1.65 mm"" (precise length) as per specification drawing G_RAW0007""
+VESTA FRANKLIN;?;"""Medical Grade Silicon Tubing Ø 0.65 x Ø 1.65 mm"" (precise length) as per specification drawing G_RAW0007"" 
 (attach to the order the latest drawing version)
 ""Silicon compliant with it\'s technical spec""
 ""Certificate(s) of compliance is requested, attesting that:
 1) The product are made with compliant Medical Grade Silicone (with mention of raw material lot number and copy of the raw material manufacturer compliance certificate of the bacth number used - including testing analysis).
 2) Product dimensions and tolerance complied with the order specification (with mention of those dimensions),
 3) The products comply with the order specifications"""
-VESTA FRANKLIN;?;"""Medical Grade Silicon Tubing ï¿½ 0.65 x ï¿½ 1.65 mm"" (precise length) as per specification drawing G_RAW0007""
+VESTA FRANKLIN;?;"""Medical Grade Silicon Tubing Ø 0.65 x Ø 1.65 mm"" (precise length) as per specification drawing G_RAW0007"" 
 (attach to the order the latest drawing version)
 ""Silicon compliant with it\'s technical spec""
 ""Certificate(s) of compliance is requested, attesting that:
 1) The product are made with compliant Medical Grade Silicone (with mention of raw material lot number and copy of the raw material manufacturer compliance certificate of the bacth number used - including testing analysis).
 2) Product dimensions and tolerance complied with the order specification (with mention of those dimensions),
 3) The products comply with the order specifications"""
-VESTA FRANKLIN;?;"""Cutting and [ALPHA] Marking on Medical Grade Silicon Tubing ref G_RAW0016"" as per attached specification drawing G_RAW0008""
+VESTA FRANKLIN;?;"""Cutting and [ALPHA] Marking on Medical Grade Silicon Tubing ref G_RAW0016"" as per attached specification drawing G_RAW0008"" 
 ""Marking material as per attached specification drawing ref G_RAW0023""
 (attach to the order the latest approved drawing version G_RAW0008 & G_RAW0023)
 ""Certificate(s) of compliance is requested, attesting that:
@@ -73,7 +73,7 @@ Appropriate local food grade silicon sheet supplier ;?;"""Food Grade Silicon SHe
 BASF;?;?
 POLYPLASTICS;?;?
 Appropriate local label for Thermal Transfer standard or custom made type Zebra supplier;?;"""Blank media for label printing"" + precise (depending on detailed ref).+
-as per specification drawing G_RAW0012 xxxx""
+as per specification drawing G_RAW0012 xxxx"" 
 (attach to the order the latest approved drawing version)
 ""Media material compliant with it\'s technical spec""
 
@@ -82,31 +82,31 @@ as per specification drawing G_RAW0012 xxxx""
 2) The products comply with the order specifications"""
 OLIVER HCP;?;?
 Appropriate local label for Thermal Transfer standard or custom made type Zebra supplier;?;"""Resin rubbon for label printing - width www"" (www value based on detailed ref).+
-material compliant with associated datasheet""
+material compliant with associated datasheet"" 
 (attach to the order the latest approved datasheet drawing version)
 
 ""Certificate(s) of compliance is requested, attesting that:
 1) Product material and dimensions complied with the order specification
 2) The products comply with the order specifications"""
-VESTA FRANKLIN;?;"""Cutting and [ALPHA] Marking on Medical Grade Silicon Tubing ref G_RAW0016"" as per attached specification drawing G_RAW0008""
+VESTA FRANKLIN;?;"""Cutting and [ALPHA] Marking on Medical Grade Silicon Tubing ref G_RAW0016"" as per attached specification drawing G_RAW0008"" 
 ""Marking material as per attached specification drawing ref G_RAW0023""
 (attach to the order the latest approved drawing version G_RAW0008 & G_RAW0023)
 ""Certificate(s) of compliance is requested, attesting that:
 1) The product are made with compliant material (tubing and ""marking ink"" - with mention of raw material lot number).
 2) The marked products comply with the order specifications""."
-POLYFIL;?;"""Insulated platinum wire, ï¿½17?, iridium 10% in spool following attached  drawing specification G_RAW0017; insulation material following attached Technical Data Sheet G_RAW0001-TDS""
+POLYFIL;?;"""Insulated platinum wire, Ø17?, iridium 10% in spool following attached  drawing specification G_RAW0017; insulation material following attached Technical Data Sheet G_RAW0001-TDS""
 (attach to the order the latest drawing and TDS version)
 ""Certificate of analysis is requested""
 ""Certificate(s) of compliance is requested, attesting that:
 1) Product dimensions and tolerance complied with the order specification and mentioning those dimension,
 2) The products comply with the order specifications"""
-POLYFIL;?;"""Insulated platinum wire, ï¿½20?, iridium 10% in spool following attached  drawing specification G_RAW0018; insulation material following attached Technical Data Sheet G_RAW0001-TDS""
+POLYFIL;?;"""Insulated platinum wire, Ø20?, iridium 10% in spool following attached  drawing specification G_RAW0018; insulation material following attached Technical Data Sheet G_RAW0001-TDS""
 (attach to the order the latest drawing and TDS version)
 ""Certificate of analysis is requested""
 ""Certificate(s) of compliance is requested, attesting that:
 1) Product dimensions and tolerance complied with the order specification and mentioning those dimension,
 2) The products comply with the order specifications"""
-VESTA FRANKLIN;?;"""Cutting and [FRIENDSHIP] Marking on Medical Grade Silicon Tubing ref G_RAW0016 as per attached specification drawing G_RAW0019""
+VESTA FRANKLIN;?;"""Cutting and [FRIENDSHIP] Marking on Medical Grade Silicon Tubing ref G_RAW0016 as per attached specification drawing G_RAW0019"" 
 ""Marking material as per attached specification drawing ref G_RAW0023""
 (attach to the order the latest approved drawing version G_RAW0019 & G_RAW0023)
 ""Certificate(s) of compliance is requested, attesting that:
@@ -117,9 +117,9 @@ FORECREU;?;"""Medical grade TA6VELI tubing following attached  specification dat
 ""Certificate of analysis & compliance to ISO 5832-3 & ASTM F136 is required""
 ""Certificate(s) of compliance is required, attesting that:
 1) The products comply with the order specifications"""
-STAINLESS;?;"""Implantable Medical Grade
-extra hard Stainless Steel Rod (ï¿½ dd.dd mm)
-Grade: 316LVM ï¿½ 1.4441 - UNS S31673
+STAINLESS;?;"""Implantable Medical Grade 
+extra hard Stainless Steel Rod (Ø dd.dd mm) 
+Grade: 316LVM – 1.4441 - UNS S31673
 following attached  specification datasheet G_RAW0021""
 (attach to the order the latest datasheet version)
 -----------------------
@@ -128,8 +128,8 @@ Precise diameter and quantity / total length expected.
 ""Certificate of analysis & compliance to ISO 5832-1 & ASTM F138 is required""
 ""Certificate(s) of compliance is required, attesting that:
 1) The products comply with the order specifications"""
-TBD;?;"""Medical Grade  Stainless Steel Rod (ï¿½ dd.dd mm)
-Grade: 303 ï¿½ 1.4305 - UNS S30300
+TBD;?;"""Medical Grade  Stainless Steel Rod (Ø dd.dd mm) 
+Grade: 303 – 1.4305 - UNS S30300
 following attached  specification datasheet G_RAW0022""
 (attach to the order the latest datasheet version)
 -----------------------
@@ -141,9 +141,9 @@ Precise diameter and quantity / total length expected.
 VESTA FRANKLIN;?;?
 MCAM;?;TBD
 ENSINGER GMBH;?;TBD
-STAINLESS;?;"""Implantable Medical Grade
-extra hard Stainless Steel Rod (ï¿½ dd.dd mm)
-Grade: 316LVM ï¿½ 1.4441 - UNS S31673
+STAINLESS;?;"""Implantable Medical Grade 
+extra hard Stainless Steel Rod (Ø dd.dd mm) 
+Grade: 316LVM – 1.4441 - UNS S31673
 following attached  specification datasheet G_RAW0021""
 (attach to the order the latest datasheet version)
 -----------------------
@@ -152,9 +152,9 @@ Precise diameter (with tolerance) and quantity / total length expected.
 ""Certificate of analysis & compliance to ISO 5832-1 & ASTM F138 is required""
 ""Certificate(s) of compliance is required, attesting that:
 1) The products comply with the order specifications"""
-ACNIS;?;"""Implantable Medical Grade
-extra hard Stainless Steel Rod (ï¿½ dd.dd mm)
-Grade: 316LVM ï¿½ 1.4441 - UNS S31673
+ACNIS;?;"""Implantable Medical Grade 
+extra hard Stainless Steel Rod (Ø dd.dd mm) 
+Grade: 316LVM – 1.4441 - UNS S31673
 following attached  specification datasheet G_RAW0021""
 (attach to the order the latest datasheet version)
 -----------------------

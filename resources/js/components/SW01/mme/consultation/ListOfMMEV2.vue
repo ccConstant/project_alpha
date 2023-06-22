@@ -25,7 +25,7 @@
                             <button class="btn btn-warning" @click="changeState">Change the state</button>
                         </td>
                         <td>
-                            <button class="btn btn-info" @click="updateMaintenance">Record and validate maintenance event</button>
+                            <button class="btn btn-info" @click="updateMaintenance">Update and validate maintenance event</button>
                         </td>
                     </tr>
                     <tr>

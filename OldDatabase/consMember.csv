@@ -1,0 +1,59 @@
+Reference;SameValue;Designation
+10x10;yes;/
+15x15;yes;/
+23x23;yes;/
+30x30;yes;/
+10x10;yes;/
+23x23;yes;/
+30x30;yes;/
+18;yes;/
+25;yes;/
+080x120;yes;/
+100x150;yes;/
+043x12;yes;/
+50;yes;/
+60x15;yes;/
+90x15;yes;/
+280;yes;/
+10A;yes;/
+"30Gx1/2""";no;"30G x  0,5"""
+"25Gx1/2""";no;"25G x  0,5"""
+1200;yes;/
+2000;yes;/
+XS;no;Extra Small (5/6)
+S;no;Small (6/7)
+M;no;Medium (7/8)
+L;no;Large (8/9)
+XL;no;Extra Large (8/9)
+PE35-B;no;PE 35gr/m² - Blue
+PP35-W;no;PP 35gr/m² - White
+PP45-W;no;PP 45gr/m² - White
+PP45-B;no;PP 45gr/m² - Blue
+PE35-B;no;PE 35gr/m² - Blue - Reinforced
+PE35-BW;no;PE 35gr/m² - Blue & White - Reinforced
+"30Gx1/2""";no;"30G Gauge x 1/2"""
+"27Gx1/2""";no;"27G Gauge x 1/2"""
+10;no;1,0
+457x1150;yes;/
+660x1150;yes;/
+M-B-PP50;no;medium size / bopper Polypropylen 50gr/m²
+L-B-PP50;no; large size / bopper Polypropylen 50gr/m²
+XL-B-PP50;no;extra large size / bopper  Polypropylen 50gr/m²
+5L;no;5L container
+1L;no;1L container
+1L-A;no;1L airless container
+1/2L-SP;no;500ml bottle with screwed pump
+1L-SP;no;1L bottle with screwed pump
+5L;no;5L container
+1L;no;1L container
+1L-A;no;1L airless container
+1/2L-SP;no;500ml bottle with screwed pump
+1L-SP;no;1L bottle with screwed pump
+18x18;yes;/
+76x26;yes;/
+T1;no; type 1:  AGAR + TTC + Neutralizing
+0,25;yes;/
+1,00;yes;/
+5,00;yes;/
+0100x0050;yes;/
+5/64;yes;/

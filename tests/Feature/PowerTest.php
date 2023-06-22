@@ -8,6 +8,8 @@
 * Coverage : 100%
 */
 
+use App\Models\SW01\EnumEquipmentMassUnit;
+use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\Power;
@@ -2888,6 +2890,18 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'consult1Test',
+            'eq_externalReference' => 'consult1Test'
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         // Add the power type
         $response=$this->post('/power/enum/type/add', [
             'value' => 'Electric'
@@ -2978,6 +2992,18 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'consult2Test',
+            'eq_externalReference' => 'consult2Test'
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         // Add the power type
         $response=$this->post('/power/enum/type/add', [
             'value' => 'Electric'
@@ -3093,6 +3119,19 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'consult3Test',
+            'eq_externalReference' => 'consult3Test'
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'drafted'
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         // Add the power type
         $response=$this->post('/power/enum/type/add', [
             'value' => 'Electric'
@@ -3266,6 +3305,19 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => 'removeTest',
+            'eq_externalReference' => 'removeTest'
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_validate' => 'drafted'
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
         // Add the power type
         $response=$this->post('/power/enum/type/add', [
             'value' => 'Electric'

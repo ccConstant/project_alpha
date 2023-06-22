@@ -117,12 +117,6 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                         'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
                     ]
                 ], 429);
-
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_validate' => ["You have to entered the person who approved this preventive maintenance operation realized for validate it"]
-                    ]
-                ], 429);
             }
         }
 

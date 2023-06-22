@@ -610,9 +610,9 @@ Route::post('/dimension/enum/type/add', [EnumDimensionTypeController::class, 'ad
 
 Route::post('/dimension/enum/type/update/{id}', [EnumDimensionTypeController::class, 'update_enum_type']);
 
-Route::post('dimension/enum/type/verif/{id}', [EnumDimensionTypeController::class, 'verif_enum_type']);
+Route::post('/dimension/enum/type/verif/{id}', [EnumDimensionTypeController::class, 'verif_enum_type']);
 
-Route::post('dimension/enum/type/analyze/{id}', [EnumDimensionTypeController::class, 'analyze_enum_type']);
+Route::post('/dimension/enum/type/analyze/{id}', [EnumDimensionTypeController::class, 'analyze_enum_type']);
 
 Route::get('/dimension/enum/name', [EnumDimensionNameController::class, 'send_enum_name']);
 
@@ -622,9 +622,9 @@ Route::post('/dimension/enum/name/add', [EnumDimensionNameController::class, 'ad
 
 Route::post('/dimension/enum/name/update/{id}', [EnumDimensionNameController::class, 'update_enum_name']);
 
-Route::post('dimension/enum/name/verif/{id}', [EnumDimensionNameController::class, 'verif_enum_name']);
+Route::post('/dimension/enum/name/verif/{id}', [EnumDimensionNameController::class, 'verif_enum_name']);
 
-Route::post('dimension/enum/name/analyze/{id}', [EnumDimensionNameController::class, 'analyze_enum_name']);
+Route::post('/dimension/enum/name/analyze/{id}', [EnumDimensionNameController::class, 'analyze_enum_name']);
 
 Route::get('/dimension/enum/unit', [EnumDimensionUnitController::class, 'send_enum_unit']);
 
@@ -634,9 +634,9 @@ Route::post('/dimension/enum/unit/add', [EnumDimensionUnitController::class, 'ad
 
 Route::post('/dimension/enum/unit/update/{id}', [EnumDimensionUnitController::class, 'update_enum_unit']);
 
-Route::post('dimension/enum/unit/verif/{id}', [EnumDimensionUnitController::class, 'verif_enum_unit']);
+Route::post('/dimension/enum/unit/verif/{id}', [EnumDimensionUnitController::class, 'verif_enum_unit']);
 
-Route::post('dimension/enum/unit/analyze/{id}', [EnumDimensionUnitController::class, 'analyze_enum_unit']);
+Route::post('/dimension/enum/unit/analyze/{id}', [EnumDimensionUnitController::class, 'analyze_enum_unit']);
 
 Route::get('/power/enum/type', [EnumPowerTypeController::class, 'send_enum_type']);
 
@@ -660,7 +660,7 @@ Route::post('/risk/enum/riskfor/update/{id}', [EnumRiskForController::class, 'up
 
 Route::post('risk/enum/riskfor/verif/{id}', [EnumRiskForController::class, 'verif_enum_riskFor']);
 
-Route::post('risk/enum/riskfor/analyze/{id}', [EnumRiskForController::class, 'analyze_enum_riskFor']);
+Route::post('/risk/enum/riskfor/analyze/{id}', [EnumRiskForController::class, 'analyze_enum_riskFor']);
 
 Route::get('/state/enum/name', [EnumStateNameController::class, 'send_enum_name']);
 

@@ -11,6 +11,8 @@
 namespace Tests\Feature;
 
 use App\Models\File;
+use App\Models\SW01\EnumEquipmentMassUnit;
+use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\Mme;
@@ -289,6 +291,20 @@ class FileTest extends TestCase
             ]);
             $response->assertStatus(200);
             $this->assertEquals($countEquipment + 1, Equipment::all()->count());
+            $this->assertDatabaseHas('equipment', [
+                'eq_internalReference' => $name,
+                'eq_externalReference' => $name,
+                'eq_name' => $name,
+            ]);
+            $this->assertDatabaseHas('equipment_temps', [
+                'equipment_id' => Equipment::all()->last()->id,
+                'eqTemp_version' => 1,
+                'eqTemp_validate' => $validate,
+                'eqTemp_lifeSheetCreated' => 0,
+            ]);
+            $this->assertDatabaseHas('pivot_equipment_temp_state', [
+                'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+            ]);
             return Equipment::all()->where('eq_internalReference', '==', $name)->first();
         }
         $response = $this->post('/equipment/enum/massUnit/add', [
@@ -348,8 +364,30 @@ class FileTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment + 1, Equipment::all()->count());
-        $equipment = Equipment::all()->where('eq_internalReference', '==', $name)->first();
-        return $equipment;
+        $this->assertDatabaseHas('equipment', [
+            'eq_internalReference' => $name,
+            'eq_externalReference' => $name,
+            'eq_name' => $name,
+            'eq_serialNumber' => $name,
+            'eq_constructor' => $name,
+            'eq_set' => $name,
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => 1,
+            'eqTemp_location' => $name,
+            'eqTemp_validate' => $validate,
+            'eqTemp_lifeSheetCreated' => 0,
+            'eqTemp_mass' => 10,
+            'eqTemp_remarks' => $name,
+            'eqTemp_mobility' => true,
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', 'internal')->first()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', 'g')->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
+        return Equipment::all()->where('eq_internalReference', '==', $name)->first();
     }
 
     public function make_an_eq_verif($eq_id)

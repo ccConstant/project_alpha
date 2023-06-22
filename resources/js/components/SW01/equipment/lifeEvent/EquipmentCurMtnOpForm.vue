@@ -24,6 +24,24 @@
                     <InputTextForm inputClassName="form-control" :Errors="errors.curMtnOp_endDate" name="curMtnOp_endDate" label="End date :" :isDisabled="true"  isRequired v-model="curMtnOp_endDate" :info_text="infos_curMtnOp[4].info_value"/>
                     <InputDateForm inputClassName="form-control date-selector" name="selected_endDate"  :isDisabled="!!isInConsultMod"  isRequired v-model="selected_endDate"/>
                 </div>
+                <RadioGroupForm
+                    label="I realize ?:"
+                    :options="eq_realizeOption"
+                    :checkedOption="eq_realize"
+                    :isDisabled="!!isInConsultMod"
+                    v-model="eq_realize"
+                    :info_text="null"
+                />
+                <InputPasswordForm
+                    v-if="eq_realize == true"
+                    :Errors="errors.connexion"
+                    v-model="user_password"
+                    name="user_password"
+                    label="Password :"
+                    inputClassName="form-control w-50"
+                    divClassName="password"
+                    :info_text="null"
+                />
                 <div v-if="this.addSucces==false ">
                     <!--If this curative maintenance operation doesn't have a id the addEquipmentCurMtnOp is called function else the updateEquipmentCurMtnOp function is called -->
                     <div v-if="this.curMtnOp_number==null ">
@@ -53,8 +71,10 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SuccesAlert from '../../../alert/SuccesAlert.vue'
 import moment from 'moment'
+import InputPasswordForm from "../../../input/InputPasswordForm.vue";
 export default {
     components : {
+        InputPasswordForm,
         InputTextAreaForm,
         InputDateForm,
         RadioGroupForm,
@@ -138,13 +158,19 @@ export default {
             isInConsultMod:this.consultMod,
             isInModifMod:this.modifMod,
             loaded:false,
-            infos_curMtnOp:[]
+            infos_curMtnOp:[],
+            eq_realize: false,
+            eq_realizeOption: [
+                {id: 'eq_realize', value: true, text: 'Yes'},
+                {id: 'eq_realize', value: false, text: 'No'}
+            ],
+            user_password:'',
         }
     },
     mounted() {
         if(this.selected_startDate!==null){
             this.curMtnOp_startDate=moment(this.selected_startDate).format('D MMM YYYY');
-        };
+        }
         if(this.selected_endDate!==null){
             this.curMtnOp_endDate=moment(this.selected_endDate).format('D MMM YYYY');
         }
@@ -211,8 +237,6 @@ export default {
                         eq_id:id,
                         state_id:this.equipment_state_id,
                         enteredBy_id:this.$userId.id
-
-
                     })
                     //If the curative maintenance operation is added successfully
                     .then(response =>{
@@ -229,7 +253,13 @@ export default {
                         this.curMtnOp_id=response.data;
                         //The validate option of this curative maintenance operation take the value of savedAs
                         this.curMtnOp_validate=savedAs;
-
+                        if (this.eq_realize) {
+                            axios.post('/curMtnOp/realize/'+this.curMtnOp_id,{
+                                user_id:this.$userId.id,
+                                user_pseudo:this.$userId.user_pseudo,
+                                user_password:this.user_password,
+                            }).catch(error => this.errors=error.response.data.errors) ;
+                        }
                     })
                     .catch(error => this.errors=error.response.data.errors) ;
                 })

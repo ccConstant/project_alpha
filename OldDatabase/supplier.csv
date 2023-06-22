@@ -1,274 +1,275 @@
-supplr_name;supplr_receptionNumber;supplr_formID;supplr_agreementNumber;supplr_qualityCertificationNumber;supplr_specificInstructions;supplr_siret ;supplr_website;supplr_activity;supplr_VATNumber ;supplr_endLinkToFolder;Number of address;Number of contact;supplr_real
-Alpha;+33 (0)9 51 32 66 71;S000;/;/;/;/;/;/;/;/;1;1;yes
-VESTA FRANKLIN;+33 (0)6 40 54 85 65 ;S011;QA Agreement 08 Jul 2020;ISO 13485:2016 Exp: 2021-11-14;/;/;/;/;/;/;1;1;yes
-JOHNSON MATTHEY;+49 9 57 481 460;S002;/;/;/;/;/;/;/;/;1;1;yes
-POLYFIL;+41 4 17 61  63 55;S003;/;ISO 13485:2016 Exp: 2021-06-19;/;/;/;/;/;/;1;1;yes
-INFO CM;+33 (0)9 50 43 15 74;S004;/;/;/;/;/;/;/;/;1;1;yes
-COMBAT;+863-79 64 68 71 13;S005;/;ISO 9001:2008 Exp: 2017-12-08;/;/;/;/;/;/;1;1;yes
+supplr_name;supplr_receptionNumber;supplr_formID;supplr_agreementNumber;supplr_qualityCertificationNumber;supplr_specificInstructions;supplr_siret ;supplr_website;supplr_activity;supplr_VATNumber ;supplr_endLinkToFolder;Number of address;Number of contact;supplr_real;supplr_critical
+Alpha;+33 (0)9 51 32 66 71;S000;/;/;/;85192456300022;/;Fabrication de matériel médico-chirurgical et dentaire (3250A);FR47851924563;/;1;1;yes;no
+VESTA FRANKLIN;+33 (0)6 40 54 85 65 ;S011;QA Agreement 08 Jul 2020;ISO 13485:2016 Exp: 2024-11-14;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\VESTA FRANKLIN-S011;1;1;yes;no
+JOHNSON MATTHEY;+49 9 57 481 460;S002;/;ISO 9001:2015 Exp: 2024-09-01;/;56212636700035;https://matthey.com/;Commerce de produits chimiques industriels (5906);FR66562126367;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\JOHNSON MATTHEY-S002;1;1;yes;no
+POLYFIL;+41 4 17 61  63 55;S003;/;ISO 13485:2016 Exp: 2021-06-19;/;81424957900032;http://polyfil-maroc.com/fr/entreprise.html;Travaux d\'installation électrique dans tous locaux (4321A);FR77814249579;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\POLYFIL-S003;1;1;yes;no
+INFO CM;+33 (0)9 50 43 15 74;S004;/;/;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\INFO\'CM-S004;1;1;yes;no
+COMBAT;+863-79 64 68 71 13;S005;/;ISO 9001:2008 Exp: 2017-12-08;/;82337019200028;/;Activités des sociétés holding (6420Z);FR59823370192;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\COMBAT-S005;1;1;yes;no
 FORT WAYNE METALS;353-94-9043-505;S006;/;"ISO 13485:2016 Exp: 2021-06-08
 ISO 9001:2016 Exp: 2020-02-07
 IEC 17025:2005 Exp: 2019-09-30
-FDA Registration";/;/;/;/;/;/;1;1;yes
-PRINCE & IZANT;216.362.7000 x253;S008;/;/;/;/;/;/;/;/;1;1;yes
-IWG & ALBATROZ;864-708-3025;S009;/;/;/;/;/;/;/;/;1;1;yes
-AXFIL;+33 (0)2 33 84 16 00;S010;/;/;/;/;/;/;/;/;1;1;yes
-VESTA THERMOPLASTICS;+33 (0)6 40 54 85 65 ;S001;/;/;/;/;/;/;/;/;1;1;yes
-WINNOMED;+886-921 169262;S012;/;ISO 13485:2016 Exp: 2022-02-14;/;/;/;/;/;/;2;2;yes
-CRESILAS;+33 (0)3 81 31 64 80 ;S013;/;/;/;/;/;/;/;/;1;1;yes
-CALLYANCE;+33 (0)6 73 19 18 47;S014;/;/;/;/;/;/;/;/;1;1;yes
-VITAPRINT;+33 (0)1 74 18 02 58 ;S015;/;/;/;/;/;/;/;/;1;1;yes
-OTELO;+33 (0)1 34 30 39 10;S016;/;/;/;/;/;/;/;/;1;1;yes
-TOUTOY & BERTHOLON;+33 (0)3 81 59 98 31;S017;/;/;/;/;/;/;/;/;1;1;yes
-FILINOX;+33 (0)4 50 33 70 71;S018;/;/;/;/;/;/;/;/;1;1;yes
-AMAZON; /;S019;/;/;/;/;/;/;/;/;1;1;yes
-ETS Michel VUICHARD;+33 (0)4 50 04 31 19;S020;/;/;/;/;/;/;/;/;1;1;yes
-HPC MEDICAL PRODUCT;+864.708.3025 (ext. 325) ;S021;/;/;/;/;/;/;/;/;1;1;yes
-SURPLEX;+49 0211422737-874;S022;/;/;/;/;/;/;/;/;1;1;yes
-ABC LA CHINE;+33 (0)6 12 79 00 43;S024;/;/;/;/;/;/;/;/;1;1;yes
-HENRIOT; +33 (0)3 81 67 67 03 ;S025;/;/;/;/;/;/;/;/;1;2;yes
-ROSE PLASTIC;+33 (0)4 79 38 48 12 ;S026;/;ISO 14001:2015 Exp: 2023-02-27;/;/;/;/;/;/;1;3;yes
-ALI EXPRESS;/;S027;/;/;/;/;/;/;/;/;1;1;yes
+FDA Registration";/;50266949200014;/;Intermédiaires spécialisés dans le commerce d\'autres produits spécifiques (4618Z);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\FORT WAYNES METAL-S006;1;1;yes;no
+PRINCE & IZANT;216.362.7000 x253;S008;/;/;/;/;https://princeizant.com/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\PRINCE & IZANT-S008;1;1;yes;no
+IWG & ALBATROZ;864-708-3025;S009;/;/;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\IWG & ALBATROZ-S009;1;1;yes;no
+AXFIL;+33 (0)2 33 84 16 00;S010;/;ISO9001:2015 Exp: 2019-10-16;/;49863359300039;/;Mécanique industrielle (2562B);FR62498633593;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\AXFIL-S010;1;1;yes;no
+VESTA THERMOPLASTICS;+33 (0)6 40 54 85 65 ;S001;/;/;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\VESTA THERMOPLASTIC-S001;1;1;yes;no
+WINNOMED;+886-921 169262;S012;/;ISO 13485:2016 Exp: 2022-02-14;/;/;https://winnomed.com/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\WINNOMED-S012;2;2;yes;no
+CRESILAS;+33 (0)3 81 31 64 80 ;S013;/;/;/;39242079000017;https://cresilas.fr/;Fabrication d\'autres outillages (2573B);FR57392420790;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\CRESILAS-S013;1;1;yes;no
+CALLYANCE;+33 (0)6 73 19 18 47;S014;/;/;/;82375514500039;https://www.callyance.com/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR36823755145;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\CALLYANCE-S014;1;1;yes;no
+VITAPRINT;+33 (0)1 74 18 02 58 ;S015;/;/;/;48796897600034;https://www.vistaprint.fr/mlp/cartes-de-visite-personnalisees?PCXTVATINCLUSIVE=false&utm_id=2B10421038376095427862&coupon=&partner=bing&utm_medium=cpc&utm_campaign=BING_FR_FR_BC_Business+Cards_Vistaprint&utm_term=impression+carte+de+visite+vista&ps_vtp=90658205%7C632447902%7C%7Ckwd-33614852984%3Aloc-66%7Cc%7C126786%7C%7Co&ps_vtp2=b%7Cimpression+carte+de+visite+vista%7Cbe%7Ce%7C75316609540894%7C33614852984%7C%7C%7C%7CImpression+de+cartes+de+visite+personnalis%C3%A9es+%7C+VistaPrint&msclkid=8ca5f2955dbd18f8379b96ed380b58ea&utm_source=bing&utm_content=PBC_Vistaprint_Exact;Commerce de gros (commerce interentreprises) d\'ordinateurs, d\'équipements informatiques périphériques et de logiciels (4651Z);FR12487968976;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\VITAPRINT-S015;1;1;yes;no
+OTELO;+33 (0)1 34 30 39 10;S016;/;/;/;34412647900056;https://www.otelo.fr/;Commerce de gros (commerce interentreprises) de matériel électrique (4669A);FR10344126479;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\OTELO-S016;1;1;yes;no
+TOUTOY & BERTHOLON;+33 (0)3 81 59 98 31;S017;/;/;/;57282128800022;https://touty.fr/;Commerce de gros (commerce interentreprises) d\'autres biens domestiques (4649Z);FR42572821288;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\TOUTOY & BERTHOLON-S017;1;1;yes;no
+FILINOX;+33 (0)4 50 33 70 71;S018;/;/;/;/;https://www.filinox.com/fr/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\FILINOX-S018;1;1;yes;no
+AMAZON; /;S019;/;ISO 9001:2015 Exp:2025-11-30;/;79093332900027;https://www.amazon.fr/?tag=hydfrabkm-21&ref=pd_sl_8g6ple7luo_e&adgrpid=1364494866923231&hvadid=85281187835326&hvnetw=o&hvqmt=e&hvbmt=be&hvdev=c&hvlocint=&hvlocphy=126786&hvtargid=kwd-85281456296437:loc-66&hydadcr=11801_1930446;Régie publicitaire de médias (7312Z);FR64790933329;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\AMAZON -S019;1;1;yes;no
+ETS Michel VUICHARD;+33 (0)4 50 04 31 19;S020;/;/;/;32301722800012;https://vuichard.com/news-vuichard-sas-micromachining/;Mécanique industrielle (2562B);FR65323017228;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ETS MICHEL VUICHARD-S020;1;1;yes;no
+HPC MEDICAL PRODUCT;+864.708.3025 (ext. 325) ;S021;/;ISO 13485:2016 Exp: 2025-09-15;/;82758053100024;/;Commerce de gros (commerce interentreprises) de produits pharmaceutiques (4646Z);FR27827580531;/;1;1;yes;no
+SURPLEX;+49 0211422737-874;S022;/;ISO 9001 : 2015 Exp 2023 -11-02;/;81245067400013;https://www.surplex.com/fr/;Autres activités de soutien aux entreprises n.c.a. (8299Z);FR54812450674;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\SURPLEX-S022;1;1;yes;no
+ABC LA CHINE;+33 (0)6 12 79 00 43;S024;/;/;/;/;/;/;/;/;1;1;yes;no
+HENRIOT; +33 (0)3 81 67 67 03 ;S025;/;/;/;31417155400046;https://www.champagne-henriot.com/en/age-gate/;Fabrication de vins effervescents (1102A);FR12314171554;/;1;2;yes;no
+ROSE PLASTIC;+33 (0)4 79 38 48 12 ;S026;/;ISO 14001:2015 Exp: 2026-02-27;/;43410707400016;https://www.rose-plastic.fr/fr/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR10434107074;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ROSE PLASTIC-S026;1;3;yes;no
+ALI EXPRESS;/;S027;/;/;/;89401996700013;https://FR.AliExpress.com;Autres activités de poste et de courrier (5320Z);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ALI -S027;1;1;yes;no
 NICOMATIC;+33 (0)6 76 49 84 00;S028;/;"EN 9100:2018 Exp: 2023-09-08
-ISO 9001:2015 Exp: 2023-09-08";/;/;/;/;/;/;1;1;yes
-LEROY MERLIN; /;S029;/;/;/;/;/;/;/;/;1;1;yes
-SPECIALITY COATING SYSTEMS;86-184-1104-6931;S030;QA Agreement 23 Oct 2020;/;/;/;/;/;/;/;1;2;yes
-NATIXIS;+33 (0)5 61 61 17 93;S031 ;/;/;/;/;/;/;/;/;1;1;yes
-STS INDUSTRIE;+33 (0)3 81 58 62 82;S032;/;ISO 9001:2015 Exp: 2022-05-28;/;/;/;/;/;/;1;2;yes
-MME ET MR DELFORGE;+33 (0)6 64 93 04 29;S033;/;/;/;/;/;/;/;/;1;1;yes
-MIDI CAOUTCHOUC ;+33 (0)5 61 41 49 90;S034;/;ISO 9001:2015 Exp: 2021-06-15;/;/;/;/;/;/;1;1;yes
-MON DROGUISTE;+33 (0)3 25 41  04 05;S035;/;/;/;/;/;/;/;/;1;1;yes
-B.MESURE;+33 (0)4 75 57 25 96;S036;/;/;/;/;/;/;/;/;1;1;yes
-FEDEX;+33 (0)3 20 28 67 63;S037;/;/;/;/;/;/;/;/;1;1;yes
-MICROLUMEN;813-886-1200;S038;/;/;/;/;/;/;/;/;1;1;yes
-COOPER;+33 (0)1  64 87 20 00;S039;/;/;/;/;/;/;/;/;1;1;yes
-MAZARS;+33 (0)3 81  53 28 55 ;S040;/;/;/;/;/;/;/;/;1;1;yes
-MOTEDIS; /;S041;/;/;/;/;/;/;/;/;1;1;yes
-FRANCOISE DELFORGE; /;S042;/;/;/;/;/;/;/;/;1;1;yes
+ISO 9001:2015 Exp: 2023-09-08";/;30692668400037;https://www.nicomatic.com/fr;Fabrication de composants électroniques (2611Z);FR95306926684;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\NICOMATIC-S028;1;1;yes;no
+LEROY MERLIN; /;S029;/;/;/;38456094200045;https://www.leroymerlin.fr/produits/cuisine/cuisine-equipee-delinia-id/cuisine-equipee-delinia-id-sydney/porte-de-cuisine-delinia-id-sydney/bandeau-sydney-angora-brillant-h-16-5-x-l-44-7-cm-80018120.html?at_medium=Sea-Paid&at_campaign=AM-05-CUISINE-TXT-11-CUISINEDELINIA-BING&at_source=bing&at_market=M1&at_section=R5C&at_campaign_id=530118760&at_campaign_type=TXT&at_account=LeroyMerlin-MarcheAmenagement&at_account_id=F1491VZS&at_adgroup_name=DSA-20-FACADESCUISINEDELINIAID&at_adgroup_type=DSA&gclid=3b510ed211b918baa6276aaa76056129&gclsrc=3p.ds&msclkid=3b510ed211b918baa6276aaa76056129;Commerce de détail de quincaillerie, peintures et verres en grandes surfaces (400 m² et plus) (4752B);FR49384560942;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\LEROY MERLIN-S029;1;1;yes;no
+SPECIALITY COATING SYSTEMS;86-184-1104-6931;S030;QA Agreement 23 Oct 2020;/;/;50515634900019;https://scscoatings.com/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\SPECIALITY COATING SYSTEMS-S030;1;2;yes;no
+NATIXIS;+33 (0)5 61 61 17 93;S031 ;/;/;/;54204452401063;https://www.interepargne.natixis.com/;Autre distribution de crédit (6492Z);FR73542044524;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\NATIXIS-S031;1;1;yes;no
+STS INDUSTRIE;+33 (0)3 81 58 62 82;S032;/;ISO 9001:2015 Exp: 2025-05-28;/;91355835900018;https://www.sts-industrie.com/;Mécanique industrielle (2562B);FR35913558359;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\STAINLESS-S045;1;2;yes;no
+MME ET MR DELFORGE;+33 (0)6 64 93 04 29;S033;/;/;/;/;/;/;/;/;1;1;yes;no
+MIDI CAOUTCHOUC ;+33 (0)5 61 41 49 90;S034;/;ISO 9001:2015 Exp: 2021-06-15;/;50444358100039;https://www.groupe-efire.com;Fabrication d\'autres articles en caoutchouc (2219Z);FR96504443581;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MIDI CAOUTCHOUC-S034;1;1;yes;no
+MON DROGUISTE;+33 (0)3 25 41  04 05;S035;/;ISO1687 Exp: 2024-09-29;/;40030344200042;https://www.Mon-Droguiste.com;Commerce de détail de quincaillerie, peintures et verres en petites surfaces (moins de 400 m²) (4752A);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MON DROGUISTE-S035;1;1;yes;no
+B.MESURE;+33 (0)4 75 57 25 96;S036;/;/;/;84459955500027;https://www.bmesure.fr;Commerce de gros (commerce interentreprises) non spécialisé (4690Z);FR82844599555;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\B.MESURE-S036;1;1;yes;no
+FEDEX;+33 (0)3 20 28 67 63;S037;/;/;/;97350535700275;https://www.fedex.com/fr-fr/home.html;Messagerie, fret express (5229A);FR22973505357;/;1;1;yes;no
+MICROLUMEN;813-886-1200;S038;/;ISO13485:2016 Exp: 2023-11-06;/;/;www.microlumen.com;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MICROLUMEN-S038;1;1;yes;no
+COOPER;+33 (0)1  64 87 20 00;S039;/;ISO 9001:2008 Exp:2017-10-06 ;/;48933290800065;https://www.cooper.fr/;Fabrication d\'autres articles en caoutchouc (2219Z);FR57489332908;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\COOPER-S039;1;1;yes;no
+MAZARS;+33 (0)3 81  53 28 55 ;S040;/;/;/;78482415300232;https://www.mazars.fr/;Activités comptables (6920Z);FR07784824153;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MAZARS-S040;1;1;yes;no
+MOTEDIS;+33 (0)4 78 59 63;S041;/;/;/;44978596300017;https://www.motedis.com/fr;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR19449785963;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MOTEDIS-S041;1;1;yes;no
+FRANCOISE DELFORGE; /;S042;/;/;/;/;/;/;/;/;1;1;yes;no
 DECOLLETAGE DE LA GARENNE;+33 (0)3 81  62 20 10;S043;/;"ISO 13485:2016 Exp: 2024-08-20
-ISO 9001:2015 Exp: 2024-08-20";/;/;/;/;/;/;1;1;yes
-FORECREU;+ 33 (0)4 70 09 13 66;S044;/;"ISO 13485:2016 Exp: 2021-09-13
-ISO 9001:2015 Exp: 2021-09-13";/;/;/;/;/;/;1;2;yes
+ISO 9001:2015 Exp: 2024-08-20";/;73282123600013;https://www.ddlg-decolletage.com;Décolletage (2562A);FR42732821236;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\DDLG-S043;1;1;yes;no
+FORECREU;+33 (0)4 70 09 13 66;S044;/;"ISO 13485:2016 Exp: 2021-09-13
+ISO 9001:2015 Exp: 2021-09-13";/;70980567500028;https://www.forecreu.com/fr/;étirage à froid de barres (2431Z);FR93709805675;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\FORECREU S.A.S-S044;1;2;yes;no
 STAINLESS;+33 (0)6 32 56 66 99;S045;/;"EN 9120:2016 Exp: 2021-06-06
 ISO 9001:2015 Exp: 2021-06-06
 ISO 13485:2016 Exp: 2021-06-06
-ISO 14001:2015 Exp: 2021-04-29";/;/;/;/;/;/;1;1;yes
-3D FI;+33 (0)4 76 05 45 65;S046;/;/;/;/;/;/;/;/;1;1;yes
-HP STORE;+33 (0)4 81 68 05 63 ;S047;/;/;/;/;/;/;/;/;1;1;yes
-SETAM;+33 (0)7 86 65 53 48;S048;/;/;/;/;/;/;/;/;1;1;yes
-GROUPE1000;+33 (0)6 42 05 23 56;S049;/;/;/;/;/;/;/;/;1;1;yes
-M.B.A. SARL;+33 (0)9 82 56 36 33;S050;/;/;/;/;/;/;/;/;1;1;yes
-VENFROID;+33 (0)3 84 87 23 23;S051;/;Capaticté N°380 Exp: 2024-05-23;/;/;/;/;/;/;1;1;yes
-INDAIR;86-512-6690-661;S052;/;/;/;/;/;/;/;/;1;1;yes
-FRANCHE COMTE ISOLATION (FCI);+33 (0)3 81 47 15 00;S053;/;/;/;/;/;/;/;/;1;1;yes
-GUANGZHOU;+86-20-8455 2831;S054;/;/;/;/;/;/;/;/;1;1;yes
-ELECTRO FRANCE INTERNET;+33 (0)9 77 21 75 50;S056;/;/;/;/;/;/;/;/;1;1;yes
-COLAS AGENCE DOUBS;+33 (0)3 81 48 15 15;S057;/;/;/;/;/;/;/;/;1;1;yes
-ALU STOCK;+34 672 61 80 41 ;S058;/;ISO 9001:2015 Exp:2022-03-05;/;/;/;/;/;/;1;1;yes
-SEALOGIS FREIGHT FORWARD;+33 (0)2 32 79 63 55 ;S059;/;/;/;/;/;/;/;/;1;1;yes
-NOVETAL;+33 (0)4 94 86 47 09;S060;/;/;/;/;/;/;/;/;1;1;yes
-PHISIOHM EURL;+33(0)6 27 33 57 01;S061;/;/;/;/;/;/;/;/;1;1;yes
-SEA ROAD LOGISTIC SARL;+33 (0)2 40 40 20 80 ;S062 ;/;/;/;/;/;/;/;/;1;1;yes
-GREELOY;86-186-2186-9885;S063;/;ISO 13485:2016 Exp: 2023-07-16;/;/;/;/;/;/;1;1;yes
-NOEL FURNITURE MANUFACTURY; /;S064;/;/;/;/;/;/;/;/;1;1;yes
-TFS ;+33 (0)6 73 54 26 26;S065;/;/;/;/;/;/;/;/;1;1;yes
-FRANCE ETUVES ;+33 (0)1 64 21 42 15;S066;/;/;/;/;/;/;/;/;1;1;yes
-MOGRA;+33 (0)3 84 76 11 54;S067;/;/;/;/;/;/;/;/;1;2;yes
-SHENZHEN FLYING;86-185-6578-5494;S068 ;/;/;/;/;/;/;/;/;1;1;yes
-COMETE INFORMATIQUE;+33 (0)6 21 12 01 90;S069;/;/;/;/;/;/;/;/;1;1;yes
-ROBE MEDICAL;+33 (0)9 51 32 66 71;S070;/;/;/;/;/;/;/;/;1;1;yes
-VWR;+33 (0)8 25 02 30 30;S071;/;/;/;/;/;/;/;/;1;1;yes
+ISO 14001:2015 Exp: 2021-04-29";/;43443598800028;https://www.stainless.eu/;Commerce de gros (commerce interentreprises) de minerais et métaux (4672Z);FR68434435988;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\STAINLESS-S045;1;1;yes;no
+3D FI;+33 (0)4 76 05 45 65;S046;/;/;/;48917018300011;/;Décolletage (2562A);FR83489170183;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\3D FI-S046;1;1;yes;no
+HP STORE;+33 (0)4 81 68 05 63 ;S047;/;/;/;/;https://www.hp.com/fr-fr/shop/?utm_content=tag_premium&gclid=ad14b531f90212d423b6d14995d4fc10&gclsrc=3p.ds&msclkid=ad14b531f90212d423b6d14995d4fc10;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\HP-S047;1;1;yes;no
+SETAM;+33 (0)7 86 65 53 48;S048;/;/;/;89986639600018;https://www.setam.com/;Commerce de gros (commerce interentreprises) de meubles, de tapis et d\'appareils d\'éclairage (4647Z);FR57899866396;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\SARL BG ETANCHEITE -S080;1;1;yes;no
+GROUPE1000;+33 (0)6 42 05 23 56;S049;/;/;/;33460824700030;https://groupe1000.jimdofree.com/;Construction d\'autres bâtiments (4120B);FR77334608247;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\GROUPE 1000-S049;1;1;yes;no
+M.B.A. SARL;+33 (0)9 82 56 36 33;S050;/;/;/;34932466500018;/;Travaux de menuiserie bois et pvc (4332A);FR72349324665;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\M.B.A. SARL-S050;1;1;yes;no
+VENFROID;+33 (0)3 84 87 23 23;S051;/;Capaticté N°380 Exp: 2024-05-23;/;30609372500019;https://www.venfroid.com/;Installation de machines et équipements mécaniques (3320B);FR35306093725;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\VENFROID-S051;1;1;yes;no
+INDAIR;86-512-6690-661;S052;/;/;/;/;https://www.szindair.com/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\INDAIR-S052;1;1;yes;no
+FRANCHE COMTE ISOLATION (FCI);+33 (0)3 81 47 15 00;S053;/;/;/;30085419700047;http://www.franchecomteisolation.com/;Travaux d\'isolation (4329A);FR10300854197;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\FRANCHE COMTE ISOLATION-S053;1;1;yes;no
+GUANGZHOU;+86-20-8455 2831;S054;/;/;/;88530977300012;/;Vente à distance sur catalogue général (4791A);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\KLC CLEANTECH CO-S054;1;1;yes;no
+ELECTRO FRANCE INTERNET;+33 (0)9 77 21 75 50;S056;/;/;/;80158729600014;https://www.electrofrance-internet.fr/fr/;Commerce de gros (commerce interentreprises) de matériel électrique (4669A);FR77801587296;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ELECTRO FRANCE INTERNET-S056;1;1;yes;no
+COLAS AGENCE DOUBS;+33 (0)3 81 48 15 15;S057;/;/;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\COLAS-S057;1;1;yes;no
+ALU STOCK;+34 672 61 80 41 ;S058;/;ISO 9001:2015 Exp:2022-03-05;/;45265280300027;https://www.alu-stock.es/fr/;Commerce de gros (commerce interentreprises) de machines pour l\'extraction, la construction et le génie civil (4663Z);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ALU-STOCK-S058;1;1;yes;no
+SEALOGIS FREIGHT FORWARD;+33 (0)2 32 79 63 55 ;S059;/;/;/;7585011500058;https://www.sealogisfreightforwarding.com/;Affrètement et organisation des transports (5229B);FR94075850115;/;1;1;yes;no
+NOVETAL;+33 (0)4 94 86 47 09;S060;/;ISO 9001:2015 Exp: 2023-06-21;/;53978027000044;https://www.novetal.com/;Commerce de gros (commerce interentreprises) de machines-outils (4662Z);FR27539780270;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\NOVETAL -S060;1;1;yes;no
+PHISIOHM EURL;+33(0)6 27 33 57 01;S061;/;/;/;82327676100017;/;Travaux d\'installation électrique dans tous locaux (4321A)Installation électrique (4321AB);FR96823276761;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\PHISIOHM S061;1;1;yes;no
+SEA ROAD LOGISTIC SARL;+33 (0)2 40 40 20 80 ;S062 ;/;/;/;43754345700034;/;Affrètement et organisation des transports (5229B);FR96437543457;/;1;1;yes;no
+GREELOY;86-186-2186-9885;S063;/;ISO 13485:2016 Exp: 2023-07-16;/;/;http://www.greeloymed.com/en/index.html;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\GREELOY MEDICAL INSTRUMENT-S063;1;1;yes;no
+NOEL FURNITURE MANUFACTURY; /;S064;/;/;/;30476473100028;https://www.noel-space.com/;Travaux de peinture et vitrerie (4334Z);FR44304764731;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\NOEL FURNITURE MANUFACTURY-S064;1;1;yes;no
+TFS ;+33 (0)6 73 54 26 26;S065;/;/;/;47779853200040;/;Affrètement et organisation des transports (5229B);FR30477798532;/;1;1;yes;no
+FRANCE ETUVES ;+33 (0)1 64 21 42 15;S066;/;/;/;43162217400016;https://www.france-etuves.com/FR/;Fabrication de fours et brûleurs (2821Z);FR51431622174;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\FRANCE ETUVES-S066;1;1;yes;no
+MOGRA;+33 (0)3 84 76 11 54;S067;/;/;/;35090581600046;https://www.mogra.fr/en/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR31350905816;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MOGRA-S067;1;2;yes;no
+SHENZHEN FLYING;86-185-6578-5494;S068 ;/;/;/;/;/;/;/;/;1;1;yes;no
+COMETE INFORMATIQUE;+33 (0)6 21 12 01 90;S069;/;/;/;42351774700030;/;Conseil en systèmes et logiciels informatiques (6202A);FR14423517747;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\COMETE INFORMATIQUE-S019;1;1;yes;no
+ROBE MEDICAL;+33 (0)9 51 32 66 71;S070;/;ISO 13485 : 2003 ;/;77571781200033;/;Vente à distance sur catalogue spécialisé (4791B);FR64775717812;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ROBE MEDICAL-S070;1;1;yes;no
+VWR;+33 (0)8 25 02 30 30;S071;/;ISO 17025:2017 Exp: 2023-06-01;/;42128785500231;https://fr.vwr.com/store/;Commerce de gros (commerce interentreprises) de produits chimiques (4675Z);FR40421287855;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\VWR INTERNATIONAL-S071;1;1;yes;no
 MGB;+33 (0)4 50 98 35 70;S072;QA Agreement 03 Sep 2021;"EN 9100:2016 Exp: 2024-06-01
 ISO 9001:2015 Exp: 2024-06-01
 ISO 13485:2016 Exp: 2021-09-05
-ISO 14001:2015 Exp: 2024-06-02";/;/;/;/;/;/;2;2;yes
-ETS LEGAIN;+33 (0)3 81 59 08 87;S073;/;/;/;/;/;/;/;/;1;1;yes
-ETS LONG SAS ;+33 (0)6 07 41 17 90 ;S074;/;/;/;/;/;/;/;/;1;1;yes
-SUPRATEC SYNEO;+33 (0)6 14 09 66 41;S075;/;ISO 9001:2015 Exp: 2024-05-08;/;/;/;/;/;/;1;1;yes
-SAFITECH;+33 (0)3 81 88 52 66;S076;/;/;/;/;/;/;/;/;1;1;yes
-MENEUR AMENAGEMENT;+33 (0)6 72 69 30 39 ;S077;/;/;/;/;/;/;/;/;1;1;yes
-RS; /;S078;/;/;/;/;/;/;/;/;1;1;yes
-E.I.S.;+49 (0)711 460 59 21 40;S079;/;/;/;/;/;/;/;/;1;1;yes
-SARL BG ETANCHEITE ;+33 (0)6 42 82 49 66;S080;/;/;/;/;/;/;/;/;1;1;yes
-LABODERM; /;S081;/;/;/;/;/;/;/;/;1;1;yes
-ADS LAMINAIRE;+33 (0)1 48 17 85 25;S082;/;/;/;/;/;/;/;/;1;1;yes
-LUSTRAL;+33 (0)3 81 26 36 11;S083;MED210831-4511 31 Aug 2021;/;/;/;/;/;/;/;1;1;yes
-SP3; /;S084;/;/;/;/;/;/;/;/;1;1;yes
-GIMA;0039 02 953854.225;S085;/;/;/;/;/;/;/;/;1;1;yes
-POLY DISPENSING SYSTEMS;+33 (0)1 39 62 40 92;S086;/;/;/;/;/;/;/;/;1;1;yes
-EUROMEDIS;+33 (0)3 44 73 83 60 ;S087;/;ISO 13485:2016 Exp: 2024-27-05;/;/;/;/;/;/;1;1;yes
-ESPRIT;+33 (0) 254828724;S088;/;/;/;/;/;/;/;/;1;1;yes
-SOLUSCAN;+33 (0)4 74 80 58 14;S089;/;/;/;/;/;/;/;/;1;1;yes
-SAS OUDOT;+33 (0)3 81 86 69 43;S090;/;/;/;/;/;/;/;/;1;1;yes
-EPOXY TECHNOLOGY EUROPE;+33 (0)1 39 13 20 82;S091;/;/;/;/;/;/;/;/;1;1;yes
-GILLET DECOLLETAGE;+33 (0)3 81 50 34 10;S092;/;/;/;/;/;/;/;/;1;1;yes
-BENE INOX;+ 33 (0)4 72 79 05 14;S093;/;/;/;/;/;/;/;/;1;1;yes
-S.A.R.L. CURTY METROLOGIE;+33 (0)3 81 57 68 63;S094;/;/;/;/;/;/;/;/;1;1;yes
-OLIVER HCP;+33 (0)3 88 51 78 54 ;S095;/;ISO 13485:2016 Exp: 2020-05-15;/;/;/;/;/;/;1;1;yes
-DIFRA;+33 (0)3 81 58 16 16;S096;/;/;/;/;/;/;/;/;1;1;yes
-REBOUL;+33 (0)9 51 32 66 71;S097;/;/;/;/;/;/;/;/;1;1;yes
-FRIENDSHIP MEDICAL;86-139-9189-505;S098;/;/;/;/;/;/;/;/;1;1;yes
-ENGRENAGES HPC;+33 (0)4 37 49 64 96 ;S099;/;/;/;/;/;/;/;/;1;1;yes
-ALBATROZ CONSULTING MEDITEC;+49 (0)2224 986 8031;S100;/;/;/;/;/;/;/;/;1;1;yes
-CARLROTH;+33 (0)3 88 94 82 42;S101;/;/;/;/;/;/;/;/;1;1;yes
-MATECHPLAST;+33 (0)2 41 55 58 84;S102;/;/;/;/;/;/;/;/;1;1;yes
-IGUS;+33 (0)1 85 16 03 22;S103;/;/;/;/;/;/;/;/;1;1;yes
-DISTRIMED;+33 (0)4 94 23 30 20 ;S104;/;/;/;/;/;/;/;/;1;1;yes
-CHANGZHOU BEISHUO MEDICAL TECHNOLOGY DEVELOPMENT;86-186-1297-2340;S105;/;/;/;/;/;/;/;/;1;1;yes
-EMITECH CHASSIEU;+33 (0)4 78 40 66 55;S106;/;/;/;/;/;/;/;/;1;1;yes
-AXA;+33 (0)1  55 92 41  50 ;S107;/;/;/;/;/;/;/;/;1;1;yes
-JIAXING JINGRUI INSTRUMENT & EQUIPMENT;86-573-8232-6081;S108;/;/;/;/;/;/;/;/;1;1;yes
-ORANGE;/;S109;/;/;/;/;/;/;/;/;0;0;no
-PROLIANS;/;S110;/;/;/;/;/;/;/;/;0;0;no
-RBS;/;S111;/;/;/;/;/;/;/;/;0;0;no
-TELEFLEX;/;S112;/;/;/;/;/;/;/;/;0;0;no
-TME;/;S113;/;/;/;/;/;/;/;/;0;0;no
-VELLEMAN;/;S114;/;/;/;/;/;/;/;/;0;0;no
-MEYER GAGE COMPANY;/;S115;/;/;/;/;/;/;/;/;0;0;no
-APOTECA;/;S116;/;/;/;/;/;/;/;/;0;0;no
-CASTORAMA;/;S117;/;/;/;/;/;/;/;/;0;0;no
-CERTEO;/;S118;/;/;/;/;/;/;/;/;0;0;no
-DEXIS;/;S119;/;/;/;/;/;/;/;/;0;0;no
-JPG;/;S120;/;/;/;/;/;/;/;/;0;0;no
-MANTION;/;S121;/;/;/;/;/;/;/;/;0;0;no
-MONDIAL EXTINCTEUR;/;S122;/;/;/;/;/;/;/;/;0;0;no
-MOLY CHINA;/;S123;/;/;/;/;/;/;/;/;0;0;no
-ELIS;/;S124;/;/;/;/;/;/;/;/;0;0;no
-FOUSSIER;/;S125;/;/;/;/;/;/;/;/;0;0;no
-GROSSERON;/;S126;/;/;/;/;/;/;/;/;0;0;no
-HENKEL LOCTITE;/;S127;/;/;/;/;/;/;/;/;0;0;no
-JR READY ZHEJIANG CHINE;/;S128;/;/;/;/;/;/;/;/;0;0;no
-MASQUE;/;S129;/;/;/;/;/;/;/;/;0;0;no
-MBO;/;S130;/;/;/;/;/;/;/;/;0;0;no
-FG CLEAN WIPES;/;S131;/;/;/;/;/;/;/;/;0;0;no
-ENSINGER GMBH;/;S132;/;/;/;/;/;/;/;/;0;0;no
-ACNIS;/;S133;/;/;/;/;/;/;/;/;0;0;no
-3M;/;S134;/;/;/;/;/;/;/;/;0;0;no
-MCAM;/;S135;/;/;/;/;/;/;/;/;0;0;no
-NORDSON MEDICAL;/;S136;/;/;/;/;/;/;/;/;0;0;no
-YOKOWO;/;S137;/;/;/;/;/;/;/;/;0;0;no
-COMELEC;/;S138;/;/;/;/;/;/;/;/;0;0;no
-FRANCHE COMTE DISTRIBUTION;/;S139;/;/;/;/;/;/;/;/;0;0;no
-EPOTEK;/;S140;/;/;/;/;/;/;/;/;0;0;no
-DDLG;/;S141;/;/;/;/;/;/;/;/;0;0;no
-COATES SCREEN;/;S142;/;/;/;/;/;/;/;/;0;0;no
-AMANN GROUP;/;S143;/;/;/;/;/;/;/;/;0;0;no
-BASF;/;S144;/;/;/;/;/;/;/;/;0;0;no
-POLYPLASTICS;/;S145;/;/;/;/;/;/;/;/;0;0;no
-BLESS;/;S146;/;/;/;/;/;/;/;/;0;0;no
-TUMA;/;S147;/;/;/;/;/;/;/;/;0;0;no
-BEAUSEIGNEUR;/;S148;/;/;/;/;/;/;/;/;0;0;no
-ALFAAESAR;/;S149;/;/;/;/;/;/;/;/;0;0;no
-MERCK;/;S150;/;/;/;/;/;/;/;/;0;0;no
-SIGMA ALDRICH;/;S151;/;/;/;/;/;/;/;/;0;0;no
-VOUSSERT;/;S152;/;/;/;/;/;/;/;/;0;0;no
-BRESSERT;/;S153;/;/;/;/;/;/;/;/;0;0;no
-ZEUS;/;S154;/;/;/;/;/;/;/;/;0;0;no
-TBD;/;S155;/;/;/;/;/;/;/;/;0;0;no
-1 ATTACK;/;S156;/;/;/;/;/;/;/;/;0;0;no
-123 CONSOMMABLES;/;S157;/;/;/;/;/;/;/;/;0;0;no
-123 MAGNET;/;S158;/;/;/;/;/;/;/;/;0;0;no
-123 ELEC;/;S159;/;/;/;/;/;/;/;/;0;0;no
-ACTION;/;S160;/;/;/;/;/;/;/;/;0;0;no
-APETIZ;/;S161;/;/;/;/;/;/;/;/;0;0;no
-ASSOCIATION REGIE URGAINE;/;S162;/;/;/;/;/;/;/;/;0;0;no
-BACK MARKET;/;S163;/;/;/;/;/;/;/;/;0;0;no
-BATTERY EMPIRE;/;S164;/;/;/;/;/;/;/;/;0;0;no
-BAZARLAND;/;S165;/;/;/;/;/;/;/;/;0;0;no
-BD MOBILIER;/;S166;/;/;/;/;/;/;/;/;0;0;no
-BIMPLI;/;S167;/;/;/;/;/;/;/;/;0;0;no
-BOULANGER;/;S168;/;/;/;/;/;/;/;/;0;0;no
-BRICO DEPOT;/;S169;/;/;/;/;/;/;/;/;0;0;no
-BRICOZOR;/;S170;/;/;/;/;/;/;/;/;0;0;no
-BULTE;/;S171;/;/;/;/;/;/;/;/;0;0;no
-CABLEMATIC;/;S172;/;/;/;/;/;/;/;/;0;0;no
-CAINIAO;/;S173;/;/;/;/;/;/;/;/;0;0;no
-CARREFOUR;/;S174;/;/;/;/;/;/;/;/;0;0;no
-CASINO;/;S175;/;/;/;/;/;/;/;/;0;0;no
-COMAFRANC;/;S176;/;/;/;/;/;/;/;/;0;0;no
-CONFORAMA;/;S177;/;/;/;/;/;/;/;/;0;0;no
-CONRAD;/;S178;/;/;/;/;/;/;/;/;0;0;no
-COOPERATION PHARMACEUTIQUE FRANCAISE;/;S179;/;/;/;/;/;/;/;/;0;0;no
-DARTY;/;S180;/;/;/;/;/;/;/;/;0;0;no
-DIGI KEY ELECTRONICS;/;S181;/;/;/;/;/;/;/;/;0;0;no
-DIRECT SIEGE;/;S182;/;/;/;/;/;/;/;/;0;0;no
-DISTRELEC;/;S183;/;/;/;/;/;/;/;/;0;0;no
-DOMOMAT;/;S184;/;/;/;/;/;/;/;/;0;0;no
-DSXUV;/;S185;/;/;/;/;/;/;/;/;0;0;no
-EBAY;/;S186;/;/;/;/;/;/;/;/;0;0;no
-ELEC44;/;S187;/;/;/;/;/;/;/;/;0;0;no
-ELECTRO DEPOT;/;S188;/;/;/;/;/;/;/;/;0;0;no
-ELITECH;/;S189;/;/;/;/;/;/;/;/;0;0;no
-EMG;/;S190;/;/;/;/;/;/;/;/;0;0;no
-ESPACE EQUIPEMENT;/;S191;/;/;/;/;/;/;/;/;0;0;no
-ESSENTRA;/;S192;/;/;/;/;/;/;/;/;0;0;no
-FACILEMBAL;/;S193;/;/;/;/;/;/;/;/;0;0;no
-FARNELL;/;S194;/;/;/;/;/;/;/;/;0;0;no
-FRANCE ELECTRIC;/;S195;/;/;/;/;/;/;/;/;0;0;no
-GALVAREX;/;S196;/;/;/;/;/;/;/;/;0;0;no
-GHANGZOU TONHUI ELECTRONIC COMPANY LIMITED;/;S197;/;/;/;/;/;/;/;/;0;0;no
-GIFI;/;S198;/;/;/;/;/;/;/;/;0;0;no
-GO TRONIC;/;S199;/;/;/;/;/;/;/;/;0;0;no
-GRAND BESANCON;/;S200;/;/;/;/;/;/;/;/;0;0;no
-GREEN CELL;/;S201;/;/;/;/;/;/;/;/;0;0;no
-GSD AUTOMATISME;/;S202;/;/;/;/;/;/;/;/;0;0;no
-HELENE GOUILLARDON;/;S203;/;/;/;/;/;/;/;/;0;0;no
-IKEA;/;S204;/;/;/;/;/;/;/;/;0;0;no
-IMPRIM ENCRE;/;S205;/;/;/;/;/;/;/;/;0;0;no
-JIM ELECTRICITE;/;S206;/;/;/;/;/;/;/;/;0;0;no
-JONHSON MATTHEY;/;S207;/;/;/;/;/;/;/;/;0;0;no
-KLAUS MAKAROWSKI;/;S208;/;/;/;/;/;/;/;/;0;0;no
-KLC;/;S209;/;/;/;/;/;/;/;/;0;0;no
-LA MAISON ELECTRIQUE;/;S210;/;/;/;/;/;/;/;/;0;0;no
-LA SCIERIE;/;S211;/;/;/;/;/;/;/;/;0;0;no
-LEPROMEDICAL;/;S212;/;/;/;/;/;/;/;/;0;0;no
-HENCKEL LOCTITE;/;S213;/;/;/;/;/;/;/;/;0;0;no
-MABEO;/;S214;/;/;/;/;/;/;/;/;0;0;no
-MAISON DU CABLE;/;S215;/;/;/;/;/;/;/;/;0;0;no
-MANOMANO;/;S216;/;/;/;/;/;/;/;/;0;0;no
-MATERIELS ELECTRIQUES;/;S217;/;/;/;/;/;/;/;/;0;0;no
-MAXICOFFEE;/;S218;/;/;/;/;/;/;/;/;0;0;no
-MBA;/;S219;/;/;/;/;/;/;/;/;0;0;no
-MDC;/;S220;/;/;/;/;/;/;/;/;0;0;no
-MON HABITAT ELECTRIQUE;/;S221;/;/;/;/;/;/;/;/;0;0;no
-MR SOLEYMANI;/;S222;/;/;/;/;/;/;/;/;0;0;no
-NELINKIA;/;S223;/;/;/;/;/;/;/;/;0;0;no
-NORMA;/;S224;/;/;/;/;/;/;/;/;0;0;no
-OPEN OFFICE;/;S225;/;/;/;/;/;/;/;/;0;0;no
-PAILLARD;/;S226;/;/;/;/;/;/;/;/;0;0;no
-PHARMACIE CHEVAL;/;S227;/;/;/;/;/;/;/;/;0;0;no
-PHARMACIE TILLEROYES;/;S228;/;/;/;/;/;/;/;/;0;0;no
-PHARMACIE MULIN;/;S229;/;/;/;/;/;/;/;/;0;0;no
-PHARMACIE RICHARD;/;S230;/;/;/;/;/;/;/;/;0;0;no
-PHARMACIE VALENTIN;/;S231;/;/;/;/;/;/;/;/;0;0;no
-PHYSIOHM;/;S232;/;/;/;/;/;/;/;/;0;0;no
-PILZ;/;S233;/;/;/;/;/;/;/;/;0;0;no
-PIXARTPRINTING;/;S234;/;/;/;/;/;/;/;/;0;0;no
-PLAQUE-PLASTIQUE;/;S235;/;/;/;/;/;/;/;/;0;0;no
-PROPOUS;/;S236;/;/;/;/;/;/;/;/;0;0;no
-QOSINA;/;S237;/;/;/;/;/;/;/;/;0;0;no
-RADIOSPARE;/;S238;/;/;/;/;/;/;/;/;0;0;no
-RAJA;/;S239;/;/;/;/;/;/;/;/;0;0;no
-BG ETANCHEITE;/;S240;/;/;/;/;/;/;/;/;0;0;no
-SERVIA;/;S241;/;/;/;/;/;/;/;/;0;0;no
-OUDOT;/;S242;/;/;/;/;/;/;/;/;0;0;no
-SHANGHAI HAOZUN INDUSTRIY;/;S243;/;/;/;/;/;/;/;/;0;0;no
-SO BRICO;/;S244;/;/;/;/;/;/;/;/;0;0;no
-TOOLSTATION;/;S245;/;/;/;/;/;/;/;/;0;0;no
-TRADE DISCOUNT;/;S246;/;/;/;/;/;/;/;/;0;0;no
-VEVOR;/;S247;/;/;/;/;/;/;/;/;0;0;no
-VIS EXPRESS;/;S248;/;/;/;/;/;/;/;/;0;0;no
-VP;/;S249;/;/;/;/;/;/;/;/;0;0;no
-VUICHARD MICHEL;/;S250;/;/;/;/;/;/;/;/;0;0;no
-YAHEETECH;/;S251;/;/;/;/;/;/;/;/;0;0;no
-YUJJIE;/;S252;/;/;/;/;/;/;/;/;0;0;no
-Appropriate supplier abble to establsh compliance certificate - manufacturer has to be ISO 13485 or ISO 9001;/;S253;/;/;/;/;/;/;/;/;0;0;no
-Pharmacy or manufacturer subdealer;/;S254;/;/;/;/;/;/;/;/;0;0;no
-Appropriate supplier;/;S255;/;/;/;/;/;/;/;/;0;0;no
-Appropriate local food grade tubing extruder;/;S256;/;/;/;/;/;/;/;/;0;0;no
-Appropriate local protective box manufacturer;/;S257;/;/;/;/;/;/;/;/;0;0;no
-Appropriate machinist equiped for bar turning;/;S258;/;/;/;/;/;/;/;/;0;0;no
-Appropriate local food grade silicon sheet supplier ;/;S259;/;/;/;/;/;/;/;/;0;0;no
-Appropriate local label for Thermal Transfer standard or custom made type Zebra supplier;/;S260;/;/;/;/;/;/;/;/;0;0;no
-Appropriate local provider advised;/;S261;/;/;/;/;/;/;/;/;0;0;no
-Appropriate local supplier in 20 to 30l can advised;/;S262;/;/;/;/;/;/;/;/;0;0;no
-Appropriate local supplier of MINIGRIP BAGS;/;S263;/;/;/;/;/;/;/;/;0;0;no
+ISO 14001:2015 Exp: 2024-06-02";/;60562064000017;/;Décolletage (2562A);FR37605620640;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MGB (AGS)-S072;2;2;yes;no
+ETS LEGAIN;+33 (0)3 81 59 08 87;S073;/;/;/;82985421500011;/;Commerce de gros (commerce interentreprises) de matériel agricole (4661Z);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ETS LEGAIN-S073;1;1;yes;no
+ETS LONG SAS ;+33 (0)6 07 41 17 90 ;S074;/;/;/;78008490100039;/;Mécanique industrielle (2562B);FR26780084901;/;1;1;yes;no
+SUPRATEC SYNEO;+33 (0)6 14 09 66 41;S075;/;ISO 9001:2015 Exp: 2024-05-08;/;49932837500021;https://www.supratec-syneo.com/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR72499328375;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\SUPRATEC SYNEO-S075;1;1;yes;no
+SAFITECH;+33 (0)3 81 88 52 66;S076;/;/;/;31371154100067;/;Mécanique industrielle (2562B);FR89313711541;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\SAFITECH-S076;1;1;yes;no
+MENEUR AMENAGEMENT;+33 (0)6 72 69 30 39 ;S077;/;/;/;85263316300021;/;Travaux de menuiserie bois et pvc (4332A);FR92852633163;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MENEUR -S077;1;1;yes;no
+RS; /;S078;/;/;/;33453403900030;https://fr.rs-online.com/web/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR68334534039;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\RS COMPONENTS -S078;1;1;yes;no
+E.I.S.;+49 (0)711 460 59 21 40;S079;/;/;/;39033744200011;euro-industry.com;Gestion de portefeuilles (671C);FR14390337442;/;1;1;yes;no
+SARL BG ETANCHEITE ;+33 (0)6 42 82 49 66;S080;/;/;/;43277253100039;https://www.etancheite-francheetanche.fr/?at_medium=sl&at_campaign=booster_bing_ads&msclkid=115dfb3a96fb19c98f2f9f42f92f446b;Travaux d\'étanchéification (4399A);FR56432772531;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\SARL BG ETANCHEITE -S080;1;1;yes;no
+LABODERM; /;S081;/;/;/;41177986100037;https://www.laboderm.fr/;Commerce de gros (commerce interentreprises) de produits pharmaceutiques (4646Z);FR72411779861;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\LABODERM -S081;1;1;yes;no
+ADS LAMINAIRE;+33 (0)1 48 17 85 25;S082;/;/;/;69204043900030;adslaminaire.com;Fabrication d\'équipements aérauliques et frigorifiques industriels (2825Z);FR65692040439;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ADS LAMINAIRE -S082;1;1;yes;no
+LUSTRAL;+33 (0)3 81 26 36 11;S083;MED210831-4511 31 Aug 2021;/;/;30967441400177;https://www.lustral.fr/;Nettoyage courant des bâtiments (8121Z);FR31309674414;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\LUSTRAL-S083;1;1;yes;no
+SP3; /;S084;/;/;/;82876721000010;/;Conseil pour les affaires et autres conseils de gestion (7022Z);FR67828767210;/;1;1;yes;no
+GIMA;0039 02 953854.225;S085;/;Iso 9001 : 2015 Exp: 2021-10-14;/;/;https://www.gimaitaly.com/contatti.asp;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\GIMA -S085;1;1;yes;no
+POLY DISPENSING SYSTEMS;+33 (0)1 39 62 40 92;S086;/;/;/;51762752700032;https://polydispensing.com/;Intermédiaires du commerce en machines, équipements industriels, navires et avions (4614Z);FR87517627527;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\POLY DISPENSING SYSTEMS -S086;1;1;yes;no
+EUROMEDIS;+33 (0)3 44 73 83 60 ;S087;/;ISO 13485:2016 Exp: 2024-27-05;/;40753551700020;laboratoires-euromedis.com;Activités des sociétés holding (6420Z);FR36407535517;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\EUROMEDIS -S087;1;1;yes;no
+ESPRIT;+33 (0) 254828724;S088;/;/;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ESPRIT -S088;1;1;yes;no
+SOLUSCAN;+33 (0)4 74 80 58 14;S089;/;/;/;/;https://soluscan.fr/;/;/;/;1;1;yes;no
+SAS OUDOT;+33 (0)3 81 86 69 43;S090;/;/;/;38104024500023;Bienvenue sur le site internet de OUDOT, Tôlerie, Chaudronnerie et Découpe laser (sasoudot.fr);Fabrication de structures métalliques et de parties de structures (2511Z);FR94381040245;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\OUDOT -S090;1;1;yes;no
+EPOXY TECHNOLOGY EUROPE;+33 (0)1 39 13 20 82;S091;/;/;/;80500044500017;Accueil - Technologie Epoxy | L\'Europe ? (epotekeurope.com);Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR10805000445;/;1;1;yes;no
+GILLET DECOLLETAGE;+33 (0)3 81 50 34 10;S092;/;/;/;41916844800027;Gillet Décolletage mécanique de précision à Dannemarie sur Crète (site-solocal.com);Décolletage (2562A);/;/;1;1;yes;no
+BENE INOX;+33 (0)4 72 79 05 14;S093;/;ISO 9001:2015 Exp 2024-04-03;/;31181028700012;bene-inox.com;Commerce de gros (commerce interentreprises) de quincaillerie (4674A);FR24311810287;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\BENE INOX-S093;1;1;yes;no
+S.A.R.L. CURTY METROLOGIE;+33 (0)3 81 57 68 63;S094;/;/;/;45097606300021;https://curty-metrologie-26.webself.net/;Analyses, essais et inspections techniques (7120B);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\CURTY METROLOGIE -S094;1;1;yes;no
+OLIVER HCP;+33 (0)3 88 51 78 54 ;S095;/;ISO 13485:2016 Exp: 2020-05-15;/;/;https://www.oliverhcp.com;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\OLIVER Healthcare Packaging -S095;1;1;yes;no
+DIFRA;+33 (0)3 81 58 16 16;S096;/;/;/;42147714200028;http://difra.com/;Mécanique industrielle (2562B);FR63421477142;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\DIFRA -S096;1;1;yes;no
+REBOUL;+33 (0)9 51 32 66 71;S097;/;/;/;31865005800056;https://www.reboul.fr;Commerce de gros (commerce interentreprises) de composants et d\'équipements électroniques et de télécommunication (4652Z);FR54318650058;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\REBOUL -S097;1;1;yes;no
+FRIENDSHIP MEDICAL;86-139-9189-505;S098;/;ISO 13485 : 2016 Exp: 2022-11-17;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\FRIENDSHIP -S098;1;1;yes;no
+ENGRENAGES HPC;+33 (0)4 37 49 64 96 ;S099;/;/;/;38291190700030;/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR41382911907;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\HPC-S099;1;1;yes;no
+ALBATROZ CONSULTING MEDITEC;+49 (0)2224 986 8031;S100;/;/;/;/;https://albatroz.eu/;/;/;/;1;1;yes;no
+CARLROTH;+33 (0)3 88 94 82 42;S101;/;/;/;/;https://www.carlroth.com/fr/fr/?em_src=kw&em_cmp=Bing/FR-Brand-Brand&msclkid=afa2212ad6f31ad03315455f6b6847e0;/;/;/;1;1;yes;no
+MATECHPLAST;+33 (0)2 41 55 58 84;S102;/;ISO 13485:2016;/;45113723600019;https://www.matechplast.com/;"
+Fabrication de pièces techniques à base de matières plastiques (2229A)";FR14451137236;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MATECHPLAST -S102;1;1;yes;no
+IGUS;+33 (0)1 85 16 03 22;S103;/;/;/;42887278200035;https://www.igus.fr/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR76428872782;/;1;1;yes;no
+DISTRIMED;+33 (0)4 94 23 30 20 ;S104;/;/;/;35200455000047;https://www.distrimed.com/;Vente à distance sur catalogue spécialisé (4791B);FR76352004550;/;1;1;yes;no
+CHANGZHOU BEISHUO MEDICAL TECHNOLOGY DEVELOPMENT;86-186-1297-2340;S105;/;/;/;/;/;/;/;/;1;1;yes;no
+EMITECH CHASSIEU;+33 (0)4 78 40 66 55;S106;/;/;/;34454564500121;https://www.emitech.fr/fr/groupe/Lyon;Ingénierie, études techniques (7112B);/;/;1;1;yes;no
+AXA;+33 (0)1  55 92 41  50 ;S107;/;/;/;45139272400022;https://www.axa.fr/;Autres assurances (6512Z);FR81451392724;/;1;1;yes;no
+JIAXING JINGRUI INSTRUMENT & EQUIPMENT;86-573-8232-6081;S108;/;/;/;/;/;/;/;/;1;1;yes;no
+ORANGE;/;S109;/;/;/;38012986648625;https://boutique.orange.fr/?gclid=a5b05b6108db197819203f19796e5567&gclsrc=3p.ds&msclkid=a5b05b6108db197819203f19796e5567;Télécommunications filaires (6110Z);FR89380129866;/;0;0;no;no
+PROLIANS;03 81 80 54 37;S110;/;/;/;56282133000320;https://www.prolians.fr/;Commerce de gros (commerce interentreprises) de quincaillerie (4674A);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\PROLIANS S110;0;0;no;no
+RBS;/;S111;/;/;/;/;/;/;/;/;0;0;no;no
+TELEFLEX;01 45 12 84 84;S112;/;ISO 13485:2016 Exp: 2021-07-14;/;34747988300030;https://www.teleflexurology.fr/produits/gestion-des-troubles-vesicaux/sondes-pour-sondage-intermittent/liquick-x-treme/?mtm_campaign=BingAd&mtm_kwd=LiquickX-treme&mtm_source=BingAd&mtm_medium=BingAd&utm_source=bing&utm_medium=cpc&utm_campaign=FR_Liquick%20X-treme&utm_term=Teleflex&utm_content=Liquick%20X-TREME;Commerce de gros (commerce interentreprises) de produits pharmaceutiques (4646Z);FR61347479883;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\TELEFLEX - S112;0;0;no;no
+TME;/;S113;/;/;/;33005418000022;/;Fabrication de cartes électroniques assemblées (2612Z);FR35330054180;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\TME - S113;0;0;no;no
+VELLEMAN;/;S114;/;/;/;90427494100015;https://www.velleman.eu/;Commerce de gros (commerce interentreprises) non spécialisé (4690Z);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\Velleman S114;0;0;no;no
+MEYER GAGE COMPANY;+1 860-528-6526;S115;/;/;/;/;https://www.meyergage.com/contact-us/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MEYER GAGE COMPANY - S115;0;0;no;no
+APOTECA;/;S116;/;/;/;/;/;/;/;/;0;0;no;no
+CASTORAMA;/;S117;/;/;/;45167897300012;https://www.castorama.fr/;Commerce de détail de quincaillerie, peintures et verres en grandes surfaces (400 m² et plus) (4752B);FR87451678973;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\CASTORAMA-S117;0;0;no;no
+CERTEO;05 39 62 41 63;S118;/;/;/;53962416300017;https://www.certeo.fr/;Vente à distance sur catalogue spécialisé (4791B);/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\CERTEO -S118;0;0;no;no
+DEXIS;01 30 29 46 46;S119;/;/;/;43470793100011;dexis.fr;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR30434707931;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\DEXIS-S119;0;0;no;no
+JPG;01 34 47 48 00;S120;/;/;/;99750640700037;https://www.jpg.fr/;Commerce de gros (commerce interentreprises) d\'autres biens domestiques (4649Z);FR72997506407;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\JPG - S120;0;0;no;no
+MANTION;+33 (0) 3 81 53 29 76;S121;/;ISO 9001 : 2008;/;58282182300025;https://www.mantion.com/;Fabrication de serrures et de ferrures (2572Z);FR32582821823;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MANTION - S121;0;0;no;no
+MONDIAL EXTINCTEUR;/;S122;/;/;/;81441821600028;MondialExtincteur.fr;Vente à distance sur catalogue spécialisé (4791B);FR36814418216;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MONDIAL EXTINCTEUR - S122;0;0;no;no
+MOLY CHINA;+86 379 64687113;S123;/;/;/;/;https://www.moly-china.com/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MOLY CHINA S123;0;0;no;no
+ELIS;/;S124;/;/;/;69300109100091;https://fr.elis.com/fr;Autres activités de soutien aux entreprises n.c.a. (8299Z);FR54693001091;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\ELIS - S124;0;0;no;no
+FOUSSIER;02 50 82 18 21;S125;/;/;/;32968134000173;www.foussier.fr;Commerce de gros (commerce interentreprises) de quincaillerie (4674A);FR22329681340;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\FOUSSIER - S125;0;0;no;no
+GROSSERON; (33) 02 40 92 07 09;S126;/;/;/;53875551300024;https://www.grosseron.com/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR74538755513;/;0;0;no;no
+HENKEL LOCTITE;/;S127;/;ISO 13485 : 2016 Exp: 2024-06-19;/;/;/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\HENKEL LOCTITE - S127;0;0;no;no
+JR READY ZHEJIANG CHINE;/;S128;/;/;/;/;http://jrready.com/;/;/;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\JR Ready ZHEJIANG Chine - S128;0;0;no;no
+MASQUE;01 84 80 95 59;S129;/;/;/;89962226000011;https://www.france-masque.fr/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR96899622260;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MASQUES - S129;0;0;no;no
+MBO;/;S130;/;/;/;39372518900038;/;Commerce de gros (commerce interentreprises) de bois et de matériaux de construction (4673A);FR80393725189;\\ALPHA-SERVEUR\RP-PUR_Purchasing\Suppliers\MBO - S130;0;0;no;no
+FG CLEAN WIPES;+1 413-598-8344;S131;/;/;/;/;https://saturix.com/;/;/;/;0;0;no;no
+ENSINGER GMBH;/;S132;/;/;/;/;/;/;/;/;0;0;no;no
+ACNIS;/;S133;/;/;/;38098854300043;https://www.acnis-titanium.com;Commerce de gros (commerce interentreprises) de minerais et métaux (4672Z);FR91380988543;/;0;0;no;no
+3M;/;S134;/;/;/;54207855500662;/;Fabrication de produits de consommation courante en matières plastiques (2229B);FR25542078555;/;0;0;no;no
+MCAM;/;S135;/;/;/;42991570500017;https://www.mcam.com/;Commerce de détail de fleurs, plantes, graines, engrais, animaux de compagnie et aliments pour ces animaux en magasin spécialisé (4776Z);FR13429915705;/;0;0;no;no
+NORDSON MEDICAL;(970) 267-5200;S136;/;/;/;71203529400081;https://www.nordsonmedical.com/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR24712035294;/;0;0;no;no
+YOKOWO;/;S137;/;/;/;50935693700011;https://www.yokowo.co.jp/english/;Commerce de gros d\'équipements automobiles (4531Z);/;/;0;0;no;no
+COMELEC;01 56 70 44 88;S138;/;/;/;50750077500048;https://scscoatings.com/?msclkid=14dfaffb200f104787e0cb8dd37c5cc6&utm_source=bing&utm_medium=cpc&utm_campaign=Comelec&utm_term=comelec&utm_content=Comelec;Conseil pour les affaires et autres conseils de gestion (7022Z);FR37507500775;/;0;0;no;no
+FRANCHE COMTE DISTRIBUTION;03 84 79 28 89;S139;/;/;/;40978821300026;/;Autres intermédiaires du commerce en produits divers (4619B);FR37409788213;/;0;0;no;no
+EPOTEK;+1 978 667 3805;S140;/;/;/;/;https://www.epotek.com/;/;/;/;0;0;no;no
+DDLG;/;S141;/;/;/;73282123600013;https://www.ddlg-decolletage.com/;Décolletage (2562A);FR42732821236;/;0;0;no;no
+COATES SCREEN;/;S142;/;/;/;84323085500036;https://www.coates.de/index.php?lang=en;Conseil pour les affaires et autres conseils de gestion (7022Z);FR89843230855;/;0;0;no;no
+AMANN GROUP;01 45 17 08 88;S143;/;/;/;48296263600031;https://www.amann.com/fr/;Commerce de gros (commerce interentreprises) non spécialisé (4690Z);FR84482962636;/;0;0;no;no
+BASF;/;S144;/;/;/;54206915800518;https://fr.rs-online.com/web/c/informatique-et-peripheriques/impression-et-numerisation-3d/materiaux-pour-impression-3d/?applied-dimensions=4289884250;Commerce de gros (commerce interentreprises) de produits chimiques (4675Z);FR61542069158;/;0;0;no;no
+POLYPLASTICS;/;S145;/;/;/;/;https://www.polyplastics.com/en/;/;/;/;0;0;no;no
+BLESS;/;S146;/;/;/;90820192400010;/;Transports de voyageurs par taxis (4932Z);/;/;0;0;no;no
+TUMA;/;S147;/;/;/;/;/;/;/;/;0;0;no;no
+BEAUSEIGNEUR;03 84 36 41 36;S148;/;/;/;53572034600027;https://www.beauseigneur.com/fr/;Commerce de gros (commerce interentreprises) de produits chimiques (4675Z);FR60535720346;/;0;0;no;no
+ALFAAESAR;/;S149;/;/;/;87773764300024;https://www.alfa.com/fr/;Commerce de gros (commerce interentreprises) non spécialisé (4690Z);/;/;0;0;no;no
+MERCK;01 43 94 54 00;S150;/;/;/;57202803300064;/;Fabrication de préparations pharmaceutiques (2120Z);FR75572028033;/;0;0;no;no
+SIGMA ALDRICH;0 800 21 14 08;S151;/;/;/;34027592400017;https://www.sigmaaldrich.com/FR/fr;Commerce de gros (commerce interentreprises) de produits chimiques (4675Z);FR75340275924;/;0;0;no;no
+VOUSSERT;/;S152;/;/;/;32153966000092;https://www.voussert.fr/?msclkid=13bf10fd1f48101a8a1a748be0d2d0fb&utm_source=bing&utm_medium=cpc&utm_campaign=OL%20-%20M.%20voussert&utm_term=voussert%20fr&utm_content=voussert;Commerce de gros (commerce interentreprises) de vaisselle, verrerie et produits d\'entretien (4644Z);FR67321539660;/;0;0;no;no
+BRESSERT;/;S153;/;/;/;/;https://fr.tradingview.com/scripts/bressert/;/;/;/;0;0;no;no
+ZEUS;/;S154;/;/;/;81191600600026;/;Autres intermédiaires du commerce en produits divers (4619B);FR42811916006;/;0;0;no;no
+TBD;04 42 04 52 29;S155;/;/;/;84425860800018;/;Autres activités informatiques (6209Z);FR09844258608;/;0;0;no;no
+1 ATTACK;/;S156;/;/;/;85187082400014;/;Autres organisations fonctionnant par adhésion volontaire (9499Z);/;/;0;0;no;no
+123 CONSOMMABLES;/;S157;/;/;/;/;https://www.123consommables.com/;/;/;/;0;0;no;no
+123 MAGNET;/;S158;/;/;/;51432983800023;https://www.123-magnet.com/cat-magnet-publicitaire-308.htm?msclkid=3e24f145a732126aae389532a5e1b283;Commerce de détail de journaux et papeterie en magasin spécialisé (4762Z);/;/;0;0;no;no
+123 ELEC;0 820 20 61 13;S159;/;/;/;/;https://www.123elec.com/?msclkid=677c84f76a8d1663f5ace0806997b2af&utm_source=bing&utm_medium=cpc&utm_campaign=ASUC%20-%20Brand%20pure%20(123elec)%20-%20Expression&utm_term=123%20elec&utm_content=Brand%20Pure%20-%20Expression;/;/;/;0;0;no;no
+ACTION;/;S160;/;/;/;75330823804860;https://www.action.com/fr-fr/;Autres commerces de détail en magasin non spécialisé (4719B);FR05753308238;/;0;0;no;no
+APETIZ;/;S161;/;/;/;82274114600010;/;Restauration de type rapide (5610C);FR56822741146;/;0;0;no;no
+ASSOCIATION REGIE URGAINE;/;S162;/;/;/;40262787100054;https://www.aru-angouleme.fr/;Action sociale sans hébergement n.c.a. (8899B);FR49402627871;/;0;0;no;no
+BACK MARKET;/;S163;/;/;/;80404947600091;https://www.backmarket.fr/fr-fr/?msclkid=e545873c501b16d74475e34b55510a8b&utm_source=bing&utm_medium=cpc&utm_campaign=FR_SA_SEARCH_M_BRA_Backmarket&utm_term=blackmarket&utm_content=Blackmarket%20%28exact%29;Programmation informatique (6201Z);/;/;0;0;no;no
+BATTERY EMPIRE;+33 9 775 58979;S164;/;/;/;/;https://batteryempire.fr/;/;/;/;0;0;no;no
+BAZARLAND;/;S165;/;/;/;83895613400012;https://www.bazarland.fr/;Commerce de détail d\'autres équipements du foyer (4759B);/;/;0;0;no;no
+BD MOBILIER;03 62 23 82 60;S166;/;/;/;80787160300013;https://www.bd-mobilier.com/?msclkid=23f9eebe0ed41dc9a16a8ac9081e32b6&utm_source=bing&utm_medium=cpc&utm_campaign=Marques%20-%20FR&utm_term=bd%20mobilier&utm_content=BD%20Mobilier%20Exact;Commerce de gros (commerce interentreprises) de mobilier de bureau (4665Z);FR78807871603;/;0;0;no;no
+BIMPLI;/;S167;/;/;/;83367241300022;https://www.bimpli.com/;Autres activités auxiliaires de services financiers, hors assurance et caisses de retraite, n.c.a. (6619B);FR00833672413;/;0;0;no;no
+BOULANGER;/;S168;/;/;/;34738457002017;https://www.boulanger.com/?at_medium=comparateurs&at_campaign=Shopzilla&cnxclid=16855224187993745408710090302008005;Commerce de détail d\'appareils électroménagers en magasin spécialisé (4754Z);FR78347384570;/;0;0;no;no
+BRICO DEPOT;/;S169;/;/;/;45164790300017;https://www.bricodepot.fr/catalogue/depot/ballainvilliers/1953/;Commerce de détail de quincaillerie, peintures et verres en grandes surfaces (400 m² et plus) (4752B);FR94451647903;/;0;0;no;no
+BRICOZOR;/;S170;/;/;/;51858062600035;https://www.bricozor.com/?msclkid=6a9e709b8a2d1b67ee8414ec8256d074&utm_source=bing&utm_medium=cpc&utm_campaign=Notori%C3%A9t%C3%A9%20-%20Bricozor&utm_term=www%20bricozor%20com&utm_content=Bricozor%20-%20Notori%C3%A9t%C3%A9;Vente à distance sur catalogue spécialisé (4791B);/;/;0;0;no;no
+BULTE;/;S171;/;/;/;33977013300033;https://www.bulte.com/;Fabrication de produits de consommation courante en matières plastiques (2229B);FR73339770133;/;0;0;no;no
+CABLEMATIC;+34 934 98 71 13;S172;/;/;/;/;https://cablematic.com/fr/;/;/;/;0;0;no;no
+CAINIAO;/;S173;/;/;/;89951667800039;https://www.ship24.com/fr/transporteurs/cainiao-suivi-colis;Affrètement et organisation des transports (5229B);FR55899516678;/;0;0;no;no
+CARREFOUR;/;S174;/;/;/;45132133500023;https://www.carrefour.fr/;Hypermarchés (4711F);FR90451321335;/;0;0;no;no
+CASINO;/;S175;/;/;/;42826802337699;https://magasins.geantcasino.fr/;Hypermarchés (4711F);FR87428268023;/;0;0;no;no
+COMAFRANC;/;S176;/;/;/;79515817900015;https://www.comafranc.fr/;Commerce de gros (commerce interentreprises) de bois et de matériaux de construction (4673A);FR12795158179;/;0;0;no;no
+CONFORAMA;/;S177;/;/;/;41481940900023;https://www.conforama.fr/?wiz_medium=search_marque&wiz_source=bing&wiz_campaign=fr__brand__rlsa__txt________obj1__cpc__audall__conforama&wiz_content=__conforama__site&wiz_term=conforama%20fr&xtor=SEC&gclid=e00899eab9e61b0a54dcfd9da8b2bd97&gclsrc=3p.ds&msclkid=e00899eab9e61b0a54dcfd9da8b2bd97&utm_source=bing&utm_medium=cpc&utm_campaign=fr__brand__rlsa__txt________obj1__cpc__audall__conforama&utm_term=conforama%20fr&utm_content=__conforama__site;Commerce de détail de meubles (4759A);FR37414819409;/;0;0;no;no
+CONRAD; 0 892 895 555;S178;/;/;/;35008263200059;https://www.conrad.fr/?msclkid=61dcd79bdc191b4bcce0b3eccd8e1234&utm_source=bing&utm_medium=cpc&utm_campaign=ASUC%20-%20Conrad%20-%20Marque&utm_term=conrad%20pro&utm_content=Conrad%20-%20Pro;Commerce de gros (commerce interentreprises) de composants et d\'équipements électroniques et de télécommunication (4652Z);FR02350082632;/;0;0;no;no
+COOPERATION PHARMACEUTIQUE FRANCAISE;01 64 87 20 00;S179;/;/;/;39922763600020;https://www.cooper.fr/;Fabrication de préparations pharmaceutiques (2120Z);FR58399227636;/;0;0;no;no
+DARTY;/;S180;/;/;/;54208661601736;https://www.darty.com/?dartycid=sea_bing_marque_Bing-Darty-Marque_adgroup_Top-Darty&esl-k=sem-msn%7cno%7cc%7cme%7ckdarty%7cp%7ct%7cdc%7ca1198467825564264%7cg325145031&&msclkid=5ef0457d4c351aeed792210a5eacdb25&gclid=5ef0457d4c351aeed792210a5eacdb25&gclsrc=3p.ds;Centrales d\'achat non alimentaires (4619A);FR55542086616;/;0;0;no;no
+DIGI KEY ELECTRONICS;/;S181;/;/;/;/;https://www.digikey.fr/?utm_adgroup=General&utm_source=bing&utm_medium=cpc&utm_campaign=FR_Brand_Digi-Key&utm_term=digi%20key&utm_content=General&utm_id=bi_cmp-26147188_adg-1623239402_ad-81638761350889_kwd-81638930665107:aud-807631157:loc-66_dev-c_ext-_prd-&productid=&msclkid=388ef4ad2987112b8dfb90da3b478ded;/;/;/;0;0;no;no
+DIRECT SIEGE; 04 73 28 76 72;S182;/;/;/;/;https://www.direct-siege.com/;/;/;/;0;0;no;no
+DISTRELEC;/;S183;/;/;/;79929462400017;https://www.distrelec.fr/fr/;Autres commerces de détail spécialisés divers (4778C);FR40799294624;/;0;0;no;no
+DOMOMAT;/;S184;/;/;/;79301983700046;https://www.domomat.com/;Autres commerces de détail en magasin non spécialisé (4719B);FR81793019837;/;0;0;no;no
+DSXUV;/;S185;/;/;/;48829897700031;/;Conseil en systèmes et logiciels informatiques (6202A);FR33488298977;/;0;0;no;no
+EBAY;/;S186;/;/;/;43277810800030;https://www.ebay.fr/;Conseil pour les affaires et autres conseils de gestion (7022Z);FR06432778108;/;0;0;no;no
+ELEC44;/;S187;/;/;/;79929192700017;https://elec44.fr/?msclkid=b20af144e56616d521449533f20d7901&utm_source=bing&utm_medium=cpc&utm_campaign=Search%20-%20Nom%20de%20marque&utm_term=elec44&utm_content=Search-Elec44;Vente à distance sur catalogue général (4791A);FR00799291927;/;0;0;no;no
+ELECTRO DEPOT;/;S188;/;/;/;43374453900423;https://www.electrodepot.fr/?msclkid=e09fe2de55e115435cf686a94db22f31&utm_source=bing&utm_medium=cpc&utm_campaign=Search_Brand__Perf_ever_cpc%20optis&utm_term=%C3%A9lectro%20d%C3%A9p%C3%B4t&utm_content=Brand%20g%C3%A9n%C3%A9rique;Commerce de détail d\'appareils électroménagers en magasin spécialisé (4754Z);FR66433744539;/;0;0;no;no
+ELITECH;/;S189;/;/;/;45325003700059;https://www.elitechlog.com/;Commerce de gros (commerce interentreprises) de produits pharmaceutiques (4646Z);FR49453250037;/;0;0;no;no
+EMG;/;S190;/;/;/;39220545600057;/;Commerce de gros (commerce interentreprises) de composants et d\'équipements électroniques et de télécommunication (4652Z);FR75392205456;/;0;0;no;no
+ESPACE EQUIPEMENT;03 66 72 49 69;S191;/;/;/;80787129800012;https://www.espace-equipement.com/;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR36807871298;/;0;0;no;no
+ESSENTRA;/;S192;/;/;/;51910798100044;https://www.essentracomponents.com/fr-fr?matchtype=p&accountregion=FR&msclkid=da02015a6b461f665a2e652d709f5948&utm_source=bing&utm_medium=cpc&utm_campaign=Brand%20%5BSearch%5D&utm_term=essentra&utm_content=Brand%20-%20Essentra%20%5BBMM%5D;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR13519107981;/;0;0;no;no
+FACILEMBAL;04 90 16 94 25;S193;/;/;/;79159365000025;https://facilembal.site-solocal.com/;Vente à distance sur catalogue spécialisé (4791B);FR93791593650;/;0;0;no;no
+FARNELL;/;S194;/;/;/;38824502900086;https://fr.farnell.com/?CMP=KNC-MFR-PFB_1212-13-Sep-2022-ImprShare&mckv=sS7kRlOIA_dc|pcrid||kword|%2Bfarnell|match|p|plid||slid||product||pgrid|1195169200809045|ptaid|kwd-74698115166441:loc-66|&msclkid=a226803dbcb71c620641e44aa079a161;Commerce de gros (commerce interentreprises) de composants et d\'équipements électroniques et de télécommunication (4652Z);FR33388245029;/;0;0;no;no
+FRANCE ELECTRIC;/;S195;/;/;/;42110670900668;https://www.france-electric.com/;Fabrication de matériel de distribution et de commande électrique (2712Z);FR93421106709;/;0;0;no;no
+GALVAREX;/;S196;/;/;/;/;/;/;/;/;0;0;no;no
+GHANGZOU TONHUI ELECTRONIC COMPANY LIMITED;/;S197;/;/;/;91824029200014;/;Vente à distance sur catalogue général (4791A);/;/;0;0;no;no
+GIFI;/;S198;/;/;/;34741001100063;https://www.gifi.fr/;Activités des agences de publicité (7311Z);FR62347410011;/;0;0;no;no
+GO TRONIC;03 24 27 93 42;S199;/;/;/;43830668000028;https://www.gotronic.fr/;Commerce de détail d\'autres équipements du foyer (4759B);FR80438306680;/;0;0;no;no
+GRAND BESANCON;/;S200;/;/;/;24250036100017;https://www.grandbesancon.fr/;Administration publique générale (8411Z);FR28242500361;/;0;0;no;no
+GREEN CELL;/;S201;/;/;/;43302763800025;https://greencell.global/fr/;Fabrication d\'autres produits alimentaires n.c.a. (1089Z);/;/;0;0;no;no
+GSD AUTOMATISME;/;S202;/;/;/;/;https://www.gsd-automatisme.com/;/;/;/;0;0;no;no
+HELENE GOUILLARDON;/;S203;/;/;/;52935375700014;/;Conseil pour les affaires et autres conseils de gestion (7022Z);/;/;0;0;no;no
+IKEA;/;S204;/;/;/;35174572400200;https://www.ikea.com/fr/fr/;Commerce de détail de meubles (4759A);FR83351745724;/;0;0;no;no
+IMPRIM ENCRE;/;S205;/;/;/;38788022200022;https://www.imprim-encre.com/?msclkid=2d3c75bb01c414928c9311cc2139f1a3;Autre imprimerie (labeur) (222C);FR63387880222;/;0;0;no;no
+JIM ELECTRICITE;/;S206;/;/;/;48311668700045;https://www.ebay.fr/str/jimselectricite;Travaux d\'installation électrique dans tous locaux (4321A);FR32483116687;/;0;0;no;no
+JONHSON MATTHEY;01 48 17 21 63;S207;/;/;/;44441518600014;https://matthey.com/;Commerce de gros (commerce interentreprises) de produits chimiques (4675Z);/;/;0;0;no;no
+KLAUS MAKAROWSKI;/;S208;/;/;/;/;https://www.makarowski-beschlaege.de/;/;/;/;0;0;no;no
+KLC;/;S209;/;/;/;/;/;/;/;/;0;0;no;no
+LA MAISON ELECTRIQUE;0 887 99 04 48;S210;/;/;/;88799044800011;https://www.la-maison-electrique.com/;Travaux d\'installation électrique dans tous locaux (4321A);FR22887990448;/;0;0;no;no
+LA SCIERIE;02 51 68 73 06;S211;/;/;/;48698023800019;http://www.boutolleau.com/;Commerce de gros (commerce interentreprises) de bois et de matériaux de construction (4673A);FR58486980238;/;0;0;no;no
+LEPROMEDICAL;/;S212;/;/;/;31984345400053;https://leprodumedical.com/;Commerce de gros (commerce interentreprises) de produits pharmaceutiques (4646Z);/;/;0;0;no;no
+HENCKEL LOCTITE;/;S213;/;/;/;/;/;/;/;/;0;0;no;no
+MABEO;/;S214;/;/;/;33256495400276;https://www.mabeo-direct.com/D-579695-nos-agences;Commerce de gros (commerce interentreprises) de fournitures et équipements industriels divers (4669B);FR16332564954;/;0;0;no;no
+MAISON DU CABLE;/;S215;/;/;/;80452288600022;https://www.maison-du-cable.com/?utm_content=maison%20du%20cable%20societe.com&msclkid=c79cf99db7c71cdb5d959de5f18591d9&utm_source=bing&utm_medium=cpc&utm_campaign=1.%20Texte%20%3A%20Branding&utm_term=maison%20du%20cable;Travaux d\'installation électrique dans tous locaux (4321A);FR23804522886;/;0;0;no;no
+MANOMANO;/;S216;/;/;/;75297993000043;https://www.manomano.fr/?referer_id=696766&msclkid=771f98f70f431b70e1a7fc8f48ff8fb3&utm_source=bing&utm_medium=cpc&utm_campaign=SEM%20Bing_CPC_FR_GEN_Search_Mix%20Brand&utm_term=manomano&utm_content=G%C3%A9n%C3%A9rique;Portails internet (6312Z);FR19752979930;/;0;0;no;no
+MATERIELS ELECTRIQUES;/;S217;/;/;/;30220820200036;https://materiels-electriques.fr/;Commerce de gros (commerce interentreprises) de matériel électrique (4669A);FR53302208202;/;0;0;no;no
+MAXICOFFEE;/;S218;/;/;/;/;https://www.maxicoffee.com/;/;/;/;0;0;no;no
+MBA;/;S219;/;/;/;40984547600061;/;Commerce de gros (commerce interentreprises) non spécialisé (4690Z);FR39409845476;/;0;0;no;no
+MDC;/;S220;/;/;/;/;/;/;/;/;0;0;no;no
+MON HABITAT ELECTRIQUE;05 81 43 20 02;S221;/;/;/;92044895800016;https://www.mon-habitat-electrique.fr/;Travaux d\'installation électrique dans tous locaux (4321A);/;/;0;0;no;no
+MR SOLEYMANI;/;S222;/;/;/;45198234200011;/;Activités d\'architecture (7111Z);FR43451982342;/;0;0;no;no
+NELINKIA;/;S223;/;/;/;81422842500025;https://www.nelinkia.com/;Vente à distance sur catalogue général (4791A);FR53814228425;/;0;0;no;no
+NORMA;/;S224;/;/;/;35273941100986;/;Supermarchés (4711D);/;/;0;0;no;no
+OPEN OFFICE;/;S225;/;/;/;88070069500013;https://www.openoffice.org/fr;Conseil pour les affaires et autres conseils de gestion (7022Z);FR92880700695;/;0;0;no;no
+PAILLARD;/;S226;/;/;/;80470140700012;/;Commerce de détail de produits pharmaceutiques en magasin spécialisé (4773Z);FR49804701407;/;0;0;no;no
+PHARMACIE CHEVAL;/;S227;/;/;/;/;/;/;/;/;0;0;no;no
+PHARMACIE TILLEROYES;03 81 50 07 00;S228;/;/;/;82877407500018;www.pharmacielafayette.com;Commerce de détail de produits pharmaceutiques en magasin spécialisé (4773Z);FR01828774075;/;0;0;no;no
+PHARMACIE MULIN;03.81.58.86.36;S229;/;/;/;44769965300013;https://www.pharmanity.com/pharmacie/pharmacie-mulin-auxon-dessous-ph2544;Commerce de détail de produits pharmaceutiques en magasin spécialisé (4773Z);FR14447699653;/;0;0;no;no
+PHARMACIE RICHARD;03 84 24 00 52;S230;/;/;/;48137506100019;/;Commerce de détail de produits pharmaceutiques en magasin spécialisé (4773Z);FR59481375061;/;0;0;no;no
+PHARMACIE VALENTIN;03 81 80 96 66;S231;/;/;/;51382282500016;https://pharmacievalentincheval.pharmavie.fr/;Commerce de détail de produits pharmaceutiques en magasin spécialisé (4773Z);FR68513822825;/;0;0;no;no
+PHYSIOHM;/;S232;/;/;/;82327676100017;/;Travaux d\'installation électrique dans tous locaux (4321A);/;/;0;0;no;no
+PILZ;/;S233;/;/;/;69850333100119;https://www.pilz.com/fr-FR;Commerce de gros (commerce interentreprises) de composants et d\'équipements électroniques et de télécommunication (4652Z);FR90698503331;/;0;0;no;no
+PIXARTPRINTING;/;S234;/;/;/;80273913600017;https://www.pixartprinting.fr/?gclid=824dd67f17071b1a18dab2074351334c&gclsrc=3p.ds&&ds_a_cid=94152874&msclkid=824dd67f17071b1a18dab2074351334c&utm_source=bing&utm_medium=cpc&utm_campaign=fr%20-%20brand%20-%20core%20-%20Bing%20-%20updated&utm_term=pixartprinting&utm_content=core%20-%20Pixartprinting%20-%20exact;Vente à distance sur catalogue spécialisé (4791B);/;/;0;0;no;no
+PLAQUE-PLASTIQUE;/;S235;/;/;/;84223362900026;https://plaqueplastique.fr/?msclkid=02ed2ad8b36219e6a5704ea0e7881985&utm_term=plaque%20plastique;Commerce de gros (commerce interentreprises) de fournitures et équipements divers pour le commerce et les services (4669C);FR85842233629;/;0;0;no;no
+PROPOUS;/;S236;/;/;/;/;/;/;/;/;0;0;no;no
+QOSINA;/;S237;/;/;/;/;https://www.qosina.com/;/;/;/;0;0;no;no
+RADIOSPARE;/;S238;/;/;/;/;/;/;/;/;0;0;no;no
+RAJA;/;S239;/;/;/;93708041400066;https://www.raja.fr/?msclkid=553c0981423b1f64f3576df9141bfc05&utm_source=bing&utm_medium=cpc&utm_campaign=FR%20%2F%20TXT%20%2F%20Marque%20Pure-%20BING&utm_term=raja&utm_content=Marque_Seule_Exact;Commerce de gros (commerce interentreprises) d\'autres produits intermédiaires (4676Z);FR58937080414;/;0;0;no;no
+BG ETANCHEITE;/;S240;/;/;/;50232112800030;/;Travaux d\'étanchéification (4399A);FR11502321128;/;0;0;no;no
+SERVIA;/;S241;/;/;/;39932140500066;https://www.societe-nettoyage-proprete-locaux-bureaux-paris.fr/;Nettoyage courant des bâtiments (8121Z);FR65399321405;/;0;0;no;no
+OUDOT;01 42 65 93 90;S242;/;/;/;38104024500023;https://www.oudot.net/;Fabrication de structures métalliques et de parties de structures (2511Z);FR94381040245;/;0;0;no;no
+SHANGHAI HAOZUN INDUSTRIY;/;S243;/;/;/;/;/;/;/;/;0;0;no;no
+SO BRICO;01 40 21 19 49;S244;/;/;/;40309296800995;https://www.sobrico.com/?utm_source=bing&utm_medium=cpc&msclkid=f9001adcf5261d0d69d47ea4adcbc59c&utm_campaign=Search-Branding-FR&utm_term=so%20brico&utm_content=Branding;Commerce de gros (commerce interentreprises) de quincaillerie (4674A);/;/;0;0;no;no
+TOOLSTATION;/;S245;/;/;/;80071695300032;https://www.toolstation.fr/?utm_id=bi_cmp-270142147_adg-1148989670748587_ad-71812006267123_kwd-71812563405558:loc-66_dev-c_ext-_prd-_sig-e2561f86cc431fd958407bfe9514e5e3&utm_source=bing&msclkid=e2561f86cc431fd958407bfe9514e5e3&utm_medium=cpc&utm_campaign=1%20%7C%20FR%20%7C%20Trademark%20%7C%20Bing&utm_term=toolstation%20france&utm_content=Toolstation%20(MB);Commerce de détail de quincaillerie, peintures et verres en petites surfaces (moins de 400 m²) (4752A);FR94800716953;/;0;0;no;no
+TRADE DISCOUNT;/;S246;/;/;/;51044192600076;https://www.tradediscount.com/?msclkid=1d09a637217e1278af1dc24f78f36f49&utm_source=bing&utm_medium=cpc&utm_campaign=Trade%20Discount%20-%20Brand-G84318910&utm_term=www%20trade%20discount%20fr&utm_content=Brand%20Trade%20Discount%20expression;Commerce de gros (commerce interentreprises) non spécialisé (4690Z);/;/;0;0;no;no
+VEVOR;/;S247;/;/;/;/;https://www.vevor.fr/?utm_source=bing&utm_medium=cpc&utm_id=602824069&utm_campaign=AD-PC-FR-Domain-Phrase-ECPC-20230303&msclkid=89a071b10d4b16682f3015c9548afa51&utm_term=vevor%20france&utm_content=FR-VEVOR;/;/;/;0;0;no;no
+VIS EXPRESS;/;S248;/;/;/;/;https://www.vis-express.fr/fr/?msclkid=2f4e1dc9f95713a3b79e79b1a0a1e450&utm_source=bing&utm_medium=cpc&utm_campaign=Visserie%20Service%20DSA&utm_term=vis-express&utm_content=All%20Webpages;/;/;/;0;0;no;no
+VP;/;S249;/;/;/;/;/;/;/;/;0;0;no;no
+VUICHARD MICHEL;/;S250;/;/;/;32301722800012;https://vuichard.fr/;Mécanique industrielle (2562B);FR65323017228;/;0;0;no;no
+YAHEETECH;/;S251;/;/;/;89515771700011;http://www.yaheetech.eu/;Commerce de gros (commerce interentreprises) non spécialisé (4690Z);FR33895157717;/;0;0;no;no
+YUJJIE;/;S252;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate supplier abble to establsh compliance certificate - manufacturer has to be ISO 13485 or ISO 9001;/;S253;/;/;/;/;/;/;/;/;0;0;no;no
+Pharmacy or manufacturer subdealer;/;S254;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate supplier;/;S255;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate local food grade tubing extruder;/;S256;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate local protective box manufacturer;/;S257;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate machinist equiped for bar turning;/;S258;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate local food grade silicon sheet supplier ;/;S259;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate local label for Thermal Transfer standard or custom made type Zebra supplier;/;S260;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate local provider advised;/;S261;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate local supplier in 20 to 30l can advised;/;S262;/;/;/;/;/;/;/;/;0;0;no;no
+Appropriate local supplier of MINIGRIP BAGS;/;S263;/;/;/;/;/;/;/;/;0;0;no;no
