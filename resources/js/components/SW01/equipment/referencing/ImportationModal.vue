@@ -6,14 +6,14 @@
 <template>
     <div>
         <b-button v-b-modal.modal-eq_add_import @click="importFromDB">Import From</b-button>
-        <b-modal id="modal-eq_add_import" title="Importation" hide-footer>
+        <b-modal id="modal-eq_add_import" hide-footer title="Importation">
             <p class="my-4">Import from set : {{ set }}</p>
             <div>
                 <div v-if="imported_eq_ref.length>0">
                     <input v-model="searchTerm" type="text">
                     <div v-for="option in filterByTerm" :key="option.id">
-                        <input type="radio" name="radio-input" :value="option" :id="option.eq_internalReference"
-                               v-model="radio_value"/>
+                        <input :id="option.eq_internalReference" v-model="radio_value" :value="option" name="radio-input"
+                               type="radio"/>
                         {{ option.eq_internalReference }}
                     </div>
                 </div>
@@ -21,8 +21,8 @@
                     <p>Nothing to import From</p>
                 </div>
             </div>
-            <b-button class="mt-3" block @click="$bvModal.hide('modal-eq_add_import')">Close</b-button>
-            <b-button class="mt-3" block @click="chooseEquipment">Choose</b-button>
+            <b-button block class="mt-3" @click="$bvModal.hide('modal-eq_add_import')">Close</b-button>
+            <b-button block class="mt-3" @click="chooseEquipment">Choose</b-button>
         </b-modal>
     </div>
 </template>
@@ -58,8 +58,10 @@ export default {
         importFromDB() {
             const importUrl = (set) => `/equipments/same_set/${set}`;
             axios.get(importUrl(this.set))
-                .then(response => this.imported_eq_ref = response.data)
-                .catch(error => console.log(error));
+                .then(response => {
+                    this.imported_eq_ref = response.data;
+                }).catch(error => {
+            });
         }
     }
 }

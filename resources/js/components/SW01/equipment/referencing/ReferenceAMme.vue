@@ -9,12 +9,13 @@
         <!--Adding to the vue EquipmentMmeForm by going through the components array with the v-for-->
         <!--ref="ask_mme_data" is used to call the child elements in this component-->
         <!--The emitted deleteMme is caught here and call the function getContent -->
-        <EquipmentMmeForm ref="ask_mme_data" v-for="(component, key) in components" :key="component.key"
-                          :internalReference="component.internalReference" :name="component.name"
-                          :externalReference="component.externalReference"
-                          :divClass="component.className" :id="component.id"
-                          :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod"
-                          :eq_id="data_eq_id"
+        <EquipmentMmeForm v-for="(component, key) in components" :id="component.id" :key="component.key"
+                          ref="ask_mme_data" :consultMod="isInConsultMod"
+                          :divClass="component.className"
+                          :eq_id="data_eq_id" :externalReference="component.externalReference"
+                          :internalReference="component.internalReference" :modifMod="isInModifMod"
+                          :name="component.name"
+                          :validate="component.validate"
                           @deleteMme="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -86,7 +87,6 @@ export default {
             data_eq_id: this.eq_id,
             all_dim_validate: [],
             mmes: this.importedMme,
-
         };
     },
     methods: {
@@ -97,7 +97,6 @@ export default {
                 key: this.uniqueKey++,
             });
         },
-
         /*Function for adding an imported mme form with his data*/
         addImportedComponent(mme_internalReference, mme_name, mme_externalReference, mme_validate, id) {
             this.components.push({
@@ -108,7 +107,6 @@ export default {
                 externalReference: mme_externalReference,
                 validate: mme_validate,
                 id: id,
-
             });
         },
         /*Function for adding to the vue the imported mmes*/
@@ -122,12 +120,10 @@ export default {
                 this.mmes = null
             }
         },
-
         /*Suppression of a mme component from the vue*/
         getContent(key) {
             this.components.splice(key, 1);
         },
-
         /*Function for saving all the data in one time*/
         saveAll(savedAs) {
             for (const component of this.$refs.ask_mme_data) {
@@ -144,7 +140,6 @@ export default {
                         if (component.mme_validate !== "validated") {
                             component.updateEquipmentMme(savedAs);
                         }
-
                     }
                 } else {
                     /*Else If the user is not in modification mode*/
@@ -160,8 +155,10 @@ export default {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             const consultUrl = (id) => `/mme/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then(response => this.mmes = response.data)
-                .catch(error => console.log(error));
+                .then(response => {
+                    this.mmes = response.data
+                }).catch(error => {
+            });
         }
     },
     /*All functions inside the created option are called after the component has been mounted.*/

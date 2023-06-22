@@ -9,11 +9,11 @@
         <!--Adding to the vue EquipmentFileForm by going through the components array with the v-for-->
         <!--ref="ask_file_data" is used to call the child elements in this component-->
         <!--The emitted deleteFile is caught here and call the function getContent -->
-        <EquipmentFileForm ref="ask_file_data" v-for="(component, key) in components" :key="component.key"
-                           :is="component.comp" :name="component.fileName" :location="component.location"
-                           :divClass="component.className" :id="component.id"
-                           :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod"
-                           :eq_id="data_eq_id"
+        <EquipmentFileForm :is="component.comp" v-for="(component, key) in components" :id="component.id"
+                           :key="component.key" ref="ask_file_data" :consultMod="isInConsultMod"
+                           :divClass="component.className" :eq_id="data_eq_id"
+                           :location="component.location" :modifMod="isInModifMod" :name="component.fileName"
+                           :validate="component.validate"
                            @deleteFile="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -25,8 +25,8 @@
                 <button v-if="!modifMod " v-on:click="importFile">import</button>
             </div>
         </div>
-        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" saveAll
+                        @add="saveAll" @update="saveAll"/>
         <ImportationAlert ref="importAlert"/>
     </div>
 
@@ -160,11 +160,11 @@ export default {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             const consultUrl = (id) => `/file/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then(response => this.files = response.data)
-                .catch(error => console.log(error));
-
+                .then(response => {
+                    this.files = response.data
+                }).catch(error => {
+            });
         }
-
     },
     /*All functions inside the created option are called after the component has been mounted.*/
     mounted() {
@@ -173,8 +173,6 @@ export default {
             this.importFile();
         }
     }
-
-
 }
 </script>
 

@@ -11,13 +11,13 @@
                 <!--Adding to the vue EquipmentRiskForm by going through the components array with the v-for-->
                 <!--ref="ask_risk_data" is used to call the child elements in this component-->
                 <!--The emitted deleteRisk is caught here and call the function getContent -->
-                <EquipmentRiskForm ref="ask_risk_data" v-for="(component, key) in components" :key="component.key"
-                                   :is="component.comp" :for="component.for" :remarks="component.remarks"
-                                   :riskForEq="true"
-                                   :wayOfControl="component.wayOfControl" :divClass="component.className"
-                                   :id="component.id"
-                                   :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod"
-                                   :eq_id="data_eq_id"
+                <EquipmentRiskForm :is="component.comp" v-for="(component, key) in components" :id="component.id"
+                                   :key="component.key" ref="ask_risk_data" :consultMod="isInConsultMod"
+                                   :divClass="component.className"
+                                   :eq_id="data_eq_id" :for="component.for"
+                                   :modifMod="isInModifMod"
+                                   :remarks="component.remarks" :riskForEq="true" :validate="component.validate"
+                                   :wayOfControl="component.wayOfControl"
                                    @deleteRisk="getContent(key)"/>
                 <!--If the user is not in consultation mode -->
                 <div v-if="!this.consultMod">
@@ -29,8 +29,8 @@
                         <button v-if="!modifMod " v-on:click="importRisk">import</button>
                     </div>
                 </div>
-                <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                                :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+                <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" saveAll
+                                @add="saveAll" @update="saveAll"/>
                 <ImportationAlert ref="importAlert"/>
             </div>
         </div>
@@ -44,13 +44,13 @@
                 <!--Adding to the vue EquipmentRiskForm by going through the components array with the v-for-->
                 <!--ref="ask_risk_data" is used to call the child elements in this component-->
                 <!--The emitted deleteRisk is caught here and call the function getContent -->
-                <EquipmentRiskForm ref="ask_risk_data" v-for="(component, key) in components" :key="component.key"
-                                   :is="component.comp" :for="component.for" :remarks="component.remarks"
-                                   :riskForEq="false"
-                                   :wayOfControl="component.wayOfControl" :divClass="component.className"
-                                   :id="component.id" :prvMtnOp_id="data_prvMtnOp_id"
-                                   :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod"
-                                   :eq_id="data_eq_id"
+                <EquipmentRiskForm :is="component.comp" v-for="(component, key) in components" :id="component.id"
+                                   :key="component.key" ref="ask_risk_data" :consultMod="isInConsultMod"
+                                   :divClass="component.className"
+                                   :eq_id="data_eq_id" :for="component.for"
+                                   :modifMod="isInModifMod" :prvMtnOp_id="data_prvMtnOp_id"
+                                   :remarks="component.remarks" :riskForEq="false" :validate="component.validate"
+                                   :wayOfControl="component.wayOfControl"
                                    @deleteRisk="getContent(key)"/>
                 <!--If the user is not in consultation mode -->
                 <div v-if="!this.consultMod">
@@ -62,8 +62,8 @@
                         <button v-if="!modifMod " v-on:click="importRisk">import</button>
                     </div>
                 </div>
-                <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                                :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+                <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" saveAll
+                                @add="saveAll" @update="saveAll"/>
                 <ImportationAlert ref="importAlert"/>
             </div>
         </div>
@@ -210,17 +210,16 @@ export default {
             /*Make a get request to ask the controller the risk corresponding to the id of the equipment with which data will be imported*/
             const consultUrl = (id) => `/equipment/risk/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then(response => this.risks = response.data)
-                .catch(error => console.log(error));
+                .then(response => {
+                    this.risks = response.data;
+                }).catch(error => {
+            });
         }
     },
     /*All functions inside the created option are called after the component has been mounted.*/
     mounted() {
         /*If the user is in consultation or modification mode, risk will be added to the vue automatically*/
         if (this.risks !== null) {
-            if (this.riskForEq == false) {
-                console.log(this.importedRisk);
-            }
             this.importRisk();
         }
     }

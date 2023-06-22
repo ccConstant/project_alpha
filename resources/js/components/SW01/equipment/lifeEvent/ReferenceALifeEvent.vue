@@ -7,19 +7,19 @@
     <div>
         <ReferenceACurMtnOp
             v-if="operation_type=='curative'"
-            @addSucces="addSucces()"
-            :eq_id="this.eq_id"
-            :state_id="this.state_id"
-            :number="this.number"
             :id="this.id"
+            :eq_id="this.eq_id"
+            :number="this.number"
+            :state_id="this.state_id"
+            @addSucces="addSucces()"
         />
         <ReferenceAPrvMtnOpRlz
             v-if="operation_type=='preventive'"
-            @addSucces="addSucces()"
-            :eq_id="this.eq_id"
-            :state_id="this.state_id"
-            :number="this.number"
             :id="this.id"
+            :eq_id="this.eq_id"
+            :number="this.number"
+            :state_id="this.state_id"
+            @addSucces="addSucces()"
         />
         <div v-if="isInConsultMod==true">
             <button type="button" @click="referenceAnother()">Reference another operation</button>
@@ -35,24 +35,23 @@ export default {
     components: {
         ReferenceACurMtnOp,
         ReferenceAPrvMtnOpRlz,
-
     },
-    data(){
-        return{
-            eq_id:parseInt(this.$route.params.id),
-            state_id:parseInt(this.$route.params.state_id),
-            selected_reference:'',
-            isInConsultMod:false,
-            operation_type:this.$route.query.type,
+    data() {
+        return {
+            eq_id: parseInt(this.$route.params.id),
+            state_id: parseInt(this.$route.params.state_id),
+            selected_reference: '',
+            isInConsultMod: false,
+            operation_type: this.$route.query.type,
             number: this.$route.query.number,
             id: this.$route.query.id,
         }
     },
-    methods:{
-        addSucces(){
+    methods: {
+        addSucces() {
             this.isInConsultMod = true;
         },
-        referenceAnother(){
+        referenceAnother() {
             window.location.reload();
         }
     }
@@ -60,8 +59,8 @@ export default {
 </script>
 
 <style lang="scss">
-    .date-selector{
-        width: 44px;
-        margin-top:8px
-    }
+.date-selector {
+    width: 44px;
+    margin-top: 8px
+}
 </style>

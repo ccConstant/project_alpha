@@ -9,18 +9,18 @@
         <!--Adding to the vue EquipmentPrvMtnOpForm by going through the components array with the v-for-->
         <!--ref="ask_prvMtnOp_data" is used to call the child elements in this component-->
         <!--The emitted deletePrvMtnOp is caught here and call the function getContent -->
-        <EquipmentPrvMtnOpForm ref="ask_prvMtnOp_data" v-for="(component, key) in components" :key="component.key"
-                               :is="component.comp" :number="component.number" :description="component.description"
-                               :periodicity="component.periodicity" :symbolPeriodicity="component.symbolPeriodicity"
-                               :reformMod="isInReformMod"
-                               :protocol="component.protocol" :divClass="component.className" :id="component.id"
-                               :import_id="component.import"
-                               :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod"
+        <EquipmentPrvMtnOpForm :is="component.comp" v-for="(component, key) in components" :id="component.id"
+                               :key="component.key" ref="ask_prvMtnOp_data" :consultMod="isInConsultMod"
+                               :description="component.description" :divClass="component.className"
                                :eq_id="data_eq_id"
-                               :reformDate="component.reformDate" :reformBy="component.reformBy"
-                               :puttingIntoService="component.puttingIntoService"
-                               :preventiveOperation="component.preventiveOperation"
+                               :import_id="component.import" :modifMod="isInModifMod" :number="component.number"
+                               :periodicity="component.periodicity"
+                               :preventiveOperation="component.preventiveOperation" :protocol="component.protocol" :puttingIntoService="component.puttingIntoService"
+                               :reformBy="component.reformBy"
+                               :reformDate="component.reformDate" :reformMod="isInReformMod"
+                               :symbolPeriodicity="component.symbolPeriodicity"
                                :typeValidation="Boolean(component.typeValidation)"
+                               :validate="component.validate"
                                @deletePrvMtnOp="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -32,8 +32,8 @@
                 <button v-if="!modifMod " v-on:click="importPrvMtnOp">import</button>
             </div>
         </div>
-        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" saveAll
+                        @add="saveAll" @update="saveAll"/>
         <ImportationAlert ref="importAlert"/>
     </div>
 
@@ -186,9 +186,9 @@ export default {
             const consultUrl = (id) => `/prvMtnOps/send/${id}`;
             axios.get(consultUrl(this.import_id))
                 .then(response => {
-                    this.prvMtnOps = response.data
-                })
-                .catch(error => console.log(error));
+                    this.prvMtnOps = response.data;
+                }).catch(error => {
+            });
         }
     },
     /*All functions inside the created option are called after the component has been mounted.*/

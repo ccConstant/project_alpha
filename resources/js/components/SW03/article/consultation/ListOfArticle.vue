@@ -248,18 +248,15 @@ export default {
     created() {
         axios.get('/comp/family/send').then(response => {
             this.compList = response.data;
-        }).catch(error => {
-        });
-        axios.get('/cons/family/send').then(response => {
-            this.consList = response.data;
-        }).catch(error => {
-        });
-        axios.get('/raw/family/send').then(response => {
-            this.rawList = response.data;
-            this.createGlobalList();
-            this.loaded = true;
-        }).catch(error => {
-        });
+            axios.get('/cons/family/send').then(response => {
+                this.consList = response.data;
+                axios.get('/raw/family/send').then(response => {
+                    this.rawList = response.data;
+                    this.createGlobalList();
+                    this.loaded = true;
+                }).catch(error => {});
+            }).catch(error => {});
+        }).catch(error => {});
     }
 }
 </script>

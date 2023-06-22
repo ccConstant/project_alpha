@@ -9,13 +9,13 @@
         <!--Adding to the vue EquipmentPowForm by going through the components array with the v-for-->
         <!--ref="ask_pow_data" is used to call the child elements in this component-->
         <!--The emitted deleteDim is caught here and call the function getContent -->
-        <EquipmentPowForm ref="ask_pow_data" v-for="(component, key) in components" :key="component.key"
-                          :is="component.comp" :name="component.powName" :type="component.type"
-                          :value="component.value" :unit="component.unit" :consumptionValue="component.consumptionValue"
-                          :consumptionUnit="component.consumptionUnit" :divClass="component.className"
-                          :id="component.id"
-                          :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod"
-                          :eq_id="data_eq_id"
+        <EquipmentPowForm :is="component.comp" v-for="(component, key) in components" :id="component.id"
+                          :key="component.key" ref="ask_pow_data" :consultMod="isInConsultMod"
+                          :consumptionUnit="component.consumptionUnit" :consumptionValue="component.consumptionValue" :divClass="component.className"
+                          :eq_id="data_eq_id" :modifMod="isInModifMod"
+                          :name="component.powName"
+                          :type="component.type" :unit="component.unit" :validate="component.validate"
+                          :value="component.value"
                           @deletePow="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -27,8 +27,8 @@
                 <button v-if="!modifMod" v-on:click="importPow">import</button>
             </div>
         </div>
-        <SaveButtonForm saveAll v-if="components.length>2" @add="saveAll" @update="saveAll"
-                        :consultMod="this.consultMod" :modifMod="this.modifMod"/>
+        <SaveButtonForm v-if="components.length>2" :consultMod="this.consultMod" :modifMod="this.modifMod" saveAll
+                        @add="saveAll" @update="saveAll"/>
         <ImportationAlert ref="importAlert"/>
     </div>
 </template>
@@ -166,8 +166,10 @@ export default {
             /*Make a get request to ask the controller the dimension corresponding to the id of the equipment with which data will be imported*/
             const consultUrl = (id) => `/power/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then(response => this.powers = response.data)
-                .catch(error => console.log(error));
+                .then(response => {
+                    this.powers = response.data;
+                }).catch(error => {
+            });
         }
     },
     /*All functions inside the created option are called after the component has been mounted.*/

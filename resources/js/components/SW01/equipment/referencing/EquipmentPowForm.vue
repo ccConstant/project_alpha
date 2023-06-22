@@ -12,47 +12,47 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50"
-                                 :Errors="errors.pow_type" name="pow_type" label="Power Type :" :options="enum_pow_type"
-                                 :isDisabled="!!isInConsultedMod" :selctedOption="pow_type" :selectedDivName="divClass"
-                                 v-model="pow_type" :info_text="infos_power[0].info_value" :id_actual="powerType"/>
-                <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.pow_name" name="pow_name"
-                                         label="Power Name " :options="pow_names" v-model="pow_name"
-                                         :isDisabled="!!isInConsultedMod" :info_text="infos_power[1].info_value"/>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.pow_value" name="pow_value"
-                                 label="Power value :" :stepOfInput="0.01" v-model="pow_value"
-                                 :isDisabled="!!isInConsultedMod" :info_text="infos_power[2].info_value"/>
-                <InputTextForm inputClassName="form-control w-50" name="pow_unit" label="Unit :"
-                               :Errors="errors.pow_unit" :isDisabled="!!isInConsultedMod" v-model="pow_unit"
-                               :info_text="infos_power[3].info_value"/>
-                <InputNumberForm inputClassName="form-control w-50" :Errors="errors.pow_consumptionValue"
-                                 name="pow_consumptionValue" label="Consumption value :" :stepOfInput="0.01"
-                                 v-model="pow_consumptionValue" :isDisabled="!!isInConsultedMod"
-                                 :info_text="infos_power[4].info_value"/>
-                <InputTextForm inputClassName="form-control w-50" name="pow_consumptionUnit" label="Unit :"
-                               :Errors="errors.pow_consumptionUnit" :isDisabled="!!isInConsultedMod"
-                               v-model="pow_consumptionUnit" :info_text="infos_power[5].info_value"/>
+                <InputSelectForm v-model="pow_type" :Errors="errors.pow_type"
+                                 :id_actual="powerType" :info_text="infos_power[0].info_value" :isDisabled="!!isInConsultedMod" :options="enum_pow_type"
+                                 :selctedOption="pow_type" :selectedDivName="divClass" label="Power Type :"
+                                 name="pow_type" selectClassName="form-select w-50" @clearSelectError='clearSelectError'/>
+                <InputTextWithOptionForm v-model="pow_name" :Errors="errors.pow_name" :info_text="infos_power[1].info_value"
+                                         :isDisabled="!!isInConsultedMod" :options="pow_names" inputClassName="form-control w-50"
+                                         label="Power Name " name="pow_name"/>
+                <InputTextForm v-model="pow_value" :Errors="errors.pow_value" :info_text="infos_power[2].info_value"
+                               :isDisabled="!!isInConsultedMod" :stepOfInput="0.01" inputClassName="form-control w-50"
+                               label="Power value :" name="pow_value"/>
+                <InputTextForm v-model="pow_unit" :Errors="errors.pow_unit" :info_text="infos_power[3].info_value"
+                               :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50" label="Unit :"
+                               name="pow_unit"/>
+                <InputNumberForm v-model="pow_consumptionValue" :Errors="errors.pow_consumptionValue"
+                                 :info_text="infos_power[4].info_value" :isDisabled="!!isInConsultedMod" :stepOfInput="0.01"
+                                 inputClassName="form-control w-50" label="Consumption value :"
+                                 name="pow_consumptionValue"/>
+                <InputTextForm v-model="pow_consumptionUnit" :Errors="errors.pow_consumptionUnit" :info_text="infos_power[5].info_value"
+                               :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50"
+                               label="Unit :" name="pow_consumptionUnit"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
                 <div v-if="this.addSuccess==false ">
                     <!--If this power doesn't have a id the addEquipmentPow is called function else the updateEquipmentPow function is called -->
                     <div v-if="this.pow_id==null || this.addSuccess==true">
                         <div v-if="modifMod==true">
-                            <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow"
-                                            :consultMod="this.isInConsultedMod" :savedAs="pow_validate"
-                                            :AddinUpdate="true"/>
+                            <SaveButtonForm :AddinUpdate="true" :consultMod="this.isInConsultedMod"
+                                            :savedAs="pow_validate" @add="addEquipmentPow"
+                                            @update="updateEquipmentPow"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow"
-                                            :consultMod="this.isInConsultedMod" :savedAs="pow_validate"/>
+                            <SaveButtonForm :consultMod="this.isInConsultedMod" :savedAs="pow_validate"
+                                            @add="addEquipmentPow" @update="updateEquipmentPow"/>
                         </div>
                     </div>
                     <div v-else-if="this.pow_id!==null">
-                        <SaveButtonForm @add="addEquipmentPow" @update="updateEquipmentPow"
-                                        :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
-                                        :savedAs="pow_validate"/>
+                        <SaveButtonForm :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
+                                        :savedAs="pow_validate" @add="addEquipmentPow"
+                                        @update="updateEquipmentPow"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :validationMode="pow_validate" :consultMod="this.isInConsultedMod"
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" :validationMode="pow_validate"
                                            @deleteOk="deleteComponent"/>
                 </div>
             </form>
@@ -184,18 +184,22 @@ export default {
     created() {
         /*Ask for the controller different types of the power  */
         axios.get('/power/enum/type')
-            .then(response => this.enum_pow_type = response.data)
-            .catch(error => console.log(error));
-        /*Ask for the controller different names of the power  */
-        axios.get('/power/names')
-            .then(response => this.pow_names = response.data)
-            .catch(error => console.log(error));
-        axios.get('/info/send/power')
             .then(response => {
-                this.infos_power = response.data;
-                this.loaded = true;
-            })
-            .catch(error => console.log(error));
+                this.enum_pow_type = response.data;
+                /*Ask for the controller different names of the power  */
+                axios.get('/power/names')
+                    .then(response => {
+                        this.pow_names = response.data;
+                        axios.get('/info/send/power')
+                            .then(response => {
+                                this.infos_power = response.data;
+                                this.loaded = true;
+                            }).catch(error => {
+                        });
+                    }).catch(error => {
+                });
+            }).catch(error => {
+        });
     },
     methods: {
         /*Sending to the controller all the information about the mme so that it can be added in the database
@@ -223,49 +227,44 @@ export default {
                     pow_consumptionValue: this.pow_consumptionValue,
                     pow_consumptionUnit: this.pow_consumptionUnit,
                     pow_validate: savedAs,
-                })
-                    .then(response => {
-                        this.errors = {};
-                        /*If all the verification passed, a new post this time to add the power in the database
-                        The type, name, value, unit, consumption unit, consumption value, validate option and id of the equipment are sent to the controller*/
-                        axios.post('/equipment/add/pow', {
-                            pow_type: this.pow_type,
-                            pow_name: this.pow_name,
-                            pow_value: this.pow_value,
-                            pow_unit: this.pow_unit,
-                            pow_consumptionValue: this.pow_consumptionValue,
-                            pow_consumptionUnit: this.pow_consumptionUnit,
-                            pow_validate: savedAs,
-                            eq_id: id
+                }).then(response => {
+                    this.errors = {};
+                    /*If all the verification passed, a new post this time to add the power in the database
+                    The type, name, value, unit, consumption unit, consumption value, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/equipment/add/pow', {
+                        pow_type: this.pow_type,
+                        pow_name: this.pow_name,
+                        pow_value: this.pow_value,
+                        pow_unit: this.pow_unit,
+                        pow_consumptionValue: this.pow_consumptionValue,
+                        pow_consumptionUnit: this.pow_consumptionUnit,
+                        pow_validate: savedAs,
+                        eq_id: id
 
-                        })
-                            /*If the power is added successfully*/
-                            .then(response => {
-                                /*We test if a life sheet has been already created*/
-                                /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                                if (lifesheet_created == true) {
-                                    axios.post(`/history/add/equipment/${id}`, {
-                                        history_reasonUpdate: reason,
-                                    });
-                                    window.location.reload();
-                                }
-                                this.$refs.sucessAlert.showAlert(`Equipment power added successfully and saved as ${savedAs}`);
-                                /*If the user is not in modification mode*/
-                                if (!this.modifMod) {
-                                    /*The form pass in consulting mode and addSuccess pass to True*/
-                                    this.isInConsultedMod = true;
-                                    this.addSuccess = true
-                                }
-                                /*the id of the powers take the value of the newly created id*/
-                                this.pow_id = response.data;
-                                /*The validate option of this power takes the value of savedAs(Params of the function)*/
-                                this.pow_validate = savedAs;
-                            })
-                            /*If the controller sends errors, we put it in the error object*/
-                            .catch(error => this.errors = error.response.data.errors);
                     })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                        /*If the power is added successfully*/
+                        .then(response => {
+                            /*We test if a life sheet has been already created*/
+                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                            if (lifesheet_created == true) {
+                                axios.post(`/history/add/equipment/${id}`, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
+                            this.$refs.sucessAlert.showAlert(`Equipment power added successfully and saved as ${savedAs}`);
+                            /*If the user is not in modification mode*/
+                            if (!this.modifMod) {
+                                /*The form pass in consulting mode and addSuccess pass to True*/
+                                this.isInConsultedMod = true;
+                                this.addSuccess = true
+                            }
+                            /*the id of the powers take the value of the newly created id*/
+                            this.pow_id = response.data;
+                            /*The validate option of this power takes the value of savedAs(Params of the function)*/
+                            this.pow_validate = savedAs;
+                        }).catch(error => this.errors = error.response.data.errors);
+                }).catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be added in the database
@@ -299,25 +298,20 @@ export default {
                         pow_consumptionUnit: this.pow_consumptionUnit,
                         eq_id: this.equipment_id_update,
                         pow_validate: savedAs
-                    })
-                        .then(response => {
-                            this.pow_validate = savedAs;
-                            const id = this.equipment_id_update;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.sucessAlert.showAlert(`Equipment power updated succesfully and saved as ${savedAs}`);
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+                    }).then(response => {
+                        this.pow_validate = savedAs;
+                        const id = this.equipment_id_update;
+                        /*We test if a life sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                        if (lifesheet_created == true) {
+                            axios.post(`/history/add/equipment/${id}`, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
+                        this.$refs.sucessAlert.showAlert(`Equipment power updated succesfully and saved as ${savedAs}`);
+                    }).catch(error => this.errors = error.response.data.errors);
+                }).catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -330,23 +324,20 @@ export default {
                 const consultUrl = (id) => `/equipment/delete/pow/${id}`;
                 axios.post(consultUrl(this.pow_id), {
                     eq_id: this.equipment_id_update
-                })
-                    .then(response => {
-                        const id = this.equipment_id_update;
-                        /*We test if a life sheet has been already created*/
-                        /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        this.$emit('deletePow', '');
-                        this.$refs.sucessAlert.showAlert(`Equipment power deleted successfully`);
-                        /*If the user is in update mode and the power exist in the database*/
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$emit('deletePow', '');
+                    this.$refs.sucessAlert.showAlert(`Equipment power deleted successfully`);
+                    /*If the user is in update mode and the power exist in the database*/
+                }).catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deletePow', '');
                 this.$refs.sucessAlert.showAlert(`Empty Equipment power deleted successfully`);

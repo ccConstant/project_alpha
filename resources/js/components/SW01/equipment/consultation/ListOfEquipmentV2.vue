@@ -25,7 +25,9 @@
                             <button class="btn btn-warning" @click="changeState">Change the state</button>
                         </td>
                         <td>
-                            <button class="btn btn-info" @click="updateMaintenance">Update and validate maintenance event</button>
+                            <button class="btn btn-info" @click="updateMaintenance">Update and validate maintenance
+                                event
+                            </button>
                         </td>
                     </tr>
                     <tr>
@@ -34,10 +36,12 @@
                                    placeholder="Search an EQ by is Intern Ref" type="text">
                         </td>
                         <td>
-                            <button class="btn btn-primary" @click="updateEquipment">Update lifesheet descriptive part</button>
+                            <button class="btn btn-primary" @click="updateEquipment">Update lifesheet descriptive part
+                            </button>
                         </td>
                         <td>
-                            <button class="btn btn-warning" @click="updateState">Update actual state informations</button>
+                            <button class="btn btn-warning" @click="updateState">Update actual state informations
+                            </button>
                         </td>
                         <td>
                             <button class="btn btn-info" @click="addCurativeMaintenance">Add curative operation</button>
@@ -49,7 +53,9 @@
                                    placeholder="Search an EQ by is name" type="text">
                         </td>
                         <td>
-                            <button class="btn btn-primary" @click="consultEquipment">Consult lifesheet descriptive part</button>
+                            <button class="btn btn-primary" @click="consultEquipment">Consult lifesheet descriptive
+                                part
+                            </button>
                         </td>
                         <td>
                         </td>
@@ -59,13 +65,18 @@
                     </tr>
                     <tr>
                         <td>
-                            <button class="btn btn-primary" @click="equipmentPrintableList">View the printable list</button>
+                            <button class="btn btn-primary" @click="equipmentPrintableList">View the printable list
+                            </button>
                         </td>
                         <td>
-                            <button class="btn btn-primary" @click="reviewEquipment">Validate lifesheet descriptive part</button>
+                            <button class="btn btn-primary" @click="reviewEquipment">Validate lifesheet descriptive
+                                part
+                            </button>
                         </td>
                         <td>
-                            <button class="btn btn-warning" @click="reformEquipment">Reform the usage and preventive maintenance</button>
+                            <button class="btn btn-warning" @click="reformEquipment">Reform the usage and preventive
+                                maintenance
+                            </button>
                         </td>
                     </tr>
                 </table>
@@ -370,10 +381,10 @@ export default {
                     this.$refs.errorAlert.showAlert("Please select only one equipment to consult");
             }
         },
-        reformEquipment(){
-            if( this.$userId.user_makeReformRight!=true){
+        reformEquipment() {
+            if (this.$userId.user_makeReformRight != true) {
                 this.$refs.errorAlert.showAlert("You don't have the right");
-            }else{
+            } else {
                 if (this.checked.length === 1) {
                     this.equipments.forEach(element => {
                         if (element.eq_internalReference === this.checked[0]) {
@@ -454,11 +465,11 @@ export default {
     created() {
         axios.get('/equipment/equipments')
             .then(response => {
-                console.log(response.data)
                 this.equipments = response.data;
                 this.loaded = true;
             })
-            .catch(error => console.log(error.response.data));
+            .catch(error => {
+            });
     }
 }
 </script>

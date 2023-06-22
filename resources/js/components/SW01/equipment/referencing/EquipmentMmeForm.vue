@@ -16,49 +16,51 @@
                 <router-link :to="{name:'url_mme_update',params:{id:this.mme_id} }"> here</router-link>
             </div>
             <div v-if="mme_id==null && this.equipment_id_add!=null">
-                <AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated"
-                                      :eq_id="this.equipment_id_add"/>
+                <AddMMEAlreadyCreated v-if="disableImport==false" :eq_id="this.equipment_id_add"
+                                      @choosedMME="addInfoMmeAlreadyCreated"/>
             </div>
             <div v-if="mme_id==null && this.equipment_id_update!=null">
-                <AddMMEAlreadyCreated v-if="disableImport==false" @choosedMME="addInfoMmeAlreadyCreated"
-                                      :eq_id="this.equipment_id_update"/>
+                <AddMMEAlreadyCreated v-if="disableImport==false" :eq_id="this.equipment_id_update"
+                                      @choosedMME="addInfoMmeAlreadyCreated"/>
             </div>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_internalReference"
-                               name="mme_internalReference" label="Alpha reference :"
-                               :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null"
-                               v-model="mme_internalReference" :info_text="infos_idCard[0].info_value"/>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_externalReference"
-                               name="mme_externalReference" label="External reference :"
-                               :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null"
-                               v-model="mme_externalReference" :info_text="infos_idCard[1].info_value"/>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.mme_name" name="mme_name"
-                               label="MME name :" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null"
-                               v-model="mme_name" :info_text="infos_idCard[2].info_value"/>
-                <InputTextForm v-if="this.mme_importFrom!== undefined " inputClassName="form-control w-50"
-                               name="mme_importFrom" label="Import From :" isDisabled v-model="mme_importFrom"/>
+                <InputTextForm v-model="mme_internalReference" :Errors="errors.mme_internalReference"
+                               :info_text="infos_idCard[0].info_value" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null"
+                               inputClassName="form-control w-50"
+                               label="Alpha reference :" name="mme_internalReference"/>
+                <InputTextForm v-model="mme_externalReference" :Errors="errors.mme_externalReference"
+                               :info_text="infos_idCard[1].info_value" :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null"
+                               inputClassName="form-control w-50"
+                               label="External reference :" name="mme_externalReference"/>
+                <InputTextForm v-model="mme_name" :Errors="errors.mme_name" :info_text="infos_idCard[2].info_value"
+                               :isDisabled="!!isInConsultMod || isInModifMod && mme_id!=null" inputClassName="form-control w-50"
+                               label="MME name :" name="mme_name"/>
+                <InputTextForm v-if="this.mme_importFrom!== undefined " v-model="mme_importFrom"
+                               inputClassName="form-control w-50" isDisabled label="Import From :" name="mme_importFrom"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
             </form>
             <div v-if="this.mme_id==null ">
                 <div v-if="modifMod==true">
-                    <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme"
-                                    :consultMod="this.isInConsultMod" :savedAs="mme_validate" :AddinUpdate="true" :desactiveValidated="true"/>
+                    <SaveButtonForm :AddinUpdate="true" :consultMod="this.isInConsultMod"
+                                    :desactiveValidated="true" :savedAs="mme_validate" @add="addEquipmentMme"
+                                    @update="updateEquipmentMme"/>
                 </div>
                 <div v-else>
-                    <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme"
-                                    :consultMod="this.isInConsultMod" :savedAs="mme_validate" :desactiveValidated="true"/>
+                    <SaveButtonForm :consultMod="this.isInConsultMod" :desactiveValidated="true"
+                                    :savedAs="mme_validate" @add="addEquipmentMme"
+                                    @update="updateEquipmentMme"/>
                 </div>
             </div>
             <div v-else-if="this.mme_id!==null && !this.mmeAlreadyCreated">
-                <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme" :consultMod="this.isInConsultMod"
-                                :modifMod="this.modifMod" :savedAs="mme_validate" :desactiveValidated="true"/>
+                <SaveButtonForm :consultMod="this.isInConsultMod" :desactiveValidated="true" :modifMod="this.modifMod"
+                                :savedAs="mme_validate" @add="addEquipmentMme" @update="updateEquipmentMme"/>
             </div>
-            <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod"
+            <DeleteComponentButton :consultMod="this.isInConsultMod" :validationMode="mme_validate"
                                    @deleteOk="deleteComponent"/>
-            <DeleteComponentButton :validationMode="mme_validate" :consultMod="this.isInConsultMod"
-                                   @deleteOk="unlinkComponent" :unlink="this.unlink_true"/>
+            <DeleteComponentButton :consultMod="this.isInConsultMod" :unlink="this.unlink_true"
+                                   :validationMode="mme_validate" @deleteOk="unlinkComponent"/>
             <SucessAlert ref="sucessAlert"/>
         </div>
 
@@ -180,21 +182,23 @@ export default {
     created() {
         /*Ask for the controller different types of the dimension  */
         axios.get('/mme/sets')
-            .then(response => this.enum_sets = response.data)
-            .catch(error => console.log(error));
-        /*Ask the controller for a list of the not linked mme*/
-        axios.get('/mme/mmes_not_linked')
             .then(response => {
-                this.list_mme = response.data;
-            })
-            .catch(error => console.log(error));
-        /*Ask the controller for the data of a mme*/
-        axios.get('/info/send/mme')
-            .then(response => {
-                this.infos_idCard = response.data;
-                this.loaded = true;
-            })
-            .catch(error => console.log(error));
+                this.enum_sets = response.data;
+                /*Ask the controller for a list of the not linked mme*/
+                axios.get('/mme/mmes_not_linked')
+                    .then(response => {
+                        this.list_mme = response.data;
+                        /*Ask the controller for the data of a mme*/
+                        axios.get('/info/send/mme')
+                            .then(response => {
+                                this.infos_idCard = response.data;
+                                this.loaded = true;
+                            }).catch(error => {
+                        });
+                    }).catch(error => {
+                });
+            }).catch(error => {
+        });
     },
     methods: {
         /*Sending to the controller all the information about the mme so that it can be added in the database
@@ -217,65 +221,58 @@ export default {
                     mme_name: this.mme_name,
                     mme_validate: savedAs,
                     reason: 'add'
-                })
-                    .then(response => {
-                        this.errors = {};
-                         console.log("before add")
-                        axios.post('/mme/add', {
-                            mme_internalReference: this.mme_internalReference,
-                            mme_externalReference: this.mme_externalReference,
-                            mme_name: this.mme_name,
-                            mme_validate: savedAs,
-                            mme_remarks: "",
-                            mme_location:"",
+                }).then(response => {
+                    this.errors = {};
+                    console.log("before add")
+                    axios.post('/mme/add', {
+                        mme_internalReference: this.mme_internalReference,
+                        mme_externalReference: this.mme_externalReference,
+                        mme_name: this.mme_name,
+                        mme_validate: savedAs,
+                        mme_remarks: "",
+                        mme_location: "",
 
-                        })
-                            /*If the mme is added successfully*/
-                            .then(response => {
-                                 console.log("add passed")
-                                /*If the user is not in modification mode*/
-                                if (!this.modifMod) {
-                                    /*The form pass in consulting mode and addSuccess pass to True*/
-                                    this.isInConsultMod = true;
-                                    this.addSuccess = true
-                                }
-                                this.mme_id = response.data;
-                                const urlLinkMmetoEq = (id) => `/mme/link_to_eq/${id}`;
-                                axios.post(urlLinkMmetoEq(id), {
-                                    'mme_internalReference': this.mme_internalReference,
-                                })
-                                    /*If the mme is added successfully*/
-                                    .then(response => {
-                                         console.log("link passed")
-                                          this.mme_validate=savedAs;
-                                        /*We test if a life sheet has been already created*/
-                                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                                        if (lifesheet_created == true) {
-                                            axios.post(`/history/add/equipment/${id}`, {
-                                                history_reasonUpdate: reason,
-                                            });
-                                            window.location.reload();
-                                        }
-                                        this.$refs.sucessAlert.showAlert(`Equipment mme saved as ${savedAs} successfully`);
-                                        /*If the user is not in modification mode*/
-                                        if (!this.modifMod) {
-                                            /*The form pass in consulting mode and addSuccess pass to True*/
-                                            this.isInConsultedMod = true;
-                                            this.addSuccess = true
-                                        }
-                                    })
-                                    .catch(error => {
-                                        this.errors = error.response.data.errors;
-                                    });
+                    })
+                        /*If the mme is added successfully*/
+                        .then(response => {
+                            /*If the user is not in modification mode*/
+                            if (!this.modifMod) {
+                                /*The form pass in consulting mode and addSuccess pass to True*/
+                                this.isInConsultMod = true;
+                                this.addSuccess = true
+                            }
+                            this.mme_id = response.data;
+                            const urlLinkMmetoEq = (id) => `/mme/link_to_eq/${id}`;
+                            axios.post(urlLinkMmetoEq(id), {
+                                'mme_internalReference': this.mme_internalReference,
                             })
-                            .catch(error => {
+                                /*If the mme is added successfully*/
+                                .then(response => {
+                                    this.mme_validate = savedAs;
+                                    /*We test if a life sheet has been already created*/
+                                    /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                                    if (lifesheet_created == true) {
+                                        axios.post(`/history/add/equipment/${id}`, {
+                                            history_reasonUpdate: reason,
+                                        });
+                                        window.location.reload();
+                                    }
+                                    this.$refs.sucessAlert.showAlert(`Equipment mme saved as ${savedAs} successfully`);
+                                    /*If the user is not in modification mode*/
+                                    if (!this.modifMod) {
+                                        /*The form pass in consulting mode and addSuccess pass to True*/
+                                        this.isInConsultedMod = true;
+                                        this.addSuccess = true
+                                    }
+                                }).catch(error => {
                                 this.errors = error.response.data.errors;
                             });
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => {
+                        }).catch(error => {
                         this.errors = error.response.data.errors;
                     });
+                }).catch(error => {
+                    this.errors = error.response.data.errors;
+                });
             }
         },
         /*Sending to the controller all the information about the mme so that it can be updated in the database
@@ -329,45 +326,42 @@ export default {
                 mme_validate: savedAs,
                 mme_id: this.mme_id,
                 reason: 'update'
-            })
-                .then(response => {
-                    this.errors = {};
-                    const updateUrl = (id) => `/mme/update/${id}`;
-                    axios.post(updateUrl(this.mme_id), {
-                        mme_internalReference: this.mme_internalReference,
-                        mme_externalReference: this.mme_externalReference,
-                        mme_name: this.mme_name,
-                        mme_validate: savedAs,
-                    })
-                        /*If the mme is added successfully*/
-                        .then(response => {
-                            const id = this.equipment_id_update;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.errors = {};
-                            /*If the user is not in modification mode*/
-                            if (!this.modifMod) {
-                                /*The form pass in consulting mode and addSuccess pass to True*/
-                                this.isInConsultMod = true;
-                                this.addSuccess = true
-                            }
-                            this.$refs.sucessAlert.showAlert(`Equipment mme saved as ${savedAs} successfully`);
-                            /*If the user is not in modification mode*/
-                            if (!this.modifMod) {
-                                /*The form pass in consulting mode and addSuccess pass to True*/
-                                this.isInConsultedMod = true;
-                                this.addSuccess = true
-                            }
-                        })
+            }).then(response => {
+                this.errors = {};
+                const updateUrl = (id) => `/mme/update/${id}`;
+                axios.post(updateUrl(this.mme_id), {
+                    mme_internalReference: this.mme_internalReference,
+                    mme_externalReference: this.mme_externalReference,
+                    mme_name: this.mme_name,
+                    mme_validate: savedAs,
                 })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+                    /*If the mme is added successfully*/
+                    .then(response => {
+                        const id = this.equipment_id_update;
+                        /*We test if a life sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                        if (lifesheet_created == true) {
+                            axios.post(`/history/add/equipment/${id}`, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
+                        this.errors = {};
+                        /*If the user is not in modification mode*/
+                        if (!this.modifMod) {
+                            /*The form pass in consulting mode and addSuccess pass to True*/
+                            this.isInConsultMod = true;
+                            this.addSuccess = true
+                        }
+                        this.$refs.sucessAlert.showAlert(`Equipment mme saved as ${savedAs} successfully`);
+                        /*If the user is not in modification mode*/
+                        if (!this.modifMod) {
+                            /*The form pass in consulting mode and addSuccess pass to True*/
+                            this.isInConsultedMod = true;
+                            this.addSuccess = true
+                        }
+                    })
+            }).catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -381,24 +375,21 @@ export default {
                 const consultUrl = (id) => `/mme/delete/${id}`;
                 axios.post(consultUrl(this.mme_id), {
                     eq_id: this.equipment_id_update,
-                })
-                    .then(response => {
-                        const id = this.equipment_id_update;
-                        /*We test if a life sheet has been already created*/
-                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        this.errors = {};
-                        /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteMme', '')
-                        this.$refs.sucessAlert.showAlert(`Equipment mme delete successfully`);
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.errors = {};
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteMme', '')
+                    this.$refs.sucessAlert.showAlert(`Equipment mme delete successfully`);
+                }).catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteMme', '')
             }
@@ -411,24 +402,21 @@ export default {
                 const consultUrl = (id) => `/mme/delete/link_to_eq/${id}`;
                 axios.post(consultUrl(this.mme_id), {
                     eq_id: this.equipment_id_update,
-                })
-                    .then(response => {
-                        const id = this.equipment_id_update;
-                        /*We test if a life sheet has been already created*/
-                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        this.errors = {};
-                        /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteMme', '')
-                        this.$refs.sucessAlert.showAlert(`Equipment mme unlink successfully`);
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.errors = {};
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteMme', '')
+                    this.$refs.sucessAlert.showAlert(`Equipment mme unlink successfully`);
+                }).catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteMme', '')
             }

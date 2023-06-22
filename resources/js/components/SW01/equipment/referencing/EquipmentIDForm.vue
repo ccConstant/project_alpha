@@ -4,53 +4,54 @@
 <!--Vue Component of the Id card of the equipment who call all the input component and send the data to the controllers-->
 
 <template>
-    <div class="equipmentID" v-if="loaded==true">
+    <div v-if="loaded==true" class="equipmentID">
         <h2 class="titleForm1">EQ ID : {{ eq_internalReference }}</h2>
         <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
         <form class="container" @keydown="clearError">
             <!--Call of the different component with their props-->
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_internalReference"
-                           name="eq_internalReference" label="Unique ID" :isDisabled="!!isInConsultMod" isRequired
-                           v-model="eq_internalReference" :info_text="infos_idCard[0].info_value"/>
-            <InputTextWithOptionForm inputClassName="form-control w-50" :Errors="errors.eq_set" name="eq_set"
-                                     label="Equipment Family" :isDisabled="!!isInConsultMod" :options="enum_sets"
-                                     v-model="eq_set" :info_text="infos_idCard[10].info_value"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_name" name="eq_name"
-                           label="Equipment name :" :isDisabled="!!isInConsultMod" v-model="eq_name"
-                           :info_text="infos_idCard[2].info_value"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_externalReference"
-                           name="eq_externalReference" label="Eq ref in Alpha Database :" :isDisabled="!!isInConsultMod"
-                           isRequired v-model="eq_externalReference" :info_text="infos_idCard[1].info_value"/>
-            <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50"
-                             :Errors="errors.eq_type" name="eq_type" label="Type :" :options="enum_type"
-                             :isDisabled="!!isInConsultMod" :selctedOption="eq_type" v-model="eq_type"
-                             :info_text="infos_idCard[3].info_value" :id_actual="equipmentType"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_serialNumber" name="eq_serialNumber"
-                           label="Equipment serial Number :" :isDisabled="!!isInConsultMod" v-model="eq_serialNumber"
-                           :info_text="infos_idCard[4].info_value"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_constructor" name="eq_constructor"
-                           label="Equipment constructor :" :isDisabled="!!isInConsultMod" v-model="eq_constructor"
-                           :info_text="infos_idCard[5].info_value"/>
-            <InputNumberForm inputClassName="form-control w-50" :Errors="errors.eq_mass" name="eq_mass"
-                             label="Equipment mass :" :stepOfInput="0.01" v-model="eq_mass"
-                             :isDisabled="!!isInConsultMod" :info_text="infos_idCard[6].info_value"/>
-            <InputSelectForm selectClassName="form-control w-50" @clearSelectError='clearSelectError' name="eq_massUnit" :Errors="errors.eq_massUnit"
-                             label="Unit :" :options="enum_massUnit" :selctedOption="eq_massUnit"
-                             :isDisabled="!!isInConsultMod" v-model="eq_massUnit"
-                             :info_text="infos_idCard[7].info_value" :id_actual="equipmentMassUnit"/>
-            <RadioGroupForm label="Mobil?:" :options="eq_mobilityOption" :Errors="errors.eq_mobilityOption"
-                            :checkedOption="eq_mobility" :isDisabled="!!isInConsultMod" v-model="eq_mobility"
-                            :info_text="infos_idCard[8].info_value"/>
-            <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.eq_remarks" name="eq_remarks"
-                               label="Remarks :" :isDisabled="!!isInConsultMod" v-model="eq_remarks"
-                               :info_text="infos_idCard[9].info_value"/>
-            <InputTextForm v-if="this.eq_importFrom!== undefined " inputClassName="form-control w-50"
-                           name="eq_importFrom" label="Import From :" isDisabled v-model="eq_importFrom"/>
-            <InputTextForm inputClassName="form-control w-50" :Errors="errors.eq_location"
-            name="eq_location" label="Location" :isDisabled="!!isInConsultMod" isRequired
-            v-model="eq_location"/>
-            <SaveButtonForm ref="saveButton" v-if="this.addSuccess==false" @add="addEquipment" @update="updateEquipment"
-                            :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="eq_validate"/>
+            <InputTextForm v-model="eq_internalReference" :Errors="errors.eq_internalReference"
+                           :info_text="infos_idCard[0].info_value" :isDisabled="!!isInConsultMod" inputClassName="form-control w-50" isRequired
+                           label="Unique ID" name="eq_internalReference"/>
+            <InputTextWithOptionForm v-model="eq_set" :Errors="errors.eq_set" :info_text="infos_idCard[10].info_value"
+                                     :isDisabled="!!isInConsultMod" :options="enum_sets" inputClassName="form-control w-50"
+                                     label="Equipment Family" name="eq_set"/>
+            <InputTextForm v-model="eq_name" :Errors="errors.eq_name" :info_text="infos_idCard[2].info_value"
+                           :isDisabled="!!isInConsultMod" inputClassName="form-control w-50" label="Equipment name :"
+                           name="eq_name"/>
+            <InputTextForm v-model="eq_externalReference" :Errors="errors.eq_externalReference"
+                           :info_text="infos_idCard[1].info_value" :isDisabled="!!isInConsultMod" inputClassName="form-control w-50"
+                           isRequired label="Eq ref in Alpha Database :" name="eq_externalReference"/>
+            <InputSelectForm v-model="eq_type" :Errors="errors.eq_type"
+                             :id_actual="equipmentType" :info_text="infos_idCard[3].info_value" :isDisabled="!!isInConsultMod" :options="enum_type"
+                             :selctedOption="eq_type" label="Type :" name="eq_type"
+                             selectClassName="form-select w-50" @clearSelectError='clearSelectError'/>
+            <InputTextForm v-model="eq_serialNumber" :Errors="errors.eq_serialNumber" :info_text="infos_idCard[4].info_value"
+                           :isDisabled="!!isInConsultMod" inputClassName="form-control w-50" label="Equipment serial Number :"
+                           name="eq_serialNumber"/>
+            <InputTextForm v-model="eq_constructor" :Errors="errors.eq_constructor" :info_text="infos_idCard[5].info_value"
+                           :isDisabled="!!isInConsultMod" inputClassName="form-control w-50" label="Equipment constructor :"
+                           name="eq_constructor"/>
+            <InputNumberForm v-model="eq_mass" :Errors="errors.eq_mass" :info_text="infos_idCard[6].info_value"
+                             :isDisabled="!!isInConsultMod" :stepOfInput="0.01" inputClassName="form-control w-50"
+                             label="Equipment mass :" name="eq_mass"/>
+            <InputSelectForm v-model="eq_massUnit" :Errors="errors.eq_massUnit" :id_actual="equipmentMassUnit"
+                             :info_text="infos_idCard[7].info_value"
+                             :isDisabled="!!isInConsultMod" :options="enum_massUnit" :selctedOption="eq_massUnit"
+                             label="Unit :" name="eq_massUnit"
+                             selectClassName="form-control w-50" @clearSelectError='clearSelectError'/>
+            <RadioGroupForm v-model="eq_mobility" :Errors="errors.eq_mobilityOption" :checkedOption="eq_mobility"
+                            :info_text="infos_idCard[8].info_value" :isDisabled="!!isInConsultMod" :options="eq_mobilityOption"
+                            label="Mobil?:"/>
+            <InputTextAreaForm v-model="eq_remarks" :Errors="errors.eq_remarks" :info_text="infos_idCard[9].info_value"
+                               :isDisabled="!!isInConsultMod" inputClassName="form-control w-50" label="Remarks :"
+                               name="eq_remarks"/>
+            <InputTextForm v-if="this.eq_importFrom!== undefined " v-model="eq_importFrom"
+                           inputClassName="form-control w-50" isDisabled label="Import From :" name="eq_importFrom"/>
+            <InputTextForm v-model="eq_location" :Errors="errors.eq_location"
+                           :isDisabled="!!isInConsultMod" inputClassName="form-control w-50" isRequired label="Location"
+                           name="eq_location"/>
+            <SaveButtonForm v-if="this.addSuccess==false" ref="saveButton" :consultMod="this.isInConsultMod" :modifMod="this.modifMod"
+                            :savedAs="eq_validate" @add="addEquipment" @update="updateEquipment"/>
             <div v-if="this.modifMod!=true">
                 <div v-if="this.isInConsultMod!=true">
                     <ImportationModal v-if="disableImport==false" :set="this.eq_set" @choosedEq="importFrom"/>
@@ -136,7 +137,7 @@ export default {
         set: {
             type: String
         },
-        location:{
+        location: {
             type: String
         },
         validate: {
@@ -217,23 +218,29 @@ export default {
     created() {
         /*Ask for the controller different type option */
         axios.get('/equipment/enum/type')
-            .then(response => this.enum_type = response.data)
-            .catch(error => console.log(error));
-        /*Ask for the controller different mass unit option */
-        axios.get('/equipment/enum/massUnit')
-            .then(response => this.enum_massUnit = response.data)
-            .catch(error => console.log(error));
-        /*Ask for the controller other equipments sets */
-        axios.get('/equipment/sets')
-            .then(response => this.enum_sets = response.data)
-            .catch(error => console.log(error));
-        /*Ask for the controller the information about equipment */
-        axios.get('/info/send/eqIdCard')
             .then(response => {
-                this.infos_idCard = response.data;
-                this.loaded = true;
-            })
-            .catch(error => console.log(error));
+                this.enum_type = response.data;
+                /*Ask for the controller different mass unit option */
+                axios.get('/equipment/enum/massUnit')
+                    .then(response => {
+                        this.enum_massUnit = response.data;
+                        /*Ask for the controller other equipments sets */
+                        axios.get('/equipment/sets')
+                            .then(response => {
+                                this.enum_sets = response.data;
+                                /*Ask for the controller the information about equipment */
+                                axios.get('/info/send/eqIdCard')
+                                    .then(response => {
+                                        this.infos_idCard = response.data;
+                                        this.loaded = true;
+                                    }).catch(error => {
+                                });
+                            }).catch(error => {
+                        });
+                    }).catch(error => {
+                });
+            }).catch(error => {
+        });
     },
 
     /*--------Declaration of the different methods:--------*/
@@ -262,10 +269,6 @@ export default {
                     .then(response => {
                         this.errors = {};
                         if (this.state_id !== null) {
-                            console.log("je suis ici")
-                            console.log(this.state_id)
-                            console.log(this.old_eq)
-                            console.log("hello")
                             /*case where the equipment is added from the state page*/
                             const consultUrl = (state_id) => `/state/equipment/${state_id}`;
                             axios.post(consultUrl(this.state_id), {
@@ -282,7 +285,7 @@ export default {
                                 eq_set: this.eq_set,
                                 eq_validate: savedAs,
                                 eq_location: this.eq_location,
-                                oldEq_id : this.old_eq,
+                                oldEq_id: this.old_eq,
                             })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -291,8 +294,7 @@ export default {
                                     this.isInConsultMod = true;
                                     this.eq_id = response.data;
                                     this.$emit('EqID', this.eq_id);
-                                })
-                                .catch(error => this.errors = error.response.data.errors);
+                                }).catch(error => this.errors = error.response.data.errors);
 
                         } else {
                             /*case the equipment is added from the equipment page*/
@@ -319,12 +321,10 @@ export default {
                                     this.isInConsultMod = true;
                                     this.eq_id = response.data;
                                     this.$emit('EqID', this.eq_id);
-                                    
-                                })
-                                .catch(error => this.errors = error.response.data.errors);
+
+                                }).catch(error => this.errors = error.response.data.errors);
                         }
-                    })
-                    .catch(error => this.errors = error.response.data.errors);
+                    }).catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -368,24 +368,21 @@ export default {
                         eq_set: this.eq_set,
                         eq_location: this.eq_location,
                         eq_validate: savedAs,
-                    })
-                        .then(response => {
-                            const id = this.eq_id;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            /*If the data have been updated in the database, we show a success message*/
-                            this.$refs.SuccessAlert.showAlert(`Equipment ID card updated successfully and saved as ${savedAs}`);
-                            this.eq_validate = savedAs;
-                        })
-                        .catch(error => this.errors = error.response.data.errors);
-                })
-                .catch(error => this.errors = error.response.data.errors);
+                    }).then(response => {
+                        const id = this.eq_id;
+                        /*We test if a life sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                        if (lifesheet_created == true) {
+                            axios.post(`/history/add/equipment/${id}`, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
+                        /*If the data have been updated in the database, we show a success message*/
+                        this.$refs.SuccessAlert.showAlert(`Equipment ID card updated successfully and saved as ${savedAs}`);
+                        this.eq_validate = savedAs;
+                    }).catch(error => this.errors = error.response.data.errors);
+                }).catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -399,7 +396,6 @@ export default {
             delete this.errors[value];
         },
         clearAllError() {
-            console.log("ERROR:", this.errors)
         }
     }
 }

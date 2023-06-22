@@ -9,11 +9,11 @@
         <!--Adding to the vue EquipmentMmeForm by going through the components array with the v-for-->
         <!--ref="ask_mme_data" is used to call the child elements in this component-->
         <!--The emitted deleteMme is caught here and call the function getContent -->
-        <EquipmentMmeForm ref="ask_mme_data" v-for="(component, key) in components" :key="component.key"
-                          :internalRef="component.internalRef"
-                          :divClass="component.className" :id="component.id"
-                          :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod"
-                          :eq_id="data_eq_id"
+        <EquipmentMmeForm v-for="(component, key) in components" :id="component.id" :key="component.key"
+                          ref="ask_mme_data"
+                          :consultMod="isInConsultMod" :divClass="component.className"
+                          :eq_id="data_eq_id" :internalRef="component.internalRef" :modifMod="isInModifMod"
+                          :validate="component.validate"
                           @deleteMme="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
@@ -21,8 +21,8 @@
             <button v-on:click="addComponent">Add</button>
             <!--If dimensions array is not empty and if the user is not in modification mode -->
         </div>
-        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" saveAll
+                        @add="saveAll" @update="saveAll"/>
     </div>
 
 
@@ -94,7 +94,6 @@ export default {
                 key: this.uniqueKey++,
             });
         },
-
         /*Function for adding an imported mme form with his data*/
         addImportedComponent(mme_internalReference) {
             console.log("hello12");
@@ -109,15 +108,12 @@ export default {
             if (this.mmes.length == 0 && !this.isInModifMod) {
                 this.$refs.importAlert.showAlert();
             } else {
-                console.log("hola");
-                console.log(this.mmes);
                 for (const mme of this.mmes) {
                     this.addImportedComponent(mme.mme_internalReference);
                 }
                 this.mmes = null
             }
         },
-
         /*Suppression of a dimension component from the vue*/
         getContent(key) {
             this.components.splice(key, 1);
@@ -139,7 +135,6 @@ export default {
                         if (component.mme_validate !== "validated") {
                             component.updateEquipmentMme(savedAs);
                         }
-
                     }
                 } else {
                     /*Else If the user is not in modification mode*/
@@ -155,15 +150,14 @@ export default {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             const consultUrl = (id) => `/mme/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then(response => this.mmes = response.data)
-
-                .catch(error => console.log(error));
-
+                .then(response => {
+                    this.mmes = response.data
+                }).catch(error => {
+            });
         }
     },
     /*All functions inside the created option are called after the component has been mounted.*/
     mounted() {
-        console.log(this.mmes);
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
         if (this.consultMod || this.modifMod) {
             this.importMme();

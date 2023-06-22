@@ -12,33 +12,33 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.file_name" name="file_name"
-                               label="File name :" v-model="file_name" :isDisabled="!!isInConsultedMod"
-                               :info_text="infos_file[0].info_value"/>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.file_location" name="file_location"
-                               label="File location :" v-model="file_location" :isDisabled="!!isInConsultedMod"
-                               :info_text="infos_file[1].info_value"/>
+                <InputTextForm v-model="file_name" :Errors="errors.file_name" :info_text="infos_file[0].info_value"
+                               :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50" label="File name :"
+                               name="file_name"/>
+                <InputTextForm v-model="file_location" :Errors="errors.file_location" :info_text="infos_file[1].info_value"
+                               :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50" label="File location :"
+                               name="file_location"/>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addEquipmentFile is called function else the updateEquipmentFile function is called -->
                     <div v-if="this.file_id==null ">
                         <div v-if="modifMod==true">
-                            <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile"
-                                            :consultMod="this.isInConsultedMod" :savedAs="file_validate"
-                                            :AddinUpdate="true"/>
+                            <SaveButtonForm :AddinUpdate="true" :consultMod="this.isInConsultedMod"
+                                            :savedAs="file_validate" @add="addEquipmentFile"
+                                            @update="updateEquipmentFile"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile"
-                                            :consultMod="this.isInConsultedMod" :savedAs="file_validate"/>
+                            <SaveButtonForm :consultMod="this.isInConsultedMod" :savedAs="file_validate"
+                                            @add="addEquipmentFile" @update="updateEquipmentFile"/>
                         </div>
                     </div>
                     <div v-else-if="this.file_id!==null">
-                        <SaveButtonForm @add="addEquipmentFile" @update="updateEquipmentFile"
-                                        :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
-                                        :savedAs="file_validate"/>
+                        <SaveButtonForm :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
+                                        :savedAs="file_validate" @add="addEquipmentFile"
+                                        @update="updateEquipmentFile"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :validationMode="file_validate" :consultMod="this.isInConsultedMod"
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" :validationMode="file_validate"
                                            @deleteOk="deleteComponent"/>
                 </div>
             </form>
@@ -149,44 +149,39 @@ export default {
                     file_name: this.file_name,
                     file_location: this.file_location,
                     file_validate: savedAs,
-                })
-                    .then(response => {
-                        this.errors = {};
-                        /*If all the verifications passed, a new post this time to add the file in the database
-                        The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                        axios.post('/equipment/add/file', {
-                            file_name: this.file_name,
-                            file_location: this.file_location,
-                            file_validate: savedAs,
-                            eq_id: id
-                        })
-                            /*If the file is added successfully*/
-                            .then(response => {
-                                /*We test if a life sheet has been already created*/
-                                /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                                if (lifesheet_created == true) {
-                                    axios.post(`/history/add/equipment/${id}`, {
-                                        history_reasonUpdate: reason,
-                                    });
-                                    window.location.reload();
-                                }
-                                this.$refs.sucessAlert.showAlert(`Equipment file added successfully and saved as ${savedAs}`);
-                                /*If the user is not in modification mode*/
-                                if (!this.modifMod) {
-                                    /*The form pass in consulting mode and addSucces pass to True*/
-                                    this.isInConsultedMod = true;
-                                    this.addSucces = true
-                                }
-                                /*the id of the file take the value of the newly created id*/
-                                this.file_id = response.data;
-                                /*The validate option of this file takes the value of savedAs(Params of the function)*/
-                                this.file_validate = savedAs;
-                            })
-                            /*If the controller sends errors, we put it in the error object*/
-                            .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/equipment/add/file', {
+                        file_name: this.file_name,
+                        file_location: this.file_location,
+                        file_validate: savedAs,
+                        eq_id: id
                     })
-                    //If the controller sends errors, we put it in the error object
-                    .catch(error => this.errors = error.response.data.errors);
+                        /*If the file is added successfully*/
+                        .then(response => {
+                            /*We test if a life sheet has been already created*/
+                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                            if (lifesheet_created == true) {
+                                axios.post(`/history/add/equipment/${id}`, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
+                            this.$refs.sucessAlert.showAlert(`Equipment file added successfully and saved as ${savedAs}`);
+                            /*If the user is not in modification mode*/
+                            if (!this.modifMod) {
+                                /*The form pass in consulting mode and addSucces pass to True*/
+                                this.isInConsultedMod = true;
+                                this.addSucces = true
+                            }
+                            /*the id of the file take the value of the newly created id*/
+                            this.file_id = response.data;
+                            /*The validate option of this file takes the value of savedAs(Params of the function)*/
+                            this.file_validate = savedAs;
+                        }).catch(error => this.errors = error.response.data.errors);
+                }).catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -200,37 +195,31 @@ export default {
                 file_name: this.file_name,
                 file_location: this.file_location,
                 file_validate: savedAs,
-            })
-                .then(response => {
-                    this.errors = {};
-                    /*If all the verifications passed, a new post this time to add the file in the database
-                    Type, name, value, unit, validate option and id of the equipment is sent to the controller
-                    In the post url the id correspond to the id of the file who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/file/${id}`;
-                    axios.post(consultUrl(this.file_id), {
-                        file_name: this.file_name,
-                        file_location: this.file_location,
-                        eq_id: this.equipment_id_update,
-                        file_validate: savedAs
-                    })
-                        .then(response => {
-                            this.file_validate = savedAs;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            const id = this.equipment_id_update;
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.sucessAlert.showAlert(`Equipment file updated successfully and saved as ${savedAs}`);
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+            }).then(response => {
+                this.errors = {};
+                /*If all the verifications passed, a new post this time to add the file in the database
+                Type, name, value, unit, validate option and id of the equipment is sent to the controller
+                In the post url the id correspond to the id of the file who will be updated*/
+                const consultUrl = (id) => `/equipment/update/file/${id}`;
+                axios.post(consultUrl(this.file_id), {
+                    file_name: this.file_name,
+                    file_location: this.file_location,
+                    eq_id: this.equipment_id_update,
+                    file_validate: savedAs
+                }).then(response => {
+                    this.file_validate = savedAs;
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                    const id = this.equipment_id_update;
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`Equipment file updated successfully and saved as ${savedAs}`);
+                }).catch(error => this.errors = error.response.data.errors);
+            }).catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -240,28 +229,24 @@ export default {
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.file_id !== null) {
-                console.log("suppression");
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {
                     eq_id: this.equipment_id_update
-                })
-                    .then(response => {
-                        const id = this.equipment_id_update;
-                        /*We test if a life sheet has been already created*/
-                        /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteFile', '')
-                        this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteFile', '')
+                    this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
+                }).catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteFile', '')
                 this.$refs.sucessAlert.showAlert(`Empty Equipment file deleted successfully`);
@@ -273,8 +258,8 @@ export default {
             .then(response => {
                 this.infos_file = response.data;
                 this.loaded = true;
-            })
-            .catch(error => console.log(error));
+            }).catch(error => {
+        });
     }
 }
 </script>

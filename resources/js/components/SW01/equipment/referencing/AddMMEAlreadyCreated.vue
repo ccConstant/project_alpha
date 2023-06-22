@@ -6,11 +6,11 @@
 <template>
     <div>
         <b-button v-b-modal.modal-mme_add_already_created>Add MME Already Created</b-button>
-        <b-modal id="modal-mme_add_already_created" title="Add MME already created" hide-footer>
+        <b-modal id="modal-mme_add_already_created" hide-footer title="Add MME already created">
             <div>
                 <div v-if="mme_not_linked.length>0">
                     <div v-for="option in mme_not_linked" :key="option.id">
-                        <input type="radio" name="radio-input" :value="option" :id="option" v-model="radio_value"/>
+                        <input :id="option" v-model="radio_value" :value="option" name="radio-input" type="radio"/>
                         {{ option.internalReference }}
                     </div>
                 </div>
@@ -18,8 +18,8 @@
                     <p>Nothing to select</p>
                 </div>
             </div>
-            <b-button class="mt-3" block @click="$bvModal.hide('modal-mme_add_already_created')">Close</b-button>
-            <b-button class="mt-3" block @click="chooseMME">Choose</b-button>
+            <b-button block class="mt-3" @click="$bvModal.hide('modal-mme_add_already_created')">Close</b-button>
+            <b-button block class="mt-3" @click="chooseMME">Choose</b-button>
         </b-modal>
 
         <b-modal :id="`modal-approved${_uid}`" @ok="dataAppear()">
@@ -46,20 +46,17 @@ export default {
         }
     },
     created() {
-        console.log(this.lifesheet_created)
         /*Ask the controller for a list of the not linked mme*/
         axios.get('/mme/mmes_not_linked')
             .then(response => {
                 this.mme_not_linked = response.data;
-            })
-            .catch(error => console.log(error));
+            }).catch(error => {
+        });
     },
     methods: {
         /*Function to import the mme selected*/
         chooseMME() {
             if (this.radio_value != '') {
-                console.log(this.radio_value.internalReference)
-                console.log(this.eq_id)
                 const urlLinkMmeToEq = (id) => `/mme/link_to_eq/${id}`;
                 axios.post(urlLinkMmeToEq(this.eq_id), {
                     'mme_internalReference': this.radio_value.internalReference,

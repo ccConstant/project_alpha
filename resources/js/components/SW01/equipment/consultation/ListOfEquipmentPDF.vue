@@ -8,37 +8,41 @@
         <div id="page" class="page">
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2 id="headingOne" class="accordion-header">
+                        <button aria-controls="collapseOne" aria-expanded="true" class="accordion-button"
+                                data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">
                             Filters
                         </button>
                     </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                    <div id="collapseOne" aria-labelledby="headingOne" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <table class="ignored">
                                 <tbody>
                                 <tr class="ignored">
                                     <td class="ignored">
-                                        <input v-model="searchTermInternRef" class="form-control search_bar align-self-center"
+                                        <input v-model="searchTermInternRef"
+                                               class="form-control search_bar align-self-center"
                                                placeholder="Filter the equipments by the internal ref" type="text">
                                     </td>
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
-                                        <input v-model="searchTermExternRef" class="form-control search_bar align-self-center"
+                                        <input v-model="searchTermExternRef"
+                                               class="form-control search_bar align-self-center"
                                                placeholder="Filter the equipments by the external ref" type="text">
                                     </td>
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
-                                        <input v-model="searchTermName" class="form-control search_bar align-self-center"
+                                        <input v-model="searchTermName"
+                                               class="form-control search_bar align-self-center"
                                                placeholder="Filter the equipments by the designation" type="text">
                                     </td>
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
-                                        <select v-model="searchStatus" class="form-control search_bar align-self-center">
+                                        <select v-model="searchStatus"
+                                                class="form-control search_bar align-self-center">
                                             <option :value="-1">Filter the equipments by the actual state</option>
                                             <option :value="1">Waiting_for_referencing</option>
                                             <option :value="2">Waiting_for_installation</option>
@@ -55,7 +59,8 @@
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
-                                        <select v-model="searchSaveStatus" class="form-control search_bar align-self-center">
+                                        <select v-model="searchSaveStatus"
+                                                class="form-control search_bar align-self-center">
                                             <option :value="-1">Filter the equipments by the save status</option>
                                             <option :value="1">Drafted</option>
                                             <option :value="2">To Be Validated</option>
@@ -65,7 +70,8 @@
                                 </tr>
                                 <tr class="ignored">
                                     <td class="ignored">
-                                        <select v-model="searchSigned" class="form-control search_bar align-self-center">
+                                        <select v-model="searchSigned"
+                                                class="form-control search_bar align-self-center">
                                             <option :value="-1">Filter the equipments by the validation status</option>
                                             <option :value="0">Signed</option>
                                             <option :value="1">Not Signed</option>
@@ -96,7 +102,8 @@
                                 Date :
                             </p>
                             <h2>
-                                {{ new Date().getDate() }} {{ new Date().toString().substring(4, 7) }} {{ new Date().getFullYear() }}
+                                {{ new Date().getDate() }} {{ new Date().toString().substring(4, 7) }}
+                                {{ new Date().getFullYear() }}
                             </h2>
                         </td>
                     </tr>
@@ -216,29 +223,29 @@ export default {
     created() {
         axios.get('/equipment/equipments')
             .then(response => {
-                console.log(response.data)
                 this.list_eq = response.data;
                 this.loaded = true;
             })
-            .catch(error => console.log(error.response.data));
+            .catch(error => {
+            });
     },
     computed: {
         filterByTerm() {
             this.outputName = 'EQ_LIST'
-                                + (this.searchTermInternRef !== "" ? '_internRef' : '')
-                                + (this.searchTermExternRef !== "" ? '_externRef' : '')
-                                + (this.searchTermName !== "" ? '_name' : '')
-                                + (this.searchStatus !== -1 ? '_status' : '')
-                                + (this.searchSaveStatus !== -1 ? '_saveStatus' : '')
-                                + (this.searchSigned !== -1 ? '_signed' : '')
-                                + '.pdf'
+                + (this.searchTermInternRef !== "" ? '_internRef' : '')
+                + (this.searchTermExternRef !== "" ? '_externRef' : '')
+                + (this.searchTermName !== "" ? '_name' : '')
+                + (this.searchStatus !== -1 ? '_status' : '')
+                + (this.searchSaveStatus !== -1 ? '_saveStatus' : '')
+                + (this.searchSigned !== -1 ? '_signed' : '')
+                + '.pdf'
             let res = this.list_eq;
             if (this.searchTermInternRef !== "") {
                 res = this.list_eq.filter(option => {
                     if (option.eq_internalReference !== null) {
                         return option.eq_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
                     }
-                    return  false;
+                    return false;
                 });
             }
             if (this.searchTermExternRef !== "") {
@@ -311,24 +318,11 @@ export default {
     margin: auto;
     page-break-inside: auto;
 }
-/*table {
-    border: 1px solid black;
-    text-align: center;
-}
-table tr{
-    border: 1px solid black;
-}
-table td{
-    border: 1px solid black;
-}
-table th{
-    border: 1px solid black;
-    text-weight: bold;
-    font-size: large;
-}*/
+
 h2 {
     margin: auto;
 }
+
 p {
     font-size: 20px;
     font-style: normal;

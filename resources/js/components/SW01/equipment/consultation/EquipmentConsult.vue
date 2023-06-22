@@ -5,125 +5,141 @@
 
 <template>
     <div>
-        <div v-if="loaded==false" >
+        <div v-if="loaded==false">
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" class="equipment_consultation">
             <ErrorAlert ref="errorAlert"/>
             <SuccesAlert ref="successAlert"/>
             <h1>Equipment Consultation</h1>
-            <ValidationButton @ValidatePressed="Validate" :eq_id="eq_id" :validationMethod="validationMethod" :Errors="errors"/>
+            <ValidationButton :Errors="errors" :eq_id="eq_id" :validationMethod="validationMethod"
+                              @ValidatePressed="Validate"/>
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2 id="headingOne" class="accordion-header">
+                        <button aria-controls="collapseOne" aria-expanded="true" class="accordion-button"
+                                data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">
                             Equipment Id
                         </button>
                     </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                    <div id="collapseOne" aria-labelledby="headingOne" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-                        <EquipmentIDForm :internalReference="eq_idCard.eq_internalReference" :externalReference="eq_idCard.eq_externalReference"
-                            :name="eq_idCard.eq_name" :type="eq_idCard.eq_type" :serialNumber="eq_idCard.eq_serialNumber"
-                            :construct="eq_idCard.eq_constructor" :mass="eq_idCard.eq_mass"  :massUnit="eq_idCard.eq_massUnit"
-                            :mobility="eq_idCard.eq_mobility" :location="eq_idCard.eq_location" :remarks="eq_idCard.eq_remarks" :set="eq_idCard.eq_set" :validate="eq_idCard.eq_validate"
-                            consultMod/>
+                            <EquipmentIDForm :construct="eq_idCard.eq_constructor"
+                                             :externalReference="eq_idCard.eq_externalReference"
+                                             :internalReference="eq_idCard.eq_internalReference"
+                                             :location="eq_idCard.eq_location"
+                                             :mass="eq_idCard.eq_mass"
+                                             :massUnit="eq_idCard.eq_massUnit" :mobility="eq_idCard.eq_mobility"
+                                             :name="eq_idCard.eq_name"
+                                             :remarks="eq_idCard.eq_remarks" :serialNumber="eq_idCard.eq_serialNumber"
+                                             :set="eq_idCard.eq_set" :type="eq_idCard.eq_type"
+                                             :validate="eq_idCard.eq_validate"
+                                             consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item"  v-if="eq_dimensions.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Characteristic(s)
+                <div v-if="eq_dimensions.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                            Equipment Characteristic(s)
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <ReferenceADim :importedDim="eq_dimensions" consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_powers.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Power source(s)
+                <div v-if="eq_powers.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                            Equipment Power source(s)
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <ReferenceAPow :importedPow="eq_powers" consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_spProc.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Special Process
+                <div v-if="eq_spProc.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                            Equipment Special Process
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <ReferenceASpecProc  :importedSpProc="eq_spProc" consultMod/>
+                            <ReferenceASpecProc :importedSpProc="eq_spProc" consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_usg.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <div v-if="eq_usg.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
                             Equipment Usage
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <ReferenceAUsage  :importedUsg="eq_usg" consultMod/>
+                            <ReferenceAUsage :importedUsg="eq_usg" consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_file.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment File
+                <div v-if="eq_file.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                            Equipment File
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
                             <ReferenceAFile :importedFile="eq_file" consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_risk.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment's due Risk(s)
+                <div v-if="eq_risk.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                            Equipment's due Risk(s)
 
                         </button>
                     </h2>
-                    <div id="collapseTwo"  class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <ReferenceARisk  :importedRisk="eq_risk" :riskForEq="true" consultMod/>
+                            <ReferenceARisk :importedRisk="eq_risk" :riskForEq="true" consultMod/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" v-if="eq_prvMtnOp.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Preventive Maintenance Operation
+                <div v-if="eq_prvMtnOp.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                            Equipment Preventive Maintenance Operation
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <ReferenceAPrvMtnOp  :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
+                            <ReferenceAPrvMtnOp :importedPrvMtnOp="eq_prvMtnOp" consultMod/>
                         </div>
                     </div>
                 </div>
-                    <div class="accordion-item" v-if="eq_mme.length>0">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Equipment Associated MME
+                <div v-if="eq_mme.length>0" class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
+                            Equipment Associated MME
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <ReferenceAMme  :importedMme="eq_mme" consultMod/>
+                            <ReferenceAMme :importedMme="eq_mme" consultMod/>
                         </div>
                     </div>
                 </div>
@@ -148,9 +164,6 @@ import ReferenceAMme from '../referencing/ReferenceAMme.vue'
 import ValidationButton from '../../../button/ValidationButton.vue'
 
 
-
-
-
 export default {
     components: {
         EquipmentIDForm,
@@ -166,147 +179,119 @@ export default {
         ErrorAlert,
         SuccesAlert
     },
-    data(){
-        return{
-            eq_id:this.$route.params.id.toString(),
-            eq_idCard:null,
-            eq_dimensions:null,
-            eq_powers:null,
-            eq_spProc:null,
-            eq_usg:null,
-            eq_file:null,
-            eq_prvMtnOp:null,
-            eq_risk:null,
-            eq_mme:null,
-            loaded:false,
-            validationMethod:this.$route.query.method,
-            errors:[]
+    data() {
+        return {
+            eq_id: this.$route.params.id.toString(),
+            eq_idCard: null,
+            eq_dimensions: null,
+            eq_powers: null,
+            eq_spProc: null,
+            eq_usg: null,
+            eq_file: null,
+            eq_prvMtnOp: null,
+            eq_risk: null,
+            eq_mme: null,
+            loaded: false,
+            validationMethod: this.$route.query.method,
+            errors: []
         }
     },
 
-    created(){
-        if(this.validationMethod=='technical' && this.$userId.user_makeTechnicalValidationRight!=true){
-            this.$router.replace({ name: "url_eq_list"})
-        }else if(this.validationMethod=='quality' && this.$userId.user_makeQualityValidationRight!=true){
-            this.$router.replace({ name: "url_eq_list"})
+    created() {
+        if (this.validationMethod == 'technical' && this.$userId.user_makeTechnicalValidationRight != true) {
+            this.$router.replace({name: "url_eq_list"})
+        } else if (this.validationMethod == 'quality' && this.$userId.user_makeQualityValidationRight != true) {
+            this.$router.replace({name: "url_eq_list"})
         }
 
-        var consultUrl = (id) => `/equipment/${id}`;
+        const consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
-            .then (response => {
-                this.eq_idCard=response.data;
-                console.log(response.data);
-                console.log("equipment")
-            })
-            .catch(error => console.log(error));
-
-
-        var consultUrlDim = (id) => `/dimension/send/${id}`;
-        axios.get(consultUrlDim(this.eq_id))
-            .then (response=> {
-                this.eq_dimensions=response.data;
-                console.log("dim");
-            })
-            .catch(error => console.log(error)) ;
-
-        var consultUrlPow = (id) => `/power/send/${id}`;
-        axios.get(consultUrlPow(this.eq_id))
-            .then (response=> {
-                this.eq_powers=response.data;
-                console.log("pow")
-            })
-            .catch(error => console.log(error)) ;
-
-        var consultUrlSpProc = (id) => `/spProc/send/${id}`;
-        axios.get(consultUrlSpProc(this.eq_id))
-            .then (response=>{
-                if(response.data==""){
-                    this.eq_spProc=[];
-                }else{
-                    this.eq_spProc=response.data;
-                }
-                console.log("spProc")
-            })
-            .catch(error => console.log(error)) ;
-
-        var consultUrlUsg = (id) => `/usage/send/${id}`;
-        axios.get(consultUrlUsg(this.eq_id))
-            .then (response=>{
-                this.eq_usg=response.data;
-                console.log("usage")
-            })
-            .catch(error => console.log(error)) ;
-
-        var consultUrlFile = (id) => `/file/send/${id}`;
-        axios.get(consultUrlFile(this.eq_id))
-            .then (response=>{
-                this.eq_file=response.data;
-                console.log("file")
-            })
-            .catch(error => console.log(error)) ;
-
-        var consultUrlPrvMtnOp = (id) => `/prvMtnOps/send/${id}`;
-        axios.get(consultUrlPrvMtnOp(this.eq_id))
-            .then (response=>{
-            console.log(response.data),
-            console.log("prvMtnOp")
-            this.eq_prvMtnOp=response.data})
-            .catch(error => console.log(error)) ;
-
-        var consultUrlRisk = (id) => `/equipment/risk/send/${id}`;
-        axios.get(consultUrlRisk(this.eq_id))
-            .then (response=>{
-                this.eq_risk=response.data
-                 console.log("risk")
-            })
-            .catch(error => console.log(error)) ;
-
-            console.log("mme")
-        var consultUrlMme = (id) => `/mme/send/${id}`;
-            axios.get(consultUrlMme(this.eq_id))
-                .then (response=>{
-                    this.eq_mme=response.data
-                    console.log("coucou");
-                    console.log(response.data)
-                    console.log(this.eq_mme)
-                    this.loaded=true;
-                })
-                .catch(error => console.log(error)) ;
-
-    },
-    methods:{
-        Validate(){
-            if(this.validationMethod=='technical' && this.$userId.user_makeTechnicalValidationRight!=true){
-                this.$refs.errorAlert.showAlert("You don't have the right");
-            }else if(this.validationMethod=='quality' && this.$userId.user_makeQualityValidationRight!=true){
-                this.$refs.errorAlert.showAlert("You don't have the right");
-            }else{
-                var validVerifUrl = (id) => `/equipment/verifValidation/${id}`;
-                console.log(this.validationMethod)
-                axios.post(validVerifUrl(this.eq_id),{
-                    reason:this.validationMethod
-                    })
-                    .then(response =>{
-                        console.log("COUCOU")
-                        console.log(this.validationMethod)
-                        console.log(this.$userId.id)
-                        var techVeriftUrl = (id) => `/equipment/validation/${id}`;
-                        axios.post(techVeriftUrl(this.eq_id),{
-                            reason:this.validationMethod,
-                            enteredBy_id:this.$userId.id
-                        })
-                        .then(response =>{
-                            console.log(this.validationMethod+" made succesfully")
-                            this.$refs.successAlert.showAlert(`${this.validationMethod} made succesfully`);
-                            this.$router.replace({ name: "url_eq_list"})
-                        })
-                        //If the controller sends errors we put it in the errors object
-                        .catch(error => this.errors=error.response.data.errors) ;
-                    ;})
-                    //If the controller sends errors we put it in the errors object
-                .catch(error =>{
-                    this.errors=error.response.data.errors
+            .then(response => {
+                this.eq_idCard = response.data;
+                const consultUrlDim = (id) => `/dimension/send/${id}`;
+                axios.get(consultUrlDim(this.eq_id))
+                    .then(response => {
+                        this.eq_dimensions = response.data;
+                        const consultUrlPow = (id) => `/power/send/${id}`;
+                        axios.get(consultUrlPow(this.eq_id))
+                            .then(response => {
+                                this.eq_powers = response.data;
+                                const consultUrlSpProc = (id) => `/spProc/send/${id}`;
+                                axios.get(consultUrlSpProc(this.eq_id))
+                                    .then(response => {
+                                        if (response.data == "") {
+                                            this.eq_spProc = [];
+                                        } else {
+                                            this.eq_spProc = response.data;
+                                        }
+                                        const consultUrlUsg = (id) => `/usage/send/${id}`;
+                                        axios.get(consultUrlUsg(this.eq_id))
+                                            .then(response => {
+                                                this.eq_usg = response.data;
+                                                const consultUrlFile = (id) => `/file/send/${id}`;
+                                                axios.get(consultUrlFile(this.eq_id))
+                                                    .then(response => {
+                                                        this.eq_file = response.data;
+                                                        const consultUrlPrvMtnOp = (id) => `/prvMtnOps/send/${id}`;
+                                                        axios.get(consultUrlPrvMtnOp(this.eq_id))
+                                                            .then(response => {
+                                                                this.eq_prvMtnOp = response.data
+                                                                const consultUrlRisk = (id) => `/equipment/risk/send/${id}`;
+                                                                axios.get(consultUrlRisk(this.eq_id))
+                                                                    .then(response => {
+                                                                        this.eq_risk = response.data
+                                                                        const consultUrlMme = (id) => `/mme/send/${id}`;
+                                                                        axios.get(consultUrlMme(this.eq_id))
+                                                                            .then(response => {
+                                                                                this.eq_mme = response.data
+                                                                                this.loaded = true;
+                                                                            }).catch(error => {
+                                                                        });
+                                                                    }).catch(error => {
+                                                                });
+                                                            }).catch(error => {
+                                                        });
+                                                    }).catch(error => {
+                                                });
+                                            }).catch(error => {
+                                        });
+                                    }).catch(error => {
+                                });
+                            }).catch(error => {
+                        });
+                    }).catch(error => {
                 });
+            }).catch(error => {
+        });
+    },
+    methods: {
+        Validate() {
+            if (this.validationMethod == 'technical' && this.$userId.user_makeTechnicalValidationRight != true) {
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            } else if (this.validationMethod == 'quality' && this.$userId.user_makeQualityValidationRight != true) {
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            } else {
+                const validVerifUrl = (id) => `/equipment/verifValidation/${id}`;
+                axios.post(validVerifUrl(this.eq_id), {
+                    reason: this.validationMethod
+                })
+                    .then(response => {
+                        const techVeriftUrl = (id) => `/equipment/validation/${id}`;
+                        axios.post(techVeriftUrl(this.eq_id), {
+                            reason: this.validationMethod,
+                            enteredBy_id: this.$userId.id
+                        })
+                            .then(response => {
+                                this.$refs.successAlert.showAlert(`${this.validationMethod} made succesfully`);
+                                this.$router.replace({name: "url_eq_list"})
+                            })
+                            //If the controller sends errors we put it in the errors object
+                            .catch(error => this.errors = error.response.data.errors);
+                    })
+                    //If the controller sends errors we put it in the errors object
+                    .catch(error => {
+                        this.errors = error.response.data.errors
+                    });
             }
 
         }
@@ -319,25 +304,26 @@ export default {
 </script>
 
 <style lang="scss">
-    .technical_validate_button {
-        display: block;
-        margin : auto;
-        margin-bottom: 15px;
+.technical_validate_button {
+    display: block;
+    margin: auto;
+    margin-bottom: 15px;
 
-    };
+}
 
-    .quality_validate_button{
-        display: block;
-        margin : auto;
-        margin-bottom: 15px;
+;
+
+.quality_validate_button {
+    display: block;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+.equipment_consultation {
+    h1 {
+        text-align: center;
     }
-
-    .equipment_consultation{
-        h1{
-            text-align: center;
-        }
-    }
-
+}
 
 
 </style>

@@ -5,85 +5,93 @@
 
 <template>
     <div v-if="enums">
-        <h2 class="enumTitle">{{this.title}}</h2>
-        <InputInfo :info="returnedText_info" v-if="returnedText_info!=null "/>
-            <ErrorAlert ref="errorAlert"/>
+        <h2 class="enumTitle">{{ this.title }}</h2>
+        <InputInfo v-if="returnedText_info!=null " :info="returnedText_info"/>
+        <ErrorAlert ref="errorAlert"/>
         <ul>
-            <li class="list-group-item" v-for="(element,index) in enums" :key="index" >
+            <li v-for="(element,index) in enums" :key="index" class="list-group-item">
                 <div class="enum_name">
-                    {{element.value}}
+                    {{ element.value }}
                 </div>
-                <div class="enum_update" v-if="update_enum_right==true">
-                     <a  href=# v-b-modal="`modal-updateEnum-${_uid}`" @click="sendEnumInfo(element)">Update</a>
+                <div v-if="update_enum_right==true" class="enum_update">
+                    <a v-b-modal="`modal-updateEnum-${_uid}`" href=# @click="sendEnumInfo(element)">Update</a>
                 </div>
-                <div class="enum_update" v-else>
-                    <a  @click="showRightAlert" >Update</a>
+                <div v-else class="enum_update">
+                    <a @click="showRightAlert">Update</a>
                 </div>
-                <div class="enum_delete" v-if="delete_enum_right==true">
-                    <a  href=# v-b-modal="`modal-deleteEnum-${_uid}`" @click="sendEnumInfo(element)">Delete</a>
+                <div v-if="delete_enum_right==true" class="enum_delete">
+                    <a v-b-modal="`modal-deleteEnum-${_uid}`" href=# @click="sendEnumInfo(element)">Delete</a>
                 </div>
-                <div class="enum_delete" v-else>
-                    <a @click="showRightAlert" >Delete</a>
+                <div v-else class="enum_delete">
+                    <a @click="showRightAlert">Delete</a>
                 </div>
             </li>
         </ul>
         <div>
             <div v-if="add_enum_right==true">
-                <b-button  @click="$bvModal.show(`modal-addEnum-${_uid}`)" variant="primary">Add a new enum</b-button>
+                <b-button variant="primary" @click="$bvModal.show(`modal-addEnum-${_uid}`)">Add a new enum</b-button>
             </div>
             <div v-else>
                 <b-button disabled variant="primary">Add a new enum</b-button>
                 <p class="enum_add_right_red"> You dont have the right to add a new enum.</p>
             </div>
-            <b-modal :id="`modal-addEnum-${_uid}`"  ref="modal" :title="`Submit Your ${title} Enum`" @show="resetModal" @hidden="resetModal" @ok="handleOkAdd">
+            <b-modal :id="`modal-addEnum-${_uid}`" ref="modal" :title="`Submit Your ${title} Enum`" @hidden="resetModal"
+                     @ok="handleOkAdd" @show="resetModal">
                 <form ref="form" @submit.stop.prevent="handleSubmitAdd">
-                    <b-form-group label="Enum" label-for="enum-input" invalid-feedback="Enum is required" :state="enumState">
-                        <b-form-input id="enum-input" v-model="returnedEnum" :state="enumState" required ></b-form-input>
-                    </b-form-group>
-                </form>
-            </b-modal>
-            <b-modal :id="`modal-updateEnum-${_uid}`"  ref="modal" :title="`Update Your ${title} Enum`" @show="resetModal" @hidden="resetModal" @ok="handleOkUpdate">
-                <form ref="form" @submit.stop.prevent="handleSubmitVerifUpdate">
-                    <b-form-group label="Enum" label-for="enum-input" invalid-feedback="Enum is required" :state="enumState">
+                    <b-form-group :state="enumState" invalid-feedback="Enum is required" label="Enum"
+                                  label-for="enum-input">
                         <b-form-input id="enum-input" v-model="returnedEnum" :state="enumState" required></b-form-input>
                     </b-form-group>
                 </form>
             </b-modal>
-        <b-modal :id="`modal-deleteEnum-${_uid}`"  @ok="deleteConfirmation">
-            <p class="my-4">Are you sure you want to delete {{returnedEnum}} from {{this.title}} enum ?</p>
-        </b-modal>
-        <b-modal :id="`modal-enum-update-approved-${_uid}`" @ok="handleSubmitUpdate()"  >
-            <div v-if="equipments_concerned!=null || approved_equipments!=null">
-                <div v-if="equipments_concerned!=null && equipments_concerned.length!=0" class="my-4">
-                <p>Are you sure you want to update this Enum? The following not signed equipments will be concerned : </p>
-                <p v-for="(element,index) in this.equipments_concerned" :key="index">
-                    Internal Reference : {{element.internalReference}}, Name : {{element.name}}
-                </p>
+            <b-modal :id="`modal-updateEnum-${_uid}`" ref="modal" :title="`Update Your ${title} Enum`"
+                     @hidden="resetModal" @ok="handleOkUpdate" @show="resetModal">
+                <form ref="form" @submit.stop.prevent="handleSubmitVerifUpdate">
+                    <b-form-group :state="enumState" invalid-feedback="Enum is required" label="Enum"
+                                  label-for="enum-input">
+                        <b-form-input id="enum-input" v-model="returnedEnum" :state="enumState" required></b-form-input>
+                    </b-form-group>
+                </form>
+            </b-modal>
+            <b-modal :id="`modal-deleteEnum-${_uid}`" @ok="deleteConfirmation">
+                <p class="my-4">Are you sure you want to delete {{ returnedEnum }} from {{ this.title }} enum ?</p>
+            </b-modal>
+            <b-modal :id="`modal-enum-update-approved-${_uid}`" @ok="handleSubmitUpdate()">
+                <div v-if="equipments_concerned!=null || approved_equipments!=null">
+                    <div v-if="equipments_concerned!=null && equipments_concerned.length!=0" class="my-4">
+                        <p>Are you sure you want to update this Enum? The following not signed equipments will be
+                            concerned : </p>
+                        <p v-for="(element,index) in this.equipments_concerned" :key="index">
+                            Internal Reference : {{ element.internalReference }}, Name : {{ element.name }}
+                        </p>
+                    </div>
+                    <div v-if="approved_equipments!=null && approved_equipments.length!=0" class="my-4">
+                        <p>You will have to re validate the following equipments : </p>
+                        <p v-for="(element,index) in this.approved_equipments" :key="index">
+                            Internal Reference : {{ element.internalReference }}, Name : {{ element.name }}
+                        </p>
+                        <InputTextForm v-model="reason" :Errors="errors.history_reason" inputClassName="form-control"
+                                       label="Reason" name="reason"/>
+                    </div>
                 </div>
-                <div v-if="approved_equipments!=null && approved_equipments.length!=0" class="my-4">
-                <p>You will have to re validate the following equipments : </p>
-                <p v-for="(element,index) in this.approved_equipments" :key="index">
-                    Internal Reference : {{element.internalReference}}, Name : {{element.name}}
-                </p>
-                 <InputTextForm  inputClassName="form-control" :Errors="errors.history_reason" name="reason" label="Reason" v-model="reason" />
+                <div v-else-if="mmes_concerned!=null || approved_mmes!=null">
+                    <div v-if="mmes_concerned!=null && mmes_concerned.length!=0" class="my-4">
+                        <p>Are you sure you want to update this Enum? The following not signed mmes will be concerned
+                            : </p>
+                        <p v-for="(element,index) in this.mmes_concerned" :key="index">
+                            Internal Reference : {{ element.internalReference }}, Name : {{ element.name }}
+                        </p>
+                    </div>
+                    <div v-if="approved_mmes!=null && approved_mmes.length!=0" class="my-4">
+                        <p class="my-4"> You will have to re validate the following mmes : </p>
+                        <p v-for="(element2,index2) in this.approved_mmes" :key="index2">
+                            Internal Reference : {{ element2.internalReference }}, Name : {{ element2.name }}
+                        </p>
+                        <InputTextForm v-model="reason" :Errors="errors.history_reason" inputClassName="form-control"
+                                       label="Reason" name="reason"/>
+                    </div>
                 </div>
-            </div>
-            <div v-else-if="mmes_concerned!=null || approved_mmes!=null">
-                 <div v-if="mmes_concerned!=null && mmes_concerned.length!=0" class="my-4">
-                <p>Are you sure you want to update this Enum? The following not signed mmes will be concerned :  </p>
-                <p v-for="(element,index) in this.mmes_concerned" :key="index">
-                    Internal Reference : {{element.internalReference}}, Name : {{element.name}}
-                </p>
-                </div>
-                <div v-if="approved_mmes!=null && approved_mmes.length!=0" class="my-4">
-                <p class="my-4"> You will have to re validate the following mmes :   </p>
-                <p v-for="(element2,index2) in this.approved_mmes" :key="index2">
-                    Internal Reference : {{element2.internalReference}}, Name : {{element2.name}}
-                </p>
-                <InputTextForm  inputClassName="form-control" :Errors="errors.history_reason" name="reason" label="Reason" v-model="reason" />
-                </div>
-            </div>
-        </b-modal>
+            </b-modal>
 
 
         </div>
@@ -96,56 +104,57 @@
 import ErrorAlert from '../../alert/ErrorAlert.vue'
 import InputInfo from '../../input/InputInfo.vue'
 import InputTextForm from '../../input/InputTextForm.vue'
+
 export default {
-    components:{
+    components: {
         ErrorAlert,
         InputInfo,
         InputTextForm
     },
-    props:{
-        enumList:{
-            type:Array
+    props: {
+        enumList: {
+            type: Array
         },
-        title:{
-            type:String
+        title: {
+            type: String
         },
-        url:{
-            type:String
+        url: {
+            type: String
         },
-        error_name:{
-            type:String
+        error_name: {
+            type: String
         },
-        enum_value:{
-            type:String
+        enum_value: {
+            type: String
         },
-        info_text:{
-            type:String,
-            default : null
+        info_text: {
+            type: String,
+            default: null
         }
     },
-    data(){
-        return{
-            returnedEnum:'',
-            enumState:null,
-            compId:this._uid,
-            sendedEnumValue:'',
-            sendedEnumId:null,
-            enums:this.enumList,
+    data() {
+        return {
+            returnedEnum: '',
+            enumState: null,
+            compId: this._uid,
+            sendedEnumValue: '',
+            sendedEnumId: null,
+            enums: this.enumList,
             dismissSecs: 5,
             dismissCountDown: 0,
             showDismissibleAlert: false,
-            returnedText_info:this.info_text,
-            delete_enum_right:this.$userId.user_deleteEnumRight,
-            add_enum_right:this.$userId.user_addEnumRight,
-            update_enum_right:this.$userId.user_updateEnumRight,
-            approved_equipments:null,
-            approved_mmes:null,
-            equipments_concerned:null,
-            mmes_concerned:null,
-            enumId:'',
-            reason:'',
-            errors:{},
-            cpt:0,
+            returnedText_info: this.info_text,
+            delete_enum_right: this.$userId.user_deleteEnumRight,
+            add_enum_right: this.$userId.user_addEnumRight,
+            update_enum_right: this.$userId.user_updateEnumRight,
+            approved_equipments: null,
+            approved_mmes: null,
+            equipments_concerned: null,
+            mmes_concerned: null,
+            enumId: '',
+            reason: '',
+            errors: {},
+            cpt: 0,
         }
     },
     methods: {
@@ -170,14 +179,16 @@ export default {
                 return
             }
             const postUrlAdd = (url) => `${url}add`;
-            axios.post(postUrlAdd(this.url),{
-                    value:this.returnedEnum,
+            axios.post(postUrlAdd(this.url), {
+                value: this.returnedEnum,
+            })
+                .then(response => {
+                    window.location.reload();
                 })
-                .then(response =>{ window.location.reload();})
-                .catch(error =>{
+                .catch(error => {
                     console.log(error.response.data.errors);
                     this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name]);
-                }) ;
+                });
             // Hide the modal manually
             this.$nextTick(() => {
                 this.$bvModal.hide(`modal-addEnum-${this.compId}`)
@@ -192,104 +203,88 @@ export default {
         handleSubmitVerifUpdate() {
             // Exit when the form isn't valid
             if (!this.checkFormValidity()) {
-                return ;
+                return;
             }
-            const postUrlAdd = (url,id) => `${url}verif/${id}`;
-            axios.post(postUrlAdd(this.url,this.sendedEnumId),{
-                    value:this.returnedEnum,
-                })
-                .then(response =>{
-                    console.log("verif ok")
-                    this.sendedEnumId=response.data
-                     console.log("id sended"+this.sendedEnumId)
-                    const postUrlAnalyze = (url,id) => `${url}analyze/${id}`;
-                    axios.post(postUrlAnalyze(this.url,this.sendedEnumId),{
-                            value:this.returnedEnum,
+            const postUrlAdd = (url, id) => `${url}verif/${id}`;
+            axios.post(postUrlAdd(this.url, this.sendedEnumId), {
+                value: this.returnedEnum,
+            })
+                .then(response => {
+                    this.sendedEnumId = response.data
+                    const postUrlAnalyze = (url, id) => `${url}analyze/${id}`;
+                    axios.post(postUrlAnalyze(this.url, this.sendedEnumId), {
+                        value: this.returnedEnum,
                     })
-                    .then(response =>{
-                        console.log("analyze ok")
-                        console.log(response.data);
-                        if (response.data.validated_eq!=null && response.data.validated_eq.length!=0 ){
-                            console.log("cas1")
-                            this.cpt++;
-                            console.log(response.data.validated_eq)
-                            this.approved_equipments=response.data.validated_eq ;
-                        }
-                        if (response.data.equipments!=null && response.data.equipments.length!=0){
-                            console.log("cas2")
-                            this.cpt++;
-                            console.log(response.data.equipments)
-                            this.equipments_concerned=response.data.equipments;
-                        }
-                        if (response.data.validated_mme!=null && response.data.validated_mme.length!=0){
-                             console.log("cas3")
-                            this.cpt++;
-                            this.approved_mmes=response.data.validated_mme;
-                        }
-                        if (response.data.mmes!=null && response.data.mmes.length!=0){
-                             console.log("cas4")
-                            this.cpt++;
-                            this.mmes_concerned=response.data.mmes;
-                        }
-                        this.enumId=response.data.id;
-                        console.log("enumId"+this.enumId)
-                        if (this.cpt>0){
-                            this.$bvModal.show(`modal-enum-update-approved-${this.compId}`);
-                        }else{
-                            this.cpt=0;
-                            this.handleSubmitUpdate();
-                        }
-                        console.log(response.data);
-                    });
+                        .then(response => {
+                            if (response.data.validated_eq != null && response.data.validated_eq.length != 0) {
+                                this.cpt++;
+                                this.approved_equipments = response.data.validated_eq;
+                            }
+                            if (response.data.equipments != null && response.data.equipments.length != 0) {
+                                this.cpt++;
+                                this.equipments_concerned = response.data.equipments;
+                            }
+                            if (response.data.validated_mme != null && response.data.validated_mme.length != 0) {
+                                this.cpt++;
+                                this.approved_mmes = response.data.validated_mme;
+                            }
+                            if (response.data.mmes != null && response.data.mmes.length != 0) {
+                                this.cpt++;
+                                this.mmes_concerned = response.data.mmes;
+                            }
+                            this.enumId = response.data.id;
+                            if (this.cpt > 0) {
+                                this.$bvModal.show(`modal-enum-update-approved-${this.compId}`);
+                            } else {
+                                this.cpt = 0;
+                                this.handleSubmitUpdate();
+                            }
+                        });
                 })
-                .catch(error =>{
+                .catch(error => {
                     this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name]);
                 });
 
             // Hide the modal manually
             this.$nextTick(() => {
                 this.$bvModal.hide(`modal-updateEnum-${this.compId}`);
-                this.sendedEnumId=null;
+                this.sendedEnumId = null;
             })
         },
 
-        handleSubmitUpdate(){
-            console.log("id"+this.enumId)
-            console.log("url"+this.url)
+        handleSubmitUpdate() {
             const postUrlUpdate = (url, id) => `${url}update/${id}`;
-            console.log(this.approved_equipments)
-            console.log("before")
-            axios.post(postUrlUpdate(this.url,this.enumId),{
-                    value:this.returnedEnum,
-                    validated_eq:this.approved_equipments,
-                    validated_mme:this.approved_mmes,
-                    history_reasonUpdate:this.reason,
+            axios.post(postUrlUpdate(this.url, this.enumId), {
+                value: this.returnedEnum,
+                validated_eq: this.approved_equipments,
+                validated_mme: this.approved_mmes,
+                history_reasonUpdate: this.reason,
             })
-                .then(response =>{
-                    console.log(response.data)
-                    
+                .then(response => {
                     window.location.reload();
-                    this.enumId=null;
-                    this.approved_equipments=null;
-                    this.approved_mmes=null;
-                    this.equipments_concerned=null;
-                    this.mmes_concerned=null;
-                    this.reason="";
+                    this.enumId = null;
+                    this.approved_equipments = null;
+                    this.approved_mmes = null;
+                    this.equipments_concerned = null;
+                    this.mmes_concerned = null;
+                    this.reason = "";
                 })
         },
-        deleteConfirmation(){
+        deleteConfirmation() {
             const postUrlAdd = (url, id) => `${url}delete/${id}`;
-            axios.post(postUrlAdd(this.url,this.sendedEnumId),{
-            })
-            .then(response =>{ window.location.reload();})
-            .catch(error =>{this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name])}) ;
+            axios.post(postUrlAdd(this.url, this.sendedEnumId), {})
+                .then(response => {
+                    window.location.reload();
+                }).catch(error => {
+                this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name])
+            });
             this.$nextTick(() => {
-                this.sendedEnumId=null;
+                this.sendedEnumId = null;
             })
         },
-        sendEnumInfo(element){
-            this.returnedEnum=element.value;
-            this.sendedEnumId=element.id;
+        sendEnumInfo(element) {
+            this.returnedEnum = element.value;
+            this.sendedEnumId = element.id;
         },
         countDownChanged(dismissCountDown) {
             this.dismissCountDown = dismissCountDown
@@ -297,7 +292,7 @@ export default {
         showAlert() {
             this.dismissCountDown = this.dismissSecs
         },
-        showRightAlert(){
+        showRightAlert() {
             this.$refs.errorAlert.showAlert("You don't have the right")
         }
     }
@@ -305,24 +300,29 @@ export default {
 </script>
 
 <style lang="scss">
-    .enumTitle{
+.enumTitle {
+    display: inline-block;
+}
+
+.list-group-item {
+    .enum_name {
         display: inline-block;
     }
-    .list-group-item{
-        .enum_name{
-            display: inline-block;
-        }
-        .enum_update{
-            display: inline-block;
-        }
-        .enum_delete{
-            display: inline-block;
-        }
+
+    .enum_update {
+        display: inline-block;
     }
-    .input-reason{
-        width: 300px;
+
+    .enum_delete {
+        display: inline-block;
     }
-    .enum_add_right_red{
-        color: red;
-    }
+}
+
+.input-reason {
+    width: 300px;
+}
+
+.enum_add_right_red {
+    color: red;
+}
 </style>

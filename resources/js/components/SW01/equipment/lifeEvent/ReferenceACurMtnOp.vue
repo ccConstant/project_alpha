@@ -4,19 +4,22 @@
 <!--Vue Component used to reference a curative maintenance operation-->
 
 <template>
-      <div class="equipmentCurMtnOp" >
+    <div class="equipmentCurMtnOp">
         <h2 class="titleForm">Equipment Curative Maintenance Operation</h2>
         <span class="hr"></span>
         <!--Adding to the vue EquipmentCurMtnOpForm by going through the components array with the v-for-->
         <!--ref="ask_curMtnOp_data" is used to call the child elements in this component-->
         <!--The emitted deleteCurMtnOp is caught here and call the function getContent -->
-        <EquipmentCurMtnOpForm ref="ask_curMtnOp_data" v-for="(component, key) in components" :key="component.key"
-            :is="component.comp" :number="component.number" :description="component.description"
-            :reportNumber="component.reportNumber" :startDate="component.startDate" :endDate="component.endDate"
-            :divClass="component.className" :id="component.id" :state_id="data_state_id"
-            :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"
-            @deleteCurMtnOp="getContent(key)" @addSucces="addSucces()" />
-        <SaveButtonForm :in_life_sheet="false" saveAll v-if="components.length>1" @add="saveAll" @update="saveAll" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        <EquipmentCurMtnOpForm :is="component.comp" v-for="(component, key) in components" :id="component.id"
+                               :key="component.key" ref="ask_curMtnOp_data" :consultMod="isInConsultMod"
+                               :description="component.description" :divClass="component.className"
+                               :endDate="component.endDate"
+                               :eq_id="data_eq_id" :modifMod="isInModifMod" :number="component.number"
+                               :reportNumber="component.reportNumber" :startDate="component.startDate" :state_id="data_state_id"
+                               :validate="component.validate"
+                               @addSucces="addSucces()" @deleteCurMtnOp="getContent(key)"/>
+        <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :in_life_sheet="false" :modifMod="this.isInModifMod" saveAll
+                        @add="saveAll" @update="saveAll"/>
     </div>
 </template>
 
@@ -24,9 +27,10 @@
 /*Importation of the other Components who will be used here*/
 import EquipmentCurMtnOpForm from './EquipmentCurMtnOpForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
+
 export default {
     /*--------Declaration of the others Components:--------*/
-    components:{
+    components: {
         EquipmentCurMtnOpForm,
         SaveButtonForm,
     },
@@ -36,27 +40,27 @@ export default {
         importedCurMtnOp: All curative maintenance operations imported from the database
         eq_id: ID of the equipment in which the curative maintenance operation will be added
     ---------------------------------------------------*/
-    props:{
-        consultMod:{
-            type:Boolean,
-            default:false
+    props: {
+        consultMod: {
+            type: Boolean,
+            default: false
         },
-        modifMod:{
-            type:Boolean,
-            default:false
+        modifMod: {
+            type: Boolean,
+            default: false
         },
-        importedCurMtnOp:{
-            type:Array,
-            default:null
+        importedCurMtnOp: {
+            type: Array,
+            default: null
         },
-        eq_id:{
-            type:Number
+        eq_id: {
+            type: Number
         },
-        state_id:{
-            type:Number
+        state_id: {
+            type: Number
         },
-        number:{
-            type:Number
+        number: {
+            type: Number
         }
     },
     /*--------Declaration of the differents returned data:--------
@@ -68,41 +72,41 @@ export default {
     data_eq_id: data of the eq_id prop
     -----------------------------------------------------------*/
     data() {
-      return {
-        components: [],
-        uniqueKey:0,
-        curMtnOps:this.importedCurMtnOp,
-        count:0,
-        isInConsultMod:this.consultMod,
-        isInModifMod:this.modifMod,
-        data_eq_id:this.eq_id,
-        data_state_id:this.state_id
-      };
+        return {
+            components: [],
+            uniqueKey: 0,
+            curMtnOps: this.importedCurMtnOp,
+            count: 0,
+            isInConsultMod: this.consultMod,
+            isInModifMod: this.modifMod,
+            data_eq_id: this.eq_id,
+            data_state_id: this.state_id
+        };
     },
-    methods:{
+    methods: {
         //Function for adding a new (empty) curative maintenance operation form
         addComponent() {
             this.components.push({
-                comp:'EquipmentCurMtnOpForm',
-                key : this.uniqueKey++,
-                prvMtnOp_number:this.number,
-                prvMtnOp_id:this.id,
-                id:this.id,
+                comp: 'EquipmentCurMtnOpForm',
+                key: this.uniqueKey++,
+                prvMtnOp_number: this.number,
+                prvMtnOp_id: this.id,
+                id: this.id,
             });
         },
         //Function for adding an imported curative maintenance operation form with his data
-        addImportedComponent(curMtnOp_number,curMtnOp_reportNumber,curMtnOp_description,curMtnOp_startDate,curMtnOp_endDate,curMtnOp_validate,curMtnOp_className,id) {
+        addImportedComponent(curMtnOp_number, curMtnOp_reportNumber, curMtnOp_description, curMtnOp_startDate, curMtnOp_endDate, curMtnOp_validate, curMtnOp_className, id) {
             this.components.push({
-                comp:'EquipmentCurMtnOpForm',
-                key : this.uniqueKey++,
-                number:curMtnOp_number,
-                reportNumber :curMtnOp_reportNumber,
-                description:curMtnOp_description,
-                startDate:curMtnOp_startDate,
-                endDate:curMtnOp_endDate,
-                className:curMtnOp_className,
-                validate:curMtnOp_validate,
-                id:id
+                comp: 'EquipmentCurMtnOpForm',
+                key: this.uniqueKey++,
+                number: curMtnOp_number,
+                reportNumber: curMtnOp_reportNumber,
+                description: curMtnOp_description,
+                startDate: curMtnOp_startDate,
+                endDate: curMtnOp_endDate,
+                className: curMtnOp_className,
+                validate: curMtnOp_validate,
+                id: id
             });
         },
         //Suppression of a curative maintenance operation component from the vue
@@ -110,56 +114,53 @@ export default {
             this.components.splice(key, 1);
         },
         //Function for adding to the vue the imported curative maintenance operation
-        importCurMtnOp(){
+        importCurMtnOp() {
             for (const curMtnOp of this.curMtnOps) {
                 const className = "importedCurMtnOp" + curMtnOp.id;
-                this.addImportedComponent(curMtnOp.curMtnOp_number,curMtnOp.curMtnOp_reportNumber,curMtnOp.curMtnOp_description,curMtnOp.curMtnOp_startDate,
-                    curMtnOp.curMtnOp_endDate,curMtnOp.curMtnOp_validate,className,curMtnOp.id);
+                this.addImportedComponent(curMtnOp.curMtnOp_number, curMtnOp.curMtnOp_reportNumber, curMtnOp.curMtnOp_description, curMtnOp.curMtnOp_startDate,
+                    curMtnOp.curMtnOp_endDate, curMtnOp.curMtnOp_validate, className, curMtnOp.id);
             }
-            this.curMtnOps=null
+            this.curMtnOps = null
         },
         //Function for saving all the data in one time
-        saveAll(savedAs){
-            for(const component of this.$refs.ask_curMtnOp_data){
+        saveAll(savedAs) {
+            for (const component of this.$refs.ask_curMtnOp_data) {
                 //If the user is in modification mode
-                if(this.modifMod==true){
+                if (this.modifMod == true) {
                     //If the curative maintenance operation doesn't have an id
-                    if(component.curMtnOp_id==null ){
+                    if (component.curMtnOp_id == null) {
                         //AddequipmentCurMtnOp is used
                         component.addEquipmentCurMtnOp(savedAs);
-                    }else
-                    //Else if the curative maintenance operation has an id and addSucces, is equal to true
-                    if(component.curMtnOp_id!=null || component.addSucces==true){
+                    } else
+                        //Else if the curative maintenance operation has an id and addSucces, is equal to true
+                    if (component.curMtnOp_id != null || component.addSucces == true) {
                         //updateEquipmentCurMtnOp is used
                         component.updateEquipmentCurMtnOp(savedAs);
                     }
-                }else{
+                } else {
                     //Else If the user is not in modification mode
                     component.addEquipmentCurMtnOp(savedAs);
                 }
-
-
             }
         },
-        addSucces(){
-            this.$emit('addSucces','')
+        addSucces() {
+            this.$emit('addSucces', '')
         }
     },
-    mounted(){
+    mounted() {
         //If the user is in consultation or modification mode, the imported curative maintenance operation will be added to the vue automatically
-        if(this.consultMod || this.modifMod ){
+        if (this.consultMod || this.modifMod) {
             this.importCurMtnOp();
-        }else{
+        } else {
             // else an empty one is added to the vue
             this.addComponent();
         }
     },
-    created(){
-        if(this.$userId.user_makeEqOpValidationRight!=true){
-            this.$router.push({ name: "home"});
+    created() {
+        if (this.$userId.user_makeEqOpValidationRight != true) {
+            this.$router.push({name: "home"});
         }
     },
-
 }
 </script>
 

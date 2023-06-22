@@ -6,16 +6,16 @@
 <template>
     <div class="equipmentSpProc">
         <h2 class="titleForm">Equipment Special Process</h2>
-        <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info!=null "/>
+        <InputInfo v-if="title_info!=null " :info="title_info.info_value" class="info_title"/>
         <!--Adding to the vue EquipmentSpecProcForm by going through the components array with the v-for-->
         <!--ref="ask_spProc_data" is used to call the child elements in this component-->
         <!--The emitted deleteSpPRoc is caught here and call the function getContent -->
-        <EquipmentSpecProcForm ref="ask_spProc_data" v-for="(component) in components" :key="component.key"
-                               :is="component.comp" :divClass="component.className" :id="component.id"
-                               :exist="component.exist"
-                               :remarksOrPrecaution="component.remarksOrPrecaution" :name="component.name"
-                               :validate="component.validate"
-                               :consultMod="isInConsultMod" :modifMod="isInModifMod" :eq_id="data_eq_id"/>
+        <EquipmentSpecProcForm :is="component.comp" v-for="(component) in components" :id="component.id"
+                               :key="component.key" ref="ask_spProc_data" :consultMod="isInConsultMod"
+                               :divClass="component.className"
+                               :eq_id="data_eq_id" :exist="component.exist"
+                               :modifMod="isInModifMod"
+                               :name="component.name" :remarksOrPrecaution="component.remarksOrPrecaution" :validate="component.validate"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
             <!--If special process array is not empty and if the user is not in modification mode -->
@@ -121,14 +121,16 @@ export default {
             /*Make a get request to ask the controller the special process corresponding to the id of the equipment with which data will be imported*/
             const consultUrl = (id) => `/spProc/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then(response => this.specProc = response.data)
-                .catch(error => console.log(error));
+                .then(response => {
+                    this.specProc = response.data;
+                    axios.get('/info/send/specialProcess')
+                        .then(response => {
+                            this.title_info = response.data[3];
+                        }).catch(error => {
+                    });
+                }).catch(error => {
+            });
         }
-        axios.get('/info/send/specialProcess')
-            .then(response => {
-                this.title_info = response.data[3];
-            })
-            .catch(error => console.log(error));
     },
     mounted() {
         if (!this.consultMod) {
@@ -141,16 +143,16 @@ export default {
         if (this.consultMod || this.modifMod) {
             this.importSpProc();
         }
-        /*Function for adding a new empty special process form */
     }
 }
 </script>
 
 <style>
-    .info_title {
-        position: relative;
-    }
-    .title {
-        display: inline-block;
-    }
+.info_title {
+    position: relative;
+}
+
+.title {
+    display: inline-block;
+}
 </style>

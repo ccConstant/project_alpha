@@ -12,35 +12,35 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <RadioGroupForm @clearRadioError="clearRadioError" label="ALPHA's Cat I processes?"
-                                :options="existOption" :Errors="errors.spProc_exist" :checkedOption="spProc_exist"
-                                :isDisabled="!!isInConsultedMod" v-model="spProc_exist"
-                                :info_text="infos_spProc[0].info_value"/>
-                <InputTextForm v-if="this.spProc_exist==true" inputClassName="form-control w-50"
-                               :Errors="errors.spProc_name" name="spProc_name" label="Special process name :"
-                               v-model="spProc_name" :isDisabled="!!isInConsultedMod"
-                               :info_text="infos_spProc[1].info_value"/>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.spProc_remarksOrPrecaution"
-                                   name="spProc_remarksOrPrecaution" label="Remarks :" :isDisabled="!!isInConsultedMod"
-                                   v-model="spProc_remarksOrPrecaution" :info_text="infos_spProc[2].info_value"/>
+                <RadioGroupForm v-model="spProc_exist" :Errors="errors.spProc_exist"
+                                :checkedOption="spProc_exist" :info_text="infos_spProc[0].info_value" :isDisabled="!!isInConsultedMod"
+                                :options="existOption" label="ALPHA's Cat I processes?"
+                                @clearRadioError="clearRadioError"/>
+                <InputTextForm v-if="this.spProc_exist==true" v-model="spProc_name"
+                               :Errors="errors.spProc_name" :info_text="infos_spProc[1].info_value" :isDisabled="!!isInConsultedMod"
+                               inputClassName="form-control w-50" label="Special process name :"
+                               name="spProc_name"/>
+                <InputTextAreaForm v-model="spProc_remarksOrPrecaution" :Errors="errors.spProc_remarksOrPrecaution"
+                                   :info_text="infos_spProc[2].info_value" :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50"
+                                   label="Remarks :" name="spProc_remarksOrPrecaution"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
                 <div v-if="this.addSuccess==false ">
                     <!--If this special process doesn't have a id the addEquipmentSpProc is called function else the updateEquipmentSpProc function is called -->
                     <div v-if="this.spProc_id==null ">
                         <div v-if="modifMod==true">
-                            <SaveButtonForm @add="addEquipmentSpProc" @update="updateEquipmentSpProc"
-                                            :consultMod="this.isInConsultedMod" :savedAs="spProc_validate"
-                                            :AddinUpdate="true"/>
+                            <SaveButtonForm :AddinUpdate="true" :consultMod="this.isInConsultedMod"
+                                            :savedAs="spProc_validate" @add="addEquipmentSpProc"
+                                            @update="updateEquipmentSpProc"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addEquipmentSpProc" @update="updateEquipmentSpProc"
-                                            :consultMod="this.isInConsultedMod" :savedAs="spProc_validate"/>
+                            <SaveButtonForm :consultMod="this.isInConsultedMod" :savedAs="spProc_validate"
+                                            @add="addEquipmentSpProc" @update="updateEquipmentSpProc"/>
                         </div>
                     </div>
                     <div v-else-if="this.spProc_id!==null">
-                        <SaveButtonForm @add="addEquipmentSpProc" @update="updateEquipmentSpProc"
-                                        :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
-                                        :savedAs="spProc_validate"/>
+                        <SaveButtonForm :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
+                                        :savedAs="spProc_validate" @add="addEquipmentSpProc"
+                                        @update="updateEquipmentSpProc"/>
                     </div>
                 </div>
             </form>
@@ -168,37 +168,32 @@ export default {
                     spProc_exist: this.spProc_exist,
                     spProc_name: this.spProc_name,
                     spProc_validate: savedAs,
-                })
-                    .then(response => {
-                        this.errors = {};
-                        /*If all the verifications passed, a new post this time to add the special process in the database
-                        The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                        axios.post('/equipment/add/spProc', {
-                            spProc_remarksOrPrecaution: this.spProc_remarksOrPrecaution,
-                            spProc_exist: this.spProc_exist,
-                            spProc_name: this.spProc_name,
-                            spProc_validate: savedAs,
-                            eq_id: id
-                        })
-                            /*If the special process is added successfully*/
-                            .then(response => {
-                                this.$refs.sucessAlert.showAlert(`Equipment special process added successfully and saved as ${savedAs}`);
-                                /*If the user is not in modification mode*/
-                                if (!this.modifMod) {
-                                    /*The form pass in consulting mode and addSuccess pass to True*/
-                                    this.isInConsultedMod = true;
-                                    this.addSuccess = true
-                                }
-                                /*the id of the special process take the value of the newly created id*/
-                                this.spProc_id = response.data;
-                                /*The validate option of this special process takes the value of savedAs*/
-                                this.spProc_validate = savedAs;
-                            })
-                            /*If the controller sends errors, we put it in the error object*/
-                            .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the special process in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/equipment/add/spProc', {
+                        spProc_remarksOrPrecaution: this.spProc_remarksOrPrecaution,
+                        spProc_exist: this.spProc_exist,
+                        spProc_name: this.spProc_name,
+                        spProc_validate: savedAs,
+                        eq_id: id
                     })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                        /*If the special process is added successfully*/
+                        .then(response => {
+                            this.$refs.sucessAlert.showAlert(`Equipment special process added successfully and saved as ${savedAs}`);
+                            /*If the user is not in modification mode*/
+                            if (!this.modifMod) {
+                                /*The form pass in consulting mode and addSuccess pass to True*/
+                                this.isInConsultedMod = true;
+                                this.addSuccess = true
+                            }
+                            /*the id of the special process take the value of the newly created id*/
+                            this.spProc_id = response.data;
+                            /*The validate option of this special process takes the value of savedAs*/
+                            this.spProc_validate = savedAs;
+                        }).catch(error => this.errors = error.response.data.errors);
+                }).catch(error => this.errors = error.response.data.errors);
             }
 
         },
@@ -210,44 +205,37 @@ export default {
 
             /*The First post to verify if all the fields are filled correctly,
             The type, name, value, unit and validate option are sent to the controller*/
-
             axios.post('/spProc/verif', {
                 spProc_remarksOrPrecaution: this.spProc_remarksOrPrecaution,
                 spProc_exist: this.spProc_exist,
                 spProc_name: this.spProc_name,
                 spProc_validate: savedAs,
-            })
-                .then(response => {
-                    this.errors = {};
-                    /*If all the verifications passed, a new post this time to add the special process in the database
-                    The type, name, value, unit, validate option and id of the equipment are sent to the controller
-                    In the post url the id correspond to the id of the special process who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/spProc/${id}`;
-                    axios.post(consultUrl(this.spProc_id), {
-                        spProc_remarksOrPrecaution: this.spProc_remarksOrPrecaution,
-                        spProc_exist: this.spProc_exist,
-                        spProc_name: this.spProc_name,
-                        spProc_validate: savedAs,
-                        eq_id: this.equipment_id_update
-                    })
-                        .then(response => {
-                            this.spProc_validate = savedAs;
-                            const id = this.equipment_id_update;
-                            /*We test if a life sheet has been already created
-                            If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.sucessAlert.showAlert(`Equipment special process updated successfully and saved as ${savedAs}`);
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+            }).then(response => {
+                this.errors = {};
+                /*If all the verifications passed, a new post this time to add the special process in the database
+                The type, name, value, unit, validate option and id of the equipment are sent to the controller
+                In the post url the id correspond to the id of the special process who will be updated*/
+                const consultUrl = (id) => `/equipment/update/spProc/${id}`;
+                axios.post(consultUrl(this.spProc_id), {
+                    spProc_remarksOrPrecaution: this.spProc_remarksOrPrecaution,
+                    spProc_exist: this.spProc_exist,
+                    spProc_name: this.spProc_name,
+                    spProc_validate: savedAs,
+                    eq_id: this.equipment_id_update
+                }).then(response => {
+                    this.spProc_validate = savedAs;
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created
+                    If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`Equipment special process updated successfully and saved as ${savedAs}`);
+                }).catch(error => this.errors = error.response.data.errors);
+            }).catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -262,8 +250,8 @@ export default {
             .then(response => {
                 this.infos_spProc = response.data;
                 this.loaded = true;
-            })
-            .catch(error => console.log(error));
+            }).catch(error => {
+        });
     }
 }
 </script>

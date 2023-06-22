@@ -12,44 +12,45 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <InputSelectForm @clearSelectError='clearSelectError' selectClassName="form-select w-50"
-                                 :Errors="errors.dim_type" name="dim_type" label="Dimension Type :"
-                                 :options="enum_dim_type" :isDisabled="!!isInConsultedMod"
-                                 :selctedOption="this.dim_type" :selectedDivName="this.divClass" v-model="dim_type"
-                                 :info_text="infos_dimension[0].info_value" :id_actual="dimensionType"/>
-                <InputSelectForm @clearSelectError='clearSelectError' name="dim_name" label="Dimension name :"
-                                 :Errors="errors.dim_name" :options="enum_dim_name" :selctedOption="this.dim_name"
-                                 selectClassName="form-select w-50" :isDisabled="!!isInConsultedMod"
-                                 :selectedDivName="this.divClass" v-model="dim_name"
-                                 :info_text="infos_dimension[1].info_value" :id_actual="dimensionName"/>
-                <InputTextForm inputClassName="form-control w-50" :Errors="errors.dim_value" name="dim_value"
-                                     label="Dimension value :" v-model="dim_value" :isDisabled="!!isInConsultedMod"
-                                     :info_text="infos_dimension[2].info_value"/>
-                <InputSelectForm selectClassName="form-select w-50" @clearSelectError='clearSelectError' name="dim_unit" label="Unit :"
-                                 :Errors="errors.dim_unit" :options="enum_dim_unit" :selctedOption="this.dim_unit"
-                                 :isDisabled="!!isInConsultedMod" :selectedDivName="this.divClass"
-                                 v-model="dim_unit" :info_text="infos_dimension[3].info_value"
-                                 :id_actual="dimensionUnit"/>
+                <InputSelectForm v-model="dim_type" :Errors="errors.dim_type"
+                                 :id_actual="dimensionType" :info_text="infos_dimension[0].info_value" :isDisabled="!!isInConsultedMod"
+                                 :options="enum_dim_type" :selctedOption="this.dim_type"
+                                 :selectedDivName="this.divClass" label="Dimension Type :" name="dim_type"
+                                 selectClassName="form-select w-50" @clearSelectError='clearSelectError'/>
+                <InputSelectForm v-model="dim_name" :Errors="errors.dim_name" :id_actual="dimensionName"
+                                 :info_text="infos_dimension[1].info_value" :isDisabled="!!isInConsultedMod" :options="enum_dim_name"
+                                 :selctedOption="this.dim_name" :selectedDivName="this.divClass"
+                                 label="Dimension name :" name="dim_name"
+                                 selectClassName="form-select w-50" @clearSelectError='clearSelectError'/>
+                <InputTextForm v-model="dim_value" :Errors="errors.dim_value" :info_text="infos_dimension[2].info_value"
+                               :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50" label="Dimension value :"
+                               name="dim_value"/>
+                <InputSelectForm v-model="dim_unit" :Errors="errors.dim_unit" :id_actual="dimensionUnit"
+                                 :info_text="infos_dimension[3].info_value"
+                                 :isDisabled="!!isInConsultedMod" :options="enum_dim_unit" :selctedOption="this.dim_unit"
+                                 :selectedDivName="this.divClass" label="Unit :"
+                                 name="dim_unit" selectClassName="form-select w-50"
+                                 @clearSelectError='clearSelectError'/>
                 <!--If addSuccess is set on false, the buttons are show -->
                 <div v-if="this.addSuccess==false ">
                     <div v-if="this.dim_id==null ">
                         <div v-if="modifMod==true">
-                            <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim"
-                                            :consultMod="this.isInConsultedMod" :savedAs="dim_validate"
-                                            :AddinUpdate="true"/>
+                            <SaveButtonForm :AddinUpdate="true" :consultMod="this.isInConsultedMod"
+                                            :savedAs="dim_validate" @add="addEquipmentDim"
+                                            @update="updateEquipmentDim"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim"
-                                            :consultMod="this.isInConsultedMod" :savedAs="dim_validate"/>
+                            <SaveButtonForm :consultMod="this.isInConsultedMod" :savedAs="dim_validate"
+                                            @add="addEquipmentDim" @update="updateEquipmentDim"/>
                         </div>
                     </div>
                     <div v-else-if="this.dim_id!==null">
-                        <SaveButtonForm @add="addEquipmentDim" @update="updateEquipmentDim"
-                                        :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
-                                        :savedAs="dim_validate"/>
+                        <SaveButtonForm :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
+                                        :savedAs="dim_validate" @add="addEquipmentDim"
+                                        @update="updateEquipmentDim"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :validationMode="dim_validate" :consultMod="this.isInConsultedMod"
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" :validationMode="dim_validate"
                                            @deleteOk="deleteComponent"/>
                 </div>
             </form>
@@ -165,23 +166,29 @@ export default {
     created() {
         /*Ask for the controller different types of the dimension  */
         axios.get('/dimension/enum/type')
-            .then(response => this.enum_dim_type = response.data)
-            .catch(error => console.log(error));
-        /*Ask for the controller different names of the dimension  */
-        axios.get('/dimension/enum/name')
-            .then(response => this.enum_dim_name = response.data)
-            .catch(error => console.log(error));
-        /*Ask for the controller different units of the dimension  */
-        axios.get('/dimension/enum/unit')
-            .then(response => this.enum_dim_unit = response.data)
-            .catch(error => console.log(error));
-        /* Ask for the data of one dimension  */
-        axios.get('/info/send/dimension')
             .then(response => {
-                this.infos_dimension = response.data;
-                this.loaded = true;
-            })
-            .catch(error => console.log(error));
+                this.enum_dim_type = response.data;
+                /*Ask for the controller different names of the dimension  */
+                axios.get('/dimension/enum/name')
+                    .then(response => {
+                        this.enum_dim_name = response.data;
+                        /*Ask for the controller different units of the dimension  */
+                        axios.get('/dimension/enum/unit')
+                            .then(response => {
+                                this.enum_dim_unit = response.data;
+                                /* Ask for the data of one dimension  */
+                                axios.get('/info/send/dimension')
+                                    .then(response => {
+                                        this.infos_dimension = response.data;
+                                        this.loaded = true;
+                                    }).catch(error => {
+                                });
+                            }).catch(error => {
+                        });
+                    }).catch(error => {
+                });
+            }).catch(error => {
+        });
     },
     methods: {
         /* Sending to the controller all the information about the equipment so that it can be added to the database
@@ -241,12 +248,8 @@ export default {
                                 this.dim_id = response.data.dim_id;
                                 /*The validate option of this dimension takes the value of savedAs*/
                                 this.dim_validate = savedAs;
-                            })
-                            /*If the controller sends errors, we put it in the error object*/
-                            .catch(error => this.errors = error.response.data.errors);
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                            }).catch(error => this.errors = error.response.data.errors);
+                    }).catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -262,50 +265,42 @@ export default {
                 dim_value: this.dim_value,
                 dim_unit: this.dim_unit,
                 dim_validate: savedAs,
-            })
-                .then(response => {
-                    this.errors = {};
-                    console.log(this.dim_type, "\n",
-                        this.dim_name, "\n",
-                        this.dim_value, "\n",
-                        this.dim_unit, "\n",
-                        savedAs, "\n",
-                        this.equipment_id_update, "\n",
-                        this.dim_id);
-                    /*If all the verification passed, a new post this time to add the dimension in the database
-                        The type, name, value, unit, validate option and id of the equipment is sent to the controller
-                        In the post url the id correspond to the id of the dimension who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/dim/${id}`;
-                    axios.post(consultUrl(this.dim_id), {
-                        dim_type: this.dim_type,
-                        dim_name: this.dim_name,
-                        dim_value: this.dim_value,
-                        dim_unit: this.dim_unit,
-                        eq_id: this.equipment_id_update,
-                        dim_validate: savedAs
-                    })
-                        .then(response => {
-                            const id = this.equipment_id_update;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                console.log('test add hist');
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                }).then(response => {
-                                    console.log('after add hist');
-                                    console.log(response);
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.successAlert.showAlert(`Equipment dimension updated successfully and saved as ${savedAs}`);
-                            this.dim_validate = savedAs;
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+            }).then(response => {
+                this.errors = {};
+                this.dim_name, "\n",
+                    this.dim_value, "\n",
+                    this.dim_unit, "\n",
+                    savedAs, "\n",
+                    this.equipment_id_update, "\n",
+                    this.dim_id
+            )
+
+                /*If all the verification passed, a new post this time to add the dimension in the database
+                    The type, name, value, unit, validate option and id of the equipment is sent to the controller
+                    In the post url the id correspond to the id of the dimension who will be updated*/
+                const consultUrl = (id) => `/equipment/update/dim/${id}`;
+                axios.post(consultUrl(this.dim_id), {
+                    dim_type: this.dim_type,
+                    dim_name: this.dim_name,
+                    dim_value: this.dim_value,
+                    dim_unit: this.dim_unit,
+                    eq_id: this.equipment_id_update,
+                    dim_validate: savedAs
+                }).then(response => {
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        }).then(response => {
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.successAlert.showAlert(`Equipment dimension updated successfully and saved as ${savedAs}`);
+                    this.dim_validate = savedAs;
+                }).catch(error => this.errors = error.response.data.errors);
+            }).catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -319,23 +314,20 @@ export default {
                 const consultUrl = (id) => `/equipment/delete/dim/${id}`;
                 axios.post(consultUrl(this.dim_id), {
                     eq_id: this.equipment_id_update
-                })
-                    .then(response => {
-                        const id = this.equipment_id_update;
-                        /*We test if a life sheet has been already created*/
-                        /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        this.$refs.successAlert.showAlert(`Equipment dimension deleted successfully`);
-                        /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteDim', '')
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.successAlert.showAlert(`Equipment dimension deleted successfully`);
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteDim', '')
+                }).catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteDim', '')
                 this.$refs.successAlert.showAlert(`Empty Equipment dimension deleted successfully`);

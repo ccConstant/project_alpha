@@ -12,24 +12,24 @@
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container">
                 <!--Call of the different component with their props-->
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_type" name="usg_type"
-                                   label="Type :" :isDisabled="!!isInConsultedMod" v-model="usg_type"
-                                   :info_text="infos_usage[0].info_value"/>
-                <InputTextAreaForm inputClassName="form-control w-50" :Errors="errors.usg_precaution"
-                                   name="usg_precaution" label="Precaution :" :isDisabled="!!isInConsultedMod"
-                                   v-model="usg_precaution" :info_text="infos_usage[1].info_value"/>
+                <InputTextAreaForm v-model="usg_type" :Errors="errors.usg_type" :info_text="infos_usage[0].info_value"
+                                   :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50" label="Type :"
+                                   name="usg_type"/>
+                <InputTextAreaForm v-model="usg_precaution" :Errors="errors.usg_precaution"
+                                   :info_text="infos_usage[1].info_value" :isDisabled="!!isInConsultedMod" inputClassName="form-control w-50"
+                                   label="Precaution :" name="usg_precaution"/>
                 <!--If addSuccess is equal to false, the buttons appear -->
                 <div v-if="this.addSuccess==false ">
                     <!--If this usage doesn't have a id the addEquipmentUsg is called function else the updateEquipmentUsg function is called -->
                     <div v-if="this.usg_id==null ">
                         <div v-if="modifMod==true">
-                            <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg"
-                                            :consultMod="this.isInConsultedMod" :savedAs="usg_validate"
-                                            :AddinUpdate="true"/>
+                            <SaveButtonForm :AddinUpdate="true" :consultMod="this.isInConsultedMod"
+                                            :savedAs="usg_validate" @add="addEquipmentUsg"
+                                            @update="updateEquipmentUsg"/>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg"
-                                            :consultMod="this.isInConsultedMod" :savedAs="usg_validate"/>
+                            <SaveButtonForm :consultMod="this.isInConsultedMod" :savedAs="usg_validate"
+                                            @add="addEquipmentUsg" @update="updateEquipmentUsg"/>
                         </div>
                     </div>
                     <div v-else-if="this.usg_id!==null && reformMod==false">
@@ -37,18 +37,18 @@
                             <p>Reformed at {{ usg_reformDate }}</p>
                         </div>
                         <div v-else>
-                            <SaveButtonForm @add="addEquipmentUsg" @update="updateEquipmentUsg"
-                                            :reformMod="this.isInReformMod" :consultMod="this.isInConsultedMod"
-                                            :modifMod="this.modifMod" :savedAs="usg_validate"/>
+                            <SaveButtonForm :consultMod="this.isInConsultedMod" :modifMod="this.modifMod"
+                                            :reformMod="this.isInReformMod" :savedAs="usg_validate"
+                                            @add="addEquipmentUsg" @update="updateEquipmentUsg"/>
                         </div>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
-                    <DeleteComponentButton :validationMode="usg_validate" :consultMod="this.isInConsultedMod"
+                    <DeleteComponentButton :consultMod="this.isInConsultedMod" :validationMode="usg_validate"
                                            @deleteOk="deleteComponent"/>
                     <div v-if="reformMod!==false && usg_reformDate===null">
-                        <ReformComponentButton :reformedBy="usg_reformedBy" :reformDate="usg_reformDate"
-                                               :reformMod="this.isInReformMod" @reformOk="reformComponent"
-                                               :info="infos_usage[2].info_value"/>
+                        <ReformComponentButton :info="infos_usage[2].info_value" :reformDate="usg_reformDate"
+                                               :reformMod="this.isInReformMod" :reformedBy="usg_reformedBy"
+                                               @reformOk="reformComponent"/>
                     </div>
                 </div>
             </form>
@@ -174,54 +174,46 @@ export default {
                 } else {
                     id = this.equipment_id_update;
                 }
-
                 /*The First post to verify if all the fields are filled correctly,
                 The type, name, value, unit and validate option are sent to the controller*/
                 axios.post('/usage/verif', {
                     usg_type: this.usg_type,
                     usg_precaution: this.usg_precaution,
                     usg_validate: savedAs,
-                })
-                    .then(response => {
-                        this.errors = {};
-                        /*If all the verifications passed, a new post this time to add the usage in the database
-                        The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                        axios.post('/equipment/add/usg', {
-                            usg_type: this.usg_type,
-                            usg_precaution: this.usg_precaution,
-                            usg_validate: savedAs,
-                            eq_id: id
-
-                        })
-                            /*If the usage is added successfully*/
-                            .then(response => {
-
-                                /*We test if a life sheet has been already created
-                                If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                                if (lifesheet_created == true) {
-                                    axios.post(`/history/add/equipment/${id}`, {
-                                        history_reasonUpdate: reason,
-                                    });
-                                    window.location.reload();
-                                }
-                                this.$refs.SuccessAlert.showAlert(`Equipment usage added successfully and saved as ${savedAs}`);
-                                /*If the user is not in modification mode*/
-                                if (!this.modifMod) {
-                                    /*The form pass in consulting mode and addSuccess pass to True*/
-                                    this.isInConsultedMod = true;
-                                    this.addSuccess = true
-                                }
-                                /*the id of the usage take the value of the newly created id*/
-                                this.usg_id = response.data;
-                                /*The validate option of this usage takes the value of savedAs(Params of the function)*/
-                                this.usg_validate = savedAs;
-
-                            })
-                            /*If the controller sends errors, we put it in the error object*/
-                            .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the usage in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                    axios.post('/equipment/add/usg', {
+                        usg_type: this.usg_type,
+                        usg_precaution: this.usg_precaution,
+                        usg_validate: savedAs,
+                        eq_id: id
                     })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                        /*If the usage is added successfully*/
+                        .then(response => {
+                            /*We test if a life sheet has been already created
+                            If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                            if (lifesheet_created == true) {
+                                axios.post(`/history/add/equipment/${id}`, {
+                                    history_reasonUpdate: reason,
+                                });
+                                window.location.reload();
+                            }
+                            this.$refs.SuccessAlert.showAlert(`Equipment usage added successfully and saved as ${savedAs}`);
+                            /*If the user is not in modification mode*/
+                            if (!this.modifMod) {
+                                /*The form pass in consulting mode and addSuccess pass to True*/
+                                this.isInConsultedMod = true;
+                                this.addSuccess = true
+                            }
+                            /*the id of the usage take the value of the newly created id*/
+                            this.usg_id = response.data;
+                            /*The validate option of this usage takes the value of savedAs(Params of the function)*/
+                            this.usg_validate = savedAs;
+
+                        }).catch(error => this.errors = error.response.data.errors);
+                }).catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the mme so that it can be added in the database
@@ -235,38 +227,32 @@ export default {
                 usg_type: this.usg_type,
                 usg_precaution: this.usg_precaution,
                 usg_validate: savedAs,
-            })
-                .then(response => {
-                    this.errors = {};
-                    /*If all the verifications passed, a new post this time to add the usage in the database
-                        The type, name, value, unit, validate option and id of the equipment are sent to the controller
-                        In the post url the id correspond to the id of the usage who will be updated*/
-                    const consultUrl = (id) => `/equipment/update/usg/${id}`;
-                    axios.post(consultUrl(this.usg_id), {
-                        usg_type: this.usg_type,
-                        usg_precaution: this.usg_precaution,
-                        usg_validate: savedAs,
-                        eq_id: this.equipment_id_update,
+            }).then(response => {
+                this.errors = {};
+                /*If all the verifications passed, a new post this time to add the usage in the database
+                    The type, name, value, unit, validate option and id of the equipment are sent to the controller
+                    In the post url the id correspond to the id of the usage who will be updated*/
+                const consultUrl = (id) => `/equipment/update/usg/${id}`;
+                axios.post(consultUrl(this.usg_id), {
+                    usg_type: this.usg_type,
+                    usg_precaution: this.usg_precaution,
+                    usg_validate: savedAs,
+                    eq_id: this.equipment_id_update,
 
-                    })
-                        .then(response => {
-                            this.usg_validate = savedAs;
-                            const id = this.equipment_id_update;
-                            /*We test if a life sheet has been already created
-                            If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post(`/history/add/equipment/${id}`, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.SuccessAlert.showAlert(`Equipment usage updated successfully and saved as ${savedAs}`);
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => this.errors = error.response.data.errors);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    this.usg_validate = savedAs;
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created
+                    If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.SuccessAlert.showAlert(`Equipment usage updated successfully and saved as ${savedAs}`);
+                }).catch(error => this.errors = error.response.data.errors);
+            }).catch(error => this.errors = error.response.data.errors);
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {
@@ -280,29 +266,24 @@ export default {
                 const consultUrl = (id) => `/equipment/delete/usg/${id}`;
                 axios.post(consultUrl(this.usg_id), {
                     eq_id: this.equipment_id_update
-                })
-                    .then(response => {
-                        const id = this.equipment_id_update;
-                        /*We test if a life sheet has been already created
-                        If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post(`/history/add/equipment/${id}`, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteUsg', '')
-                        this.$refs.SuccessAlert.showAlert(`Equipment usage deleted successfully`);
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                }).then(response => {
+                    const id = this.equipment_id_update;
+                    /*We test if a life sheet has been already created
+                    If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteUsg', '')
+                    this.$refs.SuccessAlert.showAlert(`Equipment usage deleted successfully`);
+                }).catch(error => this.errors = error.response.data.errors);
             } else {
                 this.$emit('deleteUsg', '')
                 this.$refs.SuccessAlert.showAlert(`Empty Equipment usage deleted successfully`);
-
             }
-
         },
         reformComponent(endDate) {
             /*If the user is in update mode and the usage exists in the database,
@@ -315,15 +296,12 @@ export default {
             axios.post(consultUrl(this.usg_id), {
                 eq_id: this.equipment_id_update,
                 usg_reformDate: endDate
-            })
-                .then(response => {
-                    /*Emit to the parent component that we want to delete this component*/
-                    this.$emit('deleteUsg', '')
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => {
-                    this.$refs.errorAlert.showAlert(error.response.data.errors['usg_reformDate'])
-                });
+            }).then(response => {
+                /*Emit to the parent component that we want to delete this component*/
+                this.$emit('deleteUsg', '')
+            }).catch(error => {
+                this.$refs.errorAlert.showAlert(error.response.data.errors['usg_reformDate'])
+            });
         }
     },
     created() {
@@ -331,8 +309,8 @@ export default {
             .then(response => {
                 this.infos_usage = response.data;
                 this.loaded = true;
-            })
-            .catch(error => console.log(error));
+            }).catch(error => {
+        });
     }
 }
 </script>
