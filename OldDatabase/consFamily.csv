@@ -1,0 +1,48 @@
+Reference;Designation;PurchasedBy;Drawing;Version;Characteristic;GenRef;GenDesign;Consummable Crit;Consummable Contact Crit;Consummable Function Function;Number of members;Number of supplier
+G_CONS0001;Alcohol ethanol 90�;ACE Producer;Data Sheet G_CONS0001-DS;;/;/;/;CRITICAL;DETECTABLE;CRITICAL;0;1
+G_CONS0002;Purified water;ACE Producer;Data Sheet G_CONS0002-DS;;/;/;/;CRITICAL;DETECTABLE;CRITICAL;0;1
+G_CONS0003;Cleaning agent (alkaline foaming liquid);ACE Producer;Data Sheet G_CONS0003-DS;;/;/;/;CRITICAL;DETECTABLE;CRITICAL;0;1
+G_CONS0004;Ethyl Acetate (>=99%);ACE Producer;"Data Sheet G_CONS0004-DS
+[Beauseigneur]";;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_CONS0005;Cyclohexan (>=99%);ACE Producer;"Data Sheet G_CONS00005
+(L05)-DS[VWR]";;lll;G_CONS0005(lll);/;DETECTABLE;DETECTABLE;DETECTABLE;0;2
+G_CONS0006;Soda solution 30%;ACE Producer;Data Sheet G_CONS0006-DS;;/;/;/;DETECTABLE;NOT_CRITICAL;DETECTABLE;0;1
+G_CONS0007;Lint-free wipers;ACE Producer;"G_CONS0007-TDS
+[FGCleanWipes] ";;ddxll;G_CONS0007(ddxll);Lint-free wipers size (ddxll) cm;DETECTABLE;DETECTABLE;DETECTABLE;4;1
+G_CONS0008;Table wipe;ACE producer;"G_CONS0008-TDS
+[FGCleanWipes]";;ddxll;G_CONS0008(ddxll);Table wipe size (ddxll) cm;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;3;1
+G_CONS0009;"Soft adhesive tape
+(paper scotch)";ACE producer;G_CONS0009-TDS;;lll;G_CONS0009W(ll);"Soft adhesive tape width (ll) mm
+(paper scotch)";DETECTABLE;DETECTABLE;NOT_CRITICAL;2;1
+G_CONS0010;MINIGRIP BAG;ACE producer;G_CONS0010 Typical Picture;;LLLxlll;G_CONS0010(LLLxlll);MINIGRIP BAG (LLLxlll) mm;DETECTABLE;DETECTABLE;NOT_CRITICAL;2;1
+G_CONS0011;Aluminum cup (disposable);ACE producer;G_CONS0011 typical picture ;;dddxhh;G_CONS0011D(dddxhh);Aluminum cup (disposable) �(dddxhh) mm;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;1;1
+G_CONS0012;Argon Gas;ACE producer;Data Sheet G_CONS0012-DS;;/;/;/;DETECTABLE;NOT_CRITICAL;DETECTABLE;0;1
+G_CONS0013;PH indicator strip;ACE producer;Data Sheet G_CONS0013-DS;;/;/;/;DETECTABLE;NOT_CRITICAL;DETECTABLE;0;2
+G_CONS0014;Soap cleaning solution 2%;Alpha;Not relevant;;/;/;/;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;0;1
+G_CONS0015;1 mol/L soda solution;Alpha;Not relevant;;/;/;/;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;0;1
+G_CONS0016;Disposable syringe;ACE producer;G_CONS0016 typical picture ;;ml;G_CONS0016_(ml);(ml) ml disposable syringe;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;1;1
+G_CONS0017;PS Petri dish;ACE producer;G_CONS0017 typical picture ;;llxLL;G_CONS0017D(llxLL);PS Petri dish �(llxLL);NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;2;1
+G_CONS0018;"Silicone compression sleeve made from
+G_RAW0007(Rlll) tubing length lll mm";Alpha;G_RAW0007;;lll;G_CONS0018_L(lll);Silicone compression sleeve length (lll) mm;DETECTABLE;DETECTABLE;DETECTABLE;1;1
+G_CONS0019;Blade for scalpel handle G_TOOL0010(_H);ACE producer;G_CONS0019 typical picture ;;ddd;G_CONS0019-(ddd);Blade (ddd) (scalpel G_TOOL0010_H);DETECTABLE;DETECTABLE;NOT_CRITICAL;1;1
+G_CONS0020;Glue Dosing Needle;ACE producer;Data Sheet G_CONS0020-DS;;desc;G_CONS0020(desc);Glue Dosing Needle (Stainless Steel - (desc));DETECTABLE;DETECTABLE;DETECTABLE;2;1
+G_CONS0021;Sandpaper;ACE producer;Data Sheet G_CONS0021-TDS;;grain;G_CONS0021(G(grain));Sandpaper (grain (grain));CRITICAL;DETECTABLE;DETECTABLE;2;1
+G_CONS0022;Demineralised water;ACE producer;?;;/;/;/;TO_BE_DEFINED;TO_BE_DEFINED;TO_BE_DEFINED;0;1
+G_CONS0023;Alcohol ethanol 96�;ACE producer;Data Sheet G_CONS0023-DS;;/;/;/;CRITICAL;DETECTABLE;CRITICAL;0;1
+G_CONS0024;Medical diposable gloves Nitrile & powder free;Alpha;G_CONS0024-TDS[supplier];;size;G_CONS0024(size);Medical diposable gloves Nitrile & powder free + size (size);DETECTABLE;DETECTABLE;DETECTABLE;5;1
+G_CONS0025;Surgical Masks 98% High Filtration Type II ;Alpha;G_CONS0025-TDS[ROBE];;/;/;/;DETECTABLE;NOT_CRITICAL;DETECTABLE;0;1
+G_CONS0026;Disposable non-woven Nurse cap;Alpha;G_CONS0026-TDS[VWR];;/;/;/;DETECTABLE;NOT_CRITICAL;DETECTABLE;0;1
+G_CONS0027;Disposable overshoes;Alpha;G_CONS0024-TDS[supplier];;desc;G_CONS0027((desc));Disposable overshoes - desc;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;6;1
+G_CONS0028;Hypodermic needle ;Alpha or ACE producer;G_CONS0028-TDS;;ggGxllll;G_CONS0028(ggGxllll);Hypodermic needle (ggGxllll);DETECTABLE;DETECTABLE;DETECTABLE;2;1
+G_CONS0029;NaCl (Sodium Chloride) solution at 0.9%;Alpha;G_CONS0029-TDS[COOPER];;ll;G_CONS0029G(ll);NaCl (Sodium Chloride) solution at 0.9% in Bottle of (ll) liter(s);DETECTABLE;NOT_CRITICAL;DETECTABLE;1;1
+G_CONS0030;Peelable Decontaminating Floor Mat;Producer;G_CONS0030-TDS[ADS];;llxLL;G_CONS0030(llxLL);Peelable Decontaminating Floor Mat size (llxLL) mm;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;2;1
+G_CONS0031;Disposable Lab coat;Alpha;G_CONS0031-TDS[supplier];;desc;G_CONS0031((desc));Disposable Lab coat - (desc);DETECTABLE;NOT_CRITICAL;DETECTABLE;3;1
+G_CONS0032;Antiseptic soap;Alpha;G_CONS0032-TDS[ANIOS];;cap;G_CONS0032((cap));Antiseptic soap in (cap);DETECTABLE;DETECTABLE;DETECTABLE;5;1
+G_CONS0033;Soft soap Aniosafe;Alpha;G_CONS0033-TDS[ANIOS];;cap;G_CONS0033((cap));Soft soap Aniosafe in (cap);DETECTABLE;DETECTABLE;DETECTABLE;5;1
+G_CONS0034;Stretchable food film;ACE Producer;G_CONS0034-TP;;/;/;/;DETECTABLE;DETECTABLE;DETECTABLE;0;1
+G_CONS0035;Hand towel reel for cleanroom;Alpha;G_CONS0035-TDS[VOUSSERT];;/;/;/;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;0;1
+G_CONS0036;Glass Slide;Alpha;G_CONS0036-DS[BRESSER];;LLxll;G_CONS0036(LLxll);Glass Slide (LLxll) mm;NOT_CRITICAL;NOT_CRITICAL;NOT_CRITICAL;2;1
+G_CONS0037;Plate count;Alpha;G_CONS0037(Tt)-TDS[LIOFILCHEM];;Tt;G_CONS0037((Tt));Plate count (Tt);DETECTABLE;NOT_CRITICAL;DETECTABLE;1;1
+G_CONS0038;Acetone;Alpha;TBD;;cap;G_CONS0038((cap)L);Acetone in (cap) L can;TO_BE_DEFINED;TO_BE_DEFINED;TO_BE_DEFINED;3;1
+G_CONS0039;Food Grade Silicon tubing - 60shA;ACE Producer;G_CONS0039-TDS;;llxLL;G_CONS0039_(llxLL);Food Grade Silicon tubing - 60shA - �(llxLL) mm;DETECTABLE;NOT_CRITICAL;DETECTABLE;1;1
+G_CONS0040;USP Class VI - PTFE 4:1 HEAT SHRINK;TBD;G_CONS0040-TDS;;xx/yy;G_CONS0040_(xx/yy);USP Class VI - PTFE 4:1 HEAT SHRINK (xx/yy);TO_BE_DEFINED;TO_BE_DEFINED;TO_BE_DEFINED;1;1
