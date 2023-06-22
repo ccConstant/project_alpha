@@ -98,6 +98,7 @@ class MmeController extends Controller{
                 'mme_version' => $mostRecentlyMmeTmp->mmeTemp_version,
                 'needToBeRealized' => $needToBeRealized,
                 'needToBeApprove' => $needToBeApprove,
+                'signatureDate' => $mostRecentlyMmeTmp->mmeTemp_signatureDate,
             ]);
             array_push($container,$obj);
         }
@@ -346,6 +347,8 @@ class MmeController extends Controller{
             'mme_qualityVerifier_firstName' => $qualityVerifier_firstName,
             'mme_qualityVerifier_lastName' => $qualityVerifier_lastName,
             'mme_lifeSheetCreated' => $mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated,
+            'mme_signatureDate' => $mostRecentlyMmeTmp->mmeTemp_signatureDate,
+            
 
         ]);
     }
@@ -376,6 +379,7 @@ class MmeController extends Controller{
                 'mme_set'  => $mme->mme_set,
                 'mme_validate' => $validate,
                 'mme_location' => $mostRecentlyMmeTmp->mmeTemp_location,
+                'mme_signatureDate' => $mostRecentlyMmeTmp->mmeTemp_signatureDate,
             ]);
             array_push($container,$obj);
         }
@@ -983,6 +987,7 @@ class MmeController extends Controller{
         if ($request->reason=="quality"){
             $mostRecentlyMmeTmp->update([
                 'qualityVerifier_id'=> $request->enteredBy_id,
+                'mmeTemp_signatureDate' => Carbon::now('Europe/Paris'),
             ]);
 
             $states=$mostRecentlyMmeTmp->states;
@@ -1175,140 +1180,6 @@ class MmeController extends Controller{
 
 
     }
-
-    /**
-     * Function call by MmeMaintenanceCalendar.vue when the form is submitted with the route : /mme/verif/revisionDatePassed (post)
-     * Send all the mmes validated in the data base with the verifications in which the revision date is passed
-     * @return \Illuminate\Http\Response
-     * */
-    public function send_mme_verif_revisionDatePassed(){
-        $mmes=Mme::all() ;
-        $container=array() ;
-        foreach($mmes as $mme){
-            $containerVerif=array() ;
-            $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;
-                $today=Carbon::now() ;
-                foreach( $verifs as $verif){
-                    if (($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL) && $verif->verif_nextDate<$today ){
-                        $verif=([
-                            "id" => $verif->id,
-                            "verif_number" => (string)$verif->verif_number,
-                            "verif_description" => $verif->verif_description,
-                            "verif_periodicity" => (string)$verif->verif_periodicity,
-                            "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
-                            "verif_protocol" => $verif->verif_protocol,
-                            "verif_startDate" => $verif->verif_startDate,
-                            "verif_nextDate" => $verif->verif_nextDate,
-                            "verif_reformDate" => $verif->verif_reformDate,
-                            'verif_name' => $verif->verif_name,
-                            'verif_expectedResult' => $verif->verif_expectedResult,
-                            'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
-                            'verif_validate' => $verif->verif_validate,
-                        ]);
-                        array_push($containerVerif,$verif);
-                    }
-                }
-
-                $states=$mostRecentlyMmeTmp->states;
-                $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
-                foreach($states as $state){
-                    $date=$state->created_at ;
-                    $date2=$mostRecentlyState->created_at;
-                    if ($date>=$date2){
-                        $mostRecentlyState=$state ;
-                    }
-                }
-
-                if (count($containerVerif)>0){
-                    $mme = ([
-                        "id" => $mme->id,
-                        "internalReference" => $mme->mme_internalReference,
-                        "verifications" => $containerVerif,
-                        "state_id" => $mostRecentlyState->id,
-                    ]) ;
-                    array_push($container,$mme);
-                }
-            }
-        }
-        return response()->json($container) ;
-    }
-
-      /**
-     * Function call by MmeMaintenanceCalendar.vue when the form is submitted with the route : /mme/verif/revisionLimitPassed (post)
-     * Send all the mmes validated in the data base with the verification in which the revision limit is passed
-     * @return \Illuminate\Http\Response
-     * */
-    public function send_mme_verif_revisionLimitPassed(){
-        $mmes=Mme::all() ;
-        $container=array() ;
-        foreach($mmes as $mme){
-            $containerVerif=array() ;
-            $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $mme->id)->orderBy('created_at', 'desc')->first();
-            if ($mostRecentlyMmeTmp->mmeTemp_validate==="validated"){
-                $verifs=Verification::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->where('verif_validate', '=', "validated")->get() ;
-                $today=Carbon::now('Europe/London') ;
-                foreach( $verifs as $verif){
-                    $dates=explode(' ', $verif->verif_nextDate) ;
-                    $ymd=explode('-', $dates[0]);
-                    $year=$ymd[0] ;
-                    $month=$ymd[1] ;
-                    $day=$ymd[2] ;
-
-                    $time=explode(':', $dates[1]);
-                    $hour=$time[0] ;
-                    $min=$time[1] ;
-                    $sec=$time[2] ;
-
-                    $nextDate=Carbon::create($year, $month, $day, $hour, $min, $sec);
-                    $OneWeekLater=$nextDate->addDays(7) ;
-                    if (($verif->verif_reformDate=='' || $verif->verif_reformDate===NULL) && $OneWeekLater<$today ){
-                        $verif=([
-                            "id" => $verif->id,
-                            "verif_number" => (string)$verif->verif_number,
-                            "verif_description" => $verif->verif_description,
-                            "verif_periodicity" => (string)$verif->verif_periodicity,
-                            "verif_symbolPeriodicity" => $verif->verif_symbolPeriodicity,
-                            "verif_protocol" => $verif->verif_protocol,
-                            "verif_startDate" => $verif->verif_startDate,
-                            "verif_nextDate" => $verif->verif_nextDate,
-                            "verif_reformDate" => $verif->verif_reformDate,
-                            'verif_name' => $verif->verif_name,
-                            'verif_expectedResult' => $verif->verif_expectedResult,
-                            'verif_nonComplianceLimit' => $verif->verif_nonComplianceLimit,
-                            'verif_validate' => $verif->verif_validate,
-
-                        ]);
-                        array_push($containerVerif,$verif);
-                    }
-                }
-                $states=$mostRecentlyMmeTmp->states;
-                $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
-                foreach($states as $state){
-                    $date=$state->created_at ;
-                    $date2=$mostRecentlyState->created_at;
-                    if ($date>=$date2){
-                        $mostRecentlyState=$state ;
-                    }
-                }
-
-                if (count($containerVerif)>0){
-                    $eq = ([
-                        "id" => $mme->id,
-                        "internalReference" => $mme->mme_internalReference,
-                        "verifications" => $containerVerif,
-                        "state_id" => $mostRecentlyState->id,
-                    ]) ;
-
-                    array_push($container,$mme);
-                }
-            }
-        }
-        return response()->json($container) ;
-    }
-
-
 }
 
 

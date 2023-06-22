@@ -9,7 +9,7 @@
     <div v-if="loaded==true">
         <div id="page">
             <p>'</p>
-            <table style="border: solid 1px black; margin-left:50px; width: auto;">
+            <table class="eq_top_infos" style="border: solid 1px black; margin-left:150px; width: 1042px;">
                 <tbody>
                 <tr style="border: solid 1px black">
                     <td rowspan="3" style="border: solid 1px black">

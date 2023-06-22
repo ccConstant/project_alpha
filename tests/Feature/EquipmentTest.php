@@ -369,7 +369,8 @@ class EquipmentTest extends TestCase
         $response->assertStatus(200);
         $this->post('/equipment/add', [
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'three'
+            'eq_externalReference' => 'three',
+            'eq_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('equipment', [

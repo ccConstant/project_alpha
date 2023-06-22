@@ -9,7 +9,7 @@
     <div v-if="loaded==true">
         <div id="page">
             <p>'</p>
-            <div class="mme_top_infos">
+            <!--<div class="mme_top_infos">
                 <div class="mme_pdf_logo ">
                   <img src="/images/logo.jpg" alt="Alpha logo" class="logo"/>
                 </div>
@@ -35,7 +35,59 @@
                 </div>
 
 
-            </div>
+            </div>-->
+             <p>'</p>
+            <table class="mme_top_infos" style="border: solid 1px black; margin-left:150px; width: 1042px;">
+                <tbody>
+                <tr style="border: solid 1px black">
+                    <td rowspan="3" style="border: solid 1px black">
+                        <img src="/images/logo.jpg" alt="Alpha logo" class="logo" >
+                    </td>
+                    <td colspan="2" style="border: solid 1px black">
+                        <h2>
+                            MME LIFE SHEET DESCRIPTIVE PART
+                        </h2>
+                    </td>
+                    <td style="border: solid 1px black">
+                        <h5>
+                            Version : MME LS-D_V{{mme_idCard.mme_version[1]}}.{{mme_idCard.mme_version[0]}}
+                        </h5>
+                    </td>
+                </tr>
+                <tr style="border: solid 1px black">
+                    <td style="border: solid 1px black">
+                        <p>
+                            Technical Review <b class="text-primary">{{ mme_idCard.mme_technicalVerifier_firstName}} {{mme_idCard.mme_technicalVerifier_lastName}} </b>
+                        </p>
+                    </td>
+                    <td style="border: solid 1px black">
+                        <p>
+                            Quality Review <b class="text-primary">{{ mme_idCard.mme_qualityVerifier_firstName}} {{mme_idCard.mme_qualityVerifier_lastName}} </b>
+                        </p>
+                    </td>
+                    <td style="border: solid 1px black">
+                        <p>
+                            MME unique ID : <b class="text-primary">{{mme_idCard.mme_internalReference}}</b>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="border: solid 1px black">
+                    <td colspan="2" style="border: solid 1px black">
+                        <p>
+                            Date of signature :
+                            <b class="text-primary" v-if="mme_idCard.mme_signatureDate !== null">
+                                {{ new Date(mme_idCard.mme_signatureDate.slice(0, 4), mme_idCard.mme_signatureDate.slice(5, 7), mme_idCard.mme_signatureDate.slice(8)).getDate() }}
+                                {{ new Date(mme_idCard.mme_signatureDate.slice(0, 4), mme_idCard.mme_signatureDate.slice(5, 7)-1, mme_idCard.mme_signatureDate.slice(8)).toDateString().slice(4, 7) }}
+                                {{ new Date(mme_idCard.mme_signatureDate.slice(0, 4), mme_idCard.mme_signatureDate.slice(5, 7), mme_idCard.mme_signatureDate.slice(8)).getFullYear() }}
+                            </b>
+                            <b v-else>
+                                /
+                            </b>
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
             <div class="mme_identification_infos_pdf">
                     <div class="title_identification_pdf">
@@ -658,6 +710,7 @@ export default {
 
                 .mme_set_pdf{
                     position: relative;
+                    height: auto;
 
                     p{
                         ///margin-top: 3px;

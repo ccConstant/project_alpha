@@ -169,6 +169,7 @@ class EnumPrecautionTypeController extends Controller{
                     'qualityVerifier_id' => NULL,
                     'technicalVerifier_id' => NULL,
                     'mmeTemp_version' => $version,
+                    'eqTemp_signatureDate' => NULL,
                 ]);
 
                 $states=$mme_temp->states;

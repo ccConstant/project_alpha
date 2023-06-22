@@ -105,6 +105,7 @@ class PrecautionController extends Controller
              'mmeTemp_version' => $version,
              'mmeTemp_date' => Carbon::now('Europe/Paris'),
              'mmeTemp_lifeSheetCreated' => false,
+             'mmeTemp_signatureDate' => NULL,
             ]);
 
             $states=$mostRecentlyMmeTmp->states;
@@ -218,6 +219,7 @@ class PrecautionController extends Controller
                 'mmeTemp_version' => $version,
                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
                 'mmeTemp_lifeSheetCreated' => false,
+                'mmeTemp_signatureDate' => NULL,
                ]);
 
                $states=$mostRecentlyMmeTmp->states;
@@ -304,6 +306,7 @@ class PrecautionController extends Controller
             'mmeTemp_version' => $version,
             'mmeTemp_date' => Carbon::now('Europe/Paris'),
             'mmeTemp_lifeSheetCreated' => false,
+            'mmeTemp_signatureDate' => NULL,
             ]);
 
             $states=$mostRecentlyMmeTmp->states;

@@ -38,6 +38,8 @@ class CreateMmeTempsTable extends Migration
             $table->foreign('technicalVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ;
             $table->unsignedBigInteger('createdBy_id') -> nullable() ;
             $table->foreign('createdBy_id')->references('id')->on('users') ->onDelete('restrict')  ;
+            $table->date('mmeTemp_signatureDate')->nullable();
+
         });
     }
 
