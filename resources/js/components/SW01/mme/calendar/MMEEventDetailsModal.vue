@@ -24,7 +24,7 @@
                                 {{ new Date(option.verif_nextDate.slice(6), option.verif_nextDate.slice(3, 5), option.verif_nextDate.slice(0, 2)).getFullYear() }}
                             </p>
                             <div v-if="makeMmeOpValidationRight==true">
-                                <b-button variant="primary" @click="redirect_to_preventive(option.mme_id,option.state_id)">Record it</b-button>
+                                <b-button variant="primary" @click="redirect_to_preventive(option.mme_id,option.state_id, option.verif_number, option.id)">Record it</b-button>
                             </div>
                             <div v-else>
                                 <b-button variant="primary" disabled >Record it</b-button>
@@ -61,7 +61,7 @@ export default {
         resetModal() {
             this.$emit('modalClosed','')
         },
-        redirect_to_preventive(mme_id,state_id){
+        redirect_to_preventive(mme_id,state_id, number, id){
             if(this.$userId.user_makeMmeOpValidationRight!=true){
                 this.$refs.errorAlert.showAlert("You don't have the right");
             }
@@ -70,7 +70,7 @@ export default {
             axios.post(consultUrl(state_id),{
                 mme_id:mme_id
             }).then(response =>{
-                this.$router.push({ name: "url_mme_life_event_reference", params: {id:mme_id,state_id:state_id }, query: {type:"verif"}});
+                this.$router.push({ name: "url_mme_life_event_reference", params: {id:mme_id,state_id:state_id }, query: {type:"verif", number:number, id:id}});
             }).catch(error => {
                 this.$refs.errorAlert.showAlert(error.response.data.errors.verif_reference);
             });

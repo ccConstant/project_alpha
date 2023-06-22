@@ -455,7 +455,6 @@ export default {
             lifesheet_created: Boolean to know if the lifesheet is created or not
             */
         updateMmeVerif(savedAs, reason, lifesheet_created){
-            console.log("update dans la base");
             axios.post('/verif/verif',{
                     verif_name:this.verif_name,
                     verif_description:this.verif_description,
@@ -473,6 +472,7 @@ export default {
                     verif_mesureRange:this.verif_mesureRange,
                 })
                 .then(response =>{
+                    console.log("verif effectuées");
                     this.errors={};
                     const consultUrl = (id) => `/mme/update/verif/${id}`;
                     axios.post(consultUrl(this.verif_id),{
@@ -493,6 +493,7 @@ export default {
                         verif_mesureRange:this.verif_mesureRange,
                     })
                     .then(response =>{
+                        console.log("update dans la base");
                         const id = this.mme_id_update;
                         //We test if a life sheet has been already created
                         //If it's the case we create a new enregistrement of history for saved the reason of the update

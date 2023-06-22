@@ -17,6 +17,7 @@ use App\Models\SW01\EquipmentTemp ;
 use App\Models\SW01\Equipment ; 
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use App\Models\SW01\State;
 
 class SpecialProcessController extends Controller
 {
@@ -100,6 +101,39 @@ class SpecialProcessController extends Controller
                'eqTemp_date' => Carbon::now('Europe/Paris'),
                'specialProcess_id' => $spProc->id,
               ]);
+
+            $states=$mostRecentlyEqTmp->states;
+            if ($states!==NULL){
+                $mostRecentlyState=NULL ;
+                $first=true ;
+                foreach($states as $state){
+                    if ($first){
+                        $mostRecentlyState=$state ;
+                        $first=false;
+                    }else{
+                        $date=$state->created_at ;
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ;
+                        }
+                    }
+                }
+                if ($mostRecentlyState!=NULL){
+                    $mostRecentlyState->update([
+                        'state_endDate' => Carbon::now('Europe/Paris'),
+                    ]);
+                }
+            }
+
+              //Creation of a new state
+              $newState=State::create([
+                'state_remarks' => "Equipment Update (add special process) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
           } 
       }
       $mostRecentlyEqTmp->update([
@@ -153,6 +187,40 @@ class SpecialProcessController extends Controller
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
                ]);
+
+
+               $states=$mostRecentlyEqTmp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+               //Creation of a new state
+               $newState=State::create([
+                'state_remarks' => "Equipment Update (update special process) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
                 
                 // In the other case, we can modify the informations without problems
             } 

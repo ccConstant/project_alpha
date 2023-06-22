@@ -106,10 +106,10 @@
                     <div v-if="this.addSucces==false">
                         <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOpRlzMtnOp is called function else the updateEquipmentPrvMtnOpRlz function is called -->
                         <div v-if="this.prvMtnOpRlz_id==null ">
-                            <SaveButtonForm :is_op="true" :Errors="errors.prvMtnOpRlz_validate" @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :savedAs="prvMtnOpRlz_validate"/>
+                            <SaveButtonForm :is_op="true" :Errors="errors.prvMtnOpRlz_validate" @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :savedAs="prvMtnOpRlz_validate" :desactiveValidated="true"/>
                         </div>
                         <div v-else-if="this.prvMtnOpRlz_id!==null">
-                            <SaveButtonForm :is_op="true" :Errors="errors.prvMtnOpRlz_validate"  @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="prvMtnOpRlz_validate"/>
+                            <SaveButtonForm :is_op="true" :Errors="errors.prvMtnOpRlz_validate"  @add="addEquipmentPrvMtnOpRlz" @update="updateEquipmentPrvMtnOpRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="prvMtnOpRlz_validate" :desactiveValidated="true"/>
                         </div>
                         <!-- If the user is not in the consultation mode, the delete button appear -->
                         <div v-if="isInModifMod==true">

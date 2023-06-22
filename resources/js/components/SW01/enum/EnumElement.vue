@@ -201,11 +201,13 @@ export default {
                 .then(response =>{
                     console.log("verif ok")
                     this.sendedEnumId=response.data
+                     console.log("id sended"+this.sendedEnumId)
                     const postUrlAnalyze = (url,id) => `${url}analyze/${id}`;
                     axios.post(postUrlAnalyze(this.url,this.sendedEnumId),{
                             value:this.returnedEnum,
                     })
                     .then(response =>{
+                        console.log("analyze ok")
                         console.log(response.data);
                         if (response.data.validated_eq!=null && response.data.validated_eq.length!=0 ){
                             console.log("cas1")
@@ -230,6 +232,7 @@ export default {
                             this.mmes_concerned=response.data.mmes;
                         }
                         this.enumId=response.data.id;
+                        console.log("enumId"+this.enumId)
                         if (this.cpt>0){
                             this.$bvModal.show(`modal-enum-update-approved-${this.compId}`);
                         }else{
@@ -251,6 +254,8 @@ export default {
         },
 
         handleSubmitUpdate(){
+            console.log("id"+this.enumId)
+            console.log("url"+this.url)
             const postUrlUpdate = (url, id) => `${url}update/${id}`;
             console.log(this.approved_equipments)
             console.log("before")

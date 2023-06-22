@@ -38,7 +38,7 @@
                                     <p class="redText">{{prvMtnOp.Internal_Ref}}</p>
                                 </b-col>
                                 <b-col cols="4" class="planning_table_name">
-                                    <p class="redText">{{prvMtnOp.Description}}</p>
+                                    <p class="redText">{{prvMtnOp.Name}}</p>
                                 </b-col>
                                 <b-col cols="4"  class="planning_table_number">
                                 <p class="redText"> {{prvMtnOp.Number}}</p>

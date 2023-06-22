@@ -12,7 +12,12 @@
                         <div v-if="makeEqOpValidationRight==true" class="save_button_validated">
                             <button class="save btn btn-primary" type="button"  value="drafted" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</button>
                             <button class="save btn btn-primary" type="button" value="to_be_validated" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >to be validated</button>
-                            <button class="save btn btn-primary" type="button" value="validated" @click="$bvModal.show(`modal-validated-${_uid}`)" >validate</button>
+                            <div v-if="!desactiveValidated">
+                                <button class="save btn btn-primary" type="button" value="validated" @click="$bvModal.show(`modal-validated-${_uid}`)" >validate</button>
+                            </div>
+                            <div v-else>
+                                <button class="save btn btn-primary" type="button" value="validated" disabled >validate</button>
+                            </div>
                         </div>
                         <div v-else class="save_button_validated">
                             <button class="save btn btn-primary" type="button" disabled >save as draft</button>
@@ -25,18 +30,18 @@
                     <div v-else-if="is_op_data!=true && is_state_data!=true">
                         <div v-if="this.lifesheet_created!=true">
                             <div class="save_button_draft_tbv" v-if="updateDataInDraftRight==true">
-                                <b-button variant="primary" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</b-button>
-                                <b-button variant="primary" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</b-button>
+                                <button class="save btn btn-primary" type="button" @click="$bvModal.show(`modal-draft-${_uid}`)" >save as draft</button>
+                                <button class="save btn btn-primary" type="button" @click="$bvModal.show(`modal-to_be_validated-${_uid}`)" >save as to be validated</button>
                             </div>
                             <div class="save_button_draft_tbv" v-else>
-                                <b-button variant="primary" disabled >save as draft</b-button>
-                                <b-button variant="primary" disabled >save as to be validated</b-button>
+                                <button class="save btn btn-primary" type="button" disabled >save as draft</button>
+                                <button class="save btn btn-primary" type="button" disabled >save as to be validated</button>
                             </div>
                             <div class="save_button_validated" v-if="validateDescriptiveLifeSheetDataRight==true && !this.desactiveValidated" >
-                                <b-button variant="primary" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</b-button>
+                                <button class="save btn btn-primary" type="button" @click="$bvModal.show(`modal-validated-${_uid}`)" >save as validated</button>
                             </div>
                             <div class="save_button_validated" v-else>
-                                <b-button variant="primary" disabled>save as validated</b-button>
+                                <button class="save btn btn-primary" type="button" disabled>save as validated</button>
                             </div>
                             <p v-if="updateDataInDraftRight==false" class="text-danger">You don't have the right to save as draft or as to be validated</p>
                             <p v-if="validateDescriptiveLifeSheetDataRight == false" class="text-danger">You don't have the right to save as validated </p>
@@ -50,6 +55,10 @@
                                  <div class="save_button_validated" v-if="!this.desactiveValidated" >
                                     <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-validated${_uid}`)" >save as validated</b-button>
                                 </div>
+                                <div v-else>
+                                    <b-button variant="primary" disabled >save as validated</b-button>
+                                </div>
+
 
                                 <b-modal :id="`modal-approved-add-to-be-validated${_uid}`"  @ok="addToBeValidated()">
                                 <p class="my-4">Are you sure you want to update this approved data? You will have to sign them again </p>

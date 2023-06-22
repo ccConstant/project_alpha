@@ -54,7 +54,11 @@ export default {
 		},
 		state_id:{
 			type:Number
-		}
+		},
+        number:{
+            type:Number
+        }
+        
     },
     /*--------Declaration of the differents returned data:--------
     components: Array in which will be added the data of a component

@@ -17,6 +17,8 @@ use App\Models\SW01\EnumVerifAcceptanceAuthority;
 use App\Models\SW01\MmeTemp;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Controller;
+use App\Models\SW01\MmeState;
+use Carbon\Carbon;
 
 class EnumVerifAcceptanceAuthorityController extends Controller
 {
@@ -100,8 +102,8 @@ class EnumVerifAcceptanceAuthorityController extends Controller
                 "internalReference" => $mme_temp->mme->mme_internalReference,
             ]);
             if($mme_temp->mmeTemp_lifeSheetCreated==1){
-                foreach($id_mmes_validated as $id){
-                    if($id!=$mme_temp->id){
+                foreach($id_mmes_validated as $id_mme_validated){
+                    if($id_mme_validated!=$mme_temp->id){
                         $cpt_validated++;
                     }
                 }
@@ -111,8 +113,8 @@ class EnumVerifAcceptanceAuthorityController extends Controller
                 }
                 $cpt_validated=0;
             }else{
-                foreach($id_mmes as $id){
-                    if($id!=$mme_temp->id){
+                foreach($id_mmes as $id_mme){
+                    if($id_mme!=$mme_temp->id){
                         $cpt++;
                     }
                 }
@@ -160,6 +162,39 @@ class EnumVerifAcceptanceAuthorityController extends Controller
                     'technicalVerifier_id' => NULL,
                     'mmeTemp_version' => $version,
                 ]);
+
+                $states=$mme_temp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+                //Creation of a new state
+                $newState=MmeState::create([
+                    'state_remarks' => "MME Enum Update (update verif acceptance authority): new version of life sheet created",
+                    'state_startDate' =>  Carbon::now('Europe/Paris'),
+                    'state_validate' => "validated",
+                    'state_name' => "Waiting_for_referencing"
+                ]) ;
+
+                $newState->mme_temps()->attach($mme_temp);
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
                 $HistoryController= new HistoryController() ; 

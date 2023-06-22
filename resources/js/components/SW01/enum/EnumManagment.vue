@@ -209,6 +209,7 @@ export default {
         /*Ask for the controller the different required skills for verification  */
         axios.get('/verification/enum/requiredSkill')
             .then (response=>{
+                console.log("required skill")
                 console.log(response.data)
                 this.enum_requiredSkill=response.data
             })

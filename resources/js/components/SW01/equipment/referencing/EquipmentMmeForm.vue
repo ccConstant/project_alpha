@@ -44,11 +44,11 @@
             <div v-if="this.mme_id==null ">
                 <div v-if="modifMod==true">
                     <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme"
-                                    :consultMod="this.isInConsultMod" :savedAs="mme_validate" :AddinUpdate="true"/>
+                                    :consultMod="this.isInConsultMod" :savedAs="mme_validate" :AddinUpdate="true" :desactiveValidated="true"/>
                 </div>
                 <div v-else>
                     <SaveButtonForm @add="addEquipmentMme" @update="updateEquipmentMme"
-                                    :consultMod="this.isInConsultMod" :savedAs="mme_validate"/>
+                                    :consultMod="this.isInConsultMod" :savedAs="mme_validate" :desactiveValidated="true"/>
                 </div>
             </div>
             <div v-else-if="this.mme_id!==null && !this.mmeAlreadyCreated">

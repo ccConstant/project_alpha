@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+
 class EnumEquipmentMassUnitTest extends TestCase
 {
     use RefreshDatabase;

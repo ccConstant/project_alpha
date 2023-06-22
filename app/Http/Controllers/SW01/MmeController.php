@@ -23,6 +23,7 @@ use App\Models\SW01\MmeTemp;
 use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\MmeState;
+use App\Models\SW01\State;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
@@ -186,6 +187,39 @@ class MmeController extends Controller{
             'eqTemp_date' => Carbon::now('Europe/Paris'),
             'eqTemp_lifeSheetCreated' => false,
            ]);
+
+           $states=$mostRecentlyEqTmp->states;
+            if ($states!==NULL){
+                $mostRecentlyState=NULL ;
+                $first=true ;
+                foreach($states as $state){
+                    if ($first){
+                        $mostRecentlyState=$state ;
+                        $first=false;
+                    }else{
+                        $date=$state->created_at ;
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ;
+                        }
+                    }
+                }
+                if ($mostRecentlyState!=NULL){
+                    $mostRecentlyState->update([
+                        'state_endDate' => Carbon::now('Europe/Paris'),
+                    ]);
+                }
+            }
+
+            //Creation of a new state
+            $newState=State::create([
+                'state_remarks' => "Equipment Update (add MME) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
     }
 
@@ -626,6 +660,39 @@ class MmeController extends Controller{
                 'mmeTemp_location' => $request->mme_location,
             ]);
 
+            $states=$mostRecentlyMmeTmp->states;
+            if ($states!==NULL){
+                $mostRecentlyState=NULL ;
+                $first=true ;
+                foreach($states as $state){
+                    if ($first){
+                        $mostRecentlyState=$state ;
+                        $first=false;
+                    }else{
+                        $date=$state->created_at ;
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ;
+                        }
+                    }
+                }
+                if ($mostRecentlyState!=NULL){
+                    $mostRecentlyState->update([
+                        'state_endDate' => Carbon::now('Europe/Paris'),
+                    ]);
+                }
+            }
+
+            //Creation of a new state
+            $newState=MmeState::create([
+                'state_remarks' => "MME Update (update MME) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
+
             // In the other case, we can modify the informations without problems
         }else{
 
@@ -848,14 +915,14 @@ class MmeController extends Controller{
             }
         }
 
-        if ($request->reason=="quality" && $mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_to_be_in_use" && $mostRecentlyMmeTmp->mmeTemp_version==1){
+        if ($request->reason=="quality" && $mostRecentlyState->state_name!="In_use" && $mostRecentlyState->state_name!="Waiting_to_be_in_use"){
             $obj19=([
                 'validation' => ["You can't realize quality validation only in use and waiting to be in use state"]
             ]);
             array_push($container2,$obj19);
         }
 
-        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_to_be_in_use" && $mostRecentlyMmeTmp->mmeTemp_version==1){
+        if ($request->reason=="technical" && $mostRecentlyState->state_name!="Waiting_for_referencing" && $mostRecentlyState->state_name!="Waiting_to_be_in_use"){
             $obj20=([
                 'validation' => ["You can't realize technical validation only in waiting for referencing and waiting to be in use state"]
             ]);

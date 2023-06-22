@@ -19,6 +19,7 @@ use App\Models\SW01\Equipment ;
 use App\Models\SW01\Risk ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use App\Models\SW01\State;
 
 class PreventiveMaintenanceOperationController extends Controller
 {
@@ -215,6 +216,39 @@ class PreventiveMaintenanceOperationController extends Controller
                  'eqTemp_date' => Carbon::now('Europe/Paris'),
                  'eqTemp_lifeSheetCreated' => false,
                 ]);
+
+                $states=$mostRecentlyEqTmp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+                //Creation of a new state
+                $newState=State::create([
+                    'state_remarks' => "Equipment Update (add prv mtn op) : new version of life sheet created",
+                    'state_startDate' =>  Carbon::now('Europe/Paris'),
+                    'state_validate' => "validated",
+                    'state_name' => "Waiting_for_referencing"
+                ]) ;
+
+                $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
         }
         return response()->json($prvMtnOp_id) ;
@@ -261,6 +295,40 @@ class PreventiveMaintenanceOperationController extends Controller
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
                ]);
+
+
+               $states=$mostRecentlyEqTmp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+               //Creation of a new state
+               $newState=State::create([
+                'state_remarks' => "Equipment Update (update prv mtn op) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
 
             if ($request->prvMtnOp_periodicity!=NULL && $request->prvMtnOp_symbolPeriodicity!=NULL && ($oldPrvMtnOp->prvMtnOp_periodicity!=$request->prvMtnOp_periodicity || $oldPrvMtnOp->prvMtnOp_symbolPeriodicity!=$request->prvMtnOp_symbolPeriodicity || $oldPrvMtnOp->prvMtnOp_preventiveOperation!=$request->prvMtnOp_preventiveOperation)){
@@ -556,6 +624,39 @@ class PreventiveMaintenanceOperationController extends Controller
             'eqTemp_date' => Carbon::now('Europe/Paris'),
             'eqTemp_lifeSheetCreated' => false,
             ]);
+
+            $states=$mostRecentlyEqTmp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+            //Creation of a new state
+            $newState=State::create([
+                'state_remarks' => "Equipment Update (delete prv mtn op) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
 
         $prvMtnOpsInEq=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $request->eq_id)->get() ;

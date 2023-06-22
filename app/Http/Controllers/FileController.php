@@ -19,6 +19,8 @@ use App\Models\SW01\MmeTemp ;
 use App\Models\SW01\Mme ; 
 use App\Models\File ; 
 use Carbon\Carbon;
+use App\Models\SW01\State; 
+use App\Models\SW01\MmeState;
 
 
 class FileController extends Controller
@@ -124,6 +126,39 @@ class FileController extends Controller
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
             ]);
+
+            $states=$mostRecentlyEqTmp->states;
+            if ($states!==NULL){
+                $mostRecentlyState=NULL ;
+                $first=true ;
+                foreach($states as $state){
+                    if ($first){
+                        $mostRecentlyState=$state ;
+                        $first=false;
+                    }else{
+                        $date=$state->created_at ;
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ;
+                        }
+                    }
+                }
+                if ($mostRecentlyState!=NULL){
+                    $mostRecentlyState->update([
+                        'state_endDate' => Carbon::now('Europe/Paris'),
+                    ]);
+                }
+            }
+
+            //Creation of a new state
+            $newState=State::create([
+                'state_remarks' => "Equipment Update (add file) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
             return response()->json($file_id) ; 
         }
@@ -171,6 +206,39 @@ class FileController extends Controller
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
                ]);
+
+               $states=$mostRecentlyEqTmp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+               //Creation of a new state
+               $newState=State::create([
+                'state_remarks' => "Equipment Update (update file) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
 
             $file=File::findOrFail($id) ; 
@@ -243,6 +311,39 @@ class FileController extends Controller
             'eqTemp_date' => Carbon::now('Europe/Paris'),
             'eqTemp_lifeSheetCreated' => false,
             ]);
+
+            $states=$mostRecentlyEqTmp->states;
+            if ($states!==NULL){
+                $mostRecentlyState=NULL ;
+                $first=true ;
+                foreach($states as $state){
+                    if ($first){
+                        $mostRecentlyState=$state ;
+                        $first=false;
+                    }else{
+                        $date=$state->created_at ;
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ;
+                        }
+                    }
+                }
+                if ($mostRecentlyState!=NULL){
+                    $mostRecentlyState->update([
+                        'state_endDate' => Carbon::now('Europe/Paris'),
+                    ]);
+                }
+            }
+
+            //Creation of a new state
+            $newState=State::create([
+                'state_remarks' => "Equipment Update (delete file) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
         $file=File::findOrFail($id);
         $file->delete() ; 
@@ -304,6 +405,39 @@ class FileController extends Controller
                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
                 'mmeTemp_lifeSheetCreated' => false,
             ]);
+
+                $states=$mostRecentlyMmeTmp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+            //Creation of a new state
+            $newState=MmeState::create([
+                'state_remarks' => "MME Update (add file) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
             }
             return response()->json($file_id) ; 
         }
@@ -351,6 +485,39 @@ class FileController extends Controller
                 'mmeTemp_date' => Carbon::now('Europe/Paris'),
                 'mmeTemp_lifeSheetCreated' => false,
                ]);
+
+               $states=$mostRecentlyMmeTmp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+               //Creation of a new state
+               $newState=MmeState::create([
+                'state_remarks' => "MME Update (update file) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
             }
 
             $file=File::findOrFail($id) ; 
@@ -423,6 +590,39 @@ class FileController extends Controller
             'mmeTemp_date' => Carbon::now('Europe/Paris'),
             'mmeTemp_lifeSheetCreated' => false,
             ]);
+
+            $states=$mostRecentlyMmeTmp->states;
+            if ($states!==NULL){
+                $mostRecentlyState=NULL ;
+                $first=true ;
+                foreach($states as $state){
+                    if ($first){
+                        $mostRecentlyState=$state ;
+                        $first=false;
+                    }else{
+                        $date=$state->created_at ;
+                        $date2=$mostRecentlyState->created_at;
+                        if ($date>=$date2){
+                            $mostRecentlyState=$state ;
+                        }
+                    }
+                }
+                if ($mostRecentlyState!=NULL){
+                    $mostRecentlyState->update([
+                        'state_endDate' => Carbon::now('Europe/Paris'),
+                    ]);
+                }
+            }
+
+            //Creation of a new state
+            $newState=MmeState::create([
+                'state_remarks' => "MME Update (delete file) : new version of life sheet created",
+                'state_startDate' =>  Carbon::now('Europe/Paris'),
+                'state_validate' => "validated",
+                'state_name' => "Waiting_for_referencing"
+            ]) ;
+
+            $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
         $file=File::findOrFail($id);
         $file->delete() ; 

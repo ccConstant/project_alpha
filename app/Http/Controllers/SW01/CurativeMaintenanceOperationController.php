@@ -76,6 +76,11 @@ class CurativeMaintenanceOperationController extends Controller
         $curMtnOp->update([
             'technicalVerifier_id' => $user->id, 
         ]);
+        if ($curMtnOp->qualityVerifier_id!=NULL){
+            $curMtnOp->update([
+                'curMtnOp_validate' => 'validated', 
+            ]);
+        }
     }
 
      /**
@@ -120,6 +125,12 @@ class CurativeMaintenanceOperationController extends Controller
         $curMtnOp->update([
             'qualityVerifier_id' => $user->id, 
         ]);
+
+        if ($curMtnOp->technicalVerifier_id!=NULL){
+            $curMtnOp->update([
+                'curMtnOp_validate' => 'validated', 
+            ]);
+        }
     }
 
 

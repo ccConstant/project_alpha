@@ -34,8 +34,12 @@
                         <h2 class="accordion-header" :id="'heading'+index">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+index" aria-expanded="true" :aria-controls="'collapse'+index">
                                 State : {{list.state_name}}
+                                <br>
                                 Start date : {{list.state_startDate}}
+                                <br>
                                 End date : {{list.state_endDate}}
+                                <br>
+                                Remarks : {{list.state_remarks}}
                             </button>
                         </h2>
                         <div :id="'collapse'+index" class="accordion-collapse collapse show" :aria-labelledby="'heading'+index">

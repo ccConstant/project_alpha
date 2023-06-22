@@ -18,6 +18,8 @@ use App\Models\SW01\EnumRiskFor;
 use App\Models\SW01\EquipmentTemp;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Controller;
+use App\Models\SW01\State;
+use Carbon\Carbon;
 
 class EnumRiskForController extends Controller
 {
@@ -162,6 +164,39 @@ class EnumRiskForController extends Controller
                     'technicalVerifier_id' => NULL,
                     'eqTemp_version' => $version,
                 ]);
+
+                $states=$equipment_temp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+                //Creation of a new state
+                $newState=State::create([
+                    'state_remarks' => "Equipment Enum Update (update risk for): new version of life sheet created",
+                    'state_startDate' =>  Carbon::now('Europe/Paris'),
+                    'state_validate' => "validated",
+                    'state_name' => "Waiting_for_referencing"
+                ]) ;
+
+                $newState->equipment_temps()->attach($equipment_temp);
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
                 $HistoryController= new HistoryController() ; 

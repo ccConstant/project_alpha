@@ -18,6 +18,8 @@ use App\Models\SW01\EnumPrecautionType;
 use App\Models\SW01\MmeTemp;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Controller;
+use App\Models\SW01\MmeState;
+use Carbon\Carbon;
 
 class EnumPrecautionTypeController extends Controller{
      /**
@@ -168,6 +170,39 @@ class EnumPrecautionTypeController extends Controller{
                     'technicalVerifier_id' => NULL,
                     'mmeTemp_version' => $version,
                 ]);
+
+                $states=$mme_temp->states;
+                if ($states!==NULL){
+                    $mostRecentlyState=NULL ;
+                    $first=true ;
+                    foreach($states as $state){
+                        if ($first){
+                            $mostRecentlyState=$state ;
+                            $first=false;
+                        }else{
+                            $date=$state->created_at ;
+                            $date2=$mostRecentlyState->created_at;
+                            if ($date>=$date2){
+                                $mostRecentlyState=$state ;
+                            }
+                        }
+                    }
+                    if ($mostRecentlyState!=NULL){
+                        $mostRecentlyState->update([
+                            'state_endDate' => Carbon::now('Europe/Paris'),
+                        ]);
+                    }
+                }
+
+                //Creation of a new state
+                $newState=MmeState::create([
+                    'state_remarks' => "MME Enum Update (update precaution type): new version of life sheet created",
+                    'state_startDate' =>  Carbon::now('Europe/Paris'),
+                    'state_validate' => "validated",
+                    'state_name' => "Waiting_for_referencing"
+                ]) ;
+
+                $newState->mme_temps()->attach($mme_temp);
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
                 $HistoryController= new HistoryController() ; 

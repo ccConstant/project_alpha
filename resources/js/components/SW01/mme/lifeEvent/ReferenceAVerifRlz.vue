@@ -50,6 +50,9 @@ export default {
         },
         state_id:{
             type:Number
+        },
+        number:{
+            type:Number
         }
     },
     data() {
@@ -145,6 +148,7 @@ export default {
         if(this.$userId.user_makeMmeOpValidationRight!=true){
             this.$router.push({ name: "home"});
         }
+        console.log("number", this.number)
     },
 }
 </script>

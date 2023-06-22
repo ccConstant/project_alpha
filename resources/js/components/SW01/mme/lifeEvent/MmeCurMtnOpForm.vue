@@ -27,10 +27,10 @@
                 <div v-if="this.addSucces==false ">
                     <!--If this curative maintenance operation doesn't have a id the addMmeCurMtnOp is called function else the updateMmeCurMtnOp function is called -->
                     <div v-if="this.curMtnOp_id==null ">
-                        <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate" @add="addMmeCurMtnOp" @update="updateMmeCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate"/>
+                        <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate" @add="addMmeCurMtnOp" @update="updateMmeCurMtnOp" :consultMod="this.isInConsultMod" :savedAs="curMtnOp_validate" :desactiveValidated="true"/>
                     </div>
                     <div v-else-if="this.curMtnOp_id!==null">
-                        <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate"  @add="addMmeCurMtnOp" @update="updateMmeCurMtnOp" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="curMtnOp_validate"/>
+                        <SaveButtonForm :is_op="true" :Errors="errors.curMtnOp_validate"  @add="addMmeCurMtnOp" @update="updateMmeCurMtnOp" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="curMtnOp_validate" :desactiveValidated="true"/>
                     </div>
                     <!-- If the user is not in the consultation mode, the delete button appear -->
                     <div v-if="isInModifMod==true">

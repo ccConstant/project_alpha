@@ -54,7 +54,7 @@
                                     <p class="text-primary">{{ verif.Internal_Ref }}</p>
                                 </b-col>
                                 <b-col class="planning_table_name" cols="4">
-                                    <p class="text-primary">{{ verif.Description }}</p>
+                                    <p class="text-primary">{{ verif.Name }}</p>
                                 </b-col>
                                 <b-col class="planning_table_number" cols="4">
                                     <p class="text-primary"

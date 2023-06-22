@@ -11,7 +11,7 @@
         <div v-if="loaded==true">
             <form class="container verifRlz-form"  @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <VerifChooseModal v-if="isInModifMod==false && isInConsultMod==false" :verifs="verifs" @choosedOpe="choosedOpe"/>
+                <VerifChooseModal v-if="isInModifMod==false && isInConsultMod==false" :verifs="verifs" :number="number" @choosedOpe="choosedOpe"/>
                 <div v-if="verif_number!==null  ">
                     <InputTextForm :info_text="infos_verif[0].info_value" inputClassName="form-control w-50"  name="verif_number" label="Number :" isDisabled  v-model="verif_number"/>
                     <InputTextAreaForm :info_text="infos_verif[2].info_value" inputClassName="form-control w-50" name="verif_expectedResult" label="Expected Result :" isDisabled   v-model="verif_expectedResult" />
@@ -34,10 +34,10 @@
                     <div v-if="this.addSucces==false">
                         <!--If this verification doesn't have a id the addMmeVerifRlz is called function else the updateMmeVerifRlz function is called -->
                         <div v-if="this.verifRlz_id==null ">
-                            <SaveButtonForm :is_op="true" :Errors="errors.verifRlz_validate" @add="addMmeVerifRlz" @update="updateMmeVerifRlz" :consultMod="this.isInConsultMod" :savedAs="verifRlz_validate"/>
+                            <SaveButtonForm :is_op="true" :Errors="errors.verifRlz_validate" @add="addMmeVerifRlz" @update="updateMmeVerifRlz" :consultMod="this.isInConsultMod" :savedAs="verifRlz_validate" :desactiveValidated="true"/>
                         </div>
                         <div v-else-if="this.verifRlz_id!==null">
-                            <SaveButtonForm :is_op="true" :Errors="errors.verifRlz_validate"  @add="addMmeVerifRlz" @update="updateMmeVerifRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="verifRlz_validate"/>
+                            <SaveButtonForm :is_op="true" :Errors="errors.verifRlz_validate"  @add="addMmeVerifRlz" @update="updateMmeVerifRlz" :consultMod="this.isInConsultMod" :modifMod="this.modifMod" :savedAs="verifRlz_validate" :desactiveValidated="true"/>
                         </div>
                         <!-- If the user is not in the consultation mode, the delete button appear -->
                         <div v-if="isInModifMod==true">
@@ -125,7 +125,7 @@ export default {
             default:null
         },
         verif_number_prop:{
-            type:String,
+            type:Number,
             default:null
         },
         verif_description_prop:{

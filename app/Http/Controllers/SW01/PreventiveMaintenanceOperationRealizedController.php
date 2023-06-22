@@ -357,6 +357,12 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         $prvMtnOpRlz->update([
             'approvedBy_id' => $user->id,
         ]);
+
+        if ($prvMtnOpRlz->prvMtnOpRlz_validate!="validated"){
+            $prvMtnOpRlz->update([
+                'prvMtnOpRlz_validate' => 'validated',
+            ]);
+        }
     }
 
      /**

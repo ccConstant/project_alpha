@@ -37,13 +37,13 @@
                                         <p>
                                             Comments : {{prvMtnOpRlz.prvMtnOpRlz_comment}}
                                         </p>
-                                        <p>
+                                        <p v-if="prvMtnOpRlz.prvMtnOpRlz_startDate!=null">
                                             Start Date :
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).getDate() }}
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7)-1, prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).toDateString().slice(4, 7) }}
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_startDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_startDate.slice(8)).getFullYear() }}
                                         </p>
-                                        <p>
+                                        <p v-if="prvMtnOpRlz.prvMtnOpRlz_endDate!=null">
                                             End date :
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_endDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(5, 7), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(8)).getDate() }}
                                             {{ new Date(prvMtnOpRlz.prvMtnOpRlz_endDate.slice(0, 4), prvMtnOpRlz.prvMtnOpRlz_endDate.slice(5, 7)-1, prvMtnOpRlz.prvMtnOpRlz_endDate.slice(8)).toDateString().slice(4, 7) }}
@@ -53,7 +53,7 @@
                                             Saved as : {{prvMtnOpRlz.prvMtnOpRlz_validate}}
                                         </p>
                                         <p>
-                                            Entered by : {{prvMtnOpRlz.enteredBy_lastName}} {{prvMtnOpRlz.enteredBy_firstName}}
+                                            Entered by : {{prvMtnOpRlz.enteredBy_firstName}} {{prvMtnOpRlz.enteredBy_lastName}}
                                         </p>
                                     </div>
                                     <div v-if="prvMtnOpRlz.realizedBy_lastName!=null">
@@ -109,13 +109,13 @@
                                         <p>
                                             Description : {{curMtnOp.curMtnOp_description}}
                                         </p>
-                                        <p>
+                                        <p v-if="curMtnOp.curMtnOp_startDate!=null ">
                                             Start Date :
                                             {{ new Date(curMtnOp.curMtnOp_startDate.slice(0, 4), curMtnOp.curMtnOp_startDate.slice(5, 7), curMtnOp.curMtnOp_startDate.slice(8)).getDate() }}
                                             {{ new Date(curMtnOp.curMtnOp_startDate.slice(0, 4), curMtnOp.curMtnOp_startDate.slice(5, 7)-1, curMtnOp.curMtnOp_startDate.slice(8)).toDateString().slice(4, 7) }}
                                             {{ new Date(curMtnOp.curMtnOp_startDate.slice(0, 4), curMtnOp.curMtnOp_startDate.slice(5, 7), curMtnOp.curMtnOp_startDate.slice(8)).getFullYear() }}
                                         </p>
-                                        <p>
+                                        <p v-if="curMtnOp.curMtnOp_endDate!=null" >
                                             End date :
                                             {{ new Date(curMtnOp.curMtnOp_endDate.slice(0, 4), curMtnOp.curMtnOp_endDate.slice(5, 7), curMtnOp.curMtnOp_endDate.slice(8)).getDate() }}
                                             {{ new Date(curMtnOp.curMtnOp_endDate.slice(0, 4), curMtnOp.curMtnOp_endDate.slice(5, 7)-1, curMtnOp.curMtnOp_endDate.slice(8)).toDateString().slice(4, 7) }}
@@ -125,7 +125,7 @@
                                             Saved as : {{curMtnOp.curMtnOp_validate}}
                                         </p>
                                         <p>
-                                            Entered by : {{curMtnOp.enteredBy_lastName}} {{curMtnOp.enteredBy_firstName}}
+                                            Entered by : {{curMtnOp.enteredBy_firstName}} {{curMtnOp.enteredBy_lastName}}
                                         </p>
                                     </div>
                                     <div v-if="curMtnOp.realizedBy_lastName!=null">
@@ -140,7 +140,7 @@
                                     </div>
                                     <div v-if="curMtnOp.qualityVerifier_lastName!=null">
                                         <p>
-                                            Quality verifier : {{curMtnOp.qualityVerifier_lastName}} {{curMtnOp.qualityVerifier_firstName}}
+                                            Quality verifier : {{curMtnOp.qualityVerifier_firstName}} {{curMtnOp.qualityVerifier_lastName}}
                                         </p>
                                     </div>
                                     <div v-else>
@@ -150,7 +150,7 @@
                                     </div>
                                     <div v-if="curMtnOp.technicalVerifier_lastName!=null">
                                         <p>
-                                            Technical verifier : {{curMtnOp.technicalVerifier_lastName}} {{curMtnOp.technicalVerifier_firstName}}
+                                            Technical verifier : {{curMtnOp.technicalVerifier_firstName}} {{curMtnOp.technicalVerifier_lastName}}
                                         </p>
                                     </div>
                                     <div v-else>

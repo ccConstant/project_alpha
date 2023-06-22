@@ -242,14 +242,6 @@ class MmeStateController extends Controller
                         ], 429);
                     }
                 }
-                $user=User::findOrFail($request->user_id);
-                if (!$user->user_deleteEqOrMmeRight && ($request->state_name=="Broken" || $request->state_name=="Downgraded" || $request->state_name=="Reformed")){
-                    return response()->json([
-                        'errors' => [
-                            'state_name' => ["You don't have the right to delete a mme"]
-                        ]
-                    ], 429);
-                }
             }
         }
     }

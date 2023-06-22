@@ -251,7 +251,7 @@ export default {
             if (this.$userId.user_declareNewStateRight != true) {
                 this.$refs.errorAlert.showAlert("You don't have the right");
             } else {
-                const consultUrl = (id) => `/state/verif/beforeChangingState/${id}`;
+                const consultUrl = (id) => `/mme_state/verif/beforeChangingState/${id}`;
                 axios.post(consultUrl(state_id), {})
                     .then(response => {
                         this.$router.replace({
