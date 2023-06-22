@@ -9,7 +9,7 @@
     <div v-if="loaded==true">
         <div id="page">
             <p>'</p>
-            <table style="border: solid 1px black; margin-left:50px; width: auto;">
+            <table class="eq_top_infos" style="border: solid 1px black; margin-left:150px; width: 1042px;">
                 <tbody>
                 <tr style="border: solid 1px black">
                     <td rowspan="3" style="border: solid 1px black">
@@ -735,7 +735,7 @@ export default {
             }
             .eq_identification_infos_pdf{
                 position: relative;
-                margin-top: 240px;
+                margin-top: 70px;
                 margin-bottom: 60px;
                 margin-left:150px;
                 .title_identification_pdf{

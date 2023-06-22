@@ -166,6 +166,7 @@ class EnumDimensionNameController extends Controller
                     'qualityVerifier_id' => NULL,
                     'technicalVerifier_id' => NULL,
                     'eqTemp_version' => $version,
+                    'eqTemp_signatureDate' => NULL,
                 ]);
 
 

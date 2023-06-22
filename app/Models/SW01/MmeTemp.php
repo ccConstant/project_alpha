@@ -25,7 +25,7 @@ class MmeTemp extends Model
     use HasFactory;
 
      //Data which can be added, updated or deleted by us in the data base.
-     protected $fillable = ['mmeTemp_version', 'mmeTemp_date', 'mmeTemp_location', 'mmeTemp_validate', 'mmeTemp_remarks', 'mme_id', 'qualityVerifier_id', 'technicalVerifier_id', 'createdBy_id', 'mmeTemp_lifeSheetCreated'] ; 
+     protected $fillable = ['mmeTemp_version', 'mmeTemp_date', 'mmeTemp_location', 'mmeTemp_validate', 'mmeTemp_remarks', 'mme_id', 'qualityVerifier_id', 'technicalVerifier_id', 'createdBy_id', 'mmeTemp_lifeSheetCreated', 'mmeTemp_signatureDate'] ; 
 
     
      //Define the relation between an mme_temp and its files : an mme_temp can have many files

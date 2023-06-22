@@ -87,6 +87,7 @@ class RiskController extends Controller
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
+                'eqTemp_signatureDate' => NULL,
                 ]);
 
                 $states=$mostRecentlyEqTmp->states;
@@ -174,6 +175,7 @@ class RiskController extends Controller
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
+                'eqTemp_signatureDate' => NULL,
                ]);
 
                $states=$mostRecentlyEqTmp->states;
@@ -314,6 +316,7 @@ class RiskController extends Controller
                'eqTemp_version' => $version,
                'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
+                'eqTemp_signatureDate' => NULL,
               ]);
 
               $states=$mostRecentlyEqTmp->states;
@@ -402,6 +405,7 @@ class RiskController extends Controller
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
+                'eqTemp_signatureDate' => NULL,
                ]);
 
                $states=$mostRecentlyEqTmp->states;
@@ -610,6 +614,7 @@ class RiskController extends Controller
             'eqTemp_version' => $version,
             'eqTemp_date' => Carbon::now('Europe/Paris'),
             'eqTemp_lifeSheetCreated' => false,
+            'eqTemp_signatureDate' => NULL,
             ]);
 
             $states=$mostRecentlyEqTmp->states;

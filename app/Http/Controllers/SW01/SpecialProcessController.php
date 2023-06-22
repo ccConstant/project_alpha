@@ -100,6 +100,7 @@ class SpecialProcessController extends Controller
                'eqTemp_version' => $version,
                'eqTemp_date' => Carbon::now('Europe/Paris'),
                'specialProcess_id' => $spProc->id,
+               'eqTemp_signatureDate' => NULL,
               ]);
 
             $states=$mostRecentlyEqTmp->states;
@@ -186,6 +187,7 @@ class SpecialProcessController extends Controller
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
+                'eqTemp_signatureDate' => NULL,
                ]);
 
 

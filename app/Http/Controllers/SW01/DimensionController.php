@@ -100,6 +100,7 @@ class DimensionController extends Controller
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
+                'eqTemp_signatureDate' => null,
                ]);
 
                $states=$mostRecentlyEqTmp->states;
@@ -406,6 +407,7 @@ class DimensionController extends Controller
                 'eqTemp_version' => $version,
                 'eqTemp_date' => Carbon::now('Europe/Paris'),
                 'eqTemp_lifeSheetCreated' => false,
+                'eqTemp_signatureDate' => null,
                ]);
 
                $states=$mostRecentlyEqTmp->states;
@@ -492,6 +494,7 @@ class DimensionController extends Controller
             'eqTemp_version' => $version,
             'eqTemp_date' => Carbon::now('Europe/Paris'),
             'eqTemp_lifeSheetCreated' => false,
+            'eqTemp_signatureDate' => null,
             ]);
 
             $states=$mostRecentlyEqTmp->states;
