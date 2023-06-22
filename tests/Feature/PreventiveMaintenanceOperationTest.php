@@ -8,6 +8,7 @@ use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\PreventiveMaintenanceOperation;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -704,6 +705,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_periodicity' => 72,
             'prvMtnOp_symbolPeriodicity' => 'H',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addHours(72)->format('Y-m-d H:i:s')
         ]);
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -732,6 +734,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_periodicity' => 7,
             'prvMtnOp_symbolPeriodicity' => 'D',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addDays(7)->format('Y-m-d H:i:s')
         ]);
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -760,6 +763,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addMonth()->format('Y-m-d H:i:s')
         ]);
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -788,6 +792,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'Y',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addYear()->format('Y-m-d H:i:s')
         ]);
     }
 
@@ -1277,7 +1282,6 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_number' => 2,
         ]);
-        print_r(PreventiveMaintenanceOperation::all()->where('equipmentTemp_id', '=', EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id)->count());
         $id = PreventiveMaintenanceOperation::all()->where('equipmentTemp_id', '=', EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id)->where('prvMtnOp_number', '=', 1)->last()->id;
         $response = $this->post('/equipment/delete/prvMtnOp/'.$id, [
             'eq_id' => Equipment::all()->last()->id,
@@ -1297,7 +1301,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
     /**
      * Test Conception Number: 33
      * Send a list of preventive maintenance operations linked to the equipment (for the life sheet)
-     * Expected Result: The preventive maintenance is deleted from the database
+     * Expected Result: The preventive maintenance list is correctly sent
      * @returns void
      */
     public function test_send_preventive_maintenance_operations_life_sheet()
@@ -1379,7 +1383,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
     /**
      * Test Conception Number: 34
      * Send a list of preventive maintenance operations linked to the equipment (by equipment id)
-     * Expected Result: The preventive maintenance is deleted from the database
+     * Expected Result: The preventive maintenance list is correctly sent
      * @returns void
      */
     public function test_send_preventive_maintenance_operations_by_equipment_id()
@@ -1455,7 +1459,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
     /**
      * Test Conception Number: 35
      * Send a list of preventive maintenance operations linked to the equipment (by id)
-     * Expected Result: The preventive maintenance is deleted from the database
+     * Expected Result: The preventive maintenance list is correctly sent
      * @returns void
      */
     public function test_send_preventive_maintenance_operations_by_id()
@@ -1483,7 +1487,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_puttingIntoService' => true,
         ]);
 
-        $response = $this->get('/prvMtnOp/send/'.PreventiveMaintenanceOperation::all()->last()->id);
+        $response = $this->get('/prvMtnOp/send/' . PreventiveMaintenanceOperation::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
@@ -1495,6 +1499,198 @@ class PreventiveMaintenanceOperationTest extends TestCase
                 'prvMtnOp_puttingIntoService' => true,
                 'prvMtnOp_preventiveOperation' => true,
             ]
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 36
+     * Send a list of preventive maintenance operations linked to validated equipment (by id)
+     * Expected Result: The preventive maintenance list is correctly sent
+     * @returns void
+     */
+    public function test_send_preventive_maintenance_operations_by_id_validated()
+    {
+        $this->create_equipment("three", 'validated');
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_number' => 1,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+
+        $response = $this->get('/prvMtnOp/send/validated/' . Equipment::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'prvMtnOp_number' => '1',
+                'prvMtnOp_description' => 'three',
+                'prvMtnOp_protocol' => 'three',
+            ]
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 37
+     * Reform a preventive maintenance operations linked to equipment with a date before the start date
+     * Expected Result: Receiving an error:
+     *                                      "You must entered a reformDate that is after the startDate"
+     * @returns void
+     */
+    public function test_reform_preventive_maintenance_operation_before_start()
+    {
+        $this->create_equipment("three", 'validated');
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_number' => 1,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+
+        $date = Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->subDays(1)->format('Y-m-d H:i:s');
+        $response = $this->post('/equipment/reform/prvMtnOp/'.PreventiveMaintenanceOperation::all()->last()->id, [
+            'prvMtnOp_reformDate' => $date,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOp_reformDate' => 'You must entered a reformDate that is after the startDate'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 38
+     * Reform a preventive maintenance operations linked to equipment with a date two months ago
+     * Expected Result: Receiving an error:
+     *                                      "You can\'t enter a date that is older than one month"
+     * @returns void
+     */
+    public function test_reform_preventive_maintenance_operation_two_month_ago()
+    {
+        $this->create_equipment("three", 'validated');
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_number' => 1,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+        PreventiveMaintenanceOperation::all()->last()->update([
+            'prvMtnOp_startDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->subYear()->format('Y-m-d H:i:s'),
+        ]);
+
+        $date = Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s');
+        $response = $this->post('/equipment/reform/prvMtnOp/'.PreventiveMaintenanceOperation::all()->last()->id, [
+            'prvMtnOp_reformDate' => $date,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOp_reformDate' => 'You can\'t enter a date that is older than one month'
+        ]);
+        /*$this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_number' => 1,
+            'prvMtnOp_puttingIntoService' => true,
+            'prvMtnOp_reformDate' => $date,
+        ]);*/
+    }
+
+    /**
+     * Test Conception Number: 38
+     * Reform a preventive maintenance operations linked to equipment with correct data
+     * Expected Result: The preventive maintenance operation is reformed
+     * @returns void
+     */
+    public function test_reform_preventive_maintenance_operation()
+    {
+        $this->create_equipment("three", 'validated');
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_number' => 1,
+            'prvMtnOp_puttingIntoService' => true,
+        ]);
+        PreventiveMaintenanceOperation::all()->last()->update([
+            'prvMtnOp_startDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->subYear()->format('Y-m-d H:i:s'),
+        ]);
+
+        $date = Carbon::now()->format('Y-m-d');
+        $response = $this->post('/equipment/reform/prvMtnOp/'.PreventiveMaintenanceOperation::all()->last()->id, [
+            'prvMtnOp_reformDate' => $date,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_number' => 1,
+            'prvMtnOp_puttingIntoService' => true,
+            'prvMtnOp_reformDate' => $date,
         ]);
     }
 }

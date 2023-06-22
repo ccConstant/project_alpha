@@ -102,6 +102,24 @@
                         v-model="selected_endDate"
                     />
                 </div>
+                <RadioGroupForm
+                    label="I realize ?:"
+                    :options="eq_realizeOption"
+                    :checkedOption="eq_realize"
+                    :isDisabled="!!isInConsultMod"
+                    v-model="eq_realize"
+                    :info_text="null"
+                />
+                <InputPasswordForm
+                    v-if="eq_realize == true"
+                    :Errors="errors.connexion"
+                    v-model="user_password"
+                    name="user_password"
+                    label="Password :"
+                    inputClassName="form-control w-50"
+                    divClassName="password"
+                    :info_text="null"
+                />
                 <div v-if="this.prvMtnOp_number!==null">
                     <div v-if="this.addSucces==false">
                         <!--If this preventive maintenance operation doesn't have a id the addEquipmentPrvMtnOpRlzMtnOp is called function else the updateEquipmentPrvMtnOpRlz function is called -->
@@ -135,8 +153,10 @@ import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import PrvMtnOpChooseModal from './PrvMtnOpChooseModal.vue'
 import SuccesAlert from '../../../alert/SuccesAlert.vue'
 import moment from 'moment'
+import InputPasswordForm from "../../../input/InputPasswordForm.vue";
 export default {
     components : {
+        InputPasswordForm,
         InputDateForm,
         RadioGroupForm,
         InputTextForm,
@@ -251,6 +271,12 @@ export default {
             infos_prvMtnOpRlz:[],
             prvMtnOp_startDate_placeholer:'',
             prvMtnOp_remarks:this.comment,
+            eq_realize: false,
+            eq_realizeOption: [
+                {id: 'eq_realize', value: true, text: 'Yes'},
+                {id: 'eq_realize', value: false, text: 'No'}
+            ],
+            user_password:'',
         }
     },
     mounted() {
@@ -329,7 +355,16 @@ export default {
                         this.prvMtnOpRlz_id=response.data;
                         //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
                         this.prvMtnOpRlz_validate=savedAs;
-
+                        if (this.eq_realize) {
+                            axios.post('/prvMtnOpRlz/realize/'+this.prvMtnOpRlz_id,{
+                                user_id:this.$userId.id,
+                                user_pseudo:this.$userId.user_pseudo,
+                                user_password:this.user_password,
+                            }).catch(error => {
+                                this.errors = error.response.data.errors;
+                                console.log(error.response.data);
+                            }) ;
+                        }
                     })
                     .catch(error => {
                         this.errors = error.response.data.errors;

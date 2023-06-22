@@ -431,10 +431,10 @@ class PreventiveMaintenanceOperationController extends Controller
      * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations validated
      * @return \Illuminate\Http\Response
      */
-    public function send_prvMtnOp_from_eq_revisionTimeLimitPassed($id) {
+    /*public function send_prvMtnOp_from_eq_revisionTimeLimitPassed($id) {
         $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ;
+        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
@@ -454,7 +454,7 @@ class PreventiveMaintenanceOperationController extends Controller
             }
        }
         return response()->json($container) ;
-    }
+    }*/
 
     /**
      * Function call by EquipementMaintenanceCalendar.vue  with the route : /prvMtnOp/send/revisionDatePassed/{id} (get)
@@ -462,10 +462,10 @@ class PreventiveMaintenanceOperationController extends Controller
      * The id parameter corresponds to the id of the equipment from which we want the preventive maintenance operations validated
      * @return \Illuminate\Http\Response
      */
-    public function send_prvMtnOp_from_eq_revisionDatePassed($id) {
+    /*public function send_prvMtnOp_from_eq_revisionDatePassed($id) {
         $container=array() ;
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $prvMtnOps=PreventiveMaintenanceOperation::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")::where('prvMtnOp_reformDate','=',NULL)->get() ;
+        $mostRecentlyEqTmp = EquipmentTemp::all()->where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
+        $prvMtnOps=PreventiveMaintenanceOperation::all()->where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->where('prvMtnOp_validate', '=', "validated")->where('prvMtnOp_reformDate','=',NULL)->get() ;
 
         $today=Carbon::now() ;
        foreach ($prvMtnOps as $prvMtnOp) {
@@ -484,7 +484,7 @@ class PreventiveMaintenanceOperationController extends Controller
             }
         }
         return response()->json($container) ;
-    }
+    }*/
 
 
     /**
@@ -562,10 +562,7 @@ class PreventiveMaintenanceOperationController extends Controller
         $prvMtnOpRlzs=PreventiveMaintenanceOperationRealized::where('prvMtnOp_id', '=', $id)->get() ;
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
         if (count($prvMtnOpRlzs)==0){
-            print_r($prvMtnOp);
-            print_r($prvMtnOpsInEq->count());
             foreach($prvMtnOpsInEq as $prvMtnOpInEq){
-                print_r($prvMtnOpInEq);
                 if ($prvMtnOpInEq->prvMtnOp_number>$prvMtnOp->prvMtnOp_number){
                     $prvMtnOpInEq->prvMtnOp_number=$prvMtnOpInEq->prvMtnOp_number-1 ;
                     $prvMtnOpInDB=PreventiveMaintenanceOperation::findOrFail($prvMtnOpInEq->id) ;

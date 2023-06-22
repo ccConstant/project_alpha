@@ -25,7 +25,7 @@
                             <button class="btn btn-warning" @click="changeState">Change the state</button>
                         </td>
                         <td>
-                            <button class="btn btn-info" @click="updateMaintenance">Record and validate maintenance event</button>
+                            <button class="btn btn-info" @click="updateMaintenance">Update and validate maintenance event</button>
                         </td>
                     </tr>
                     <tr>
@@ -63,6 +63,9 @@
                         </td>
                         <td>
                             <button class="btn btn-primary" @click="reviewEquipment">Validate lifesheet descriptive part</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" @click="reformEquipment">Reform the usage and preventive maintenance</button>
                         </td>
                     </tr>
                 </table>
@@ -365,6 +368,27 @@ export default {
                     this.$refs.errorAlert.showAlert("Please select an equipment to consult");
                 else
                     this.$refs.errorAlert.showAlert("Please select only one equipment to consult");
+            }
+        },
+        reformEquipment(){
+            if( this.$userId.user_makeReformRight!=true){
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            }else{
+                if (this.checked.length === 1) {
+                    this.equipments.forEach(element => {
+                        if (element.eq_internalReference === this.checked[0]) {
+                            this.$router.push({
+                                name: "url_eq_reform",
+                                params: {id: element.id},
+                            });
+                        }
+                    });
+                } else {
+                    if (this.checked.length === 0)
+                        this.$refs.errorAlert.showAlert("Please select an equipment to consult");
+                    else
+                        this.$refs.errorAlert.showAlert("Please select only one equipment to consult");
+                }
             }
         },
         resetActiveFilter() {

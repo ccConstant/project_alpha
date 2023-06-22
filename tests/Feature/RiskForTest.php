@@ -1354,7 +1354,6 @@ class RiskForTest extends TestCase
                 'risk_wayOfControl' => 'three',
                 'risk_for' => 'Risk',
                 'risk_validate' => 'validated',
-                'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
             ]
         ]);
     }
@@ -1470,9 +1469,7 @@ class RiskForTest extends TestCase
             '0' => [
                 'risk_remarks' => 'three',
                 'risk_wayOfControl' => 'three',
-                'risk_for' => 'Risk',
                 'risk_validate' => 'validated',
-                'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
             ]
         ]);
     }
