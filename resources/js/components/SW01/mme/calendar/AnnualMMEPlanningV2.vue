@@ -171,11 +171,9 @@ export default {
             });
         },
         handleClick(mme, index) {
-            console.log(mme);
-            console.log(index);
-/*
-            let tmp = mme.verifications[0].verif_day < 10 ? '0' + mme.verifications[0].verif_day : mme.verifications[0].verif_day;
-*/
+            /*
+                        let tmp = mme.verifications[0].verif_day < 10 ? '0' + mme.verifications[0].verif_day : mme.verifications[0].verif_day;
+            */
             this.verif.push({
                 mme_internalReference: mme.internalReference,
                 verif_number: mme.verifications[0].verif_number,
@@ -198,10 +196,10 @@ export default {
         axios.get('/mme/verif/planning')
             .then(response => {
                 this.mme = response.data;
-            });
-        axios.get('/send/equipment/planning/periode')
-            .then(response => {
-                this.periode = response.data;
+                axios.get('/send/equipment/planning/periode')
+                    .then(response => {
+                        this.periode = response.data;
+                    });
             });
     },
 }

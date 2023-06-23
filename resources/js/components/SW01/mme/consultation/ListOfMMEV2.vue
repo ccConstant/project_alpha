@@ -25,7 +25,9 @@
                             <button class="btn btn-warning" @click="changeState">Change the state</button>
                         </td>
                         <td>
-                            <button class="btn btn-info" @click="updateMaintenance">Update and validate maintenance event</button>
+                            <button class="btn btn-info" @click="updateMaintenance">Update and validate maintenance
+                                event
+                            </button>
                         </td>
                     </tr>
                     <tr>
@@ -34,10 +36,12 @@
                                    placeholder="Search a MME by is Intern Ref" type="text">
                         </td>
                         <td>
-                            <button class="btn btn-primary" @click="updateMME">Update lifesheet descriptive part</button>
+                            <button class="btn btn-primary" @click="updateMME">Update lifesheet descriptive part
+                            </button>
                         </td>
                         <td>
-                            <button class="btn btn-warning" @click="updateState">Update actual state informations</button>
+                            <button class="btn btn-warning" @click="updateState">Update actual state informations
+                            </button>
                         </td>
                         <td>
                             <button class="btn btn-info" @click="addCurativeMaintenance">Add curative operation</button>
@@ -49,7 +53,8 @@
                                    placeholder="Search a MME by is name" type="text">
                         </td>
                         <td>
-                            <button class="btn btn-primary" @click="consultMME">Consult lifesheet descriptive part</button>
+                            <button class="btn btn-primary" @click="consultMME">Consult lifesheet descriptive part
+                            </button>
                         </td>
                         <td>
                         </td>
@@ -62,7 +67,8 @@
                             <button class="btn btn-primary" @click="mmePrintableList">View the printable list</button>
                         </td>
                         <td>
-                            <button class="btn btn-primary" @click="reviewMME">Validate lifesheet descriptive part</button>
+                            <button class="btn btn-primary" @click="reviewMME">Validate lifesheet descriptive part
+                            </button>
                         </td>
                     </tr>
                 </table>
@@ -261,7 +267,6 @@ export default {
                         });
                     })
                     .catch(error => {
-                        console.log(error.response.data.errors)
                         this.$refs.errorAlert.showAlert(error.response.data.errors.state_verif);
                     });
             }
@@ -389,7 +394,7 @@ export default {
                     if (option.mme_internalReference !== null) {
                         return option.mme_internalReference.toLowerCase().includes(this.searchTermInternRef.toLowerCase());
                     }
-                    return  false;
+                    return false;
                 });
             } else if (this.searchTermInternRef === "" && this.searchTermName !== "") {
                 res = this.MMEs.filter(option => {
@@ -430,11 +435,10 @@ export default {
     created() {
         axios.get('/mme/mmes')
             .then(response => {
-                console.log(response.data)
                 this.MMEs = response.data;
                 this.loaded = true;
-            })
-            .catch(error => console.log(error.response.data));
+            }).catch(error => {
+        });
     }
 }
 </script>

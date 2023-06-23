@@ -4,49 +4,52 @@
 <!--Vue Component used to reference an imported MME in another MME-->
 
 <template>
-  <div>
+    <div>
         <MmeIdForm @MMEID="put_mme_id" @importFromMMEID="put_import_id"/>
         <div v-if="this.mme_id!=null">
             <div class="accordion">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                           MME File
+                    <h2 id="headingOne" class="accordion-header">
+                        <button aria-controls="collapseOne" aria-expanded="true" class="accordion-button"
+                                data-bs-target="#collapseOne" data-bs-toggle="collapse" type="button">
+                            MME File
                         </button>
                     </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                    <div id="collapseOne" aria-labelledby="headingOne" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-                            <ReferenceAMMEFile :mme_id="this.mme_id" :import_id="this.importation_id"/>
+                            <ReferenceAMMEFile :import_id="this.importation_id" :mme_id="this.mme_id"/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" >
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <div class="accordion-item">
+                    <h2 id="headingTwo" class="accordion-header">
+                        <button aria-controls="collapseTwo" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseTwo" data-bs-toggle="collapse" type="button">
                             MME Verification
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div id="collapseTwo" aria-labelledby="headingTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <ReferenceAMMEVerif :mme_id="this.mme_id" :import_id="this.importation_id"/>
+                            <ReferenceAMMEVerif :import_id="this.importation_id" :mme_id="this.mme_id"/>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item" >
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <div class="accordion-item">
+                    <h2 id="headingThree" class="accordion-header">
+                        <button aria-controls="collapseThree" aria-expanded="false" class="accordion-button collapsed"
+                                data-bs-target="#collapseThree" data-bs-toggle="collapse" type="button">
                             MME Usage
                         </button>
                     </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                    <div id="collapseThree" aria-labelledby="headingThree" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <ReferenceAMMEUsage :mme_id="this.mme_id" :import_id="this.importation_id"/>
+                            <ReferenceAMMEUsage :import_id="this.importation_id" :mme_id="this.mme_id"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -62,22 +65,21 @@ export default {
         ReferenceAMMEFile,
         ReferenceAMMEVerif,
         ReferenceAMMEUsage
-
     },
-    data(){
-        return{
+    data() {
+        return {
             //ID of the MME to reference
-            mme_id:null,
+            mme_id: null,
             //ID of the imported MME to reference
-            importation_id:null
+            importation_id: null
         }
     },
-    methods:{
-        put_mme_id(value){
-            this.mme_id=value;
+    methods: {
+        put_mme_id(value) {
+            this.mme_id = value;
         },
-        put_import_id(value){
-            this.importation_id=value;
+        put_import_id(value) {
+            this.importation_id = value;
         }
     }
 }

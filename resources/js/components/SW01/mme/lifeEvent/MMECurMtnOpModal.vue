@@ -125,29 +125,27 @@ export default {
         closeModal(modal){
             this.$bvModal.hide(modal);
             this.resetModal();
-            this.$emit('okReload','')
+            this.$emit('okReload','');
         },
         handleOkUpdate(){
-            this.$emit('okReload','')
+            this.$emit('okReload','');
         },
         resetModal(){
-            this.user_pseudo=''
-            this.user_password=''
+            this.user_pseudo='';
+            this.user_password='';
         },
         handleOkRealize(bvModalEvent){
             // Prevent modal from closing
-            bvModalEvent.preventDefault()
+            bvModalEvent.preventDefault();
             // Trigger submit handler
             const postUrlAdd = (id) => `/curMtnOp/realize/${id}`;
             axios.post(postUrlAdd(this.curMtnOp_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.$userId.id
-            })
-            .then(response =>{
+            }).then(response =>{
                 this.closeModal(bvModalEvent.target.id);
-            })
-            .catch(error =>{this.errors=error.response.data.errors});
+            }).catch(error =>{this.errors=error.response.data.errors});
         },
         handleOkQuality(bvModalEvent){
             // Prevent modal from closing
@@ -157,11 +155,9 @@ export default {
                 user_pseudo:this.user_pseudo,
                 user_password:this.user_password,
                 user_id:this.$userId.id
-            })
-            .then(response =>{
+            }).then(response =>{
                 this.closeModal(bvModalEvent.target.id);
-            })
-            .catch(error =>{this.errors=error.response.data.errors});
+            }).catch(error =>{this.errors=error.response.data.errors});
         },
         handleOkTechnical(bvModalEvent){
             // Prevent modal from closing
@@ -172,11 +168,9 @@ export default {
                 user_pseudo:this.user_pseudo,
                 user_password:this.user_password,
                 user_id:this.$userId.id
-            })
-            .then(response =>{
+            }).then(response =>{
                 this.closeModal(bvModalEvent.target.id);
-            })
-            .catch(error =>{this.errors=error.response.data.errors});
+            }).catch(error =>{this.errors=error.response.data.errors});
         }
     }
 }

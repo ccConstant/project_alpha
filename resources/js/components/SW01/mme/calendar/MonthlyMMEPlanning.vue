@@ -44,9 +44,15 @@
                                 </b-col>
                                 <b-col class="planning_table_nextDate" cols="4">
                                     <p v-if="verif.nextDate != null">
-                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getDate() }}
-                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7)-1, verif.nextDate.slice(8)).toDateString().slice(4, 7) }}
-                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getFullYear() }}
+                                        {{
+                                            new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getDate()
+                                        }}
+                                        {{
+                                            new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7) - 1, verif.nextDate.slice(8)).toDateString().slice(4, 7)
+                                        }}
+                                        {{
+                                            new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getFullYear()
+                                        }}
                                     </p>
                                     <p v-else>/</p>
                                 </b-col>
@@ -55,7 +61,7 @@
                         <div v-else>
                             <b-row
                                 @click="handleListClick(verif.mme_id,verif.Internal_Ref,verif.state_id,verif.Number, verif.Description, verif.Protocol, verif.nextDate, verif.verif_periodicity, verif.verif_symbolPeriodicity, verif.verif_expectedResult, verif.verif_nonComplianceLimit)">
-                            <b-col class="planning_table_internalReference" cols="1">
+                                <b-col class="planning_table_internalReference" cols="1">
                                     <p class="text-primary">{{ verif.Internal_Ref }}</p>
                                 </b-col>
                                 <b-col class="planning_table_name" cols="4">
@@ -68,9 +74,15 @@
                                 </b-col>
                                 <b-col class="planning_table_nextDate" cols="4">
                                     <p v-if="verif.nextDate != null">
-                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getDate() }}
-                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7)-1, verif.nextDate.slice(8)).toDateString().slice(4, 7) }}
-                                        {{ new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getFullYear() }}
+                                        {{
+                                            new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getDate()
+                                        }}
+                                        {{
+                                            new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7) - 1, verif.nextDate.slice(8)).toDateString().slice(4, 7)
+                                        }}
+                                        {{
+                                            new Date(verif.nextDate.slice(0, 4), verif.nextDate.slice(5, 7), verif.nextDate.slice(8)).getFullYear()
+                                        }}
                                     </p>
                                     <p v-else>/</p>
                                 </b-col>
@@ -114,7 +126,6 @@ export default {
                 prvMtnOp_protocol: arg.event.extendedProps.protocol,
                 prvMtnOp_nextDate: arg.event.extendedProps.operation_date
             });
-            console.log(arg)
             this.$refs.event_details.$bvModal.show('modal-event_details');
         },
         handleListClick(mme_id, mme_internalReference, state_id, number, description, protocol, next_date, periodicity, symbolPeriodicity, expectedResult, nonComplianceLimit) {
@@ -140,13 +151,10 @@ export default {
     created() {
         axios.get('/mme/verif/planning_monthly')
             .then(response => {
-                console.log(response.data)
                 this.mme_nextMonth = response.data;
                 this.loaded = true;
             })
-
     }
-
 }
 </script>
 

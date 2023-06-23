@@ -5,8 +5,10 @@
 
 <template>
     <div>
-        <ReferenceAMMECurMtnOp v-if="operation_type=='curative'" @addSucces="addSucces()" :mme_id="this.mme_id" :number="this.number" :state_id="this.state_id"/>
-        <ReferenceAVerifRlz v-if="operation_type=='verif'" @addSucces="addSucces()" :mme_id="this.mme_id" :number="this.number" :state_id="this.state_id"/>
+        <ReferenceAMMECurMtnOp v-if="operation_type=='curative'" :mme_id="this.mme_id" :number="this.number"
+                               :state_id="this.state_id" @addSucces="addSucces()"/>
+        <ReferenceAVerifRlz v-if="operation_type=='verif'" :mme_id="this.mme_id" :number="this.number"
+                            :state_id="this.state_id" @addSucces="addSucces()"/>
         <div v-if="isInConsultMod==true">
             <button type="button" @click="referenceAnother()">Reference another operation</button>
         </div>
@@ -22,26 +24,23 @@ export default {
         ReferenceAMMECurMtnOp,
         ReferenceAVerifRlz,
     },
-    data(){
-        return{
-            mme_id:parseInt(this.$route.params.id),
-            state_id:parseInt(this.$route.params.state_id),
-            isInConsultMod:false,
-            operation_type:this.$route.query.type,
+    data() {
+        return {
+            mme_id: parseInt(this.$route.params.id),
+            state_id: parseInt(this.$route.params.state_id),
+            isInConsultMod: false,
+            operation_type: this.$route.query.type,
             number: parseInt(this.$route.query.number),
             id: this.$route.query.id,
         }
     },
-    methods:{
-        addSucces(){
+    methods: {
+        addSucces() {
             this.isInConsultMod = true;
         },
-        referenceAnother(){
+        referenceAnother() {
             window.location.reload();
         }
-    },
-    created(){
-        
     }
 }
 </script>

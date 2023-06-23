@@ -12,11 +12,12 @@
         <!--Adding to the vue MMEPrecautionForm by going through the components array with the v-for-->
         <!--ref="ask_prctn_data" is used to call the child elements in this component-->
         <!--The emitted deletePrctn is caught here and call the function getContent -->
-        <MMEPrecautionForm ref="ask_prctn_data" v-for="(component, key) in components" :key="component.key"
-            :is="component.comp" :type="component.type" :description="component.description"
-            :divClass="component.className" :id="component.id" :usg_id="data_usg_id"
-            :validate="component.validate" :consultMod="isInConsultMod" :modifMod="isInModifMod" :mme_id="data_mme_id"
-            @deletePrctn="getContent(key)"/>
+        <MMEPrecautionForm :is="component.comp" v-for="(component, key) in components" :id="component.id"
+                           :key="component.key" ref="ask_prctn_data" :consultMod="isInConsultMod"
+                           :description="component.description" :divClass="component.className" :mme_id="data_mme_id"
+                           :modifMod="isInModifMod" :type="component.type" :usg_id="data_usg_id"
+                           :validate="component.validate"
+                           @deletePrctn="getContent(key)"/>
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
             <!--Add another precaution button appear -->
@@ -27,7 +28,8 @@
                 <button v-if="!modifMod " v-on:click="importPrctn">import</button>
             </div>
         </div>
-        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+        <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod" saveAll
+                        @add="saveAll" @update="saveAll"/>
         <ImportationAlert ref="importAlert"/>
     </div>
 
@@ -38,68 +40,68 @@
 import MMEPrecautionForm from './MMEPrecautionForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import ImportationAlert from '../../../alert/ImportationAlert.vue'
+
 export default {
     /*--------Declaration of the others Components:--------*/
-    components:{
+    components: {
         MMEPrecautionForm,
         SaveButtonForm,
         ImportationAlert
-
     },
-    props:{
-        consultMod:{
-            type:Boolean,
-            default:false
+    props: {
+        consultMod: {
+            type: Boolean,
+            default: false
         },
-        modifMod:{
-            type:Boolean,
-            default:false
+        modifMod: {
+            type: Boolean,
+            default: false
         },
-        importedPrctn:{
-            type:Array,
-            default:null
+        importedPrctn: {
+            type: Array,
+            default: null
         },
-        mme_id:{
-            type:Number
+        mme_id: {
+            type: Number
         },
-        usg_id:{
-            type:Number
+        usg_id: {
+            type: Number
         },
-        import_id:{
-            type:Number,
-            default:null
+        import_id: {
+            type: Number,
+            default: null
         }
     },
     data() {
-      return {
-        components: [],
-        uniqueKey:0,
-        prctns:this.importedPrctn,
-        count:0,
-        isInConsultMod:this.consultMod,
-        isInModifMod:this.modifMod,
-        data_mme_id:this.mme_id,
-        data_usg_id:this.usg_id,
-      };
+        return {
+            components: [],
+            uniqueKey: 0,
+            prctns: this.importedPrctn,
+            count: 0,
+            isInConsultMod: this.consultMod,
+            isInModifMod: this.modifMod,
+            data_mme_id: this.mme_id,
+            data_usg_id: this.usg_id,
+        };
     },
-    methods:{
+    methods: {
         //Function for adding a new empty precaution form
         addComponent() {
             this.components.push({
-                comp:'MMEPrecautionForm',
-                key : this.uniqueKey++,
+                comp: 'MMEPrecautionForm',
+                key: this.uniqueKey++,
             });
         },
         //Function for adding an imported precaution form with his data
-        addImportedComponent(prctn_type,prctn_description,prctn_validate,prctn_className,id) {
+        addImportedComponent(prctn_type, prctn_description, prctn_validate, prctn_className, id) {
             this.components.push({
-                comp:'MMEPrecautionForm',
-                key : this.uniqueKey++,
-                type :prctn_type,
-                description:prctn_description,
-                className:prctn_className,
-                validate:prctn_validate,
-                id:id
+                comp: 'MMEPrecautionForm',
+                key: this.uniqueKey++,
+                type: prctn_type,
+                description: prctn_description,
+                className: prctn_className,
+                validate: prctn_validate,
+                id: id
             });
         },
         //Suppression of a precaution component from the vue
@@ -107,35 +109,35 @@ export default {
             this.components.splice(key, 1);
         },
         //Function for adding to the vue the imported precaution
-        importPrctn(){
-            if(this.prctns.length==0 && !this.isInModifMod ){
+        importPrctn() {
+            if (this.prctns.length == 0 && !this.isInModifMod) {
                 this.$refs.importAlert.showAlert();
-            }else{
+            } else {
                 for (const prctn of this.prctns) {
-                    var className="importedPrctn"+prctn.id
-                    this.addImportedComponent(prctn.prctn_type,prctn.prctn_description,prctn.prctn_validate,className,prctn.id);
+                    var className = "importedPrctn" + prctn.id
+                    this.addImportedComponent(prctn.prctn_type, prctn.prctn_description, prctn.prctn_validate, className, prctn.id);
                 }
             }
-            this.prctns=null
+            this.prctns = null
         },
         //Function for saving all the data in one time
-        saveAll(savedAs){
-            for(const component of this.$refs.ask_prctn_data){
+        saveAll(savedAs) {
+            for (const component of this.$refs.ask_prctn_data) {
                 //If the user is in modification mode
-                if(this.modifMod==true){
+                if (this.modifMod == true) {
                     //If the precaution doesn't have, an id
-                    if(component.prctn_id==null ){
+                    if (component.prctn_id == null) {
                         //AddMmePrctn is used
                         component.AddMmePrctn(savedAs); //FIXME addMMEPrctn ?
-                    }else
-                    //Else if the precaution has an id and addSucces, is equal to true
-                    if(component.prctn_id!=null || component.addSucces==true){
+                    } else
+                        //Else if the precaution has an id and addSucces, is equal to true
+                    if (component.prctn_id != null || component.addSucces == true) {
                         //updateMmePrctn is used
-                        if(component.prctn_validate!=="validated"){
+                        if (component.prctn_validate !== "validated") {
                             component.updateMmePrctn(savedAs); //FIXME updateMMEPrctn ?
                         }
                     }
-                }else{
+                } else {
                     //Else If the user is not in modification mode
                     component.AddMmePrctn(savedAs); //FIXME addMMEPrctn ?
                 }
@@ -143,19 +145,22 @@ export default {
         },
     },
     /*All functions inside the created option are called after the component has been created.*/
-    created(){
+    created() {
         //If the user chooses importation equipment
-        if(this.import_id!==null ){
+        if (this.import_id !== null) {
             //Make a get request to ask the controller the precaution corresponding to the id of the equipment with which data will be imported
             const consultUrl = (id) => `/equipment/prctn/send/${id}`;
             axios.get(consultUrl(this.import_id))
-                .then (response=>this.prctns=response.data)
-                .catch(error => console.log(error)) ;
+                .then(response => {
+                    this.prctns = response.data;
+                })
+                .catch(error => {
+                });
         }
     },
-    mounted(){
+    mounted() {
         //If prctns is not null, the precaution will be added to the vue automatically
-        if(this.prctns!==null ){
+        if (this.prctns !== null) {
             this.importPrctn();
         }
     }

@@ -153,9 +153,9 @@ export default {
             this.$emit('okReload','')
         },
         resetModal(){
-            this.errors={},
-            this.user_pseudo='',
-            this.user_password=''
+            this.errors={};
+            this.user_pseudo='';
+            this.user_password='';
         },
         handleOkApprove(bvModalEvent){
             // Prevent modal from closing
@@ -165,14 +165,11 @@ export default {
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.compId
-            })
-            .then(response =>{
+            }).then(response =>{
                 this.$refs.succesAlert.showAlert("Succesfully aprouved");
                 this.closeModal(bvModalEvent.target.id);
-            })
-            .catch(error =>{this.errors=error.response.data.errors});
+            }).catch(error =>{this.errors=error.response.data.errors});
         },
-
         handleOkRealize(bvModalEvent){
             // Trigger submit handler
             bvModalEvent.preventDefault()
@@ -181,16 +178,12 @@ export default {
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
                     user_id:this.compId
-            })
-            .then(response =>{
+            }).then(response =>{
                 this.$refs.succesAlert.showAlert("Succesfully realized");
                 this.closeModal(bvModalEvent.target.id);
-            })
-            .catch(error =>{this.errors=error.response.data.errors});
-
+            }).catch(error =>{this.errors=error.response.data.errors});
         }
     }
-
 }
 </script>
 
