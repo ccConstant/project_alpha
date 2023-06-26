@@ -154,6 +154,7 @@
 import InputDateForm from '../../../input/InputDateForm.vue'
 import InputTextForm from '../../../input/InputTextForm.vue'
 import InputTextAreaForm from '../../../input/InputTextAreaForm.vue'
+import InputNumberForm from '../../../input/InputNumberForm.vue'
 import RadioGroupForm from '../../../input/RadioGroupForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
@@ -172,7 +173,8 @@ export default {
         SaveButtonForm,
         DeleteComponentButton,
         PrvMtnOpChooseModal,
-        SuccesAlert
+        SuccesAlert,
+        InputNumberForm
     },
     /*--------Declaration of the differents props:--------
    number: Unused prop
