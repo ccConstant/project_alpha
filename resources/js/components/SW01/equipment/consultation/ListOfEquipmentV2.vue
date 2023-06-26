@@ -396,9 +396,9 @@ export default {
                     });
                 } else {
                     if (this.checked.length === 0)
-                        this.$refs.errorAlert.showAlert("Please select an equipment to consult");
+                        this.$refs.errorAlert.showAlert("Please select an equipment to reform");
                     else
-                        this.$refs.errorAlert.showAlert("Please select only one equipment to consult");
+                        this.$refs.errorAlert.showAlert("Please select only one equipment to reform");
                 }
             }
         },

@@ -361,7 +361,7 @@ export default {
             }).catch(error => {
         });
 
-        const UrlState = (id) => `/send/equipment/mme/${id}`;
+        const UrlState = (id) => `/mme/send/${id}`;
         axios.get(UrlState(this.eq_id))
             .then(response => {
                 this.mme = response.data;
