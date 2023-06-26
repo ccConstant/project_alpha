@@ -47,7 +47,7 @@ export default {
             type: Array
         },
         number: {
-            type: String
+            type: Number
         }
     },
     data() {

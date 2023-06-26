@@ -5,12 +5,12 @@
 
 <template>
     <div>
+        <ErrorAlert ref="errorAlert"/>
+        <SuccesAlert ref="successAlert"/>
         <div v-if="loaded==false">
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-if="loaded==true" class="mme_consultation">
-            <ErrorAlert ref="errorAlert"/>
-            <SuccesAlert ref="successAlert"/>
             <h1>MME Consultation</h1>
             <div v-if="this.mme_eq.length>0">
                 <p class="mme_linked"> The MME is linked to the equipment:
@@ -119,12 +119,6 @@ export default {
         }
     },
     created() {
-        if (this.validationMethod == 'technical' && this.$userId.user_makeTechnicalValidationRight != true) {
-            this.$router.replace({name: "url_mme_list"})
-        } else if (this.validationMethod == 'quality' && this.$userId.user_makeQualityValidationRight != true) {
-            this.$router.replace({name: "url_mme_list"})
-        }
-
         let consultUrl = (id) => `/mme/eq_linked/${id}`;
         axios.get(consultUrl(this.mme_id))
             .then(response => {
@@ -181,6 +175,15 @@ export default {
                     this.errors = error.response.data.errors
                 });
             }
+        }
+    },
+    mounted() {
+        if (this.validationMethod == 'technical' && this.$userId.user_makeTechnicalValidationRight != true) {
+            this.$refs.errorAlert.showAlert("You don't have the technical right to validate this equipment");
+            this.$router.replace({name: "url_eq_list"})
+        } else if (this.validationMethod == 'quality' && this.$userId.user_makeQualityValidationRight != true) {
+            this.$refs.errorAlert.showAlert("You don't have the quality right to validate this equipment");
+            this.$router.replace({name: "url_eq_list"})
         }
     }
 }

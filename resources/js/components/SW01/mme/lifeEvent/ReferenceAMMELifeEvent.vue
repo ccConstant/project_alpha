@@ -5,10 +5,22 @@
 
 <template>
     <div>
-        <ReferenceAMMECurMtnOp v-if="operation_type=='curative'" :mme_id="this.mme_id" :number="this.number"
-                               :state_id="this.state_id" @addSucces="addSucces()"/>
-        <ReferenceAVerifRlz v-if="operation_type=='verif'" :mme_id="this.mme_id" :number="this.number"
-                            :state_id="this.state_id" @addSucces="addSucces()"/>
+        <ReferenceAMMECurMtnOp
+            v-if="operation_type=='curative'"
+            :id="this.id"
+            :mme_id="this.mme_id"
+            :number="this.number"
+            :state_id="this.state_id"
+            @addSucces="addSucces()"
+        />
+        <ReferenceAVerifRlz
+            v-if="operation_type=='verif'"
+            :id="this.id"
+            :mme_id="this.mme_id"
+            :number="this.number"
+            :state_id="this.state_id"
+            @addSucces="addSucces()"
+        />
         <div v-if="isInConsultMod==true">
             <button type="button" @click="referenceAnother()">Reference another operation</button>
         </div>
@@ -30,8 +42,8 @@ export default {
             state_id: parseInt(this.$route.params.state_id),
             isInConsultMod: false,
             operation_type: this.$route.query.type,
-            number: parseInt(this.$route.query.number),
-            id: this.$route.query.id,
+            number: Number(this.$route.query.number),
+            id: Number(this.$route.query.id),
         }
     },
     methods: {

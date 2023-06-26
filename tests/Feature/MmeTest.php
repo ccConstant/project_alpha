@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\SW01\EnumEquipmentMassUnit;
+use App\Models\SW01\EnumEquipmentType;
+use App\Models\SW01\Equipment;
+use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\MmeState;
 use App\Models\SW01\MmeTemp;
 use App\Models\SW01\Mme;
@@ -1169,7 +1173,7 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 38
+     * Test Conception Number: 39
      * Add a new mme as validated with a too long location
      * Internal Ref: "three"
      * Name: "three"
@@ -1201,6 +1205,44 @@ class MmeTest extends TestCase
         $response->assertStatus(302);
         $response->assertInvalid([
             'mme_location' => 'You must enter a maximum of 255 characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 40
+     * Add a new mme as validated with an existent internal reference
+     * Internal Ref: "three"
+     * Name: "three"
+     * External Ref: "three"
+     * Serial Number: "three"
+     * Constructor: "three"
+     * Unit: /
+     * Mobil ? : /
+     * Remarks: "three"
+     * Set: "three"
+     * Location: "three"
+     * Expected Result: Receiving an error:
+     *                                      "This internal reference is already use for another mme"
+     * @returns void
+     */
+    public function test_add_mme_validated_existent_ref()
+    {
+        $this->create_mme('three');
+        $response = $this->post('/mme/verif', [
+            'reason' => 'add',
+            'mme_validate' => 'validated',
+            'mme_internalReference' => 'three',
+            'mme_externalReference' => 'three',
+            'mme_name' => 'three',
+            'mme_serialNumber' => 'three',
+            'mme_constructor' => 'three',
+            'mme_remarks' => 'three',
+            'mme_set' => 'three',
+            'mme_location' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'mme_internalReference' => 'This internal reference is already use for another mme',
         ]);
     }
 
@@ -1277,6 +1319,7 @@ class MmeTest extends TestCase
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countEquipment+1, Mme::all()->count());
+        return Mme::all()->where('mme_internalReference', '=', $name)->last()->id;
     }
 
     /**
@@ -1604,6 +1647,348 @@ class MmeTest extends TestCase
 
     /**
      * Test Conception Number: 52
+     * Update the internal reference of a validated mme with correct values
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the internal reference because you have already validated the id card"
+     * @returns void
+     */
+    public function test_update_internal_reference_mme_signed()
+    {
+        $this->create_mme('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mme_temps', [
+            'mme_id' => Mme::all()->last()->id,
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+        ]);
+        $response = $this->post('/mme/verif', [
+            'reason' => 'update',
+            'mme_id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
+            'mme_validate' => 'drafted',
+            'mme_internalReference' => 'other',
+            'mme_externalReference' => 'three',
+            'mme_name' => 'three',
+            'mme_serialNumber' => 'three',
+            'mme_constructor' => 'three',
+            'mme_remarks' => 'three',
+            'mme_set' => 'three',
+            'mme_location' => 'three',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'mme_internalReference' => 'You can\'t modify the internal reference because you have already validated the id card'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 53
+     * Update the external reference of a validated mme with correct values
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the external reference because you have already validated the id card"
+     * @returns void
+     */
+    public function test_update_external_reference_mme_signed()
+    {
+        $this->create_mme('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mme_temps', [
+            'mme_id' => Mme::all()->last()->id,
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+        ]);
+        $response = $this->post('/mme/verif', [
+            'reason' => 'update',
+            'mme_id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
+            'mme_validate' => 'validated',
+            'mme_internalReference' => 'three',
+            'mme_externalReference' => 'other',
+            'mme_name' => 'three',
+            'mme_serialNumber' => 'three',
+            'mme_constructor' => 'three',
+            'mme_remarks' => 'three',
+            'mme_set' => 'three',
+            'mme_location' => 'three',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'mme_externalReference' => 'You can\'t modify the external reference because you have already validated the id card'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 54
+     * Update the name of a validated mme with correct values
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the name because a life sheet has already been created"
+     * @returns void
+     */
+    public function test_update_name_mme_signed()
+    {
+        $this->create_mme('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mme_temps', [
+            'mme_id' => Mme::all()->last()->id,
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+        ]);
+        $response = $this->post('/mme/verif', [
+            'reason' => 'update',
+            'mme_id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
+            'mme_validate' => 'validated',
+            'mme_internalReference' => 'three',
+            'mme_externalReference' => 'three',
+            'mme_name' => 'other',
+            'mme_serialNumber' => 'three',
+            'mme_constructor' => 'three',
+            'mme_remarks' => 'three',
+            'mme_set' => 'three',
+            'mme_location' => 'three',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'mme_name' => 'You can\'t modify the name because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 55
+     * Update the serial number of a validated mme with correct values
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the serial number because a life sheet has already been created"
+     * @returns void
+     */
+    public function test_update_serial_number_mme_signed()
+    {
+        $this->create_mme('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mme_temps', [
+            'mme_id' => Mme::all()->last()->id,
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+        ]);
+        $response = $this->post('/mme/verif', [
+            'reason' => 'update',
+            'mme_id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
+            'mme_validate' => 'validated',
+            'mme_internalReference' => 'three',
+            'mme_externalReference' => 'three',
+            'mme_name' => 'three',
+            'mme_serialNumber' => 'other',
+            'mme_constructor' => 'three',
+            'mme_remarks' => 'three',
+            'mme_set' => 'three',
+            'mme_location' => 'three',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'mme_serialNumber' => 'You can\'t modify the serial number because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 56
+     * Update the constructor of a validated mme with correct values
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the constructor because a life sheet has already been created"
+     * @returns void
+     */
+    public function test_update_constructor_mme_signed()
+    {
+        $this->create_mme('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mme_temps', [
+            'mme_id' => Mme::all()->last()->id,
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+        ]);
+        $response = $this->post('/mme/verif', [
+            'reason' => 'update',
+            'mme_id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
+            'mme_validate' => 'validated',
+            'mme_internalReference' => 'three',
+            'mme_externalReference' => 'three',
+            'mme_name' => 'three',
+            'mme_serialNumber' => 'three',
+            'mme_constructor' => 'other',
+            'mme_remarks' => 'three',
+            'mme_set' => 'three',
+            'mme_location' => 'three',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'mme_constructor' => 'You can\'t modify the constructor because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 57
+     * Update the set of a validated mme with correct values
+     * Expected Result: Receiving an error :
+     *                                          "You can't modify the set because a life sheet has already been created"
+     * @returns void
+     */
+    public function test_update_set_mme_signed()
+    {
+        $this->create_mme('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mme_temps', [
+            'mme_id' => Mme::all()->last()->id,
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+        ]);
+        $response = $this->post('/mme/verif', [
+            'reason' => 'update',
+            'mme_id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
+            'mme_validate' => 'validated',
+            'mme_internalReference' => 'three',
+            'mme_externalReference' => 'three',
+            'mme_name' => 'three',
+            'mme_serialNumber' => 'three',
+            'mme_constructor' => 'three',
+            'mme_remarks' => 'three',
+            'mme_set' => 'other',
+            'mme_location' => 'three',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'mme_set' => 'You can\'t modify the set because a life sheet has already been created'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 58
      * Update a signed mme with correct values
      * Expected Result: The mme is correctly saved as validated and updated in the database
      * @returns void
@@ -1687,7 +2072,7 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 53
+     * Test Conception Number: 59
      * Send the mme list for the list page
      * Expected Result: The data are correctly sent
      * @returns void
@@ -1716,7 +2101,7 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 54
+     * Test Conception Number: 60
      * Send the mme list for the list page with signed mme
      * Expected Result: The data are correctly sent
      * @returns void
@@ -1779,7 +2164,7 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 55
+     * Test Conception Number: 61
      * Send the mme list from the set
      * Expected Result: The data are correctly sent
      * @returns void
@@ -1805,7 +2190,7 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 56
+     * Test Conception Number: 62
      * Send the mme list from the id
      * Expected Result: The data are correctly sent
      * @returns void
@@ -1835,7 +2220,7 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 57
+     * Test Conception Number: 63
      * Send a signed mme list from the id
      * Expected Result: The data are correctly sent
      * @returns void
@@ -1889,7 +2274,7 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 58
+     * Test Conception Number: 64
      * Send the set list
      * Expected Result: The data are correctly sent
      * @returns void
@@ -1903,6 +2288,313 @@ class MmeTest extends TestCase
             '0' => [
                 'mme_set' => 'three',
             ]
+        ]);
+    }
+
+    public function create_equipment($name, $validated = 'drafted') {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
+            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
+            $response=$this->post('/equipment/enum/massUnit/add', [
+                'value' => $name,
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', $name)->count() === 0) {
+            $countEqType=EnumEquipmentType::all()->count();
+            $response=$this->post('/equipment/enum/type/add', [
+                'value' => $name,
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        }
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => $validated,
+            'eq_internalReference' => $name,
+            'eq_externalReference' => $name,
+            'eq_name' => $name,
+            'eq_serialNumber' => $name,
+            'eq_constructor' => $name,
+            'eq_mass' => 1234,
+            'eq_remarks' => $name,
+            'eq_set' => $name,
+            'eq_location' => $name,
+            'eq_type' => $name,
+            'eq_massUnit' => $name
+        ]);
+        $response->assertStatus(200);
+        $countEquipment = Equipment::all()->count();
+        $response = $this->post('/equipment/add', [
+            'eq_validate' => $validated,
+            'eq_internalReference' => $name,
+            'eq_externalReference' => $name,
+            'eq_name' => $name,
+            'eq_serialNumber' => $name,
+            'eq_constructor' => $name,
+            'eq_mass' => 1234,
+            'eq_remarks' => $name,
+            'eq_set' => $name,
+            'eq_location' => $name,
+            'eq_type' => $name,
+            'eq_massUnit' => $name,
+            'eq_mobility' => '0'
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => '1',
+            'eqTemp_location' => $name,
+            'eqTemp_validate' => $validated,
+            'eqTemp_lifeSheetCreated' => '0',
+            'eqTemp_mass' => '1234',
+            'eqTemp_remarks' => $name,
+            'eqTemp_mobility' => '0',
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', $name)->first()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', $name)->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
+        return Equipment::all()->last()->id;
+    }
+
+    /**
+     * Test Conception Number: 65
+     * Add a mme and linked it to an equipment
+     * Expected Result: The mme is correctly linked to the equipment
+     * @returns void
+     */
+    public function test_add_link_mme_to_equipment()
+    {
+        $eq_id = $this->create_equipment('three');
+        $this->create_mme('three');
+        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+            'mme_internalReference' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 66
+     * Add a mme and linked it to a signed equipment
+     * Expected Result: The mme is correctly linked to the equipment and the equipment is no longer signed
+     * @returns void
+     */
+    public function test_add_link_mme_to_equipment_signed()
+    {
+        $eq_id = $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+        $response=$this->post('/equipment/validation/'.$eq_id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.$eq_id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_lifeSheetCreated' => '1',
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'eqTemp_version' => '1',
+        ]);
+
+        $this->create_mme('three', 'validated');
+        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+            'mme_internalReference' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_lifeSheetCreated' => '0',
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+            'eqTemp_version' => '2',
+        ]);
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 67
+     * Unlinked a mme from equipment
+     * Expected Result: The mme is correctly unlinked from the equipment
+     * @returns void
+     */
+    public function test_add_unlink_mme_to_equipment()
+    {
+        $eq_id = $this->create_equipment('three');
+        $this->create_mme('three');
+        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+            'mme_internalReference' => 'three',
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+
+        $response = $this->post('/mme/delete/link_to_eq/'.Mme::all()->last()->id, [
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => null,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 66
+     * Unlinked a mme from signed equipment
+     * Expected Result: The mme is correctly unlinked from the equipment and the equipment is no longer signed
+     * @returns void
+     */
+    public function test_add_unlink_mme_to_equipment_signed()
+    {
+        $eq_id = $this->create_equipment('three', 'validated');
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser=User::all()->count();
+            $response=$this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser+1, User::all());
+        }
+
+        $this->create_mme('three', 'validated');
+        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+            'mme_internalReference' => 'three',
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+
+        $response=$this->post('/equipment/validation/'.$eq_id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response=$this->post('/equipment/validation/'.$eq_id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_lifeSheetCreated' => '1',
+            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'eqTemp_version' => '1',
+        ]);
+
+        $response = $this->post('/mme/delete/link_to_eq/'.Mme::all()->last()->id, [
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('equipment_temps', [
+            'eqTemp_lifeSheetCreated' => '0',
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+            'eqTemp_version' => '2',
+        ]);
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => null,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 68
+     * Send the list of mme not linked to equipment
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_get_list_mme_not_linked_to_equipment()
+    {
+        $eq_id = $this->create_equipment('three');
+        $this->create_mme('other');
+
+        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+            'mme_internalReference' => 'other',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'other')->first()->id,
+        ]);
+
+        $this->create_mme('three');
+        $response = $this->get('/mme/mmes_not_linked');
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'internalReference' => 'three',
+                'externalReference' => 'three',
+                'name' => 'three',
+                'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+            ],
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 69
+     * Send the list of mme linked to equipment
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_get_list_mme_linked_to_equipment()
+    {
+        $eq_id = $this->create_equipment('three');
+        $this->create_mme('three');
+        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+            'mme_internalReference' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+        $this->create_mme('other');
+        $response = $this->get('/mme/eq_linked/'.Mme::all()->where('mme_internalReference', '=', 'three')->first()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'eq_internalReference' => 'three',
+                'eq_id' => $eq_id,
+            ],
         ]);
     }
 }

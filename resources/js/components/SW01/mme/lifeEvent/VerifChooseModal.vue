@@ -45,11 +45,14 @@ export default {
     props: {
         verifs: {
             type: Array
+        },
+        number: {
+            type: Number
         }
     },
     data() {
         return {
-            radio_value: '',
+            radio_value: this.number,
             verifs_data: this.verifs
         }
     },

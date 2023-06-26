@@ -267,14 +267,6 @@ export default {
                 dim_validate: savedAs,
             }).then(response => {
                 this.errors = {};
-                this.dim_name, "\n",
-                    this.dim_value, "\n",
-                    this.dim_unit, "\n",
-                    savedAs, "\n",
-                    this.equipment_id_update, "\n",
-                    this.dim_id
-            )
-
                 /*If all the verification passed, a new post this time to add the dimension in the database
                     The type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the dimension who will be updated*/

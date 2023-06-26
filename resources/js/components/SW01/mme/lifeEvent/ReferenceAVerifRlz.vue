@@ -58,6 +58,9 @@ export default {
         state_id: {
             type: Number
         },
+        id: {
+            type: Number
+        },
         number: {
             type: Number
         }
@@ -79,6 +82,9 @@ export default {
             this.components.push({
                 comp: 'MMEVerifRlzForm',
                 key: this.uniqueKey++,
+                verif_number: this.number,
+                verif_id: this.id,
+                id: this.id,
             });
         },
         addImportedComponent(verifRlz_number, verifRlz_reportNumber, verifRlz_startDate,
@@ -153,6 +159,8 @@ export default {
         if (this.$userId.user_makeMmeOpValidationRight != true) {
             this.$router.push({name: "home"});
         }
+        console.log("number");
+        console.log(this.number);
     },
 }
 </script>

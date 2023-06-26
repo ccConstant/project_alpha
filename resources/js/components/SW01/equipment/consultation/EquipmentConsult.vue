@@ -198,12 +198,6 @@ export default {
     },
 
     created() {
-        if (this.validationMethod == 'technical' && this.$userId.user_makeTechnicalValidationRight != true) {
-            this.$router.replace({name: "url_eq_list"})
-        } else if (this.validationMethod == 'quality' && this.$userId.user_makeQualityValidationRight != true) {
-            this.$router.replace({name: "url_eq_list"})
-        }
-
         const consultUrl = (id) => `/equipment/${id}`;
         axios.get(consultUrl(this.eq_id))
             .then(response => {
@@ -295,9 +289,16 @@ export default {
             }
 
         }
+    },
+    mounted() {
+        if (this.validationMethod == 'technical' && this.$userId.user_makeTechnicalValidationRight != true) {
+            this.$refs.errorAlert.showAlert("You don't have the technical right to validate this equipment");
+            this.$router.replace({name: "url_eq_list"})
+        } else if (this.validationMethod == 'quality' && this.$userId.user_makeQualityValidationRight != true) {
+            this.$refs.errorAlert.showAlert("You don't have the quality right to validate this equipment");
+            this.$router.replace({name: "url_eq_list"})
+        }
     }
-
-
 }
 
 
@@ -306,17 +307,12 @@ export default {
 <style lang="scss">
 .technical_validate_button {
     display: block;
-    margin: auto;
-    margin-bottom: 15px;
-
+    margin: auto auto 15px;
 }
-
-;
 
 .quality_validate_button {
     display: block;
-    margin: auto;
-    margin-bottom: 15px;
+    margin: auto auto 15px;
 }
 
 .equipment_consultation {

@@ -18,7 +18,7 @@
                     @choosedOpe="choosedOpe"
                 />
                 <div v-if="prvMtnOp_number!==null  ">
-                    <InputTextForm
+                    <InputNumberForm
                         v-model="prvMtnOp_number"
                         :info_text="infos_prvMtnOp[3].info_value" inputClassName="form-control w-50"
                         isDisabled

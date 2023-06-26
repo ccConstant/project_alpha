@@ -11,10 +11,14 @@
         <div v-if="loaded==true">
             <form class="container verifRlz-form" @keydown="clearError">
                 <!--Call of the different component with their props-->
-                <VerifChooseModal v-if="isInModifMod==false && isInConsultMod==false" :number="number" :verifs="verifs"
-                                  @choosedOpe="choosedOpe"/>
+                <VerifChooseModal
+                    v-if="isInModifMod==false && isInConsultMod==false"
+                    :number="number"
+                    :verifs="verifs"
+                    @choosedOpe="choosedOpe"
+                />
                 <div v-if="verif_number!==null  ">
-                    <InputTextForm v-model="verif_number" :info_text="infos_verif[0].info_value"
+                    <InputNumberForm v-model="verif_number" :info_text="infos_verif[0].info_value"
                                    inputClassName="form-control w-50" isDisabled label="Number :" name="verif_number"/>
                     <InputTextAreaForm v-model="verif_expectedResult" :info_text="infos_verif[2].info_value"
                                        inputClassName="form-control w-50" isDisabled label="Expected Result :"
@@ -88,9 +92,11 @@ import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import VerifChooseModal from './VerifChooseModal.vue'
 import moment from 'moment'
 import SuccesAlert from '../../../alert/SuccesAlert.vue'
+import InputNumberForm from "../../../input/InputNumberForm.vue";
 
 export default {
     components: {
+        InputNumberForm,
         InputDateForm,
         RadioGroupForm,
         InputTextForm,
@@ -346,8 +352,8 @@ export default {
         choosedOpe(value) {
             this.verif_number = value.verif_number;
             this.verif_expectedResult = value.verif_expectedResult,
-                this.verif_nonComplianceLimit = value.verif_nonComplianceLimit,
-                this.verif_description = value.verif_description;
+            this.verif_nonComplianceLimit = value.verif_nonComplianceLimit,
+            this.verif_description = value.verif_description;
             this.verif_protocol = value.verif_protocol;
             this.verif_startDate_placeholer = value.verif_nextDate;
             this.verif_id = value.id;
@@ -359,6 +365,9 @@ export default {
             axios.get(consultUrl(this.mme_id))
                 .then(response => {
                     this.verifs = response.data;
+                    if (this.verif_number_prop !== null) {
+                        this.choosedOpe(this.verifs.find(verif => Number(verif.verif_number) === this.verif_number_prop));
+                    }
                     axios.get('/info/send/verif')
                         .then(response => {
                             this.infos_verif = response.data;
