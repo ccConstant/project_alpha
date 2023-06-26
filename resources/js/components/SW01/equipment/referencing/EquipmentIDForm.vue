@@ -47,7 +47,7 @@
                                name="eq_remarks"/>
             <InputTextForm v-if="this.eq_importFrom!== undefined " v-model="eq_importFrom"
                            inputClassName="form-control w-50" isDisabled label="Import From :" name="eq_importFrom"/>
-            <InputTextForm v-model="eq_location" :Errors="errors.eq_location"
+            <InputTextForm v-model="eq_location" :Errors="errors.eq_location" :info_text="infos_idCard[11].info_value"
                            :isDisabled="!!isInConsultMod" inputClassName="form-control w-50" isRequired label="Location"
                            name="eq_location"/>
             <SaveButtonForm v-if="this.addSuccess==false" ref="saveButton" :consultMod="this.isInConsultMod" :modifMod="this.modifMod"
@@ -213,6 +213,7 @@ export default {
             loaded: false,
             equipmentMassUnit: "EquipmentMassUnit",
             equipmentType: "EquipmentType",
+            
         }
     },
     created() {
@@ -263,7 +264,9 @@ export default {
                     eq_set: this.eq_set,
                     eq_validate: savedAs,
                     eq_location: this.eq_location,
-                    reason: 'add'
+                    reason: 'add',
+                    enteredBy_id: this.$userId.id
+
                 })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
@@ -286,6 +289,8 @@ export default {
                                 eq_validate: savedAs,
                                 eq_location: this.eq_location,
                                 oldEq_id: this.old_eq,
+                                enteredBy_id: this.$userId.id
+
                             })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {

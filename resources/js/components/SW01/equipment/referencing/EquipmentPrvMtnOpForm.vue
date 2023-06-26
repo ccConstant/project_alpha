@@ -51,7 +51,7 @@
                                    label="Protocol :" name="prvMtnOp_protocol"/>
                 <RadioGroupForm v-model="typeValidation" :Errors="errors.typeValidation"
                                 :checkedOption="typeValidation"
-                                :info_text="null" :isDisabled="!!isInConsultedMod"
+                                :info_text="infos_prvMtnOp[8].info_value" :isDisabled="!!isInConsultedMod"
                                 :options="typeValidationOption"
                                 label="Type of Validation"
                                 name="typeValidation"
@@ -452,22 +452,25 @@ export default {
             delete this.errors[value];
         },
     },
-    created() {
-        if (this.prvMtnOp_id !== null && this.addSuccess == false) {
+    created() { 
             /*Make a get request to ask the controller the preventive maintenance operation corresponding to the id of the equipment with which data will be imported*/
-            const consultUrl = (id) => `/prvMtnOp/risk/send/${id}`;
-            axios.get(consultUrl(this.prvMtnOp_id))
-                .then(response => {
-                    this.importedOpRisk = response.data;
-                    axios.get('/info/send/preventiveMaintenanceOperation')
+            axios.get('/info/send/preventiveMaintenanceOperation')
+            .then(response => {
+                this.infos_prvMtnOp = response.data;
+                console.log(this.infos_prvMtnOp)
+                const consultUrl = (id) => `/prvMtnOp/risk/send/${id}`;
+                if (this.prvMtnOp_id !== null && this.addSuccess == false) {
+                    axios.get(consultUrl(this.prvMtnOp_id))
                         .then(response => {
-                            this.infos_prvMtnOp = response.data;
+                            this.importedOpRisk = response.data;
                             this.loaded = true;
                         }).catch(error => {
-                    });
-                }).catch(error => {
+                        });
+                }else{
+                   this.loaded = true; 
+                }
+            }).catch(error => {
             });
-        }
     }
 }
 </script>

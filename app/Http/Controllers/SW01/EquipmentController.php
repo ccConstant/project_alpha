@@ -1280,6 +1280,7 @@ class EquipmentController extends Controller{
             'enumType_id' => $type_id,
             'specialProcess_id' => $old_eqTemp->specialProcess_id,
             'eqTemp_location' => $request->eq_location,
+            'createdBy_id' => $request->createdBy_id,
         ]);
 
         //Creation of a new state

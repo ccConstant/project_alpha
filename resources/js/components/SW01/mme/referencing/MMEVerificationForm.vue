@@ -145,7 +145,7 @@
                 <InputTextForm
                     v-model="verif_mesureRange"
                     :Errors="errors.verif_mesureRange"
-                    :info_text="null"
+                    :info_text="infos_verif[13].info_value"
                     :isDisabled="!!isInConsultedMod"
                     inputClassName="form-control w-50"
                     label="Measurement Range :"
@@ -154,7 +154,7 @@
                 <InputTextForm
                     v-model="verif_mesureUncert"
                     :Errors="errors.verif_mesureUncert"
-                    :info_text="null"
+                    :info_text="infos_verif[14].info_value"
                     :isDisabled="!!isInConsultedMod"
                     inputClassName="form-control w-50"
                     label="Measurement Uncertainty :"

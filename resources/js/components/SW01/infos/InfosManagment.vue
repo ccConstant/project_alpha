@@ -41,6 +41,8 @@
                                          title="Remarks"/>
                             <InfoElement :info_content="infos_idCard[10].info_value" :info_id="infos_idCard[10].id"
                                          title="Set"/>
+                            <InfoElement :info_content="infos_idCard[11].info_value" :info_id="infos_idCard[11].id"
+                            title="Location"/>
                         </div>
                     </div>
                 </div>
@@ -166,6 +168,10 @@
                                          title="Reform date"/>
                             <InfoElement :info_content="infos_prvMtnOp[6].info_value" :info_id="infos_prvMtnOp[6].id"
                                          title="Putting into Service"/>
+                            <InfoElement :info_content="infos_prvMtnOp[7].info_value" :info_id="infos_prvMtnOp[7].id"
+                            title="Preventive operation"/>
+                            <InfoElement :info_content="infos_prvMtnOp[8].info_value" :info_id="infos_prvMtnOp[8].id"
+                            title="Type validation required"/>
                         </div>
                     </div>
                 </div>
@@ -223,6 +229,12 @@
                                          title="Start date"/>
                             <InfoElement :info_content="infos_prvMtnOpRlz[2].info_value" :info_id="infos_prvMtnOpRlz[2].id"
                                          title="End date"/>
+                            <InfoElement :info_content="infos_prvMtnOpRlz[3].info_value" :info_id="infos_prvMtnOpRlz[3].id"
+                                        title="Remarks"/>
+                            <InfoElement :info_content="infos_prvMtnOpRlz[4].info_value" :info_id="infos_prvMtnOpRlz[4].id"
+                                        title="Password"/>
+                             <InfoElement :info_content="infos_prvMtnOpRlz[5].info_value" :info_id="infos_prvMtnOpRlz[5].id"
+                                        title="Realize"/>
                         </div>
                     </div>
                 </div>
@@ -348,6 +360,8 @@
                                          title="Remarks"/>
                             <InfoElement :info_content="infos_mme_idCard[6].info_value" :info_id="infos_mme_idCard[6].id"
                                          title="Set"/>
+                            <InfoElement :info_content="infos_mme_idCard[7].info_value" :info_id="infos_mme_idCard[7].id"
+                            title="Location"/>
                         </div>
                     </div>
                 </div>
@@ -409,6 +423,10 @@
                                          title="Protocol"/>
                             <InfoElement :info_content="infos_mme_verif[12].info_value" :info_id="infos_mme_verif[12].id"
                                          title="Reform date"/>
+                            <InfoElement :info_content="infos_mme_verif[13].info_value" :info_id="infos_mme_verif[13].id"
+                                        title="Mesure range"/>
+                            <InfoElement :info_content="infos_mme_verif[14].info_value" :info_id="infos_mme_verif[14].id"
+                                        title="Mesure Uncertainty"/>
 
                         </div>
                     </div>
@@ -431,6 +449,8 @@
                                          title="End date"/>
                             <InfoElement :info_content="infos_mme_verifRlz[3].info_value" :info_id="infos_mme_verifRlz[3].id"
                                          title="Is passed"/>
+                            <InfoElement :info_content="infos_mme_verifRlz[4].info_value" :info_id="infos_mme_verifRlz[4].id"
+                                        title="Comments"/>
 
                         </div>
                     </div>

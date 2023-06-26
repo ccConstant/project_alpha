@@ -85,6 +85,7 @@
                 v-model="mme_location"
                 :Errors="errors.mme_location"
                 :isDisabled="!!isInConsultMod"
+                :info_text="infos_idCard[7].info_value"
                 inputClassName="form-control w-50"
                 label="MME location :"
                 location="mme_location"
@@ -186,7 +187,7 @@ export default {
             infos_idCard: [],
             info_mme_internalReference: '',
             loaded: false,
-            mme_location: this.location
+            mme_location: this.location,
         }
     },
     /*All functions inside the created option are called after the component has been created.*/
@@ -216,7 +217,8 @@ export default {
                     mme_set: this.mme_set,
                     mme_validate: savedAs,
                     reason: 'add',
-                    mme_location: this.mme_location
+                    mme_location: this.mme_location,
+                    createdBy_id: this.$userId.id
                 }).then(response => {
                     this.errors = {};
                     if (this.state_id !== null) {
@@ -230,7 +232,8 @@ export default {
                             mme_remarks: this.mme_remarks,
                             mme_set: this.mme_set,
                             mme_validate: savedAs,
-                            mme_location: this.mme_location
+                            mme_location: this.mme_location,
+                            createdBy_id: this.$userId.id
                         }).then(response => {
                             this.$refs.sucessAlert.showAlert(`ID card added successfully and saved as ${savedAs}`);
                             this.addSucces = true;

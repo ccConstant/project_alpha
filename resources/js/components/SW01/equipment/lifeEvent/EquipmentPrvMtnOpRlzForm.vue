@@ -57,7 +57,7 @@
                 />
                 <InputTextAreaForm
                     v-model="prvMtnOp_remarks"
-                    :info_text="null"
+                    :info_text="infos_prvMtnOpRlz[3].info_value"
                     :isDisabled="!!isInConsultMod"
                     inputClassName="form-control w-50"
                     label="Comment :"
@@ -105,7 +105,7 @@
                 <RadioGroupForm
                     v-model="eq_realize"
                     :checkedOption="eq_realize"
-                    :info_text="null"
+                    :info_text="infos_prvMtnOpRlz[5].info_value"
                     :isDisabled="!!isInConsultMod"
                     :options="eq_realizeOption"
                     label="I realize ?:"
@@ -114,7 +114,7 @@
                     v-if="eq_realize == true"
                     v-model="user_password"
                     :Errors="errors.connexion"
-                    :info_text="null"
+                    :info_text="infos_prvMtnOpRlz[4].info_value"    
                     divClassName="password"
                     inputClassName="form-control w-50"
                     label="Password :"

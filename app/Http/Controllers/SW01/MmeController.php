@@ -606,6 +606,7 @@ class MmeController extends Controller{
             'mmeTemp_validate' => $request->mme_validate,
             'mmeTemp_remarks' => $request->mme_remarks,
             'mmeTemp_location' => $request->mme_location,
+            'createdBy_id' => $request->createdBy_id
         ]);
 
         //Creation of a new state
@@ -1118,6 +1119,7 @@ class MmeController extends Controller{
             'mme_constructor' => $request->mme_constructor,
             'mme_set' => $request->mme_set,
             'state_id' => $id,
+            'createdBy_id' => $request->createdBy_id
         ]) ;
 
         $mme_id=$mme->id ;

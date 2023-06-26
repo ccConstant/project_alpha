@@ -35,7 +35,7 @@
                 <InputTextAreaForm v-model="verif_comment" :info_text="null" :isDisabled="!!isInConsultMod"
                                    inputClassName="form-control w-50" label="Comment :" name="verif_comment"/>
                 <InputTextForm v-model="verifRlz_reportNumber" :Errors="errors.verifRlz_reportNumber"
-                               :info_text="infos_verifRlz[0].info_value" :isDisabled="!!isInConsultMod"
+                               :info_text="infos_verifRlz[4].info_value" :isDisabled="!!isInConsultMod"
                                inputClassName="form-control w-50" label="Report number :" name="verifRlz_reportNumber"/>
                 <div class="input-group">
                     <InputTextForm v-model="verifRlz_startDate" :Errors="errors.verifRlz_startDate"
