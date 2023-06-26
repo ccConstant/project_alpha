@@ -146,6 +146,33 @@ class DimensionTest extends TestCase
             ]);
             $response->assertStatus(200);
             $this->assertCount($countUser + 1, User::all());
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
         }
     }
 
