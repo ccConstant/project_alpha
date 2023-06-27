@@ -1,6 +1,6 @@
 <!--File name : ListOfMMEV2.vue-->
 <!--Creation date : 25 May 2023-->
-<!--Update date : 5 Jun 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the list of mme menu-->
 
 <template>
@@ -68,6 +68,10 @@
                         </td>
                         <td>
                             <button class="btn btn-primary" @click="reviewMME">Validate lifesheet descriptive part
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning" @click="reformEquipment">Reform the usage and verifications
                             </button>
                         </td>
                     </tr>
@@ -370,6 +374,27 @@ export default {
                     this.$refs.errorAlert.showAlert("Please select a MME to consult");
                 else
                     this.$refs.errorAlert.showAlert("Please select only one MME to consult");
+            }
+        },
+        reformEquipment() {
+            if (this.$userId.user_makeReformRight != true) {
+                this.$refs.errorAlert.showAlert("You don't have the right");
+            } else {
+                if (this.checked.length === 1) {
+                    this.MMEs.forEach(element => {
+                        if (element.mme_internalReference === this.checked[0]) {
+                            this.$router.push({
+                                name: "url_mme_reform",
+                                params: {id: element.id},
+                            });
+                        }
+                    });
+                } else {
+                    if (this.checked.length === 0)
+                        this.$refs.errorAlert.showAlert("Please select an equipment to reform");
+                    else
+                        this.$refs.errorAlert.showAlert("Please select only one equipment to reform");
+                }
             }
         },
         resetActiveFilter() {

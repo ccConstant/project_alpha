@@ -1,21 +1,21 @@
 <?php
 
 /*
-* Filename : UsageController.php 
+* Filename : UsageController.php
 * Creation date : 17 May 2022
-* Update date : 19 May 2022
-* This file is used to link the view files and the database that concern the usage table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the usage table.
 * For example : add a usage for an equipment in the data base, update a usage, delete it...
-*/ 
+*/
 
 
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\Equipment ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\Equipment ;
 use App\Models\SW01\Usage ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
@@ -86,12 +86,12 @@ class UsageController extends Controller
                     'usg_precaution.min' => 'You must enter at least three characters ',
                     'usg_precaution.max' => 'You must enter a maximum of 255 characters',
 
-                
+
                 ]
             );
         }else{
              //-----CASE usg->validate=drafted or usg->validate=to be validate----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -111,11 +111,11 @@ class UsageController extends Controller
 
     /**
      * Function call by EquipmentUsgForm.vue when the form is submitted for insert with the route : /equipment/add/usg/${id} (post)
-     * Add a new enregistrement of usage in the data base with the informations entered in the form 
+     * Add a new enregistrement of usage in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new usage
      */
     public function add_usage(Request $request){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
 
         //Creation of a new usage
@@ -128,7 +128,7 @@ class UsageController extends Controller
         ]) ;
 
         $usg_id=$usage->id;
-        $id_eq=intval($request->eq_id) ; 
+        $id_eq=intval($request->eq_id) ;
         if ($mostRecentlyEqTmp!=NULL){
 
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -143,16 +143,16 @@ class UsageController extends Controller
             }
               //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add usage
               if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
-                
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                 //update of equipment temp
                 $mostRecentlyEqTmp->update([
                  'eqTemp_version' => $version,
@@ -194,22 +194,22 @@ class UsageController extends Controller
 
                 $newState->equipment_temps()->attach($mostRecentlyEqTmp);
              }
-            return response()->json($usg_id) ; 
+            return response()->json($usg_id) ;
         }
     }
 
     /**
      * Function call by EquipmentUsgForm.vue when the form is submitted for update with the route :/equipment/update/usg/{id} (post)
-     * Update an enregistrement of usage in the data base with the informations entered in the form 
+     * Update an enregistrement of usage in the data base with the informations entered in the form
      * The id parameter correspond to the id of the usage we want to update
      * */
     public function update_usage(Request $request, $id){
 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
-            
+
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
                 $mostRecentlyEqTmp->update([
                     'qualityVerifier_id' => NULL,
@@ -220,20 +220,20 @@ class UsageController extends Controller
                     'technicalVerifier_id' => NULL,
                 ]);
             }
-            
+
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add usage
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
 
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                //update of equipment temp
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
@@ -274,10 +274,10 @@ class UsageController extends Controller
             ]) ;
 
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
-                
+
                 // In the other case, we can modify the informations without problems
             }
-            $usage=Usage::findOrFail($id) ; 
+            $usage=Usage::findOrFail($id) ;
             $usage->update([
                 'usg_type' => $request->usg_type,
                 'usg_validate' => $request->usg_validate,
@@ -294,54 +294,54 @@ class UsageController extends Controller
      */
 
     public function send_usages($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $usages=Usage::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
         foreach ($usages as $usage) {
             $dates=explode("-", $usage->usg_startDate)  ;
-            $year=$dates[0] ; 
-            $month="" ; 
+            $year=$dates[0] ;
+            $month="" ;
             switch ($dates[1]){
-                case "01" : case "1" : 
-                    $month="JAN" ; 
-                    break ; 
-                case "02" : case "2" : 
-                    $month="FEB" ; 
-                    break ; 
-                case "03" : case "3" : 
-                    $month="MAR" ; 
-                    break ; 
-                case "04" : case "4" : 
-                    $month="APR" ; 
-                    break ; 
-                case "05" : case "5" : 
-                    $month="MAY" ; 
-                    break ; 
-                case "06" : case "6" : 
-                    $month="JUN" ; 
-                    break ; 
-                case "07" : case "7" : 
-                    $month="JUL" ; 
-                    break ; 
-                case "08" : case "8" : 
-                    $month="AUG" ; 
-                    break ; 
-                case "09" : case "9" : 
-                    $month="SEP" ; 
-                    break ; 
-                case "10" : 
-                    $month="OCT" ; 
-                    break ; 
-                case "11" : 
-                    $month="NOV" ; 
-                    break ; 
-                case "12" : 
-                    $month="DEC" ; 
-                    break ; 
+                case "01" : case "1" :
+                    $month="JAN" ;
+                    break ;
+                case "02" : case "2" :
+                    $month="FEB" ;
+                    break ;
+                case "03" : case "3" :
+                    $month="MAR" ;
+                    break ;
+                case "04" : case "4" :
+                    $month="APR" ;
+                    break ;
+                case "05" : case "5" :
+                    $month="MAY" ;
+                    break ;
+                case "06" : case "6" :
+                    $month="JUN" ;
+                    break ;
+                case "07" : case "7" :
+                    $month="JUL" ;
+                    break ;
+                case "08" : case "8" :
+                    $month="AUG" ;
+                    break ;
+                case "09" : case "9" :
+                    $month="SEP" ;
+                    break ;
+                case "10" :
+                    $month="OCT" ;
+                    break ;
+                case "11" :
+                    $month="NOV" ;
+                    break ;
+                case "12" :
+                    $month="DEC" ;
+                    break ;
 
             }
             $day=$dates[2] ;
-            $newDate=$day." ".$month." ".$year ; 
+            $newDate=$day." ".$month." ".$year ;
 
             $obj=([
                 'id' => $usage->id,
@@ -350,7 +350,7 @@ class UsageController extends Controller
                 'usg_precaution' => $usage->usg_precaution,
                 'usg_startDate' => $newDate,
                 'usg_reformDate' => $usage->usg_reformDate,
-                
+
             ]);
             array_push($container,$obj);
         }
@@ -364,8 +364,8 @@ class UsageController extends Controller
      * The id parameter correspond to the id of the usage we want to delete
      * */
     public function delete_usage(Request $request,$id){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         
         $user=User::findOrFail($request->user_id);
@@ -403,19 +403,19 @@ class UsageController extends Controller
                 'technicalVerifier_id' => NULL,
             ]);
         }
-        
+
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
 
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
             //update of equipment temp
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
@@ -465,7 +465,7 @@ class UsageController extends Controller
      * Function call by EquipmentUsgForm.vue when we want to reform a usage with the route : /equipment/reform/usg/{id} (post)
      * Reform a usage thanks to the id given in parameter
      * The id parameter correspond to the id of the usage we want to reform
-     * 
+     *
      * */
 
     public function reform_usage(Request $request, $id){
@@ -481,13 +481,13 @@ class UsageController extends Controller
         if ($request->usg_reformDate<$usg->usg_startDate){
             return response()->json([
                 'errors' => [
-                    'usg_reformDate' => ["You must entered a reformDate that is after the startDate"] 
+                    'usg_reformDate' => ["You must entered a reformDate that is after the startDate"]
                 ]
             ], 429);
 
         }
 
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->usg_reformDate!=NULL && $request->usg_reformDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -495,14 +495,14 @@ class UsageController extends Controller
                 ]
             ], 429);
         }
-        
+
         $usg->update([
             'usg_reformDate' => $request->usg_reformDate,
         ]) ;
     }
-    
+
 
 }
 
 
-   
+

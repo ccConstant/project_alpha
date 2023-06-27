@@ -3,7 +3,7 @@
 /*
 * Filename : MmeController.php
 * Creation date : 14 Jun 2022
-* Update date : 25 May 2023
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the mme table.
 * For example : add the identity card of an mme in the database, update the identity card, delete the identity card...
 */
@@ -348,7 +348,7 @@ class MmeController extends Controller{
             'mme_qualityVerifier_lastName' => $qualityVerifier_lastName,
             'mme_lifeSheetCreated' => $mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated,
             'mme_signatureDate' => $mostRecentlyMmeTmp->mmeTemp_signatureDate,
-            
+
 
         ]);
     }

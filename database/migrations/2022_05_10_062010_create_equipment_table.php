@@ -4,7 +4,7 @@
 /*
 * Filename : 2022_05_10_062010_create_equipment_table.php
 * Creation date : 10 May 2022
-* Update date : 25 May 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "equipement" in the data base. In this file, we can see the different
 * attribute of this table (internReference, externReference..) and how they are defined (string, boolean, unique or not)
 */

@@ -3,7 +3,7 @@
 /*
 * Filename : HistoryController.php
 * Creation date : 18 Jan 2023
-* Update date : 14 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the history table.
 * For example : add the history of an equipment or of a mme in the database, send this history to the view, etc.
 */

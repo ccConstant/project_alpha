@@ -1,20 +1,20 @@
 <?php
 
 /*
-* Filename : SpecialProcessController.php 
+* Filename : SpecialProcessController.php
 * Creation date : 18 May 2022
-* Update date : 18 May 2022
-* This file is used to link the view files and the database that concern the specialProcess table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the specialProcess table.
 * For example : add a specialProcess for an equipment, update a specialProcess, import it, delete it...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\SpecialProcess ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\Equipment ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\SpecialProcess ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\Equipment ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\SW01\State;
@@ -101,36 +101,36 @@ class SpecialProcessController extends Controller
 
     /**
      * Function call by EquipmentSpecProcForm.vue when the form is submitted for insert with the route : /equipment/add/spProc(post)
-     * Add a new enregistrement of specialProcess in the data base with the informations entered in the form 
+     * Add a new enregistrement of specialProcess in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : the id of the new special process
      */
     public function add_specialProcess(Request $request){
-        
+
         //Creation of a new specialProcess
         $spProc=SpecialProcess::create([
             'spProc_exist' => $request->spProc_exist,
             'spProc_remarksOrPrecaution' => $request->spProc_remarksOrPrecaution,
             'spProc_name' => $request->spProc_name,
             'spProc_validate' => $request->spProc_validate,
-        ]) ; 
+        ]) ;
 
         $spProc_id=$spProc->id;
-        $id_eq=intval($request->eq_id) ; 
-        $equipment=Equipment::findOrfail($id_eq) ; 
+        $id_eq=intval($request->eq_id) ;
+        $equipment=Equipment::findOrfail($id_eq) ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp!=NULL){
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add special process
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
-              
+
               //We need to increase the number of equipment temp linked to the equipment
-              $version_eq=$equipment->eq_nbrVersion+1 ; 
+              $version_eq=$equipment->eq_nbrVersion+1 ;
               //Update of equipment
               $equipment->update([
                   'eq_nbrVersion' =>$version_eq,
               ]);
-              
+
               //We need to increase the version of the equipment temp (because we create a new equipment temp)
-              $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+              $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
               //update of equipment temp
               $mostRecentlyEqTmp->update([
                'eqTemp_version' => $version,
@@ -171,7 +171,7 @@ class SpecialProcessController extends Controller
             ]) ;
 
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
-          } 
+          }
       }
       $mostRecentlyEqTmp->update([
         'specialProcess_id' => $spProc->id,
@@ -182,17 +182,17 @@ class SpecialProcessController extends Controller
 
     /**
      * Function call by EquipmentSpecProcForm.vue when the form is submitted for update with the route :/equipment/update/spProc/{id} (post)
-     * Update an enregistrement of special processn in the data base with the informations entered in the form 
+     * Update an enregistrement of special processn in the data base with the informations entered in the form
      * The id parameter correspond to the id of the specialProcess we want to update
      * */
     public function update_specialProcess(Request $request, $id){
-        
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
-            
-            
+
+
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
                 $mostRecentlyEqTmp->update([
                     'qualityVerifier_id' => NULL,
@@ -203,21 +203,21 @@ class SpecialProcessController extends Controller
                     'technicalVerifier_id' => NULL,
                 ]);
             }
-            
-            
+
+
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update special process
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
 
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                //update of equipment temp
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
@@ -259,10 +259,10 @@ class SpecialProcessController extends Controller
             ]) ;
 
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
-                
+
                 // In the other case, we can modify the informations without problems
-            } 
-            $spProc=SpecialProcess::findOrFail($id) ; 
+            }
+            $spProc=SpecialProcess::findOrFail($id) ;
             $spProc->update([
                 'spProc_exist' => $request->spProc_exist,
                 'spProc_remarksOrPrecaution' => $request->spProc_remarksOrPrecaution,
@@ -280,11 +280,11 @@ class SpecialProcessController extends Controller
      */
 
     public function send_specialProcess($id) {
-        $container=array() ; 
+        $container=array() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp->specialProcess_id!=NULL){
-            $spProc_id=$mostRecentlyEqTmp->specialProcess_id ; 
-            $spProc=SpecialProcess::findOrFail($spProc_id) ; 
+            $spProc_id=$mostRecentlyEqTmp->specialProcess_id ;
+            $spProc=SpecialProcess::findOrFail($spProc_id) ;
             $obj=([
                 "id" => $spProc_id,
                 'spProc_exist' => (boolean)$spProc->spProc_exist,
@@ -299,5 +299,5 @@ class SpecialProcessController extends Controller
 }
 
 
-    
+
 

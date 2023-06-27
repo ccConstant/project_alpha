@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_20_081310_create_comp_families_table.php
 * Creation date : 20 Apr 2023
-* Update date : 20 Apr 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "comp_families" in the data base. In this file, we can see the different
 * attribute of this table (reference, designation..) and how they are defined (string, boolean, unique or not)
 */

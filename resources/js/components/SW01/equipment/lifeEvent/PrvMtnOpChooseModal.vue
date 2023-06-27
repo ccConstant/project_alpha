@@ -1,6 +1,6 @@
 <!--File name : PrvMtnOpChooseModal.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component to make the modal to choose the preventive maintenance operation to realize-->
 
 <template>

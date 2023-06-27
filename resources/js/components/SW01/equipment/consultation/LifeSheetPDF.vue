@@ -1,7 +1,7 @@
 <!--
 * Filename : LifeSheetPDF.vue
 * Creation date : 6 Jul 2022
-* Update date : 25 May 2023
+* Update date : 27 Jun 2023
 * The document allows us to create the life sheet of an equipment and to export it in PDF.
 -->
 

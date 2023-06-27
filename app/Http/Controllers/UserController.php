@@ -3,7 +3,7 @@
  /*
  * Filename : UserController.php
  * Creation date : 14 Jun 2022
- * Update date : 14 Jun 2022
+ * Update date : 27 Jun 2023
  * This file is used to link the view files and the database that concern the user table.
  * For example : send the informations about users..
  */

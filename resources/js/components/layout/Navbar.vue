@@ -1,6 +1,6 @@
 <!--File name : Navbar.vue-->
 <!--Creation date : 21 Apr 2023-->
-<!--Update date : 21 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the navigation bar, up of the website-->
 
 <template>

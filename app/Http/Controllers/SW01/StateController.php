@@ -3,7 +3,7 @@
 /*
 * Filename : StateController.php
 * Creation date : 17 May 2022
-* Update date : 17 May 2022
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the state table.
 * For example : add a state for an equipment in the data base, update a file, delete it...
 */

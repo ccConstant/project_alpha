@@ -1,6 +1,6 @@
 <!--File name : ListOfEquipmentV2.vue-->
 <!--Creation date : 25 May 2023-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the list of equipment menu-->
 
 <template>
@@ -396,9 +396,9 @@ export default {
                     });
                 } else {
                     if (this.checked.length === 0)
-                        this.$refs.errorAlert.showAlert("Please select an equipment to consult");
+                        this.$refs.errorAlert.showAlert("Please select an equipment to reform");
                     else
-                        this.$refs.errorAlert.showAlert("Please select only one equipment to consult");
+                        this.$refs.errorAlert.showAlert("Please select only one equipment to reform");
                 }
             }
         },

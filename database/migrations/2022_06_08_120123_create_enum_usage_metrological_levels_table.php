@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 /*
 * Filename : 2022_06_08_120123_create_enum_usage_metrological_levels_table.php
 * Creation date : 8 Jun 2022
-* Update date : 15 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "enum_usage_metrological_levels" in the data base. In this file, we can see the different
 * attribute of this table (id and value) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 class CreateEnumUsageMetrologicalLevelsTable extends Migration
 {
@@ -24,7 +24,7 @@ class CreateEnumUsageMetrologicalLevelsTable extends Migration
         Schema::create('enum_usage_metrological_levels', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('value') ; 
+            $table->string('value') ;
         });
     }
 

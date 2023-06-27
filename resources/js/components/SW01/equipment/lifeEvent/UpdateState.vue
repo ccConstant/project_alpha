@@ -1,6 +1,6 @@
 <!--File name : UpdateState.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component used to update a state-->
 
 <template>
@@ -363,7 +363,7 @@ export default {
             }).catch(error => {
         });
 
-        const UrlState = (id) => `/send/equipment/mme/${id}`;
+        const UrlState = (id) => `/mme/send/${id}`;
         axios.get(UrlState(this.eq_id))
             .then(response => {
                 this.mme = response.data;

@@ -1,6 +1,6 @@
 <!--File name :ReferenceAMmeList.vue-->
 <!--Creation date : 12 Jul 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component used to reference a MME list in the equipment-->
 
 <template>

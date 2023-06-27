@@ -285,7 +285,7 @@ class UserTest extends TestCase
             'user_firstName' => 'three',
             'user_lastName' => 'three',
             'user_pseudo' => 'three',
-            'user_password' => 'password',
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
             'user_confirmation_password' => 'a'
         ]);
         $response->assertStatus(302);
@@ -313,7 +313,7 @@ class UserTest extends TestCase
             'user_firstName' => 'three',
             'user_lastName' => 'three',
             'user_pseudo' => 'three',
-            'user_password' => 'password',
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
             'user_confirmation_password' => 'different'
         ]);
         $response->assertStatus(429);
@@ -341,8 +341,8 @@ class UserTest extends TestCase
             'user_firstName' => 1234567890,
             'user_lastName' => 'three',
             'user_pseudo' => 'three',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -369,8 +369,8 @@ class UserTest extends TestCase
             'user_firstName' => 'three',
             'user_lastName' => 1234567890,
             'user_pseudo' => 'three',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -397,8 +397,8 @@ class UserTest extends TestCase
             'user_firstName' => 'three',
             'user_lastName' => 'three',
             'user_pseudo' => 1234567890,
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -426,7 +426,7 @@ class UserTest extends TestCase
             'user_lastName' => 'three',
             'user_pseudo' => 'three',
             'user_password' => 1234567890,
-            'user_confirmation_password' => 'password'
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -453,7 +453,7 @@ class UserTest extends TestCase
             'user_firstName' => 'three',
             'user_lastName' => 'three',
             'user_pseudo' => 'three',
-            'user_password' => 'password',
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
             'user_confirmation_password' => 1234567890
         ]);
         $response->assertStatus(302);
@@ -481,8 +481,8 @@ class UserTest extends TestCase
             'user_firstName' => 'three',
             'user_lastName' => 'three',
             'user_pseudo' => 'three',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -491,7 +491,7 @@ class UserTest extends TestCase
             'user_lastName' => 'three',
             'user_pseudo' => 'three'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'three')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'three')->first()->password));
     }
 
     /**
@@ -518,8 +518,8 @@ class UserTest extends TestCase
             'user_firstName' => 'three',
             'user_lastName' => 'three',
             'user_pseudo' => 'three',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -534,8 +534,8 @@ class UserTest extends TestCase
             'user_firstName' => 'admin',
             'user_lastName' => 'admin',
             'user_pseudo' => 'admin',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -544,7 +544,7 @@ class UserTest extends TestCase
             'user_lastName' => 'admin',
             'user_pseudo' => 'admin'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'admin')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'admin')->first()->password));
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
         $admin->update([
             'user_initials' => "AA",
@@ -749,8 +749,8 @@ class UserTest extends TestCase
             'user_firstName' => 'other',
             'user_lastName' => 'other',
             'user_pseudo' => 'other',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -759,7 +759,7 @@ class UserTest extends TestCase
             'user_lastName' => 'other',
             'user_pseudo' => 'other'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other')->first()->password));
         $other = User::all()->where('user_pseudo', '==', 'other')->first();
         // Update the permission of the other user
         $response = $this->post('/user/update_right/user_resetUserPasswordRight/'.$user->id, [
@@ -2134,7 +2134,7 @@ class UserTest extends TestCase
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
         $response = $this->post('/user/update/infos/'.$user->id, [
-            'user_password' => 'password',
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
             'user_confirmation_password' => 'password1',
             'user_id' => $admin->id
         ]);
@@ -2444,7 +2444,7 @@ class UserTest extends TestCase
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
         $response = $this->post('/user/update/myAccount/'.$user->id, [
-            'user_password' => 'password',
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
             'user_confirmation_password' => 'password1',
             'user_id' => $user->id
         ]);
@@ -2537,8 +2537,8 @@ class UserTest extends TestCase
                 'user_firstName' => 'other',
                 'user_lastName' => 'other',
                 'user_pseudo' => 'other',
-                'user_password' => 'password',
-                'user_confirmation_password' => 'password'
+                'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+                'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
             ]);
             $response->assertStatus(200);
             $this->assertEquals($countUsers + 1, User::all()->count());
@@ -2547,7 +2547,7 @@ class UserTest extends TestCase
                 'user_lastName' => 'other',
                 'user_pseudo' => 'other'
             ]);
-            $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other')->first()->password));
+            $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other')->first()->password));
         }
         $response = $this->post('/user/update/myAccount/'.$user->id, [
             'user_pseudo' => 'other',
@@ -2659,8 +2659,8 @@ class UserTest extends TestCase
             'user_firstName' => 'other0',
             'user_lastName' => 'other0',
             'user_pseudo' => 'other0',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -2669,7 +2669,7 @@ class UserTest extends TestCase
             'user_lastName' => 'other0',
             'user_pseudo' => 'other0'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other0')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other0')->first()->password));
 
         $user = User::all()->where('user_pseudo', '==', 'other0')->first();
         $response = $this->post('/user/update/myAccount/'.$user->id, [
@@ -2694,8 +2694,8 @@ class UserTest extends TestCase
             'user_firstName' => 'other1',
             'user_lastName' => 'other1',
             'user_pseudo' => 'other1',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -2704,7 +2704,7 @@ class UserTest extends TestCase
             'user_lastName' => 'other1',
             'user_pseudo' => 'other1'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other1')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other1')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other1')->first();
         $response = $this->post('/user/update/myAccount/'.$user->id, [
             'user_formationEqDate' => Carbon::now(),
@@ -2728,8 +2728,8 @@ class UserTest extends TestCase
             'user_firstName' => 'other2',
             'user_lastName' => 'other2',
             'user_pseudo' => 'other2',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -2738,7 +2738,7 @@ class UserTest extends TestCase
             'user_lastName' => 'other2',
             'user_pseudo' => 'other2'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other2')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other2')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other2')->first();
         $response = $this->get('/user/get/formationEqOk/'.$user->id);
         $this->assertEquals('false', $response->content());
@@ -2757,8 +2757,8 @@ class UserTest extends TestCase
             'user_firstName' => 'other3',
             'user_lastName' => 'other3',
             'user_pseudo' => 'other3',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -2767,7 +2767,7 @@ class UserTest extends TestCase
             'user_lastName' => 'other3',
             'user_pseudo' => 'other3'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other3')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other3')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other3')->first();
         $response = $this->post('/user/update/myAccount/'.$user->id, [
             'user_formationMmeDate' => Carbon::now()->subYear()->subYear(),
@@ -2791,8 +2791,8 @@ class UserTest extends TestCase
             'user_firstName' => 'other4',
             'user_lastName' => 'other4',
             'user_pseudo' => 'other4',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -2801,7 +2801,7 @@ class UserTest extends TestCase
             'user_lastName' => 'other4',
             'user_pseudo' => 'other4'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other4')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other4')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other4')->first();
         $response = $this->post('/user/update/myAccount/'.$user->id, [
             'user_formationMmeDate' => Carbon::now(),
@@ -2825,8 +2825,8 @@ class UserTest extends TestCase
             'user_firstName' => 'other5',
             'user_lastName' => 'other5',
             'user_pseudo' => 'other5',
-            'user_password' => 'password',
-            'user_confirmation_password' => 'password'
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countUsers + 1, User::all()->count());
@@ -2835,7 +2835,7 @@ class UserTest extends TestCase
             'user_lastName' => 'other5',
             'user_pseudo' => 'other5'
         ]);
-        $this->assertTrue(Hash::check('password', User::all()->where('user_pseudo', '==', 'other5')->first()->password));
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other5')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other5')->first();
         $response = $this->get('/user/get/formationMmeOk/'.$user->id);
         $this->assertEquals('false', $response->content());

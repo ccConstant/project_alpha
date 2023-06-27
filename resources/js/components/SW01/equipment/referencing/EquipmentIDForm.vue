@@ -1,6 +1,6 @@
 <!--File name : EquipmentIDForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the Id card of the equipment who call all the input component and send the data to the controllers-->
 
 <template>
@@ -213,7 +213,7 @@ export default {
             loaded: false,
             equipmentMassUnit: "EquipmentMassUnit",
             equipmentType: "EquipmentType",
-            
+
         }
     },
     created() {

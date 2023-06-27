@@ -1,6 +1,6 @@
 <!--File name : PrvMtnOpRlzManagementModal.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component to make the modal used to manage the different preventive maintenance operation already realized-->
 
 <template>

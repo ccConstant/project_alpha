@@ -1,6 +1,6 @@
 <!--File name : ReferenceAMMELifeEvent.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component used to reference a life event in the current MME, it use the ReferenceAMMEVerifRlz and ReferenceAMMECurMtnOp to reference each one respectively-->
 
 <template>

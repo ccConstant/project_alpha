@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_21_075744_pivot_comp_fam_supplr.php
 * Creation date : 21 Apr 2023
-* Update date : 21 Apr 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "pivot_comp_fam_supplr" in the data base. In this file, we can see the different
 * attribute of this table ((two foreign key for link compFam table and supplier table)) and how they are defined (string, boolean, unique or not)
 */

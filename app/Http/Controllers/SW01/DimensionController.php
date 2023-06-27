@@ -3,7 +3,7 @@
 /*
 * Filename : DimensionController.php
 * Creation date : 11 May 2022
-* Update date : 17 May 2022
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the dimension table.
 * For example : add a dimension for an equipment, update a dimension, import a dimension, delete a dimension...
 */

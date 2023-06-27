@@ -1,6 +1,6 @@
 <!--File name : EquipmentPrvMtnOpForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the Form of the equipment preventive maintenance operation who call all the input component-->
 
 <template>
@@ -462,7 +462,7 @@ export default {
             delete this.errors[value];
         },
     },
-    created() { 
+    created() {
             /*Make a get request to ask the controller the preventive maintenance operation corresponding to the id of the equipment with which data will be imported*/
             axios.get('/info/send/preventiveMaintenanceOperation')
             .then(response => {
@@ -477,7 +477,7 @@ export default {
                         }).catch(error => {
                         });
                 }else{
-                   this.loaded = true; 
+                   this.loaded = true;
                 }
             }).catch(error => {
             });

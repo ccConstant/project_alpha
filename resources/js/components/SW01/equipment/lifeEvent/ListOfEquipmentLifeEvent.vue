@@ -1,6 +1,6 @@
 <!--File name : ListOfEquipmentLifeEvent.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component to show the list of the equipment in the life event menu-->
 
 <template>

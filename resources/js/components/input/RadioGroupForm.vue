@@ -1,6 +1,6 @@
 <!--File name : RadioGroupForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of a radio group called in the different forms-->
 
 <template>

@@ -1,6 +1,6 @@
 <!--File name : ValidationButton.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 11 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the validation button-->
 
 <template>

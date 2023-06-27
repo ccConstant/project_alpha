@@ -3,7 +3,7 @@
 /*
 * Filename : EquipmentController.php
 * Creation date : 27 Apr 2022
-* Update date : 25 May 2023
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the equipment table.
 * For example : add the identity card of an equipment in the database, update the identity card, delete the identity card...
 */
@@ -960,7 +960,7 @@ class EquipmentController extends Controller{
 
     }
 
-    
+
 
 
     /**
@@ -1438,19 +1438,6 @@ class EquipmentController extends Controller{
 
 
     }
-
-    /**
-     * Function call by UpdateState.vue when the form is submitted for add a new state with the route : /send/equipment/mme/ (get)
-     * Send the different mme linked to the equipment in which we update the state
-     * @return \Illuminate\Http\Response : MMES linked to the equipment
-     */
-    public function send_mme($eq_id){
-        $eq=Equipment::findOrFail($eq_id) ;
-        $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $eq_id)->orderBy('created_at', 'desc')->first();
-        $mmes=Mme::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
-        return response()->json($mmes) ;
-    }
-
 }
 
 

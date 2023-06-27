@@ -1,6 +1,6 @@
 <!--File name : EquipmentRiskForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 4 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the Form of the equipment risk who call all the input component-->
 
 <template>

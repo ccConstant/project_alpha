@@ -1,17 +1,17 @@
 <?php
 
 /*
-* Filename : EnumVerifAcceptanceAuthorityController.php 
+* Filename : EnumVerifAcceptanceAuthorityController.php
 * Creation date : 21 Jun 2022
-* Update date : 7 Jun 2023
-* This file is used to link the view files and the database that concern the enumVerifAcceptanceAuthority table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the enumVerifAcceptanceAuthority table.
 * For example : send the fields of the enum, add a new field...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
+use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\Verification;
 use App\Models\SW01\EnumVerifAcceptanceAuthority;
 use App\Models\SW01\MmeTemp;
@@ -22,15 +22,15 @@ use Carbon\Carbon;
 
 class EnumVerifAcceptanceAuthorityController extends Controller
 {
-   
+
     /**
      * Function call by MmeVerificationForm.vue with the route : /verification/enum/verifAcceptanceAuthority (get)
-    * Get the fields of the verification verifAcceptanceAuthority enum in the data base and give them to the vue for print them in the form 
+    * Get the fields of the verification verifAcceptanceAuthority enum in the data base and give them to the vue for print them in the form
     * @return \Illuminate\Http\Response
     */
 
     public function send_enum_verifAcceptanceAuthority (){
-        $enums_verifAcceptanceAuthorities=DB::table('enum_verif_acceptance_authorities')->orderBy('value', 'asc')->get() ;  
+        $enums_verifAcceptanceAuthorities=DB::table('enum_verif_acceptance_authorities')->orderBy('value', 'asc')->get() ;
         $enums=array() ;
         foreach($enums_verifAcceptanceAuthorities as $enum_verifAcceptanceAuthority){
             $enum=([
@@ -40,7 +40,7 @@ class EnumVerifAcceptanceAuthorityController extends Controller
             ]);
             array_push($enums, $enum) ;
         }
-        return response()->json($enums) ; 
+        return response()->json($enums) ;
     }
 
     /**
@@ -57,9 +57,9 @@ class EnumVerifAcceptanceAuthorityController extends Controller
                 ]
             ], 429);
         }
-        
+
         $enum_verifAcceptanceAuthority=EnumVerifAcceptanceAuthority::create([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
     }
 
@@ -88,7 +88,7 @@ class EnumVerifAcceptanceAuthorityController extends Controller
      */
     public function analyze_enum_verifAcceptanceAuthority(Request $request, $id){
         $verifications=Verification::where('enumVerifAcceptanceAuthority_id', '=', $id)->get() ;
-        $mmes=array() ; 
+        $mmes=array() ;
         $validated_mme=array() ;
         $id_mmes=array() ;
         $id_mmes_validated=array() ;
@@ -124,7 +124,7 @@ class EnumVerifAcceptanceAuthorityController extends Controller
                 }
                 $cpt=0;
             }
-            
+
         }
         $final=([
             "id" => $id,
@@ -143,21 +143,21 @@ class EnumVerifAcceptanceAuthorityController extends Controller
      */
 
     public function update_enum_verifAcceptanceAuthority (Request $request, $id){
-        $enum=EnumVerifAcceptanceAuthority::findOrFail($id) ; 
+        $enum=EnumVerifAcceptanceAuthority::findOrFail($id) ;
         $enum->update([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
         if ($request->validated_mme!=NULL){
             foreach ($request->validated_mme as $mme){
-                $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
+                $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ;
                 $mme=$mme_temp->mme ;
-    
+
                 $version=$mme->mme_nbrVersion+1;
                 $mme->update([
                     'mme_nbrVersion' => $version
                 ]);
                 $mme_temp->update([
-                    'mmeTemp_lifeSheetCreated' => 0, 
+                    'mmeTemp_lifeSheetCreated' => 0,
                     'qualityVerifier_id' => NULL,
                     'technicalVerifier_id' => NULL,
                     'mmeTemp_version' => $version,
@@ -198,8 +198,8 @@ class EnumVerifAcceptanceAuthorityController extends Controller
                 $newState->mme_temps()->attach($mme_temp);
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
-                $HistoryController= new HistoryController() ; 
-                $HistoryController->add_history_for_mme($mme->id, $request) ; 
+                $HistoryController= new HistoryController() ;
+                $HistoryController->add_history_for_mme($mme->id, $request) ;
             }
         }
 
@@ -215,8 +215,8 @@ class EnumVerifAcceptanceAuthorityController extends Controller
      */
 
     public function delete_enum_verifAcceptanceAuthority ($id){
-        $enum_verifAcceptanceAuthority=EnumVerifAcceptanceAuthority::findOrFail($id) ; 
-        $VerificationLinked=Verification::where('EnumVerifAcceptanceAuthority_id', '=', $id)->get() ; 
+        $enum_verifAcceptanceAuthority=EnumVerifAcceptanceAuthority::findOrFail($id) ;
+        $VerificationLinked=Verification::where('EnumVerifAcceptanceAuthority_id', '=', $id)->get() ;
         if (count($VerificationLinked)!=0){
             return response()->json([
                 'errors' => [
@@ -224,6 +224,6 @@ class EnumVerifAcceptanceAuthorityController extends Controller
                 ]
             ], 429);
         }
-        $enum_verifAcceptanceAuthority->delete() ; 
+        $enum_verifAcceptanceAuthority->delete() ;
     }
 }

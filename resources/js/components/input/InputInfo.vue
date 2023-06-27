@@ -1,6 +1,6 @@
 <!--File name : InputInfo.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 05 May 2022-->
+<!--Update date : 27 Jun 2023-->
 <!--Displays a clickable information button that show a help text to facilitate user input-->
 
 <template>
@@ -9,13 +9,13 @@
         <b-popover :target="`popover-target-${_uid}`" triggers="hover" placement="right">
             {{info}}
         </b-popover>
-        
+
     </div>
-    
+
 </template>
 
 <script>
-    
+
 export default {
     props:['info']
 
@@ -33,15 +33,15 @@ export default {
         transition:1ms ;
     }
     .info_icon:hover{
-        -ms-transform: scale(1.5); 
-        -webkit-transform: scale(1.5); 
+        -ms-transform: scale(1.5);
+        -webkit-transform: scale(1.5);
         transform: scale(1.5);
     }
     .textInfo p{
         font-size: 12px;
     }
-    
 
-    
+
+
 
 </style>

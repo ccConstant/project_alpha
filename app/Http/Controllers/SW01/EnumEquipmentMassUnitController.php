@@ -1,19 +1,19 @@
 <?php
 
 /*
-* Filename : EnumEquipmentMassUnitController.php 
+* Filename : EnumEquipmentMassUnitController.php
 * Creation date : 24 May 2022
-* Update date : 7 Jun 2023
-* This file is used to link the view files and the database that concern the enumEquipmentMassUnit table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the enumEquipmentMassUnit table.
 * For example : send the fields of the enum, add a new field...
-*/ 
+*/
 
 
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
+use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\EnumEquipmentMassUnit;
@@ -27,11 +27,11 @@ class EnumEquipmentMassUnitController extends Controller
 {
     /**
      * Function call by EquipmentIDForm.vue with the route : /equipment/enum/massUnit (post)
-    * Get the fields of the equipment mass unit enum in the data base and give them to the vue for print them in the form 
+    * Get the fields of the equipment mass unit enum in the data base and give them to the vue for print them in the form
     * @return \Illuminate\Http\Response
     */
     public function send_enum_massUnit (){
-        $enums_massUnit=DB::table('enum_equipment_mass_units')->orderBy('value', 'asc')->get() ;  
+        $enums_massUnit=DB::table('enum_equipment_mass_units')->orderBy('value', 'asc')->get() ;
         $enums=array() ;
         foreach($enums_massUnit as $enum_massUnit){
             $enum=([
@@ -41,7 +41,7 @@ class EnumEquipmentMassUnitController extends Controller
             ]);
             array_push($enums, $enum) ;
         }
-        return response()->json($enums) ; 
+        return response()->json($enums) ;
     }
 
     /**
@@ -58,9 +58,9 @@ class EnumEquipmentMassUnitController extends Controller
                 ]
             ], 429);
         }
-        
+
         $enum_massUnit=EnumEquipmentMassUnit::create([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
     }
 
@@ -88,7 +88,7 @@ class EnumEquipmentMassUnitController extends Controller
      */
     public function analyze_enum_massUnit(Request $request, $id){
         $equipmentTemps=EquipmentTemp::where('enumMassUnit_id', '=', $id)->get() ;
-        $equipments=array() ; 
+        $equipments=array() ;
         $validated_eq=array() ;
         $id_eqs=array() ;
         $id_eqs_validated=array() ;
@@ -123,7 +123,7 @@ class EnumEquipmentMassUnitController extends Controller
                 }
                 $cpt=0;
             }
-            
+
         }
         $final=([
             "id" => $id,
@@ -134,7 +134,7 @@ class EnumEquipmentMassUnitController extends Controller
         return response()->json($final) ;
     }
 
-    
+
 
      /**
      * Function call by EnumManagement.vue with the route : /dimension/enum/massUnit/update/{id} (post)
@@ -143,21 +143,21 @@ class EnumEquipmentMassUnitController extends Controller
      */
 
     public function update_enum_massUnit (Request $request, $id){
-        $enum_massUnit=EnumEquipmentMassUnit::findOrFail($id) ; 
+        $enum_massUnit=EnumEquipmentMassUnit::findOrFail($id) ;
         $enum_massUnit->update([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
         if ($request->validated_eq!=NULL){
             foreach ($request->validated_eq as $eq){
-                $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ; 
+                $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ;
                 $eq=$equipment_temp->equipment ;
-                
+
                 $version=$eq->eq_nbrVersion+1;
                 $eq->update([
                     'eq_nbrVersion' => $version
                 ]);
                 $equipment_temp->update([
-                    'eqTemp_lifeSheetCreated' => 0, 
+                    'eqTemp_lifeSheetCreated' => 0,
                     'qualityVerifier_id' => NULL,
                     'technicalVerifier_id' => NULL,
                     'eqTemp_version' => $version,
@@ -196,12 +196,12 @@ class EnumEquipmentMassUnitController extends Controller
                 ]) ;
 
                 $newState->equipment_temps()->attach($equipment_temp);
-            
-            
+
+
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
-                $HistoryController= new HistoryController() ; 
-                $HistoryController->add_history_for_eq($eq->id, $request) ; 
+                $HistoryController= new HistoryController() ;
+                $HistoryController->add_history_for_eq($eq->id, $request) ;
             }
         }
 
@@ -214,8 +214,8 @@ class EnumEquipmentMassUnitController extends Controller
      */
 
     public function delete_enum_massUnit ($id){
-        $enum_massUnit=EnumEquipmentMassUnit::findOrFail($id) ; 
-        $eqLinked=EquipmentTemp::where('enumMassUnit_id', '=', $id)->get() ; 
+        $enum_massUnit=EnumEquipmentMassUnit::findOrFail($id) ;
+        $eqLinked=EquipmentTemp::where('enumMassUnit_id', '=', $id)->get() ;
         if (count($eqLinked)!=0){
             return response()->json([
                 'errors' => [
@@ -223,7 +223,7 @@ class EnumEquipmentMassUnitController extends Controller
                 ]
             ], 429);
         }
-        $enum_massUnit->delete() ; 
+        $enum_massUnit->delete() ;
     }
 
 }

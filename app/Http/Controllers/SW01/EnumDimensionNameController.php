@@ -3,7 +3,7 @@
 /*
 * Filename : EnumDimensionNameController.php
 * Creation date : 24 May 2022
-* Update date : 7 Jun 2023
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the enumDimensionName table.
 * For example : send the fields of the enum, add a new field...
 */

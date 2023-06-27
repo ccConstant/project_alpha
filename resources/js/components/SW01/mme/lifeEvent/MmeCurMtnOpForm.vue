@@ -1,6 +1,6 @@
 <!--File name : MmeCurMtnOpForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component used to generate a form, this form will be used to create a new curative maintenance operation on a MME-->
 
 <template>

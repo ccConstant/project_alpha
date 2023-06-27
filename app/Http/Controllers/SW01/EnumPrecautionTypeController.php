@@ -1,18 +1,18 @@
 <?php
 
 /*
-* Filename : EnumPrecautionTypeController.php 
+* Filename : EnumPrecautionTypeController.php
 * Creation date : 21 Jun 2022
-* Update date : 7 Jun 2023
-* This file is used to link the view files and the database that concern the enumPrecautionType table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the enumPrecautionType table.
 * For example : send the fields of the enum, add a new field...
-*/ 
+*/
 
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
+use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\Precaution;
 use App\Models\SW01\EnumPrecautionType;
 use App\Models\SW01\MmeTemp;
@@ -24,11 +24,11 @@ use Carbon\Carbon;
 class EnumPrecautionTypeController extends Controller{
      /**
      * Function call by MMEPrecautionForm.vue with the route : /precaution/enum/type' (get)
-    * Get the fields of the precaution type enum to the vue for print them in the form 
+    * Get the fields of the precaution type enum to the vue for print them in the form
      * @return \Illuminate\Http\Response
      */
     public function send_enum_type (){
-        $enums_type=DB::table('enum_precaution_types')->orderBy('value', 'asc')->get() ;   
+        $enums_type=DB::table('enum_precaution_types')->orderBy('value', 'asc')->get() ;
         $enums=array() ;
         foreach($enums_type as $enum_type){
             $enum=([
@@ -38,8 +38,8 @@ class EnumPrecautionTypeController extends Controller{
             ]);
             array_push($enums, $enum) ;
         }
-        return response()->json($enums) ; 
-        
+        return response()->json($enums) ;
+
     }
 
     /**
@@ -56,10 +56,10 @@ class EnumPrecautionTypeController extends Controller{
                 ]
             ], 429);
         }
-        
-        
+
+
         $enum_type=EnumPrecautionType::create([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
     }
 
@@ -78,7 +78,7 @@ class EnumPrecautionTypeController extends Controller{
                 ]
             ], 429);
         }
-        
+
         if (count($enum_already_exist)!=0 ){
             return response()->json([
                 'errors' => [
@@ -96,7 +96,7 @@ class EnumPrecautionTypeController extends Controller{
      */
     public function analyze_enum_type(Request $request, $id){
         $precautions=Precaution::where('enumPrecautionType_id', '=', $id)->get() ;
-        $mmes=array() ; 
+        $mmes=array() ;
         $validated_mme=array() ;
         $id_mmes=array() ;
         $id_mmes_validated=array() ;
@@ -132,7 +132,7 @@ class EnumPrecautionTypeController extends Controller{
                 }
                 $cpt=0;
             }
-            
+
         }
         $final=([
             "id" => $id,
@@ -151,21 +151,21 @@ class EnumPrecautionTypeController extends Controller{
      */
 
     public function update_enum_type (Request $request, $id){
-        $enum_type=EnumPrecautionType::findOrFail($id) ; 
+        $enum_type=EnumPrecautionType::findOrFail($id) ;
         $enum_type->update([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
         if ($request->validated_mme!=NULL){
             foreach ($request->validated_mme as $mme){
-                $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
+                $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ;
                 $mme=$mme_temp->mme ;
-                
+
                 $version=$mme->mme_nbrVersion+1;
                 $mme->update([
                     'mme_nbrVersion' => $version
                 ]);
                 $mme_temp->update([
-                    'mmeTemp_lifeSheetCreated' => 0, 
+                    'mmeTemp_lifeSheetCreated' => 0,
                     'qualityVerifier_id' => NULL,
                     'technicalVerifier_id' => NULL,
                     'mmeTemp_version' => $version,
@@ -206,8 +206,8 @@ class EnumPrecautionTypeController extends Controller{
                 $newState->mme_temps()->attach($mme_temp);
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
-                $HistoryController= new HistoryController() ; 
-                $HistoryController->add_history_for_mme($mme->id, $request) ; 
+                $HistoryController= new HistoryController() ;
+                $HistoryController->add_history_for_mme($mme->id, $request) ;
 
             }
         }
@@ -223,7 +223,7 @@ class EnumPrecautionTypeController extends Controller{
      */
 
     public function delete_enum_type ($id){
-        $enum_type=EnumPrecautionType::findOrFail($id) ; 
+        $enum_type=EnumPrecautionType::findOrFail($id) ;
         if ($enum_type->value=="Preservation" || $enum_type->value=="Handling" || $enum_type->value=="Storage"){
             return response()->json([
                 'errors' => [
@@ -231,7 +231,7 @@ class EnumPrecautionTypeController extends Controller{
                 ]
             ], 429);
         }
-        $prctnLinked=Precaution::where('enumPrecautionType_id', '=', $id)->get() ; 
+        $prctnLinked=Precaution::where('enumPrecautionType_id', '=', $id)->get() ;
         if (count($prctnLinked)!=0){
             return response()->json([
                 'errors' => [
@@ -239,7 +239,7 @@ class EnumPrecautionTypeController extends Controller{
                 ]
             ], 429);
         }
-        $enum_type->delete() ; 
+        $enum_type->delete() ;
     }
 }
 

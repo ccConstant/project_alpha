@@ -3,10 +3,10 @@
 /*
 * Filename : 2022_05_10_062350_create_curative_maintenance_operations_table.php
 * Creation date : 10 May 2022
-* Update date : 15 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "curative_maintenance_operations" in the data base. In this file, we can see the different
 * attribute of this table (number, reportNumber, description...) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 
 use Illuminate\Database\Migrations\Migration;
@@ -24,24 +24,24 @@ return new class extends Migration
     {
         Schema::create('curative_maintenance_operations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('curMtnOp_number') ; 
-            $table->string('curMtnOp_reportNumber') ->nullable() ; 
-            $table->mediumText('curMtnOp_description') -> nullable(); 
-            $table->date('curMtnOp_startDate') ->nullable(); 
-            $table->date('curMtnOp_endDate') ->nullable(); 
-            $table->enum('curMtnOp_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
+            $table->unsignedTinyInteger('curMtnOp_number') ;
+            $table->string('curMtnOp_reportNumber') ->nullable() ;
+            $table->mediumText('curMtnOp_description') -> nullable();
+            $table->date('curMtnOp_startDate') ->nullable();
+            $table->date('curMtnOp_endDate') ->nullable();
+            $table->enum('curMtnOp_validate',  ['drafted', 'to_be_validated', 'validated']) ;
             $table->unsignedBigInteger('state_id') ->nullable();
-            $table->foreign('state_id')->references('id')->on('states') ->onDelete('cascade')  ; 
+            $table->foreign('state_id')->references('id')->on('states') ->onDelete('cascade')  ;
             $table->unsignedBigInteger('mme_state_id') ->nullable();
-            $table->foreign('mme_state_id')->references('id')->on('mme_states') ->onDelete('cascade')  ; 
-            $table->unsignedBigInteger('qualityVerifier_id') -> nullable() ; 
-            $table->foreign('qualityVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
-            $table->unsignedBigInteger('technicalVerifier_id')  -> nullable() ; 
-            $table->foreign('technicalVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ; 
-            $table->unsignedBigInteger('realizedBy_id') -> nullable() ; 
+            $table->foreign('mme_state_id')->references('id')->on('mme_states') ->onDelete('cascade')  ;
+            $table->unsignedBigInteger('qualityVerifier_id') -> nullable() ;
+            $table->foreign('qualityVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ;
+            $table->unsignedBigInteger('technicalVerifier_id')  -> nullable() ;
+            $table->foreign('technicalVerifier_id')->references('id')->on('users') ->onDelete('restrict')  ;
+            $table->unsignedBigInteger('realizedBy_id') -> nullable() ;
             $table->foreign('realizedBy_id')->references('id')->on('users') ->onDelete('restrict')  ;
-            $table->unsignedBigInteger('enteredBy_id') -> nullable() ; 
-            $table->foreign('enteredBy_id')->references('id')->on('users') ->onDelete('restrict')  ;  
+            $table->unsignedBigInteger('enteredBy_id') -> nullable() ;
+            $table->foreign('enteredBy_id')->references('id')->on('users') ->onDelete('restrict')  ;
 
             $table->timestamps();
         });
