@@ -12,7 +12,6 @@
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
             <exclude>./tests/Feature/Auth</exclude>
-            <exclude>./tests/Feature/UserTest.php</exclude>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
