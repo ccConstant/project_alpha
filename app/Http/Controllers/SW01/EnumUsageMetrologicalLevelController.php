@@ -1,17 +1,17 @@
 <?php
 
 /*
-* Filename : EnumUsageMetrologicalLevelController.php 
+* Filename : EnumUsageMetrologicalLevelController.php
 * Creation date : 21 Jun 2022
-* Update date : 7 Jun 2023
-* This file is used to link the view files and the database that concern the enumUsageMetrologicalLevel table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the enumUsageMetrologicalLevel table.
 * For example : send the fields of the enum, add a new field...
-*/ 
+*/
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
+use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\MmeUsage;
 use App\Models\SW01\EnumUsageMetrologicalLevel;
 use App\Models\SW01\MmeTemp;
@@ -22,15 +22,15 @@ use Carbon\Carbon;
 
 class EnumUsageMetrologicalLevelController extends Controller
 {
-   
+
     /**
      * Function call by MmeUsageForm.vue with the route : /usage/enum/metrologicalLevel (get)
-    * Get the fields of the usage metrological level enum in the data base and give them to the vue for print them in the form 
+    * Get the fields of the usage metrological level enum in the data base and give them to the vue for print them in the form
     * @return \Illuminate\Http\Response
     */
 
     public function send_enum_metrologicalLevel (){
-        $enums_metrologicalLevel=DB::table('enum_usage_metrological_levels')->orderBy('value', 'asc')->get() ;   
+        $enums_metrologicalLevel=DB::table('enum_usage_metrological_levels')->orderBy('value', 'asc')->get() ;
         $enums=array() ;
         foreach($enums_metrologicalLevel as $enum_metrologicalLevel){
             $enum=([
@@ -40,7 +40,7 @@ class EnumUsageMetrologicalLevelController extends Controller
             ]);
             array_push($enums, $enum) ;
         }
-        return response()->json($enums) ; 
+        return response()->json($enums) ;
     }
 
     /**
@@ -57,9 +57,9 @@ class EnumUsageMetrologicalLevelController extends Controller
                 ]
             ], 429);
         }
-        
+
         $enum_metrologicalLevel=EnumUsageMetrologicalLevel::create([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
     }
 
@@ -88,7 +88,7 @@ class EnumUsageMetrologicalLevelController extends Controller
      */
     public function analyze_enum_metrologicalLevel(Request $request, $id){
         $usages=MmeUsage::where('enumUsageMetrologicalLevel_id', '=', $id)->get() ;
-        $mmes=array() ; 
+        $mmes=array() ;
         $validated_mme=array() ;
         $id_mmes=array() ;
         $id_mmes_validated=array() ;
@@ -123,7 +123,7 @@ class EnumUsageMetrologicalLevelController extends Controller
                     array_push($id_mmes, $mme_temp->id) ;
                 }
                 $cpt=0;
-            } 
+            }
         }
         $final=([
             "id" => $id,
@@ -142,21 +142,21 @@ class EnumUsageMetrologicalLevelController extends Controller
      */
 
     public function update_enum_metrologicalLevel (Request $request, $id){
-        $enum=EnumUsageMetrologicalLevel::findOrFail($id) ; 
+        $enum=EnumUsageMetrologicalLevel::findOrFail($id) ;
         $enum->update([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
         if ($request->validated_mme!=NULL){
             foreach ($request->validated_mme as $mme){
-                $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ; 
+                $mme_temp=MmeTemp::findOrFail($mme['mmeTemp_id']) ;
                 $mme=$mme_temp->mme ;
-    
+
                 $version=$mme->mme_nbrVersion+1;
                 $mme->update([
                     'mme_nbrVersion' => $version
                 ]);
                 $mme_temp->update([
-                    'mmeTemp_lifeSheetCreated' => 0, 
+                    'mmeTemp_lifeSheetCreated' => 0,
                     'qualityVerifier_id' => NULL,
                     'technicalVerifier_id' => NULL,
                     'mmeTemp_version' => $version,
@@ -196,11 +196,11 @@ class EnumUsageMetrologicalLevelController extends Controller
 
                 $newState->mme_temps()->attach($mme_temp);
 
-                
+
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
-                $HistoryController= new HistoryController() ; 
-                $HistoryController->add_history_for_mme($mme->id, $request) ; 
+                $HistoryController= new HistoryController() ;
+                $HistoryController->add_history_for_mme($mme->id, $request) ;
             }
         }
 
@@ -215,8 +215,8 @@ class EnumUsageMetrologicalLevelController extends Controller
      */
 
     public function delete_enum_metrologicalLevel ($id){
-        $enum_metrologicalLevel=EnumUsageMetrologicalLevel::findOrFail($id) ; 
-        $UsageLinked=MmeUsage::where('enumUsageMetrologicalLevel_id', '=', $id)->get() ; 
+        $enum_metrologicalLevel=EnumUsageMetrologicalLevel::findOrFail($id) ;
+        $UsageLinked=MmeUsage::where('enumUsageMetrologicalLevel_id', '=', $id)->get() ;
         if (count($UsageLinked)!=0){
             return response()->json([
                 'errors' => [
@@ -224,6 +224,6 @@ class EnumUsageMetrologicalLevelController extends Controller
                 ]
             ], 429);
         }
-        $enum_metrologicalLevel->delete() ; 
+        $enum_metrologicalLevel->delete() ;
     }
 }

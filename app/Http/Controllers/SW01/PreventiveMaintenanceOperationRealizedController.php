@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Filename : PreventiveMaintenanceOperationRealizedController.php
+ * Creation date : 21 Jun 2021
+ * Update date : 27 Jun 2023
+ * This file is used to link the view files and the database that concern the PreventiveMaintenanceOperationRealized table.
+ * For example : send the fields of the prvMtnOpRlz, add a new field...
+ */
+
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;

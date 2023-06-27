@@ -1,25 +1,25 @@
 <?php
 
 /*
-* Filename : PowerController.php 
+* Filename : PowerController.php
 * Creation date : 17 May 2022
-* Update date : 17 May 2022
-* This file is used to link the view files and the database that concern the power table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the power table.
 * For example : add a power for an equipment in the data base, update a power, delete it...
-*/ 
+*/
 
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\EnumPowerType ; 
-use App\Models\SW01\Power ; 
-use App\Models\SW01\Equipment ;  
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\EnumPowerType ;
+use App\Models\SW01\Power ;
+use App\Models\SW01\Equipment ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
-use App\Models\SW01\State ; 
+use App\Models\SW01\State ;
 
 
 
@@ -29,12 +29,12 @@ class PowerController extends Controller
 
      /**
      * Function call by EquipmentPowForm.vue with the route : /power/names (get)
-    * Get the fields of the power names to the vue for print them in the form 
+    * Get the fields of the power names to the vue for print them in the form
      * @return \Illuminate\Http\Response
      */
     public function send_names (){
         $names=DB::select(DB::raw('SELECT DISTINCT pow_name FROM powers'));
-        return response()->json($names) ; 
+        return response()->json($names) ;
     }
 
     /**
@@ -72,7 +72,7 @@ class PowerController extends Controller
                     'pow_consumptionUnit.required' => 'You must enter a unit for the consumption of the power ',
                     'pow_consumptionUnit.min' => 'You must enter at least one character ',
                     'pow_consumptionUnit.max' => 'You must enter a maximum of 25 characters',
-                
+
                 ]
             );
 
@@ -87,7 +87,7 @@ class PowerController extends Controller
 
         }else{
              //-----CASE pow->validate=drafted or pow->validate=to be validate----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -113,7 +113,7 @@ class PowerController extends Controller
 
     /**
      * Function call by EquipmentPowForm.vue when the form is submitted for insert with the route : /equipment/add/pow/${id} (post)
-     * Add a new enregistrement of power in the data base with the informations entered in the form 
+     * Add a new enregistrement of power in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : the id of the new power
      */
     public function add_power(Request $request){
@@ -121,15 +121,15 @@ class PowerController extends Controller
        //A power is linked to its type. So we need to find the id of the type choosen by the user and write it in the attribute of the power.
         //But if no one type is choosen by the user we define this id to NULL
         // And if the type choosen is find in the data base the NULL value will be replace by the id value
-        $type_id=NULL ; 
+        $type_id=NULL ;
        if ($request->pow_type!='' && $request->pow_type!=NULL){
             $type= EnumPowerType::where('value', '=', $request->pow_type)->first() ;
-            $type_id=$type->id ; 
+            $type_id=$type->id ;
         }
 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
-        
+
         //Creation of a new power
         $power=Power::create([
             'pow_name' => $request->pow_name,
@@ -140,10 +140,10 @@ class PowerController extends Controller
             'pow_validate' => $request->pow_validate,
             'enumPowerType_id' => $type_id,
             'equipmentTemp_id' => $mostRecentlyEqTmp->id,
-        ]) ; 
+        ]) ;
 
         $power_id=$power->id;
-        $id_eq=intval($request->eq_id) ; 
+        $id_eq=intval($request->eq_id) ;
         if ($mostRecentlyEqTmp!=NULL){
 
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -158,16 +158,16 @@ class PowerController extends Controller
             }
             //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add power
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
-                
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                 //update of equipment temp
                 $mostRecentlyEqTmp->update([
                  'eqTemp_version' => $version,
@@ -209,14 +209,14 @@ class PowerController extends Controller
 
                 $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
-            return response()->json($power_id) ; 
+            return response()->json($power_id) ;
         }
     }
 
 
     /**
      * Function call by EquipmentPowForm.vue when the form is submitted for update with the route : /equipment/update/pow/{id} (post)
-     * Update an enregistrement of power in the data base with the informations entered in the form 
+     * Update an enregistrement of power in the data base with the informations entered in the form
      * The id parameter correspond to the id of the power we want to update
      * */
     public function update_power(Request $request, $id){
@@ -224,14 +224,14 @@ class PowerController extends Controller
         //A power is linked to its type. So we need to find the id of the type choosen by the user and write it in the attribute of the power.
         //But if no one type is choosen by the user we define this id to NULL
         // And if the type choosen is find in the data base the NULL value will be replace by the id value
-        $type_id=NULL ; 
+        $type_id=NULL ;
         if ($request->pow_type!='' && $request->pow_type!=NULL){
             $type= EnumPowerType::where('value', '=', $request->pow_type)->first() ;
-            $type_id=$type->id ; 
+            $type_id=$type->id ;
         }
 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
 
@@ -248,16 +248,16 @@ class PowerController extends Controller
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update power
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
 
                 //We need to increase the version of the equipment temp (because we create a new equipment temp)
-               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+               $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                //update of equipment temp
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
@@ -300,7 +300,7 @@ class PowerController extends Controller
                 $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
             // In the other case, we can modify the informations without problems
-            $power=Power::findOrFail($id) ; 
+            $power=Power::findOrFail($id) ;
             $power->update([
                 'pow_name' => $request->pow_name,
                 'pow_value' => $request->pow_value,
@@ -309,7 +309,7 @@ class PowerController extends Controller
                 'pow_consumptionUnit' => $request->pow_consumptionUnit,
                 'pow_validate' => $request->pow_validate,
                 'enumPowerType_id' => $type_id,
-            ]) ; 
+            ]) ;
         }
     }
 
@@ -322,10 +322,10 @@ class PowerController extends Controller
 
     public function send_powers($id) {
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
-        $container=array() ; 
+        $container=array() ;
         $powers= $powers=Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get() ;
         foreach ($powers as $power) {
-            $type = NULL ; 
+            $type = NULL ;
             if ($power->enumPowerType_id!=NULL){
                 $type = $power->enumPowerType->value ;
             }
@@ -351,8 +351,8 @@ class PowerController extends Controller
      * The id parameter correspond to the id of the power we want to delete
      * */
     public function delete_power(Request $request, $id){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
@@ -368,14 +368,14 @@ class PowerController extends Controller
         }
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
 
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
             //update of equipment temp
             $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
@@ -418,7 +418,7 @@ class PowerController extends Controller
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
         $power=Power::findOrFail($id);
-        $power->delete() ; 
+        $power->delete() ;
     }
 
     /**
@@ -429,15 +429,15 @@ class PowerController extends Controller
      */
 
     public function send_powers_by_type($id) {
-        $enums_powerType=EnumPowerType::all() ; 
+        $enums_powerType=EnumPowerType::all() ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->latest()->first();
         $powers = Power::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
-        $containerGlobal=array() ; 
+        $containerGlobal=array() ;
         foreach ($enums_powerType as $enum_powerType){
-            $container=array() ; 
+            $container=array() ;
             foreach ($powers as $power) {
                 if ($enum_powerType->id==$power->enumPowerType_id){
-                    $type = NULL ; 
+                    $type = NULL ;
                     if ($power->enumPowerType_id!=NULL){
                         $type = $power->enumPowerType->value ;
                     }
@@ -460,7 +460,7 @@ class PowerController extends Controller
             ]);
             array_push($containerGlobal,$obj2);
         }
-       
+
         return response()->json($containerGlobal) ;
     }
 

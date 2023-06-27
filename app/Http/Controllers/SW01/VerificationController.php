@@ -3,7 +3,7 @@
 /*
 * Filename : VerificationController.php
 * Creation date : 15 Jun 2022
-* Update date : 22 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the verification table.
 * For example : add a verification for an mme in the data base, update it, delete it...
 */

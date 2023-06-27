@@ -1,6 +1,6 @@
 <!--File name : InputNumberForm.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of an input type number called in the different forms-->
 
 <template>

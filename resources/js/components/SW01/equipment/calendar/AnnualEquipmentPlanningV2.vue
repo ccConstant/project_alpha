@@ -1,6 +1,6 @@
 <!--File name : AnnualEquipmentPlanningV2.vue-->
 <!--Creation date : 02 Jun 2023-->
-<!--Update date : 02 Jun 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the annual maintenance of equipment-->
 
 <template>

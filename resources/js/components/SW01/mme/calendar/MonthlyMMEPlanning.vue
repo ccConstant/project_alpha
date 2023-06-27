@@ -1,6 +1,6 @@
 <!--File name : MonthlyMMEPlanning.vue-->
 <!--Creation date : 27 Apr 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component used to show the monthly planning of maintenance linked to the different MME-->
 
 <template>

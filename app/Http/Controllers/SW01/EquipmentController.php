@@ -3,7 +3,7 @@
 /*
 * Filename : EquipmentController.php
 * Creation date : 27 Apr 2022
-* Update date : 25 May 2023
+* Update date : 27 Jun 2023
 * This file is used to link the view files and the database that concern the equipment table.
 * For example : add the identity card of an equipment in the database, update the identity card, delete the identity card...
 */

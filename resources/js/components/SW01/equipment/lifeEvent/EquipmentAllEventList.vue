@@ -1,6 +1,6 @@
 <!--File name : EquipmentAllEventList.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 7 Jun 2023-->
+<!--Update date :27 Jun 2023-->
 <!--Vue Component to show the different event for an equipment-->
 
 <template>

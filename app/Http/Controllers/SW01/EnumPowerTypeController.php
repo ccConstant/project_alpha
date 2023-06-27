@@ -1,18 +1,18 @@
 <?php
 
 /*
-* Filename : EnumPowerTypeController.php 
+* Filename : EnumPowerTypeController.php
 * Creation date : 24 May 2022
-* Update date : 7 Jun 2023
-* This file is used to link the view files and the database that concern the enumPowerType table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the enumPowerType table.
 * For example : send the fields of the enum, add a new field...
-*/ 
+*/
 
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
+use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\Power;
 use App\Models\SW01\EnumPowerType;
 use App\Models\SW01\EquipmentTemp ;
@@ -24,11 +24,11 @@ use Carbon\Carbon;
 class EnumPowerTypeController extends Controller{
      /**
      * Function call by EquipmentPowForm.vue with the route : /power/enum/type (get)
-    * Get the fields of the power type enum to the vue for print them in the form 
+    * Get the fields of the power type enum to the vue for print them in the form
      * @return \Illuminate\Http\Response
      */
     public function send_enum_type (){
-        $enums_type=DB::table('enum_power_types')->orderBy('value', 'asc')->get() ;   
+        $enums_type=DB::table('enum_power_types')->orderBy('value', 'asc')->get() ;
         $enums=array() ;
         foreach($enums_type as $enum_type){
             $enum=([
@@ -38,8 +38,8 @@ class EnumPowerTypeController extends Controller{
             ]);
             array_push($enums, $enum) ;
         }
-        return response()->json($enums) ; 
-        
+        return response()->json($enums) ;
+
     }
 
     /**
@@ -56,10 +56,10 @@ class EnumPowerTypeController extends Controller{
                 ]
             ], 429);
         }
-        
-        
+
+
         $enum_type=EnumPowerType::create([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
     }
 
@@ -87,7 +87,7 @@ class EnumPowerTypeController extends Controller{
      */
     public function analyze_enum_type(Request $request, $id){
         $powers=Power::where('enumPowerType_id', '=', $id)->get() ;
-        $equipments=array() ; 
+        $equipments=array() ;
         $validated_eq=array() ;
         $id_eqs=array() ;
         $id_eqs_validated=array() ;
@@ -123,7 +123,7 @@ class EnumPowerTypeController extends Controller{
                 }
                 $cpt=0;
             }
-            
+
         }
         $final=([
             "id" => $id,
@@ -142,21 +142,21 @@ class EnumPowerTypeController extends Controller{
      */
 
     public function update_enum_type (Request $request, $id){
-        $enum_type=EnumPowerType::findOrFail($id) ; 
+        $enum_type=EnumPowerType::findOrFail($id) ;
         $enum_type->update([
-            'value' => $request->value, 
+            'value' => $request->value,
         ]);
         if ($request->validated_eq!=NULL){
             foreach ($request->validated_eq as $eq){
-                $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ; 
+                $equipment_temp=EquipmentTemp::findOrFail($eq['eqTemp_id']) ;
                 $eq=$equipment_temp->equipment ;
-                
+
                 $version=$eq->eq_nbrVersion+1;
                 $eq->update([
                     'eq_nbrVersion' => $version
                 ]);
                 $equipment_temp->update([
-                    'eqTemp_lifeSheetCreated' => 0, 
+                    'eqTemp_lifeSheetCreated' => 0,
                     'qualityVerifier_id' => NULL,
                     'technicalVerifier_id' => NULL,
                     'eqTemp_version' => $version,
@@ -197,8 +197,8 @@ class EnumPowerTypeController extends Controller{
                 $newState->equipment_temps()->attach($equipment_temp);
 
                 //We created a new enregistrement of history for explain the reason of the enum updates
-                $HistoryController= new HistoryController() ; 
-                $HistoryController->add_history_for_eq($eq->id, $request) ; 
+                $HistoryController= new HistoryController() ;
+                $HistoryController->add_history_for_eq($eq->id, $request) ;
             }
         }
 
@@ -213,8 +213,8 @@ class EnumPowerTypeController extends Controller{
      */
 
     public function delete_enum_type ($id){
-        $enum_type=EnumPowerType::findOrFail($id) ; 
-        $pwLinked=Power::where('enumPowerType_id', '=', $id)->get() ; 
+        $enum_type=EnumPowerType::findOrFail($id) ;
+        $pwLinked=Power::where('enumPowerType_id', '=', $id)->get() ;
         if (count($pwLinked)!=0){
             return response()->json([
                 'errors' => [
@@ -222,7 +222,7 @@ class EnumPowerTypeController extends Controller{
                 ]
             ], 429);
         }
-        $enum_type->delete() ; 
+        $enum_type->delete() ;
     }
 }
 

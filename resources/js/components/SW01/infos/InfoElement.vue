@@ -1,6 +1,6 @@
 <!--File name : InfosElement.vue-->
 <!--Creation date : 12 Jul 2022-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component representing an info called in the different forms-->
 
 

@@ -1,20 +1,20 @@
 <?php
 
 /*
-* Filename : InformationController.php 
+* Filename : InformationController.php
 * Creation date : 9 Jun 2022
-* Update date : 15 May 2023
-* This file is used to link the view files and the database that concern the information table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the information table.
 * For example : update an information in the data base, send all information about ID card of equipment...
-*/ 
+*/
 
 
 namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\Information ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\Information ;
 use Carbon\Carbon;
 
 class InformationController extends Controller
@@ -26,8 +26,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     /*public function send_informations_all(){
-        $informations=Information::all() ; 
-        return response()->json($informations) ; 
+        $informations=Information::all() ;
+        return response()->json($informations) ;
     }*/
 
      /**
@@ -36,8 +36,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_eqIdCard(){
-        $informations=Information::where('info_set', '=', 'eqIdCard')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'eqIdCard')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -46,8 +46,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_dimension(){
-        $informations=Information::where('info_set', '=', 'dimension')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'dimension')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -56,8 +56,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_power(){
-        $informations=Information::where('info_set', '=', 'power')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'power')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -66,8 +66,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_specialProcess(){
-        $informations=Information::where('info_set', '=', 'specialProcess')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'specialProcess')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -76,8 +76,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_usage(){
-        $informations=Information::where('info_set', '=', 'usage')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'usage')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -86,8 +86,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_file(){
-        $informations=Information::where('info_set', '=', 'file')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'file')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -96,8 +96,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_preventiveMaintenanceOperation(){
-        $informations=Information::where('info_set', '=', 'preventiveMaintenanceOperation')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'preventiveMaintenanceOperation')->get() ;
+        return response()->json($informations) ;
     }
 
         /**
@@ -106,8 +106,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_risk(){
-        $informations=Information::where('info_set', '=', 'risk')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'risk')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -116,8 +116,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_state(){
-        $informations=Information::where('info_set', '=', 'state')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'state')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -126,8 +126,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_preventiveMaintenanceOperationRealized(){
-        $informations=Information::where('info_set', '=', 'preventiveMaintenanceOperationRealized')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'preventiveMaintenanceOperationRealized')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -136,8 +136,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_curativeMaintenanceOperation(){
-        $informations=Information::where('info_set', '=', 'curativeMaintenanceOperation')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'curativeMaintenanceOperation')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -146,8 +146,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_person(){
-        $informations=Information::where('info_set', '=', 'user')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'user')->get() ;
+        return response()->json($informations) ;
     }
 
     /**
@@ -156,8 +156,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme(){
-        $informations=Information::where('info_set', '=', 'mme')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'mme')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -166,8 +166,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme_state(){
-        $informations=Information::where('info_set', '=', 'mme_state')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'mme_state')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -176,8 +176,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_verif(){
-        $informations=Information::where('info_set', '=', 'verif')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'verif')->get() ;
+        return response()->json($informations) ;
     }
 
 
@@ -187,8 +187,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_verifRlz(){
-        $informations=Information::where('info_set', '=', 'verifRlz')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'verifRlz')->get() ;
+        return response()->json($informations) ;
     }
 
       /**
@@ -197,8 +197,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme_usage(){
-        $informations=Information::where('info_set', '=', 'mme_usage')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'mme_usage')->get() ;
+        return response()->json($informations) ;
     }
 
       /**
@@ -207,8 +207,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_mme_precaution(){
-        $informations=Information::where('info_set', '=', 'mme_precaution')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'mme_precaution')->get() ;
+        return response()->json($informations) ;
     }
 
         /**
@@ -217,9 +217,9 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_enum(){
-       //$informations=Information::where('info_name', '=', 'enum')->get() ; 
+       //$informations=Information::where('info_name', '=', 'enum')->get() ;
        $informations=DB::select(DB::raw("SELECT id, info_name, info_value FROM information WHERE info_name LIKE 'enum%'"));
-        return response()->json($informations) ; 
+        return response()->json($informations) ;
     }
 
      /**
@@ -228,8 +228,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_article_family(){
-        $informations=Information::where('info_set', '=', 'article_family')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'article_family')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -238,8 +238,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_article_member(){
-        $informations=Information::where('info_set', '=', 'article_member')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'article_member')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -248,8 +248,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_purchase_specifications(){
-        $informations=Information::where('info_set', '=', 'purSpe')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'purSpe')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -258,8 +258,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_criticality(){
-        $informations=Information::where('info_set', '=', 'crit')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'crit')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -268,8 +268,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_supplier(){
-        $informations=Information::where('info_set', '=', 'supplier')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'supplier')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -278,8 +278,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_supplier_address(){
-        $informations=Information::where('info_set', '=', 'supplierAdr')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'supplierAdr')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -288,8 +288,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_supplier_contact(){
-        $informations=Information::where('info_set', '=', 'supplierContact')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'supplierContact')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -298,8 +298,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_incoming_inspection(){
-        $informations=Information::where('info_set', '=', 'IncmgInsp')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'IncmgInsp')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -308,8 +308,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_aspectTest(){
-        $informations=Information::where('info_set', '=', 'aspectTest')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'aspectTest')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -318,8 +318,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_dimTest(){
-        $informations=Information::where('info_set', '=', 'dimTest')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'dimTest')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -328,8 +328,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_funcTest(){
-        $informations=Information::where('info_set', '=', 'funcTest')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'funcTest')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -338,8 +338,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_docControl(){
-        $informations=Information::where('info_set', '=', 'docControl')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'docControl')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -348,8 +348,8 @@ class InformationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_informations_compTest(){
-        $informations=Information::where('info_set', '=', 'compTest')->get() ; 
-        return response()->json($informations) ; 
+        $informations=Information::where('info_set', '=', 'compTest')->get() ;
+        return response()->json($informations) ;
     }
 
      /**
@@ -358,7 +358,7 @@ class InformationController extends Controller
      * The id in parameter correspond to the id of the information we want to update
      */
     public function update_information(Request $request, $id){
-        $information=Information::findOrFail($id) ; 
+        $information=Information::findOrFail($id) ;
         //return response()->json($request->info_value) ;
         $information->update([
             'info_value' => $request->info_value,

@@ -1,6 +1,6 @@
 <!--File name : EquipmentDimForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the Form of the equipment dimension who call all the input component-->
 
 <template>

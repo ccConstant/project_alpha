@@ -1,6 +1,6 @@
 <!--File name :ReferenceASpecProc.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component used to reference a special process in the equipment-->
 
 <template>

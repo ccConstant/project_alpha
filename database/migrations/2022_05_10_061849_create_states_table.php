@@ -3,7 +3,7 @@
 /*
 * Filename : 2022_05_10_061849_create_states_table.php
 * Creation date : 10 May 2022
-* Update date : 15 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "eq_states" in the data base. In this file, we can see the different
 * attribute of this table (name, remarks, startDate...) and how they are defined (string, boolean, unique or not)
 */

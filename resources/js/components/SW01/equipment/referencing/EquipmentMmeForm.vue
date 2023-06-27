@@ -1,6 +1,6 @@
 <!--File name : EquipmentMmeForm.vue-->
 <!--Creation date : 12 Jul 2022-->
-<!--Update date : 5 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the Form of the equipment mme who call all the input component-->
 
 <template>

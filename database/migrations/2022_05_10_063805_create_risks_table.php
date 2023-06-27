@@ -3,10 +3,10 @@
 /*
 * Filename : 2022_05_10_063805_create_risks_table.php
 * Creation date : 10 May 2022
-* Update date : 15 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "risks" in the data base. In this file, we can see the different
 * attribute of this table (remarks, wayOfControl...) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 
 use Illuminate\Database\Migrations\Migration;
@@ -24,15 +24,15 @@ return new class extends Migration
     {
         Schema::create('risks', function (Blueprint $table) {
             $table->id();
-            $table->mediumText('risk_remarks') -> nullable(); 
-            $table->mediumText('risk_wayOfControl') ->nullable(); 
-            $table->enum('risk_validate',  ['drafted', 'to_be_validated', 'validated']) ;  
+            $table->mediumText('risk_remarks') -> nullable();
+            $table->mediumText('risk_wayOfControl') ->nullable();
+            $table->enum('risk_validate',  ['drafted', 'to_be_validated', 'validated']) ;
             $table->unsignedBigInteger('enumRiskFor_id') ->nullable();
-            $table->foreign('enumRiskFor_id')->references('id')->on('enum_risk_fors') -> onDelete('restrict') ; 
+            $table->foreign('enumRiskFor_id')->references('id')->on('enum_risk_fors') -> onDelete('restrict') ;
             $table->unsignedBigInteger('equipmentTemp_id') ->nullable();
-            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') -> onDelete('cascade') ; 
+            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') -> onDelete('cascade') ;
             $table->unsignedBigInteger('preventiveMaintenanceOperation_id') ->nullable();
-            $table->foreign('preventiveMaintenanceOperation_id')->references('id')->on('preventive_maintenance_operations') -> onDelete('cascade') ; 
+            $table->foreign('preventiveMaintenanceOperation_id')->references('id')->on('preventive_maintenance_operations') -> onDelete('cascade') ;
             $table->timestamps();
         });
     }

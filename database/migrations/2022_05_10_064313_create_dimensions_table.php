@@ -3,10 +3,10 @@
 /*
 * Filename : 2022_05_10_064313_create_dimensions_table.php
 * Creation date : 10 May 2022
-* Update date : 15 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "dimensions" in the data base. In this file, we can see the different
 * attribute of this table (value, validate) and how they are defined (string, boolean, unique or not)
-*/ 
+*/
 
 
 
@@ -26,8 +26,8 @@ return new class extends Migration
         Schema::create('dimensions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->tinyText('dim_value') ; 
-            $table->enum('dim_validate', ['drafted', 'to_be_validated', 'validated']) ;  
+            $table->tinyText('dim_value') ;
+            $table->enum('dim_validate', ['drafted', 'to_be_validated', 'validated']) ;
             $table->unsignedBigInteger('enumDimensionType_id') ->nullable();
             $table->foreign('enumDimensionType_id')->references('id')->on('enum_dimension_types') -> onDelete('restrict') ;
             $table->unsignedBigInteger('enumDimensionName_id') ->nullable();
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->unsignedBigInteger('enumDimensionUnit_id') ->nullable();
             $table->foreign('enumDimensionUnit_id')->references('id')->on('enum_dimension_units') -> onDelete('restrict') ;
             $table->unsignedBigInteger('equipmentTemp_id') ->nullable();
-            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') -> onDelete('cascade') ; 
+            $table->foreign('equipmentTemp_id')->references('id')->on('equipment_temps') -> onDelete('cascade') ;
         });
     }
 

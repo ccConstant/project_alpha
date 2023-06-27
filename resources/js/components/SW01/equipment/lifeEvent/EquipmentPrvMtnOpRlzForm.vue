@@ -1,6 +1,6 @@
 <!--File name : EquipmentPrvMtnOpRlz.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 25 May 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component to show the form of a preventive maintenance already realized-->
 
 <template>
@@ -114,7 +114,7 @@
                     v-if="eq_realize == true"
                     v-model="user_password"
                     :Errors="errors.connexion"
-                    :info_text="infos_prvMtnOpRlz[4].info_value"    
+                    :info_text="infos_prvMtnOpRlz[4].info_value"
                     divClassName="password"
                     inputClassName="form-control w-50"
                     label="Password :"

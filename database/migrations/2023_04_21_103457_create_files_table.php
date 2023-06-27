@@ -3,7 +3,7 @@
 /*
 * Filename : 2022_06_07_064422_create_files_table.php
 * Creation date : 10 May 2022
-* Update date : 15 Feb 2023
+* Update date : 27 Jun 2023
 * This file is used to create the table "files" in the data base. In this file, we can see the different
 * attribute of this table (name, location, validate..) and how they are defined (string, boolean, unique or not)
 */

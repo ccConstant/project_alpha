@@ -1,29 +1,29 @@
 <?php
 
 /*
-* Filename : CurativeMaintenanceOperationController.php 
+* Filename : CurativeMaintenanceOperationController.php
 * Creation date : 25 May 2022
-* Update date : 25 May 2022
-* This file is used to link the view files and the database that concern the CurativeMaintenanceOperation table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the CurativeMaintenanceOperation table.
 * For example : add a CurativeMaintenanceOperation for an equipment in the data base, update it, delete it...
-*/ 
+*/
 
 
 namespace App\Http\Controllers\SW01;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\CurativeMaintenanceOperation ; 
-use App\Models\SW01\Equipment ; 
-use App\Models\SW01\MmeState ; 
-use App\Models\SW01\State ; 
-use App\Models\User ; 
-use App\HttpControllers\SW01\PowerController ; 
-use App\HttpControllers\SW01\FileController ; 
-use App\HttpControllers\SW01\UsageController ; 
-use App\HttpControllers\SW01\StateController ; 
-use App\HttpControllers\SW01\RiskController ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\CurativeMaintenanceOperation ;
+use App\Models\SW01\Equipment ;
+use App\Models\SW01\MmeState ;
+use App\Models\SW01\State ;
+use App\Models\User ;
+use App\HttpControllers\SW01\PowerController ;
+use App\HttpControllers\SW01\FileController ;
+use App\HttpControllers\SW01\UsageController ;
+use App\HttpControllers\SW01\StateController ;
+use App\HttpControllers\SW01\RiskController ;
 use App\HttpControllers\SW01\DimensionController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -34,9 +34,9 @@ class CurativeMaintenanceOperationController extends Controller
 
 
     /*
-                GENERALE FUNCTION FOR CURATIVE MAINTENANCE OPERATION 
+                GENERALE FUNCTION FOR CURATIVE MAINTENANCE OPERATION
      /**
-    
+
 
     /**
      * Function call by EquipmentCurMtnOpForm.vue when we want to delete a curative maintenance operation with the route : /state/delete/curMtnOp/{id}(post)
@@ -52,18 +52,18 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }else{
-            $curMtnOp->delete() ; 
+            $curMtnOp->delete() ;
         }
     }
 
      /**
      * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/technicalVerifier/{id}
-     * Check technically a curative maintenance operation 
+     * Check technically a curative maintenance operation
      * The id parameter correspond to the id of the curative maintenance operation we want to check
      * */
     public function technicalVerification_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
+        $user=User::findOrFail($request->user_id) ;
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -71,26 +71,26 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }
-        
-        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ;
         $curMtnOp->update([
-            'technicalVerifier_id' => $user->id, 
+            'technicalVerifier_id' => $user->id,
         ]);
         if ($curMtnOp->qualityVerifier_id!=NULL){
             $curMtnOp->update([
-                'curMtnOp_validate' => 'validated', 
+                'curMtnOp_validate' => 'validated',
             ]);
         }
     }
 
      /**
      * Function call by  CurMtnOpModal.vue when we want to tell that we are the realizator of a curative maintenance operation with the route : /curMtnOp/realize/{id}
-     * Tell that you have realize a curative maintenance operation 
+     * Tell that you have realize a curative maintenance operation
      * The id parameter correspond to the id of the curative maintenance operation we want to entered the realizator
      * */
     public function realize_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
+        $user=User::findOrFail($request->user_id) ;
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -99,20 +99,20 @@ class CurativeMaintenanceOperationController extends Controller
             ], 429);
         }
 
-        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ;
         $curMtnOp->update([
-            'realizedBy_id' => $user->id, 
+            'realizedBy_id' => $user->id,
         ]);
     }
 
     /**
      * Function call by CurMtnOpModal.vue when we want to approuve a preventive maintenance operation realized with the route : /curMtnOp/qualityVerifier/{id}
-     * Check qualitatively a curative maintenance operation 
+     * Check qualitatively a curative maintenance operation
      * The id parameter correspond to the id of the curative maintenance operation we want to check
      * */
     public function qualityVerification_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
-        
+        $user=User::findOrFail($request->user_id) ;
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -120,15 +120,15 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }
-        
-        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ; 
+
+        $curMtnOp=CurativeMaintenanceOperation::findOrFail($id) ;
         $curMtnOp->update([
-            'qualityVerifier_id' => $user->id, 
+            'qualityVerifier_id' => $user->id,
         ]);
 
         if ($curMtnOp->technicalVerifier_id!=NULL){
             $curMtnOp->update([
-                'curMtnOp_validate' => 'validated', 
+                'curMtnOp_validate' => 'validated',
             ]);
         }
     }
@@ -140,24 +140,24 @@ class CurativeMaintenanceOperationController extends Controller
 
     /**
      * Function call by EquipmentCurMtnOpForm.vue when the form is submitted for insert with the route :/equipment/add/state/curMtnOp (post)
-     * Add a new enregistrement of curative maintenance operation in the data base with the informations entered in the form 
+     * Add a new enregistrement of curative maintenance operation in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new curMtnOp
      */
     public function add_curMtnOp_eq(Request $request){
-        $state=State::findOrFail($request->state_id) ; 
+        $state=State::findOrFail($request->state_id) ;
         $curMtnOpsInEq=CurativeMaintenanceOperation::where('state_id', '=', $request->state_id)->get();
-        $max_number=1 ; 
+        $max_number=1 ;
         if (count($curMtnOpsInEq)!=0){
             foreach ($curMtnOpsInEq as $curMtnOpInEq){
-                $number=intval($curMtnOpInEq->curMtnOp_number) ; 
+                $number=intval($curMtnOpInEq->curMtnOp_number) ;
                 if ($number>$max_number){
-                    $max_number=$curMtnOpInEq->curMtnOp_number ; 
+                    $max_number=$curMtnOpInEq->curMtnOp_number ;
                 }
             }
             $max_number=$max_number+1 ;
         }
-        
-        
+
+
         //Creation of a new curative maintenance operation
         $curMtnOp=CurativeMaintenanceOperation::create([
             'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
@@ -165,19 +165,19 @@ class CurativeMaintenanceOperationController extends Controller
             'curMtnOp_description' => $request->curMtnOp_description,
             'curMtnOp_startDate' => $request->curMtnOp_startDate,
             'curMtnOp_endDate' => $request->curMtnOp_endDate,
-            'state_id' => $request->state_id,   
+            'state_id' => $request->state_id,
             'curMtnOp_number' => $max_number,
             'enteredBy_id' => $request->enteredBy_id,
 
-        ]) ; 
-        
+        ]) ;
+
         $curMtnOp_id=$curMtnOp->id;
-        return response()->json($curMtnOp->id) ; 
+        return response()->json($curMtnOp->id) ;
     }
 
      /**
      * Function call by EquipmentCurMtnOpForm.vue when the form is submitted for update with the route :/equipment/update/state/curMtnOp/{id} (post)
-     * Update an enregistrement of curative maintenance operation in the data base with the informations entered in the form 
+     * Update an enregistrement of curative maintenance operation in the data base with the informations entered in the form
      * The id parameter correspond to the id of the curative maintenance operation we want to update
      * */
     public function update_curMtnOp_eq(Request $request, $id){
@@ -196,17 +196,17 @@ class CurativeMaintenanceOperationController extends Controller
      /**
      * Function call by ReferenceACurMtnOp.vue with the route : /state/curMtnOp/send/{id}(get)
      * Get the curative maintenance operations of the state whose id is passed in parameter
-     * The id parameter corresponds to the id of the state from which we want the curative maintenance operations. 
-     * @return \Illuminate\Http\Response 
+     * The id parameter corresponds to the id of the state from which we want the curative maintenance operations.
+     * @return \Illuminate\Http\Response
      */
 
     public function send_curMtnOp_eq($id) {
         $state = State::findOrFail($id);
-        $container=array() ; 
+        $container=array() ;
         if (count($state->curative_maintenance_operations)>0){
-            $curMtnOps=$state->curative_maintenance_operations ; 
+            $curMtnOps=$state->curative_maintenance_operations ;
             foreach ($curMtnOps as $curMtnOp) {
-                
+
                 $technicalVerifier_firstName=NULL;
                 $technicalVerifier_lastName=NULL;
                 $qualityVerifier_firstName=NULL;
@@ -214,27 +214,27 @@ class CurativeMaintenanceOperationController extends Controller
                 $enteredBy_firstName=NULL;
                 $enteredBy_lastName=NULL;
                 $realizedBy_firstName=NULL;
-                $realizedBy_lastName=NULL ; 
+                $realizedBy_lastName=NULL ;
 
                 if ($curMtnOp->technicalVerifier_id!=NULL){
-                    $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                    $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ;
                     $technicalVerifier_firstName=$technicalVerifier->user_firstName;
                     $technicalVerifier_lastName=$technicalVerifier->user_lastName;
                 }
                 if ($curMtnOp->qualityVerifier_id!=NULL){
-                    $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
-                    $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
-                    $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                    $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ;
+                    $qualityVerifier_firstName=$qualityVerifier->user_firstName ;
+                    $qualityVerifier_lastName=$qualityVerifier->user_lastName ;
                 }
                 if ($curMtnOp->realizedBy_id!=NULL){
-                    $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
-                    $realizedBy_firstName=$realizedBy->user_firstName ; 
-                    $realizedBy_lastName=$realizedBy->user_lastName ; 
+                    $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ;
+                    $realizedBy_firstName=$realizedBy->user_firstName ;
+                    $realizedBy_lastName=$realizedBy->user_lastName ;
                 }
                 if ($curMtnOp->enteredBy_id!=NULL){
-                    $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
-                    $enteredBy_firstName=$enteredBy->user_firstName ; 
-                    $enteredBy_lastName=$enteredBy->user_lastName ; 
+                    $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ;
+                    $enteredBy_firstName=$enteredBy->user_firstName ;
+                    $enteredBy_lastName=$enteredBy->user_lastName ;
                 }
 
                 $obj=([
@@ -264,7 +264,7 @@ class CurativeMaintenanceOperationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_curMtnOp(Request $request){
-        $state=State::findOrFail($request->state_id) ; 
+        $state=State::findOrFail($request->state_id) ;
         if ($request->curMtnOp_validate=='validated'){
             $this->validate(
                 $request,
@@ -282,7 +282,7 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             );
 
-    
+
             if ($request->curMtnOp_startDate=='' || $request->curMtnOp_startDate===NULL){
                 return response()->json([
                     'errors' => [
@@ -309,7 +309,7 @@ class CurativeMaintenanceOperationController extends Controller
                         ]
                     ], 429);
                 }
-    
+
                 if ($curMtnOp->qualityVerifier_id===NULL){
                     return response()->json([
                         'errors' => [
@@ -317,7 +317,7 @@ class CurativeMaintenanceOperationController extends Controller
                         ]
                     ], 429);
                 }
-    
+
                 if ($curMtnOp->technicalVerifier_id===NULL){
                     return response()->json([
                         'errors' => [
@@ -331,13 +331,13 @@ class CurativeMaintenanceOperationController extends Controller
                         'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
-    
+
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
-    
+
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
@@ -345,10 +345,10 @@ class CurativeMaintenanceOperationController extends Controller
                 ], 429);
             }
 
-    
+
 
         //-----CASE curMtnOp->validate=drafted or curMtnOp->validate=to be validate----//
-        //if the user has choosen "drafted" or "to be validated" he have no obligations 
+        //if the user has choosen "drafted" or "to be validated" he have no obligations
         }else{
             $this->validate(
                 $request,
@@ -377,7 +377,7 @@ class CurativeMaintenanceOperationController extends Controller
             }
         }
 
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->curMtnOp_startDate!=NULL && $request->curMtnOp_startDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -429,27 +429,27 @@ class CurativeMaintenanceOperationController extends Controller
      /*
                 FUNCTION FOR CURATIVE MAINTENANCE OPERATION LINKED TO MME
     /**
-    
+
       /**
      * Function call by MmeCurMtnOpForm.vue when the form is submitted for insert with the route :/mme/add/state/curMtnOp (post)
-     * Add a new enregistrement of curative maintenance operation in the data base with the informations entered in the form 
+     * Add a new enregistrement of curative maintenance operation in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new curMtnOp
      */
     public function add_curMtnOp_mme(Request $request){
-        $state=MmeState::findOrFail($request->state_id) ; 
+        $state=MmeState::findOrFail($request->state_id) ;
         $curMtnOpsInMme=CurativeMaintenanceOperation::where('mme_state_id', '=', $request->state_id)->get();
-        $max_number=1 ; 
+        $max_number=1 ;
         if (count($curMtnOpsInMme)!=0){
             foreach ($curMtnOpsInMme as $curMtnOpInMme){
-                $number=intval($curMtnOpInMme->curMtnOp_number) ; 
+                $number=intval($curMtnOpInMme->curMtnOp_number) ;
                 if ($number>$max_number){
-                    $max_number=$curMtnOpInMme->curMtnOp_number ; 
+                    $max_number=$curMtnOpInMme->curMtnOp_number ;
                 }
             }
             $max_number=$max_number+1 ;
         }
-        
-        
+
+
         //Creation of a new curative maintenance operation
         $curMtnOp=CurativeMaintenanceOperation::create([
             'curMtnOp_reportNumber' => $request->curMtnOp_reportNumber,
@@ -457,19 +457,19 @@ class CurativeMaintenanceOperationController extends Controller
             'curMtnOp_description' => $request->curMtnOp_description,
             'curMtnOp_startDate' => $request->curMtnOp_startDate,
             'curMtnOp_endDate' => $request->curMtnOp_endDate,
-            'mme_state_id' => $request->state_id,   
+            'mme_state_id' => $request->state_id,
             'curMtnOp_number' => $max_number,
             'enteredBy_id' => $request->enteredBy_id,
 
         ]) ;
-        
+
         $curMtnOp_id=$curMtnOp->id;
         return response()->json($curMtnOp->id) ;
     }
 
      /**
      * Function call by MmeCurMtnOpForm.vue when the form is submitted for update with the route :/mme/update/state/curMtnOp/{id} (post)
-     * Update an enregistrement of curative maintenance operation in the data base with the informations entered in the form 
+     * Update an enregistrement of curative maintenance operation in the data base with the informations entered in the form
      * The id parameter correspond to the id of the curative maintenance operation we want to update
      * */
     public function update_curMtnOp_mme(Request $request, $id){
@@ -488,13 +488,13 @@ class CurativeMaintenanceOperationController extends Controller
      /**
      * Function call by ReferenceACurMtnOp.vue with the route : /mme_state/curMtnOp/send/{id}(get)
      * Get the curative maintenance operations of the state whose id is passed in parameter
-     * The id parameter corresponds to the id of the mme_state from which we want the curative maintenance operations. 
-     * @return \Illuminate\Http\Response 
+     * The id parameter corresponds to the id of the mme_state from which we want the curative maintenance operations.
+     * @return \Illuminate\Http\Response
      */
 
     public function send_curMtnOp_mme($id) {
         $state = MmeState::findOrFail($id);
-        $container=array(); 
+        $container=array();
         $curMtnOps=CurativeMaintenanceOperation::where('mme_state_id', '=', $id)->get();
             foreach ($curMtnOps as $curMtnOp) {
                 $technicalVerifier_firstName=NULL;
@@ -504,27 +504,27 @@ class CurativeMaintenanceOperationController extends Controller
                 $enteredBy_firstName=NULL;
                 $enteredBy_lastName=NULL;
                 $realizedBy_firstName=NULL;
-                $realizedBy_lastName=NULL ; 
+                $realizedBy_lastName=NULL ;
 
                 if ($curMtnOp->technicalVerifier_id!=NULL){
-                    $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ; 
+                    $technicalVerifier=User::findOrFail($curMtnOp->technicalVerifier_id) ;
                     $technicalVerifier_firstName=$technicalVerifier->user_firstName;
                     $technicalVerifier_lastName=$technicalVerifier->user_lastName;
                 }
                 if ($curMtnOp->qualityVerifier_id!=NULL){
-                    $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ; 
-                    $qualityVerifier_firstName=$qualityVerifier->user_firstName ; 
-                    $qualityVerifier_lastName=$qualityVerifier->user_lastName ; 
+                    $qualityVerifier=User::findOrFail($curMtnOp->qualityVerifier_id) ;
+                    $qualityVerifier_firstName=$qualityVerifier->user_firstName ;
+                    $qualityVerifier_lastName=$qualityVerifier->user_lastName ;
                 }
                 if ($curMtnOp->realizedBy_id!=NULL){
-                    $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ; 
-                    $realizedBy_firstName=$realizedBy->user_firstName ; 
-                    $realizedBy_lastName=$realizedBy->user_lastName ; 
+                    $realizedBy=User::findOrFail($curMtnOp->realizedBy_id) ;
+                    $realizedBy_firstName=$realizedBy->user_firstName ;
+                    $realizedBy_lastName=$realizedBy->user_lastName ;
                 }
                 if ($curMtnOp->enteredBy_id!=NULL){
-                    $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ; 
-                    $enteredBy_firstName=$enteredBy->user_firstName ; 
-                    $enteredBy_lastName=$enteredBy->user_lastName ; 
+                    $enteredBy=User::findOrFail($curMtnOp->enteredBy_id) ;
+                    $enteredBy_firstName=$enteredBy->user_firstName ;
+                    $enteredBy_lastName=$enteredBy->user_lastName ;
                 }
 
                 $obj=([
@@ -553,7 +553,7 @@ class CurativeMaintenanceOperationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_curMtnOp_mme(Request $request){
-        $state=MmeState::findOrFail($request->state_id) ; 
+        $state=MmeState::findOrFail($request->state_id) ;
         if ($request->curMtnOp_validate=='validated'){
             $this->validate(
                 $request,
@@ -570,7 +570,7 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             );
 
-        
+
             if ($request->curMtnOp_startDate=='' || $request->curMtnOp_startDate===NULL){
                 return response()->json([
                     'errors' => [
@@ -586,7 +586,7 @@ class CurativeMaintenanceOperationController extends Controller
                     ]
                 ], 429);
             }
-        
+
             if ($request->reason=="update"){
                 $curMtnOp=CurativeMaintenanceOperation::findOrFail($request->curMtnOp_id) ;
 
@@ -597,7 +597,7 @@ class CurativeMaintenanceOperationController extends Controller
                         ]
                     ], 429);
                 }
-    
+
                 if ($curMtnOp->qualityVerifier_id===NULL){
                     return response()->json([
                         'errors' => [
@@ -605,7 +605,7 @@ class CurativeMaintenanceOperationController extends Controller
                         ]
                     ], 429);
                 }
-    
+
                 if ($curMtnOp->technicalVerifier_id===NULL){
                     return response()->json([
                         'errors' => [
@@ -619,13 +619,13 @@ class CurativeMaintenanceOperationController extends Controller
                         'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
-    
+
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
-    
+
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
@@ -633,10 +633,10 @@ class CurativeMaintenanceOperationController extends Controller
                 ], 429);
             }
 
-    
+
 
         //-----CASE curMtnOp->validate=drafted or curMtnOp->validate=to be validate----//
-        //if the user has choosen "drafted" or "to be validated" he have no obligations 
+        //if the user has choosen "drafted" or "to be validated" he have no obligations
         }else{
             $this->validate(
                 $request,
@@ -663,8 +663,8 @@ class CurativeMaintenanceOperationController extends Controller
             }
         }
 
-        
-        $oneMonthAgo=Carbon::now()->subMonth(1) ; 
+
+        $oneMonthAgo=Carbon::now()->subMonth(1) ;
         if ($request->curMtnOp_startDate!=NULL && $request->curMtnOp_startDate<$oneMonthAgo){
             return response()->json([
                 'errors' => [
@@ -681,7 +681,7 @@ class CurativeMaintenanceOperationController extends Controller
             ], 429);
         }
 
-        
+
         if ($state->state_startDate!=NULL && $request->curMtnOp_startDate!=NULL){
             if ($request->curMtnOp_startDate<$state->state_startDate ){
                 return response()->json([
@@ -691,7 +691,7 @@ class CurativeMaintenanceOperationController extends Controller
                 ], 429);
             }
         }
-        
+
         if ($state->state_startDate!=NULL && $request->curMtnOp_endDate!=NULL){
             if ($request->curMtnOp_endDate<$state->state_startDate){
                 return response()->json([
@@ -701,7 +701,7 @@ class CurativeMaintenanceOperationController extends Controller
                 ], 429);
             }
         }
-        
+
         if ($request->curMtnOp_startDate!=NULL && $request->curMtnOp_endDate!=NULL){
             if ($request->curMtnOp_endDate < $request->curMtnOp_startDate){
                 return response()->json([
@@ -713,9 +713,9 @@ class CurativeMaintenanceOperationController extends Controller
             }
         }
     }
-    
 
-    
+
+
 }
 
 

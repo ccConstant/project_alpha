@@ -1,31 +1,31 @@
 <?php
 
 /*
-* Filename : FileController.php 
+* Filename : FileController.php
 * Creation date : 17 May 2022
-* Update date : 9 Feb 2023
-* This file is used to link the view files and the database that concern the file table. 
+* Update date : 27 Jun 2023
+* This file is used to link the view files and the database that concern the file table.
 * For example : add a file for an equipment in the data base, update a file, delete it...
-*/ 
+*/
 
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB ; 
-use App\Models\SW01\EquipmentTemp ; 
-use App\Models\SW01\Equipment ; 
-use App\Models\SW01\MmeTemp ; 
-use App\Models\SW01\Mme ; 
-use App\Models\File ; 
+use Illuminate\Support\Facades\DB ;
+use App\Models\SW01\EquipmentTemp ;
+use App\Models\SW01\Equipment ;
+use App\Models\SW01\MmeTemp ;
+use App\Models\SW01\Mme ;
+use App\Models\File ;
 use Carbon\Carbon;
-use App\Models\SW01\State; 
+use App\Models\SW01\State;
 use App\Models\SW01\MmeState;
 
 
 class FileController extends Controller
 {
-    
+
     /* ---------------------------------------- GENERALS FUNCTION FOR FILES --------------------------------------------*/
     /**
      * Function call by EquipmentFileForm.vue when the form is submitted for check data with the route : /file/verif''(post)
@@ -50,14 +50,14 @@ class FileController extends Controller
                     'file_location.min' => 'You must enter at least three characters ',
                     'file_location.max' => 'You must enter a maximum of 255 characters',
 
-                
+
                 ]
             );
 
-           
+
         }else{
              //-----CASE file->validate=drafted or file->validate=to be validate----//
-            //if the user has choosen "drafted" or "to be validated" he have no obligations 
+            //if the user has choosen "drafted" or "to be validated" he have no obligations
             $this->validate(
                 $request,
                 [
@@ -77,13 +77,13 @@ class FileController extends Controller
     /* ---------------------------------------- FUNCTIONS FOR FILES LINKED TO EQUIPMENT  --------------------------------------------*/
     /**
      * Function call by EquipmentFileForm.vue when the form is submitted for insert with the route : /equipment/add/file/${id} (post)
-     * Add a new enregistrement of file in the data base with the informations entered in the form 
+     * Add a new enregistrement of file in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new file
      */
     public function add_file_eq(Request $request){
 
-        $id_eq=intval($request->eq_id) ; 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
+        $id_eq=intval($request->eq_id) ;
+        $equipment=Equipment::findOrfail($request->eq_id) ;
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp!=NULL){
 
@@ -94,10 +94,10 @@ class FileController extends Controller
                 'file_validate' => $request->file_validate,
                 'file_validate' => $request->file_validate,
                 'equipmentTemp_id' => $mostRecentlyEqTmp->id,
-            ]) ; 
+            ]) ;
 
             $file_id=$file->id;
-            
+
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
                 $mostRecentlyEqTmp->update([
                     'qualityVerifier_id' => NULL,
@@ -110,16 +110,16 @@ class FileController extends Controller
             }
              //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for add file
             if ((boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true && $mostRecentlyEqTmp->eqTemp_validate=="validated"){
-                
+
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
-            
+
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                 //update of equipment temp
             $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
@@ -160,20 +160,20 @@ class FileController extends Controller
 
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
-            return response()->json($file_id) ; 
+            return response()->json($file_id) ;
         }
     }
 
 
      /**
      * Function call by EquipmentFileForm.vue when the form is submitted for update with the route :/equipment/update/file/{id} (post)
-     * Update an enregistrement of file in the data base with the informations entered in the form 
+     * Update an enregistrement of file in the data base with the informations entered in the form
      * The id parameter correspond to the id of the file we want to update
      * */
     public function update_file_eq(Request $request, $id){
 
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         if ($mostRecentlyEqTmp!=NULL){
             if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -186,20 +186,20 @@ class FileController extends Controller
                     'technicalVerifier_id' => NULL,
                 ]);
             }
-            
+
             //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
-            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update file 
+            //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update file
             if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
-            
+
                 //We need to increase the number of equipment temp linked to the equipment
-                $version_eq=$equipment->eq_nbrVersion+1 ; 
+                $version_eq=$equipment->eq_nbrVersion+1 ;
                 //Update of equipment
                 $equipment->update([
                     'eq_nbrVersion' =>$version_eq,
                 ]);
-                
+
                //We need to increase the version of the equipment temp (because we create a new equipment temp)
-                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+                $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
                  //update of equipment temp
                $mostRecentlyEqTmp->update([
                 'eqTemp_version' => $version,
@@ -241,7 +241,7 @@ class FileController extends Controller
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
             }
 
-            $file=File::findOrFail($id) ; 
+            $file=File::findOrFail($id) ;
             $file->update([
                 'file_name' => $request->file_name,
                 'file_location' => $request->file_location,
@@ -260,7 +260,7 @@ class FileController extends Controller
     public function send_files_eq($id) {
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $files = File::where('equipmentTemp_id', '=', $mostRecentlyEqTmp->id)->get();
-        $container=array() ; 
+        $container=array() ;
         foreach ($files as $file) {
             $obj=([
                 "id" => $file->id,
@@ -279,8 +279,8 @@ class FileController extends Controller
      * The id parameter correspond to the id of the file we want to delete
      * */
     public function delete_file_eq(Request $request, $id){
-        $equipment=Equipment::findOrfail($request->eq_id) ; 
-        //We search the most recently equipment temp of the equipment 
+        $equipment=Equipment::findOrfail($request->eq_id) ;
+        //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
@@ -294,17 +294,17 @@ class FileController extends Controller
                 'technicalVerifier_id' => NULL,
             ]);
         }
-        
+
         if ($mostRecentlyEqTmp->eqTemp_validate=="validated" && (boolean)$mostRecentlyEqTmp->eqTemp_lifeSheetCreated==true){
             //We need to increase the number of equipment temp linked to the equipment
-            $version_eq=$equipment->eq_nbrVersion+1 ; 
+            $version_eq=$equipment->eq_nbrVersion+1 ;
             //Update of equipment
             $equipment->update([
                 'eq_nbrVersion' =>$version_eq,
             ]);
 
             //We need to increase the version of the equipment temp (because we create a new equipment temp)
-            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ; 
+            $version =  $mostRecentlyEqTmp->eqTemp_version+1 ;
             //update of equipment temp
             $mostRecentlyEqTmp->update([
             'eqTemp_version' => $version,
@@ -346,7 +346,7 @@ class FileController extends Controller
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
         $file=File::findOrFail($id);
-        $file->delete() ; 
+        $file->delete() ;
     }
 
 
@@ -355,13 +355,13 @@ class FileController extends Controller
 
      /**
      * Function call by MmeFileForm.vue when the form is submitted for insert with the route : /mme/add/file/${id} (post)
-     * Add a new enregistrement of file in the data base with the informations entered in the form 
+     * Add a new enregistrement of file in the data base with the informations entered in the form
      * @return \Illuminate\Http\Response : id of the new file
      */
     public function add_file_mme(Request $request){
 
-        $id_mme=intval($request->mme_id) ; 
-        $mme=Mme::findOrfail($request->mme_id) ; 
+        $id_mme=intval($request->mme_id) ;
+        $mme=Mme::findOrfail($request->mme_id) ;
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyMmeTmp!=NULL){
 
@@ -372,7 +372,7 @@ class FileController extends Controller
                 'file_validate' => $request->file_validate,
                 'file_validate' => $request->file_validate,
                 'mmeTemp_id' => $mostRecentlyMmeTmp->id,
-            ]) ; 
+            ]) ;
 
             $file_id=$file->id;
 
@@ -386,19 +386,19 @@ class FileController extends Controller
                     'technicalVerifier_id' => NULL,
                 ]);
             }
-            
+
              //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for add file
             if ((boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true && $mostRecentlyMmeTmp->mmeTemp_validate=="validated"){
-                
+
             //We need to increase the number of mme temp linked to the mme
-            $version_mme=$mme->mme_nbrVersion+1 ; 
+            $version_mme=$mme->mme_nbrVersion+1 ;
             //Update of mme
             $mme->update([
                 'mme_nbrVersion' =>$version_mme,
             ]);
-            
+
             //We need to increase the version of the mme temp (because we create a new mme temp)
-            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ;
                 //update of mme temp
             $mostRecentlyMmeTmp->update([
                 'mmeTemp_version' => $version,
@@ -439,20 +439,20 @@ class FileController extends Controller
 
             $newState->mme_temps()->attach($mostRecentlyMmeTmp);
             }
-            return response()->json($file_id) ; 
+            return response()->json($file_id) ;
         }
     }
 
 
      /**
      * Function call by MmeFileForm.vue when the form is submitted for update with the route :/mme/update/file/{id} (post)
-     * Update an enregistrement of file in the data base with the informations entered in the form 
+     * Update an enregistrement of file in the data base with the informations entered in the form
      * The id parameter correspond to the id of the file we want to update
      * */
     public function update_file_mme(Request $request, $id){
 
-        $mme=Mme::findOrfail($request->mme_id) ; 
-        //We search the most recently mme temp of the mme 
+        $mme=Mme::findOrfail($request->mme_id) ;
+        //We search the most recently mme temp of the mme
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
         if ($mostRecentlyMmeTmp!=NULL){
 
@@ -468,17 +468,17 @@ class FileController extends Controller
             }
 
             //We checked if the most recently mme temp is validate and if a life sheet has been already created.
-            //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update file 
-        
+            //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update file
+
             if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
-            
+
                 //We need to increase the number of mme temp linked to the mme
-                $version_mme=$mme->mme_nbrVersion+1 ; 
+                $version_mme=$mme->mme_nbrVersion+1 ;
                 //Update of mme
                 $mme->update([
                     'mme_nbrVersion' =>$version_mme,
                 ]);
-                
+
                  //update of mme temp
                $mostRecentlyMmeTmp->update([
                 'mmeTemp_version' => $version_mme,
@@ -520,7 +520,7 @@ class FileController extends Controller
             $newState->mme_temps()->attach($mostRecentlyMmeTmp);
             }
 
-            $file=File::findOrFail($id) ; 
+            $file=File::findOrFail($id) ;
             $file->update([
                 'file_name' => $request->file_name,
                 'file_location' => $request->file_location,
@@ -539,7 +539,7 @@ class FileController extends Controller
     public function send_files_mme($id) {
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
         $files = File::where('mmeTemp_id', '=', $mostRecentlyMmeTmp->id)->get();
-        $container=array() ; 
+        $container=array() ;
         foreach ($files as $file) {
             $obj=([
                 "id" => $file->id,
@@ -558,8 +558,8 @@ class FileController extends Controller
      * The id parameter correspond to the id of the file we want to delete
      * */
     public function delete_file_mme(Request $request, $id){
-        $mme=Mme::findOrfail($request->mme_id) ; 
-        //We search the most recently mme temp of the mme 
+        $mme=Mme::findOrfail($request->mme_id) ;
+        //We search the most recently mme temp of the mme
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
 
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
@@ -576,14 +576,14 @@ class FileController extends Controller
         //If the mme temp is validated and a life sheet has been already created, we need to update the mme temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyMmeTmp->mmeTemp_validate=="validated" && (boolean)$mostRecentlyMmeTmp->mmeTemp_lifeSheetCreated==true){
             //We need to increase the number of mme temp linked to the mme
-            $version_mme=$mme->mme_nbrVersion+1 ; 
+            $version_mme=$mme->mme_nbrVersion+1 ;
             //Update of mme
             $mme->update([
                 'mme_nbrVersion' =>$version_mme,
             ]);
 
             //We need to increase the version of the mme temp (because we create a new mme temp)
-            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ; 
+            $version =  $mostRecentlyMmeTmp->mmeTemp_version+1 ;
             //update of mme temp
             $mostRecentlyMmeTmp->update([
             'mmeTemp_version' => $version,
@@ -625,6 +625,6 @@ class FileController extends Controller
             $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
         $file=File::findOrFail($id);
-        $file->delete() ; 
+        $file->delete() ;
     }
 }

@@ -1,6 +1,6 @@
 <!--File name : EquipmentUsgForm.vue-->
 <!--Creation date : 18 May 2022-->
-<!--Update date : 5 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the Form of the usage  who call all the input component-->
 
 <template>

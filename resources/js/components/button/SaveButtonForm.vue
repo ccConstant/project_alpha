@@ -1,6 +1,6 @@
 <!--File name : SaveButtonForm.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 11 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the save button for the different forms-->
 
 <template>
@@ -51,7 +51,7 @@
                             <div v-if="updateDescriptiveLifeSheetDataSignedRight==true" class="save_button_draft_tbv">
                                 <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-drafted${_uid}`)" >save as draft</b-button>
                                 <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-to-be-validated${_uid}`)" >save as to be validated</b-button>
-                                
+
                                  <div class="save_button_validated" v-if="!this.desactiveValidated" >
                                     <b-button variant="primary" @click="$bvModal.show(`modal-approved-add-validated${_uid}`)" >save as validated</b-button>
                                 </div>

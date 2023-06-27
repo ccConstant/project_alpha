@@ -1,6 +1,6 @@
 <!--File name : ListOfEquipmentPDF.vue-->
 <!--Creation date : 10 Jan 2023-->
-<!--Update date : 05 Jun 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component to generate a pdf version of the equipment list-->
 
 <template>

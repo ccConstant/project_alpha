@@ -1,6 +1,6 @@
 <!--File name : ListOfMMEV2.vue-->
 <!--Creation date : 25 May 2023-->
-<!--Update date : 5 Jun 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component of the list of mme menu-->
 
 <template>

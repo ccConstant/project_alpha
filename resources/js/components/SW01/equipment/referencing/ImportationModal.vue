@@ -1,6 +1,6 @@
 <!--File name :ImportationModal.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 27 Jun 2023-->
 <!--Vue Component used to show a modal, this one is used to show the list of possible importations-->
 
 <template>
