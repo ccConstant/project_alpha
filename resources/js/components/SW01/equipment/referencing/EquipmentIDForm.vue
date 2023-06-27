@@ -353,7 +353,10 @@ export default {
                 eq_validate: savedAs,
                 eq_id: this.eq_id,
                 eq_location: this.eq_location,
-                reason: 'update'
+                reason: 'update',
+                enteredBy_id: this.$userId.id,
+                lifesheet_created: lifesheet_created,
+                eq_id: this.eq_id
             })
                 /*If the data are correct, we send them to the controller for update data in the database*/
                 .then(response => {

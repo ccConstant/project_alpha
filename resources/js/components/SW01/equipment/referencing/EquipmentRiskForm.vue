@@ -188,6 +188,8 @@ export default {
                     risk_remarks: this.risk_remarks,
                     risk_wayOfControl: this.risk_wayOfControl,
                     risk_validate: savedAs,
+                    reason:'add',
+                    user_id:this.$userId.id
                 }).then(response => {
                     this.errors = {};
                     /*If the user want to add equipment*/
@@ -274,6 +276,10 @@ export default {
                 risk_remarks: this.risk_remarks,
                 risk_wayOfControl: this.risk_wayOfControl,
                 risk_validate: savedAs,
+                reason:'update',
+                user_id:this.$userId.id,
+                lifesheet_created: lifesheet_created,
+                risk_id: this.risk_id
             }).then(response => {
                 this.errors = {};
                 if (this.riskForEq == true) {
@@ -344,7 +350,9 @@ export default {
                 /*Send a post-request with the id of the risk who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/risk/${id}`;
                 axios.post(consultUrl(this.risk_id), {
-                    eq_id: this.equipment_id_update
+                    eq_id: this.equipment_id_update,
+                    user_id: this.$userId.id,
+                    lifesheet_created: lifesheet_created
                 }).then(response => {
                     const id = this.equipment_id_update;
                     /*We test if a life sheet has been already created

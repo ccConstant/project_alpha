@@ -247,7 +247,8 @@ export default {
                     curMtnOp_id: this.curMtnOp_id,
                     eq_id: id,
                     state_id: this.equipment_state_id,
-                    reason: 'add'
+                    reason: 'add',
+                    user_id: this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     /*In case of the whole fields are correctly filled we make a new post this time to add the curative maintenance operation in the data base
@@ -306,7 +307,9 @@ export default {
                 curMtnOp_id: this.curMtnOp_id,
                 eq_id: this.equipment_id_update,
                 state_id: this.equipment_state_id,
-                reason: 'update'
+                reason: 'update',
+                user_id: this.$userId.id,
+                curMtnOp_id: this.curMtnOp_id,
             }).then(response => {
                 /*
                                     console.log("update dans la base");
@@ -342,6 +345,7 @@ export default {
                 const consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
                 axios.post(consultUrl(this.curMtnOp_id), {
                     eq_id: this.equipment_id_update,
+                    user_id: this.$userId.id,
                 }).then(response => {
                     //Emit to the parent component that we want to delete this curative maintenance operation
                     this.$emit('deleteCurMtnOp', '')

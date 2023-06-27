@@ -227,6 +227,42 @@ class EquipmentController extends Controller{
         // We need to do many verifications on the data entered by the user.
         // If the user make a mistake, we send to the vue an error to explain it and print it to the user.
 
+        $user=User::findOrFail($request->createdBy_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->eq_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'eq_internalReference' => ["You don't have the user right to save an equipment ID as validated"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=="update"){
+            $equipment= Equipment::findOrFail($request->eq_id) ;
+            if (!$user->user_updateDataInDraftRight && ($equipment->eq_validate=="drafted" || $equipment->eq_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'eq_internalReference' => ["You don't have the user right to update an equipment ID save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $equipment->eq_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'eq_internalReference' => ["You don't have the user right to update an equipment ID save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'eq_internalReference' => ["You don't have the user right to update an equipment ID signed"]
+                    ]
+                ], 429);
+            }
+
+
+        }
 
         //-----CASE eq->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his equipment, so he must enter all the attributes
@@ -937,6 +973,22 @@ class EquipmentController extends Controller{
     public function verif_validation(Request $request, $id){
         $container=array() ;
         $container2=array() ;
+
+        $user=User::findOrFail($request->user_id) ;
+        if ($request->reason=="technical" && !$user->user_makeTechnicalValidationRight){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You don't have the right to realize a technical validation"]
+                ]
+            ], 429);
+        }
+        if ($request->reason=="quality" && !$user->user_makeQualityValidationRight){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You don't have the right to realize a quality validation"]
+                ]
+            ], 429);
+        }
 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyEqTmp->eqTemp_validate!="validated"){

@@ -287,7 +287,9 @@ export default {
                 state_validate: savedAs,
                 state_id: this.state_id,
                 eq_id: this.eq_id,
-                reason: 'update'
+                reason: 'update',
+                user_id: this.$userId.id,
+                state_id: this.state_id
             }).then(response => {
                 this.errors = {}
                 /* If the check does not produce error, we can update the value of the state */

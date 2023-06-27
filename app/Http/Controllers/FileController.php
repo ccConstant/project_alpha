@@ -21,6 +21,7 @@ use App\Models\File ;
 use Carbon\Carbon;
 use App\Models\SW01\State; 
 use App\Models\SW01\MmeState;
+use App\Models\User ;
 
 
 class FileController extends Controller
@@ -32,6 +33,41 @@ class FileController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_file(Request $request){
+
+            $user=User::findOrFail($request->user_id);
+            if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->file_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'file_name' => ["You don't have the user right to save a file as validated"]
+                    ]
+                ], 429);
+            }
+        if ($request->reason=="update"){
+            $file=File::findOrFail($request->file_id);
+            if (!$user->user_updateDataInDraftRight && ($file->file_validate=="drafted" || $file->file_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'file_name' => ["You don't have the user right to update a file save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $file->file_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'file_name' => ["You don't have the user right to update a file save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'file_name' => ["You don't have the user right to update a file signed"]
+                    ]
+                ], 429);
+            }
+        }
+
 
         //-----CASE file->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his file, so he must enter all the attributes
@@ -282,6 +318,34 @@ class FileController extends Controller
         $equipment=Equipment::findOrfail($request->eq_id) ; 
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+        
+        $user=User::findOrFail($request->user_id);
+        $file=File::findOrFail($id);
+
+        if (($file->file_validate=="drafted" || $file->file_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'file_name' => ["You don't have the user right to delete a file save as drafted or in to be validated"]
+                ]
+            ], 429);
+        }
+        if ($file->file_validate=="validated" && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'file_name' => ["You don't have the user right to delete a file save as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'file_name' => ["You don't have the user right to delete a file signed"]
+                ]
+            ], 429);
+        }
+        
+        
+        
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -345,7 +409,6 @@ class FileController extends Controller
 
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
-        $file=File::findOrFail($id);
         $file->delete() ; 
     }
 

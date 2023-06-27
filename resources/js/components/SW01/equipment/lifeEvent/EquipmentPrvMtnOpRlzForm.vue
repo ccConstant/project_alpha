@@ -332,7 +332,8 @@ export default {
                     state_id: this.equipment_state_id,
                     prvMtnOp_id: this.prvMtnOp_id,
                     eq_id: id,
-                    reason: 'add'
+                    reason: 'add',
+                    user_id: this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     /*If all the verification passed, a new post this time to add the preventive maintenance operation in the database
@@ -398,7 +399,9 @@ export default {
                 prvMtnOp_id: this.prvMtnOp_id,
                 prvMtnOpRlz_id: this.prvMtnOpRlz_id,
                 eq_id: this.equipment_id_update,
-                reason: 'update'
+                reason: 'update',
+                user_id: this.$userId.id,
+                prvMtnOpRlz_id: this.prvMtnOpRlz_id,
             }).then(response => {
                 /*If all the verification passed, a new post this time to add the preventive maintenance operation in the data base
                 The reportNumber, the start and end date, validate enum, the id of the state, the id of the affected equipment and the id of maintenance operation are sent to the controller
@@ -432,6 +435,7 @@ export default {
                 const consultUrl = (id) => `/state/delete/prvMtnOpRlz/${id}`;
                 axios.post(consultUrl(this.prvMtnOpRlz_id), {
                     eq_id: this.equipment_id_update,
+                    user_id: this.$userId.id,
                 }).then(response => {
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deletePrvMtnOpRlz', '')

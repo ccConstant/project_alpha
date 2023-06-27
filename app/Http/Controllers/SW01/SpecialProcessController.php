@@ -18,6 +18,7 @@ use App\Models\SW01\Equipment ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\SW01\State;
+use App\Models\User;
 
 class SpecialProcessController extends Controller
 {
@@ -27,6 +28,41 @@ class SpecialProcessController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_specialProcess(Request $request){
+
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->spProc_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'spProc_remarksOrPrecaution' => ["You don't have the user right to save a special process as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->reason=="update"){
+            $spProc=SpecialProcess::findOrFail($request->spProc_id);
+            $user=User::findOrFail($request->user_id);
+            if (!$user->user_updateDataInDraftRight && ($spProc->spProc_validate=="drafted" || $spProc->spProc_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'spProc_remarksOrPrecaution' => ["You don't have the user right to update a special process save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $spProc->spProc_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'spProc_remarksOrPrecaution' => ["You don't have the user right to update a special process save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'spProc_remarksOrPrecaution' => ["You don't have the user right to update a special process signed"]
+                    ]
+                ], 429);
+            }
+        }
 
         //The most important attribute in this table is "exist" : it allow to know if the equipment has any special process
        // So, whatever the special process is validated or not we need this attribute.

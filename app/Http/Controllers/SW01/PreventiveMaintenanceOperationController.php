@@ -20,6 +20,7 @@ use App\Models\SW01\Risk ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\SW01\State;
+use App\Models\User;
 
 class PreventiveMaintenanceOperationController extends Controller
 {
@@ -29,6 +30,39 @@ class PreventiveMaintenanceOperationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_prvMtnOp(Request $request){
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->prvMtnOp_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_description' => ["You don't have the user right to save a preventive maintenance operation as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->reason=="update"){
+            $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id);
+            if (!$user->user_updateDataInDraftRight && ($prvMtnOp->prvMtnOp_validate=="drafted" || $prvMtnOp->prvMtnOp_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOp_description' => ["You don't have the user right to update a preventive maintenance operation save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $prvMtnOp->prvMtnOp_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOp_description' => ["You don't have the user right to update a preventive maintenance operation save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOp_description' => ["You don't have the user right to update a preventive maintenance operation signed"]
+                    ]
+                ], 429);
+            }
+        }
                 //-----CASE prvMtnOp->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his preventive maintenance operation, so he must enter all the attributes
         if ($request->prvMtnOp_validate=='validated'){
@@ -597,6 +631,32 @@ class PreventiveMaintenanceOperationController extends Controller
         //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
 
+        $user=User::findOrFail($request->user_id);
+        $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
+
+        if (($prvMtnOp->prvMtnOp_validate=="drafted" || $prvMtnOp->prvMtnOp_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_description' => ["You don't have the user right to delete a preventive maintenance operation save as drafted or in to be validated"]
+                ]
+            ], 429);
+        }
+        if ($prvMtnOp->prvMtnOp_validate=="validated" && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_description' => ["You don't have the user right to delete a preventive maintenance operation save as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_description' => ["You don't have the user right to delete a preventive maintenance operation signed"]
+                ]
+            ], 429);
+        }
+
+
         if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
             $mostRecentlyEqTmp->update([
                 'qualityVerifier_id' => NULL,
@@ -693,7 +753,16 @@ class PreventiveMaintenanceOperationController extends Controller
      * */
 
     public function reform_prvMtnOp(Request $request, $id){
+
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($id) ;
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_makeReformRight){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOp_reformDate' => ["You don't have the user right to reform a preventive maintenance operation"]
+                ]
+            ], 429);
+        }
         if ($request->prvMtnOp_reformDate<$prvMtnOp->prvMtnOp_startDate){
             return response()->json([
                 'errors' => [

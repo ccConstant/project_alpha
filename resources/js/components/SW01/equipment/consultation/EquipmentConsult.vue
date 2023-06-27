@@ -267,7 +267,8 @@ export default {
             } else {
                 const validVerifUrl = (id) => `/equipment/verifValidation/${id}`;
                 axios.post(validVerifUrl(this.eq_id), {
-                    reason: this.validationMethod
+                    reason: this.validationMethod,
+                    user_id: this.$userId.id,
                 })
                     .then(response => {
                         const techVeriftUrl = (id) => `/equipment/validation/${id}`;

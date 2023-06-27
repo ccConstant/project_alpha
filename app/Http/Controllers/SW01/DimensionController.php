@@ -21,6 +21,7 @@ use App\Models\SW01\EnumDimensionUnit ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\SW01\State ; 
+use App\Models\User ;
 
 
 class DimensionController extends Controller
@@ -147,6 +148,43 @@ class DimensionController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_dimension(Request $request){
+
+        
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->dim_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'dim_type' => ["You don't have the user right to save a dimension as validated"]
+                ]
+            ], 429);
+        }
+        
+        if ($request->reason=="update"){
+            $dim=Dimension::findOrFail($request->dim_id);
+            if (!$user->user_updateDataInDraftRight && ($dim->dim_validate=="drafted" || $dim->dim_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'dim_type' => ["You don't have the user right to update a dimension save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $dim->dim_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'dim_type' => ["You don't have the user right to update a dimension save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'dim_type' => ["You don't have the user right to update a dimension signed"]
+                    ]
+                ], 429);
+            }
+        }
+
 
         //-----CASE dim->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his dimension, so he must enter all the attributes
@@ -466,6 +504,31 @@ class DimensionController extends Controller
         $equipment=Equipment::findOrfail($request->eq_id) ;
         //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
+
+        $user=User::findOrFail($request->user_id);
+        $dimension=Dimension::findOrFail($id);
+        if (($dimension->dim_validate=="drafted" || $dimension->dim_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'dim_type' => ["You don't have the user right to delete a dimension save as drafted or in to be validated"]
+                ]
+            ], 429);
+        }
+        if ($dimension->dim_validate=="validated" && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'dim_type' => ["You don't have the user right to delete a dimension save as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'dim_type' => ["You don't have the user right to delete a dimension signed"]
+                ]
+            ], 429);
+        }
+
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -531,7 +594,6 @@ class DimensionController extends Controller
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
 
-        $dimension=Dimension::findOrFail($id);
         $dimension->delete() ;
     }
 }

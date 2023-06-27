@@ -149,6 +149,8 @@ export default {
                     file_name: this.file_name,
                     file_location: this.file_location,
                     file_validate: savedAs,
+                    reason: 'add',
+                    user_id: this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
@@ -157,7 +159,8 @@ export default {
                         file_name: this.file_name,
                         file_location: this.file_location,
                         file_validate: savedAs,
-                        eq_id: id
+                        eq_id: id,
+
                     })
                         /*If the file is added successfully*/
                         .then(response => {
@@ -195,6 +198,10 @@ export default {
                 file_name: this.file_name,
                 file_location: this.file_location,
                 file_validate: savedAs,
+                reason:'update',
+                user_id:this.$userId.id,
+                lifesheet_created: lifesheet_created,
+                file_id: this.file_id
             }).then(response => {
                 this.errors = {};
                 /*If all the verifications passed, a new post this time to add the file in the database
@@ -232,7 +239,9 @@ export default {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {
-                    eq_id: this.equipment_id_update
+                    eq_id: this.equipment_id_update,
+                    user_id: this.$userId.id,
+                    lifesheet_created: lifesheet_created
                 }).then(response => {
                     const id = this.equipment_id_update;
                     /*We test if a life sheet has been already created*/

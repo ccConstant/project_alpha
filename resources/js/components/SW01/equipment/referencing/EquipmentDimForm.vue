@@ -214,6 +214,8 @@ export default {
                     dim_value: this.dim_value,
                     dim_unit: this.dim_unit,
                     dim_validate: savedAs,
+                    reason: 'add',
+                    user_id: this.$userId.id,
                 })
                     .then(response => {
                         this.errors = {};
@@ -265,6 +267,10 @@ export default {
                 dim_value: this.dim_value,
                 dim_unit: this.dim_unit,
                 dim_validate: savedAs,
+                reason: 'update',
+                user_id: this.$userId.id,
+                lifesheet_created: lifesheet_created,
+                dim_id:this.dim_id
             }).then(response => {
                 this.errors = {};
                 /*If all the verification passed, a new post this time to add the dimension in the database
@@ -305,7 +311,9 @@ export default {
                 /*Send a post-request with the id of the dimension who will be deleted in the url*/
                 const consultUrl = (id) => `/equipment/delete/dim/${id}`;
                 axios.post(consultUrl(this.dim_id), {
-                    eq_id: this.equipment_id_update
+                    eq_id: this.equipment_id_update,
+                    user_id: this.$userId.id,
+                    lifesheet_created: lifesheet_created
                 }).then(response => {
                     const id = this.equipment_id_update;
                     /*We test if a life sheet has been already created*/

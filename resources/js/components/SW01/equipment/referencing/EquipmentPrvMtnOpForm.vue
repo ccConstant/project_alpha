@@ -301,7 +301,9 @@ export default {
                     prvMtnOp_validate: savedAs,
                     prvMtnOp_puttingIntoService: this.prvMtnOp_puttingIntoService,
                     prvMtnOp_preventiveOperation: this.prvMtnOp_preventiveOperation,
-                    typeValidation: this.typeValidation
+                    typeValidation: this.typeValidation,
+                    reason: "add",
+                    user_id: this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the preventive maintenance operation in the database
@@ -358,7 +360,12 @@ export default {
                 prvMtnOp_validate: savedAs,
                 prvMtnOp_puttingIntoService: this.prvMtnOp_puttingIntoService,
                 prvMtnOp_preventiveOperation: this.prvMtnOp_preventiveOperation,
-                typeValidation: this.typeValidation
+                typeValidation: this.typeValidation,
+                reason: "add",
+                user_id: this.$userId.id,
+                lifesheet_created: lifesheet_created,
+                prvMtnOp_id: this.prvMtnOp_id
+
             })
                 .then(response => {
                     this.errors = {};
@@ -411,6 +418,8 @@ export default {
                 const consultUrl = (id) => `/equipment/delete/prvMtnOp/${id}`;
                 axios.post(consultUrl(this.prvMtnOp_id), {
                     eq_id: this.equipment_id_update,
+                    user_id: this.$userId.id,
+                    lifesheet_created: lifesheet_created
                 }).then(response => {
                     const id = this.equipment_id_update;
                     /*We test if a life sheet has been already created*/
@@ -440,7 +449,8 @@ export default {
             const consultUrl = (id) => `/equipment/reform/prvMtnOp/${id}`;
             axios.post(consultUrl(this.prvMtnOp_id), {
                 eq_id: this.equipment_id_update,
-                prvMtnOp_reformDate: endDate
+                prvMtnOp_reformDate: endDate,
+                user_id: this.$userId.id,
             }).then(response => {
                 /*Emit to the parent component that we want to delete this component*/
                 this.$emit('deletePrvMtnOp', '')

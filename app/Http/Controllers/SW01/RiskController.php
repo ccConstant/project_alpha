@@ -526,6 +526,39 @@ class RiskController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_risk(Request $request){
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->risk_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'risk_for' => ["You don't have the user right to save a risk as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->reason=="update"){
+            $risk=Risk::findOrFail($request->risk_id);
+            if (!$user->user_updateDataInDraftRight && ($risk->risk_validate=="drafted" || $risk->risk_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'risk_for' => ["You don't have the user right to update a risk save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $risk->risk_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'risk_for' => ["You don't have the user right to update a risk save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'risk_for' => ["You don't have the user right to update a risk signed"]
+                    ]
+                ], 429);
+            }
+        }
 
         //-----CASE risk->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his risk, so he must enter all the attributes
@@ -586,6 +619,31 @@ class RiskController extends Controller
         //We search the most recently equipment temp of the equipment 
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
         
+
+        $user=User::findOrFail($request->user_id);
+        $risk=Risk::findOrFail($id);
+        if (($risk->risk_validate=="drafted" || $risk->risk_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'risk_for' => ["You don't have the user right to delete a risk save as drafted or in to be validated"]
+                ]
+            ], 429);
+        }
+        if ($risk->risk_validate=="validated" && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'risk_for' => ["You don't have the user right to delete a risk save as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'risk_for' => ["You don't have the user right to delete a risk signed"]
+                ]
+            ], 429);
+        }
+
         if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
             $mostRecentlyEqTmp->update([
                 'qualityVerifier_id' => NULL,
@@ -650,8 +708,6 @@ class RiskController extends Controller
 
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
-        
-        $risk=Risk::findOrFail($id);
         $risk->delete() ; 
     }
 }

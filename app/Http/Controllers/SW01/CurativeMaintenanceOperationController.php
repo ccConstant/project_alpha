@@ -44,6 +44,16 @@ class CurativeMaintenanceOperationController extends Controller
      * The id parameter correspond to the id of the curative maintenance operation we want to delete
      * */
     public function delete_curMtnOp($id){
+
+        $user=User::findOrFail($request->user_id) ;
+        if (!$user->user_makeEqOpValidationRight){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_delete' => ["You don't have the right to delete a curative maintenance operation"]
+                ]
+            ], 429);    
+        }
+
         $curMtnOp=CurativeMaintenanceOperation::findOrFail($id);
         if ($curMtnOp->curMtnOp_validate=='validated'){
             return response()->json([
@@ -63,6 +73,14 @@ class CurativeMaintenanceOperationController extends Controller
      * */
     public function technicalVerification_curMtnOp(Request $request, $id){
         $user=User::findOrFail($request->user_id) ; 
+
+        if (!$user->user_makeTechnicalValidationRight){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to realize technical validation on a curative maintenance operation"]
+                ]
+            ], 429);
+        }
         
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
@@ -90,6 +108,13 @@ class CurativeMaintenanceOperationController extends Controller
      * */
     public function realize_curMtnOp(Request $request, $id){
         $user=User::findOrFail($request->user_id) ; 
+        if (!$user->user_makeEqOpValidationRight){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to realize a curative maintenance operation"]
+                ]
+            ], 429);
+        }
         
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
@@ -112,6 +137,14 @@ class CurativeMaintenanceOperationController extends Controller
      * */
     public function qualityVerification_curMtnOp(Request $request, $id){
         $user=User::findOrFail($request->user_id) ; 
+
+        if (!$user->user_makeQualityValidationRight){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to realize quality validation on a curative maintenance operation"]
+                ]
+            ], 429);
+        }
         
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
@@ -264,6 +297,35 @@ class CurativeMaintenanceOperationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_curMtnOp(Request $request){
+
+        $user=User::findOrFail($request->user_id) ;
+
+        if ($request->reason=="update"){
+            if (!$user->user_makeEqOpValidationRight){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_validate' => ["You don't have the right to update a curative maintenance operation"]
+                    ]
+                ], 429);
+            }
+            $curMtnOp=CurativeMaintenanceOperation::findOrFail($request->curMtnOp_id) ;
+            if (!$user->user_updateDataInDraftRight && ($curMtnOp->curMtnOp_validate=="drafted" || $curMtnOp->curMtnOp_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_validate' => ["You don't have the user right to update a curative maintenance operation save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+        }
+        if(!$user->user_validateOtherDataRight && $request->curMtnOp_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_validate' => ["You don't have the right to validate a curative maintenance operation"]
+                ]
+            ], 429);
+        }
+
+        
         $state=State::findOrFail($request->state_id) ; 
         if ($request->curMtnOp_validate=='validated'){
             $this->validate(

@@ -168,6 +168,8 @@ export default {
                     spProc_exist: this.spProc_exist,
                     spProc_name: this.spProc_name,
                     spProc_validate: savedAs,
+                    reason: 'add',
+                    user_id:this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the special process in the database
@@ -210,6 +212,10 @@ export default {
                 spProc_exist: this.spProc_exist,
                 spProc_name: this.spProc_name,
                 spProc_validate: savedAs,
+                reason: 'update',
+                user_id: this.$userId.id,
+                lifesheet_created: lifesheet_created,
+                spProc_id: this.spProc_id
             }).then(response => {
                 this.errors = {};
                 /*If all the verifications passed, a new post this time to add the special process in the database

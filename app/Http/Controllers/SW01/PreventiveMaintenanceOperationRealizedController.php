@@ -84,6 +84,34 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         $state=State::findOrFail($request->state_id) ;
         $prvMtnOp=PreventiveMaintenanceOperation::findOrFail($request->prvMtnOp_id) ;
 
+        $user=User::findOrFail($request->user_id) ;
+        if(!$user->user_validateOtherDataRight && $request->prvMtnOpRlz_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOpRlz_validate' => ["You don't have the right to validate a preventive maintenance operation realized"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=="update"){
+            if (!$user->user_makeEqOpValidationRight){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOpRlz_validate' => ["You don't have the right to update a preventive maintenance operation realized"]
+                    ]
+                ], 429);
+            }
+            $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($request->prvMtnOpRlz_id) ;
+            if (!$user->user_updateDataInDraftRight && ($prvMtnOpRlz->prvMtnOpRlz_validate=="drafted" || $prvMtnOpRlz->prvMtnOpRlz_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'prvMtnOpRlz_validate' => ["You don't have the user right to update a preventive maintenance operation realized save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+        }
+
         if ($request->prvMtnOpRlz_validate=="validated"){
             if ($request->prvMtnOpRlz_endDate=='' || $request->prvMtnOpRlz_endDate===NULL){
                 return response()->json([
@@ -256,6 +284,16 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * */
     public function delete_prvMtnOpRlz($id){
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id);
+
+        $user=User::findOrFail($request->user_id) ;
+        if (!$user->user_makeEqOpValidationRight){
+            return response()->json([
+                'errors' => [
+                    'prvMtnOpRlz_delete' => ["You don't have the right to delete a preventive maintenance operation realized"]
+                ]
+            ], 429);    
+        }
+
         if ($prvMtnOpRlz->prvMtnOpRlz_validate=='validated'){
             return response()->json([
                 'errors' => [
@@ -339,6 +377,14 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
     public function approve_prvMtnOpRlz(Request $request, $id){
         $user=User::findOrFail($request->user_id) ;
 
+        if (!$user->user_makeEqRespValidationRight){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to approve a preventive maintenance operation realized"]
+                ]
+            ], 429);
+        }
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -366,6 +412,13 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * */
     public function realize_prvMtnOpRlz(Request $request, $id){
         $user=User::findOrFail($request->user_id) ;
+        if (!$user->user_makeEqOpValidationRight){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to realize a preventive maintenance operation realized"]
+                ]
+            ], 429);
+        }
 
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
