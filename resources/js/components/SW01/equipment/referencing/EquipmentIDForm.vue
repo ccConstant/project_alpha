@@ -265,7 +265,7 @@ export default {
                     eq_validate: savedAs,
                     eq_location: this.eq_location,
                     reason: 'add',
-                    enteredBy_id: this.$userId.id
+                    createdBy_id: this.$userId.id
 
                 })
                     /*If the data are correct, we send them to the controller for add them in the database*/
@@ -354,7 +354,7 @@ export default {
                 eq_id: this.eq_id,
                 eq_location: this.eq_location,
                 reason: 'update',
-                enteredBy_id: this.$userId.id,
+                createdBy_id: this.$userId.id,
                 lifesheet_created: lifesheet_created,
                 eq_id: this.eq_id
             })

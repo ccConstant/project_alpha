@@ -161,7 +161,8 @@ export default {
             axios.post(postUrlAdd(this.curMtnOp_id), {
                 user_pseudo: this.user_pseudo,
                 user_password: this.user_password,
-                user_id: this.$userId.id
+                user_id: this.$userId.id,
+                reason:'equipment'
             })
                 .then(response => {
                     this.closeModal(bvModalEvent.target.id);

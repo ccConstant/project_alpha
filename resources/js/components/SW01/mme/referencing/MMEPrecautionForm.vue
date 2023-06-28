@@ -153,6 +153,7 @@ export default {
                     prctn_description: this.prctn_description,
                     prctn_validate: savedAs,
                     usage_id: this.usg_id,
+                    user_id:this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     axios.post("/mme/add/usage/prctn", {
@@ -200,6 +201,7 @@ export default {
                 prctn_description: this.prctn_description,
                 prctn_validate: savedAs,
                 usage_id: this.usg_id,
+                user_id:this.$userId.id,
             }).then(response => {
                 this.errors = {};
                 /*If all the fields are correctly filled, a new post this time to add the precaution in the database

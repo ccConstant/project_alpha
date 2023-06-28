@@ -258,7 +258,8 @@ export default {
                     state_id: this.mme_state_id,
                     verif_id: this.verif_id,
                     mme_id: id,
-                    reason: 'add'
+                    reason: 'add',
+                    user_id: this.$userId.id
                 }).then(response => {
                     this.errors = {};
                     /*If all of the fields are correctly filled, a new post this time to add the verification in the data base
@@ -309,7 +310,9 @@ export default {
                 state_id: this.mme_state_id,
                 verif_id: this.verif_id,
                 mme_id: this.mme_id_update,
-                reason: 'update'
+                reason: 'update',
+                user_id: this.$userId.id,
+                verifRlz_id: this.verifRlz_id
             }).then(response => {
                 /*If all of the fields are correctly filled, a new post this time to add the verification in the data base
                 The reportNumber, the startDate, endDate, isPassed value, validate options, the id of the mme affected, the id of his current state, the id of verification and the user who entered it
@@ -343,6 +346,7 @@ export default {
                 const consultUrl = (id) => `/mme_state/delete/verifRlz/${id}`;
                 axios.post(consultUrl(this.verifRlz_id), {
                     mme_id: this.mme_id_update,
+                    user_id: this.$userId.id
                 }).then(response => {
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteVerifRlz', '')

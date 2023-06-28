@@ -218,7 +218,7 @@ export default {
                     mme_validate: savedAs,
                     reason: 'add',
                     mme_location: this.mme_location,
-                    createdBy_id: this.$userId.id
+                    createdBy_id: this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     if (this.state_id !== null) {
@@ -278,7 +278,10 @@ export default {
                 mme_validate: savedAs,
                 mme_id: this.mme_id,
                 reason: 'update',
-                mme_location: this.mme_location
+                mme_location: this.mme_location,
+                createdBy_id: this.$userId.id,
+                lifesheet_created: lifesheet_created,
+                mme_id: this.mme_id,
             }).then(response => {
                 this.errors = {};
                 const consultUrl = (id) => `/mme/update/${id}`;

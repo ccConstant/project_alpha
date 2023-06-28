@@ -201,7 +201,8 @@ export default {
                     curMtnOp_validate: savedAs,
                     mme_id: id,
                     state_id: this.mme_state_id,
-                    reason: 'add'
+                    reason: 'add',
+                    user_id: this.$userId.id,
                 }).then(response => {
                     this.errors = {};
                     /*If all the verification passed, a new post this time to add the curative maintenance operation in the database
@@ -251,7 +252,9 @@ export default {
                 curMtnOp_id: this.curMtnOp_id,
                 mme_id: this.mme_id_update,
                 state_id: this.mme_state_id,
-                reason: 'update'
+                reason: 'update',
+                user_id: this.$userId.id,
+                curMtnOp_id: this.curMtnOp_id,
             }).then(response => {
                 /*If all the verification passed, a new post this time to add the curative maintenance operation in the database
                 The report number, description, start date, end date, validate option, id of the mme affected and the id of the current state are sent to the controller
@@ -283,6 +286,8 @@ export default {
                 const consultUrl = (id) => `/state/delete/curMtnOp/${id}`;
                 axios.post(consultUrl(this.curMtnOp_id), {
                     mme_id: this.mme_id_update,
+                    user_id: this.$userId.id,
+                    reason:"mme"
                 }).then(response => {
                     //Emit to the parent component that we want to delete this component
                     this.$emit('deleteCurMtnOp', '')

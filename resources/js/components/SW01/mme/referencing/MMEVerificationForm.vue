@@ -412,6 +412,8 @@ export default {
                     verif_preventiveOperation: this.verif_preventiveOperation,
                     verif_mesureUncert: this.verif_mesureUncert,
                     verif_mesureRange: this.verif_mesureRange,
+                    user_id:this.$userId.id,
+                    reason:'add'
                 }).then(response => {
                     this.errors = {};
                     axios.post('/mme/add/verif', {
@@ -481,6 +483,10 @@ export default {
                 verif_preventiveOperation: this.verif_preventiveOperation,
                 verif_mesureUncert: this.verif_mesureUncert,
                 verif_mesureRange: this.verif_mesureRange,
+                user_id:this.$userId.id,
+                reason:'update',
+                verif_id: this.verif_id,
+                lifesheet_created: lifesheet_created,
             }).then(response => {
                 this.errors = {};
                 const consultUrl = (id) => `/mme/update/verif/${id}`;
@@ -557,7 +563,8 @@ export default {
             const consultUrl = (id) => `/mme/reform/verif/${id}`;
             axios.post(consultUrl(this.verif_id), {
                 eq_id: this.equipment_id_update,
-                verif_reformDate: endDate
+                verif_reformDate: endDate,
+                user_id:this.$userId.id,
             }).then(response => {
                 //Emit to the parent component that we want to delete this component
                 this.$emit('deleteVerif', '')

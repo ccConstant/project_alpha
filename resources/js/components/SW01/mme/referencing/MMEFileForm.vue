@@ -128,6 +128,8 @@ export default {
                     file_name: this.file_name,
                     file_location: this.file_location,
                     file_validate: savedAs,
+                    user_id: this.$userId.id,
+                    reason: 'add'
                 }).then(response => {
                     this.errors = {};
                     /*If all the verification passed, a new post this time to add the file in the database
@@ -175,6 +177,10 @@ export default {
                 file_name: this.file_name,
                 file_location: this.file_location,
                 file_validate: savedAs,
+                user_id: this.$userId.id,
+                reason:'update',
+                file_id: this.file_id,
+                lifesheet_created: lifesheet_created
             }).then(response => {
                 this.errors = {};
                 /*If all the check passed, a new post this time to add the file in the database
@@ -212,7 +218,9 @@ export default {
                 //Send a post-request with the id of the file who will be deleted in the url
                 const consultUrl = (id) => `/mme/delete/file/${id}`;
                 axios.post(consultUrl(this.file_id), {
-                    mme_id: this.mme_id_update
+                    mme_id: this.mme_id_update,
+                    user_id: this.$userId.id,
+                    lifesheet_created: lifesheet_created
                 }).then(response => {
                     const id = this.mme_id_update;
                     //We test if a life sheet has been already created

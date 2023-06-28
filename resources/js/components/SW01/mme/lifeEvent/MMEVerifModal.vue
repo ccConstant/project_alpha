@@ -164,7 +164,7 @@ export default {
             axios.post(postUrlAdd(this.verifRlz_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
-                    user_id:this.compId
+                    user_id:this.compId,
             }).then(response =>{
                 this.$refs.succesAlert.showAlert("Succesfully aprouved");
                 this.closeModal(bvModalEvent.target.id);
@@ -177,7 +177,7 @@ export default {
             axios.post(postUrlAdd(this.verifRlz_id),{
                     user_pseudo:this.user_pseudo,
                     user_password:this.user_password,
-                    user_id:this.compId
+                    user_id:this.compId,
             }).then(response =>{
                 this.$refs.succesAlert.showAlert("Succesfully realized");
                 this.closeModal(bvModalEvent.target.id);

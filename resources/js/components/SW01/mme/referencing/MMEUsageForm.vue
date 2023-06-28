@@ -243,6 +243,8 @@ export default {
                     usg_metrologicalLevel: this.usg_metrologicalLevel,
                     usg_application: this.usg_application,
                     usg_validate: savedAs,
+                    user_id: this.$userId.id,
+                    reason:'add',
                 }).then(response => {
                     this.errors = {};
                     /*If all the check passed, a new post this time to add the MME usage in the database
@@ -296,6 +298,10 @@ export default {
                 usg_metrologicalLevel: this.usg_metrologicalLevel,
                 usg_application: this.usg_application,
                 usg_validate: savedAs,
+                user_id:this.$userId.id,
+                reason:'update',
+                usg_id:this.usg_id,
+                lifesheet_created:lifesheet_created,
             }).then(response => {
                 this.errors = {};
                 /*If all the check has passed, a new post this time to add the MME usage in the database
@@ -365,7 +371,8 @@ export default {
             const consultUrl = (id) => `/mme/reform/usg/${id}`;
             axios.post(consultUrl(this.usg_id), {
                 mme_id: this.mme_id_update,
-                usg_reformDate: endDate
+                usg_reformDate: endDate,
+                user_id:this.$userId.id,
             }).then(response => {
                 //Emit to the parent component that we want to delete this component
                 this.$emit('deleteUsage', '')

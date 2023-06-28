@@ -208,7 +208,8 @@ export default {
                 state_validate: savedAs,
                 state_id: this.state_id,
                 mme_id: this.mme_id,
-                reason: 'update'
+                reason: 'update',
+                user_id: this.$userId.id
             }).then(response => {
                 this.errors = {}
                 const consultUrl = (id) => `/mme/update/state/${id}`;

@@ -284,6 +284,7 @@ export default {
                                     user_id: this.$userId.id,
                                     user_pseudo: this.$userId.user_pseudo,
                                     user_password: this.user_password,
+                                    reason: 'equipment'
                                 }).catch(error => this.errors = error.response.data.errors);
                             }
                         }).catch(error => this.errors = error.response.data.errors);
@@ -346,6 +347,8 @@ export default {
                 axios.post(consultUrl(this.curMtnOp_id), {
                     eq_id: this.equipment_id_update,
                     user_id: this.$userId.id,
+                    reason:"equipment"
+
                 }).then(response => {
                     //Emit to the parent component that we want to delete this curative maintenance operation
                     this.$emit('deleteCurMtnOp', '')
