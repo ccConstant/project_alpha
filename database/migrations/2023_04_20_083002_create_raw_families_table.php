@@ -27,8 +27,8 @@ class CreateRawFamiliesTable extends Migration
             $table->string('rawFam_design');
             $table->string('rawFam_drawingPath')->nullable();
             $table->integer('rawFam_nbrVersion')->default(1);
-            $table->string('rawFam_variablesCharac')->nullable();
-            $table->string('rawFam_variablesCharacDesign')->nullable();
+           /* $table->string('rawFam_variablesCharac')->nullable();
+            $table->string('rawFam_variablesCharacDesign')->nullable();*/
             $table->timestamps();
             $table->unsignedBigInteger('rawFam_qualityApproverId')->nullable();
             $table->foreign('rawFam_qualityApproverId')->references('id')->on('users');
@@ -37,10 +37,11 @@ class CreateRawFamiliesTable extends Migration
             $table->date('rawFam_signatureDate')->nullable();
             $table->enum('rawFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->boolean('rawFam_active')->default(true);
-            $table->string('rawFam_genDesign')->nullable();
-            $table->string('rawFam_genRef')->nullable();
+           /* $table->string('rawFam_genDesign')->nullable();
+            $table->string('rawFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
+          
         });
     }
 

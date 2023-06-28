@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_20_081310_create_comp_families_table.php
 * Creation date : 20 Apr 2023
-* Update date : 27 Jun 2023
+* Update date : 28 Jun 2023
 * This file is used to create the table "comp_families" in the data base. In this file, we can see the different
 * attribute of this table (reference, designation..) and how they are defined (string, boolean, unique or not)
 */
@@ -27,8 +27,8 @@ class CreateCompFamiliesTable extends Migration
             $table->string('compFam_design');
             $table->string('compFam_drawingPath')->nullable();
             $table->integer('compFam_nbrVersion')->default(1);
-            $table->string('compFam_variablesCharac')->nullable();
-            $table->string('compFam_variablesCharacDesign')->nullable();
+           /* $table->string('compFam_variablesCharac')->nullable();
+            $table->string('compFam_variablesCharacDesign')->nullable();*/
             $table->timestamps();
             $table->unsignedBigInteger('compFam_qualityApproverId')->nullable();
             $table->foreign('compFam_qualityApproverId')->references('id')->on('users');
@@ -38,8 +38,8 @@ class CreateCompFamiliesTable extends Migration
             $table->enum('compFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('compFam_version')->nullable();
             $table->boolean('compFam_active')->default(true);
-            $table->string('compFam_genDesign')->nullable();
-            $table->string('compFam_genRef')->nullable();
+           /* $table->string('compFam_genDesign')->nullable();
+            $table->string('compFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
 

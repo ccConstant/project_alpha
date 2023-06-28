@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_20_083900_create_raw_family_members_table.php
 * Creation date : 20 Apr 2023
-* Update date : 27 Jun 2023
+* Update date : 28 Jun 2023
 * This file is used to create the table "raw_family_members" in the data base. In this file, we can see the different
 * attribute of this table (dimension, technicalReviewer..) and how they are defined (string, boolean, unique or not)
 */
@@ -26,12 +26,7 @@ class CreateRawFamilyMembersTable extends Migration
             $table->id();
             $table->string('rawMb_dimension') ->nullable();
             $table->string('rawMb_design')->nullable();
-            $table->boolean('rawMb_sameValues')->default(true);
-            $table->foreign('rawMb_technicalReviewerId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('rawMb_technicalReviewerId') ->nullable();
-            $table->foreign('rawMb_qualityApproverId')->references('id')->on('users') ;
-            $table->unsignedBigInteger('rawMb_qualityApproverId') ->nullable();
-            $table->string('rawMb_signatureDate') ->nullable();
+           /* $table->boolean('rawMb_sameValues')->default(true);*/
             $table->unsignedBigInteger('rawFam_id') ->nullable();
             $table->foreign('rawFam_id')->references('id')->on('raw_families') ;
             $table->timestamps();
