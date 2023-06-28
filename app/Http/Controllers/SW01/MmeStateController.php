@@ -33,6 +33,34 @@ class MmeStateController extends Controller
      */
     public function verif_state(Request $request){
 
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateOtherDataRight && $request->state_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'state_name' => ["You don't have the user right to save a state as validated"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=='add' && !$user->user_declareNewStateRight){
+            return response()->json([
+                'errors' => [
+                    'state_name' => ["You don't have the user right to declare a new state"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=="update"){
+            $state=MmeState::findOrFail($request->state_id);
+            if (!$user->user_updateDataInDraftRight && ($state->state_validate=="drafted" || $state->state_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'state_name' => ["You don't have the user right to update a state save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+        }
+
         //-----CASE state->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his state, so he must enter all the attributes
 

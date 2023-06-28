@@ -385,7 +385,7 @@ class UsageController extends Controller
                 ]
             ], 429);
         }
-        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+        if ($request->lifesheet_created && !$user->user_deleteDataSignedLinkedToEqOrMmeRight){
             return response()->json([
                 'errors' => [
                     'usg_type' => ["You don't have the user right to delete a usage signed"]

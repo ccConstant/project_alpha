@@ -92,6 +92,34 @@ class VerificationRealizedController extends Controller
         $state=MmeState::findOrFail($request->state_id) ;
         $verif=Verification::findOrFail($request->verif_id) ;
 
+        $user=User::findOrFail($request->user_id) ;
+        if(!$user->user_validateOtherDataRight && $request->verifRlz_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'verifRlz_validate' => ["You don't have the right to validate a verification realized"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=="update"){
+            if (!$user->user_makeMmeOpValidationRight){
+                return response()->json([
+                    'errors' => [
+                        'verifRlz_validate' => ["You don't have the right to update a verification realized"]
+                    ]
+                ], 429);
+            }
+            $verifRlz=VerificationRealized::findOrFail($request->verifRlz_id ) ;
+            if (!$user->user_updateDataInDraftRight && ($verifRlz->verifRlz_validate=="drafted" || $verifRlz->verifRlz_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'verifRlz_validate' => ["You don't have the user right to update a verification realized save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+        }
+
         if ($request->verifRlz_validate=="validated"){
             if ($request->verifRlz_endDate=='' || $request->verifRlz_endDate===NULL){
                 return response()->json([
@@ -277,6 +305,15 @@ class VerificationRealizedController extends Controller
      * */
     public function delete_verifRlz($id){
         $verifRlz=VerificationRealized::findOrFail($id);
+
+        $user=User::findOrFail($request->user_id) ;
+        if (!$user->user_makeMmeOpValidationRight){
+            return response()->json([
+                'errors' => [
+                    'verifRlz_delete' => ["You don't have the right to delete a verification realized"]
+                ]
+            ], 429);    
+        }
         if ($verifRlz->verifRlz_validate=='validated'){
             return response()->json([
                 'errors' => [
@@ -360,6 +397,13 @@ class VerificationRealizedController extends Controller
      * */
     public function approve_verifRlz(Request $request, $id){
         $user=User::findOrFail($request->user_id) ;
+        if (!$user->user_makeMmeOpValidationRight){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to approve a verification realized"]
+                ]
+            ], 429);
+        }
 
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
@@ -382,6 +426,13 @@ class VerificationRealizedController extends Controller
      * */
     public function realize_verifRlz(Request $request, $id){
         $user=User::findOrFail($request->user_id) ;
+        if (!$user->user_makeMmeOpValidationRight){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to realize a verification"]
+                ]
+            ], 429);
+        }
 
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([

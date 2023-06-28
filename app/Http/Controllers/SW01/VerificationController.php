@@ -22,6 +22,7 @@ use App\Models\SW01\EnumVerifAcceptanceAuthority;
 use Carbon\Carbon;
 use App\Models\SW01\MmeState;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class VerificationController extends Controller
 {
@@ -31,6 +32,42 @@ class VerificationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_verif(Request $request){
+
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->verif_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'verif_preventiveOperation' => ["You don't have the user right to save a verification as validated"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=="update"){
+            $verif=Verification::findOrFail($request->verif_id);
+            if (!$user->user_updateDataInDraftRight && ($verif->verif_validate=="drafted" || $verif->verif_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'verif_preventiveOperation' => ["You don't have the user right to update a verification save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $verif->verif_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'verif_preventiveOperation' => ["You don't have the user right to update a verification save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'verif_preventiveOperation' => ["You don't have the user right to update a verification signed"]
+                    ]
+                ], 429);
+            }
+        }
+
 
         //-----CASE verif->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his verification, so he must enter all the attributes
@@ -756,6 +793,31 @@ class VerificationController extends Controller
      * */
     public function delete_verif(Request $request, $id){
         $mme=Mme::findOrfail($request->mme_id) ;
+        $verif=Verification::findOrFail($id) ;
+
+        if (($verif->verif_validate=="drafted" || $verif->verif_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'verif_preventiveOperation' => ["You don't have the user right to delete a verification save as drafted or in to be validated"]
+                ]
+            ], 429);
+        }
+        if ($verif->verif_validate=="validated" && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'verif_preventiveOperation' => ["You don't have the user right to delete a verification save as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->lifesheet_created && !$user->user_deleteDataSignedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'verif_preventiveOperation' => ["You don't have the user right to delete a verification signed"]
+                ]
+            ], 429);
+        }
+
+
         //We search the most recently mme temp of the mme
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
 
@@ -826,7 +888,6 @@ class VerificationController extends Controller
 
         $verifsInMme=Verification::where('mmeTemp_id', '=', $request->mme_id)->get() ;
         $verifRlzs=VerificationRealized::where('verif_id', '=', $id)->get() ;
-        $verif=Verification::findOrFail($id) ;
         if (count($verifRlzs)==0){
             foreach($verifsInMme as $verifInMme){
                 if ($verifInMme->verif_number>$verif->verif_number){
@@ -856,6 +917,14 @@ class VerificationController extends Controller
 
     public function reform_verif(Request $request, $id){
         $verif=Verification::findOrFail($id) ;
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_makeReformRight){
+            return response()->json([
+                'errors' => [
+                    'verif_reformDate' => ["You don't have the user right to reform a verification"]
+                ]
+            ], 429);
+        }
         if ($request->verif_reformDate<$verif->verif_startDate){
             return response()->json([
                 'errors' => [

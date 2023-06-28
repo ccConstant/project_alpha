@@ -20,6 +20,7 @@ use App\Models\SW01\Precaution  ;
 use Carbon\Carbon;
 use App\Models\SW01\MmeState;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class PrecautionController extends Controller
 {
@@ -30,6 +31,17 @@ class PrecautionController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_precaution(Request $request){
+
+
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->prctn_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'prctn_type' => ["You don't have the user right to save a precaution as validated"]
+                ]
+            ], 429);
+        }
+
         if ($request->prctn_validate=="validated"){
             if ($request->prctn_type=='' || $request->prctn_type==NULL ){
                 return response()->json([

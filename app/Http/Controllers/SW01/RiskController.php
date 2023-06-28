@@ -636,7 +636,7 @@ class RiskController extends Controller
                 ]
             ], 429);
         }
-        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+        if ($request->lifesheet_created && !$user->user_deleteDataSignedLinkedToEqOrMmeRight){
             return response()->json([
                 'errors' => [
                     'risk_for' => ["You don't have the user right to delete a risk signed"]

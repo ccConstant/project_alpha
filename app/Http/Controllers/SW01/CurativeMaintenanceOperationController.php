@@ -43,10 +43,18 @@ class CurativeMaintenanceOperationController extends Controller
      * Delete a curative maintenance operation thanks to the id given in parameter
      * The id parameter correspond to the id of the curative maintenance operation we want to delete
      * */
-    public function delete_curMtnOp($id){
+    public function delete_curMtnOp(Request $request, $id){
 
         $user=User::findOrFail($request->user_id) ;
-        if (!$user->user_makeEqOpValidationRight){
+        if (!$user->user_makeEqOpValidationRight && $request->reason=="equipment"){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_delete' => ["You don't have the right to delete a curative maintenance operation"]
+                ]
+            ], 429);    
+        }
+
+        if (!$user->user_makeMmeOpValidationRight && $request->reason=="mme"){
             return response()->json([
                 'errors' => [
                     'curMtnOp_delete' => ["You don't have the right to delete a curative maintenance operation"]
@@ -108,7 +116,14 @@ class CurativeMaintenanceOperationController extends Controller
      * */
     public function realize_curMtnOp(Request $request, $id){
         $user=User::findOrFail($request->user_id) ; 
-        if (!$user->user_makeEqOpValidationRight){
+        if (!$user->user_makeEqOpValidationRight && $request->reason=="equipment"){
+            return response()->json([
+                'errors' => [
+                    'connexion' => ["You don't have the right to realize a curative maintenance operation"]
+                ]
+            ], 429);
+        }
+        if (!$user->user_makeMmeOpValidationRight && $request->reason=="mme"){
             return response()->json([
                 'errors' => [
                     'connexion' => ["You don't have the right to realize a curative maintenance operation"]
@@ -301,7 +316,7 @@ class CurativeMaintenanceOperationController extends Controller
         $user=User::findOrFail($request->user_id) ;
 
         if ($request->reason=="update"){
-            if (!$user->user_makeEqOpValidationRight){
+            if (!$user->user_makeMmeOpValidationRight){
                 return response()->json([
                     'errors' => [
                         'curMtnOp_validate' => ["You don't have the right to update a curative maintenance operation"]

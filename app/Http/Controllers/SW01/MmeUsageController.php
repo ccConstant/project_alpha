@@ -20,6 +20,7 @@ use App\Models\SW01\Usage ;
 use App\Models\SW01\MmeState ;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 
 
@@ -33,6 +34,42 @@ class MmeUsageController extends Controller
      */
     public function verif_usage(Request $request){
 
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->usg_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'usg_measurementType' => ["You don't have the user right to save a usage as validated"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=="update"){
+            $usg= MmeUsage::findOrFail($request->usg_id) ;
+            if (!$user->user_updateDataInDraftRight && ($usg->usg_validate=="drafted" || $usg->usg_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'usg_measurementType' => ["You don't have the user right to update a usage save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $usg->usg_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'usg_measurementType' => ["You don't have the user right to update a usage save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'usg_measurementType' => ["You don't have the user right to update a usage signed"]
+                    ]
+                ], 429);
+            }
+
+
+        }
         //-----CASE usg->validate=validated----//
         //if the user has choosen "validated" value that's mean he wants to validate his usage, so he must enter all the attributes
         if ($request->usg_validate=='validated'){
@@ -371,6 +408,30 @@ class MmeUsageController extends Controller
      * */
     public function delete_usage(Request $request,$id){
         $mme=Mme::findOrfail($request->mme_id) ;
+        $usage=MmeUsage::findOrFail($id);
+
+        if (($usage->usg_validate=="drafted" || $usage->usg_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'usg_measurementType' => ["You don't have the user right to delete a usage save as drafted or in to be validated"]
+                ]
+            ], 429);
+        }
+        if ($usage->usg_validate=="validated" && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'usg_measurementType' => ["You don't have the user right to delete a usage save as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->lifesheet_created && !$user->user_deleteDataSignedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'usg_measurementType' => ["You don't have the user right to delete a usage signed"]
+                ]
+            ], 429);
+        }
+
         //We search the most recently mme temp of the mme
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
 
@@ -438,7 +499,6 @@ class MmeUsageController extends Controller
 
             $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
-        $usage=MmeUsage::findOrFail($id);
         $usage->delete() ;
     }
 
@@ -452,6 +512,14 @@ class MmeUsageController extends Controller
 
     public function reform_usage(Request $request, $id){
         $usg=MmeUsage::findOrFail($id) ;
+        $user=User::findOrFail($request->user_id);
+        if (!$user->user_makeReformRight){
+            return response()->json([
+                'errors' => [
+                    'usg_reformDate' => ["You don't have the user right to reform a usage"]
+                ]
+            ], 429);
+        }
         if ($request->usg_reformDate<$usg->usg_startDate){
             return response()->json([
                 'errors' => [

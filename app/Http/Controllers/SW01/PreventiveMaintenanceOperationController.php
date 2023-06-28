@@ -648,7 +648,7 @@ class PreventiveMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }
-        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+        if ($request->lifesheet_created && !$user->user_deleteDataSignedLinkedToEqOrMmeRight){
             return response()->json([
                 'errors' => [
                     'prvMtnOp_description' => ["You don't have the user right to delete a preventive maintenance operation signed"]

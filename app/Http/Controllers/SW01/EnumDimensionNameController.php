@@ -53,6 +53,15 @@ class EnumDimensionNameController extends Controller
 
     public function add_enum_name(Request $request)
     {
+        $user=User::findOrFail($request->user_id) ;
+        if (!$user->user_addEnumRight){
+            return response()->json([
+                'errors' => [
+                    'enum_dim_name' => ["You don't have the right to add a new dimension name"]
+                ]
+            ], 429);
+        }
+
         $enum_already_exist = EnumDimensionName::where('value', '=', $request->value)->get();
         if (count($enum_already_exist) != 0) {
             return response()->json([

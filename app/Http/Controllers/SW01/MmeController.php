@@ -406,6 +406,43 @@ class MmeController extends Controller{
      */
     public function verif_mme(Request $request){
 
+        $user=User::findOrFail($request->createdBy_id);
+        if (!$user->user_validateDescriptiveLifeSheetDataRight && $request->mme_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'mme_internalReference' => ["You don't have the user right to save a MME ID as validated"]
+                ]
+            ], 429);
+        }
+
+        if ($request->reason=="update"){
+            $mme= Mme::findOrFail($request->mme_id) ;
+            if (!$user->user_updateDataInDraftRight && ($mme->mme_validate=="drafted" || $mme->mme_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'mme_internalReference' => ["You don't have the user right to update a MME ID save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+
+            if (!$user->user_updateDataValidatedButNotSignedRight && $mme->mme_validate=="validated"){
+                return response()->json([
+                    'errors' => [
+                        'mme_internalReference' => ["You don't have the user right to update a MME ID save as validated"]
+                    ]
+                ], 429);
+            }
+            if (!$user->user_updateDescriptiveLifeSheetDataSignedRight && $request->lifesheet_created==true){
+                return response()->json([
+                    'errors' => [
+                        'mme_internalReference' => ["You don't have the user right to update a MME ID signed"]
+                    ]
+                ], 429);
+            }
+
+
+        }
+
         // We need to do many verifications on the data entered by the user.
         // If the user make a mistake, we send to the vue an error to explain it and print it to the user.
 
@@ -850,6 +887,22 @@ class MmeController extends Controller{
     public function verif_validation(Request $request, $id){
         $container=array() ;
         $container2=array() ;
+
+        $user=User::findOrFail($request->user_id) ;
+        if ($request->reason=="technical" && !$user->user_makeTechnicalValidationRight){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You don't have the right to realize a technical validation"]
+                ]
+            ], 429);
+        }
+        if ($request->reason=="quality" && !$user->user_makeQualityValidationRight){
+            return response()->json([
+                'errors' => [
+                    'validation' => ["You don't have the right to realize a quality validation"]
+                ]
+            ], 429);
+        }
 
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $id)->orderBy('created_at', 'desc')->first();
         if ($mostRecentlyMmeTmp->mmeTemp_validate!="validated"){

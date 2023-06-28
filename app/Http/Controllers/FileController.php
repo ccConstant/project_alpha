@@ -336,7 +336,7 @@ class FileController extends Controller
                 ]
             ], 429);
         }
-        if ($request->lifesheet_created && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+        if ($request->lifesheet_created && !$user->user_deleteDataSignedLinkedToEqOrMmeRight){
             return response()->json([
                 'errors' => [
                     'file_name' => ["You don't have the user right to delete a file signed"]
@@ -625,6 +625,30 @@ class FileController extends Controller
         //We search the most recently mme temp of the mme
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
 
+        $file=File::findOrFail($id);
+
+        if (($file->file_validate=="drafted" || $file->file_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'file_name' => ["You don't have the user right to delete a file save as drafted or in to be validated"]
+                ]
+            ], 429);
+        }
+        if ($file->file_validate=="validated" && !$user->user_deleteDataValidatedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'file_name' => ["You don't have the user right to delete a file save as validated"]
+                ]
+            ], 429);
+        }
+        if ($request->lifesheet_created && !$user->user_deleteDataSignedLinkedToEqOrMmeRight){
+            return response()->json([
+                'errors' => [
+                    'file_name' => ["You don't have the user right to delete a file signed"]
+                ]
+            ], 429);
+        }
+
         if ($mostRecentlyMmeTmp->qualityVerifier_id!=null){
             $mostRecentlyMmeTmp->update([
                 'qualityVerifier_id' => NULL,
@@ -687,7 +711,6 @@ class FileController extends Controller
 
             $newState->mme_temps()->attach($mostRecentlyMmeTmp);
         }
-        $file=File::findOrFail($id);
         $file->delete() ;
     }
 }
