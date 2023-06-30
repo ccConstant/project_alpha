@@ -457,7 +457,6 @@ export default {
             axios.get('/info/send/preventiveMaintenanceOperation')
             .then(response => {
                 this.infos_prvMtnOp = response.data;
-                console.log(this.infos_prvMtnOp)
                 const consultUrl = (id) => `/prvMtnOp/risk/send/${id}`;
                 if (this.prvMtnOp_id !== null && this.addSuccess == false) {
                     axios.get(consultUrl(this.prvMtnOp_id))

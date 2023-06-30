@@ -128,7 +128,6 @@ export default {
                 prvMtnOp_protocol: arg.event.extendedProps.protocol,
                 prvMtnOp_nextDate: arg.event.extendedProps.operation_date
             });
-            console.log(arg)
             this.$refs.event_details.$bvModal.show('modal-event_details');
         },
         handleListClick(eq_id, eq_internalReference, state_id, number, description, protocol, next_date, periodicity, symbolPeriodicity) {

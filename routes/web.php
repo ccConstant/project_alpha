@@ -1102,6 +1102,7 @@ Route::get('/artFam/enum/storageCondition/sendUsageByType/{type}/{id}', [EnumSto
 Route::post('/artFam/enum/storageCondition/update/{id}', [EnumStorageConditionController::class, 'update_enum_storageCondition_linked']);
 Route::post('/artFam/enum/storageCondition/unlink/{type}/{id}', [EnumStorageConditionController::class, 'unlink_enum_storageCondition']);
 Route::post('/artFam/enum/storageCondition/delete/{id}', [EnumStorageConditionController::class, 'delete_enum_stoConds']);
+Route::post('/artFam/storageCondition/update/{id}', [EnumStorageConditionController::class, 'update_storageCondition_linked']);
 
 // Criticality
 Route::post('/artFam/criticality/verif', [CriticalityController::class, 'verif_criticality']);

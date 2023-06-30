@@ -25,6 +25,13 @@
                 <p></p>
                 <table class="header">
                     <tbody>
+                    <tr v-if="articleData.signatureDate === null">
+                        <td colspan="5" style="background-color: yellow; text-align: center">
+                            <h1>
+                                FOR CONSULTATION ONLY - APPROVAL IN PROGRESS
+                            </h1>
+                        </td>
+                    </tr>
                     <tr class="ignored" rowspan="3">
                         <td class="ignored" rowspan="3"
                             style="text-align: center; vertical-align: middle; border: none!important;">
@@ -78,11 +85,9 @@
                         <td colspan="2" style="text-align: left; vertical-align: text-top">
                             <p class="ignored">
                                 Verified by (Name and Date) :
-                                <br>
                                 <span v-if="articleData.signatureDate !== null">
                                     {{ articleData.technicalReviewerName }}
                                 </span>
-                                <br>
                                 <span v-if="articleData.signatureDate !== null">
                                     {{
                                         new Date(articleData.signatureDate).getDate()
@@ -95,11 +100,9 @@
                         <td colspan="2" style="text-align: left; vertical-align: top">
                             <p class="ignored">
                                 Approved by (Name and Date) :
-                                <br>
                                 <span v-if="articleData.signatureDate !== null">
                                     {{ articleData.qualityApproverName }}
                                 </span>
-                                <br>
                                 <span v-if="articleData.signatureDate !== null">
                                     {{
                                         new Date(articleData.signatureDate).getDate()
@@ -1214,7 +1217,6 @@ export default {
         axios.get('/purSpe/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.purSpes = response.data;
-                console.log(this.purSpes);
                 this.loaded = true;
             })
             .catch(error => {

@@ -104,7 +104,8 @@ class UserTest extends TestCase
      *                                      "You must confirm your password"
      * @returns void
      */
-    public function test_add_a_user_with_a_too_long_first_name() {
+    public function test_add_a_user_with_a_too_long_first_name()
+    {
         $response = $this->post('register', [
             'user_firstName' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
         ]);
@@ -134,7 +135,8 @@ class UserTest extends TestCase
      *                                      "You must confirm your password"
      * @returns void
      */
-    public function test_add_a_user_with_a_too_short_last_name() {
+    public function test_add_a_user_with_a_too_short_last_name()
+    {
         $response = $this->post('register', [
             'user_firstName' => 'three',
             'user_lastName' => 'a'
@@ -164,7 +166,8 @@ class UserTest extends TestCase
      *                                      "You must confirm your password"
      * @returns void
      */
-    public function test_add_a_user_with_a_too_long_last_name() {
+    public function test_add_a_user_with_a_too_long_last_name()
+    {
         $response = $this->post('register', [
             'user_firstName' => 'three',
             'user_lastName' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
@@ -193,7 +196,8 @@ class UserTest extends TestCase
      *                                      "You must confirm your password"
      * @returns void
      */
-    public function test_add_a_user_with_a_too_short_pseudo() {
+    public function test_add_a_user_with_a_too_short_pseudo()
+    {
         $response = $this->post('register', [
             'user_firstName' => 'three',
             'user_lastName' => 'three',
@@ -463,38 +467,6 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 16
-     * Save a User with correct data
-     * First name: "three"
-     * Last name: "three"
-     * Pseudo: "three"
-     * Password: "password"
-     * Confirm password: "password"
-     * Initial: /
-     * Expected result: The user is saved and correctly added in the database
-     * @returns void
-     */
-    public function test_add_a_user_with_correct_data()
-    {
-        $countUsers = User::all()->count();
-        $response = $this->post('register', [
-            'user_firstName' => 'three',
-            'user_lastName' => 'three',
-            'user_pseudo' => 'three',
-            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
-            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals($countUsers + 1, User::all()->count());
-        $this->assertDatabaseHas('users', [
-            'user_firstName' => 'three',
-            'user_lastName' => 'three',
-            'user_pseudo' => 'three'
-        ]);
-        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'three')->first()->password));
-    }
-
-    /**
      * Test Conception Number: 17
      * Save a User with the same data, as a previous one
      * First name: "three"
@@ -525,6 +497,114 @@ class UserTest extends TestCase
         $response->assertInvalid([
             'user_pseudo' => 'This username is already used'
         ]);
+        $this->post('/logout');
+    }
+
+    /**
+     * Test Conception Number: 16
+     * Save a User with correct data
+     * First name: "three"
+     * Last name: "three"
+     * Pseudo: "three"
+     * Password: "password"
+     * Confirm password: "password"
+     * Initial: /
+     * Expected result: The user is saved and correctly added in the database
+     * @returns void
+     */
+    public function test_add_a_user_with_correct_data()
+    {
+        $countUsers = User::all()->count();
+        $response = $this->post('register', [
+            'user_firstName' => 'three',
+            'user_lastName' => 'three',
+            'user_pseudo' => 'three',
+            'user_password' => 'Xn!jkpc!)B640!{$A1MB',
+            'user_confirmation_password' => 'Xn!jkpc!)B640!{$A1MB'
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($countUsers + 1, User::all()->count());
+        $this->assertDatabaseHas('users', [
+            'user_firstName' => 'three',
+            'user_lastName' => 'three',
+            'user_pseudo' => 'three'
+        ]);
+        $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'three')->first()->password));
+        $this->post('/logout');
+    }
+
+    /**
+     * Test Conception Number: 18
+     * Update his own menuUserAccessRight permission
+     * Expected result: Receiving an error:
+     *                                      "You can't update your own permission"
+     * @returns void
+     */
+    public function test_update_his_own_menuUserAccessRight_permission()
+    {
+        $this->edit_own_permission('menuUserAcessRight');
+    }
+
+    private function edit_own_permission($uri): void
+    {
+        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
+            $this->test_add_a_user_with_correct_data();
+        }
+        $user = User::all()->where('user_pseudo', '==', 'three')->first();
+        $response = $this->post('/user/update_right/user_' . $uri . '/' . $user->id, [
+            'user_id' => $user->id,
+            'user_value' => true
+        ]);
+        $response->assertStatus(429);
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'user_' . $uri => false
+        ]);
+        $this->post('/logout');
+    }
+
+    /**
+     * Test Conception Number: 19
+     * Update the menuUserAccessRight permission of the admin User
+     * Expected result: Receiving an error:
+     *                                      "You can't update the permission of the admin user"
+     * @returns void
+     */
+    public function test_update_the_menuUserAccessRight_permission_of_the_admin_user()
+    {
+        $this->edit_permission_of_admin('menuUserAcessRight');
+    }
+
+    private function edit_permission_of_admin($uri): void
+    {
+        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
+            $this->test_add_a_user_with_correct_data();
+        }
+        $user = User::all()->where('user_pseudo', '==', 'three')->first();
+        if ($uri == 'resetUserPasswordRight') {
+            $user->update([
+                'user_resetUserPasswordRight' => true
+            ]);
+        }
+        if (User::all()->where('user_pseudo', '==', 'admin')->count() == 0) {
+            $this->add_an_admin_user();
+        }
+        $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
+        $response = $this->post('/user/update_right/user_' . $uri . '/' . $admin->id, [
+            'user_id' => $user->id,
+            'user_value' => false
+        ]);
+        $response->assertStatus(429);
+        $this->assertDatabaseHas('users', [
+            'id' => $admin->id,
+            'user_' . $uri => true
+        ]);
+        if ($uri == 'resetUserPasswordRight') {
+            $user->update([
+                'user_resetUserPasswordRight' => false
+            ]);
+        }
+        $this->post('/logout');
     }
 
     private function add_an_admin_user(): void
@@ -577,52 +657,15 @@ class UserTest extends TestCase
         ]);
     }
 
-    private function edit_own_permission($uri): void
+    /**
+     * Test Conception Number: 20
+     * Update the permission of a User, we put the menuUserAccessRight to false
+     * Expected result: The user permissions are correctly updated in the database
+     * @returns void
+     */
+    public function test_update_a_user_permission_menuUserAccessRight()
     {
-        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
-            $this->test_add_a_user_with_correct_data();
-        }
-        $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update_right/user_'.$uri.'/'.$user->id, [
-            'user_id' => $user->id,
-            'user_value' => true
-        ]);
-        $response->assertStatus(429);
-        $this->assertDatabaseHas('users', [
-            'id' => $user->id,
-            'user_'.$uri => false
-        ]);
-    }
-
-    private function edit_permission_of_admin($uri): void
-    {
-        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
-            $this->test_add_a_user_with_correct_data();
-        }
-        $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        if ($uri == 'resetUserPasswordRight') {
-            $user->update([
-                'user_resetUserPasswordRight' => true
-            ]);
-        }
-        if (User::all()->where('user_pseudo', '==', 'admin')->count() == 0) {
-            $this->add_an_admin_user();
-        }
-        $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update_right/user_'.$uri.'/'.$admin->id, [
-            'user_id' => $user->id,
-            'user_value' => false
-        ]);
-        $response->assertStatus(429);
-        $this->assertDatabaseHas('users', [
-            'id' => $admin->id,
-            'user_'.$uri => true
-        ]);
-        if ($uri == 'resetUserPasswordRight') {
-            $user->update([
-                'user_resetUserPasswordRight' => false
-            ]);
-        }
+        $this->edit_permission_of_another_user('menuUserAcessRight');
     }
 
     /**
@@ -640,59 +683,25 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update_right/user_'.$uri.'/'.$user->id, [
+        $response = $this->post('/user/update_right/user_' . $uri . '/' . $user->id, [
             'user_id' => $admin->id,
             'user_value' => true
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'user_'.$uri => true
+            'user_' . $uri => true
         ]);
-        $response = $this->post('/user/update_right/user_'.$uri.'/'.$user->id, [
+        $response = $this->post('/user/update_right/user_' . $uri . '/' . $user->id, [
             'user_id' => $admin->id,
             'user_value' => false
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'user_'.$uri => false
+            'user_' . $uri => false
         ]);
-    }
-
-    /**
-     * Test Conception Number: 18
-     * Update his own menuUserAccessRight permission
-     * Expected result: Receiving an error:
-     *                                      "You can't update your own permission"
-     * @returns void
-     */
-    public function test_update_his_own_menuUserAccessRight_permission()
-    {
-        $this->edit_own_permission('menuUserAcessRight');
-    }
-
-    /**
-     * Test Conception Number: 19
-     * Update the menuUserAccessRight permission of the admin User
-     * Expected result: Receiving an error:
-     *                                      "You can't update the permission of the admin user"
-     * @returns void
-     */
-    public function test_update_the_menuUserAccessRight_permission_of_the_admin_user()
-    {
-        $this->edit_permission_of_admin('menuUserAcessRight');
-    }
-
-    /**
-     * Test Conception Number: 20
-     * Update the permission of a User, we put the menuUserAccessRight to false
-     * Expected result: The user permissions are correctly updated in the database
-     * @returns void
-     */
-    public function test_update_a_user_permission_menuUserAccessRight()
-    {
-        $this->edit_permission_of_another_user('menuUserAcessRight');
+        $this->post('/logout');
     }
 
     /**
@@ -762,7 +771,7 @@ class UserTest extends TestCase
         $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other')->first()->password));
         $other = User::all()->where('user_pseudo', '==', 'other')->first();
         // Update the permission of the other user
-        $response = $this->post('/user/update_right/user_resetUserPasswordRight/'.$user->id, [
+        $response = $this->post('/user/update_right/user_resetUserPasswordRight/' . $user->id, [
             'user_id' => $other->id,
             'user_value' => true
         ]);
@@ -1601,7 +1610,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_firstname' => 'new three',
             'user_lastname' => 'new three',
             'user_pseudo' => 'new three',
@@ -1638,10 +1647,10 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$admin->id, [
-            'user_firstname' => 'new admin',
-            'user_lastname' => 'new admin',
-            'user_pseudo' => 'new admin',
+        $response = $this->post('/user/update/infos/' . $admin->id, [
+            'user_firstname' => 'new superUser',
+            'user_lastname' => 'new superUser',
+            'user_pseudo' => 'new superUser',
             'user_password' => 'password1',
             'user_confirmation_password' => 'password1',
             'user_id' => $user->id
@@ -1675,7 +1684,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_initials' => 'T',
             'user_id' => $admin->id
         ]);
@@ -1708,7 +1717,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_initials' => 'Three',
             'user_id' => $admin->id
         ]);
@@ -1717,6 +1726,7 @@ class UserTest extends TestCase
             'user_initials' => 'You must enter a maximum of 4 characters'
         ]);
     }
+
     /**
      * Test Conception Number: 98
      * Update the initial of another with an already used value
@@ -1740,7 +1750,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_initials' => 'AA',
             'user_id' => $admin->id
         ]);
@@ -1773,7 +1783,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_initials' => 12,
             'user_id' => $admin->id
         ]);
@@ -1813,7 +1823,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_startDate' => Carbon::now(),
             'user_endDate' => Carbon::now()->subYear(),
             'user_id' => $admin->id
@@ -1853,7 +1863,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_startDate' => Carbon::now(),
             'user_endDate' => Carbon::now()->addYear(),
             'user_id' => $admin->id
@@ -1865,47 +1875,6 @@ class UserTest extends TestCase
             'user_pseudo' => 'three',
             'user_startDate' => Carbon::now()->format('Y-m-d'),
             'user_endDate' => Carbon::now()->addYear()->format('Y-m-d'),
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 102
-     * Update the formation date (EQ) of another with a correct date
-     * First name: /
-     * Last name: /
-     * Pseudo: /
-     * Password: /
-     * Confirm password: /
-     * Initials: /
-     * EQ formation date: Carbon::now()
-     * Expected result: The user is saved and correctly updated in the database
-     * @returns void
-     */
-    public function test_update_the_eq_formation_date_of_another_with_a_correct_date()
-    {
-        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
-            $this->test_add_a_user_with_correct_data();
-        }
-        $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $user->update([
-            'user_formationEqDate' => Null,
-            'user_formationsMmeDate' => Null,
-            'user_endDate' => Null
-        ]);
-        if (User::all()->where('user_pseudo', '==', 'admin')->count() == 0) {
-            $this->add_an_admin_user();
-        }
-        $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
-            'user_formationEqDate' => Carbon::now(),
-            'user_id' => $admin->id
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('users', [
-            'user_firstname' => 'three',
-            'user_lastname' => 'three',
-            'user_pseudo' => 'three',
-            'user_formationEqDate' => Carbon::now()->format('Y-m-d'),
         ]);
     }
 
@@ -1939,59 +1908,18 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_formationEqDate' => Carbon::now(),
             'user_id' => $admin->id
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_formationEqDate' => Carbon::now()->subYear(),
             'user_id' => $admin->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
             'user_formationEqDate' => 'You have to entered a formation equipment date that is after the previous formation equipment date'
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 104
-     * Update the formation date (MME) of another with a correct date
-     * First name: /
-     * Last name: /
-     * Pseudo: /
-     * Password: /
-     * Confirm password: /
-     * Initials: /
-     * MME formation date: Carbon::now()
-     * Expected result: The user is saved and correctly updated in the database
-     * @returns void
-     */
-    public function test_update_the_mme_formation_date_of_another_with_a_correct_date()
-    {
-        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
-            $this->test_add_a_user_with_correct_data();
-        }
-        $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $user->update([
-            'user_formationEqDate' => Null,
-            'user_formationsMmeDate' => Null,
-            'user_endDate' => Null
-        ]);
-        if (User::all()->where('user_pseudo', '==', 'admin')->count() == 0) {
-            $this->add_an_admin_user();
-        }
-        $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
-            'user_formationMmeDate' => Carbon::now(),
-            'user_id' => $admin->id
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('users', [
-            'user_firstname' => 'three',
-            'user_lastname' => 'three',
-            'user_pseudo' => 'three',
-            'user_formationMmeDate' => Carbon::now()->format('Y-m-d'),
         ]);
     }
 
@@ -2025,12 +1953,12 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_formationMmeDate' => Carbon::now(),
             'user_id' => $admin->id
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_formationMmeDate' => Carbon::now()->subYear(),
             'user_id' => $admin->id
         ]);
@@ -2064,7 +1992,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_password' => 'pass',
             'user_id' => $admin->id
         ]);
@@ -2099,7 +2027,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_confirmation_password' => 'pass',
             'user_id' => $admin->id
         ]);
@@ -2133,7 +2061,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_password' => 'Xn!jkpc!)B640!{$A1MB',
             'user_confirmation_password' => 'password1',
             'user_id' => $admin->id
@@ -2167,7 +2095,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_password' => 1234567890,
             'user_confirmPassword' => 1234567890,
             'user_id' => $admin->id
@@ -2201,7 +2129,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_password' => "password",
             'user_confirmation_password' => 1234567890,
             'user_id' => $admin->id
@@ -2234,7 +2162,7 @@ class UserTest extends TestCase
             $this->add_an_admin_user();
         }
         $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
-        $response = $this->post('/user/update/infos/'.$user->id, [
+        $response = $this->post('/user/update/infos/' . $user->id, [
             'user_password' => 'password1',
             'user_confirmation_password' => 'password1',
             'user_initials' => 'T1',
@@ -2269,7 +2197,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_firstName' => 'a',
             'user_id' => $user->id
         ]);
@@ -2298,7 +2226,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_firstName' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
             'user_id' => $user->id
         ]);
@@ -2327,7 +2255,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_lastName' => 'a',
             'user_id' => $user->id
         ]);
@@ -2356,7 +2284,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_lastName' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
             'user_id' => $user->id
         ]);
@@ -2385,7 +2313,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_password' => 'pass',
             'user_id' => $user->id
         ]);
@@ -2414,7 +2342,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_confirmation_password' => 'pass',
             'user_id' => $user->id
         ]);
@@ -2443,7 +2371,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_password' => 'Xn!jkpc!)B640!{$A1MB',
             'user_confirmation_password' => 'password1',
             'user_id' => $user->id
@@ -2473,7 +2401,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_pseudo' => 'a',
             'user_id' => $user->id
         ]);
@@ -2502,7 +2430,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_pseudo' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
             'user_id' => $user->id
         ]);
@@ -2549,7 +2477,7 @@ class UserTest extends TestCase
             ]);
             $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other')->first()->password));
         }
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_pseudo' => 'other',
             'user_id' => $user->id
         ]);
@@ -2572,13 +2500,54 @@ class UserTest extends TestCase
     {
         $this->test_update_the_eq_formation_date_of_another_with_a_correct_date();
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_formationEqDate' => Carbon::now()->subYear(),
             'user_id' => $user->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
             'user_formationEqDate' => 'You have to entered a formation equipment date that is after the previous formation equipment date'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 102
+     * Update the formation date (EQ) of another with a correct date
+     * First name: /
+     * Last name: /
+     * Pseudo: /
+     * Password: /
+     * Confirm password: /
+     * Initials: /
+     * EQ formation date: Carbon::now()
+     * Expected result: The user is saved and correctly updated in the database
+     * @returns void
+     */
+    public function test_update_the_eq_formation_date_of_another_with_a_correct_date()
+    {
+        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
+            $this->test_add_a_user_with_correct_data();
+        }
+        $user = User::all()->where('user_pseudo', '==', 'three')->first();
+        $user->update([
+            'user_formationEqDate' => Null,
+            'user_formationsMmeDate' => Null,
+            'user_endDate' => Null
+        ]);
+        if (User::all()->where('user_pseudo', '==', 'admin')->count() == 0) {
+            $this->add_an_admin_user();
+        }
+        $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
+        $response = $this->post('/user/update/infos/' . $user->id, [
+            'user_formationEqDate' => Carbon::now(),
+            'user_id' => $admin->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('users', [
+            'user_firstname' => 'three',
+            'user_lastname' => 'three',
+            'user_pseudo' => 'three',
+            'user_formationEqDate' => Carbon::now()->format('Y-m-d'),
         ]);
     }
 
@@ -2595,13 +2564,54 @@ class UserTest extends TestCase
     {
         $this->test_update_the_mme_formation_date_of_another_with_a_correct_date();
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_formationMmeDate' => Carbon::now()->subYear(),
             'user_id' => $user->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
             'user_formationMmeDate' => 'You have to entered a formation mme date that is after the previous formation mme date'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 104
+     * Update the formation date (MME) of another with a correct date
+     * First name: /
+     * Last name: /
+     * Pseudo: /
+     * Password: /
+     * Confirm password: /
+     * Initials: /
+     * MME formation date: Carbon::now()
+     * Expected result: The user is saved and correctly updated in the database
+     * @returns void
+     */
+    public function test_update_the_mme_formation_date_of_another_with_a_correct_date()
+    {
+        if (User::all()->where('user_pseudo', '==', 'three')->count() == 0) {
+            $this->test_add_a_user_with_correct_data();
+        }
+        $user = User::all()->where('user_pseudo', '==', 'three')->first();
+        $user->update([
+            'user_formationEqDate' => Null,
+            'user_formationsMmeDate' => Null,
+            'user_endDate' => Null
+        ]);
+        if (User::all()->where('user_pseudo', '==', 'admin')->count() == 0) {
+            $this->add_an_admin_user();
+        }
+        $admin = User::all()->where('user_pseudo', '==', 'admin')->first();
+        $response = $this->post('/user/update/infos/' . $user->id, [
+            'user_formationMmeDate' => Carbon::now(),
+            'user_id' => $admin->id
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('users', [
+            'user_firstname' => 'three',
+            'user_lastname' => 'three',
+            'user_pseudo' => 'three',
+            'user_formationMmeDate' => Carbon::now()->format('Y-m-d'),
         ]);
     }
 
@@ -2625,7 +2635,7 @@ class UserTest extends TestCase
             $this->test_add_a_user_with_correct_data();
         }
         $user = User::all()->where('user_pseudo', '==', 'three')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_firstName' => 'threeMe',
             'user_lastName' => 'threeMe',
             'user_pseudo' => 'threeMe',
@@ -2672,12 +2682,12 @@ class UserTest extends TestCase
         $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other0')->first()->password));
 
         $user = User::all()->where('user_pseudo', '==', 'other0')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_formationEqDate' => Carbon::now()->subYear()->subYear(),
             'user_id' => $user->id
         ]);
         $response->assertStatus(200);
-        $response = $this->get('/user/get/formationEqOk/'.$user->id);
+        $response = $this->get('/user/get/formationEqOk/' . $user->id);
         $this->assertEquals('false', $response->content());
     }
 
@@ -2706,12 +2716,12 @@ class UserTest extends TestCase
         ]);
         $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other1')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other1')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_formationEqDate' => Carbon::now(),
             'user_id' => $user->id
         ]);
         $response->assertStatus(200);
-        $response = $this->get('/user/get/formationEqOk/'.$user->id);
+        $response = $this->get('/user/get/formationEqOk/' . $user->id);
         $this->assertEquals('true', $response->content());
     }
 
@@ -2740,7 +2750,7 @@ class UserTest extends TestCase
         ]);
         $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other2')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other2')->first();
-        $response = $this->get('/user/get/formationEqOk/'.$user->id);
+        $response = $this->get('/user/get/formationEqOk/' . $user->id);
         $this->assertEquals('false', $response->content());
     }
 
@@ -2769,12 +2779,12 @@ class UserTest extends TestCase
         ]);
         $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other3')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other3')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_formationMmeDate' => Carbon::now()->subYear()->subYear(),
             'user_id' => $user->id
         ]);
         $response->assertStatus(200);
-        $response = $this->get('/user/get/formationMmeOk/'.$user->id);
+        $response = $this->get('/user/get/formationMmeOk/' . $user->id);
         $this->assertEquals('false', $response->content());
     }
 
@@ -2803,12 +2813,12 @@ class UserTest extends TestCase
         ]);
         $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other4')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other4')->first();
-        $response = $this->post('/user/update/myAccount/'.$user->id, [
+        $response = $this->post('/user/update/myAccount/' . $user->id, [
             'user_formationMmeDate' => Carbon::now(),
             'user_id' => $user->id
         ]);
         $response->assertStatus(200);
-        $response = $this->get('/user/get/formationMmeOk/'.$user->id);
+        $response = $this->get('/user/get/formationMmeOk/' . $user->id);
         $this->assertEquals('true', $response->content());
     }
 
@@ -2837,7 +2847,7 @@ class UserTest extends TestCase
         ]);
         $this->assertTrue(Hash::check('Xn!jkpc!)B640!{$A1MB', User::all()->where('user_pseudo', '==', 'other5')->first()->password));
         $user = User::all()->where('user_pseudo', '==', 'other5')->first();
-        $response = $this->get('/user/get/formationMmeOk/'.$user->id);
+        $response = $this->get('/user/get/formationMmeOk/' . $user->id);
         $this->assertEquals('false', $response->content());
     }
 

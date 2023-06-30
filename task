@@ -73,3 +73,56 @@ DONE:
             - Modification des existantes finie
             - Ajout des nouvelles
     */
+
+
+
+/**
+     * Test Conception Number: 23
+     * Update a preventive maintenance realized as to be validated
+     * Start date: Today
+     * End date: Today + 1 month
+     * Report number: "three"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: The preventive maintenance realized is updated in the database
+     * @returns void
+     */
+    public function test_update_prvMtnOpRlz_to_be_validated()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Month', 'validated');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+        $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+
+        $this->post('/equipment/update/state/prvMtnOpRlz/' . PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_reportNumber' => 'four',
+        ]);
+    }

@@ -17,36 +17,60 @@ class RiskForTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function requiredForTest() {
+    /**
+     * Test Conception Number: 1
+     * Saved a risk as drafted from add menu with no value
+     * Remarks: /
+     * Way Of Control: /
+     * Risk For: /
+     * Expected result: Receiving an error
+     *                                      "You must enter a value for your dimension"
+     * @return void
+     */
+    public function test_add_risk_drafted_no_values()
+    {
+        $this->requiredForTest();
+        $eq_id = $this->add_eq('Test', 'drafted');
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'risk_remarks' => 'You must enter a remark for your risk'
+        ]);
+    }
+
+    public function requiredForTest()
+    {
         // Add the different enum of the risk if they didn't already exist in the database
         if (EnumRiskFor::all()->where('value', '=', 'Risk')->count() === 0) {
-            $countDimName=EnumRiskFor::all()->count();
-            $response=$this->post('/risk/enum/riskfor/add', [
+            $countDimName = EnumRiskFor::all()->count();
+            $response = $this->post('/risk/enum/riskfor/add', [
                 'value' => 'Risk',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countDimName+1, EnumRiskFor::all());
+            $this->assertCount($countDimName + 1, EnumRiskFor::all());
         }
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'g')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'g',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'Balance')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'Balance',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         // Add the user to validate the equipment
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -54,7 +78,7 @@ class RiskForTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
             User::all()->last()->update([
                 'user_menuUserAcessRight' => 1,
                 'user_resetUserPasswordRight' => 1,
@@ -118,7 +142,7 @@ class RiskForTest extends TestCase
             'eq_massUnit' => 'g'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
             'eqTemp_version' => 1,
@@ -135,29 +159,6 @@ class RiskForTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
         return Equipment::all()->last()->id;
-    }
-
-    /**
-     * Test Conception Number: 1
-     * Saved a risk as drafted from add menu with no value
-     * Remarks: /
-     * Way Of Control: /
-     * Risk For: /
-     * Expected result: Receiving an error
-     *                                      "You must enter a value for your dimension"
-     * @return void
-     */
-    public function test_add_risk_drafted_no_values()
-    {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
-        $response = $this->post('/risk/verif', [
-            'risk_validate' => 'drafted',
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'risk_remarks' => 'You must enter a remark for your risk'
-        ]);
     }
 
     /**
@@ -599,13 +600,13 @@ class RiskForTest extends TestCase
     {
         $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -681,7 +682,7 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
         ]);
-        $response = $this->post('/equipment/update/risk/'.Risk::all()->last()->id, [
+        $response = $this->post('/equipment/update/risk/' . Risk::all()->last()->id, [
             'risk_remarks' => 'other',
             'risk_wayOfControl' => 'other',
             'risk_for' => 'Risk',
@@ -733,18 +734,18 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
         ]);
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/equipment/update/risk/'.Risk::all()->last()->id, [
+        $response = $this->post('/equipment/update/risk/' . Risk::all()->last()->id, [
             'risk_remarks' => 'other',
             'risk_wayOfControl' => 'other',
             'risk_for' => 'Risk',
@@ -1014,13 +1015,13 @@ class RiskForTest extends TestCase
             'prvMtnOp_symbolPeriodicity' => 'M',
         ]);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -1123,7 +1124,7 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
         ]);
-        $response = $this->post('/equipment/update/prvMtnOp/risk/'.Risk::all()->last()->id, [
+        $response = $this->post('/equipment/update/prvMtnOp/risk/' . Risk::all()->last()->id, [
             'risk_remarks' => 'other',
             'risk_wayOfControl' => 'other',
             'risk_for' => 'Risk',
@@ -1207,18 +1208,18 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'preventiveMaintenanceOperation_id' => PreventiveMaintenanceOperation::all()->last()->id
         ]);
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/equipment/update/prvMtnOp/risk/'.Risk::all()->last()->id, [
+        $response = $this->post('/equipment/update/prvMtnOp/risk/' . Risk::all()->last()->id, [
             'risk_remarks' => 'other',
             'risk_wayOfControl' => 'other',
             'risk_for' => 'Risk',
@@ -1275,7 +1276,7 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
         ]);
-        $response = $this->post('/equipment/delete/risk/'.Risk::all()->last()->id, [
+        $response = $this->post('/equipment/delete/risk/' . Risk::all()->last()->id, [
             'eq_id' => $eq_id
         ]);
         $response->assertStatus(200);
@@ -1285,7 +1286,7 @@ class RiskForTest extends TestCase
             'enumRiskFor_id' => EnumRiskFor::all()->where('value', '=', 'Risk')->last()->id,
             'risk_validate' => 'validated',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
-            ]);
+        ]);
     }
 
     /**
@@ -1322,19 +1323,19 @@ class RiskForTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
         ]);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response = $this->post('/equipment/delete/risk/'.Risk::all()->last()->id, [
+        $response = $this->post('/equipment/delete/risk/' . Risk::all()->last()->id, [
             'eq_id' => $eq_id
         ]);
         $response->assertStatus(200);
@@ -1373,7 +1374,7 @@ class RiskForTest extends TestCase
             'eq_id' => $eq_id
         ]);
         $response->assertStatus(200);
-        $response = $this->get('/equipment/risk/send/'.$eq_id);
+        $response = $this->get('/equipment/risk/send/' . $eq_id);
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
@@ -1431,7 +1432,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response = $this->get('/prvMtnOp/risk/send/'.PreventiveMaintenanceOperation::all()->last()->id);
+        $response = $this->get('/prvMtnOp/risk/send/' . PreventiveMaintenanceOperation::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
@@ -1490,7 +1491,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response = $this->get('/prvMtnOp/risk/send/pdf/'.EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id);
+        $response = $this->get('/prvMtnOp/risk/send/pdf/' . EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [

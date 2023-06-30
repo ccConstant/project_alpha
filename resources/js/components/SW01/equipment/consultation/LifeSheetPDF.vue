@@ -537,7 +537,6 @@ export default {
             tab_className[9] = "eq_recordTemplateRefPdf";
 
             tab_className.forEach(function (element) {
-                console.log(element);
                 let elem = document.getElementsByClassName(element)[0];
                 const rect = elem.getBoundingClientRect();
                 let top = rect.top + window.scrollY;

@@ -69,8 +69,8 @@ export default {
                 //id of user who change the right
                 user_id:this.$userId.id
             })
-            .then(response =>{console.log(response.data)})
-            .catch(error => {
+            .then(response => {
+            }).catch(error => {
                 this.$refs.errorAlert.showAlert(error.response.data.errors.user);
                 e.target.checked="checked";
             });

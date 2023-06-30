@@ -24,10 +24,10 @@ class CreateCriticalitiesTable extends Migration
         Schema::create('criticalities', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('crit_artCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED']);
-            $table->enum('crit_artMaterialContactCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED']);
-            $table->enum('crit_artMaterialFunctionCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED']);
-            $table->enum('crit_artProcessCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED']);
+            $table->enum('crit_artCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
+            $table->enum('crit_artMaterialContactCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
+            $table->enum('crit_artMaterialFunctionCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
+            $table->enum('crit_artProcessCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
             $table->unsignedBigInteger('crit_qualityApproverId') ->nullable();
             $table->foreign('crit_qualityApproverId')->references('id')->on('users') ;
             $table->unsignedBigInteger('crit_technicalReviewerId') ->nullable();

@@ -275,7 +275,6 @@ export default {
                         });
                     })
                     .catch(error => {
-                        console.log(error.response.data.errors)
                         this.$refs.errorAlert.showAlert(error.response.data.errors.state_verif);
                     });
             }

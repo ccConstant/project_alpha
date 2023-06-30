@@ -50,11 +50,6 @@ export default {
     },
     methods:{
         create_account(){
-            console.log(this.user_firstName);
-            console.log(this.user_lastName);
-            console.log(this.user_pseudo);
-            console.log(this.user_password);
-            console.log(this.user_confirmation_password);
             axios.post('register',{
                 user_firstName:this.user_firstName,
                 user_lastName:this.user_lastName,
@@ -75,8 +70,8 @@ export default {
         .then (response=> {
             this.infos_person=response.data;
             this.loaded=true;
-            })
-        .catch(error => console.log(error)) ;
+            }).catch(error => {
+        }) ;
     }
 
 }

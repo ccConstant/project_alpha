@@ -12,29 +12,98 @@ use App\Models\SW01\State;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PreventiveMaintenanceOperationRealizedTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function create_equipment($name, $validated = 'drafted') {
+    public function addUser()
+    {
+        $countUser = User::all()->count();
+        $response = $this->post('register', [
+            'user_firstName' => 'Verifier',
+            'user_lastName' => 'Verifier',
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+            'user_confirmation_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countUser + 1, User::all());
+        User::all()->last()->update([
+            'user_menuUserAcessRight' => 1,
+            'user_resetUserPasswordRight' => 1,
+            'user_updateDataInDraftRight' => 1,
+            'user_validateDescriptiveLifeSheetDataRight' => 1,
+            'user_validateOtherDataRight' => 1,
+            'user_updateDataValidatedButNotSignedRight' => 1,
+            'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+            'user_makeQualityValidationRight' => 1,
+            'user_makeTechnicalValidationRight' => 1,
+            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+            'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+            'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+            'user_deleteEqOrMmeRight' => 1,
+            'user_makeReformRight' => 1,
+            'user_declareNewStateRight' => 1,
+            'user_updateEnumRight' => 1,
+            'user_deleteEnumRight' => 1,
+            'user_addEnumRight' => 1,
+            'user_updateInformationRight' => 1,
+            'user_makeEqOpValidationRight' => 1,
+            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+            'user_makeEqRespValidationRight' => 1,
+            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+            'user_makeMmeOpValidationRight' => 1,
+            'user_makeMmeRespValidationRight' => 1,
+        ]);
+        return User::all()->last()->id;
+    }
+
+    /**
+     * Test Conception Number: 1
+     * Add new preventive maintenance realized as drafted with no values
+     * Start date: /
+     * End date: /
+     * Report number: /
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a report number for the preventive maintenance operation realized"
+     * @returns void
+     */
+    public function test_add_drafted_preventive_maintenance_realized_with_no_values()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'test', 'validated');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOpRlz_reportNumber' => 'You must enter a report number for the preventive maintenance operation realized',
+        ]);
+    }
+
+    public function create_equipment($name, $validated = 'drafted')
+    {
         if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => $name,
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', $name)->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => $name,
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $response = $this->post('/equipment/verif', [
             'eq_validate' => $validated,
@@ -68,7 +137,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'eq_mobility' => '0'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
             'eqTemp_version' => '1',
@@ -87,7 +156,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         return Equipment::all()->last()->id;
     }
 
-    public function add_prevMaintenance($eq_id, $name, $validated = 'drafted', $periodicity = 1, $symbolPeriodicity = 'M', $preventiveOperation = true) {
+    public function add_prevMaintenance($eq_id, $name, $validated = 'drafted', $periodicity = 1, $symbolPeriodicity = 'M', $preventiveOperation = true)
+    {
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => $validated,
             'prvMtnOp_description' => $name,
@@ -132,73 +202,6 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_periodicity' => $periodicity,
             'prvMtnOp_symbolPeriodicity' => $symbolPeriodicity,
             'prvMtnOp_nextDate' => $nextDate,
-        ]);
-    }
-
-    public function addUser() {
-        $countUser=User::all()->count();
-        $response=$this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
-            'user_password' => 'VerifierVerifier',
-            'user_confirmation_password' => 'VerifierVerifier',
-        ]);
-        $response->assertStatus(200);
-        $this->assertCount($countUser+1, User::all());
-        User::all()->last()->update([
-            'user_menuUserAcessRight' => 1,
-            'user_resetUserPasswordRight' => 1,
-            'user_updateDataInDraftRight' => 1,
-            'user_validateDescriptiveLifeSheetDataRight' => 1,
-            'user_validateOtherDataRight' => 1,
-            'user_updateDataValidatedButNotSignedRight' => 1,
-            'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-            'user_makeQualityValidationRight' => 1,
-            'user_makeTechnicalValidationRight' => 1,
-            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-            'user_deleteEqOrMmeRight' => 1,
-            'user_makeReformRight' => 1,
-            'user_declareNewStateRight' => 1,
-            'user_updateEnumRight' => 1,
-            'user_deleteEnumRight' => 1,
-            'user_addEnumRight' => 1,
-            'user_updateInformationRight' => 1,
-            'user_makeEqOpValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-            'user_makeEqRespValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-            'user_makeMmeOpValidationRight' => 1,
-            'user_makeMmeRespValidationRight' => 1,
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 1
-     * Add new preventive maintenance realized as drafted with no values
-     * Start date: /
-     * End date: /
-     * Report number: /
-     * Comment: /
-     * Symbol Periodicity: /
-     * Expected Result: Receiving an error:
-     *                                      "You must enter a report number for the preventive maintenance operation realized"
-     * @returns void
-     */
-    public function test_add_drafted_preventive_maintenance_realized_with_no_values()
-    {
-        $eq_id = $this->create_equipment('test', 'validated');
-        $this->add_prevMaintenance($eq_id, 'test', 'validated');
-        $response = $this->post('/prvMtnOpRlz/verif', [
-            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
-            'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_validate' => 'drafted',
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'prvMtnOpRlz_reportNumber' => 'You must enter a report number for the preventive maintenance operation realized',
         ]);
     }
 
@@ -287,7 +290,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         ]);
     }
 
-/**
+    /**
      * Test Conception Number: 5
      * Add new preventive maintenance realized as drafted with only a correct report number
      * Start date: /
@@ -918,52 +921,212 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
 
     /**
      * Test Conception Number: 23
-     * Update a preventive maintenance realized as to be validated
-     * Start date: Today
-     * End date: Today + 1 month
-     * Report number: "three"
+     * Add new preventive maintenance realized as validated with no values
+     * Start date: /
+     * End date: /
+     * Report number: /
      * Comment: /
      * Symbol Periodicity: /
-     * Expected Result: The preventive maintenance realized is updated in the database
+     * Expected Result: Receiving an error:
+     *                                      "You have to entered the endDate of your preventive maintenance operation realized for validate it"
      * @returns void
      */
-    public function test_update_prvMtnOpRlz_to_be_validated()
+    public function test_add_new_prevMaintenance_realized_as_validated_with_no_values()
     {
         $eq_id = $this->create_equipment('test', 'validated');
-        $this->add_prevMaintenance($eq_id, 'Month', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_reportNumber' => 'three',
+            'prvMtnOpRlz_validate' => 'validated',
         ]);
-        $response->assertStatus(200);
-        $this->post('/equipment/add/state/prvMtnOpRlz', [
-            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
-            'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_reportNumber' => 'three',
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOpRlz_endDate' => 'You have to entered the endDate of your preventive maintenance operation realized for validate it',
         ]);
-        $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
-            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
-            'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
-            'prvMtnOpRlz_reportNumber' => 'three',
-        ]);
+    }
 
-        $this->post('/equipment/update/state/prvMtnOpRlz/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+    /**
+     * Test Conception Number: 24
+     * Add new preventive maintenance realized as validated with only an end date
+     * Start date: /
+     * End date: Today
+     * Report number: /
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You have to entered the realizator of this preventive maintenance operation realized for validate it"
+     * @returns void
+     */
+    public function test_add_new_prevMaintenance_realized_as_validated_with_only_an_end_date()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_reportNumber' => 'four',
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_validate' => 'validated',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOpRlz_validate' => 'You have to entered the realizator of this preventive maintenance operation realized for validate it',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 25
+     * Add new preventive maintenance realized as validated with an end date and a realizator
+     * Start date: /
+     * End date: Today
+     * Report number: /
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a report number for the preventive maintenance operation realized"
+     * @returns void
+     */
+    public function test_add_new_prevMaintenance_realized_as_validated_with_an_end_date_and_a_realizator()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $user_id = $this->addUser();
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_validate' => 'validated',
+            'realizedBy_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOpRlz_reportNumber' => 'You must enter a report number for the preventive maintenance operation realized',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 26
+     * Add new preventive maintenance realized as validated with a too short report number
+     * Start date: /
+     * End date: Today
+     * Report number: "1"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least three characters"
+     * @returns void
+     */
+    public function test_add_new_prevMaintenance_realized_as_validated_with_a_too_short_report_number()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $user_id = $this->addUser();
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_validate' => 'validated',
+            'realizedBy_id' => $user_id,
+            'prvMtnOpRlz_reportNumber' => '1',
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOpRlz_reportNumber' => 'You must enter at least three characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 27
+     * Add new preventive maintenance realized as validated with a too long report number
+     * Start date: /
+     * End date: Today
+     * Report number: "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 255 characters"
+     * @returns void
+     */
+    public function test_add_new_prevMaintenance_realized_as_validated_with_a_too_long_report_number()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $user_id = $this->addUser();
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_validate' => 'validated',
+            'realizedBy_id' => $user_id,
+            'prvMtnOpRlz_reportNumber' => '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOpRlz_reportNumber' => 'You must enter a maximum of 255 characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 28
+     * Add new preventive maintenance realized as validated with a too long comment
+     * Start date: /
+     * End date: Today
+     * Report number: "12345"
+     * Comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 255 characters"
+     * @returns void
+     */
+    public function test_add_new_prevMaintenance_realized_as_validated_with_a_too_long_comment()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $user_id = $this->addUser();
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_validate' => 'validated',
+            'realizedBy_id' => $user_id,
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'prvMtnOpRlz_comment' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOpRlz_comment' => 'You must enter a maximum of 255 characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 29
+     * Add new preventive maintenance realized as validated with correct data and an end date + the realizator
+     * Start date: /
+     * End date: Today
+     * Report number: "12345"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You have to entered the startDate of your preventive maintenance operation realized"
+     * @returns void
+     */
+    public function test_add_new_prevMaintenance_realized_as_validated_with_correct_data_and_an_end_date_and_realizator()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $user_id = $this->addUser();
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_validate' => 'validated',
+            'realizedBy_id' => $user_id,
+            'prvMtnOpRlz_reportNumber' => '12345',
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOpRlz_startDate' => 'You have to entered the startDate of your preventive maintenance operation realized',
         ]);
     }
 }
+

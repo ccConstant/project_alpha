@@ -36,7 +36,6 @@ export default {
     },
     methods:{
         hasError(errors){
-            console.log((errors.length>0))
             return(errors.length>0);
 
         },

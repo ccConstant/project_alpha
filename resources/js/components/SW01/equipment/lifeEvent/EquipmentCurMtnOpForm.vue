@@ -308,9 +308,6 @@ export default {
                 state_id: this.equipment_state_id,
                 reason: 'update'
             }).then(response => {
-                /*
-                                    console.log("update dans la base");
-                */
                 /*in case of the whole fields are correctly filled, we make a new post this time to add the curative maintenance operation in the data base
                     The report number, description, start and end dates, validate options of the curative maintenance operation, the id of the linked equipment and the id of his state
                     are sent to the controller

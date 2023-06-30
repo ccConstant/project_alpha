@@ -558,13 +558,7 @@ export default {
         if (this.artFam_genRef !== undefined) {
             let a = this.artFam_genRef.split('_');
             if (a[2] !== undefined) {
-                console.log(a[0]);
-                console.log(a[1]);
-                console.log(a[2]);
-                console.log(this.artFam_ref);
-                console.log(typeof a[2]);
                 this.artFam_genRef = this.artFam_ref + '_' + a[2];
-                console.log(this.artFam_genRef);
             } else {
                 this.artFam_genRef = this.artFam_ref + '_';
             }
