@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_20_080526_create_cons_family_members_table.php
 * Creation date : 20 Apr 2023
-* Update date : 27 Jun 2023
+* Update date : 3 Jul 2023
 * This file is used to create the table "cons_family_members" in the data base. In this file, we can see the different
 * attribute of this table (dimension, technicalReviewer..) and how they are defined (string, boolean, unique or not)
 */
@@ -25,7 +25,7 @@ class CreateConsFamilyMembersTable extends Migration
             $table->id();
             $table->string('consMb_dimension') ->nullable();
             $table->string('consMb_design')->nullable();
-            $table->boolean('consMb_sameValues')->default(true);
+           // $table->boolean('consMb_sameValues')->default(true);
             $table->foreign('consMb_technicalReviewerId')->references('id')->on('users') ;
             $table->unsignedBigInteger('consMb_technicalReviewerId') ->nullable();
             $table->foreign('consMb_qualityApproverId')->references('id')->on('users') ;

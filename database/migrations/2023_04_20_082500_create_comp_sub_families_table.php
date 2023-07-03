@@ -38,7 +38,6 @@ class CreateCompSubFamiliesTable extends Migration
             $table->boolean('compSubFam_active')->default(true);
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
-            $table->timestamps();
             $table->unsignedBigInteger('compFam_id') ->nullable();
             $table->foreign('compFam_id')->references('id')->on('comp_families') ;
         });
