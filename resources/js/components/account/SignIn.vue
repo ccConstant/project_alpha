@@ -43,8 +43,6 @@ export default {
     },
     methods:{
         create_account(){
-            console.log(this.user_pseudo);
-            console.log(this.user_password);
             axios.post('login',{
                 user_pseudo:this.user_pseudo,
                 user_password:this.user_password
@@ -62,8 +60,8 @@ export default {
         .then (response=> {
             this.infos_person=response.data;
             this.loaded=true;
-            })
-        .catch(error => console.log(error)) ;
+            }).catch(error => {
+        }) ;
     }
 
 }

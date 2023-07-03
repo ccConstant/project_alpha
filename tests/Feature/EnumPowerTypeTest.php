@@ -10,12 +10,12 @@ use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\Power;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class EnumPowerTypeTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * Test Conception Number: 1
      * Try to add a non-existent type in the database
@@ -23,13 +23,14 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The type is correctly added to the database
      * @return void
      */
-    public function test_add_non_existent_type() {
+    public function test_add_non_existent_type()
+    {
         $oldCOunt = EnumPowerType::all()->count();
         $response = $this->post('/power/enum/type/add', [
             'value' => 'Type'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals(EnumPowerType::all()->count(), $oldCOunt+1);
+        $this->assertEquals(EnumPowerType::all()->count(), $oldCOunt + 1);
     }
 
     /**
@@ -40,13 +41,14 @@ class EnumPowerTypeTest extends TestCase
      *                                      "The value of the field for the new power type already exist in the data base"
      * @return void
      */
-    public function test_add_two_time_same_type() {
+    public function test_add_two_time_same_type()
+    {
         $oldCOunt = EnumPowerType::all()->count();
         $response = $this->post('/power/enum/type/add', [
             'value' => 'Exist'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals(EnumPowerType::all()->count(), $oldCOunt+1);
+        $this->assertEquals(EnumPowerType::all()->count(), $oldCOunt + 1);
         $response = $this->post('/power/enum/type/add', [
             'value' => 'Exist'
         ]);
@@ -56,82 +58,7 @@ class EnumPowerTypeTest extends TestCase
                 "The value of the field for the new power type already exist in the data base"
             ]
         ]);
-        $this->assertEquals(EnumPowerType::all()->count(), $oldCOunt+1);
-    }
-
-    public function requiredForTest() {
-        if (EnumEquipmentMassUnit::all()->where('value', '=', 'g')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
-                'value' => 'g',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
-        }
-        if (EnumEquipmentType::all()->where('value', '=', 'Balance')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
-                'value' => 'Balance',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
-        }
-        if (EnumPowerType::all()->where('value', '=', 'Type')->count() === 0) {
-            $countPowerType=EnumPowerType::all()->count();
-            $response=$this->post('/power/enum/type/add', [
-                'value' => 'Type',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countPowerType+1, EnumPowerType::all());
-        }
-        if (EnumPowerType::all()->where('value', '=', 'Exist')->count() === 0) {
-            $countPowerType=EnumPowerType::all()->count();
-            $response=$this->post('/power/enum/type/add', [
-                'value' => 'Exist',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countPowerType+1, EnumPowerType::all());
-        }
-        // Add the user to validate the equipment
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
-            User::all()->last()->update([
-                'user_menuUserAcessRight' => 1,
-                'user_resetUserPasswordRight' => 1,
-                'user_updateDataInDraftRight' => 1,
-                'user_validateDescriptiveLifeSheetDataRight' => 1,
-                'user_validateOtherDataRight' => 1,
-                'user_updateDataValidatedButNotSignedRight' => 1,
-                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-                'user_makeQualityValidationRight' => 1,
-                'user_makeTechnicalValidationRight' => 1,
-                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-                'user_deleteEqOrMmeRight' => 1,
-                'user_makeReformRight' => 1,
-                'user_declareNewStateRight' => 1,
-                'user_updateEnumRight' => 1,
-                'user_deleteEnumRight' => 1,
-                'user_addEnumRight' => 1,
-                'user_updateInformationRight' => 1,
-                'user_makeEqOpValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-                'user_makeEqRespValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-                'user_makeMmeOpValidationRight' => 1,
-                'user_makeMmeRespValidationRight' => 1,
-            ]);
-        }
+        $this->assertEquals(EnumPowerType::all()->count(), $oldCOunt + 1);
     }
 
     /**
@@ -141,11 +68,12 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The data contain one validated equipment and one not validated
      * @returns void
      */
-    public function test_analyze_data() {
+    public function test_analyze_data()
+    {
         $this->requiredForTest();
 
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('/equipment/add', [
+        $response = $this->post('/equipment/add', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'Test',
             'eq_externalReference' => 'Test',
@@ -160,7 +88,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'Test',
             'eq_externalReference' => 'Test',
@@ -195,7 +123,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Type',
             'pow_name' => 'Name',
@@ -206,7 +134,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertCount($countPower+1, Power::all());
+        $this->assertCount($countPower + 1, Power::all());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
             'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Type')->first()->id,
@@ -217,7 +145,7 @@ class EnumPowerTypeTest extends TestCase
             'pow_consumptionUnit' => 'kwH',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id
         ]);
-        $response=$this->post('/equipment/add', [
+        $response = $this->post('/equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'TestvalidatedPowType',
             'eq_externalReference' => 'TestvalidatedPowType',
@@ -232,7 +160,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+2, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 2, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'TestvalidatedPowType',
             'eq_externalReference' => 'TestvalidatedPowType',
@@ -267,7 +195,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Type',
             'pow_name' => 'Name',
@@ -278,7 +206,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertCount($countPower+1, Power::all());
+        $this->assertCount($countPower + 1, Power::all());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
             'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Type')->first()->id,
@@ -289,13 +217,13 @@ class EnumPowerTypeTest extends TestCase
             'pow_consumptionUnit' => 'kwH',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id
         ]);
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -326,6 +254,82 @@ class EnumPowerTypeTest extends TestCase
         ]);
     }
 
+    public function requiredForTest()
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'g')->count() === 0) {
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
+                'value' => 'g',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'Balance')->count() === 0) {
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
+                'value' => 'Balance',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
+        }
+        if (EnumPowerType::all()->where('value', '=', 'Type')->count() === 0) {
+            $countPowerType = EnumPowerType::all()->count();
+            $response = $this->post('/power/enum/type/add', [
+                'value' => 'Type',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countPowerType + 1, EnumPowerType::all());
+        }
+        if (EnumPowerType::all()->where('value', '=', 'Exist')->count() === 0) {
+            $countPowerType = EnumPowerType::all()->count();
+            $response = $this->post('/power/enum/type/add', [
+                'value' => 'Exist',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countPowerType + 1, EnumPowerType::all());
+        }
+        // Add the user to validate the equipment
+        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+    }
+
     /**
      * Test Conception Number: 4
      * Try to update an enum linked to drafted equipment with a non-existent type in the database
@@ -333,10 +337,11 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The type is correctly updated in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_drafted_with_non_existent_type() {
+    public function test_update_enum_linked_to_drafted_with_non_existent_type()
+    {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('/equipment/add', [
+        $response = $this->post('/equipment/add', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'TestUpdateEnum1',
             'eq_externalReference' => 'TestUpdateEnum1',
@@ -351,7 +356,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'TestUpdateEnum1',
             'eq_externalReference' => 'TestUpdateEnum1',
@@ -386,7 +391,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Type',
             'pow_name' => 'Name',
@@ -397,7 +402,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertCount($countPower+1, Power::all());
+        $this->assertCount($countPower + 1, Power::all());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
             'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Type')->first()->id,
@@ -408,18 +413,18 @@ class EnumPowerTypeTest extends TestCase
             'pow_consumptionUnit' => 'kwH',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id
         ]);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $oldId = EnumPowerType::all()->where('value', '=', 'Type')->first()->id;
         $response = $this->post('power/enum/type/verif/' . EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
             'value' => 'TestDrafted'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/power/enum/type/update/'.EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
+        $response = $this->post('/power/enum/type/update/' . EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
             'value' => 'TestDrafted',
             'validated_eq' => []
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $newId = EnumPowerType::all()->where('value', '=', 'TestDrafted')->first()->id;
         $this->assertEquals($oldId, $newId);
         $this->assertDatabaseHas('enum_power_types', [
@@ -444,10 +449,11 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The type is correctly updated in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_toBeValidated_with_non_existent_type() {
+    public function test_update_enum_linked_to_toBeValidated_with_non_existent_type()
+    {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('/equipment/add', [
+        $response = $this->post('/equipment/add', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'TestUpdateEnum2',
             'eq_externalReference' => 'TestUpdateEnum2',
@@ -462,7 +468,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'TestUpdateEnum2',
             'eq_externalReference' => 'TestUpdateEnum2',
@@ -497,7 +503,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Type',
             'pow_name' => 'Name',
@@ -508,7 +514,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertCount($countPower+1, Power::all());
+        $this->assertCount($countPower + 1, Power::all());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
             'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Type')->first()->id,
@@ -519,18 +525,18 @@ class EnumPowerTypeTest extends TestCase
             'pow_consumptionUnit' => 'kwH',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id
         ]);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $response = $this->post('power/enum/type/verif/' . EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
             'value' => 'TestToBeValidated'
         ]);
         $response->assertStatus(200);
         $oldId = EnumPowerType::all()->where('value', '=', 'Type')->first()->id;
-        $response = $this->post('/power/enum/type/update/'.EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
+        $response = $this->post('/power/enum/type/update/' . EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
             'value' => 'TestToBeValidated',
             'validated_eq' => []
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $newId = EnumPowerType::all()->where('value', '=', 'TestToBeValidated')->first()->id;
         $this->assertEquals($oldId, $newId);
         $this->assertDatabaseHas('enum_power_types', [
@@ -555,10 +561,11 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The type is correctly updated in the database, and a history is created in the database
      * @returns void
      */
-    public function test_update_enum_linked_to_validated_with_non_existent_type() {
+    public function test_update_enum_linked_to_validated_with_non_existent_type()
+    {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('/equipment/add', [
+        $response = $this->post('/equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'TestUpdateEnum3',
             'eq_externalReference' => 'TestUpdateEnum3',
@@ -573,7 +580,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'TestUpdateEnum3',
             'eq_externalReference' => 'TestUpdateEnum3',
@@ -608,7 +615,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Type',
             'pow_name' => 'Name',
@@ -629,15 +636,15 @@ class EnumPowerTypeTest extends TestCase
             'pow_consumptionUnit' => 'kwH',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id
         ]);
-        $this->assertCount($countPower+1, Power::all());
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $this->assertCount($countPower + 1, Power::all());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -667,13 +674,13 @@ class EnumPowerTypeTest extends TestCase
             'value' => 'TestvalidatedPowType'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/power/enum/type/update/'.EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
+        $response = $this->post('/power/enum/type/update/' . EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
             'value' => 'TestvalidatedPowType',
             'validated_eq' => $tab,
             'history_reasonUpdate' => 'TestUpdateEnum3',
         ]);
         $response->assertStatus(200);
-        $this->assertCount($countPower+1, Power::all());
+        $this->assertCount($countPower + 1, Power::all());
         $newId = EnumPowerType::all()->where('value', '=', 'TestvalidatedPowType')->first()->id;
         $this->assertEquals($oldId, $newId);
         $this->assertDatabaseHas('enum_power_types', [
@@ -709,10 +716,11 @@ class EnumPowerTypeTest extends TestCase
      *                                      "The value of the field for the power type already exist in the data base"
      * @returns void
      */
-    public function test_update_enum_with_existant_value() {
+    public function test_update_enum_with_existant_value()
+    {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('/equipment/add', [
+        $response = $this->post('/equipment/add', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'TestUpdateEnum4',
             'eq_externalReference' => 'TestUpdateEnum4',
@@ -727,7 +735,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'TestUpdateEnum4',
             'eq_externalReference' => 'TestUpdateEnum4',
@@ -762,7 +770,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Type',
             'pow_name' => 'Name',
@@ -783,8 +791,8 @@ class EnumPowerTypeTest extends TestCase
             'pow_consumptionUnit' => 'kwH',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id
         ]);
-        $this->assertCount($countPower+1, Power::all());
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertCount($countPower + 1, Power::all());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $response = $this->post('/power/enum/type/verif/' . EnumPowerType::all()->where('value', '=', 'Type')->first()->id, [
             'value' => 'Exist'
         ]);
@@ -801,12 +809,13 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The type is correctly deleted in the database
      * @returns void
      */
-    public function test_delete_enum_not_linked() {
+    public function test_delete_enum_not_linked()
+    {
         $this->requiredForTest();
         $countEnumDimType = EnumPowerType::all()->count();
-        $response = $this->post('/power/enum/type/delete/'.EnumPowerType::all()->where('value', '=', 'Exist')->first()->id);
+        $response = $this->post('/power/enum/type/delete/' . EnumPowerType::all()->where('value', '=', 'Exist')->first()->id);
         $response->assertStatus(200);
-        $this->assertCount($countEnumDimType-1, EnumPowerType::all());
+        $this->assertCount($countEnumDimType - 1, EnumPowerType::all());
     }
 
     /**
@@ -817,10 +826,11 @@ class EnumPowerTypeTest extends TestCase
      *                                      "This value is already used in the data base so you can't delete it"
      * @returns void
      */
-    public function test_delete_enum_linked() {
+    public function test_delete_enum_linked()
+    {
         $this->requiredForTest();
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('/equipment/add', [
+        $response = $this->post('/equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'TestUpdateEnum3',
             'eq_externalReference' => 'TestUpdateEnum3',
@@ -835,7 +845,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_type' => 'Balance',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'TestUpdateEnum3',
             'eq_externalReference' => 'TestUpdateEnum3',
@@ -870,7 +880,7 @@ class EnumPowerTypeTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Type',
             'pow_name' => 'Name',
@@ -891,15 +901,15 @@ class EnumPowerTypeTest extends TestCase
             'pow_consumptionUnit' => 'kwH',
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->first()->id
         ]);
-        $this->assertCount($countPower+1, Power::all());
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $this->assertCount($countPower + 1, Power::all());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -914,7 +924,7 @@ class EnumPowerTypeTest extends TestCase
             'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
             'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
-        $response = $this->post('/power/enum/type/delete/'.EnumPowerType::all()->where('value', '=', 'Type')->first()->id);
+        $response = $this->post('/power/enum/type/delete/' . EnumPowerType::all()->where('value', '=', 'Type')->first()->id);
         $response->assertStatus(429);
         $response->assertInvalid([
             'enum_pow_type' => 'This value is already used in the data base so you can\'t delete it'
@@ -941,7 +951,8 @@ class EnumPowerTypeTest extends TestCase
      * Expected result: The enum list is correct, and we receive all the data
      * @returns void
      */
-    public function test_consult_enum() {
+    public function test_consult_enum()
+    {
         $this->requiredForTest();
         $response = $this->get('/power/enum/type');
         $response->assertJson([

@@ -186,7 +186,6 @@ export default {
                     window.location.reload();
                 })
                 .catch(error => {
-                    console.log(error.response.data.errors);
                     this.$refs.errorAlert.showAlert(error.response.data.errors[this.error_name]);
                 });
             // Hide the modal manually

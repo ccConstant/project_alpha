@@ -8,12 +8,10 @@
 * Coverage : 100%
 */
 
-use App\Models\SW01\EnumEquipmentMassUnit;
-use App\Models\SW01\EnumEquipmentType;
+use App\Models\SW01\EnumPowerType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\Power;
-use App\Models\SW01\EnumPowerType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -22,48 +20,6 @@ use Tests\TestCase;
 class PowerTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function addUser() {
-        if (User::where('user_pseudo', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertEquals($countUser+1, User::all()->count());
-            User::all()->last()->update([
-                'user_menuUserAcessRight' => 1,
-                'user_resetUserPasswordRight' => 1,
-                'user_updateDataInDraftRight' => 1,
-                'user_validateDescriptiveLifeSheetDataRight' => 1,
-                'user_validateOtherDataRight' => 1,
-                'user_updateDataValidatedButNotSignedRight' => 1,
-                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-                'user_makeQualityValidationRight' => 1,
-                'user_makeTechnicalValidationRight' => 1,
-                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-                'user_deleteEqOrMmeRight' => 1,
-                'user_makeReformRight' => 1,
-                'user_declareNewStateRight' => 1,
-                'user_updateEnumRight' => 1,
-                'user_deleteEnumRight' => 1,
-                'user_addEnumRight' => 1,
-                'user_updateInformationRight' => 1,
-                'user_makeEqOpValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-                'user_makeEqRespValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-                'user_makeMmeOpValidationRight' => 1,
-                'user_makeMmeRespValidationRight' => 1,
-            ]);
-        }
-    }
 
     /**
      * Test Conception Number: 1
@@ -252,20 +208,20 @@ class PowerTest extends TestCase
     public function test_add_pow_drafted_success_only_name()
     {
         // Add of the equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'draft1Test',
             'eq_externalReference' => 'draft1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'draft1Test',
             'eq_externalReference' => 'draft1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
@@ -273,13 +229,13 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_name' => 'three',
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
             'enumPowerType_id' => null,
@@ -307,22 +263,22 @@ class PowerTest extends TestCase
     public function test_add_pow_drafted_success_full()
     {
         // Add of the equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'draft2Test',
             'eq_externalReference' => 'draft2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'draft2Test',
             'eq_externalReference' => 'draft2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add of the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -350,7 +306,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Electric',
             'pow_name' => 'three',
@@ -361,7 +317,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
@@ -410,7 +366,8 @@ class PowerTest extends TestCase
      * Expected result: Receiving an error: "You must enter a minimum of three characters"
      * @return void
      */
-    public function test_add_pow_toBeValidated_addMenu_tooShortName() {
+    public function test_add_pow_toBeValidated_addMenu_tooShortName()
+    {
         $response = $this->post('/power/verif', [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'in'
@@ -560,20 +517,20 @@ class PowerTest extends TestCase
     public function test_add_pow_toBeValidated_success_only_name()
     {
         // Add of the equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa1Test',
             'eq_externalReference' => 'toBeVa1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'toBeVa1Test',
             'eq_externalReference' => 'toBeVa1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
@@ -581,13 +538,13 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'three',
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'to_be_validated',
             'enumPowerType_id' => null,
@@ -615,22 +572,22 @@ class PowerTest extends TestCase
     public function test_add_pow_toBeValidated_success_full()
     {
         // Add of the equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa2Test',
             'eq_externalReference' => 'toBeVa2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'toBeVa2Test',
             'eq_externalReference' => 'toBeVa2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add of the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -658,7 +615,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'to_be_validated',
             'pow_type' => 'Electric',
             'pow_name' => 'three',
@@ -669,7 +626,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'to_be_validated',
@@ -700,7 +657,8 @@ class PowerTest extends TestCase
      *                                      "You must enter a unit for the consumption of the power"
      * @return void
      */
-    public function test_add_pow_validated_addMenu_noValues() {
+    public function test_add_pow_validated_addMenu_noValues()
+    {
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated'
         ]);
@@ -764,7 +722,8 @@ class PowerTest extends TestCase
      *                                      "You must enter a unit for the consumption of the power"
      * @return void
      */
-    public function test_add_pow_validated_addMenu_tooLongName() {
+    public function test_add_pow_validated_addMenu_tooLongName()
+    {
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
@@ -856,7 +815,8 @@ class PowerTest extends TestCase
      *                                      "You must enter a unit for the consumption of the power"
      * @return void
      */
-    public function test_add_pow_validated_addMenu_correctName_correctValue_correctUnit_tooLongConsumptionValue() {
+    public function test_add_pow_validated_addMenu_correctName_correctValue_correctUnit_tooLongConsumptionValue()
+    {
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
@@ -884,7 +844,8 @@ class PowerTest extends TestCase
      *                                      "You must enter a maximum of 25 characters"
      * @return void
      */
-    public function test_add_pow_validated_addMenu_correctName_correctValue_correctUnit_correctConsumptionValue_tooLongConsumptionUnit() {
+    public function test_add_pow_validated_addMenu_correctName_correctValue_correctUnit_correctConsumptionValue_tooLongConsumptionUnit()
+    {
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
@@ -942,22 +903,22 @@ class PowerTest extends TestCase
     public function test_add_pow_validated_addMenu_successfully_saved()
     {
         // Add the equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'validatedTest',
             'eq_externalReference' => 'validatedTest',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'validatedTest',
             'eq_externalReference' => 'validatedTest',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -986,7 +947,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'three',
@@ -997,7 +958,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -1026,22 +987,22 @@ class PowerTest extends TestCase
     public function test_update_pow_drafted_only_name()
     {
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'updated1Test',
             'eq_externalReference' => 'updated1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'updated1Test',
             'eq_externalReference' => 'updated1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1069,7 +1030,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -1080,7 +1041,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
@@ -1100,7 +1061,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'drafted',
             'pow_name' => 'three',
             'eq_id' => Equipment::all()->last()->id
@@ -1129,22 +1090,22 @@ class PowerTest extends TestCase
     public function test_update_pow_drafted_full()
     {
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'updated2Test',
             'eq_externalReference' => 'updated2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'updated2Test',
             'eq_externalReference' => 'updated2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1172,7 +1133,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'drafted',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -1183,7 +1144,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'drafted',
@@ -1196,7 +1157,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '=', 'Electric')->first()->id
         ]);
         // Add a new power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1224,7 +1185,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'drafted',
             'pow_type' => 'Example',
             'pow_name' => 'Example',
@@ -1263,22 +1224,22 @@ class PowerTest extends TestCase
     public function test_update_pow_toBeValidated_only_name()
     {
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa1Test',
             'eq_externalReference' => 'toBeVa1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'toBeVa1Test',
             'eq_externalReference' => 'toBeVa1Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1306,7 +1267,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'to_be_validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -1317,7 +1278,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'to_be_validated',
@@ -1337,7 +1298,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'three',
             'eq_id' => Equipment::all()->last()->id
@@ -1366,22 +1327,22 @@ class PowerTest extends TestCase
     public function test_update_pow_toBeValidated_full()
     {
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa2Test',
             'eq_externalReference' => 'toBeVa2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'toBeVa2Test',
             'eq_externalReference' => 'toBeVa2Test',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1409,7 +1370,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'to_be_validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -1420,7 +1381,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'to_be_validated',
@@ -1433,7 +1394,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Add a new power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1461,7 +1422,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'to_be_validated',
             'pow_type' => 'Example',
             'pow_name' => 'Example',
@@ -1501,22 +1462,22 @@ class PowerTest extends TestCase
     public function test_update_pow_validated_full()
     {
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'validatedTest',
             'eq_externalReference' => 'validatedTest',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_internalReference' => 'validatedTest',
             'eq_externalReference' => 'validatedTest',
             'eq_validate' => 'drafted'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1544,7 +1505,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -1555,7 +1516,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -1568,7 +1529,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Add a new power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1596,7 +1557,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'validated',
             'pow_type' => 'Example',
             'pow_name' => 'Example',
@@ -1639,7 +1600,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1652,7 +1613,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1665,7 +1626,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upTypeTest',
             'eq_externalReference' => 'upTypeTest',
@@ -1682,7 +1643,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upTypeTest',
             'eq_externalReference' => 'upTypeTest',
@@ -1698,9 +1659,9 @@ class PowerTest extends TestCase
             'eq_location' => 'upTypeTest',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1728,7 +1689,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -1739,7 +1700,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -1752,18 +1713,18 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         // Add a new power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1794,7 +1755,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'validated',
             'pow_type' => 'Example',
             'pow_name' => 'Electric source',
@@ -1817,10 +1778,53 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->last()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->qualityVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->technicalVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->eqTemp_lifeSheetCreated);
+    }
+
+    public function addUser()
+    {
+        if (User::where('user_pseudo', '=', 'Verifier')->count() === 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertEquals($countUser + 1, User::all()->count());
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
     }
 
     /**
@@ -1841,7 +1845,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1854,7 +1858,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1867,7 +1871,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upNameTest',
             'eq_externalReference' => 'upNameTest',
@@ -1884,7 +1888,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upNameTest',
             'eq_externalReference' => 'upNameTest',
@@ -1900,9 +1904,9 @@ class PowerTest extends TestCase
             'eq_location' => 'upNameTest'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -1930,7 +1934,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -1941,7 +1945,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -1954,13 +1958,13 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
@@ -1980,7 +1984,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Example',
@@ -2003,7 +2007,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->qualityVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->technicalVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->eqTemp_lifeSheetCreated);
@@ -2027,7 +2031,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2040,7 +2044,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2053,7 +2057,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upValTest',
             'eq_externalReference' => 'upValTest',
@@ -2070,7 +2074,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upValTest',
             'eq_externalReference' => 'upValTest',
@@ -2086,9 +2090,9 @@ class PowerTest extends TestCase
             'eq_location' => 'upValTest'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2116,7 +2120,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2127,7 +2131,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -2140,13 +2144,13 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
@@ -2166,7 +2170,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2189,7 +2193,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->qualityVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->technicalVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->eqTemp_lifeSheetCreated);
@@ -2213,7 +2217,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2226,7 +2230,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2239,7 +2243,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upUnitTest',
             'eq_externalReference' => 'upUnitTest',
@@ -2256,7 +2260,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upUnitTest',
             'eq_externalReference' => 'upUnitTest',
@@ -2272,9 +2276,9 @@ class PowerTest extends TestCase
             'eq_location' => 'upUnitTest',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2302,7 +2306,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2313,7 +2317,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -2326,13 +2330,13 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
@@ -2352,7 +2356,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2375,7 +2379,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->qualityVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->technicalVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->eqTemp_lifeSheetCreated);
@@ -2399,7 +2403,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2412,7 +2416,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2425,7 +2429,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upCValTest',
             'eq_externalReference' => 'upCValTest',
@@ -2442,7 +2446,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upCValTest',
             'eq_externalReference' => 'upCValTest',
@@ -2458,9 +2462,9 @@ class PowerTest extends TestCase
             'eq_location' => 'upCValTest',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2488,7 +2492,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2499,7 +2503,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -2512,13 +2516,13 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
@@ -2538,7 +2542,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2561,7 +2565,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->qualityVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->technicalVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->eqTemp_lifeSheetCreated);
@@ -2585,7 +2589,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2598,7 +2602,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2611,7 +2615,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upCUnitTest',
             'eq_externalReference' => 'upCUnitTest',
@@ -2628,7 +2632,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'upCUnitTest',
             'eq_externalReference' => 'upCUnitTest',
@@ -2644,9 +2648,9 @@ class PowerTest extends TestCase
             'eq_location' => 'upCUnitTest'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2674,7 +2678,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2685,7 +2689,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -2698,13 +2702,13 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
@@ -2724,7 +2728,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/update/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/update/pow/' . Power::all()->last()->id, [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2747,7 +2751,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         $this->assertEquals($countPower, Power::all()->count());
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->qualityVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->technicalVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->eqTemp_lifeSheetCreated);
@@ -2762,7 +2766,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2775,7 +2779,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2788,7 +2792,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'addValidTest',
             'eq_externalReference' => 'addValidTest',
@@ -2805,7 +2809,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'addValidTest',
             'eq_externalReference' => 'addValidTest',
@@ -2821,15 +2825,15 @@ class PowerTest extends TestCase
             'eq_location' => 'addValidTest',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
@@ -2837,7 +2841,7 @@ class PowerTest extends TestCase
         $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->qualityVerifier_id);
         $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->technicalVerifier_id);
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2865,7 +2869,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2876,7 +2880,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -2888,7 +2892,7 @@ class PowerTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id,
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->qualityVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->technicalVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->eqTemp_lifeSheetCreated);
@@ -2916,7 +2920,7 @@ class PowerTest extends TestCase
             'eq_externalReference' => 'consult1Test'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'consult1Test',
             'eq_externalReference' => 'consult1Test'
@@ -2930,7 +2934,7 @@ class PowerTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -2958,7 +2962,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -2969,7 +2973,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
             'pow_name' => 'Electric source',
@@ -2981,7 +2985,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Consult the power of this equipment
-        $response = $this->get('/power/send/'.Equipment::all()->last()->id);
+        $response = $this->get('/power/send/' . Equipment::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
@@ -3018,7 +3022,7 @@ class PowerTest extends TestCase
             'eq_externalReference' => 'consult2Test'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'consult2Test',
             'eq_externalReference' => 'consult2Test'
@@ -3032,7 +3036,7 @@ class PowerTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3047,7 +3051,7 @@ class PowerTest extends TestCase
         $this->assertDatabaseHas('enum_power_types', [
             'value' => 'Electric'
         ]);
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3075,7 +3079,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -3086,7 +3090,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
             'pow_name' => 'Electric source',
@@ -3098,7 +3102,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Consult the power of this equipment
-        $response = $this->get('/power/send/ByType/'.Equipment::all()->last()->id);
+        $response = $this->get('/power/send/ByType/' . Equipment::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
@@ -3145,7 +3149,7 @@ class PowerTest extends TestCase
             'eq_externalReference' => 'consult3Test'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'consult3Test',
             'eq_externalReference' => 'consult3Test'
@@ -3160,7 +3164,7 @@ class PowerTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3175,7 +3179,7 @@ class PowerTest extends TestCase
         $this->assertDatabaseHas('enum_power_types', [
             'value' => 'Electric'
         ]);
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3203,7 +3207,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'three',
@@ -3214,7 +3218,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
@@ -3237,7 +3241,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Example',
@@ -3248,7 +3252,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
             'pow_name' => 'Example',
@@ -3271,7 +3275,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -3282,7 +3286,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
             'pow_name' => 'Electric source',
@@ -3331,7 +3335,7 @@ class PowerTest extends TestCase
             'eq_externalReference' => 'removeTest'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment', [
             'eq_internalReference' => 'removeTest',
             'eq_externalReference' => 'removeTest'
@@ -3346,7 +3350,7 @@ class PowerTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
         ]);
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3374,7 +3378,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -3385,7 +3389,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
             'pow_name' => 'Electric source',
@@ -3397,7 +3401,7 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Delete the power
-        $response = $this->post('/equipment/delete/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/delete/pow/' . Power::all()->last()->id, [
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
@@ -3413,7 +3417,7 @@ class PowerTest extends TestCase
     {
         $this->addUser();
         // Add a mass unit
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3426,7 +3430,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add an equipment type
-        $response=$this->post('/equipment/enum/type/add', [
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'internal'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3439,7 +3443,7 @@ class PowerTest extends TestCase
             ]);
         }
         // Add a new equipment
-        $response=$this->post('equipment/verif', [
+        $response = $this->post('equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'removePowerTest',
             'eq_externalReference' => 'removePowerTest',
@@ -3456,7 +3460,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
-        $response=$this->post('equipment/add', [
+        $response = $this->post('equipment/add', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'removePowerTest',
             'eq_externalReference' => 'removePowerTest',
@@ -3472,9 +3476,9 @@ class PowerTest extends TestCase
             'eq_location' => 'removePowerTest'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         // Add the power type
-        $response=$this->post('/power/enum/type/add', [
+        $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
         ]);
         if ($response->getStatusCode() === 200) {
@@ -3502,7 +3506,7 @@ class PowerTest extends TestCase
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
-        $response=$this->post('/equipment/add/pow', [
+        $response = $this->post('/equipment/add/pow', [
             'pow_validate' => 'validated',
             'pow_type' => 'Electric',
             'pow_name' => 'Electric source',
@@ -3513,7 +3517,7 @@ class PowerTest extends TestCase
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countPower+1, Power::all()->count());
+        $this->assertEquals($countPower + 1, Power::all()->count());
         // Verification in the database
         $this->assertDatabaseHas('powers', [
             'pow_validate' => 'validated',
@@ -3526,12 +3530,12 @@ class PowerTest extends TestCase
             'enumPowerType_id' => EnumPowerType::all()->where('value', '==', 'Electric')->first()->id
         ]);
         // Technical and quality verification
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->last()->id,
         ]);
@@ -3539,13 +3543,13 @@ class PowerTest extends TestCase
         $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->qualityVerifier_id);
         $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->technicalVerifier_id);
         // Delete the power
-        $response=$this->post('/equipment/delete/pow/'.Power::all()->last()->id, [
+        $response = $this->post('/equipment/delete/pow/' . Power::all()->last()->id, [
             'eq_id' => Equipment::all()->last()->id
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countPower, Power::all()->count());
         // Check the status of the equipment
-        $this->assertEquals($actualVersion+1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->eqTemp_version);
+        $this->assertEquals($actualVersion + 1, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->eqTemp_version);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->technicalVerifier_id);
         $this->assertNull(EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->qualityVerifier_id);
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->eqTemp_lifeSheetCreated);

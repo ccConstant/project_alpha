@@ -27,6 +27,7 @@ class CreatePivotRawFamStoCond extends Migration
             $table->foreign('rawFam_id')->references('id')->on('raw_families') ->onDelete('cascade') ;
             $table->unsignedBigInteger('storageCondition_id') ;
             $table->foreign('storageCondition_id')->references('id')->on('enum_storage_conditions') ->onDelete('cascade') ;
+            $table->enum('validate',  ['drafted', 'to_be_validated', 'validated']) ;
             $table->timestamps();
         });
     }

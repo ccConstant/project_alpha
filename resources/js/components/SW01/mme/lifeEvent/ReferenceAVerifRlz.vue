@@ -159,8 +159,6 @@ export default {
         if (this.$userId.user_makeMmeOpValidationRight != true) {
             this.$router.push({name: "home"});
         }
-        console.log("number");
-        console.log(this.number);
     },
 }
 </script>

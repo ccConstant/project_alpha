@@ -14,16 +14,18 @@ use App\Models\SW01\EnumEquipmentMassUnit;
 use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\PreventiveMaintenanceOperation;
 use App\Models\SW01\State;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class EquipmentTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * Test Conception Number: 1
      * Add new equipment as drafted with no values
@@ -1529,18 +1531,18 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_correct_values()
     {
-        $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-        $response=$this->post('/equipment/enum/massUnit/add', [
+        $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+        $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'three',
         ]);
         $response->assertStatus(200);
-        $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
-        $countEqType=EnumEquipmentType::all()->count();
-        $response=$this->post('/equipment/enum/type/add', [
+        $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
+        $countEqType = EnumEquipmentType::all()->count();
+        $response = $this->post('/equipment/enum/type/add', [
             'value' => 'three',
         ]);
         $response->assertStatus(200);
-        $this->assertCount($countEqType+1, EnumEquipmentType::all());
+        $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1572,7 +1574,7 @@ class EquipmentTest extends TestCase
             'eq_massUnit' => 'three'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
             'eqTemp_version' => 1,
@@ -1590,73 +1592,6 @@ class EquipmentTest extends TestCase
         ]);
     }
 
-    public function create_equipment($name, $validated = 'drafted') {
-        if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
-                'value' => $name,
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
-        }
-        if (EnumEquipmentType::all()->where('value', '=', $name)->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
-                'value' => $name,
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
-        }
-        $response = $this->post('/equipment/verif', [
-            'eq_validate' => $validated,
-            'eq_internalReference' => $name,
-            'eq_externalReference' => $name,
-            'eq_name' => $name,
-            'eq_serialNumber' => $name,
-            'eq_constructor' => $name,
-            'eq_mass' => 1234,
-            'eq_remarks' => $name,
-            'eq_set' => $name,
-            'eq_location' => $name,
-            'eq_type' => $name,
-            'eq_massUnit' => $name
-        ]);
-        $response->assertStatus(200);
-        $countEquipment = Equipment::all()->count();
-        $response = $this->post('/equipment/add', [
-            'eq_validate' => $validated,
-            'eq_internalReference' => $name,
-            'eq_externalReference' => $name,
-            'eq_name' => $name,
-            'eq_serialNumber' => $name,
-            'eq_constructor' => $name,
-            'eq_mass' => 1234,
-            'eq_remarks' => $name,
-            'eq_set' => $name,
-            'eq_location' => $name,
-            'eq_type' => $name,
-            'eq_massUnit' => $name,
-            'eq_mobility' => '0'
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
-        $this->assertDatabaseHas('equipment_temps', [
-            'equipment_id' => Equipment::all()->last()->id,
-            'eqTemp_version' => '1',
-            'eqTemp_location' => $name,
-            'eqTemp_validate' => $validated,
-            'eqTemp_lifeSheetCreated' => '0',
-            'eqTemp_mass' => '1234',
-            'eqTemp_remarks' => $name,
-            'eqTemp_mobility' => '0',
-            'enumType_id' => EnumEquipmentType::all()->where('value', '=', $name)->first()->id,
-            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', $name)->first()->id,
-        ]);
-        $this->assertDatabaseHas('pivot_equipment_temp_state', [
-            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
-        ]);
-    }
-
     /**
      * Test Conception Number: 42
      * Update the data of a drafted equipment with correct values
@@ -1666,20 +1601,20 @@ class EquipmentTest extends TestCase
     public function test_update_equipment_drafted_correct_values()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three');
         $response = $this->post('/equipment/verif', [
@@ -1699,7 +1634,7 @@ class EquipmentTest extends TestCase
             'eq_massUnit' => 'other'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/equipment/update/'.Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
+        $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
             'reason' => 'update',
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'other',
@@ -1734,6 +1669,75 @@ class EquipmentTest extends TestCase
         ]);
     }
 
+    public function create_equipment($name, $validated = 'drafted')
+    {
+        if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
+                'value' => $name,
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', $name)->count() === 0) {
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
+                'value' => $name,
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
+        }
+        $response = $this->post('/equipment/verif', [
+            'eq_validate' => $validated,
+            'eq_internalReference' => $name,
+            'eq_externalReference' => $name,
+            'eq_name' => $name,
+            'eq_serialNumber' => $name,
+            'eq_constructor' => $name,
+            'eq_mass' => 1234,
+            'eq_remarks' => $name,
+            'eq_set' => $name,
+            'eq_location' => $name,
+            'eq_type' => $name,
+            'eq_massUnit' => $name
+        ]);
+        $response->assertStatus(200);
+        $countEquipment = Equipment::all()->count();
+        $response = $this->post('/equipment/add', [
+            'eq_validate' => $validated,
+            'eq_internalReference' => $name,
+            'eq_externalReference' => $name,
+            'eq_name' => $name,
+            'eq_serialNumber' => $name,
+            'eq_constructor' => $name,
+            'eq_mass' => 1234,
+            'eq_remarks' => $name,
+            'eq_set' => $name,
+            'eq_location' => $name,
+            'eq_type' => $name,
+            'eq_massUnit' => $name,
+            'eq_mobility' => '0'
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_version' => '1',
+            'eqTemp_location' => $name,
+            'eqTemp_validate' => $validated,
+            'eqTemp_lifeSheetCreated' => '0',
+            'eqTemp_mass' => '1234',
+            'eqTemp_remarks' => $name,
+            'eqTemp_mobility' => '0',
+            'enumType_id' => EnumEquipmentType::all()->where('value', '=', $name)->first()->id,
+            'enumMassUnit_id' => EnumEquipmentMassUnit::all()->where('value', '=', $name)->first()->id,
+        ]);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+        ]);
+        return Equipment::all()->last()->id;
+    }
+
     /**
      * Test Conception Number: 43
      * Update the data of a drafted equipment with existent values
@@ -1744,20 +1748,20 @@ class EquipmentTest extends TestCase
     public function test_update_equipment_drafted_existent_values()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three');
         $this->create_equipment('Exist');
@@ -1792,20 +1796,20 @@ class EquipmentTest extends TestCase
     public function test_update_equipment_toBeValidated_correct_values()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'to_be_validated');
         $response = $this->post('/equipment/verif', [
@@ -1825,7 +1829,7 @@ class EquipmentTest extends TestCase
             'eq_massUnit' => 'other'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/equipment/update/'.Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
+        $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
             'reason' => 'update',
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'other',
@@ -1870,20 +1874,20 @@ class EquipmentTest extends TestCase
     public function test_update_equipment_toBeValidated_existent_values()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'to_be_validated');
         $this->create_equipment('Exist', 'to_be_validated');
@@ -1919,20 +1923,20 @@ class EquipmentTest extends TestCase
     public function test_update_internal_reference_equipment_validated()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
         $response = $this->post('/equipment/verif', [
@@ -1953,7 +1957,7 @@ class EquipmentTest extends TestCase
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-           'eq_internalReference' => 'You can\'t modify the internal reference because you have already validated the id card'
+            'eq_internalReference' => 'You can\'t modify the internal reference because you have already validated the id card'
         ]);
     }
 
@@ -1967,25 +1971,25 @@ class EquipmentTest extends TestCase
     public function test_update_external_reference_equipment_validated()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -1993,15 +1997,15 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2038,25 +2042,25 @@ class EquipmentTest extends TestCase
     public function test_update_name_equipment_validated()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2064,15 +2068,15 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2109,25 +2113,25 @@ class EquipmentTest extends TestCase
     public function test_update_serial_number_equipment_validated()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2135,15 +2139,15 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2180,25 +2184,25 @@ class EquipmentTest extends TestCase
     public function test_update_constructor_equipment_validated()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2206,15 +2210,15 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2251,25 +2255,25 @@ class EquipmentTest extends TestCase
     public function test_update_set_equipment_validated()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2277,15 +2281,15 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2321,25 +2325,25 @@ class EquipmentTest extends TestCase
     public function test_update_value_equipment_signed()
     {
         if (EnumEquipmentMassUnit::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', 'other')->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => 'other',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2347,15 +2351,15 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2383,7 +2387,7 @@ class EquipmentTest extends TestCase
             'eq_massUnit' => 'other'
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/equipment/update/'.Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
+        $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
             'reason' => 'update',
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
@@ -2439,7 +2443,7 @@ class EquipmentTest extends TestCase
                 'eq_externalReference' => 'three',
                 'eq_name' => 'three',
                 'eq_state' => 'Waiting_for_referencing',
-                'state_id' => DB::select('SELECT state_id FROM pivot_equipment_temp_state WHERE equipmentTemp_id = '.EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id)[0]->state_id,
+                'state_id' => DB::select('SELECT state_id FROM pivot_equipment_temp_state WHERE equipmentTemp_id = ' . EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id)[0]->state_id,
                 'eqTemp_lifeSheetCreated' => 0,
                 'alreadyValidatedQuality' => false,
                 'alreadyValidatedTechnical' => false,
@@ -2463,8 +2467,8 @@ class EquipmentTest extends TestCase
     {
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2472,47 +2476,47 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
         $mostRecentlyEqTmp = EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last();
-        $states=$mostRecentlyEqTmp->states;
-        $mostRecentlyState=State::orderBy('created_at', 'asc')->first();
-        foreach($states as $state){
-            $date=$state->created_at ;
-            $date2=$mostRecentlyState->created_at;
-            if ($date>=$date2){
-                $mostRecentlyState=$state ;
+        $states = $mostRecentlyEqTmp->states;
+        $mostRecentlyState = State::orderBy('created_at', 'asc')->first();
+        foreach ($states as $state) {
+            $date = $state->created_at;
+            $date2 = $mostRecentlyState->created_at;
+            if ($date >= $date2) {
+                $mostRecentlyState = $state;
             }
         }
         $response = $this->get('/equipment/equipments');
         $response->assertStatus(200);
         $response->assertJson([
-            '0' => [
-                'id' => Equipment::all()->last()->id,
-                'eq_internalReference' => 'three',
-                'eq_externalReference' => 'three',
-                'eq_name' => 'three',
-                'eq_state' => 'In_use',
-                'state_id' => $mostRecentlyState->id,
-                'eqTemp_lifeSheetCreated' => 1,
-                'alreadyValidatedQuality' => true,
-                'alreadyValidatedTechnical' => true,
-                'eq_version' => 1,
-                'needToBeRealized' => false,
-                'needToBeApprove' => false,
-                'validated' => 'validated',
-                'signed' => true,
+                '0' => [
+                    'id' => Equipment::all()->last()->id,
+                    'eq_internalReference' => 'three',
+                    'eq_externalReference' => 'three',
+                    'eq_name' => 'three',
+                    'eq_state' => 'In_use',
+                    'state_id' => $mostRecentlyState->id,
+                    'eqTemp_lifeSheetCreated' => 1,
+                    'alreadyValidatedQuality' => true,
+                    'alreadyValidatedTechnical' => true,
+                    'eq_version' => 1,
+                    'needToBeRealized' => false,
+                    'needToBeApprove' => false,
+                    'validated' => 'validated',
+                    'signed' => true,
                 ]
             ]
         );
@@ -2553,7 +2557,7 @@ class EquipmentTest extends TestCase
     public function test_send_values_from_id()
     {
         $this->create_equipment('three');
-        $response = $this->get('/equipment/'.Equipment::all()->last()->id);
+        $response = $this->get('/equipment/' . Equipment::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             'eq_internalReference' => 'three',
@@ -2589,8 +2593,8 @@ class EquipmentTest extends TestCase
     {
         $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2598,21 +2602,21 @@ class EquipmentTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.Equipment::all()->last()->id, [
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response = $this->get('/equipment/'.Equipment::all()->last()->id);
+        $response = $this->get('/equipment/' . Equipment::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             'eq_internalReference' => 'three',
@@ -2660,24 +2664,556 @@ class EquipmentTest extends TestCase
      * Send the list for annual planning
      * Expected Result: The data are correctly sent
      * @returns void
-     *
+     */
     public function test_send_annual_planning()
     {
-        $this->create_equipment('three');
+        $this->create_equipment('three', 'validated');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_preventiveOperation' => false,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_preventiveOperation' => false,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => false,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '72hours',
+            'prvMtnOp_protocol' => '72hours',
+            'prvMtnOp_periodicity' => 72,
+            'prvMtnOp_symbolPeriodicity' => 'H',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '72hours',
+            'prvMtnOp_protocol' => '72hours',
+            'prvMtnOp_periodicity' => 72,
+            'prvMtnOp_symbolPeriodicity' => 'H',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '72hours',
+            'prvMtnOp_protocol' => '72hours',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 72,
+            'prvMtnOp_symbolPeriodicity' => 'H',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addHours(72)->format('Y-m-d H:i:s')
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '7days',
+            'prvMtnOp_protocol' => '7days',
+            'prvMtnOp_periodicity' => 7,
+            'prvMtnOp_symbolPeriodicity' => 'D',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '7days',
+            'prvMtnOp_protocol' => '7days',
+            'prvMtnOp_periodicity' => 7,
+            'prvMtnOp_symbolPeriodicity' => 'D',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '7days',
+            'prvMtnOp_protocol' => '7days',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 7,
+            'prvMtnOp_symbolPeriodicity' => 'D',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addDays(7)->format('Y-m-d H:i:s')
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '1month',
+            'prvMtnOp_protocol' => '1month',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '1month',
+            'prvMtnOp_protocol' => '1month',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '1month',
+            'prvMtnOp_protocol' => '1month',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addMonth()->format('Y-m-d H:i:s')
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '1year',
+            'prvMtnOp_protocol' => '1year',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'Y',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '1year',
+            'prvMtnOp_protocol' => '1year',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'Y',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '1year',
+            'prvMtnOp_protocol' => '1year',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'Y',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addYear()->format('Y-m-d H:i:s')
+        ]);
+
         $response = $this->get('/equipment/prvMtnOp/planning');
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
                 'id' => Equipment::all()->last()->id,
-                'eq_internalReference' => 'three',
-                'eq_externalReference' => 'three',
-                'eq_name' => 'three',
-                'eq_serialNumber' => 'three',
-                'eq_constructor' => 'three',
-                'eq_set' => 'three',
-                'eq_nbrVersion' => 1,
-                'state_id' => null,
+                'internalReference' => 'three',
+                'name' => 'three',
+                'preventive_maintenance_operations' => [
+                    '0' => [
+                        'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', 'three')->last()->id,
+                        'prvMtnOp_number' => '1',
+                        'prvMtnOp_description' => 'three',
+                        'prvMtnOp_periodicity' => 'N/A',
+                        'prvMtnOp_symbolPeriodicity' => '',
+                    ],
+                    '1' => [
+                        'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '72hours')->last()->id,
+                        'prvMtnOp_number' => '2',
+                        'prvMtnOp_description' => '72hours',
+                        'prvMtnOp_periodicity' => '72',
+                        'prvMtnOp_symbolPeriodicity' => 'H',
+                    ],
+                    '2' => [
+                        'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '7days')->last()->id,
+                        'prvMtnOp_number' => '3',
+                        'prvMtnOp_description' => '7days',
+                        'prvMtnOp_periodicity' => '7',
+                        'prvMtnOp_symbolPeriodicity' => 'D',
+                    ],
+                    '3' => [
+                        'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '1month')->last()->id,
+                        'prvMtnOp_number' => '4',
+                        'prvMtnOp_description' => '1month',
+                        'prvMtnOp_periodicity' => '1',
+                        'prvMtnOp_symbolPeriodicity' => 'M',
+                    ],
+                    '4' => [
+                        'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '1year')->last()->id,
+                        'prvMtnOp_number' => '5',
+                        'prvMtnOp_description' => '1year',
+                        'prvMtnOp_periodicity' => '1',
+                        'prvMtnOp_symbolPeriodicity' => 'Y',
+                    ]
+                ]
             ]
         ]);
-    }*/
+    }
+
+    /**
+     * Test Conception Number: 60
+     * Send the list for monthly planning
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_monthly_planning()
+    {
+        $this->create_equipment('three', 'validated');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_preventiveOperation' => false,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_preventiveOperation' => false,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => false,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_validate' => 'validated',
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '72hours',
+            'prvMtnOp_protocol' => '72hours',
+            'prvMtnOp_periodicity' => 72,
+            'prvMtnOp_symbolPeriodicity' => 'H',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '72hours',
+            'prvMtnOp_protocol' => '72hours',
+            'prvMtnOp_periodicity' => 72,
+            'prvMtnOp_symbolPeriodicity' => 'H',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '72hours',
+            'prvMtnOp_protocol' => '72hours',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 72,
+            'prvMtnOp_symbolPeriodicity' => 'H',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addHours(72)->format('Y-m-d H:i:s')
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '7days',
+            'prvMtnOp_protocol' => '7days',
+            'prvMtnOp_periodicity' => 7,
+            'prvMtnOp_symbolPeriodicity' => 'D',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '7days',
+            'prvMtnOp_protocol' => '7days',
+            'prvMtnOp_periodicity' => 7,
+            'prvMtnOp_symbolPeriodicity' => 'D',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '7days',
+            'prvMtnOp_protocol' => '7days',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 7,
+            'prvMtnOp_symbolPeriodicity' => 'D',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addDays(7)->format('Y-m-d H:i:s')
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '1month',
+            'prvMtnOp_protocol' => '1month',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '1month',
+            'prvMtnOp_protocol' => '1month',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '1month',
+            'prvMtnOp_protocol' => '1month',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addMonth()->format('Y-m-d H:i:s')
+        ]);
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_description' => '1year',
+            'prvMtnOp_protocol' => '1year',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'Y',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => '1year',
+            'prvMtnOp_protocol' => '1year',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'Y',
+            'prvMtnOp_preventiveOperation' => true,
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_description' => '1year',
+            'prvMtnOp_protocol' => '1year',
+            'prvMtnOp_validate' => 'validated',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'Y',
+            'prvMtnOp_nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->addYear()->format('Y-m-d H:i:s')
+        ]);
+
+        PreventiveMaintenanceOperation::all()->last()->update([
+            'prvMtnOp_startDate' => Carbon::now()->subYears(2)->format('Y-m-d H:i:s'),
+            'prvMtnOp_nextDate' => Carbon::now()->subYear()->format('Y-m-d H:i:s')
+        ]);
+
+        $response = $this->get('/equipment/prvMtnOp/planning_monthly');
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '72hours')->last()->id,
+                'Number' => '2',
+                'Description' => '72hours',
+                'prvMtnOp_periodicity' => '72',
+                'prvMtnOp_symbolPeriodicity' => 'H',
+                'nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '72hours')->last()->prvMtnOp_startDate)->addHours(72)->format('d m Y'),
+                'Protocol' => '72hours',
+                'Internal_Ref' => 'three',
+                'Name' => 'three',
+                'eq_id' => Equipment::all()->last()->id,
+            ],
+            '1' => [
+                'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '7days')->last()->id,
+                'Number' => '3',
+                'Description' => '7days',
+                'prvMtnOp_periodicity' => '7',
+                'prvMtnOp_symbolPeriodicity' => 'D',
+                'nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '7days')->last()->prvMtnOp_startDate)->addDays(7)->format('d m Y'),
+                'Protocol' => '7days',
+                'Internal_Ref' => 'three',
+                'Name' => 'three',
+                'eq_id' => Equipment::all()->last()->id,
+            ],
+            '2' => [
+                'id' => PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '1month')->last()->id,
+                'Number' => '4',
+                'Description' => '1month',
+                'prvMtnOp_periodicity' => '1',
+                'prvMtnOp_symbolPeriodicity' => 'M',
+                'nextDate' => Carbon::create(PreventiveMaintenanceOperation::all()->where('prvMtnOp_description', '1month')->last()->prvMtnOp_startDate)->addMonth()->format('d m Y'),
+                'Protocol' => '1month',
+                'Internal_Ref' => 'three',
+                'Name' => 'three',
+                'eq_id' => Equipment::all()->last()->id,
+            ],
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 61
+     * Try to add two equipment with the same values
+     * Expected Result: Receiving an error:
+     *                                      "This internal reference is already use for another equipment"
+     * @returns void
+     */
+    public function test_add_same_values()
+    {
+        $this->create_equipment('three');
+        $response = $this->post('/equipment/verif', [
+            'reason' => 'add',
+            'eq_validate' => 'drafted',
+            'eq_internalReference' => 'three',
+            'eq_externalReference' => 'three',
+            'eq_name' => 'three',
+            'eq_serialNumber' => 'three',
+            'eq_constructor' => 'three',
+            'eq_mass' => 1234,
+            'eq_remarks' => 'three',
+            'eq_set' => 'three',
+            'eq_location' => 'three',
+            'eq_type' => 'three',
+            'eq_massUnit' => 'three'
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'eq_internalReference' => 'This internal reference is already use for another equipment'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 62
+     * Send the periode data for the annual planning
+     * Expected Result: The data are correctly send
+     * @returns void
+     */
+    public function test_send_periode_data()
+    {
+        $this->create_equipment('three');
+        $response = $this->get('/send/equipment/planning/periode');
+        $response->assertStatus(200);
+        $firstOfMonth = Carbon::create(Carbon::now()->format('Y-m-01'));
+        $response->assertJson([
+            '0' => [
+                'id' => $firstOfMonth->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '1' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '2' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '3' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '4' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '5' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '6' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '7' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '8' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '9' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '10' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '11' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '12' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '13' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '14' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '15' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '16' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '17' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '18' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '19' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '20' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '21' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '22' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+            '23' => [
+                'id' => $firstOfMonth->addMonth()->format('m-Y'),
+                'month' => $firstOfMonth->format('M'),
+                'year' => (int)($firstOfMonth->format('o')),
+            ],
+        ]);
+    }
 }

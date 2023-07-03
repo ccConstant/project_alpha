@@ -29,7 +29,7 @@
                     @update="updateStorageConditions"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
-                    :savedAs="validate"
+                    :savedAs="this.storageCondition_validate"
                 />
                 <DeleteComponentButton v-if="this.isInModifMod"
                     @delete="deleteComponent"
@@ -126,7 +126,8 @@ export default {
             isInModifMod: this.modifMod,
             loaded: false,
             infos_storageCondition: [],
-            enumArticle_storageCondition: []
+            enumArticle_storageCondition: [],
+            oldValue: this.value,
         }
     },
     methods: {
@@ -149,6 +150,7 @@ export default {
                 axios.post(consultUrl(id), {
                     artFam_type: this.artFam_type.toUpperCase(),
                     artFam_storageCondition: this.artFam_storageCondition,
+                    validate: savedAs,
                 })
 
                 /*If the storage condition have been linked successfully*/
@@ -170,6 +172,7 @@ export default {
                     this.storageCondition_id = response.data;
                     /*The validate option of this file takes the value of savedAs(Params of the function)*/
                     this.storageCondition_validate = savedAs;
+                    console.log(this.storageCondition_validate);
                 })
                 /*If the controller sends errors, we put it in the error object*/
                 .catch(error => this.errors = error.response.data.errors);
@@ -180,10 +183,17 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updateStorageConditions(savedAs, reason, lifesheet_created) {
-            const consultUrl = (id) => `/artFam/enum/storageCondition/update/${id}`;
+            const consultUrl = (id) => `/artFam/storageCondition/update/${id}`;
+            console.log(this.artFam_storageCondition);
+            console.log(this.oldValue);
+            console.log(this.art_id);
+            console.log(this.artFam_type);
             axios.post(consultUrl(this.storageCondition_id), {
                 value: this.artFam_storageCondition,
-                id: this.storageCondition_id
+                validate: savedAs,
+                artFam_id : this.art_id,
+                artFam_type: this.artFam_type.toLowerCase(),
+                oldValue: this.oldValue,
             }).then(response =>{
                 if (lifesheet_created == true) {
                     axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
@@ -197,6 +207,7 @@ export default {
                 this.addSucces = true
             }).catch(error =>{
                 this.errors = error.response.data.errors;
+                console.log(error.response.data);
             })
         },
         clearSelectError(value) {

@@ -96,7 +96,6 @@ export default {
         },
         /*Function for adding an imported mme form with his data*/
         addImportedComponent(mme_internalReference) {
-            console.log("hello12");
             this.components.push({
                 comp: 'EquipmentMmeForm',
                 key: this.uniqueKey++,

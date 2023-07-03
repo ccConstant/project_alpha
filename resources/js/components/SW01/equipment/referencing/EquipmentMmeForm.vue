@@ -223,7 +223,6 @@ export default {
                     reason: 'add'
                 }).then(response => {
                     this.errors = {};
-                    console.log("before add")
                     axios.post('/mme/add', {
                         mme_internalReference: this.mme_internalReference,
                         mme_externalReference: this.mme_externalReference,

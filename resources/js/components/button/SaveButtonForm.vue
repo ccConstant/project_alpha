@@ -214,7 +214,7 @@
 
                 </div>
                     <div v-if="saveAll!==true">
-                        <p >Actually saved as : {{savedAs}}</p>
+                        <p v-if="savedAs !== null && savedAs !== undefined">Actually saved as : {{savedAs}}</p>
                         <p class="text-danger" v-if="updateDescriptiveLifeSheetDataSignedRight==false && lifesheet_created==true">You don't have the right to update a signed life sheet</p>
                         <p class="text-danger" v-if="updateDataInDraftRight==false  && lifesheet_created==false">You don't have the right to save as draft or as to be validated</p>
                         <p class="text-danger" v-if="user_updateDataValidatedButNotSignedRight == false && lifesheet_created==false">You don't have the right to save as validated  </p>

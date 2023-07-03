@@ -173,8 +173,6 @@ export default {
             });
         },
         handleClick(eq, index) {
-            console.log(eq);
-            console.log(index);
             let tmp = eq.preventive_maintenance_operations[0].prvMtnOp_day < 10 ? '0' + eq.preventive_maintenance_operations[0].prvMtnOp_day : eq.preventive_maintenance_operations[0].prvMtnOp_day;
             this.prvMtnOp.push({
                 eq_internalReference: eq.internalReference,

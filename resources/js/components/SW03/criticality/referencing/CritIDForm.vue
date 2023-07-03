@@ -159,22 +159,22 @@ export default {
     ---------------------------------------------------*/
     props: {
         artCriticality: {
-            type: String
+            type: String,
         },
         artMaterialContactCriticality: {
-            type: String
+            type: String,
         },
         artMaterialFunctionCriticality: {
-            type: String
+            type: String,
         },
         artProcessCriticality: {
-            type: String
+            type: String,
         },
         justification: {
-            type: String
+            type: String,
         },
         remarks: {
-            type: String
+            type: String,
         },
         consultMod: {
             type: Boolean,
@@ -248,6 +248,7 @@ export default {
                 console.log("crit_artMaterialContactCriticality : " + this.crit_artMaterialContactCriticality);
                 console.log("crit_artMaterialFunctionCriticality : " + this.crit_artMaterialFunctionCriticality);
                 console.log("crit_artProcessCriticality : " + this.crit_artProcessCriticality);
+                console.log("crit_remarks : " + this.crit_remarks);
                 axios.post('/artFam/criticality/verif', {
                     crit_artCriticality: this.crit_artCriticality,
                     crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
@@ -273,21 +274,17 @@ export default {
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
                         crit_justification: this.crit_justification,
-                    })
-                    /*If the file is added successfully*/
-                    .then(response => {
+                    }).then(response => {
                         this.$snotify.success(`Criticality added successfully and saved as ${savedAs}`);
                         this.isInConsultMod = true;
                         this.addSucces = true
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => {
+                    }).catch(error => {
                         this.errors = error.response.data.errors;
+                        console.log(error.response.data);
                     });
-                })
-                //If the controller sends errors, we put it in the error object
-                .catch(error => {
+                }).catch(error => {
                     this.errors = error.response.data.errors;
+                    console.log(error.response.data);
                 });
             }
         },
@@ -306,8 +303,7 @@ export default {
                 crit_articleType: this.data_article_type,
                 crit_articleID: this.data_article_id,
                 crit_justification: this.crit_justification,
-            })
-                .then(response => {
+            }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
@@ -323,8 +319,7 @@ export default {
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
                         crit_justification: this.crit_justification,
-                    })
-                        .then(response => {
+                    }).then(response => {
                             this.crit_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
@@ -336,13 +331,14 @@ export default {
                             }
                             this.$refs.sucessAlert.showAlert(`Criticality updated successfully and saved as ${savedAs}`);
                             this.isInConsultMod = true;
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => {
+                        }).catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
                         });
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+                }).catch(error => {
+                this.errors = error.response.data.errors;
+                console.log(error.response.data);
+            });
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

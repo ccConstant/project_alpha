@@ -12,12 +12,36 @@ namespace Tests\Feature;
 
 use App\Models\Information;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class InformationTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Test Conception Number: 1
+     * Consult the eqIdCard information and checked if all the values are correct
+     * Expected result: All the values are correctly received
+     * @returns void
+     */
+    public function test_consult_eqIdCard_information()
+    {
+        $this->assertEquals(Information::all()->count(), 0);
+        $this->add_all_required_information();
+        $response = $this->get('/info/send/eqIdCard');
+        $response->assertJson([
+            '0' => [
+                'info_name' => 'eqIdCard1',
+                'info_value' => 'eqIdCard1',
+                'info_set' => 'eqIdCard'
+            ],
+            '1' => [
+                'info_name' => 'eqIdCard2',
+                'info_value' => 'eqIdCard2',
+                'info_set' => 'eqIdCard'
+            ]
+        ]);
+    }
 
     private function add_all_required_information()
     {
@@ -43,44 +67,18 @@ class InformationTest extends TestCase
             'enum_test_'
         ];
 
-        foreach ($categories as $category)
-        {
+        foreach ($categories as $category) {
             Information::create([
-                'info_name' => $category.'1',
-                'info_value' => $category.'1',
+                'info_name' => $category . '1',
+                'info_value' => $category . '1',
                 'info_set' => $category
             ]);
             Information::create([
-                'info_name' => $category.'2',
-                'info_value' => $category.'2',
+                'info_name' => $category . '2',
+                'info_value' => $category . '2',
                 'info_set' => $category
             ]);
         }
-    }
-
-    /**
-     * Test Conception Number: 1
-     * Consult the eqIdCard information and checked if all the values are correct
-     * Expected result: All the values are correctly received
-     * @returns void
-     */
-    public function test_consult_eqIdCard_information()
-    {
-        $this->assertEquals(Information::all()->count(), 0);
-        $this->add_all_required_information();
-        $response = $this->get('/info/send/eqIdCard');
-        $response->assertJson([
-            '0' => [
-                'info_name' => 'eqIdCard1',
-                'info_value' =>'eqIdCard1',
-                'info_set' => 'eqIdCard'
-            ],
-            '1' => [
-                'info_name' => 'eqIdCard2',
-                'info_value' =>'eqIdCard2',
-                'info_set' => 'eqIdCard'
-            ]
-        ]);
     }
 
     /**
@@ -98,12 +96,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'file1',
-                'info_value' =>'file1',
+                'info_value' => 'file1',
                 'info_set' => 'file'
             ],
             '1' => [
                 'info_name' => 'file2',
-                'info_value' =>'file2',
+                'info_value' => 'file2',
                 'info_set' => 'file'
             ]
         ]);
@@ -124,12 +122,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'power1',
-                'info_value' =>'power1',
+                'info_value' => 'power1',
                 'info_set' => 'power'
             ],
             '1' => [
                 'info_name' => 'power2',
-                'info_value' =>'power2',
+                'info_value' => 'power2',
                 'info_set' => 'power'
             ]
         ]);
@@ -150,12 +148,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'dimension1',
-                'info_value' =>'dimension1',
+                'info_value' => 'dimension1',
                 'info_set' => 'dimension'
             ],
             '1' => [
                 'info_name' => 'dimension2',
-                'info_value' =>'dimension2',
+                'info_value' => 'dimension2',
                 'info_set' => 'dimension'
             ]
         ]);
@@ -176,12 +174,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'risk1',
-                'info_value' =>'risk1',
+                'info_value' => 'risk1',
                 'info_set' => 'risk'
             ],
             '1' => [
                 'info_name' => 'risk2',
-                'info_value' =>'risk2',
+                'info_value' => 'risk2',
                 'info_set' => 'risk'
             ]
         ]);
@@ -202,12 +200,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'specialProcess1',
-                'info_value' =>'specialProcess1',
+                'info_value' => 'specialProcess1',
                 'info_set' => 'specialProcess'
             ],
             '1' => [
                 'info_name' => 'specialProcess2',
-                'info_value' =>'specialProcess2',
+                'info_value' => 'specialProcess2',
                 'info_set' => 'specialProcess'
             ]
         ]);
@@ -228,12 +226,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'state1',
-                'info_value' =>'state1',
+                'info_value' => 'state1',
                 'info_set' => 'state'
             ],
             '1' => [
                 'info_name' => 'state2',
-                'info_value' =>'state2',
+                'info_value' => 'state2',
                 'info_set' => 'state'
             ]
         ]);
@@ -254,12 +252,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'preventiveMaintenanceOperation1',
-                'info_value' =>'preventiveMaintenanceOperation1',
+                'info_value' => 'preventiveMaintenanceOperation1',
                 'info_set' => 'preventiveMaintenanceOperation'
             ],
             '1' => [
                 'info_name' => 'preventiveMaintenanceOperation2',
-                'info_value' =>'preventiveMaintenanceOperation2',
+                'info_value' => 'preventiveMaintenanceOperation2',
                 'info_set' => 'preventiveMaintenanceOperation'
             ]
         ]);
@@ -280,12 +278,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'curativeMaintenanceOperation1',
-                'info_value' =>'curativeMaintenanceOperation1',
+                'info_value' => 'curativeMaintenanceOperation1',
                 'info_set' => 'curativeMaintenanceOperation'
             ],
             '1' => [
                 'info_name' => 'curativeMaintenanceOperation2',
-                'info_value' =>'curativeMaintenanceOperation2',
+                'info_value' => 'curativeMaintenanceOperation2',
                 'info_set' => 'curativeMaintenanceOperation'
             ]
         ]);
@@ -306,12 +304,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'preventiveMaintenanceOperationRealized1',
-                'info_value' =>'preventiveMaintenanceOperationRealized1',
+                'info_value' => 'preventiveMaintenanceOperationRealized1',
                 'info_set' => 'preventiveMaintenanceOperationRealized'
             ],
             '1' => [
                 'info_name' => 'preventiveMaintenanceOperationRealized2',
-                'info_value' =>'preventiveMaintenanceOperationRealized2',
+                'info_value' => 'preventiveMaintenanceOperationRealized2',
                 'info_set' => 'preventiveMaintenanceOperationRealized'
             ]
         ]);
@@ -332,12 +330,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'usage1',
-                'info_value' =>'usage1',
+                'info_value' => 'usage1',
                 'info_set' => 'usage'
             ],
             '1' => [
                 'info_name' => 'usage2',
-                'info_value' =>'usage2',
+                'info_value' => 'usage2',
                 'info_set' => 'usage'
             ]
         ]);
@@ -358,12 +356,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'user1',
-                'info_value' =>'user1',
+                'info_value' => 'user1',
                 'info_set' => 'user'
             ],
             '1' => [
                 'info_name' => 'user2',
-                'info_value' =>'user2',
+                'info_value' => 'user2',
                 'info_set' => 'user'
             ]
         ]);
@@ -384,12 +382,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'mme1',
-                'info_value' =>'mme1',
+                'info_value' => 'mme1',
                 'info_set' => 'mme'
             ],
             '1' => [
                 'info_name' => 'mme2',
-                'info_value' =>'mme2',
+                'info_value' => 'mme2',
                 'info_set' => 'mme'
             ]
         ]);
@@ -410,12 +408,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'mme_state1',
-                'info_value' =>'mme_state1',
+                'info_value' => 'mme_state1',
                 'info_set' => 'mme_state'
             ],
             '1' => [
                 'info_name' => 'mme_state2',
-                'info_value' =>'mme_state2',
+                'info_value' => 'mme_state2',
                 'info_set' => 'mme_state'
             ]
         ]);
@@ -436,12 +434,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'verif1',
-                'info_value' =>'verif1',
+                'info_value' => 'verif1',
                 'info_set' => 'verif'
             ],
             '1' => [
                 'info_name' => 'verif2',
-                'info_value' =>'verif2',
+                'info_value' => 'verif2',
                 'info_set' => 'verif'
             ]
         ]);
@@ -462,12 +460,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'verifRlz1',
-                'info_value' =>'verifRlz1',
+                'info_value' => 'verifRlz1',
                 'info_set' => 'verifRlz'
             ],
             '1' => [
                 'info_name' => 'verifRlz2',
-                'info_value' =>'verifRlz2',
+                'info_value' => 'verifRlz2',
                 'info_set' => 'verifRlz'
             ]
         ]);
@@ -488,12 +486,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'mme_usage1',
-                'info_value' =>'mme_usage1',
+                'info_value' => 'mme_usage1',
                 'info_set' => 'mme_usage'
             ],
             '1' => [
                 'info_name' => 'mme_usage2',
-                'info_value' =>'mme_usage2',
+                'info_value' => 'mme_usage2',
                 'info_set' => 'mme_usage'
             ]
         ]);
@@ -514,12 +512,12 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'mme_precaution1',
-                'info_value' =>'mme_precaution1',
+                'info_value' => 'mme_precaution1',
                 'info_set' => 'mme_precaution'
             ],
             '1' => [
                 'info_name' => 'mme_precaution2',
-                'info_value' =>'mme_precaution2',
+                'info_value' => 'mme_precaution2',
                 'info_set' => 'mme_precaution'
             ]
         ]);
@@ -540,11 +538,11 @@ class InformationTest extends TestCase
         $response->assertJson([
             '0' => [
                 'info_name' => 'enum_test_1',
-                'info_value' =>'enum_test_1'
+                'info_value' => 'enum_test_1'
             ],
             '1' => [
                 'info_name' => 'enum_test_2',
-                'info_value' =>'enum_test_2'
+                'info_value' => 'enum_test_2'
             ]
         ]);
     }
@@ -559,9 +557,9 @@ class InformationTest extends TestCase
     {
         $this->assertEquals(Information::all()->count(), 0);
         //if (Information::all()->count() == 0) {
-            $this->add_all_required_information();
+        $this->add_all_required_information();
         //}
-        $response = $this->post('/info/update/'. Information::all()->first()->id, [
+        $response = $this->post('/info/update/' . Information::all()->first()->id, [
             'info_value' => 'edited'
         ]);
         $response->assertStatus(200);
@@ -571,5 +569,5 @@ class InformationTest extends TestCase
         ]);
     }
 
-    
+
 }

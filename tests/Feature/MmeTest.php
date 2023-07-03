@@ -6,10 +6,9 @@ use App\Models\SW01\EnumEquipmentMassUnit;
 use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\Mme;
 use App\Models\SW01\MmeState;
 use App\Models\SW01\MmeTemp;
-use App\Models\SW01\Mme;
-use App\Models\SW01\State;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +17,7 @@ use Tests\TestCase;
 class MmeTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * Test Conception Number: 1
      * Add new mme as drafted with no values
@@ -1246,6 +1246,37 @@ class MmeTest extends TestCase
         ]);
     }
 
+    public function create_mme($name, $validated = 'drafted')
+    {
+        $response = $this->post('/mme/verif', [
+            'mme_validate' => $validated,
+            'mme_internalReference' => $name,
+            'mme_externalReference' => $name,
+            'mme_name' => $name,
+            'mme_serialNumber' => $name,
+            'mme_constructor' => $name,
+            'mme_remarks' => $name,
+            'mme_set' => $name,
+            'mme_location' => $name,
+        ]);
+        $response->assertStatus(200);
+        $countEquipment = Mme::all()->count();
+        $response = $this->post('/mme/add', [
+            'mme_validate' => $validated,
+            'mme_internalReference' => $name,
+            'mme_externalReference' => $name,
+            'mme_name' => $name,
+            'mme_serialNumber' => $name,
+            'mme_constructor' => $name,
+            'mme_remarks' => $name,
+            'mme_set' => $name,
+            'mme_location' => $name,
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($countEquipment + 1, Mme::all()->count());
+        return Mme::all()->where('mme_internalReference', '=', $name)->last()->id;
+    }
+
     /**
      * Test Conception Number: 41
      * Add a new mme as validated with correct values
@@ -1289,37 +1320,23 @@ class MmeTest extends TestCase
             'mme_location' => 'three',
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Mme::all()->count());
-    }
+        $this->assertEquals($countEquipment + 1, Mme::all()->count());
+        $this->assertDatabaseHas('mmes', [
+            'mme_internalReference' => 'three',
+            'mme_externalReference' => 'three',
+            'mme_name' => 'three',
+            'mme_serialNumber' => 'three',
+            'mme_constructor' => 'three',
+            'mme_set' => 'three',
+        ]);
+        $this->assertDatabaseHas('mme_temps', [
+            'mmeTemp_location' => 'three',
+            'mmeTemp_validate' => 'validated',
+            'mmeTemp_remarks' => 'three',
+            'mme_id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
 
-    public function create_mme($name, $validated = 'drafted') {
-        $response = $this->post('/mme/verif', [
-            'mme_validate' => $validated,
-            'mme_internalReference' => $name,
-            'mme_externalReference' => $name,
-            'mme_name' => $name,
-            'mme_serialNumber' => $name,
-            'mme_constructor' => $name,
-            'mme_remarks' => $name,
-            'mme_set' => $name,
-            'mme_location' => $name,
         ]);
-        $response->assertStatus(200);
-        $countEquipment = Mme::all()->count();
-        $response = $this->post('/mme/add', [
-            'mme_validate' => $validated,
-            'mme_internalReference' => $name,
-            'mme_externalReference' => $name,
-            'mme_name' => $name,
-            'mme_serialNumber' => $name,
-            'mme_constructor' => $name,
-            'mme_remarks' => $name,
-            'mme_set' => $name,
-            'mme_location' => $name,
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Mme::all()->count());
-        return Mme::all()->where('mme_internalReference', '=', $name)->last()->id;
+        $this->assertEquals(1, DB::select('SELECT COUNT(id) AS cpt FROM `pivot_mme_temp_state` WHERE `mmeTemp_id`= ' . MmeTemp::all()->where('mme_id', '=', Mme::all()->last()->id)->last()->id)[0]->cpt);
     }
 
     /**
@@ -1345,7 +1362,7 @@ class MmeTest extends TestCase
             'mme_location' => 'other',
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/mme/update/'.Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
+        $response = $this->post('/mme/update/' . Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
             'reason' => 'update',
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'other',
@@ -1372,6 +1389,7 @@ class MmeTest extends TestCase
             'mmeTemp_validate' => 'drafted',
             'mmeTemp_remarks' => 'other',
         ]);
+        $this->assertEquals(1, DB::select('SELECT COUNT(id) AS cpt FROM `pivot_mme_temp_state` WHERE `mmeTemp_id`= ' . MmeTemp::all()->where('mme_id', '=', Mme::all()->last()->id)->last()->id)[0]->cpt);
     }
 
     /**
@@ -1427,7 +1445,7 @@ class MmeTest extends TestCase
             'mme_location' => 'other',
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/mme/update/'.Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
+        $response = $this->post('/mme/update/' . Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
             'reason' => 'update',
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'other',
@@ -1454,6 +1472,7 @@ class MmeTest extends TestCase
             'mmeTemp_validate' => 'drafted',
             'mmeTemp_remarks' => 'other',
         ]);
+        $this->assertEquals(1, DB::select('SELECT COUNT(id) AS cpt FROM `pivot_mme_temp_state` WHERE `mmeTemp_id`= ' . MmeTemp::all()->where('mme_id', '=', Mme::all()->last()->id)->last()->id)[0]->cpt);
     }
 
     /**
@@ -1656,8 +1675,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -1665,15 +1684,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -1713,8 +1732,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -1722,15 +1741,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -1770,8 +1789,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -1779,15 +1798,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -1827,8 +1846,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -1836,15 +1855,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -1884,8 +1903,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -1893,15 +1912,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -1941,8 +1960,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -1950,15 +1969,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -1997,8 +2016,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2006,15 +2025,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2039,7 +2058,7 @@ class MmeTest extends TestCase
             'mme_location' => 'other',
         ]);
         $response->assertStatus(200);
-        $response = $this->post('/mme/update/'.Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
+        $response = $this->post('/mme/update/' . Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
             'reason' => 'update',
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
@@ -2089,7 +2108,7 @@ class MmeTest extends TestCase
                 'mme_externalReference' => 'three',
                 'mme_name' => 'three',
                 'mme_state' => 'Waiting_for_referencing',
-                'state_id' => DB::select('SELECT mme_state_id FROM pivot_mme_temp_state WHERE mmeTemp_id = '.MmeTemp::all()->where('mme_id', '=', Mme::all()->last()->id)->last()->id)[0]->mme_state_id,
+                'state_id' => DB::select('SELECT mme_state_id FROM pivot_mme_temp_state WHERE mmeTemp_id = ' . MmeTemp::all()->where('mme_id', '=', Mme::all()->last()->id)->last()->id)[0]->mme_state_id,
                 'mmeTemp_lifeSheetCreated' => 0,
                 'alreadyValidatedQuality' => false,
                 'alreadyValidatedTechnical' => false,
@@ -2110,8 +2129,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2119,27 +2138,27 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
         $mostRecentlyMmeTmp = MmeTemp::all()->where('mme_id', '=', Mme::all()->last()->id)->last();
-        $states=$mostRecentlyMmeTmp->states;
-        $mostRecentlyState=MmeState::orderBy('created_at', 'asc')->first();
-        foreach($states as $state){
-            $date=$state->created_at ;
-            $date2=$mostRecentlyState->created_at;
-            if ($date>=$date2){
-                $mostRecentlyState=$state ;
+        $states = $mostRecentlyMmeTmp->states;
+        $mostRecentlyState = MmeState::orderBy('created_at', 'asc')->first();
+        foreach ($states as $state) {
+            $date = $state->created_at;
+            $date2 = $mostRecentlyState->created_at;
+            if ($date >= $date2) {
+                $mostRecentlyState = $state;
             }
         }
         $response = $this->get('/mme/mmes');
@@ -2198,7 +2217,7 @@ class MmeTest extends TestCase
     public function test_send_values_from_id()
     {
         $this->create_mme('three');
-        $response = $this->get('/mme/'.Mme::all()->last()->id);
+        $response = $this->get('/mme/' . Mme::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             'mme_internalReference' => 'three',
@@ -2229,8 +2248,8 @@ class MmeTest extends TestCase
     {
         $this->create_mme('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2238,21 +2257,21 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/mme/validation/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response = $this->get('/mme/'.Mme::all()->last()->id);
+        $response = $this->get('/mme/' . Mme::all()->last()->id);
         $response->assertStatus(200);
         $response->assertJson([
             'mme_internalReference' => 'three',
@@ -2291,22 +2310,43 @@ class MmeTest extends TestCase
         ]);
     }
 
-    public function create_equipment($name, $validated = 'drafted') {
+    /**
+     * Test Conception Number: 65
+     * Add a mme and linked it to an equipment
+     * Expected Result: The mme is correctly linked to the equipment
+     * @returns void
+     */
+    public function test_add_link_mme_to_equipment()
+    {
+        $eq_id = $this->create_equipment('three');
+        $this->create_mme('three');
+        $response = $this->post('/mme/link_to_eq/' . $eq_id, [
+            'mme_internalReference' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+    }
+
+    public function create_equipment($name, $validated = 'drafted')
+    {
         if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
-            $countEqMassUnit=EnumEquipmentMassUnit::all()->count();
-            $response=$this->post('/equipment/enum/massUnit/add', [
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
                 'value' => $name,
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit+1, EnumEquipmentMassUnit::all());
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
         }
         if (EnumEquipmentType::all()->where('value', '=', $name)->count() === 0) {
-            $countEqType=EnumEquipmentType::all()->count();
-            $response=$this->post('/equipment/enum/type/add', [
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
                 'value' => $name,
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countEqType+1, EnumEquipmentType::all());
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $response = $this->post('/equipment/verif', [
             'eq_validate' => $validated,
@@ -2340,7 +2380,7 @@ class MmeTest extends TestCase
             'eq_mobility' => '0'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countEquipment+1, Equipment::all()->count());
+        $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
             'eqTemp_version' => '1',
@@ -2360,26 +2400,6 @@ class MmeTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 65
-     * Add a mme and linked it to an equipment
-     * Expected Result: The mme is correctly linked to the equipment
-     * @returns void
-     */
-    public function test_add_link_mme_to_equipment()
-    {
-        $eq_id = $this->create_equipment('three');
-        $this->create_mme('three');
-        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
-            'mme_internalReference' => 'three',
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('mmes', [
-            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
-            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
-        ]);
-    }
-
-    /**
      * Test Conception Number: 66
      * Add a mme and linked it to a signed equipment
      * Expected Result: The mme is correctly linked to the equipment and the equipment is no longer signed
@@ -2389,8 +2409,8 @@ class MmeTest extends TestCase
     {
         $eq_id = $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2398,15 +2418,15 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
-        $response=$this->post('/equipment/validation/'.$eq_id, [
+        $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.$eq_id, [
+        $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2420,7 +2440,7 @@ class MmeTest extends TestCase
         ]);
 
         $this->create_mme('three', 'validated');
-        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+        $response = $this->post('/mme/link_to_eq/' . $eq_id, [
             'mme_internalReference' => 'three',
         ]);
         $response->assertStatus(200);
@@ -2446,7 +2466,7 @@ class MmeTest extends TestCase
     {
         $eq_id = $this->create_equipment('three');
         $this->create_mme('three');
-        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+        $response = $this->post('/mme/link_to_eq/' . $eq_id, [
             'mme_internalReference' => 'three',
         ]);
         $response->assertStatus(200);
@@ -2456,7 +2476,7 @@ class MmeTest extends TestCase
             'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
         ]);
 
-        $response = $this->post('/mme/delete/link_to_eq/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/delete/link_to_eq/' . Mme::all()->last()->id, [
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -2477,8 +2497,8 @@ class MmeTest extends TestCase
     {
         $eq_id = $this->create_equipment('three', 'validated');
         if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser=User::all()->count();
-            $response=$this->post('register', [
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
                 'user_firstName' => 'Verifier',
                 'user_lastName' => 'Verifier',
                 'user_pseudo' => 'Verifier',
@@ -2486,11 +2506,11 @@ class MmeTest extends TestCase
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
-            $this->assertCount($countUser+1, User::all());
+            $this->assertCount($countUser + 1, User::all());
         }
 
         $this->create_mme('three', 'validated');
-        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+        $response = $this->post('/mme/link_to_eq/' . $eq_id, [
             'mme_internalReference' => 'three',
         ]);
         $response->assertStatus(200);
@@ -2500,13 +2520,13 @@ class MmeTest extends TestCase
             'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
         ]);
 
-        $response=$this->post('/equipment/validation/'.$eq_id, [
+        $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'technical',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
         $response->assertStatus(200);
 
-        $response=$this->post('/equipment/validation/'.$eq_id, [
+        $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'quality',
             'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
         ]);
@@ -2519,7 +2539,7 @@ class MmeTest extends TestCase
             'eqTemp_version' => '1',
         ]);
 
-        $response = $this->post('/mme/delete/link_to_eq/'.Mme::all()->last()->id, [
+        $response = $this->post('/mme/delete/link_to_eq/' . Mme::all()->last()->id, [
             'eq_id' => Equipment::all()->last()->id,
         ]);
         $response->assertStatus(200);
@@ -2547,7 +2567,7 @@ class MmeTest extends TestCase
         $eq_id = $this->create_equipment('three');
         $this->create_mme('other');
 
-        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+        $response = $this->post('/mme/link_to_eq/' . $eq_id, [
             'mme_internalReference' => 'other',
         ]);
         $response->assertStatus(200);
@@ -2579,7 +2599,7 @@ class MmeTest extends TestCase
     {
         $eq_id = $this->create_equipment('three');
         $this->create_mme('three');
-        $response = $this->post('/mme/link_to_eq/'.$eq_id, [
+        $response = $this->post('/mme/link_to_eq/' . $eq_id, [
             'mme_internalReference' => 'three',
         ]);
         $response->assertStatus(200);
@@ -2588,12 +2608,65 @@ class MmeTest extends TestCase
             'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
         ]);
         $this->create_mme('other');
-        $response = $this->get('/mme/eq_linked/'.Mme::all()->where('mme_internalReference', '=', 'three')->first()->id);
+        $response = $this->get('/mme/eq_linked/' . Mme::all()->where('mme_internalReference', '=', 'three')->first()->id);
         $response->assertStatus(200);
         $response->assertJson([
             '0' => [
                 'eq_internalReference' => 'three',
                 'eq_id' => $eq_id,
+            ],
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 69
+     * Send the list of mme linked to equipment (no mme)
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_get_list_mme_linked_to_equipment_no_mme()
+    {
+        $eq_id = $this->create_equipment('three');
+        $this->create_mme('three');
+        $response = $this->get('/mme/eq_linked/' . Mme::all()->where('mme_internalReference', '=', 'three')->first()->id);
+        $response->assertStatus(200);
+        $response->assertJson([]);
+    }
+
+    /**
+     * Test Conception Number: 70
+     * Send the list of mme linked to equipment (by equipment id)
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_get_list_mme_linked_to_equipment_by_eq_id()
+    {
+        $eq_id = $this->create_equipment('three');
+        $this->create_mme('three');
+        $response = $this->post('/mme/link_to_eq/' . $eq_id, [
+            'mme_internalReference' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('mmes', [
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', $eq_id)->last()->id,
+            'id' => MME::all()->where('mme_internalReference', '=', 'three')->first()->id,
+        ]);
+        $this->create_mme('other');
+        $response = $this->get('/mme/send/' . $eq_id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => Mme::all()->where('mme_internalReference', '=', 'three')->last()->id,
+                'mme_internalReference' => 'three',
+                'mme_externalReference' => 'three',
+                'mme_name' => 'three',
+                'mme_serialNumber' => 'three',
+                'mme_constructor' => 'three',
+                'mme_remarks' => 'three',
+                'mme_set' => 'three',
+                'mme_validate' => 'drafted',
+                'mme_location' => 'three',
+                'mme_signatureDate' => null,
             ],
         ]);
     }

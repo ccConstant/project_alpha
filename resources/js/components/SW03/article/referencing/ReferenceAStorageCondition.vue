@@ -10,11 +10,21 @@
         <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
         <!--ref="ask_dim_data" is used to call the child elements in this component-->
         <!--The emitted deleteDim is caught here and call the function getContent -->
-        <ArticleStorageConditionForm ref="ask_storageCondition_data" v-for="(component, key) in components" :key="component.key"
-                          :is="component.comp" :value="component.value" :divClass="component.className"
-                          :id="component.id" :consultMod="isInConsultMod" :modifMod="component.id !== null && isInModifMod"
-                          :art_type="data_art_type" :art_id="data_art_id"
-                          @deleteStorageCondition="getContent(key)"/>
+        <ArticleStorageConditionForm
+            ref="ask_storageCondition_data"
+            v-for="(component, key) in components"
+            :key="component.key"
+            :is="component.comp"
+            :value="component.value"
+            :divClass="component.className"
+            :id="component.id"
+            :consultMod="isInConsultMod"
+            :modifMod="component.id !== null && isInModifMod"
+            :art_type="data_art_type"
+            :art_id="data_art_id"
+            @deleteStorageCondition="getContent(key)"
+            :validate="component.validate"
+        />
         <!--If the user is not in consultation mode -->
         <div v-if="!this.consultMod">
             <!--Add another dimension button appear -->
@@ -101,13 +111,14 @@ export default {
             });
         },
         /*Function for adding an imported dimension form with his data*/
-        addImportedComponent(storageCondition_value, storageCondition_className, id) {
+        addImportedComponent(storageCondition_value, storageCondition_className, id, validate) {
             this.components.push({
                 comp: 'ArticleStorageConditionForm',
                 key: this.uniqueKey++,
                 value: storageCondition_value,
                 className: storageCondition_className,
-                id: id
+                id: id,
+                validate: validate
             });
         },
         /*Suppression of a dimension component from the vue*/
@@ -148,7 +159,9 @@ export default {
                     this.addImportedComponent(
                         st.value,
                         'importedStorageCondition'+st.id,
-                        st.id);
+                        st.id,
+                        st.validate
+                    );
                 }
             }
         }
@@ -160,6 +173,7 @@ export default {
             axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
                 .then(response => {
                     this.sto_conds = response.data;
+                    console.log(this.sto_conds);
                     this.importStoConds();
                     this.loaded = true;
                 })

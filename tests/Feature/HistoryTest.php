@@ -21,7 +21,6 @@ use App\Models\SW01\Power;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class HistoryTest extends TestCase
@@ -35,6 +34,26 @@ class HistoryTest extends TestCase
      * Expected result: The history is added to the database
      * @returns void
     */
+    /**
+     * Test Conception Number: 3
+     * Consult the list of history of the previous equipment
+     * Expected result: The history list is correct
+     * @returns void
+     */
+    public function test_consult_hist()
+    {
+        $this->test_add_hist_equipment();
+        $response = $this->get('/history/send/equipment/' . Equipment::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'history_numVersion' => 1,
+                'history_reasonUpdate' => 'Update',
+                'history_date' => Carbon::now()->format('d M o')
+            ]
+        ]);
+    }
+
     public function test_add_hist_equipment()
     {
         // Add a mass unit
@@ -246,12 +265,32 @@ class HistoryTest extends TestCase
     }
 
     /**
+     * Test Conception Number: 4
+     * Consult the list of history of the previous mme
+     * Expected result: The history list is correct
+     * @returns void
+     */
+    public function test_consult_hist_mme()
+    {
+        $this->test_add_hist_mme();
+        $response = $this->get('/history/send/mme/' . Mme::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'history_numVersion' => 1,
+                'history_reasonUpdate' => 'Update',
+                'history_date' => Carbon::now()->format('d M o')
+            ]
+        ]);
+    }
+
+    /**
      * Test Conception Number: 2
      * Add a new history for a mme
      * Reason: "Update"
      * Expected result: The history is added to the database
      * @returns void
-    */
+     */
     public function test_add_hist_mme()
     {
         $countMme = Mme::all()->count();
@@ -325,7 +364,7 @@ class HistoryTest extends TestCase
             'file_name' => 'File'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($countFile+1, File::all()->count());
+        $this->assertEquals($countFile + 1, File::all()->count());
         $this->assertDatabaseHas('files', [
             'file_name' => 'File',
             'file_validate' => 'drafted',
@@ -339,45 +378,5 @@ class HistoryTest extends TestCase
             'history_reasonUpdate' => 'Update'
         ]);
         $this->assertEquals($countHistory + 1, History::all()->count());
-    }
-
-    /**
-     * Test Conception Number: 3
-     * Consult the list of history of the previous equipment
-     * Expected result: The history list is correct
-     * @returns void
-    */
-    public function test_consult_hist()
-    {
-        $this->test_add_hist_equipment();
-        $response = $this->get('/history/send/equipment/' . Equipment::all()->last()->id);
-        $response->assertStatus(200);
-        $response->assertJson([
-            '0' => [
-                'history_numVersion' => 1,
-                'history_reasonUpdate' => 'Update',
-                'history_date' => Carbon::now()->format('d M o')
-            ]
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 4
-     * Consult the list of history of the previous mme
-     * Expected result: The history list is correct
-     * @returns void
-    */
-    public function test_consult_hist_mme()
-    {
-        $this->test_add_hist_mme();
-        $response = $this->get('/history/send/mme/' . Mme::all()->last()->id);
-        $response->assertStatus(200);
-        $response->assertJson([
-            '0' => [
-                'history_numVersion' => 1,
-                'history_reasonUpdate' => 'Update',
-                'history_date' => Carbon::now()->format('d M o')
-            ]
-        ]);
     }
 }

@@ -51,7 +51,6 @@ export default {
 		ErrorAlert
 	},
 	created(){
-        console.log(this.$userId)
 	},
 	methods:{
 		disconnect(){

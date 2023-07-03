@@ -227,7 +227,6 @@ export default {
                     id: response.data[i].id
                 });
             }
-            console.log(this.supplierList);
             this.loaded = true;
         }).catch(error => {
         });

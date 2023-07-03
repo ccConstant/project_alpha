@@ -82,9 +82,8 @@ export default {
             delete this.errors[event.target.name];
         },
         UpdateInfo(){
-            console.log(this.selected_mme_formation_date)
-            var postUrlUpdate = (id) => ` /user/update/myAccount/${id}`;
-			axios.post(postUrlUpdate(this.$userId.id),{
+            const postUrlUpdate = (id) => ` /user/update/myAccount/${id}`;
+            axios.post(postUrlUpdate(this.$userId.id),{
                 user_pseudo:this.user_pseudo,
                 user_firstName:this.user_firstName,
                 user_signaturePath:this.user_signaturePath,
@@ -107,23 +106,23 @@ export default {
         axios.get('/info/send/person')
         .then (response=> {
             this.infos_person=response.data;
-            })
-        .catch(error => console.log(error)) ;
+            }).catch(error => {
+        }) ;
 
-        var getUrlFormationOk = (id) => ` /user/get/formationEqOk/${id}`;
+        let getUrlFormationOk = (id) => ` /user/get/formationEqOk/${id}`;
         axios.get(getUrlFormationOk(this.$userId.id))
         .then (response=> {
             this.formation_eq_ok=response.data;
-            })
-        .catch(error => console.log(error)) ;
+            }).catch(error => {
+        }) ;
 
-        var getUrlFormationOk = (id) => ` /user/get/formationMmeOk/${id}`;
+        getUrlFormationOk = (id) => ` /user/get/formationMmeOk/${id}`;
         axios.get(getUrlFormationOk(this.$userId.id))
         .then (response=> {
             this.formation_mme_ok=response.data;
             this.loaded=true;
-            })
-        .catch(error => console.log(error)) ;
+            }).catch(error => {
+        }) ;
     },
     updated() {
         if(this.selected_eq_formation_date!==null){

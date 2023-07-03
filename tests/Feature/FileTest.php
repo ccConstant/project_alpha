@@ -390,65 +390,6 @@ class FileTest extends TestCase
         return Equipment::all()->where('eq_internalReference', '==', $name)->first();
     }
 
-    public function make_an_eq_verif($eq_id)
-    {
-        $user = $this->make_a_user();
-        $response = $this->post('/equipment/validation/' . $eq_id, [
-            'reason' => 'technical',
-            'enteredBy_id' => $user->id,
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/equipment/validation/' . $eq_id, [
-            'reason' => 'quality',
-            'enteredBy_id' => $user->id,
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals($user->id, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->qualityVerifier_id);
-        $this->assertEquals($user->id, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->technicalVerifier_id);
-    }
-
-    public function make_a_user()
-    {
-        $countUser = User::all()->count();
-        $response = $this->post('register', [
-            'user_firstName' => 'VerifierVerifier',
-            'user_lastName' => 'VerifierVerifier',
-            'user_pseudo' => 'VerifierVerifier',
-            'user_password' => 'VerifierVerifier',
-            'user_confirmation_password' => 'VerifierVerifier',
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals($countUser + 1, User::all()->count());
-        return User::all()->where('user_pseudo', '==', 'VerifierVerifier')->first();
-        User::all()->last()->update([
-            'user_menuUserAcessRight' => 1,
-            'user_resetUserPasswordRight' => 1,
-            'user_updateDataInDraftRight' => 1,
-            'user_validateDescriptiveLifeSheetDataRight' => 1,
-            'user_validateOtherDataRight' => 1,
-            'user_updateDataValidatedButNotSignedRight' => 1,
-            'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-            'user_makeQualityValidationRight' => 1,
-            'user_makeTechnicalValidationRight' => 1,
-            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-            'user_deleteEqOrMmeRight' => 1,
-            'user_makeReformRight' => 1,
-            'user_declareNewStateRight' => 1,
-            'user_updateEnumRight' => 1,
-            'user_deleteEnumRight' => 1,
-            'user_addEnumRight' => 1,
-            'user_updateInformationRight' => 1,
-            'user_makeEqOpValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-            'user_makeEqRespValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-            'user_makeMmeOpValidationRight' => 1,
-            'user_makeMmeRespValidationRight' => 1,
-        ]);
-    }
-
     /**
      * Test Conception Number: 12
      * Successfully save as drafted from add menu a file linked to a mme
@@ -532,23 +473,6 @@ class FileTest extends TestCase
         return $Mme;
     }
 
-    public function make_a_mme_verif($mme_id)
-    {
-        $user = $this->make_a_user();
-        $response = $this->post('/mme/validation/' . $mme_id, [
-            'reason' => 'technical',
-            'enteredBy_id' => $user->id,
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/mme/validation/' . $mme_id, [
-            'reason' => 'quality',
-            'enteredBy_id' => $user->id,
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals($user->id, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->qualityVerifier_id);
-        $this->assertEquals($user->id, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->technicalVerifier_id);
-    }
-
     /**
      * Test Conception Number: 13
      * Successfully save as to be validated from add menu a file linked to an equipment
@@ -613,14 +537,6 @@ class FileTest extends TestCase
         ]);
     }
 
-    /*
-     * Test Conception Number: 15
-     * Successfully save as validated from add menu a file linked to an equipment
-     * File name: "File"
-     * File Location: "FilePath"
-     * Expected result: The file is correctly added in the database
-     * @returns void
-    */
     public function test_add_file_validated_success()
     {
         $equipment = $this->make_an_equipment('addValidEqTest', 'drafted');
@@ -721,6 +637,74 @@ class FileTest extends TestCase
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addDraftEqVTest')->last()->eqTemp_lifeSheetCreated);
     }
 
+    /*
+     * Test Conception Number: 15
+     * Successfully save as validated from add menu a file linked to an equipment
+     * File name: "File"
+     * File Location: "FilePath"
+     * Expected result: The file is correctly added in the database
+     * @returns void
+    */
+
+    public function make_an_eq_verif($eq_id)
+    {
+        $user = $this->make_a_user();
+        $response = $this->post('/equipment/validation/' . $eq_id, [
+            'reason' => 'technical',
+            'enteredBy_id' => $user->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/validation/' . $eq_id, [
+            'reason' => 'quality',
+            'enteredBy_id' => $user->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($user->id, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->qualityVerifier_id);
+        $this->assertEquals($user->id, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->technicalVerifier_id);
+    }
+
+    public function make_a_user()
+    {
+        $countUser = User::all()->count();
+        $response = $this->post('register', [
+            'user_firstName' => 'VerifierVerifier',
+            'user_lastName' => 'VerifierVerifier',
+            'user_pseudo' => 'VerifierVerifier',
+            'user_password' => 'VerifierVerifier',
+            'user_confirmation_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($countUser + 1, User::all()->count());
+        return User::all()->where('user_pseudo', '==', 'VerifierVerifier')->first();
+        User::all()->last()->update([
+            'user_menuUserAcessRight' => 1,
+            'user_resetUserPasswordRight' => 1,
+            'user_updateDataInDraftRight' => 1,
+            'user_validateDescriptiveLifeSheetDataRight' => 1,
+            'user_validateOtherDataRight' => 1,
+            'user_updateDataValidatedButNotSignedRight' => 1,
+            'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+            'user_makeQualityValidationRight' => 1,
+            'user_makeTechnicalValidationRight' => 1,
+            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+            'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+            'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+            'user_deleteEqOrMmeRight' => 1,
+            'user_makeReformRight' => 1,
+            'user_declareNewStateRight' => 1,
+            'user_updateEnumRight' => 1,
+            'user_deleteEnumRight' => 1,
+            'user_addEnumRight' => 1,
+            'user_updateInformationRight' => 1,
+            'user_makeEqOpValidationRight' => 1,
+            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+            'user_makeEqRespValidationRight' => 1,
+            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+            'user_makeMmeOpValidationRight' => 1,
+            'user_makeMmeRespValidationRight' => 1,
+        ]);
+    }
+
     /**
      * Test Conception Number: 18
      * Successfully save as drafted from add menu a file linked to a validated mme
@@ -757,6 +741,23 @@ class FileTest extends TestCase
         $this->assertNull(MmeTemp::all()->where('mmeTemp_remarks', '==', 'addDraftMmeVTest')->last()->technicalVerifier_id);
         $this->assertNull(MmeTemp::all()->where('mmeTemp_remarks', '==', 'addDraftMmeVTest')->last()->qualityVerifier_id);
         $this->assertEquals(0, MmeTemp::all()->where('mmeTemp_remarks', '==', 'addDraftMmeVTest')->last()->mmeTemp_lifeSheetCreated);
+    }
+
+    public function make_a_mme_verif($mme_id)
+    {
+        $user = $this->make_a_user();
+        $response = $this->post('/mme/validation/' . $mme_id, [
+            'reason' => 'technical',
+            'enteredBy_id' => $user->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/mme/validation/' . $mme_id, [
+            'reason' => 'quality',
+            'enteredBy_id' => $user->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertEquals($user->id, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->qualityVerifier_id);
+        $this->assertEquals($user->id, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->technicalVerifier_id);
     }
 
     /**

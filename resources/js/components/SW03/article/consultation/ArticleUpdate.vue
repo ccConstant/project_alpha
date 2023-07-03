@@ -213,7 +213,6 @@ export default {
                         genDesign: response.data.compFam_genDesign,
                         supplier: response.data.supplr_id,
                     };
-                    console.log(this.article);
                     this.generic = {
                         variablesCharac: this.article.variablesCharac,
                         variablesCharacDesign: this.article.variablesCharacDesign,

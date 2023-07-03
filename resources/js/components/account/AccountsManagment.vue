@@ -169,9 +169,8 @@ export default {
                 }
             }
             this.loaded=true;
-			console.log(response.data)
-		})
-        .catch(error => console.log(error)) ;
+		}).catch(error => {
+        });
 	},
 
 	methods:{
@@ -212,7 +211,6 @@ export default {
 			})
 			.then(response =>{
 				// Hide the modal manually
-				console.log("updated")
 				this.$bvModal.hide(bvModalEvent.target.id);
 				this.resetModal()
 				this.$refs.succesAlert.showAlert("Data updated succesfully");

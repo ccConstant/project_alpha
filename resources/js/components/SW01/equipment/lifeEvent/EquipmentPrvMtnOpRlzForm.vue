@@ -323,7 +323,6 @@ export default {
                 }
                 /*First post to verify if all the fields are filled correctly
                 The reportNumber, the start and end date, validate enum, the id of the state, the id of the affected equipment and the id of maintenance operation are sent to the controller*/
-                // console.log("Report number:",this.prvMtnOpRlz_reportNumber,"\n","validate :",savedAs,"\nEQ ID: ",id,"\nState id:",this.equipment_state_id,"\nprvmtnOp:",this.prvMtnOp_id)
                 axios.post('/prvMtnOpRlz/verif', {
                     prvMtnOpRlz_reportNumber: this.prvMtnOpRlz_reportNumber,
                     prvMtnOpRlz_startDate: this.selected_startDate,
@@ -372,7 +371,6 @@ export default {
                                     user_password: this.user_password,
                                 }).catch(error => {
                                     this.errors = error.response.data.errors;
-                                    console.log(error.response.data);
                                 });
                             }
                         }).catch(error => {
