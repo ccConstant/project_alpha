@@ -7,6 +7,7 @@ use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
 use App\Models\SW01\State;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -28,11 +29,60 @@ class StateTest extends TestCase
      */
     public function test_add_state_no_values()
     {
-        $response = $this->post('/state/verif');
+        $user_id = $this->create_user('test');
+
+        $response = $this->post('/state/verif', [
+            'user_id' => $user_id,
+        ]);
         $response->assertStatus(302);
         $response->assertInvalid([
             'state_remarks' => 'You must enter a remark about the state',
         ]);
+    }
+
+    public function create_user($name)
+    {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
     }
 
     /**
@@ -48,8 +98,11 @@ class StateTest extends TestCase
      */
     public function test_add_state_short_remarks()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/state/verif', [
             'state_remarks' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -70,8 +123,11 @@ class StateTest extends TestCase
      */
     public function test_add_state_long_remarks()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/state/verif', [
             'state_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -92,8 +148,10 @@ class StateTest extends TestCase
      */
     public function test_add_state_only_remarks()
     {
+        $user_id = $this->create_user('test');
         $response = $this->post('/state/verif', [
             'state_remarks' => 'Remarks',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -114,9 +172,11 @@ class StateTest extends TestCase
      */
     public function test_add_state_no_dates()
     {
+        $user_id = $this->create_user('test');
         $response = $this->post('/state/verif', [
             'state_remarks' => 'Remarks',
             'state_name' => 'Name',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -137,10 +197,13 @@ class StateTest extends TestCase
      */
     public function test_add_state_old_start_date()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/state/verif', [
             'state_remarks' => 'Remarks',
             'state_name' => 'Name',
             'state_startDate' => Carbon::now()->subMonths(2),
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -167,6 +230,7 @@ class StateTest extends TestCase
             'state_name' => 'Name',
             'state_startDate' => Carbon::now(),
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -176,6 +240,8 @@ class StateTest extends TestCase
 
     public function create_equipment($name, $validated = 'drafted')
     {
+        $user_id = $this->create_user('test');
+
         if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
             $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
             $response = $this->post('/equipment/enum/massUnit/add', [
@@ -204,7 +270,8 @@ class StateTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => $name,
-            'eq_massUnit' => $name
+            'eq_massUnit' => $name,
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -279,6 +346,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_referencing',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -306,6 +374,7 @@ class StateTest extends TestCase
             'state_name' => 'In_use',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -333,6 +402,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_maintenance',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -360,6 +430,7 @@ class StateTest extends TestCase
             'state_name' => 'On_hold',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -387,6 +458,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_repair',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -414,6 +486,7 @@ class StateTest extends TestCase
             'state_name' => 'Broken',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -441,6 +514,7 @@ class StateTest extends TestCase
             'state_name' => 'Downgraded',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -468,6 +542,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -495,6 +570,7 @@ class StateTest extends TestCase
             'state_name' => 'Destroyed',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -521,6 +597,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_referencing',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -550,7 +627,8 @@ class StateTest extends TestCase
      * Start Date: Today
      * End Date: /
      * Name: "Waiting_for_installation"
-     * Expected Result: The state is added to the database
+     * Expected Result: Receiving an error :
+     *                                          "You can't only go in waiting for installation state from this one"
      * @returns void
      */
     public function test_add_state_1_to_2()
@@ -562,13 +640,14 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_installation',
             'state_startDate' => $date,
             'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
             'state_remarks' => 'Remarks',
             'state_name' => 'Waiting_for_installation',
             'state_startDate' => $date,
-            'eq_id' => $eq_id,
+            'eq_id' => Equipment::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -604,10 +683,54 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_installation',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
             'state_name' => 'You can\'t only go in waiting for referencing, in use, on hold, reformed and lost states from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 19
+     * Try to add a new state (Waiting_for_installation -> In_use)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "In_use"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_2_to_3()
+    {
+        $this->test_add_state_1_to_2();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
         ]);
     }
 
@@ -631,6 +754,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_maintenance',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -657,6 +781,7 @@ class StateTest extends TestCase
             'state_name' => 'On_hold',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -699,6 +824,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_repair',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -726,6 +852,7 @@ class StateTest extends TestCase
             'state_name' => 'Broken',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -753,6 +880,7 @@ class StateTest extends TestCase
             'state_name' => 'Downgraded',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -779,6 +907,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -786,6 +915,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -820,6 +950,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -827,6 +958,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -861,6 +993,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_referencing',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -868,47 +1001,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_referencing',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
-            'state_validate' => 'drafted',
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('pivot_equipment_temp_state', [
-            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
-            'state_id' => State::all()->last()->id,
-        ]);
-        $this->assertDatabaseHas('states', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'In_use',
-            'state_startDate' => $date->format('Y-m-d'),
-            'state_validate' => 'drafted',
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 19
-     * Try to add a new state (Waiting_for_installation -> In_use)
-     * Remarks: "Remarks"
-     * Start Date: Today
-     * End Date: /
-     * Name: "In_use"
-     * Expected Result: The state is added in the database and linked to the equipment
-     * @returns void
-     */
-    public function test_add_state_2_to_3()
-    {
-        $this->test_add_state_1_to_2();
-        $date = Carbon::now();
-        $response = $this->post('/state/verif', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'In_use',
-            'state_startDate' => $date,
-            'eq_id' => Equipment::all()->last()->id,
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/equipment/add/state', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'In_use',
-            'state_startDate' => $date,
-            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -944,6 +1037,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_installation',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -971,6 +1065,7 @@ class StateTest extends TestCase
             'state_name' => 'In_use',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -997,6 +1092,7 @@ class StateTest extends TestCase
             'state_name' => 'On_hold',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1004,6 +1100,7 @@ class StateTest extends TestCase
             'state_name' => 'On_hold',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1039,6 +1136,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_repair',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1066,6 +1164,7 @@ class StateTest extends TestCase
             'state_name' => 'Broken',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1093,6 +1192,7 @@ class StateTest extends TestCase
             'state_name' => 'Downgraded',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1119,6 +1219,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1126,6 +1227,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1160,6 +1262,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1167,6 +1270,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1202,6 +1306,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_referencing',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1228,6 +1333,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_maintenance',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1235,6 +1341,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_maintenance',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1270,6 +1377,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_installation',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1296,6 +1404,7 @@ class StateTest extends TestCase
             'state_name' => 'In_use',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1303,6 +1412,7 @@ class StateTest extends TestCase
             'state_name' => 'In_use',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1338,51 +1448,11 @@ class StateTest extends TestCase
             'state_name' => 'Under_maintenance',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
             'state_name' => 'You can\'t only go in In_use, On_hold and lost states from this one',
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 41
-     * Try to add a new state (Under_maintenance -> On_hold)
-     * Remarks: "Remarks"
-     * Start Date: Today
-     * End Date: /
-     * Name: "On_hold"
-     * Expected Result: The state is added in the database and linked to the equipment
-     * @returns void
-     */
-    public function test_add_state_4_to_5()
-    {
-        $this->test_add_state_3_to_4();
-        $date = Carbon::now();
-        $response = $this->post('/state/verif', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'On_hold',
-            'state_startDate' => $date,
-            'eq_id' => Equipment::all()->last()->id,
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/equipment/add/state', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'On_hold',
-            'state_startDate' => $date,
-            'eq_id' => Equipment::all()->last()->id,
-            'state_validate' => 'drafted',
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('pivot_equipment_temp_state', [
-            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
-            'state_id' => State::all()->last()->id,
-        ]);
-        $this->assertDatabaseHas('states', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'On_hold',
-            'state_startDate' => $date->format('Y-m-d'),
-            'state_validate' => 'drafted',
         ]);
     }
 
@@ -1406,6 +1476,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_repair',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1433,6 +1504,7 @@ class StateTest extends TestCase
             'state_name' => 'Broken',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1460,6 +1532,7 @@ class StateTest extends TestCase
             'state_name' => 'Downgraded',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1487,6 +1560,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1513,6 +1587,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1520,6 +1595,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1555,10 +1631,54 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_referencing',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
             'state_name' => 'You can\'t only go in In_use, Under_maintenance, Under_repair, Broken, Downgraded, Reformed and lost states from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 41
+     * Try to add a new state (Under_maintenance -> On_hold)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "On_hold"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_4_to_5()
+    {
+        $this->test_add_state_3_to_4();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
         ]);
     }
 
@@ -1582,6 +1702,7 @@ class StateTest extends TestCase
             'state_name' => 'Waiting_for_installation',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1608,6 +1729,7 @@ class StateTest extends TestCase
             'state_name' => 'In_use',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1615,6 +1737,7 @@ class StateTest extends TestCase
             'state_name' => 'In_use',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1649,6 +1772,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_maintenance',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1656,6 +1780,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_maintenance',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1691,6 +1816,7 @@ class StateTest extends TestCase
             'state_name' => 'On_hold',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1698,7 +1824,7 @@ class StateTest extends TestCase
         ]);
     }
 
-/**
+    /**
      * Test Conception Number: 52
      * Try to add a new state (On_hold -> Under_repair)
      * Remarks: "Remarks"
@@ -1717,6 +1843,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_repair',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1724,6 +1851,7 @@ class StateTest extends TestCase
             'state_name' => 'Under_repair',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1758,6 +1886,7 @@ class StateTest extends TestCase
             'state_name' => 'Broken',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1765,6 +1894,7 @@ class StateTest extends TestCase
             'state_name' => 'Broken',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1799,6 +1929,7 @@ class StateTest extends TestCase
             'state_name' => 'Downgraded',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1806,6 +1937,7 @@ class StateTest extends TestCase
             'state_name' => 'Downgraded',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1840,6 +1972,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1847,6 +1980,7 @@ class StateTest extends TestCase
             'state_name' => 'Reformed',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);
@@ -1881,6 +2015,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state', [
@@ -1888,6 +2023,7 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date,
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
             'state_validate' => 'drafted',
         ]);
         $response->assertStatus(200);

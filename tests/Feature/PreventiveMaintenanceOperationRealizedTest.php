@@ -20,43 +20,45 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
 
     public function addUser()
     {
-        $countUser = User::all()->count();
-        $response = $this->post('register', [
-            'user_firstName' => 'Verifier',
-            'user_lastName' => 'Verifier',
-            'user_pseudo' => 'Verifier',
-            'user_password' => 'VerifierVerifier',
-            'user_confirmation_password' => 'VerifierVerifier',
-        ]);
-        $response->assertStatus(200);
-        $this->assertCount($countUser + 1, User::all());
-        User::all()->last()->update([
-            'user_menuUserAcessRight' => 1,
-            'user_resetUserPasswordRight' => 1,
-            'user_updateDataInDraftRight' => 1,
-            'user_validateDescriptiveLifeSheetDataRight' => 1,
-            'user_validateOtherDataRight' => 1,
-            'user_updateDataValidatedButNotSignedRight' => 1,
-            'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-            'user_makeQualityValidationRight' => 1,
-            'user_makeTechnicalValidationRight' => 1,
-            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-            'user_deleteEqOrMmeRight' => 1,
-            'user_makeReformRight' => 1,
-            'user_declareNewStateRight' => 1,
-            'user_updateEnumRight' => 1,
-            'user_deleteEnumRight' => 1,
-            'user_addEnumRight' => 1,
-            'user_updateInformationRight' => 1,
-            'user_makeEqOpValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-            'user_makeEqRespValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-            'user_makeMmeOpValidationRight' => 1,
-            'user_makeMmeRespValidationRight' => 1,
-        ]);
+        if (User::all()->count() === 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => 'Verifier',
+                'user_lastName' => 'Verifier',
+                'user_pseudo' => 'Verifier',
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
         return User::all()->last()->id;
     }
 
@@ -80,6 +82,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -89,6 +92,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
 
     public function create_equipment($name, $validated = 'drafted')
     {
+        $user_id = $this->addUser();
         if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
             $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
             $response = $this->post('/equipment/enum/massUnit/add', [
@@ -117,7 +121,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => $name,
-            'eq_massUnit' => $name
+            'eq_massUnit' => $name,
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -158,6 +163,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
 
     public function add_prevMaintenance($eq_id, $name, $validated = 'drafted', $periodicity = 1, $symbolPeriodicity = 'M', $preventiveOperation = true)
     {
+        $user_id = $this->addUser();
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => $validated,
             'prvMtnOp_description' => $name,
@@ -165,6 +171,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_periodicity' => $periodicity,
             'prvMtnOp_symbolPeriodicity' => $symbolPeriodicity,
             'prvMtnOp_preventiveOperation' => $preventiveOperation,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -226,6 +233,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
             'prvMtnOpRlz_reportNumber' => 'in',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -254,6 +262,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
             'prvMtnOpRlz_reportNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -283,6 +292,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_validate' => 'drafted',
             'prvMtnOpRlz_reportNumber' => 'three',
             'prvMtnOpRlz_comment' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ",
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -311,6 +321,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -340,6 +351,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_validate' => 'drafted',
             'prvMtnOpRlz_startDate' => Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -370,6 +382,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -400,6 +413,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -429,6 +443,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_validate' => 'drafted',
             'prvMtnOpRlz_startDate' => Carbon::now()->subDays(10)->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -459,6 +474,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subDays(10)->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -488,6 +504,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->post('/equipment/add/state/prvMtnOpRlz', [
@@ -528,6 +545,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -556,6 +574,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
             'prvMtnOpRlz_reportNumber' => 'in',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -584,6 +603,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
             'prvMtnOpRlz_reportNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -613,6 +633,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_validate' => 'to_be_validated',
             'prvMtnOpRlz_reportNumber' => 'three',
             'prvMtnOpRlz_comment' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ",
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -641,6 +662,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -670,6 +692,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_validate' => 'to_be_validated',
             'prvMtnOpRlz_startDate' => Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -700,6 +723,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -730,6 +754,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -759,6 +784,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_validate' => 'to_be_validated',
             'prvMtnOpRlz_startDate' => Carbon::now()->subDays(10)->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -789,6 +815,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subDays(10)->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
+
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -818,6 +846,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->post('/equipment/add/state/prvMtnOpRlz', [
@@ -845,6 +874,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->post('/equipment/add/state/prvMtnOpRlz', [
@@ -872,6 +902,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->post('/equipment/add/state/prvMtnOpRlz', [
@@ -899,6 +930,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->post('/equipment/add/state/prvMtnOpRlz', [
@@ -939,6 +971,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'validated',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -967,6 +1000,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_validate' => 'validated',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -989,14 +1023,15 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
     public function test_add_new_prevMaintenance_realized_as_validated_with_an_end_date_and_a_realizator()
     {
         $eq_id = $this->create_equipment('test', 'validated');
-        $user_id = $this->addUser();
         $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_validate' => 'validated',
-            'realizedBy_id' => $user_id,
+            'realizedBy_id' => User::all()->last()->id,
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1019,15 +1054,16 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
     public function test_add_new_prevMaintenance_realized_as_validated_with_a_too_short_report_number()
     {
         $eq_id = $this->create_equipment('test', 'validated');
-        $user_id = $this->addUser();
         $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_validate' => 'validated',
-            'realizedBy_id' => $user_id,
+            'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '1',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1050,15 +1086,16 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
     public function test_add_new_prevMaintenance_realized_as_validated_with_a_too_long_report_number()
     {
         $eq_id = $this->create_equipment('test', 'validated');
-        $user_id = $this->addUser();
         $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_validate' => 'validated',
-            'realizedBy_id' => $user_id,
+            'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1081,16 +1118,17 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
     public function test_add_new_prevMaintenance_realized_as_validated_with_a_too_long_comment()
     {
         $eq_id = $this->create_equipment('test', 'validated');
-        $user_id = $this->addUser();
         $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_validate' => 'validated',
-            'realizedBy_id' => $user_id,
+            'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '12345',
             'prvMtnOpRlz_comment' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1113,17 +1151,18 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
     public function test_add_new_prevMaintenance_realized_as_validated_with_correct_data_and_an_end_date_and_realizator()
     {
         $eq_id = $this->create_equipment('test', 'validated');
-        $user_id = $this->addUser();
         $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_validate' => 'validated',
-            'realizedBy_id' => $user_id,
+            'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
         ]);
-        $response->assertStatus(302);
+        $response->assertStatus(429);
         $response->assertInvalid([
             'prvMtnOpRlz_startDate' => 'You have to entered the startDate of your preventive maintenance operation realized',
         ]);

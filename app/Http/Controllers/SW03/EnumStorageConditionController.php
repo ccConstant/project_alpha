@@ -77,15 +77,21 @@ class EnumStorageConditionController extends Controller
         $enum=EnumStorageCondition::where('value', '=', $request->artFam_storageCondition)->first();
         if ($request->artFam_type=="COMP"){
             $compFam=CompFamily::findOrFail($id);
-            $enum->compFamily()->attach($compFam) ;
+            $enum->compFamily()->attach($compFam, [
+                'validate' => $request->validate,
+            ]) ;
             return response()->json($enum->id) ;
         }else if ($request->artFam_type=="RAW"){
             $rawFam=RawFamily::findOrFail($id);
-            $enum->rawFamily()->attach($rawFam) ;
+            $enum->rawFamily()->attach($rawFam, [
+                'validate' => $request->validate,
+            ]) ;
             return response()->json($enum->id) ;
         }else if ($request->artFam_type=="CONS"){
             $consFam=ConsFamily::findOrFail($id);
-            $enum->consFamily()->attach($consFam) ;
+            $enum->consFamily()->attach($consFam, [
+                'validate' => $request->validate,
+            ]) ;
             return response()->json($enum->id) ;
         }
     }
@@ -251,5 +257,21 @@ class EnumStorageConditionController extends Controller
         }
         $enum = EnumStorageCondition::all()->find($id);
         $enum->delete() ;
+    }
+
+    public function update_storageCondition_linked(Request $request, $id) {
+        $artFamily = null;
+        if ($request->artFam_type === "comp"){
+            $artFamily=CompFamily::findOrFail($request->artFam_id);
+        }else if ($request->artFam_type === "raw"){
+            $artFamily=RawFamily::findOrFail($request->artFam_id);
+        }else if ($request->artFam_type === "cons"){
+            $artFamily=ConsFamily::findOrFail($request->artFam_id);
+        }
+        $oldEnumStodConds = EnumStorageCondition::all()->where('value', '=', $request->oldValue)->first();
+        $newEnumStodConds = EnumStorageCondition::all()->where('value', '=', $request->value)->first();
+
+        $artFamily->storage_conditions()->detach($oldEnumStodConds);
+        $artFamily->storage_conditions()->attach($newEnumStodConds);
     }
 }

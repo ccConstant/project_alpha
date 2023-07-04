@@ -17,68 +17,19 @@ class RiskForTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test Conception Number: 1
-     * Saved a risk as drafted from add menu with no value
-     * Remarks: /
-     * Way Of Control: /
-     * Risk For: /
-     * Expected result: Receiving an error
-     *                                      "You must enter a value for your dimension"
-     * @return void
-     */
-    public function test_add_risk_drafted_no_values()
-    {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
-        $response = $this->post('/risk/verif', [
-            'risk_validate' => 'drafted',
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'risk_remarks' => 'You must enter a remark for your risk'
-        ]);
-    }
-
-    public function requiredForTest()
-    {
-        // Add the different enum of the risk if they didn't already exist in the database
-        if (EnumRiskFor::all()->where('value', '=', 'Risk')->count() === 0) {
-            $countDimName = EnumRiskFor::all()->count();
-            $response = $this->post('/risk/enum/riskfor/add', [
-                'value' => 'Risk',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countDimName + 1, EnumRiskFor::all());
-        }
-        if (EnumEquipmentMassUnit::all()->where('value', '=', 'g')->count() === 0) {
-            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
-            $response = $this->post('/equipment/enum/massUnit/add', [
-                'value' => 'g',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
-        }
-        if (EnumEquipmentType::all()->where('value', '=', 'Balance')->count() === 0) {
-            $countEqType = EnumEquipmentType::all()->count();
-            $response = $this->post('/equipment/enum/type/add', [
-                'value' => 'Balance',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
-        }
-        // Add the user to validate the equipment
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
             $countUser = User::all()->count();
             $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
                 'user_password' => 'VerifierVerifier',
                 'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
             $this->assertCount($countUser + 1, User::all());
+
             User::all()->last()->update([
                 'user_menuUserAcessRight' => 1,
                 'user_resetUserPasswordRight' => 1,
@@ -107,10 +58,44 @@ class RiskForTest extends TestCase
                 'user_makeMmeRespValidationRight' => 1,
             ]);
         }
+        return User::all()->last()->id;
+    }
+
+    public function requiredForTest()
+    {
+        $user_id = $this->create_user('test');
+        // Add the different enum of the risk if they didn't already exist in the database
+        if (EnumRiskFor::all()->where('value', '=', 'Risk')->count() === 0) {
+            $countDimName = EnumRiskFor::all()->count();
+            $response = $this->post('/risk/enum/riskfor/add', [
+                'value' => 'Risk',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countDimName + 1, EnumRiskFor::all());
+        }
+        if (EnumEquipmentMassUnit::all()->where('value', '=', 'g')->count() === 0) {
+            $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
+            $response = $this->post('/equipment/enum/massUnit/add', [
+                'value' => 'g',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqMassUnit + 1, EnumEquipmentMassUnit::all());
+        }
+        if (EnumEquipmentType::all()->where('value', '=', 'Balance')->count() === 0) {
+            $countEqType = EnumEquipmentType::all()->count();
+            $response = $this->post('/equipment/enum/type/add', [
+                'value' => 'Balance',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEqType + 1, EnumEquipmentType::all());
+        }
+        return $user_id;
     }
 
     public function add_eq($name, $validate)
     {
+        $user_id = $this->requiredForTest();
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => $validate,
             'eq_internalReference' => $name,
@@ -123,7 +108,8 @@ class RiskForTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => 'Balance',
-            'eq_massUnit' => 'g'
+            'eq_massUnit' => 'g',
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -162,6 +148,29 @@ class RiskForTest extends TestCase
     }
 
     /**
+     * Test Conception Number: 1
+     * Saved a risk as drafted from add menu with no value
+     * Remarks: /
+     * Way Of Control: /
+     * Risk For: /
+     * Expected result: Receiving an error
+     *                                      "You must enter a value for your dimension"
+     * @return void
+     */
+    public function test_add_risk_drafted_no_values()
+    {
+        $user_id = $this->requiredForTest();
+        $response = $this->post('/risk/verif', [
+            'risk_validate' => 'drafted',
+            'user_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'risk_remarks' => 'You must enter a remark for your risk'
+        ]);
+    }
+
+    /**
      * Test Conception Number: 2
      * Saved a risk as drafted from add menu with too short remarks
      * Remarks: "in"
@@ -173,11 +182,11 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_drafted_too_short_remarks()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'drafted',
-            'risk_remarks' => 'in'
+            'risk_remarks' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -197,11 +206,11 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_drafted_too_long_remarks()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'drafted',
-            'risk_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'risk_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -221,12 +230,12 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_drafted_too_long_wayOfControl()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'drafted',
             'risk_remarks' => 'Remarks',
-            'risk_wayOfControl' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'risk_wayOfControl' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -245,12 +254,13 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_drafted_correct_values()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'drafted');
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'drafted',
             'risk_remarks' => 'Remarks',
-            'risk_wayOfControl' => 'Control'
+            'risk_wayOfControl' => 'Control',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -280,10 +290,10 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_to_be_validated_no_values()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'to_be_validated',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -303,11 +313,11 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_to_be_validated_too_short_remarks()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'to_be_validated',
-            'risk_remarks' => 'in'
+            'risk_remarks' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -327,11 +337,11 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_to_be_validated_too_long_remarks()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'to_be_validated',
-            'risk_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'risk_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -351,12 +361,12 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_to_be_validated_too_long_wayOfControl()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'to_be_validated',
             'risk_remarks' => 'Remarks',
-            'risk_wayOfControl' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'risk_wayOfControl' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -375,12 +385,13 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_to_be_validated_correct_values()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'drafted');
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'to_be_validated',
             'risk_remarks' => 'Remarks',
-            'risk_wayOfControl' => 'Control'
+            'risk_wayOfControl' => 'Control',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -411,10 +422,10 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_no_values()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
-            'risk_validate' => 'validated'
+            'risk_validate' => 'validated',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -436,11 +447,11 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_too_short_remarks()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
-            'risk_remarks' => 'in'
+            'risk_remarks' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -462,11 +473,11 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_too_long_remarks()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -487,12 +498,12 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_too_short_wayOfControl()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
-            'risk_wayOfControl' => 'in'
+            'risk_wayOfControl' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -512,12 +523,12 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_too_long_wayOfControl()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
-            'risk_wayOfControl' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'risk_wayOfControl' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -537,12 +548,12 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_no_riskFor()
     {
-        $this->requiredForTest();
-        $eq_id = $this->add_eq('Test', 'drafted');
+        $user_id = $this->requiredForTest();
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
-            'risk_wayOfControl' => 'three'
+            'risk_wayOfControl' => 'three',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -561,13 +572,14 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_correct_values()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'drafted');
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -598,30 +610,31 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_validated_correct_values_signed()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => $eq_id,
             'eqTemp_version' => 1,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'qualityVerifier_id' => $user_id,
+            'technicalVerifier_id' => $user_id,
         ]);
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -658,13 +671,14 @@ class RiskForTest extends TestCase
      */
     public function test_update_risk_correct_values()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'drafted');
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -710,13 +724,14 @@ class RiskForTest extends TestCase
      */
     public function test_update_risk_correct_values_signed()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -736,13 +751,13 @@ class RiskForTest extends TestCase
         ]);
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/update/risk/' . Risk::all()->last()->id, [
@@ -779,7 +794,7 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_correct_values_preventive_maintenance_drafted()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -790,6 +805,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -815,7 +831,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'drafted',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [
@@ -847,7 +864,7 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_correct_values_preventive_maintenance_to_be_validated()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -858,6 +875,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -883,7 +901,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'to_be_validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [
@@ -915,7 +934,7 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_correct_values_preventive_maintenance_validated()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -926,6 +945,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -951,7 +971,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [
@@ -983,7 +1004,7 @@ class RiskForTest extends TestCase
      */
     public function test_add_risk_correct_values_preventive_maintenance_signed()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -994,6 +1015,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -1017,13 +1039,13 @@ class RiskForTest extends TestCase
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
@@ -1031,7 +1053,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [
@@ -1069,7 +1092,7 @@ class RiskForTest extends TestCase
      */
     public function test_update_risk_preventive_maintenance()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'drafted');
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -1080,6 +1103,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -1105,7 +1129,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [
@@ -1153,7 +1178,7 @@ class RiskForTest extends TestCase
      */
     public function test_update_risk_preventive_maintenance_signed()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/prvMtnOp/verif', [
@@ -1164,6 +1189,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -1189,7 +1215,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [
@@ -1210,13 +1237,13 @@ class RiskForTest extends TestCase
         ]);
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/update/prvMtnOp/risk/' . Risk::all()->last()->id, [
@@ -1251,14 +1278,15 @@ class RiskForTest extends TestCase
      */
     public function test_delete_risk_equipment()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -1266,7 +1294,7 @@ class RiskForTest extends TestCase
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
             'risk_for' => 'Risk',
-            'eq_id' => $eq_id
+            'eq_id' => $eq_id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('risks', [
@@ -1277,7 +1305,8 @@ class RiskForTest extends TestCase
             'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', $eq_id)->last()->id
         ]);
         $response = $this->post('/equipment/delete/risk/' . Risk::all()->last()->id, [
-            'eq_id' => $eq_id
+            'eq_id' => $eq_id,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseMissing('risks', [
@@ -1297,14 +1326,15 @@ class RiskForTest extends TestCase
      */
     public function test_delete_risk_equipment_signed()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -1325,18 +1355,19 @@ class RiskForTest extends TestCase
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/delete/risk/' . Risk::all()->last()->id, [
-            'eq_id' => $eq_id
+            'eq_id' => $eq_id,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseMissing('risks', [
@@ -1356,14 +1387,15 @@ class RiskForTest extends TestCase
      */
     public function test_send_risk_equipment()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/risk/verif', [
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/risk', [
@@ -1394,7 +1426,7 @@ class RiskForTest extends TestCase
      */
     public function test_send_risk_preventive()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -1405,6 +1437,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('preventive_maintenance_operations', [
@@ -1420,7 +1453,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [
@@ -1453,7 +1487,7 @@ class RiskForTest extends TestCase
      */
     public function test_send_risk_preventive_pdf()
     {
-        $this->requiredForTest();
+        $user_id = $this->requiredForTest();
         $eq_id = $this->add_eq('Test', 'validated');
 
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -1464,6 +1498,7 @@ class RiskForTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('preventive_maintenance_operations', [
@@ -1479,7 +1514,8 @@ class RiskForTest extends TestCase
             'risk_validate' => 'validated',
             'risk_remarks' => 'three',
             'risk_wayOfControl' => 'three',
-            'risk_for' => 'Risk'
+            'risk_for' => 'Risk',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp/risk', [

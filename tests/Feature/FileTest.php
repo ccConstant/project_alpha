@@ -25,6 +25,50 @@ class FileTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
+    }
+
     /**
      * Test Conception Number: 1
      * Saved a file as drafted from add menu with no values
@@ -36,8 +80,11 @@ class FileTest extends TestCase
      */
     public function test_add_file_drafted_no_value()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
-            'file_validate' => 'drafted'
+            'file_validate' => 'drafted',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -56,9 +103,12 @@ class FileTest extends TestCase
      */
     public function test_add_file_drafted_too_short_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
             'file_validate' => 'drafted',
-            'file_name' => 'in'
+            'file_name' => 'in',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -77,9 +127,12 @@ class FileTest extends TestCase
      */
     public function test_add_file_drafted_too_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
             'file_validate' => 'drafted',
-            'file_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'file_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -98,8 +151,11 @@ class FileTest extends TestCase
      */
     public function test_add_file_to_be_validated_no_value()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
-            'file_validate' => 'to_be_validated'
+            'file_validate' => 'to_be_validated',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -118,9 +174,12 @@ class FileTest extends TestCase
      */
     public function test_add_file_to_be_validated_too_short_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
             'file_validate' => 'to_be_validated',
-            'file_name' => 'in'
+            'file_name' => 'in',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -139,9 +198,12 @@ class FileTest extends TestCase
      */
     public function test_add_file_to_be_validated_too_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
             'file_validate' => 'to_be_validated',
-            'file_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'file_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -161,8 +223,11 @@ class FileTest extends TestCase
      */
     public function test_add_file_validated_no_value()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
-            'file_validate' => 'validated'
+            'file_validate' => 'validated',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -183,9 +248,12 @@ class FileTest extends TestCase
      */
     public function test_add_file_validated_too_short_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
-            'file_name' => 'in'
+            'file_name' => 'in',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -206,9 +274,12 @@ class FileTest extends TestCase
      */
     public function test_add_file_validated_too_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
-            'file_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'file_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -228,10 +299,13 @@ class FileTest extends TestCase
      */
     public function test_add_file_validated_too_short_location()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => 'in'
+            'file_location' => 'in',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -253,14 +327,16 @@ class FileTest extends TestCase
         // Add a file to the equipment
         $response = $this->post('file/verif', [
             'file_validate' => 'drafted',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
         $this->post('/equipment/add/file/', [
             'file_validate' => 'drafted',
             'eq_id' => $equipment->id,
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countFile + 1, File::all()->count());
@@ -273,6 +349,8 @@ class FileTest extends TestCase
 
     public function make_an_equipment($name, $validate)
     {
+        $user_id = $this->create_user('test');
+
         if ($validate != "validated") {
             $countEquipment = Equipment::all()->count();
             $response = $this->post('equipment/verif', [
@@ -280,6 +358,7 @@ class FileTest extends TestCase
                 'eq_internalReference' => $name,
                 'eq_externalReference' => $name,
                 'eq_location' => $name,
+                'createdBy_id' => $user_id
             ]);
             $response->assertStatus(200);
             $response->assertSessionHasNoErrors();
@@ -344,6 +423,7 @@ class FileTest extends TestCase
             'eq_mobility' => true,
             'eq_type' => 'internal',
             'eq_location' => $name,
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -404,7 +484,8 @@ class FileTest extends TestCase
         // Add a file to the mme
         $response = $this->post('file/verif', [
             'file_validate' => 'drafted',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -424,12 +505,14 @@ class FileTest extends TestCase
 
     public function make_a_mme($name, $validate)
     {
+        $user_id = $this->create_user('test');
         if ($validate != "validated") {
             $countMme = Mme::all()->count();
             $response = $this->post('mme/verif', [
                 'mme_validate' => $validate,
                 'mme_internalReference' => $name,
-                'mme_externalReference' => $name
+                'mme_externalReference' => $name,
+                'createdBy_id' => $user_id,
             ]);
             $response->assertStatus(200);
             $response->assertSessionHasNoErrors();
@@ -453,6 +536,7 @@ class FileTest extends TestCase
             'mme_remarks' => $name,
             'mme_set' => $name,
             'mme_location' => $name,
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -487,7 +571,8 @@ class FileTest extends TestCase
         // Add a file to the equipment
         $response = $this->post('file/verif', [
             'file_validate' => 'to_be_validated',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -519,7 +604,8 @@ class FileTest extends TestCase
         // Add a file to the mme
         $response = $this->post('file/verif', [
             'file_validate' => 'to_be_validated',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -544,7 +630,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => 'FilePath'
+            'file_location' => 'FilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -579,7 +666,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => 'FilePath'
+            'file_location' => 'FilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -615,7 +703,8 @@ class FileTest extends TestCase
         // Add a file to the equipment
         $response = $this->post('file/verif', [
             'file_validate' => 'drafted',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -648,61 +737,19 @@ class FileTest extends TestCase
 
     public function make_an_eq_verif($eq_id)
     {
-        $user = $this->make_a_user();
+        $user = $this->create_user('test');
         $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'technical',
-            'enteredBy_id' => $user->id,
+            'enteredBy_id' => $user,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'quality',
-            'enteredBy_id' => $user->id,
+            'enteredBy_id' => $user,
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($user->id, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->qualityVerifier_id);
-        $this->assertEquals($user->id, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->technicalVerifier_id);
-    }
-
-    public function make_a_user()
-    {
-        $countUser = User::all()->count();
-        $response = $this->post('register', [
-            'user_firstName' => 'VerifierVerifier',
-            'user_lastName' => 'VerifierVerifier',
-            'user_pseudo' => 'VerifierVerifier',
-            'user_password' => 'VerifierVerifier',
-            'user_confirmation_password' => 'VerifierVerifier',
-        ]);
-        $response->assertStatus(200);
-        $this->assertEquals($countUser + 1, User::all()->count());
-        return User::all()->where('user_pseudo', '==', 'VerifierVerifier')->first();
-        User::all()->last()->update([
-            'user_menuUserAcessRight' => 1,
-            'user_resetUserPasswordRight' => 1,
-            'user_updateDataInDraftRight' => 1,
-            'user_validateDescriptiveLifeSheetDataRight' => 1,
-            'user_validateOtherDataRight' => 1,
-            'user_updateDataValidatedButNotSignedRight' => 1,
-            'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-            'user_makeQualityValidationRight' => 1,
-            'user_makeTechnicalValidationRight' => 1,
-            'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-            'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-            'user_deleteEqOrMmeRight' => 1,
-            'user_makeReformRight' => 1,
-            'user_declareNewStateRight' => 1,
-            'user_updateEnumRight' => 1,
-            'user_deleteEnumRight' => 1,
-            'user_addEnumRight' => 1,
-            'user_updateInformationRight' => 1,
-            'user_makeEqOpValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-            'user_makeEqRespValidationRight' => 1,
-            'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-            'user_makeMmeOpValidationRight' => 1,
-            'user_makeMmeRespValidationRight' => 1,
-        ]);
+        $this->assertEquals($user, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->qualityVerifier_id);
+        $this->assertEquals($user, EquipmentTemp::all()->where('equipment_id', '==', $eq_id)->last()->technicalVerifier_id);
     }
 
     /**
@@ -721,7 +768,8 @@ class FileTest extends TestCase
         // Add a file to the equipment
         $response = $this->post('file/verif', [
             'file_validate' => 'drafted',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -745,19 +793,19 @@ class FileTest extends TestCase
 
     public function make_a_mme_verif($mme_id)
     {
-        $user = $this->make_a_user();
+        $user = $this->create_user('test');
         $response = $this->post('/mme/validation/' . $mme_id, [
             'reason' => 'technical',
-            'enteredBy_id' => $user->id,
+            'enteredBy_id' => $user,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/mme/validation/' . $mme_id, [
             'reason' => 'quality',
-            'enteredBy_id' => $user->id,
+            'enteredBy_id' => $user,
         ]);
         $response->assertStatus(200);
-        $this->assertEquals($user->id, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->qualityVerifier_id);
-        $this->assertEquals($user->id, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->technicalVerifier_id);
+        $this->assertEquals($user, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->qualityVerifier_id);
+        $this->assertEquals($user, MmeTemp::all()->where('mme_id', '==', $mme_id)->last()->technicalVerifier_id);
     }
 
     /**
@@ -776,7 +824,8 @@ class FileTest extends TestCase
         // Add a file to the equipment
         $response = $this->post('file/verif', [
             'file_validate' => 'to_be_validated',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -814,7 +863,8 @@ class FileTest extends TestCase
         // Add a file to the equipment
         $response = $this->post('file/verif', [
             'file_validate' => 'to_be_validated',
-            'file_name' => 'File'
+            'file_name' => 'File',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -853,7 +903,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => "FilePath"
+            'file_location' => 'FilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -894,7 +945,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => "FilePath"
+            'file_location' => 'FilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -932,7 +984,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
@@ -959,7 +1012,8 @@ class FileTest extends TestCase
             $response = $this->post('file/verif', [
                 'file_validate' => 'validated',
                 'file_name' => 'File',
-                'file_location' => 'FilePath'
+                'file_location' => 'FilePath',
+                'user_id' => User::all()->last()->id,
             ]);
             $response->assertStatus(200);
             $countFile = File::all()->count();
@@ -984,7 +1038,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => 'FilePath'
+            'file_location' => 'FilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -1020,7 +1075,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('mmeTemp_id', '==', $Mme->id)->last();
@@ -1047,7 +1103,8 @@ class FileTest extends TestCase
             $response = $this->post('file/verif', [
                 'file_validate' => 'validated',
                 'file_name' => 'File',
-                'file_location' => "FilePath"
+                'file_location' => 'FilePath',
+                'user_id' => User::all()->last()->id,
             ]);
             $response->assertStatus(200);
             $countFile = File::all()->count();
@@ -1072,7 +1129,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'File',
-            'file_location' => "FilePath"
+            'file_location' => 'FilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $countFile = File::all()->count();
@@ -1108,7 +1166,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
@@ -1141,7 +1200,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('mmeTemp_id', '==', $Mme->id)->last();
@@ -1174,7 +1234,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
@@ -1207,7 +1268,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('mmeTemp_id', '==', $Mme->id)->last();
@@ -1240,7 +1302,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
@@ -1280,7 +1343,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('mmeTemp_id', '==', $Mme->id)->last();
@@ -1319,7 +1383,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
@@ -1359,7 +1424,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('mmeTemp_id', '==', $Mme->id)->last();
@@ -1398,7 +1464,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('equipmentTemp_id', '==', EquipmentTemp::all()->where('equipment_id', '=', $equipment->id)->last()->id)->last();
@@ -1438,7 +1505,8 @@ class FileTest extends TestCase
         $response = $this->post('file/verif', [
             'file_validate' => 'validated',
             'file_name' => 'NewFile',
-            'file_location' => "NewFilePath"
+            'file_location' => 'NewFilePath',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $file = File::all()->where('mmeTemp_id', '==', $Mme->id)->last();
@@ -1512,9 +1580,11 @@ class FileTest extends TestCase
         $equipment = $this->make_an_eq_with_file('delDrEqTest', 'drafted');
         $lastEquipmentTemps = EquipmentTemp::all()->where('equipment_id', '==', $equipment->id)->last()->id;
         $fileID = File::all()->where('equipmentTemp_id', '==', $lastEquipmentTemps)->first()->id;
-        $this->post('/equipment/delete/file/' . $fileID, [
-            'eq_id' => $equipment->id
+        $response = $this->post('/equipment/delete/file/' . $fileID, [
+            'eq_id' => $equipment->id,
+            'user_id' => User::all()->last()->id,
         ]);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('files', [
             'id' => $fileID,
             'equipmentTemp_id' => $lastEquipmentTemps
@@ -1532,9 +1602,11 @@ class FileTest extends TestCase
         $Mme = $this->make_a_mme_with_file('delDrMmeTest', 'drafted');
         $lastMmeTemps = MmeTemp::all()->where('mme_id', '==', $Mme->id)->last()->id;
         $fileID = File::all()->where('mmeTemp_id', '==', $lastMmeTemps)->first()->id;
-        $this->post('/mme/delete/file/' . $fileID, [
-            'mme_id' => $Mme->id
+        $response = $this->post('/mme/delete/file/' . $fileID, [
+            'mme_id' => $Mme->id,
+            'user_id' => User::all()->last()->id,
         ]);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('files', [
             'id' => $fileID,
             'mmeTemp_id' => $lastMmeTemps
@@ -1552,9 +1624,11 @@ class FileTest extends TestCase
         $equipment = $this->make_an_eq_with_file('delValEqTest', 'validated');
         $lastEquipmentTemps = EquipmentTemp::all()->where('equipment_id', '==', $equipment->id)->last()->id;
         $fileID = File::all()->where('equipmentTemp_id', '==', $lastEquipmentTemps)->first()->id;
-        $this->post('/equipment/delete/file/' . $fileID, [
-            'eq_id' => $equipment->id
+        $response = $this->post('/equipment/delete/file/' . $fileID, [
+            'eq_id' => $equipment->id,
+            'user_id' => User::all()->last()->id,
         ]);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('files', [
             'id' => $fileID,
             'equipmentTemp_id' => $lastEquipmentTemps
@@ -1577,9 +1651,11 @@ class FileTest extends TestCase
         $Mme = $this->make_a_mme_with_file('delValMmeTest', 'validated');
         $lastMmeTemps = MmeTemp::all()->where('mme_id', '==', $Mme->id)->last()->id;
         $fileID = File::all()->where('mmeTemp_id', '==', $lastMmeTemps)->first()->id;
-        $this->post('/mme/delete/file/' . $fileID, [
-            'mme_id' => $Mme->id
+        $response = $this->post('/mme/delete/file/' . $fileID, [
+            'mme_id' => $Mme->id,
+            'user_id' => User::all()->last()->id,
         ]);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('files', [
             'id' => $fileID,
             'mmeTemp_id' => $lastMmeTemps

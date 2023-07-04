@@ -16,129 +16,54 @@ class PreventiveMaintenanceOperationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test Conception Number: 1
-     * Add new preventive maintenance as drafted with no values
-     * Description: /
-     * Protocol: /
-     * Periodicity: /
-     * Symbol Periodicity: /
-     * Expected Result: Receiving an error:
-     *                                      "You must enter a description for your preventive maintenance operation"
-     * @returns void
-     */
-    public function test_add_preventive_maintenance_drafted_no_values()
-    {
-        $response = $this->post('/prvMtnOp/verif', [
-            'prvMtnOp_validate' => 'drafted',
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'prvMtnOp_description' => 'You must enter a description for your preventive maintenance operation',
-        ]);
-    }
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
 
-    /**
-     * Test Conception Number: 2
-     * Add new preventive maintenance as drafted with too short description
-     * Description: "in"
-     * Protocol: /
-     * Periodicity: /
-     * Symbol Periodicity: /
-     * Expected Result: Receiving an error:
-     *                                      "You must enter at least three characters"
-     * @returns void
-     */
-    public function test_add_preventive_maintenance_drafted_too_short_desc()
-    {
-        $response = $this->post('/prvMtnOp/verif', [
-            'prvMtnOp_validate' => 'drafted',
-            'prvMtnOp_description' => 'in',
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'prvMtnOp_description' => 'You must enter at least three characters',
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 3
-     * Add new preventive maintenance as drafted with too long description
-     * Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
-     * Protocol: /
-     * Periodicity: /
-     * Symbol Periodicity: /
-     * Expected Result: Receiving an error:
-     *                                      "You must enter a maximum of 255 characters"
-     * @returns void
-     */
-    public function test_add_preventive_maintenance_drafted_too_long_desc()
-    {
-        $response = $this->post('/prvMtnOp/verif', [
-            'prvMtnOp_validate' => 'drafted',
-            'prvMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'prvMtnOp_description' => 'You must enter a maximum of 255 characters',
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 4
-     * Add new preventive maintenance as drafted with too long periodicty
-     * Description: "three"
-     * Protocol: /
-     * Periodicity: 12345
-     * Symbol Periodicity: /
-     * Expected Result: Receiving an error:
-     *                                      "You must enter a maximum of 4 characters"
-     * @returns void
-     */
-    public function test_add_preventive_maintenance_drafted_too_long_period()
-    {
-        $response = $this->post('/prvMtnOp/verif', [
-            'prvMtnOp_validate' => 'drafted',
-            'prvMtnOp_description' => 'three',
-            'prvMtnOp_periodicity' => 12345,
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'prvMtnOp_periodicity' => 'You must enter a maximum of 4 characters',
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 5
-     * Add new preventive maintenance as drafted with correct values
-     * Description: "three"
-     * Protocol: /
-     * Periodicity: /
-     * Symbol Periodicity: /
-     * Expected Result: The preventive maintenance is added to the database
-     * @returns void
-     */
-    public function test_add_preventive_maintenance_drafted_correct_values()
-    {
-        $this->create_equipment("three");
-        $response = $this->post('/prvMtnOp/verif', [
-            'prvMtnOp_validate' => 'drafted',
-            'prvMtnOp_description' => 'three',
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/equipment/add/prvMtnOp', [
-            'prvMtnOp_validate' => 'drafted',
-            'eq_id' => Equipment::all()->last()->id,
-            'prvMtnOp_description' => 'three',
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('preventive_maintenance_operations', [
-            'prvMtnOp_description' => 'three',
-        ]);
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
     }
 
     public function create_equipment($name, $validated = 'drafted')
     {
+        $user_id = $this->create_user('test');
+
         if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
             $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
             $response = $this->post('/equipment/enum/massUnit/add', [
@@ -167,7 +92,8 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => $name,
-            'eq_massUnit' => $name
+            'eq_massUnit' => $name,
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -206,6 +132,140 @@ class PreventiveMaintenanceOperationTest extends TestCase
     }
 
     /**
+     * Test Conception Number: 1
+     * Add new preventive maintenance as drafted with no values
+     * Description: /
+     * Protocol: /
+     * Periodicity: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a description for your preventive maintenance operation"
+     * @returns void
+     */
+    public function test_add_preventive_maintenance_drafted_no_values()
+    {
+        $user_id = $this->create_user('test');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'drafted',
+            'user_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOp_description' => 'You must enter a description for your preventive maintenance operation',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 2
+     * Add new preventive maintenance as drafted with too short description
+     * Description: "in"
+     * Protocol: /
+     * Periodicity: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter at least three characters"
+     * @returns void
+     */
+    public function test_add_preventive_maintenance_drafted_too_short_desc()
+    {
+        $user_id = $this->create_user('test');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'drafted',
+            'prvMtnOp_description' => 'in',
+            'user_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOp_description' => 'You must enter at least three characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 3
+     * Add new preventive maintenance as drafted with too long description
+     * Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
+     * Protocol: /
+     * Periodicity: /
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 255 characters"
+     * @returns void
+     */
+    public function test_add_preventive_maintenance_drafted_too_long_desc()
+    {
+        $user_id = $this->create_user('test');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'drafted',
+            'prvMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOp_description' => 'You must enter a maximum of 255 characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 4
+     * Add new preventive maintenance as drafted with too long periodicty
+     * Description: "three"
+     * Protocol: /
+     * Periodicity: 12345
+     * Symbol Periodicity: /
+     * Expected Result: Receiving an error:
+     *                                      "You must enter a maximum of 4 characters"
+     * @returns void
+     */
+    public function test_add_preventive_maintenance_drafted_too_long_period()
+    {
+        $user_id = $this->create_user('test');
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'drafted',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_periodicity' => 12345,
+            'user_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'prvMtnOp_periodicity' => 'You must enter a maximum of 4 characters',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 5
+     * Add new preventive maintenance as drafted with correct values
+     * Description: "three"
+     * Protocol: /
+     * Periodicity: /
+     * Symbol Periodicity: /
+     * Expected Result: The preventive maintenance is added to the database
+     * @returns void
+     */
+    public function test_add_preventive_maintenance_drafted_correct_values()
+    {
+        $this->create_equipment("three");
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'drafted',
+            'prvMtnOp_description' => 'three',
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/prvMtnOp', [
+            'prvMtnOp_validate' => 'drafted',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operations', [
+            'prvMtnOp_description' => 'three',
+        ]);
+    }
+
+    /**
      * Test Conception Number: 6
      * Add new preventive maintenance as to be validated with no values
      * Description: /
@@ -218,9 +278,12 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_to_be_validated_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'to_be_validated',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -241,10 +304,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_to_be_validated_too_short_desc()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'to_be_validated',
             'prvMtnOp_description' => 'in',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -265,10 +331,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_to_be_validated_too_long_desc()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'to_be_validated',
             'prvMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -289,11 +358,14 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_to_be_validated_too_long_periodicity()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'to_be_validated',
             'prvMtnOp_description' => 'three',
             'prvMtnOp_periodicity' => 12345,
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -317,6 +389,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'to_be_validated',
             'prvMtnOp_description' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -344,9 +417,12 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_validated_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -369,10 +445,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_validated_too_short_desc()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'in',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -395,10 +474,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_validated_too_long_desc()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -420,11 +502,14 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_validated_too_short_protocol()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'in',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -445,11 +530,14 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_validated_too_long_protocol()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -470,12 +558,15 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_preventive_maintenance_validated_too_long_periodicity()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'three',
             'prvMtnOp_periodicity' => 12345,
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -501,6 +592,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'three',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -535,9 +627,12 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_redundant_preventive_maintenance_validated_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -564,10 +659,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_redundant_preventive_maintenance_validated_too_short_desc()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'in',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -594,10 +692,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_redundant_preventive_maintenance_validated_too_long_desc()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -623,11 +724,14 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_redundant_preventive_maintenance_validated_too_short_protocol()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'in',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -651,12 +755,15 @@ class PreventiveMaintenanceOperationTest extends TestCase
      */
     public function test_add_redundant_preventive_maintenance_validated_too_long_periodicity()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'three',
             'prvMtnOp_periodicity' => 12345,
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -686,6 +793,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 72,
             'prvMtnOp_symbolPeriodicity' => 'H',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -715,6 +823,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 7,
             'prvMtnOp_symbolPeriodicity' => 'D',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -744,6 +853,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -773,6 +883,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'Y',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -816,6 +927,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 5999,
             'prvMtnOp_symbolPeriodicity' => 'D',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -843,6 +955,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 199,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -870,6 +983,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 20,
             'prvMtnOp_symbolPeriodicity' => 'Y',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -891,27 +1005,15 @@ class PreventiveMaintenanceOperationTest extends TestCase
     {
         $this->create_equipment("three", 'validated');
 
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -923,6 +1025,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -963,6 +1066,17 @@ class PreventiveMaintenanceOperationTest extends TestCase
     public function test_update_preventive_maintenance_validated()
     {
         $this->create_equipment("three");
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
@@ -1072,6 +1186,17 @@ class PreventiveMaintenanceOperationTest extends TestCase
     {
         $this->create_equipment("three", 'validated');
 
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
@@ -1091,27 +1216,15 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_symbolPeriodicity' => 'M',
         ]);
 
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/update/prvMtnOp/' . PreventiveMaintenanceOperation::all()->last()->id, [
@@ -1148,6 +1261,18 @@ class PreventiveMaintenanceOperationTest extends TestCase
     public function test_delete_preventive_maintenance_validated()
     {
         $this->create_equipment("three");
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
@@ -1168,6 +1293,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
         ]);
         $response = $this->post('/equipment/delete/prvMtnOp/' . PreventiveMaintenanceOperation::all()->last()->id, [
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
     }
@@ -1182,6 +1308,17 @@ class PreventiveMaintenanceOperationTest extends TestCase
     {
         $this->create_equipment("three", 'validated');
 
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
@@ -1201,31 +1338,20 @@ class PreventiveMaintenanceOperationTest extends TestCase
             'prvMtnOp_symbolPeriodicity' => 'M',
         ]);
 
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/delete/prvMtnOp/' . PreventiveMaintenanceOperation::all()->last()->id, [
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('equipment_temps', [
@@ -1244,6 +1370,18 @@ class PreventiveMaintenanceOperationTest extends TestCase
     public function test_delete_first_preventive_maintenance()
     {
         $this->create_equipment("three");
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
@@ -1285,6 +1423,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $id = PreventiveMaintenanceOperation::all()->where('equipmentTemp_id', '=', EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last()->id)->where('prvMtnOp_number', '=', 1)->last()->id;
         $response = $this->post('/equipment/delete/prvMtnOp/' . $id, [
             'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('preventive_maintenance_operations', [
@@ -1307,6 +1446,19 @@ class PreventiveMaintenanceOperationTest extends TestCase
     public function test_send_preventive_maintenance_operations_life_sheet()
     {
         $this->create_equipment("three");
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_puttingIntoService' => true,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
@@ -1389,6 +1541,19 @@ class PreventiveMaintenanceOperationTest extends TestCase
     public function test_send_preventive_maintenance_operations_by_equipment_id()
     {
         $this->create_equipment("three");
+
+        $response = $this->post('/prvMtnOp/verif', [
+            'prvMtnOp_validate' => 'validated',
+            'eq_id' => Equipment::all()->last()->id,
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
+            'prvMtnOp_periodicity' => 1,
+            'prvMtnOp_symbolPeriodicity' => 'M',
+            'prvMtnOp_preventiveOperation' => true,
+            'prvMtnOp_puttingIntoService' => true,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
@@ -1579,6 +1744,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $date = Carbon::create(PreventiveMaintenanceOperation::all()->last()->prvMtnOp_startDate)->subDays(1)->format('Y-m-d H:i:s');
         $response = $this->post('/equipment/reform/prvMtnOp/' . PreventiveMaintenanceOperation::all()->last()->id, [
             'prvMtnOp_reformDate' => $date,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1624,6 +1790,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $date = Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s');
         $response = $this->post('/equipment/reform/prvMtnOp/' . PreventiveMaintenanceOperation::all()->last()->id, [
             'prvMtnOp_reformDate' => $date,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1679,6 +1846,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $date = Carbon::now()->format('Y-m-d');
         $response = $this->post('/equipment/reform/prvMtnOp/' . PreventiveMaintenanceOperation::all()->last()->id, [
             'prvMtnOp_reformDate' => $date,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('preventive_maintenance_operations', [

@@ -237,8 +237,8 @@ class EquipmentController extends Controller{
         }
 
         if ($request->reason=="update"){
-            $equipment= Equipment::findOrFail($request->eq_id) ;
-            if (!$user->user_updateDataInDraftRight && ($equipment->eq_validate=="drafted" || $equipment->eq_validate=="to_be_validated")){
+            $equipment= EquipmentTemp::all()->where('equipment_id', '=', $request->eq_id)->last();
+            if (!$user->user_updateDataInDraftRight && ($equipment->eqTemp_validate=="drafted" || $equipment->eqTemp_validate=="to_be_validated")){
                 return response()->json([
                     'errors' => [
                         'eq_internalReference' => ["You don't have the user right to update an equipment ID save as drafted or in to be validated"]
@@ -246,7 +246,7 @@ class EquipmentController extends Controller{
                 ], 429);
             }
 
-            if (!$user->user_updateDataValidatedButNotSignedRight && $equipment->eq_validate=="validated"){
+            if (!$user->user_updateDataValidatedButNotSignedRight && $equipment->eqTemp_validate=="validated"){
                 return response()->json([
                     'errors' => [
                         'eq_internalReference' => ["You don't have the user right to update an equipment ID save as validated"]

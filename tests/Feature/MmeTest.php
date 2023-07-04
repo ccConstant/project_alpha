@@ -18,6 +18,50 @@ class MmeTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
+    }
+
     /**
      * Test Conception Number: 1
      * Add new mme as drafted with no values
@@ -37,8 +81,11 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
-            'mme_validate' => 'drafted'
+            'mme_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -66,9 +113,12 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_short_intern_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
-            'mme_internalReference' => 'in'
+            'mme_internalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -96,9 +146,12 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_long_intern_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
-            'mme_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -126,10 +179,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
-            'mme_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.'
+            'mme_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -156,10 +212,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_short_alpha_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'in'
+            'mme_externalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -185,10 +244,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_long_alpha_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.'
+            'mme_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -214,11 +276,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_long_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -244,11 +309,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_long_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -274,11 +342,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_long_set()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -303,10 +374,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_drafted_success()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'drafted',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'three'
+            'mme_externalReference' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $this->post('/mme/add', [
@@ -338,8 +412,11 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
-            'mme_validate' => 'to_be_validated'
+            'mme_validate' => 'to_be_validated',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -367,9 +444,12 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_short_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
-            'mme_internalReference' => 'in'
+            'mme_internalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -397,9 +477,12 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_long_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
-            'mme_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -427,10 +510,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
             'mme_internalReference' => 'three',
-            'mme_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.'
+            'mme_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -457,10 +543,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_short_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'in'
+            'mme_externalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -486,10 +575,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_long_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. '
+            'mme_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -515,11 +607,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_long_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -545,11 +640,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_long_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -575,11 +673,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_long_set()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -604,10 +705,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_to_be_validated_success()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'to_be_validated',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'three'
+            'mme_externalReference' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/mme/add', [
@@ -646,8 +750,11 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
-            'mme_validate' => 'validated'
+            'mme_validate' => 'validated',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -687,9 +794,12 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_short_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
-            'mme_internalReference' => 'in'
+            'mme_internalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -729,9 +839,12 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
-            'mme_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -770,10 +883,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_short_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'in'
+            'mme_externalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -811,10 +927,13 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
-            'mme_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -851,11 +970,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_short_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_name' => 'in'
+            'mme_name' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -891,11 +1013,14 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
-            'mme_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -930,12 +1055,15 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_short_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
             'mme_name' => 'three',
-            'mme_serialNumber' => 'in'
+            'mme_serialNumber' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -969,12 +1097,15 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
             'mme_name' => 'three',
-            'mme_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1007,13 +1138,16 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_short_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
             'mme_name' => 'three',
             'mme_serialNumber' => 'three',
-            'mme_constructor' => 'in'
+            'mme_constructor' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1045,13 +1179,16 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
             'mme_externalReference' => 'three',
             'mme_name' => 'three',
             'mme_serialNumber' => 'three',
-            'mme_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1082,6 +1219,8 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_short_remark()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
@@ -1089,7 +1228,8 @@ class MmeTest extends TestCase
             'mme_name' => 'three',
             'mme_serialNumber' => 'three',
             'mme_constructor' => 'three',
-            'mme_remarks' => 'in'
+            'mme_remarks' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1119,6 +1259,8 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_remark()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
@@ -1126,7 +1268,8 @@ class MmeTest extends TestCase
             'mme_name' => 'three',
             'mme_serialNumber' => 'three',
             'mme_constructor' => 'three',
-            'mme_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1155,6 +1298,8 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_set()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
@@ -1163,7 +1308,8 @@ class MmeTest extends TestCase
             'mme_serialNumber' => 'three',
             'mme_constructor' => 'three',
             'mme_remarks' => 'three',
-            'mme_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1191,6 +1337,8 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_long_location()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
@@ -1200,7 +1348,8 @@ class MmeTest extends TestCase
             'mme_constructor' => 'three',
             'mme_remarks' => 'three',
             'mme_set' => 'three',
-            'mme_location' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'mme_location' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1238,7 +1387,8 @@ class MmeTest extends TestCase
             'mme_constructor' => 'three',
             'mme_remarks' => 'three',
             'mme_set' => 'three',
-            'mme_location' => 'three'
+            'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1248,6 +1398,9 @@ class MmeTest extends TestCase
 
     public function create_mme($name, $validated = 'drafted')
     {
+
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => $validated,
             'mme_internalReference' => $name,
@@ -1258,6 +1411,7 @@ class MmeTest extends TestCase
             'mme_remarks' => $name,
             'mme_set' => $name,
             'mme_location' => $name,
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Mme::all()->count();
@@ -1295,6 +1449,8 @@ class MmeTest extends TestCase
      */
     public function test_add_mme_validated_correct_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/mme/verif', [
             'mme_validate' => 'validated',
             'mme_internalReference' => 'three',
@@ -1305,6 +1461,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Mme::all()->count();
@@ -1360,6 +1517,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'other',
             'mme_set' => 'other',
             'mme_location' => 'other',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/mme/update/' . Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
@@ -1415,6 +1573,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'Exist',
             'mme_set' => 'Exist',
             'mme_location' => 'Exist',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1443,6 +1602,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'other',
             'mme_set' => 'other',
             'mme_location' => 'other',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/mme/update/' . Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
@@ -1498,6 +1658,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'Exist',
             'mme_set' => 'Exist',
             'mme_location' => 'Exist',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1527,6 +1688,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1556,6 +1718,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
     }
@@ -1582,6 +1745,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
     }
@@ -1608,6 +1772,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
     }
@@ -1634,6 +1799,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
     }
@@ -1660,6 +1826,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'other',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
     }
@@ -1674,33 +1841,21 @@ class MmeTest extends TestCase
     public function test_update_internal_reference_mme_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('mme_temps', [
             'mme_id' => Mme::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $response = $this->post('/mme/verif', [
             'reason' => 'update',
@@ -1714,6 +1869,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1731,33 +1887,21 @@ class MmeTest extends TestCase
     public function test_update_external_reference_mme_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('mme_temps', [
             'mme_id' => Mme::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $response = $this->post('/mme/verif', [
             'reason' => 'update',
@@ -1771,6 +1915,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1788,33 +1933,21 @@ class MmeTest extends TestCase
     public function test_update_name_mme_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('mme_temps', [
             'mme_id' => Mme::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $response = $this->post('/mme/verif', [
             'reason' => 'update',
@@ -1828,6 +1961,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1845,33 +1979,21 @@ class MmeTest extends TestCase
     public function test_update_serial_number_mme_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('mme_temps', [
             'mme_id' => Mme::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $response = $this->post('/mme/verif', [
             'reason' => 'update',
@@ -1885,6 +2007,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1902,33 +2025,21 @@ class MmeTest extends TestCase
     public function test_update_constructor_mme_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('mme_temps', [
             'mme_id' => Mme::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $response = $this->post('/mme/verif', [
             'reason' => 'update',
@@ -1942,6 +2053,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'three',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1959,33 +2071,21 @@ class MmeTest extends TestCase
     public function test_update_set_mme_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('mme_temps', [
             'mme_id' => Mme::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $response = $this->post('/mme/verif', [
             'reason' => 'update',
@@ -1999,6 +2099,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'three',
             'mme_set' => 'other',
             'mme_location' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -2015,33 +2116,21 @@ class MmeTest extends TestCase
     public function test_update_value_mme_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('mme_temps', [
             'mme_id' => Mme::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $oldVersion = Mme::all()->where('mme_internalReference', '=', 'three')->last()->mme_nbrVersion;
         $response = $this->post('/mme/verif', [
@@ -2056,6 +2145,7 @@ class MmeTest extends TestCase
             'mme_remarks' => 'other',
             'mme_set' => 'three',
             'mme_location' => 'other',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/mme/update/' . Mme::all()->where('mme_internalReference', '=', 'three')->last()->id, [
@@ -2128,27 +2218,15 @@ class MmeTest extends TestCase
     public function test_send_values_for_list_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $mostRecentlyMmeTmp = MmeTemp::all()->where('mme_id', '=', Mme::all()->last()->id)->last();
@@ -2247,27 +2325,15 @@ class MmeTest extends TestCase
     public function test_send_values_from_id_signed()
     {
         $this->create_mme('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/mme/validation/' . Mme::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -2284,10 +2350,10 @@ class MmeTest extends TestCase
             'mme_set' => 'three',
             'mme_validate' => 'validated',
             'mme_lifeSheetCreated' => 1,
-            'mme_technicalVerifier_firstName' => 'Verifier',
-            'mme_technicalVerifier_lastName' => 'Verifier',
-            'mme_qualityVerifier_firstName' => 'Verifier',
-            'mme_qualityVerifier_lastName' => 'Verifier',
+            'mme_technicalVerifier_firstName' => 'test',
+            'mme_technicalVerifier_lastName' => 'test',
+            'mme_qualityVerifier_firstName' => 'test',
+            'mme_qualityVerifier_lastName' => 'test',
             'mme_location' => 'three',
         ]);
     }
@@ -2332,6 +2398,7 @@ class MmeTest extends TestCase
 
     public function create_equipment($name, $validated = 'drafted')
     {
+        $user_id = $this->create_user('test');
         if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
             $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
             $response = $this->post('/equipment/enum/massUnit/add', [
@@ -2360,7 +2427,8 @@ class MmeTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => $name,
-            'eq_massUnit' => $name
+            'eq_massUnit' => $name,
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2408,34 +2476,22 @@ class MmeTest extends TestCase
     public function test_add_link_mme_to_equipment_signed()
     {
         $eq_id = $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_lifeSheetCreated' => '1',
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_version' => '1',
         ]);
 
@@ -2496,19 +2552,6 @@ class MmeTest extends TestCase
     public function test_add_unlink_mme_to_equipment_signed()
     {
         $eq_id = $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
-
         $this->create_mme('three', 'validated');
         $response = $this->post('/mme/link_to_eq/' . $eq_id, [
             'mme_internalReference' => 'three',
@@ -2522,20 +2565,20 @@ class MmeTest extends TestCase
 
         $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . $eq_id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_lifeSheetCreated' => '1',
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_version' => '1',
         ]);
 

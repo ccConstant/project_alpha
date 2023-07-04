@@ -416,8 +416,8 @@ class MmeController extends Controller{
         }
 
         if ($request->reason=="update"){
-            $mme= Mme::findOrFail($request->mme_id) ;
-            if (!$user->user_updateDataInDraftRight && ($mme->mme_validate=="drafted" || $mme->mme_validate=="to_be_validated")){
+            $mme= MmeTemp::all()->where('mme_id','=',$request->mme_id)->last();
+            if (!$user->user_updateDataInDraftRight && ($mme->mmeTemp_validate=="drafted" || $mme->mmeTemp_validate=="to_be_validated")){
                 return response()->json([
                     'errors' => [
                         'mme_internalReference' => ["You don't have the user right to update a MME ID save as drafted or in to be validated"]
@@ -425,7 +425,7 @@ class MmeController extends Controller{
                 ], 429);
             }
 
-            if (!$user->user_updateDataValidatedButNotSignedRight && $mme->mme_validate=="validated"){
+            if (!$user->user_updateDataValidatedButNotSignedRight && $mme->mmeTemp_validate=="validated"){
                 return response()->json([
                     'errors' => [
                         'mme_internalReference' => ["You don't have the user right to update a MME ID save as validated"]
