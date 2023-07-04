@@ -84,6 +84,13 @@
                     :savedAs="validate"/>
         </form>
         <SuccessAlert ref="successAlert"/>
+        <div v-if="this.artSubFam_id!==null && modifMod==false && consultMod==false && this.addSuccess" >
+                <ReferenceAnArticleFamilyMember :artType="this.data_artFam_type"  :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref"  :artSubFam_id="this.artSubFam_id"/>
+            </div>
+            <div v-else-if="this.artSubFam_id!==null && modifMod==true && this.addSuccess">
+                <ReferenceAnArticleFamilyMember :consultMod="!!isInConsultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref" :artSubFam_id="this.artSubFam_id"
+                                :modifMod="!!this.modifMod"/>
+            </div>
     </div>
 </template>
 
@@ -97,7 +104,7 @@ import InputTextDoubleForm from '../../../input/SW03/InputTextDoubleForm.vue'
 import RadioGroupForm from '../../../input/SW03/RadioGroupForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import SuccessAlert from '../../../alert/SuccesAlert.vue'
-
+import ReferenceAnArticleFamilyMember from './ReferenceAnArticleFamilyMember.vue'
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
@@ -109,6 +116,7 @@ export default {
         RadioGroupForm,
         SaveButtonForm,
         SuccessAlert,
+        ReferenceAnArticleFamilyMember
 
 
     },
@@ -223,6 +231,7 @@ export default {
         }
     },
     created() {
+        console.log(this.artSubFam_id)
         axios.get('/info/send/articleFamily')
             .then(response => {
                 this.infos_artSubFam = response.data;
@@ -244,7 +253,6 @@ export default {
             if (!this.addSuccess) {
                 if (this.data_artFam_type=="COMP"){
                     /*We begin by checking if the data entered by the user are correct*/
-                    console.log(this.data_artFam_ref+this.artSubFam_ref+"\n")
                     axios.post('/comp/subFam/verif', {
                         artSubFam_ref: this.data_artFam_ref+this.artSubFam_ref,
                         artSubFam_design: this.artSubFam_design,

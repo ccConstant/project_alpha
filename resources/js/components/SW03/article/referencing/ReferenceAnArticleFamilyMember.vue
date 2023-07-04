@@ -28,15 +28,14 @@
                 :modifMod="component.id !== null"
                 :art_type="data_art_type.toUpperCase()"
                 :art_id="data_art_id"
-                :genRef="data_genRef"
-                :genDesign="data_genDesign"
-                :varCharac="data_varCharac"
-                :varCharacDesign="data_varCharacDesign"
+                :artSubFam_id="artSubFam_id"
+                :artFam_ref="data_artFam_ref"
+                :artSubFam_ref="data_artSubFam_ref"
                 @deleteStorageCondition="getContent(key)"/>
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->
-                <button v-on:click="addComponent">Add</button>
+                <button v-on:click="addComponent">Add Article Family Member</button>
             </div>
             <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
                             :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
@@ -88,16 +87,13 @@ export default {
             type: Number,
             default: null
         },
-        genRef: {
+        artSubFam_id: {
+            type: Number
+        },
+        artFam_ref: {
             type: String
         },
-        genDesign: {
-            type: String
-        },
-        varCharac: {
-            type: String
-        },
-        varCharacDesign: {
+        artSubFam_ref: {
             type: String
         },
     },
@@ -119,10 +115,8 @@ export default {
             all_familyMember_validate: [],
             title_info: null,
             data_art_type: this.artType.toLowerCase(),
-            data_genRef: this.genRef,
-            data_genDesign: this.genDesign,
-            data_varCharac: this.varCharac,
-            data_varCharacDesign: this.varCharacDesign,
+            data_artFam_ref: this.artFam_ref,
+            data_artSubFam_ref: this.artSubFam_ref,
             loaded: false,
             familyMember: [],
         };
@@ -198,6 +192,11 @@ export default {
     /*All functions inside the created option are called after the component has been created.*/
     created() {
         /*If the user chooses importation doc control*/
+        console.log("ReferenceAnArticleFamilyMember")
+        console.log(this.artFam_ref)
+        console.log(this.artSubFam_ref)
+        console.log(this.data_artFam_ref)
+        console.log(this.data_artSubFam_ref)
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
             if (this.data_art_type === 'comp') {

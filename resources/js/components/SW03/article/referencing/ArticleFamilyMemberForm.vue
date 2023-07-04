@@ -11,59 +11,33 @@
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" >
-                <p v-if="artMb_dimension !== undefined">
-                    Member reference : {{ data_genRef.replace('(' + data_varCharac + ')', artMb_dimension) }}
-                </p>
-                <div v-if="artMb_sameValues">
-                    <p v-if="artMb_dimension !== undefined">
-                        Member Designation : {{ data_genDesign.replace('(' + data_varCharac + ')', artMb_dimension) }}
-                    </p>
-                </div>
-                <div v-else>
-                    <p v-if="artMb_designation !== undefined">
-                        Member Designation : {{ data_genDesign.replace('(' + data_varCharac + ')', artMb_designation) }}
-                    </p>
-                </div>
-                <div>
-                    <p>
-                        Variable Characteristic : {{ data_varCharacDesign }}
-                    </p>
-                    <InputTextForm
-                        :inputClassName="null"
-                        :Errors="errors.artMb_dimension"
-                        name="artMb_dimension"
-                        label="Article Member Dimension"
-                        :isDisabled="this.isInConsultMod"
-                        isRequired
-                        v-model="artMb_dimension"
-                        :info_text="this.infos_artFamMember[0].info_value"
-                        :min="0"
-                        :max="50"
-                    />
-                    <RadioGroupForm
-                        :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
-                        :name="'Same value ?'"
-                        :label="'sameValues'"
-                        v-model="artMb_sameValues"
-                        :info_text="this.infos_artFamMember[1].info_value"
-                        :inputClassName="null"
-                        :Errors="errors['Active']"
-                        :checkedOption="isInModifMod ? artMb_sameValues : true"
-                    />
-                    <InputTextForm
-                        v-if="!artMb_sameValues"
-                        :inputClassName="null"
-                        :Errors="errors.artMb_designation"
-                        name="artMb_designation"
-                        label="Article Member Designation"
-                        :isDisabled="this.isInConsultMod"
-                        isRequired
-                        v-model="artMb_designation"
-                        :info_text="null"
-                        :min="0"
-                        :max="50"
-                    />
-                </div>
+                <InputTextDoubleForm
+                    :inputClassName="null"
+                    :Errors="errors.artFamMb_ref"
+                    name="artFamMb_ref"
+                    label="Article Family Member Reference"
+                    :isDisabled="this.isInConsultMod"
+                    isRequired
+                    v-model="this.artFamMb_ref"
+                    :famRef="this.data_artFam_ref"
+                    :info_text="null"
+                    :min="3"
+                    :max="255"
+                    :placeholer="this.data_artSubFam_ref"
+                />
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFamMb_design"
+                    name="artSubFam_design"
+                    label="Article Family Member Designation"
+                    :isDisabled="isInConsultMod"
+                    isRequired
+                    v-model="artFamMb_design"
+                    :info_text="null"
+                    :min="3"
+                    :max="255"
+                />
+            
                 <SaveButtonForm v-if="this.addSucces==false"
                     ref="saveButton"
                     @add="addArticleMember"
@@ -85,8 +59,8 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from '../../../input/InputSelectForm.vue'
-import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue";
-
+import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue"
+import InputTextDoubleForm from '../../../input/SW03/InputTextDoubleForm.vue';
 
 
 export default {
@@ -97,7 +71,8 @@ export default {
         SaveButtonForm,
         DeleteComponentButton,
         SucessAlert,
-        InputSelectForm
+        InputSelectForm,
+        InputTextDoubleForm
 
     },
     /*--------Declaration of the different props:--------
@@ -145,18 +120,21 @@ export default {
         art_type:{
             type: String
         },
-        genRef: {
+        artSubFam_id:{
+            type: Number
+        },
+        famMb_ref:{
             type: String
         },
-        genDesign: {
+        famMb_design:{
             type: String
         },
-        varCharac: {
+        artFam_ref:{
             type: String
         },
-        varCharacDesign: {
+        artSubFam_ref:{
             type: String
-        },
+        }
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -171,34 +149,26 @@ export default {
 -----------------------------------------------------------*/
     data() {
         return {
-            artMb_dimension: this.dimension,
-            artMb_designation: this.designation,
-            artMb_sameValues: this.sameValues,
+            artFamMb_ref: this.famMb_ref,
+            artFamMb_design: this.famMb_design,
             artMb_validate: this.validate,
             artFamMember_id: this.id,
             art_id_add: this.art_id,
             artFam_type:this.art_type,
+            data_artSubFam_id: this.artSubFam_id,
             art_id_update: this.$route.params.id,
             errors: {},
             addSucces: false,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             loaded: false,
-            infos_artFamMember: [],
-            data_genRef: this.genRef,
-            data_genDesign: this.genDesign,
-            data_varCharac: this.varCharac,
-            data_varCharacDesign: this.varCharacDesign,
+            data_artSubFam_ref: this.artSubFam_ref,
+            data_artFam_ref: this.artFam_ref
         }
     },
     created(){
-        axios.get('/info/send/article_member')
-            .then(response => {
-                this.infos_artFamMember = response.data;
-                this.loaded=true;
-            })
-            .catch(error => {
-            });
+        console.log(this.data_artSubFam_ref)
+         this.loaded=true;
     },
     methods: {
         /*Sending to the controller all the information about the article member so that it can be updated in the database
