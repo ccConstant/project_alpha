@@ -22,6 +22,7 @@
                         :placeholder="placeholer"
                         v-model="data"
                         v-on:input="updateValue(data)"
+                        :disabled="isDisabled"
                     >
                     <div v-if="!this.state()" class="invalid-feedback">
                         {{this.invalidFeedBack()}}
@@ -116,12 +117,16 @@ export default {
     ---------------------------------------------------*/
     methods: {
         updateValue: function (value) {
-            this.$emit('input', value)
+            this.$emit('input', value);
+            this.Errors = [];
         },
         hasError(errors){
             return(errors.length>0);
         },
         state() {
+            if (this.hasError(this.Errors)) {
+                return false;
+            }
             if (this.isRequired) {
                 if (this.data === null) {
                     return false;
@@ -134,6 +139,9 @@ export default {
             return true;
         },
         invalidFeedBack() {
+            if (this.hasError(this.Errors)) {
+                return this.Errors[0];
+            }
             if (this.isRequired) {
                 if (this.data === null) {
                     return 'This field is required';

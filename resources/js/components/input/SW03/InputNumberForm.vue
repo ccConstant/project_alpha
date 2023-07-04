@@ -20,6 +20,7 @@
                         id="input"
                         v-model="data"
                         v-on:input="updateValue(data)"
+                        :disabled="isDisabled"
                     >
                 </div>
             </div>
@@ -98,6 +99,7 @@ export default {
     methods: {
       updateValue: function (value) {
         this.$emit('input', value)
+          this.Errors = [];
       },
       hasError(errors){
           return(errors.length>0);
@@ -108,12 +110,18 @@ export default {
             return InputInfo
         },
         state() {
+            if (this.hasError(this.Errors)) {
+                return false;
+            }
             if (this.isRequired) {
                 return this.data !== null
             }
             return true;
         },
         invalidFeedBack() {
+            if (this.hasError(this.Errors)) {
+                return this.Errors[0];
+            }
             if (this.isRequired && this.data === null) {
                 return 'This field is required';
             }
