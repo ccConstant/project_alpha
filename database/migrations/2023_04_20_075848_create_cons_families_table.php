@@ -23,6 +23,10 @@ class CreateConsFamiliesTable extends Migration
     {
         Schema::create('cons_families', function (Blueprint $table) {
             $table->id('id');
+            $table->string('consFam_ref')->unique();
+            $table->string('consFam_design');
+            $table->string('consFam_drawingPath')->nullable();
+            $table->integer('consFam_nbrVersion')->default(1);
           /*  $table->string('consFam_variablesCharac')->nullable();
             $table->string('consFam_variablesCharacDesign')->nullable();*/
             $table->timestamps();

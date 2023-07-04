@@ -3,7 +3,7 @@
 /*
 * Filename : CompFamily.php
 * Creation date : 20 Apr 2023
-* Update date : 20 Apr 2023
+* Update date : 3 Jul 2023
 * This file define the model CompFamily. We can see more details about this model (like his attributes) in the
 * migration file named "2023_04_20_081310_create_comp_families_table.php" in Database>migrations."
 *
@@ -15,6 +15,7 @@ namespace App\Models\SW03;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW03\CompFamilyMember;
+use App\Models\SW03\CompSubFamily;
 use App\Models\User;
 use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\Supplier;
@@ -42,9 +43,9 @@ class CompFamily extends Model
          'compFam_genDesign',
          'compFam_genRef'] ;
 
-     //Define the relation between a compFamily and its compFamilyMember : a compFamilyMember can correspond to only one compFamily
-     public function comp_family_member(){
-         return $this->hasMany(CompFamilyMember::class) ;
+     //Define the relation between a compFamily and its compSubFamily : a compSubFamily can correspond to only one compFamily
+     public function comp_sub_family(){
+         return $this->hasMany(CompSubFamily::class) ;
      }
 
     //Define the relation between a compFamily and the user who approved it : a compFamily has only one qualityApprover

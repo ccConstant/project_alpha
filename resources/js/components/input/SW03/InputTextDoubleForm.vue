@@ -6,29 +6,36 @@
 
 <template>
     <div>
-        <div
-            class="form-group row"
-        >
+        <div class="OneRow">
             <label for="input" class="col-sm-2 col-form-label">
                 {{label}}
                 <InputInfo :info="returnedText_info" v-if="returnedText_info!=null"/>
             </label>
-            <div class="col-sm-10">
-                <div class="input-group">
-                    <input
-                        type="text"
-                        :class="'form-control' + (state() ? '' : ' is-invalid')"
-                        id="input"
-                        :placeholder="placeholer"
-                        v-model="data"
-                        v-on:input="updateValue(data)"
-                    >
-                    <div v-if="!this.state()" class="invalid-feedback">
-                        {{this.invalidFeedBack()}}
-                    </div>
-                    <div v-else class="valid-feedback">
-                        {{this.invalidFeedBack()}}
-                    </div>
+            <div class="col-sm-2">
+                <input
+                    type="text"
+                    :class="'form-control'"
+                    id="input"
+                    :placeholder="placeholer"
+                    v-model="famRef"
+                    disabled
+                >
+            </div>
+                ___
+            <div class="col-sm-3">
+                <input
+                    type="text"
+                    :class="'form-control' + (state() ? '' : ' is-invalid')"
+                    id="input"
+                    :placeholder="placeholer"
+                    v-model="data"
+                    v-on:input="updateValue(data)"
+                >
+                <div v-if="!this.state()" class="invalid-feedback">
+                    {{this.invalidFeedBack()}}
+                </div>
+                <div v-else class="valid-feedback">
+                    {{this.invalidFeedBack()}}
                 </div>
             </div>
         </div>
@@ -97,6 +104,9 @@ export default {
         },
         max:{
             type:Number
+        },
+        famRef:{
+            type:String
         }
 
     },
@@ -167,4 +177,10 @@ export default {
 </script>
 
 <style lang="scss">
+
+    .OneRow{
+        display: flex;
+        position:inline-block;
+        width: 100%;
+    }
 </style>

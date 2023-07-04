@@ -25,7 +25,6 @@ class CreateCompFamilyMembersTable extends Migration
             $table->id();
             $table->string('compMb_dimension') ->nullable();
             $table->string('compMb_design')->nullable();
-            $table->boolean('compMb_active')->nullable();
            // $table->boolean('compMb_sameValues')->default(true);
             $table->unsignedBigInteger('compSubFam_id') ->nullable();
             $table->foreign('compSubFam_id')->references('id')->on('comp_sub_families') ;

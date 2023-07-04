@@ -6,9 +6,29 @@
 
 <template>
     <div>
-        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type" @generic="genericSetter"/>
+        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type"   @ArtFamRef="put_artFamily_ref" @generic="genericSetter"/>
+        
         <div v-if="this.artFam_id!=null">
             <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingZero">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
+                            Article Sub Family
+                        </button>
+                    </h2>
+                    <div id="collapseZero" class="accordion-collapse collapse show" aria-labelledby="headingZero">
+                        <div class="accordion-body">
+                            <ReferenceASubFamilyForm
+                                modifMod
+                                :artFam_type="this.artFam_type"
+                                :artFam_id="this.artFam_id"
+                                :import_id="this.artFam_id"
+                                :artFam_ref="this.artFam_ref"
+                            />
+                        </div>
+                    </div>
+                </div>
                 <div class="accordion-item" v-if="generic !== null">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -23,10 +43,6 @@
                                 :artType="this.artFam_type"
                                 :artFam_id="this.artFam_id"
                                 :import_id="this.artFam_id"
-                                :genRef="this.generic.genRef"
-                                :genDesign="this.generic.genDesign"
-                                :varCharac="this.generic.variablesCharac"
-                                :varCharacDesign="this.generic.variablesCharacDesign"
                             />
                         </div>
                     </div>
@@ -121,7 +137,7 @@ import ReferenceAStorageCondition from "./ReferenceAStorageCondition";
 import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp.vue";
 import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
 import ReferenceAnArticlePurchaseSpecification from "./ReferenceAnArticlePurchaseSpecification";
-
+import ReferenceASubFamilyForm from "./ReferenceASubFamilyForm";
 
 export default {
     components: {
@@ -131,12 +147,14 @@ export default {
         ReferenceAStorageCondition,
         ReferenceAnArticleFamilyMember,
         ReferenceAnArticlePurchaseSpecification,
+        ReferenceASubFamilyForm,
     },
     data() {
         return {
             /*ID of the equipment created*/
             artFam_id: null,
             artFam_type: null,
+            artFam_ref: null,
             generic: null,
         }
     },
@@ -146,6 +164,9 @@ export default {
         },
         put_artFamily_type(value) {
             this.artFam_type = value;
+        },
+        put_artFamily_ref(value) {
+            this.artFam_ref = value;
         },
         genericSetter(ref, design, variableCharac, variableCharacDesign) {
             this.generic = {
