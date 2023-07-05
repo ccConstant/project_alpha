@@ -322,13 +322,6 @@
                 <table class="header">
                     <tbody>
                     <tr>
-                        <td class="gray" colspan="2" style="text-align: center;">
-                            <h2>
-                                Storage Conditions
-                            </h2>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="tableName" :rowspan="3*purSpes.length" style="text-align: center;">
                             <h2>
                                 Purchasing specifications
@@ -373,6 +366,13 @@
                             </td>
                         </tr>
                     </div>
+                    <tr>
+                        <td class="gray" colspan="2" style="text-align: center;">
+                            <h2>
+                                Storage Conditions
+                            </h2>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
                 <h2 v-if="docControls.length > 0 ||
