@@ -10,6 +10,7 @@ use App\Models\SW01\Mme;
 use App\Models\SW01\MmeState;
 use App\Models\SW01\MmeTemp;
 use App\Models\SW01\State;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,8 +19,54 @@ class CurativeMaintenanceOperationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
+    }
+
     public function create_equipment($name, $validated = 'drafted')
     {
+
+        $user_id = $this->create_user('test');
         $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => $name,
@@ -44,7 +91,8 @@ class CurativeMaintenanceOperationTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => $name,
-            'eq_massUnit' => $name
+            'eq_massUnit' => $name,
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -153,6 +201,7 @@ class CurativeMaintenanceOperationTest extends TestCase
         $response = $this->post('/curMtnOp/verif', [
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'drafted',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -190,6 +239,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'drafted',
             'curMtnOp_description' => 'in',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -227,6 +277,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'drafted',
             'curMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -265,6 +316,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_validate' => 'drafted',
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -302,6 +354,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_validate' => 'drafted',
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state/curMtnOp/', [
@@ -349,6 +402,7 @@ class CurativeMaintenanceOperationTest extends TestCase
         $response = $this->post('/curMtnOp/verif', [
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'to_be_validated',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -386,6 +440,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'to_be_validated',
             'curMtnOp_description' => 'in',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -423,6 +478,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'to_be_validated',
             'curMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -461,6 +517,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_validate' => 'to_be_validated',
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -498,6 +555,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_validate' => 'to_be_validated',
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/state/curMtnOp/', [
@@ -544,6 +602,7 @@ class CurativeMaintenanceOperationTest extends TestCase
         $response = $this->post('/curMtnOp/verif', [
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'validated',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -583,6 +642,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'validated',
             'curMtnOp_description' => 'in',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -622,6 +682,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'state_id' => $mostRecentlyState->id,
             'curMtnOp_validate' => 'validated',
             'curMtnOp_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -661,6 +722,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_validate' => 'validated',
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'in',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -699,6 +761,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_validate' => 'validated',
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -737,6 +800,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_validate' => 'validated',
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'three',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -776,6 +840,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_description' => 'three',
             'curMtnOp_reportNumber' => 'three',
             'curMtnOp_startDate' => Carbon::now(),
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -816,6 +881,7 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_reportNumber' => 'three',
             'curMtnOp_startDate' => Carbon::now(),
             'curMtnOp_endDate' => Carbon::now()->addWeek(),
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([

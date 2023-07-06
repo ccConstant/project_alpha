@@ -333,6 +333,8 @@ export default {
                     eq_id: id,
                     reason: 'add',
                     user_id: this.$userId.id,
+                    realizedBy_id: this.eq_realize ? this.$userId.id : null,
+                    user_password: this.user_password,
                 }).then(response => {
                     this.errors = {};
                     /*If all the verification passed, a new post this time to add the preventive maintenance operation in the database
@@ -346,8 +348,10 @@ export default {
                         eq_id: id,
                         state_id: this.equipment_state_id,
                         prvMtnOp_id: this.prvMtnOp_id,
-                        enteredBy_id: this.$userId.id
-
+                        enteredBy_id: this.$userId.id,
+                        user_id: this.$userId.id,
+                        realizedBy_id: this.eq_realize ? this.$userId.id : null,
+                        user_password: this.user_password,
                     })
                         //If the preventive maintenance operation is added succesfuly
                         .then(response => {
@@ -364,7 +368,7 @@ export default {
                             this.prvMtnOpRlz_id = response.data;
                             //The validate option of this preventive maintenance operation take the value of savedAs(Params of the function)
                             this.prvMtnOpRlz_validate = savedAs;
-                            if (this.eq_realize) {
+                            /*if (this.eq_realize) {
                                 axios.post('/prvMtnOpRlz/realize/' + this.prvMtnOpRlz_id, {
                                     user_id: this.$userId.id,
                                     user_pseudo: this.$userId.user_pseudo,
@@ -372,7 +376,7 @@ export default {
                                 }).catch(error => {
                                     this.errors = error.response.data.errors;
                                 });
-                            }
+                            }*/
                         }).catch(error => {
                         this.errors = error.response.data.errors;
                     });

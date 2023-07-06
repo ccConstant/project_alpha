@@ -18,6 +18,50 @@ class EnumDimensionTypeTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
+    }
+
     /**
      * Test Conception Number: 1
      * Try to add a non-existent type in the database
@@ -27,9 +71,12 @@ class EnumDimensionTypeTest extends TestCase
      */
     public function test_add_non_existent_type()
     {
+        $user_id = $this->create_user('test');
+
         $oldCOunt = EnumDimensionType::all()->count();
         $response = $this->post('/dimension/enum/type/add', [
-            'value' => 'Type'
+            'value' => 'Type',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $this->assertEquals(EnumDimensionType::all()->count(), $oldCOunt + 1);
@@ -119,7 +166,8 @@ class EnumDimensionTypeTest extends TestCase
             'dim_name' => 'TestAnalyze',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -184,7 +232,8 @@ class EnumDimensionTypeTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -207,13 +256,13 @@ class EnumDimensionTypeTest extends TestCase
         ]);
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('dimension/enum/type/analyze/' . EnumDimensionType::all()->where('value', '=', 'Type')->first()->id);
@@ -244,6 +293,7 @@ class EnumDimensionTypeTest extends TestCase
 
     public function requiredForTest()
     {
+        $user_id = $this->create_user('test');
         // Add the different enum of the type if they didn't already exist in the database
         if (EnumDimensionName::all()->where('value', '=', 'Name')->count() === 0) {
             $countDimName = EnumDimensionName::all()->count();
@@ -318,46 +368,6 @@ class EnumDimensionTypeTest extends TestCase
             $response->assertStatus(200);
             $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
-        // Add the user to validate the equipment
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-            User::all()->last()->update([
-                'user_menuUserAcessRight' => 1,
-                'user_resetUserPasswordRight' => 1,
-                'user_updateDataInDraftRight' => 1,
-                'user_validateDescriptiveLifeSheetDataRight' => 1,
-                'user_validateOtherDataRight' => 1,
-                'user_updateDataValidatedButNotSignedRight' => 1,
-                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-                'user_makeQualityValidationRight' => 1,
-                'user_makeTechnicalValidationRight' => 1,
-                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-                'user_deleteEqOrMmeRight' => 1,
-                'user_makeReformRight' => 1,
-                'user_declareNewStateRight' => 1,
-                'user_updateEnumRight' => 1,
-                'user_deleteEnumRight' => 1,
-                'user_addEnumRight' => 1,
-                'user_updateInformationRight' => 1,
-                'user_makeEqOpValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-                'user_makeEqRespValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-                'user_makeMmeOpValidationRight' => 1,
-                'user_makeMmeRespValidationRight' => 1,
-            ]);
-        }
     }
 
     /**
@@ -415,7 +425,8 @@ class EnumDimensionTypeTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -518,7 +529,8 @@ class EnumDimensionTypeTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -621,7 +633,8 @@ class EnumDimensionTypeTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -645,13 +658,13 @@ class EnumDimensionTypeTest extends TestCase
         $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('equipment_temps', [
@@ -661,8 +674,8 @@ class EnumDimensionTypeTest extends TestCase
             'eqTemp_remarks' => 'TestUpdateEnum3',
             'eqTemp_mobility' => true,
             'eqTemp_version' => 1,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
         ]);
         $oldId = EnumDimensionType::all()->where('value', '=', 'Type')->first()->id;
         $response = $this->post('dimension/enum/type/analyze/' . EnumDimensionType::all()->where('value', '=', 'Type')->first()->id);
@@ -767,7 +780,8 @@ class EnumDimensionTypeTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -870,7 +884,8 @@ class EnumDimensionTypeTest extends TestCase
             'dim_name' => 'Name',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -894,13 +909,13 @@ class EnumDimensionTypeTest extends TestCase
         $this->assertEquals($countEquipment + 1, Equipment::all()->count());
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('equipment_temps', [
@@ -910,8 +925,8 @@ class EnumDimensionTypeTest extends TestCase
             'eqTemp_remarks' => 'TestUpdateEnum3',
             'eqTemp_mobility' => true,
             'eqTemp_version' => 1,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
         ]);
         $response = $this->post('/dimension/enum/type/delete/' . EnumDimensionType::all()->where('value', '=', 'Type')->first()->id);
         $response->assertStatus(429);

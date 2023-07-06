@@ -26,6 +26,50 @@ class EquipmentTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
+    }
+
     /**
      * Test Conception Number: 1
      * Add new equipment as drafted with no values
@@ -47,8 +91,11 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -78,9 +125,12 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_short_intern_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
-            'eq_internalReference' => 'in'
+            'eq_internalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -110,9 +160,12 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_long_intern_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
-            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -142,10 +195,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
-            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.'
+            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -174,10 +230,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_short_alpha_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'in'
+            'eq_externalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -205,10 +264,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_long_alpha_ref()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.'
+            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -236,11 +298,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_long_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -268,11 +333,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_long_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -300,11 +368,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_long_mass()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_mass' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_mass' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -332,11 +403,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_long_set()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -363,10 +437,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_drafted_success()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'three'
+            'eq_externalReference' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $this->post('/equipment/add', [
@@ -408,8 +485,11 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
-            'eq_validate' => 'to_be_validated'
+            'eq_validate' => 'to_be_validated',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -439,9 +519,12 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_short_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
-            'eq_internalReference' => 'in'
+            'eq_internalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -471,9 +554,12 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_long_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
-            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -503,10 +589,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
-            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.'
+            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -535,10 +624,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_short_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'in'
+            'eq_externalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -566,10 +658,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_long_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. '
+            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -597,11 +692,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_long_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -629,11 +727,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_long_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -661,11 +762,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_long_mass()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_mass' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_mass' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -693,11 +797,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_long_set()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -724,10 +831,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_to_be_validated_success()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'to_be_validated',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'three'
+            'eq_externalReference' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add', [
@@ -776,8 +886,11 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_no_values()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
-            'eq_validate' => 'validated'
+            'eq_validate' => 'validated',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -821,9 +934,12 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_short_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
-            'eq_internalReference' => 'in'
+            'eq_internalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -867,9 +983,12 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_internal_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
-            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_internalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -912,10 +1031,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_short_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'in'
+            'eq_externalReference' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -957,10 +1079,13 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_external_reference()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
-            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_externalReference' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1001,11 +1126,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_short_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_name' => 'in'
+            'eq_name' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1045,11 +1173,14 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_name()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
-            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1088,12 +1219,15 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_short_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'three',
-            'eq_serialNumber' => 'in'
+            'eq_serialNumber' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1131,12 +1265,15 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_serial_number()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'three',
-            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_serialNumber' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1173,13 +1310,16 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_short_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'three',
             'eq_serialNumber' => 'three',
-            'eq_constructor' => 'in'
+            'eq_constructor' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1215,13 +1355,16 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_constructor()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
             'eq_externalReference' => 'three',
             'eq_name' => 'three',
             'eq_serialNumber' => 'three',
-            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_constructor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1256,6 +1399,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_mass()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1263,7 +1408,8 @@ class EquipmentTest extends TestCase
             'eq_name' => 'three',
             'eq_serialNumber' => 'three',
             'eq_constructor' => 'three',
-            'eq_mass' => '123456789123456789'
+            'eq_mass' => '123456789123456789',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1296,6 +1442,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_short_remark()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1304,7 +1452,8 @@ class EquipmentTest extends TestCase
             'eq_serialNumber' => 'three',
             'eq_constructor' => 'three',
             'eq_mass' => 1234,
-            'eq_remarks' => 'in'
+            'eq_remarks' => 'in',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1336,6 +1485,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_remark()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1344,7 +1495,8 @@ class EquipmentTest extends TestCase
             'eq_serialNumber' => 'three',
             'eq_constructor' => 'three',
             'eq_mass' => 1234,
-            'eq_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_remarks' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1375,6 +1527,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_set()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1384,7 +1538,8 @@ class EquipmentTest extends TestCase
             'eq_constructor' => 'three',
             'eq_mass' => 1234,
             'eq_remarks' => 'three',
-            'eq_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_set' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1414,6 +1569,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_long_location()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1424,7 +1581,8 @@ class EquipmentTest extends TestCase
             'eq_mass' => 1234,
             'eq_remarks' => 'three',
             'eq_set' => 'three',
-            'eq_location' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non '
+            'eq_location' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non ',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -1453,6 +1611,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_no_type()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1463,7 +1623,8 @@ class EquipmentTest extends TestCase
             'eq_mass' => 1234,
             'eq_remarks' => 'three',
             'eq_set' => 'three',
-            'eq_location' => 'three'
+            'eq_location' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1492,6 +1653,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_no_unit()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/equipment/verif', [
             'eq_validate' => 'validated',
             'eq_internalReference' => 'three',
@@ -1503,7 +1666,8 @@ class EquipmentTest extends TestCase
             'eq_remarks' => 'three',
             'eq_set' => 'three',
             'eq_location' => 'three',
-            'eq_type' => 'three'
+            'eq_type' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1531,6 +1695,8 @@ class EquipmentTest extends TestCase
      */
     public function test_add_equipment_validated_correct_values()
     {
+        $user_id = $this->create_user('test');
+
         $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'three',
@@ -1555,7 +1721,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1631,7 +1798,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'other',
             'eq_location' => 'other',
             'eq_type' => 'other',
-            'eq_massUnit' => 'other'
+            'eq_massUnit' => 'other',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
@@ -1671,6 +1839,8 @@ class EquipmentTest extends TestCase
 
     public function create_equipment($name, $validated = 'drafted')
     {
+        $user_id = $this->create_user('test');
+
         if (EnumEquipmentMassUnit::all()->where('value', '=', $name)->count() === 0) {
             $countEqMassUnit = EnumEquipmentMassUnit::all()->count();
             $response = $this->post('/equipment/enum/massUnit/add', [
@@ -1699,7 +1869,8 @@ class EquipmentTest extends TestCase
             'eq_set' => $name,
             'eq_location' => $name,
             'eq_type' => $name,
-            'eq_massUnit' => $name
+            'eq_massUnit' => $name,
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1779,7 +1950,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'Exist',
             'eq_location' => 'Exist',
             'eq_type' => 'Exist',
-            'eq_massUnit' => 'Exist'
+            'eq_massUnit' => 'Exist',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1826,7 +1998,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'other',
             'eq_location' => 'other',
             'eq_type' => 'other',
-            'eq_massUnit' => 'other'
+            'eq_massUnit' => 'other',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
@@ -1905,7 +2078,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'Exist',
             'eq_location' => 'Exist',
             'eq_type' => 'Exist',
-            'eq_massUnit' => 'Exist'
+            'eq_massUnit' => 'Exist',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1953,7 +2127,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -1987,27 +2162,15 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
@@ -2024,7 +2187,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -2058,27 +2222,15 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
@@ -2095,7 +2247,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -2129,27 +2282,15 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
@@ -2166,7 +2307,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -2200,27 +2342,15 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
@@ -2237,7 +2367,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -2271,27 +2402,15 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/verif', [
@@ -2308,7 +2427,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'other',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -2341,33 +2461,21 @@ class EquipmentTest extends TestCase
             $this->assertCount($countEqType + 1, EnumEquipmentType::all());
         }
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('equipment_temps', [
             'equipment_id' => Equipment::all()->last()->id,
-            'qualityVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
-            'technicalVerifier_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id
         ]);
         $oldVersion = Equipment::all()->where('eq_internalReference', '=', 'three')->last()->eq_nbrVersion;
         $response = $this->post('/equipment/verif', [
@@ -2384,7 +2492,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'other',
             'eq_type' => 'other',
-            'eq_massUnit' => 'other'
+            'eq_massUnit' => 'other',
+            'createdBy_id' => User::all()->last()->id
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'three')->last()->id, [
@@ -2466,27 +2575,15 @@ class EquipmentTest extends TestCase
     public function test_send_values_for_list_signed()
     {
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $mostRecentlyEqTmp = EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->last()->id)->last();
@@ -2592,27 +2689,15 @@ class EquipmentTest extends TestCase
     public function test_send_values_from_id_signed()
     {
         $this->create_equipment('three', 'validated');
-        if (User::all()->where('user_firstName', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countUser + 1, User::all());
-        }
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_firstName', '=', 'Verifier')->last()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -2633,10 +2718,10 @@ class EquipmentTest extends TestCase
             'eq_mobility' => false,
             'eq_validate' => 'validated',
             'eq_lifeSheetCreated' => 1,
-            'eq_technicalVerifier_firstName' => 'Verifier',
-            'eq_technicalVerifier_lastName' => 'Verifier',
-            'eq_qualityVerifier_firstName' => 'Verifier',
-            'eq_qualityVerifier_lastName' => 'Verifier',
+            'eq_technicalVerifier_firstName' => 'test',
+            'eq_technicalVerifier_lastName' => 'test',
+            'eq_qualityVerifier_firstName' => 'test',
+            'eq_qualityVerifier_lastName' => 'test',
             'eq_location' => 'three',
         ]);
     }
@@ -2674,6 +2759,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'three',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2698,6 +2784,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 72,
             'prvMtnOp_symbolPeriodicity' => 'H',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2727,6 +2814,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 7,
             'prvMtnOp_symbolPeriodicity' => 'D',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2756,6 +2844,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2785,6 +2874,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'Y',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2870,6 +2960,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_description' => 'three',
             'prvMtnOp_protocol' => 'three',
             'prvMtnOp_preventiveOperation' => false,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2894,6 +2985,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 72,
             'prvMtnOp_symbolPeriodicity' => 'H',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2923,6 +3015,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 7,
             'prvMtnOp_symbolPeriodicity' => 'D',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2952,6 +3045,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -2981,6 +3075,7 @@ class EquipmentTest extends TestCase
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'Y',
             'prvMtnOp_preventiveOperation' => true,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/prvMtnOp', [
@@ -3073,7 +3168,8 @@ class EquipmentTest extends TestCase
             'eq_set' => 'three',
             'eq_location' => 'three',
             'eq_type' => 'three',
-            'eq_massUnit' => 'three'
+            'eq_massUnit' => 'three',
+            'createdBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([

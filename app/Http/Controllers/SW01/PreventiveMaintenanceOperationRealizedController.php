@@ -80,6 +80,11 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
         }
 
         $prvMtnOpRlz_id=$prvMtnOpRlz->id;
+        if ($request->realizedBy_id !== null) {
+            $prvMtnOpRlz->update([
+                'realizedBy_id' => $request->realizedBy_id,
+            ]);
+        }
         return response()->json($prvMtnOpRlz_id) ;
     }
 
@@ -148,11 +153,30 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 }
 
             }else{
-                return response()->json([
-                    'errors' => [
-                        'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
-                    ]
-                ], 429);
+                if ($request->realizedBy_id==NULL) {
+                    return response()->json([
+                        'errors' => [
+                            'prvMtnOpRlz_validate' => ["You have to entered the realizator of this preventive maintenance operation realized for validate it"]
+                        ]
+                    ], 429);
+                }
+
+                $user = User::findOrFail($request->user_id) ;
+                if (!$user->user_makeEqOpValidationRight){
+                    return response()->json([
+                        'errors' => [
+                            'connexion' => ["You don't have the right to realize a preventive maintenance operation realized"]
+                        ]
+                    ], 429);
+                }
+
+                if (!Auth::attempt(['user_pseudo' => $user->user_pseudo, 'password' => $request->user_password])) {
+                    return response()->json([
+                        'errors' => [
+                            'connexion' => ["Verification failed, the couple pseudo password isn't recognized"]
+                        ]
+                    ], 429);
+                }
             }
         }
 
@@ -299,7 +323,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
                 'errors' => [
                     'prvMtnOpRlz_delete' => ["You don't have the right to delete a preventive maintenance operation realized"]
                 ]
-            ], 429);    
+            ], 429);
         }
 
         if ($prvMtnOpRlz->prvMtnOpRlz_validate=='validated'){

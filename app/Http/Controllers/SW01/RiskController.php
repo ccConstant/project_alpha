@@ -11,6 +11,7 @@
 
 namespace App\Http\Controllers\SW01;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB ;
 use App\Models\SW01\EquipmentTemp ;
@@ -618,7 +619,7 @@ class RiskController extends Controller
         $equipment=Equipment::findOrfail($request->eq_id) ;
         //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
-        
+
 
         $user=User::findOrFail($request->user_id);
         $risk=Risk::findOrFail($id);
@@ -708,7 +709,7 @@ class RiskController extends Controller
 
             $newState->equipment_temps()->attach($mostRecentlyEqTmp);
         }
-        $risk->delete() ; 
+        $risk->delete() ;
     }
 }
 

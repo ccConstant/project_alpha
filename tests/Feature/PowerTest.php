@@ -21,6 +21,50 @@ class PowerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
+            $countUser = User::all()->count();
+            $response = $this->post('register', [
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countUser + 1, User::all());
+
+            User::all()->last()->update([
+                'user_menuUserAcessRight' => 1,
+                'user_resetUserPasswordRight' => 1,
+                'user_updateDataInDraftRight' => 1,
+                'user_validateDescriptiveLifeSheetDataRight' => 1,
+                'user_validateOtherDataRight' => 1,
+                'user_updateDataValidatedButNotSignedRight' => 1,
+                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
+                'user_makeQualityValidationRight' => 1,
+                'user_makeTechnicalValidationRight' => 1,
+                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
+                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
+                'user_deleteEqOrMmeRight' => 1,
+                'user_makeReformRight' => 1,
+                'user_declareNewStateRight' => 1,
+                'user_updateEnumRight' => 1,
+                'user_deleteEnumRight' => 1,
+                'user_addEnumRight' => 1,
+                'user_updateInformationRight' => 1,
+                'user_makeEqOpValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
+                'user_makeEqRespValidationRight' => 1,
+                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
+                'user_makeMmeOpValidationRight' => 1,
+                'user_makeMmeRespValidationRight' => 1,
+            ]);
+        }
+        return User::all()->last()->id;
+    }
+
     /**
      * Test Conception Number: 1
      * Saved a power as drafted from add-menu with no values
@@ -35,8 +79,11 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_addMenu_NoValue()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
-            'pow_validate' => 'drafted'
+            'pow_validate' => 'drafted',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -58,9 +105,12 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_addMenu_tooShortName()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
-            'pow_name' => 'in'
+            'pow_name' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -83,9 +133,12 @@ class PowerTest extends TestCase
 
     public function test_add_pow_drafted_addMenu_tooLongName()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
-            'pow_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -107,10 +160,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_addMenu_correctName_tooLongValue()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
             'pow_name' => 'three',
-            'pow_value' => '123456789012345678901234567890'
+            'pow_value' => '123456789012345678901234567890',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -132,10 +188,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_addMenu_correctName_tooLongUnit()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
             'pow_name' => 'three',
-            'pow_unit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_unit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -157,10 +216,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_addMenu_correctName_tooLongConsumptionValue()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
             'pow_name' => 'three',
-            'pow_consumptionValue' => '123456789012345678901234567890'
+            'pow_consumptionValue' => '123456789012345678901234567890',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -182,10 +244,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_addMenu_correctName_tooLongConsumptionUnit()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
             'pow_name' => 'three',
-            'pow_consumptionUnit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_consumptionUnit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -207,11 +272,14 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_success_only_name()
     {
+        $user_id = $this->create_user('test');
+
         // Add of the equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'draft1Test',
             'eq_externalReference' => 'draft1Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -225,7 +293,8 @@ class PowerTest extends TestCase
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
-            'pow_name' => 'three'
+            'pow_name' => 'three',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -262,11 +331,14 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_drafted_success_full()
     {
+        $user_id = $this->create_user('test');
+
         // Add of the equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'draft2Test',
             'eq_externalReference' => 'draft2Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -302,7 +374,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -345,8 +418,11 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_addMenu_noValues()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
-            'pow_validate' => 'to_be_validated'
+            'pow_validate' => 'to_be_validated',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -368,9 +444,12 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_addMenu_tooShortName()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'to_be_validated',
-            'pow_name' => 'in'
+            'pow_name' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -392,9 +471,12 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_addMenu_tooLongName()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'to_be_validated',
-            'pow_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -416,10 +498,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_addMenu_correctName_tooLongValue()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'three',
-            'pow_value' => '123456789012345678901234567890'
+            'pow_value' => '123456789012345678901234567890',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -441,10 +526,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_addMenu_correctName_tooLongUnit()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'three',
-            'pow_unit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_unit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -466,10 +554,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_addMenu_correctName_tooLongConsumptionValue()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'three',
-            'pow_consumptionValue' => '123456789012345678901234567890'
+            'pow_consumptionValue' => '123456789012345678901234567890',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -491,10 +582,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_addMenu_correctName_tooLongConsumptionUnit()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'to_be_validated',
             'pow_name' => 'three',
-            'pow_consumptionUnit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_consumptionUnit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -516,11 +610,14 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_success_only_name()
     {
+        $user_id = $this->create_user('test');
+
         // Add of the equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa1Test',
             'eq_externalReference' => 'toBeVa1Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -534,7 +631,8 @@ class PowerTest extends TestCase
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
-            'pow_name' => 'three'
+            'pow_name' => 'three',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -571,11 +669,14 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_toBeValidated_success_full()
     {
+        $user_id = $this->create_user('test');
+
         // Add of the equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa2Test',
             'eq_externalReference' => 'toBeVa2Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -611,7 +712,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -659,8 +761,11 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_noValues()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
-            'pow_validate' => 'validated'
+            'pow_validate' => 'validated',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -691,9 +796,12 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_tooShortName()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
-            'pow_name' => 'in'
+            'pow_name' => 'in',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -724,9 +832,12 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_tooLongName()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
-            'pow_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -756,10 +867,13 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_correctName_tooLongValue()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
-            'pow_value' => '123456789012345678901234567890'
+            'pow_value' => '123456789012345678901234567890',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -787,11 +901,14 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_correctName_correctValue_tooLongUnit()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
             'pow_value' => '12345',
-            'pow_unit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_unit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -817,12 +934,15 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_correctName_correctValue_correctUnit_tooLongConsumptionValue()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
             'pow_value' => '12345',
             'pow_unit' => 'unit',
-            'pow_consumptionValue' => '123456789012345678901234567890'
+            'pow_consumptionValue' => '123456789012345678901234567890',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -846,13 +966,16 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_correctName_correctValue_correctUnit_correctConsumptionValue_tooLongConsumptionUnit()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
             'pow_value' => '12345',
             'pow_unit' => 'unit',
             'pow_consumptionValue' => '12345',
-            'pow_consumptionUnit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non'
+            'pow_consumptionUnit' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -874,13 +997,16 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_correctName_correctValue_correctUnit_correctConsumptionValue_correctConsumptionUnit_noType()
     {
+        $user_id = $this->create_user('test');
+
         $response = $this->post('/power/verif', [
             'pow_validate' => 'validated',
             'pow_name' => 'three',
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'unit'
+            'pow_consumptionUnit' => 'unit',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
@@ -902,11 +1028,14 @@ class PowerTest extends TestCase
      */
     public function test_add_pow_validated_addMenu_successfully_saved()
     {
+        $user_id = $this->create_user('test');
+
         // Add the equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'validatedTest',
             'eq_externalReference' => 'validatedTest',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -943,7 +1072,8 @@ class PowerTest extends TestCase
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
             'pow_consumptionUnit' => 'kwH',
-            'eq_id' => Equipment::all()->last()->id
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -986,11 +1116,14 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_drafted_only_name()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'updated1Test',
             'eq_externalReference' => 'updated1Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1026,7 +1159,9 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1057,7 +1192,8 @@ class PowerTest extends TestCase
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
-            'pow_name' => 'three'
+            'pow_name' => 'three',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1089,11 +1225,14 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_drafted_full()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'updated2Test',
             'eq_externalReference' => 'updated2Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1129,7 +1268,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1181,7 +1321,8 @@ class PowerTest extends TestCase
             'pow_value' => 138,
             'pow_unit' => 'w',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'wH'
+            'pow_consumptionUnit' => 'wH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1223,11 +1364,14 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_toBeValidated_only_name()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa1Test',
             'eq_externalReference' => 'toBeVa1Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1263,7 +1407,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1294,7 +1439,8 @@ class PowerTest extends TestCase
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
             'pow_validate' => 'drafted',
-            'pow_name' => 'three'
+            'pow_name' => 'three',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1326,11 +1472,14 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_toBeValidated_full()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'toBeVa2Test',
             'eq_externalReference' => 'toBeVa2Test',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1366,7 +1515,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1418,7 +1568,8 @@ class PowerTest extends TestCase
             'pow_value' => 138,
             'pow_unit' => 'w',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'wH'
+            'pow_consumptionUnit' => 'wH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1461,11 +1612,14 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_validated_full()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $response = $this->post('equipment/verif', [
             'eq_internalReference' => 'validatedTest',
             'eq_externalReference' => 'validatedTest',
-            'eq_validate' => 'drafted'
+            'eq_validate' => 'drafted',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1501,7 +1655,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1553,7 +1708,8 @@ class PowerTest extends TestCase
             'pow_value' => 138,
             'pow_unit' => 'w',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'wH'
+            'pow_consumptionUnit' => 'wH',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1598,7 +1754,8 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_type_of_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -1640,6 +1797,7 @@ class PowerTest extends TestCase
             'eq_mobility' => true,
             'eq_type' => 'internal',
             'eq_location' => 'upTypeTest',
+            'createdBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1685,7 +1843,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1715,33 +1874,26 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
+        $response->assertStatus(200);
         // Add a new power type
         $response = $this->post('/power/enum/type/add', [
             'value' => 'Example'
         ]);
-        if ($response->getStatusCode() === 200) {
-            // If the power type doesn't already exist in the database
-            $response->assertStatus(200);
-        } else {
-            $response->assertStatus(429);
-            $response->assertInvalid([
-                'enum_pow_type' => 'The value of the field for the new power type already exist in the data base'
-            ]);
-        }
+        $response->assertStatus(200);
         $this->assertDatabaseHas('enum_power_types', [
             'value' => 'Example'
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -1751,7 +1903,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1784,49 +1937,6 @@ class PowerTest extends TestCase
         $this->assertEquals(0, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upTypeTest')->last()->eqTemp_lifeSheetCreated);
     }
 
-    public function addUser()
-    {
-        if (User::where('user_pseudo', '=', 'Verifier')->count() === 0) {
-            $countUser = User::all()->count();
-            $response = $this->post('register', [
-                'user_firstName' => 'Verifier',
-                'user_lastName' => 'Verifier',
-                'user_pseudo' => 'Verifier',
-                'user_password' => 'VerifierVerifier',
-                'user_confirmation_password' => 'VerifierVerifier',
-            ]);
-            $response->assertStatus(200);
-            $this->assertEquals($countUser + 1, User::all()->count());
-            User::all()->last()->update([
-                'user_menuUserAcessRight' => 1,
-                'user_resetUserPasswordRight' => 1,
-                'user_updateDataInDraftRight' => 1,
-                'user_validateDescriptiveLifeSheetDataRight' => 1,
-                'user_validateOtherDataRight' => 1,
-                'user_updateDataValidatedButNotSignedRight' => 1,
-                'user_updateDescriptiveLifeSheetDataSignedRight' => 1,
-                'user_makeQualityValidationRight' => 1,
-                'user_makeTechnicalValidationRight' => 1,
-                'user_deleteDataNotValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataValidatedLinkedToEqOrMmeRight' => 1,
-                'user_deleteDataSignedLinkedToEqOrMmeRight' => 1,
-                'user_deleteEqOrMmeRight' => 1,
-                'user_makeReformRight' => 1,
-                'user_declareNewStateRight' => 1,
-                'user_updateEnumRight' => 1,
-                'user_deleteEnumRight' => 1,
-                'user_addEnumRight' => 1,
-                'user_updateInformationRight' => 1,
-                'user_makeEqOpValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfEqManagementRight' => 1,
-                'user_makeEqRespValidationRight' => 1,
-                'user_personTrainedToGeneralPrinciplesOfMMEManagementRight' => 1,
-                'user_makeMmeOpValidationRight' => 1,
-                'user_makeMmeRespValidationRight' => 1,
-            ]);
-        }
-    }
-
     /**
      * Test Conception Number: 34
      * Update power name of validated equipment successfully
@@ -1843,7 +1953,8 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_name_of_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -1884,7 +1995,8 @@ class PowerTest extends TestCase
             'eq_remarks' => 'upNameTest',
             'eq_mobility' => true,
             'eq_type' => 'internal',
-            'eq_location' => 'upNameTest'
+            'eq_location' => 'upNameTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -1930,7 +2042,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -1960,17 +2073,17 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upNameTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -1980,7 +2093,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2029,7 +2143,8 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_value_of_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -2070,7 +2185,8 @@ class PowerTest extends TestCase
             'eq_remarks' => 'upValTest',
             'eq_mobility' => true,
             'eq_type' => 'internal',
-            'eq_location' => 'upValTest'
+            'eq_location' => 'upValTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2116,7 +2232,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2146,17 +2263,17 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upValTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2166,7 +2283,8 @@ class PowerTest extends TestCase
             'pow_value' => 138,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2215,7 +2333,8 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_unit_of_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -2257,6 +2376,7 @@ class PowerTest extends TestCase
             'eq_mobility' => true,
             'eq_type' => 'internal',
             'eq_location' => 'upUnitTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2302,7 +2422,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2332,17 +2453,17 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upUnitTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2352,7 +2473,8 @@ class PowerTest extends TestCase
             'pow_value' => 18,
             'pow_unit' => 'w',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2401,7 +2523,8 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_consumption_value_of_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -2443,6 +2566,7 @@ class PowerTest extends TestCase
             'eq_mobility' => true,
             'eq_type' => 'internal',
             'eq_location' => 'upCValTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2488,7 +2612,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2518,17 +2643,17 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCValTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2538,7 +2663,8 @@ class PowerTest extends TestCase
             'pow_value' => 18,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2587,7 +2713,8 @@ class PowerTest extends TestCase
      */
     public function test_update_pow_consumption_unit_of_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -2628,7 +2755,8 @@ class PowerTest extends TestCase
             'eq_remarks' => 'upCUnitTest',
             'eq_mobility' => true,
             'eq_type' => 'internal',
-            'eq_location' => 'upCUnitTest'
+            'eq_location' => 'upCUnitTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2674,7 +2802,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2704,17 +2833,17 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'upCUnitTest')->last()->technicalVerifier_id);
         // Update the power type
         $countPower = Power::all()->count();
         $response = $this->post('/power/verif', [
@@ -2724,7 +2853,8 @@ class PowerTest extends TestCase
             'pow_value' => 18,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 18,
-            'pow_consumptionUnit' => 'wH'
+            'pow_consumptionUnit' => 'wH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2764,7 +2894,8 @@ class PowerTest extends TestCase
      */
     public function test_add_validated_power_to_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -2806,6 +2937,7 @@ class PowerTest extends TestCase
             'eq_mobility' => true,
             'eq_type' => 'internal',
             'eq_location' => 'addValidTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -2829,17 +2961,17 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'addValidTest')->last()->technicalVerifier_id);
         // Add the power type
         $response = $this->post('/power/enum/type/add', [
             'value' => 'Electric'
@@ -2865,7 +2997,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2905,12 +3038,15 @@ class PowerTest extends TestCase
      */
     public function test_consult_power_in_equipment()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $countEquipment = Equipment::all()->count();
         $response = $this->post('equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'consult1Test',
-            'eq_externalReference' => 'consult1Test'
+            'eq_externalReference' => 'consult1Test',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -2958,7 +3094,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3007,12 +3144,15 @@ class PowerTest extends TestCase
      */
     public function test_consult_power_in_equipment_by_type()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $countEquipment = Equipment::all()->count();
         $response = $this->post('equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'consult2Test',
-            'eq_externalReference' => 'consult2Test'
+            'eq_externalReference' => 'consult2Test',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3075,7 +3215,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3134,12 +3275,15 @@ class PowerTest extends TestCase
      */
     public function test_consult_power_names()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $countEquipment = Equipment::all()->count();
         $response = $this->post('equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'consult3Test',
-            'eq_externalReference' => 'consult3Test'
+            'eq_externalReference' => 'consult3Test',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3203,7 +3347,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3237,7 +3382,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3271,7 +3417,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3320,12 +3467,15 @@ class PowerTest extends TestCase
      */
     public function test_delete_power()
     {
+        $user_id = $this->create_user('test');
+
         // Add a new equipment
         $countEquipment = Equipment::all()->count();
         $response = $this->post('equipment/verif', [
             'eq_validate' => 'drafted',
             'eq_internalReference' => 'removeTest',
-            'eq_externalReference' => 'removeTest'
+            'eq_externalReference' => 'removeTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3374,7 +3524,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3402,7 +3553,8 @@ class PowerTest extends TestCase
         ]);
         // Delete the power
         $response = $this->post('/equipment/delete/pow/' . Power::all()->last()->id, [
-            'eq_id' => Equipment::all()->last()->id
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countPower, Power::all()->count());
@@ -3410,12 +3562,13 @@ class PowerTest extends TestCase
 
     /**
      * Test Conception Number: 44
-     * Delete the power previously created of an validated equipment
+     * Delete the power previously created of validated equipment
      * @return void
      */
     public function test_delete_power_from_validated_equipment()
     {
-        $this->addUser();
+        $user_id = $this->create_user('test');
+
         // Add a mass unit
         $response = $this->post('/equipment/enum/massUnit/add', [
             'value' => 'g'
@@ -3456,7 +3609,8 @@ class PowerTest extends TestCase
             'eq_remarks' => 'removePowerTest',
             'eq_mobility' => true,
             'eq_type' => 'internal',
-            'eq_location' => 'removePowerTest'
+            'eq_location' => 'removePowerTest',
+            'createdBy_id' => $user_id
         ]);
         $response->assertStatus(200);
         $countEquipment = Equipment::all()->count();
@@ -3502,7 +3656,8 @@ class PowerTest extends TestCase
             'pow_value' => 220,
             'pow_unit' => 'V',
             'pow_consumptionValue' => 29,
-            'pow_consumptionUnit' => 'kwH'
+            'pow_consumptionUnit' => 'kwH',
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
@@ -3532,19 +3687,20 @@ class PowerTest extends TestCase
         // Technical and quality verification
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->last()->id,
+            'enteredBy_id' => $user_id,
         ]);
         $actualVersion = EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->eqTemp_version;
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->qualityVerifier_id);
-        $this->assertEquals(User::all()->where('user_pseudo', '==', 'Verifier')->first()->id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->technicalVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->qualityVerifier_id);
+        $this->assertEquals($user_id, EquipmentTemp::all()->where('eqTemp_remarks', '==', 'removePowerTest')->last()->technicalVerifier_id);
         // Delete the power
         $response = $this->post('/equipment/delete/pow/' . Power::all()->last()->id, [
-            'eq_id' => Equipment::all()->last()->id
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => $user_id
         ]);
         $response->assertStatus(200);
         $this->assertEquals($countPower, Power::all()->count());

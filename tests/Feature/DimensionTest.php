@@ -27,125 +27,19 @@ class DimensionTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test Conception Number : 1
-     * Saved a dimension as drafted from add menu with no value
-     * Type : /  Name : /  Value : / Unit : /
-     * Expected result : Receiving an error "You must enter a value for your dimension"
-     * @return void
-     */
-    public function test_add_dim_drafted_addMenu_NoValue()
-    {
-        $countDim = Dimension::all()->count();
-        $response = $this->post('/dimension/verif', [
-            'dim_validate' => 'drafted'
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'dim_value' => 'You must enter a value for your dimension'
-        ]);
-    }
-
-    /**
-     * Test Conception Number : 2
-     * Saved a dimension as drafted from add menu with a too long value
-     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : /
-     * Expected result : Receiving an error "You must enter a maximum of 50 characters"
-     * @return void
-     */
-    public function test_add_dim_drafted_addMenu_TooLongValue()
-    {
-
-        $countDim = Dimension::all()->count();
-        $response = $this->post('/dimension/verif', [
-            'dim_validate' => 'drafted',
-            'dim_value' => '123456789123456789123456789123456789123456789123456789'
-        ]);
-        $response->assertStatus(302);
-        $response->assertInvalid([
-            'dim_value' => 'You must enter a maximum of 50 characters'
-        ]);
-    }
-
-    /**
-     * Test Conception Number : 3
-     * Saved successfully a dimension as drafted from add menu
-     * Type : /  Name : /  Value : 47 Unit : /
-     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment
-     * @return void
-     */
-    public function test_add_dim_drafted_addMenu_CorrectValue()
-    {
-        $this->create_equipment_and_user('Test', 'drafted');
-        $countDim = Dimension::all()->count();
-        $response = $this->post('/dimension/verif', [
-            'dim_validate' => 'drafted',
-            'dim_value' => '47'
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/equipment/add/dim', [
-            'dim_validate' => 'drafted',
-            'dim_value' => '47',
-            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id,
-        ]);
-        $response->assertStatus(200);
-        $this->assertCount($countDim + 1, Dimension::all());
-        $this->assertDatabaseHas('dimensions', [
-            'enumDimensionType_id' => NULL,
-            'enumDimensionName_id' => NULL,
-            'dim_value' => 47,
-            'enumDimensionUnit_id' => NULL,
-            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id)->first()->id,
-            'dim_validate' => 'drafted'
-        ]);
-    }
-
-    public function create_equipment_and_user($name, $validate, $verifier = null)
-    {
-        // ->where('eq_validate', '=', $validate)
-        if (Equipment::all()->where('eq_internalReference', '=', $name)->count() === 0) {
-            $countEq = Equipment::all()->count();
-            $response = $this->post('/equipment/verif', [
-                'eq_internalReference' => $name,
-                'eq_externalReference' => $name,
-                'reason' => 'add',
-                'eq_validate' => $validate
-            ]);
-            $response->assertStatus(200);
-            $response = $this->post('/equipment/add', [
-                'eq_internalReference' => $name,
-                'eq_externalReference' => $name,
-                'reason' => 'add',
-                'eq_validate' => $validate
-
-            ]);
-            $response->assertStatus(200);
-            $this->assertCount($countEq + 1, Equipment::all());
-            $this->assertDatabaseHas('equipment', [
-                'eq_internalReference' => $name,
-                'eq_externalReference' => $name,
-            ]);
-            $this->assertDatabaseHas('equipment_temps', [
-                'equipment_id' => Equipment::all()->last()->id,
-                'eqTemp_version' => 1,
-                'eqTemp_validate' => $validate,
-                'eqTemp_lifeSheetCreated' => 0,
-            ]);
-            $this->assertDatabaseHas('pivot_equipment_temp_state', [
-                'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
-            ]);
-        }
-        if ($verifier !== null && User::all()->where('user_pseudo', '=', $verifier)->count() === 0) {
+    public function create_user($name) {
+        if (User::all()->count() == 0) {
             $countUser = User::all()->count();
             $response = $this->post('register', [
-                'user_firstName' => $verifier,
-                'user_lastName' => $verifier,
-                'user_pseudo' => $verifier,
-                'user_password' => $verifier . $verifier,
-                'user_confirmation_password' => $verifier . $verifier,
+                'user_firstName' => $name,
+                'user_lastName' => $name,
+                'user_pseudo' => $name,
+                'user_password' => 'VerifierVerifier',
+                'user_confirmation_password' => 'VerifierVerifier',
             ]);
             $response->assertStatus(200);
             $this->assertCount($countUser + 1, User::all());
+
             User::all()->last()->update([
                 'user_menuUserAcessRight' => 1,
                 'user_resetUserPasswordRight' => 1,
@@ -174,6 +68,124 @@ class DimensionTest extends TestCase
                 'user_makeMmeRespValidationRight' => 1,
             ]);
         }
+        return User::all()->last()->id;
+    }
+
+    /**
+     * Test Conception Number : 1
+     * Saved a dimension as drafted from add menu with no value
+     * Type : /  Name : /  Value : / Unit : /
+     * Expected result : Receiving an error "You must enter a value for your dimension"
+     * @return void
+     */
+    public function test_add_dim_drafted_addMenu_NoValue()
+    {
+        $user_id = $this->create_user('Test');
+
+        $countDim = Dimension::all()->count();
+        $response = $this->post('/dimension/verif', [
+            'dim_validate' => 'drafted',
+            'user_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'dim_value' => 'You must enter a value for your dimension'
+        ]);
+    }
+
+    /**
+     * Test Conception Number : 2
+     * Saved a dimension as drafted from add menu with a too long value
+     * Type : /  Name : /  Value : "123456789123456789123456789123456789123456789123456789" Unit : /
+     * Expected result : Receiving an error "You must enter a maximum of 50 characters"
+     * @return void
+     */
+    public function test_add_dim_drafted_addMenu_TooLongValue()
+    {
+        $user_id = $this->create_user('Test');
+
+        $countDim = Dimension::all()->count();
+        $response = $this->post('/dimension/verif', [
+            'dim_validate' => 'drafted',
+            'dim_value' => '123456789123456789123456789123456789123456789123456789',
+            'user_id' => $user_id,
+        ]);
+        $response->assertStatus(302);
+        $response->assertInvalid([
+            'dim_value' => 'You must enter a maximum of 50 characters'
+        ]);
+    }
+
+    /**
+     * Test Conception Number : 3
+     * Saved successfully a dimension as drafted from add menu
+     * Type : /  Name : /  Value : 47 Unit : /
+     * Expected result : The dimension is correctly saved in data base and correctly linked to the equipment
+     * @return void
+     */
+    public function test_add_dim_drafted_addMenu_CorrectValue()
+    {
+        $this->create_equipment('Test', 'drafted');
+        $countDim = Dimension::all()->count();
+        $response = $this->post('/dimension/verif', [
+            'dim_validate' => 'drafted',
+            'dim_value' => '47',
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/dim', [
+            'dim_validate' => 'drafted',
+            'dim_value' => '47',
+            'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertCount($countDim + 1, Dimension::all());
+        $this->assertDatabaseHas('dimensions', [
+            'enumDimensionType_id' => NULL,
+            'enumDimensionName_id' => NULL,
+            'dim_value' => 47,
+            'enumDimensionUnit_id' => NULL,
+            'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', '=', Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id)->first()->id,
+            'dim_validate' => 'drafted'
+        ]);
+    }
+
+    public function create_equipment($name, $validate)
+    {
+        $user_id = $this->create_user('test');
+        if (Equipment::all()->where('eq_internalReference', '=', $name)->count() === 0) {
+            $countEq = Equipment::all()->count();
+            $response = $this->post('/equipment/verif', [
+                'eq_internalReference' => $name,
+                'eq_externalReference' => $name,
+                'reason' => 'add',
+                'eq_validate' => $validate,
+                'createdBy_id' => User::all()->last()->id,
+            ]);
+            $response->assertStatus(200);
+            $response = $this->post('/equipment/add', [
+                'eq_internalReference' => $name,
+                'eq_externalReference' => $name,
+                'reason' => 'add',
+                'eq_validate' => $validate
+
+            ]);
+            $response->assertStatus(200);
+            $this->assertCount($countEq + 1, Equipment::all());
+            $this->assertDatabaseHas('equipment', [
+                'eq_internalReference' => $name,
+                'eq_externalReference' => $name,
+            ]);
+            $this->assertDatabaseHas('equipment_temps', [
+                'equipment_id' => Equipment::all()->last()->id,
+                'eqTemp_version' => 1,
+                'eqTemp_validate' => $validate,
+                'eqTemp_lifeSheetCreated' => 0,
+            ]);
+            $this->assertDatabaseHas('pivot_equipment_temp_state', [
+                'equipmentTemp_id' => EquipmentTemp::all()->where('equipment_id', Equipment::all()->last()->id)->last()->id,
+            ]);
+        }
     }
 
     /**
@@ -186,7 +198,7 @@ class DimensionTest extends TestCase
     public function test_add_dim_drafted_addMenu_CorrectValues()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -194,7 +206,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -336,10 +349,12 @@ class DimensionTest extends TestCase
      */
     public function test_add_dim_toBeValidated_addMenu_NoValue()
     {
+        $user_id = $this->create_user('test');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
-            'dim_validate' => 'to_be_validated'
+            'dim_validate' => 'to_be_validated',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -356,10 +371,13 @@ class DimensionTest extends TestCase
      */
     public function test_add_dim_toBeValidated_addMenu_TooLongValue()
     {
+        $user_id = $this->create_user('test');
+
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'to_be_validated',
-            'dim_value' => '123456789123456789123456789123456789123456789123456789'
+            'dim_value' => '123456789123456789123456789123456789123456789123456789',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -376,11 +394,12 @@ class DimensionTest extends TestCase
      */
     public function test_add_dim_toBeValidated_addMenu_CorrectValue()
     {
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'to_be_validated',
-            'dim_value' => '8930'
+            'dim_value' => '8930',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -411,7 +430,7 @@ class DimensionTest extends TestCase
     public function test_add_dim_toBeValidated_addMenu_CorrectValues()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -419,7 +438,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'to_be_validated',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -463,9 +483,12 @@ class DimensionTest extends TestCase
      */
     public function test_add_dim_validated_addMenu_NoValue()
     {
+        $user_id = $this->create_user('test');
+
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
-            'dim_validate' => 'validated'
+            'dim_validate' => 'validated',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -483,10 +506,13 @@ class DimensionTest extends TestCase
      */
     public function test_add_dim_validated_addMenu_TooLongValue()
     {
+        $user_id = $this->create_user('test');
+
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
-            'dim_value' => '123456789123456789123456789123456789123456789123456789'
+            'dim_value' => '123456789123456789123456789123456789123456789123456789',
+            'user_id' => $user_id,
         ]);
         $response->assertStatus(302);
         $response->assertInvalid([
@@ -504,11 +530,12 @@ class DimensionTest extends TestCase
      */
     public function test_add_dim_validated_addMenu_CorrectValueOnly()
     {
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
-            'dim_value' => '32'
+            'dim_value' => '32',
+            'user_id' => User::all()->last()->id,
         ]);
 
         $response->assertStatus(429);
@@ -530,13 +557,14 @@ class DimensionTest extends TestCase
     public function test_add_dim_validated_addMenu_CorrectValueUnit()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
 
         $response->assertStatus(429);
@@ -557,13 +585,14 @@ class DimensionTest extends TestCase
     public function test_add_dim_validated_addMenu_CorrectValueName()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
             'dim_value' => '18',
-            'dim_name' => 'Length'
+            'dim_name' => 'Length',
+            'user_id' => User::all()->last()->id,
         ]);
 
         $response->assertStatus(429);
@@ -584,14 +613,15 @@ class DimensionTest extends TestCase
     public function test_add_dim_validated_addMenu_CorrectValueNameUnit()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
             'dim_value' => '18',
             'dim_name' => 'Length',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
 
         $response->assertStatus(429);
@@ -611,13 +641,14 @@ class DimensionTest extends TestCase
     public function test_add_dim_validated_addMenu_CorrectValueType()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
             'dim_value' => '18',
             'dim_type' => 'External',
+            'user_id' => User::all()->last()->id,
         ]);
 
         $response->assertStatus(429);
@@ -638,14 +669,15 @@ class DimensionTest extends TestCase
     public function test_add_dim_validated_addMenu_CorrectValueTypeUnit()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
             'dim_value' => '18',
             'dim_type' => 'External',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
 
         $response->assertStatus(429);
@@ -665,14 +697,15 @@ class DimensionTest extends TestCase
     public function test_add_dim_validated_addMenu_CorrectValueTypeName()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
             'dim_validate' => 'validated',
             'dim_value' => '18',
             'dim_type' => 'External',
-            'dim_name' => 'Length'
+            'dim_name' => 'Length',
+            'user_id' => User::all()->last()->id,
         ]);
 
         $response->assertStatus(429);
@@ -692,7 +725,7 @@ class DimensionTest extends TestCase
     public function test_add_dim_validated_addMenu_CorrectValues()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -700,7 +733,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '18',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -751,7 +785,7 @@ class DimensionTest extends TestCase
     public function test_update_dim_draft_correctValue()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -759,7 +793,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'drafted',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -798,7 +833,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'drafted',
             'dim_value' => '47',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -838,7 +874,7 @@ class DimensionTest extends TestCase
     public function test_update_dim_drafted_correctValues()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -846,7 +882,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'drafted',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -897,7 +934,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Width',
             'dim_validate' => 'drafted',
             'dim_value' => '18',
-            'dim_unit' => 'cm'
+            'dim_unit' => 'cm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -937,7 +975,7 @@ class DimensionTest extends TestCase
     public function test_update_dim_toBeValidated_correctValue()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -945,7 +983,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'to_be_validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -984,7 +1023,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'to_be_validated',
             'dim_value' => '8930',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -1023,7 +1063,7 @@ class DimensionTest extends TestCase
     public function test_update_dim_toBeValidated_correctValues()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -1031,7 +1071,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'to_be_validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1082,7 +1123,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Width',
             'dim_validate' => 'to_be_validated',
             'dim_value' => '18',
-            'dim_unit' => 'cm'
+            'dim_unit' => 'cm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -1122,7 +1164,7 @@ class DimensionTest extends TestCase
     public function test_update_dim_validated_correctValues()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -1130,7 +1172,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1181,7 +1224,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Width',
             'dim_validate' => 'validated',
             'dim_value' => '18',
-            'dim_unit' => 'cm'
+            'dim_unit' => 'cm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -1221,7 +1265,7 @@ class DimensionTest extends TestCase
     public function test_updateType_dim_validated()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('Test', 'drafted', 'Verifier');
+        $this->create_equipment('Test', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -1229,7 +1273,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1284,13 +1329,13 @@ class DimensionTest extends TestCase
         $response->assertStatus(200);
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -1301,8 +1346,8 @@ class DimensionTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_version' => 1,
             'eqTemp_lifeSheetCreated' => true,
-            'qualityVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
-            'technicalVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_validate' => 'validated',
             'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'Test')->first()->id,
 
@@ -1315,6 +1360,7 @@ class DimensionTest extends TestCase
             'dim_validate' => 'validated',
             'dim_value' => '29',
             'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -1366,7 +1412,7 @@ class DimensionTest extends TestCase
     public function test_updateName_dim_validated()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestUpdate1', 'drafted', 'Verifier');
+        $this->create_equipment('TestUpdate1', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -1374,7 +1420,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1429,13 +1476,13 @@ class DimensionTest extends TestCase
         $response->assertStatus(200);
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestUpdate1')->first()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestUpdate1')->first()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -1446,8 +1493,8 @@ class DimensionTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_version' => 1,
             'eqTemp_lifeSheetCreated' => true,
-            'qualityVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
-            'technicalVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_validate' => 'validated',
             'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'TestUpdate1')->first()->id,
 
@@ -1460,6 +1507,7 @@ class DimensionTest extends TestCase
             'dim_validate' => 'validated',
             'dim_value' => '29',
             'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -1511,7 +1559,7 @@ class DimensionTest extends TestCase
     public function test_updateValue_dim_validated()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestUpdate2', 'drafted', 'Verifier');
+        $this->create_equipment('TestUpdate2', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -1519,7 +1567,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1570,13 +1619,13 @@ class DimensionTest extends TestCase
         $response->assertStatus(200);
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestUpdate2')->first()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestUpdate2')->first()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -1587,8 +1636,8 @@ class DimensionTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_version' => 1,
             'eqTemp_lifeSheetCreated' => true,
-            'qualityVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
-            'technicalVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_validate' => 'validated',
             'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'TestUpdate2')->first()->id,
 
@@ -1601,6 +1650,7 @@ class DimensionTest extends TestCase
             'dim_validate' => 'validated',
             'dim_value' => '30',
             'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -1651,7 +1701,7 @@ class DimensionTest extends TestCase
     public function test_updateUnit_dim_validated()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestUpdate3', 'drafted', 'Verifier');
+        $this->create_equipment('TestUpdate3', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -1659,7 +1709,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1714,13 +1765,13 @@ class DimensionTest extends TestCase
         $response->assertStatus(200);
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestUpdate3')->first()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestUpdate3')->first()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -1731,8 +1782,8 @@ class DimensionTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_version' => 1,
             'eqTemp_lifeSheetCreated' => true,
-            'qualityVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
-            'technicalVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_validate' => 'validated',
             'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'TestUpdate3')->first()->id,
 
@@ -1745,6 +1796,7 @@ class DimensionTest extends TestCase
             'dim_validate' => 'validated',
             'dim_value' => '29',
             'dim_unit' => 'cm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $url = '/equipment/update/dim/' . Dimension::all()->last()->id;
@@ -1791,7 +1843,7 @@ class DimensionTest extends TestCase
     public function test_addFromUpdate_dim()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestAddUpdate', 'drafted', 'Verifier');
+        $this->create_equipment('TestAddUpdate', 'drafted');
 
         $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'TestAddUpdate')->first()->id, [
             'eq_validate' => 'validated',
@@ -1811,13 +1863,13 @@ class DimensionTest extends TestCase
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestAddUpdate')->first()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestAddUpdate')->first()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -1828,8 +1880,8 @@ class DimensionTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_version' => 1,
             'eqTemp_lifeSheetCreated' => true,
-            'qualityVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
-            'technicalVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_validate' => 'validated',
             'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'TestAddUpdate')->first()->id,
         ]);
@@ -1840,7 +1892,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Width',
             'dim_validate' => 'validated',
             'dim_value' => '41',
-            'dim_unit' => 'km'
+            'dim_unit' => 'km',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1899,7 +1952,7 @@ class DimensionTest extends TestCase
     public function test_consult_dim()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestConsult', 'drafted', 'Verifier');
+        $this->create_equipment('TestConsult', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -1907,7 +1960,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -1925,7 +1979,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Width',
             'dim_validate' => 'validated',
             'dim_value' => '41',
-            'dim_unit' => 'cm'
+            'dim_unit' => 'cm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -2025,7 +2080,7 @@ class DimensionTest extends TestCase
     public function test_consultByType_dim()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestConsultType', 'drafted', 'Verifier');
+        $this->create_equipment('TestConsultType', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -2033,7 +2088,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -2051,7 +2107,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Width',
             'dim_validate' => 'validated',
             'dim_value' => '41',
-            'dim_unit' => 'cm'
+            'dim_unit' => 'cm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -2159,7 +2216,7 @@ class DimensionTest extends TestCase
     public function test_delete_dim()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestDelete', 'drafted');
+        $this->create_equipment('TestDelete', 'drafted');
 
         $countDim = Dimension::all()->count();
         $response = $this->post('/dimension/verif', [
@@ -2167,7 +2224,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -2205,6 +2263,7 @@ class DimensionTest extends TestCase
         $countDim = Dimension::all()->count();
         $response = $this->post('/equipment/delete/dim/' . Dimension::all()->last()->id, [
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'TestDelete')->first()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertCount($countDim - 1, Dimension::all());
@@ -2236,7 +2295,7 @@ class DimensionTest extends TestCase
     public function test_delete_dimFromValidatedEq()
     {
         $this->create_required_enum();
-        $this->create_equipment_and_user('TestDeleteValid', 'drafted', 'Verifier');
+        $this->create_equipment('TestDeleteValid', 'drafted');
 
         $response = $this->post('/equipment/update/' . Equipment::all()->where('eq_internalReference', '=', 'TestDeleteValid')->first()->id, [
             'eq_validate' => 'validated',
@@ -2260,7 +2319,8 @@ class DimensionTest extends TestCase
             'dim_name' => 'Length',
             'dim_validate' => 'validated',
             'dim_value' => '29',
-            'dim_unit' => 'mm'
+            'dim_unit' => 'mm',
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $response = $this->post('/equipment/add/dim', [
@@ -2297,13 +2357,13 @@ class DimensionTest extends TestCase
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestDeleteValid')->first()->id, [
             'reason' => 'technical',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
         $response = $this->post('/equipment/validation/' . Equipment::all()->where('eq_internalReference', '=', 'TestDeleteValid')->first()->id, [
             'reason' => 'quality',
-            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'enteredBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
 
@@ -2315,8 +2375,8 @@ class DimensionTest extends TestCase
         $this->assertDatabaseHas('equipment_temps', [
             'eqTemp_version' => 1,
             'eqTemp_lifeSheetCreated' => true,
-            'qualityVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
-            'technicalVerifier_id' => User::all()->where('user_pseudo', '=', 'Verifier')->first()->id,
+            'qualityVerifier_id' => User::all()->last()->id,
+            'technicalVerifier_id' => User::all()->last()->id,
             'eqTemp_validate' => 'validated',
             'equipment_id' => Equipment::all()->where('eq_internalReference', '=', 'TestDeleteValid')->first()->id,
         ]);
@@ -2324,6 +2384,7 @@ class DimensionTest extends TestCase
         $countDim = Dimension::all()->count();
         $response = $this->post('/equipment/delete/dim/' . Dimension::all()->last()->id, [
             'eq_id' => Equipment::all()->where('eq_internalReference', '=', 'TestDeleteValid')->first()->id,
+            'user_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(200);
         $this->assertCount($countDim - 1, Dimension::all());

@@ -30,6 +30,7 @@
                     :placeholder="placeholer"
                     v-model="data"
                     v-on:input="updateValue(data)"
+                    :disabled="isDisabled"
                 >
                 <div v-if="!this.state()" class="invalid-feedback">
                     {{this.invalidFeedBack()}}

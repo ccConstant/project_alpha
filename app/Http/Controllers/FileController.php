@@ -318,7 +318,7 @@ class FileController extends Controller
         $equipment=Equipment::findOrfail($request->eq_id) ;
         //We search the most recently equipment temp of the equipment
         $mostRecentlyEqTmp = EquipmentTemp::where('equipment_id', '=', $request->eq_id)->latest()->first();
-        
+
         $user=User::findOrFail($request->user_id);
         $file=File::findOrFail($id);
 
@@ -343,9 +343,9 @@ class FileController extends Controller
                 ]
             ], 429);
         }
-        
-        
-        
+
+
+
         //We checked if the most recently equipment temp is validate and if a life sheet has been already created.
         //If the equipment temp is validated and a life sheet has been already created, we need to update the equipment temp and increase it's version (that's mean another life sheet version) for update dimension
         if ($mostRecentlyEqTmp->qualityVerifier_id!=null){
@@ -626,6 +626,7 @@ class FileController extends Controller
         $mostRecentlyMmeTmp = MmeTemp::where('mme_id', '=', $request->mme_id)->latest()->first();
 
         $file=File::findOrFail($id);
+        $user = User::findOrFail($request->user_id);
 
         if (($file->file_validate=="drafted" || $file->file_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
             return response()->json([
