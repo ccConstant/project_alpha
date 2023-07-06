@@ -109,6 +109,7 @@ export default {
         return{
             data: this.value,
             returnedText_info:this.info_text,
+            errors: this.Errors
         }
     },
     /*--------Declaration of the differents methods:--------
@@ -118,7 +119,7 @@ export default {
     methods: {
         updateValue: function (value) {
             this.$emit('input', value);
-            this.Errors = [];
+            this.errors = [];
         },
         hasError(errors){
             return(errors.length>0);

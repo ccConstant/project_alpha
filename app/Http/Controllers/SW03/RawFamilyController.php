@@ -3,7 +3,7 @@
 /*
 * Filename : RawFamilyController.php
 * Creation date : 28 Apr 2023
-* Update date : 28 Apr 2023
+* Update date : 5 Jul 2023
 * This file is used to link the view files and the database that concern the raw family table.
 * For example : add a raw family in the data base, update a raw family...
 */
@@ -138,6 +138,11 @@ class RawFamilyController extends Controller
         return response()->json($rawFamily_id) ;
     }
 
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted for insert with the route : /raw/family/send (post)
+     * Get all the family raw corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
     public function send_rawFamilies(){
         $rawFamilies=RawFamily::all() ;
         $array = [];
@@ -165,8 +170,6 @@ class RawFamilyController extends Controller
                 'rawFam_ref' => $rawFamily->rawFam_ref,
                 'rawFam_design' => $rawFamily->rawFam_design,
                 'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
-                'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
-                'rawFam_variablesCharacDesign' => $rawFamily->rawFam_variablesCharacDesign,
                 'rawFam_validate' => $rawFamily->rawFam_validate,
                 'rawFam_active' => $rawFamily->rawFam_active,
                 'rawFam_purchasedBy' => $purchaseBy,
@@ -175,10 +178,6 @@ class RawFamilyController extends Controller
                 'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId,
                 'rawFam_technicalReviewerName' => $technicalReviewer,
                 'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
-                'rawFam_created_at' => $rawFamily->created_at,
-                'rawFam_updated_at' => $rawFamily->updated_at,
-                'rawFam_genRef' => $rawFamily->rawFam_genRef,
-                'rawFam_genDesign' => $rawFamily->rawFam_genDesign,
                 'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion,
             ];
             array_push($array, $obj);
@@ -186,6 +185,12 @@ class RawFamilyController extends Controller
         return response()->json($array);
     }
 
+     /**
+     * Function call by ArticleFamilyForm.vue when the form is submitted for insert with the route : /raw/family/send/{id} (post)
+     * Get the family raw corresponding of the id parameter
+     * The id parameter corresponds to the id of the family raw from which we want the informations
+     * @return \Illuminate\Http\Response
+     */
     public function send_rawFamily($id) {
         $rawFamily = RawFamily::find($id);
         $purchaseBy = EnumPurchasedBy::find($rawFamily->enumPurchasedBy_id);
@@ -211,8 +216,6 @@ class RawFamilyController extends Controller
             'rawFam_ref' => $rawFamily->rawFam_ref,
             'rawFam_design' => $rawFamily->rawFam_design,
             'rawFam_drawingPath' => $rawFamily->rawFam_drawingPath,
-            'rawFam_variablesCharac' => $rawFamily->rawFam_variablesCharac,
-            'rawFam_variablesCharacDesign' => $rawFamily->rawFam_variablesCharacDesign,
             'rawFam_validate' => $rawFamily->rawFam_validate,
             'rawFam_active' => $rawFamily->rawFam_active,
             'rawFam_purchasedBy' => $purchaseBy,
@@ -221,15 +224,16 @@ class RawFamilyController extends Controller
             'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId,
             'rawFam_technicalReviewerName' => $technicalReviewer,
             'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
-            'rawFam_created_at' => $rawFamily->created_at,
-            'rawFam_updated_at' => $rawFamily->updated_at,
-            'rawFam_genRef' => $rawFamily->rawFam_genRef,
-            'rawFam_genDesign' => $rawFamily->rawFam_genDesign,
             'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion,
         ];
         return response()->json($obj);
     }
 
+    /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route :/raw/family/update/{id} (post)
+     * Update an enregistrement of raw family in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the raw family we want to update
+     * */
     public function update_rawFamily(Request $request, $id) {
         $rawFamily = RawFamily::findOrfail($id);
         if ($rawFamily->rawFam_signatureDate != null) {
@@ -246,21 +250,22 @@ class RawFamilyController extends Controller
             'rawFam_ref' => $request->artFam_ref,
             'rawFam_design' => $request->artFam_design,
             'rawFam_drawingPath' => $request->artFam_drawingPath,
-            'rawFam_variablesCharac' => $request->artFam_variablesCharac,
-            'rawFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,
-            'rawFam_version' => $request->artFam_version,
             'rawFam_qualityApproverId' => null,
             'rawFam_technicalReviewerId' => null,
             'rawFam_signatureDate' => null,
             'rawFam_validate' => $request->artFam_validate,
             'rawFam_active' => $request->artFam_active,
-            'rawFam_genRef' => $request->artFam_genRef,
-            'rawFam_genDesign' => $request->artFam_genDesign,
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($rawFamily);
     }
 
+    /**
+     * Function call by ArticleConsult.vue when the form is submitted for update with the route : /raw/verifValidation/{id} (post)
+     * Tell if the raw family is ready to be validated
+     * The id parameter is the id of the raw family in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
     public function verifValidation_rawFamily($id) {
         $article = RawFamily::all()->where('id', '==', $id)->first();
         if ($article->rawFam_validate !== 'validated') {
@@ -294,6 +299,12 @@ class RawFamilyController extends Controller
         }
     }
 
+    /**
+     * Function call by ArticleConsult.vue when the form is submitted for update with the route : /raw/validation/id (post)
+     * Tell if the raw family is ready to be validated
+     * The id parameter is the id of the raw in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
     public function validate_rawFamily(Request $request, $id) {
         $rawFamily = RawFamily::findOrfail($id);
         if ($request->reason === 'technical') {

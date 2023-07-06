@@ -14,6 +14,7 @@ namespace App\Models\SW03;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SW03\ConsFamily;
+use App\Models\SW03\ConsSubFamily;
 use App\Models\User;
 
 class ConsFamilyMember extends Model
@@ -21,21 +22,11 @@ class ConsFamilyMember extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['consMb_dimension', 'consMb_technicalReviewerId', 'consMb_qualityApproverId', 'consMb_signatureDate', 'consFam_id', 'consMb_design', 'consMb_sameValues'] ;
+    protected $fillable = ['consMb_ref',  'consSubFam_id', 'consMb_design', 'consMb_validate' ] ;
 
     //Define the relation between a cons_family_member and the cons_family which he is linked : a cons_family_member can be linked to only one cons_family
-    public function cons_family(){
-        return $this->belongsTo(ConsFamily::class, 'consFam_id') ;
-    }
-
-    //Define the relation between a consFamilyMember and the user who approved it : a consFamilyMember has only one qualityApprover
-    public function quality_approver(){
-        return $this->belongsTo(User::class, 'consMb_qualityApproverId') ;
-    }
-
-     //Define the relation between a consFamilyMember and the user who reviewed it : a consFamilyMember has only one technicalReviewer
-     public function technical_reviewer(){
-        return $this->belongsTo(User::class, 'consMb_technicalReviewerId') ;
+    public function cons_sub_family(){
+        return $this->belongsTo(ConsSubFamily::class, 'consSubFam_id') ;
     }
 
 }

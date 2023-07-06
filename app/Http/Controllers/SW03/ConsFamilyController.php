@@ -3,7 +3,7 @@
 /*
 * Filename : ConsFamilyController.php
 * Creation date : 2 May 2023
-* Update date : 4 Jul 2023
+* Update date : 5 Jul 2023
 * This file is used to link the view files and the database that concern the cons family table.
 * For example : add a cons family in the data base, update a cons family...
 */
@@ -146,6 +146,11 @@ class ConsFamilyController extends Controller
         return response()->json($consFamily_id) ;
     }
 
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted for insert with the route : /cons/family/send (post)
+     * Get all the family cons corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
     public function send_consFamilies(){
         $consFamilies=ConsFamily::all() ;
         $array = [];
@@ -173,8 +178,6 @@ class ConsFamilyController extends Controller
                 'consFam_ref' => $consFamily->consFam_ref,
                 'consFam_design' => $consFamily->consFam_design,
                 'consFam_drawingPath' => $consFamily->consFam_drawingPath,
-                'consFam_variablesCharac' => $consFamily->consFam_variablesCharac,
-                'consFam_variablesCharacDesign' => $consFamily->consFam_variablesCharacDesign,
                 'consFam_version' => $consFamily->consFam_version,
                 'consFam_nbrVersion' => $consFamily->consFam_nbrVersion,
                 'consFam_validate' => $consFamily->consFam_validate,
@@ -185,16 +188,19 @@ class ConsFamilyController extends Controller
                 'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
                 'consFam_technicalReviewerName' => $technicalReviewer,
                 'consFam_signatureDate' => $consFamily->consFam_signatureDate,
-                'consFam_created_at' => $consFamily->created_at,
-                'consFam_updated_at' => $consFamily->updated_at,
-                'consFam_genRef' => $consFamily->consFam_genRef,
-                'consFam_genDesign' => $consFamily->consFam_genDesign,
             ];
             array_push($array, $obj);
         }
         return response()->json($array);
     }
 
+
+     /**
+     * Function call by ArticleFamilyForm.vue when the form is submitted for insert with the route : /cons/family/send/{id} (post)
+     * Get the family cons corresponding of the id parameter
+     * The id parameter corresponds to the id of the family cons from which we want the informations
+     * @return \Illuminate\Http\Response
+     */
     public function send_consFamily($id) {
         $consFamily = ConsFamily::find($id);
         $purchaseBy = EnumPurchasedBy::find($consFamily->enumPurchasedBy_id);
@@ -220,8 +226,6 @@ class ConsFamilyController extends Controller
             'consFam_ref' => $consFamily->consFam_ref,
             'consFam_design' => $consFamily->consFam_design,
             'consFam_drawingPath' => $consFamily->consFam_drawingPath,
-            'consFam_variablesCharac' => $consFamily->consFam_variablesCharac,
-            'consFam_variablesCharacDesign' => $consFamily->consFam_variablesCharacDesign,
             'consFam_version' => $consFamily->consFam_version,
             'consFam_nbrVersion' => $consFamily->consFam_nbrVersion,
             'consFam_validate' => $consFamily->consFam_validate,
@@ -232,14 +236,15 @@ class ConsFamilyController extends Controller
             'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
             'consFam_technicalReviewerName' => $technicalReviewer,
             'consFam_signatureDate' => $consFamily->consFam_signatureDate,
-            'consFam_created_at' => $consFamily->created_at,
-            'consFam_updated_at' => $consFamily->updated_at,
-            'consFam_genRef' => $consFamily->consFam_genRef,
-            'consFam_genDesign' => $consFamily->consFam_genDesign,
         ];
         return response()->json($obj);
     }
 
+    /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route :/cons/family/update/{id} (post)
+     * Update an enregistrement of cons family in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the cons family we want to update
+     * */
     public function update_consFamily(Request $request, $id) {
         $consFamily = ConsFamily::findOrfail($id);
         if ($consFamily->consFam_signatureDate != null) {
@@ -256,21 +261,23 @@ class ConsFamilyController extends Controller
             'consFam_ref' => $request->artFam_ref,
             'consFam_design' => $request->artFam_design,
             'consFam_drawingPath' => $request->artFam_drawingPath,
-            'consFam_variablesCharac' => $request->artFam_variablesCharac,
-            'consFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,
             'consFam_version' => $request->artFam_version,
             'consFam_qualityApproverId' => null,
             'consFam_technicalReviewerId' => null,
             'consFam_signatureDate' => null,
             'consFam_validate' => $request->artFam_validate,
             'consFam_active' => $request->artFam_active,
-            'consFam_genRef' => $request->artFam_genRef,
-            'consFam_genDesign' => $request->artFam_genDesign,
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($consFamily);
     }
 
+    /**
+     * Function call by ArticleConsult.vue when the form is submitted for update with the route : /cons/verifValidation/{id} (post)
+     * Tell if the cons family is ready to be validated
+     * The id parameter is the id of the cons family in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
     public function verifValidation_consFamily($id) {
         $article = ConsFamily::all()->where('id', '==', $id)->first();
         if ($article->consFam_validate !== 'validated') {
@@ -304,6 +311,12 @@ class ConsFamilyController extends Controller
         }
     }
 
+    /**
+     * Function call by ArticleConsult.vue when the form is submitted for update with the route : /cons/validation/id (post)
+     * Tell if the cons family is ready to be validated
+     * The id parameter is the id of the cons in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
     public function validate_consFamily(Request $request, $id) {
         $consFamily = ConsFamily::findOrfail($id);
         if ($request->reason === 'technical') {

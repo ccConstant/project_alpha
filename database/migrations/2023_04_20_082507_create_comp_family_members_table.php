@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_20_082307_create_comp_family_members_table.php
 * Creation date : 20 Apr 2023
-* Update date : 28 Jun 2023
+* Update date : 5 Jul 2023
 * This file is used to create the table "comp_family_members" in the data base. In this file, we can see the different
 * attribute of this table (dimension, technicalReviewer..) and how they are defined (string, boolean, unique or not)
 */
@@ -23,8 +23,9 @@ class CreateCompFamilyMembersTable extends Migration
     {
         Schema::create('comp_family_members', function (Blueprint $table) {
             $table->id();
-            $table->string('compMb_dimension') ->nullable();
+            $table->string('compMb_ref') ->nullable();
             $table->string('compMb_design')->nullable();
+            $table->enum('compMb_validate',  ['drafted', 'to_be_validated', 'validated']) ;
            // $table->boolean('compMb_sameValues')->default(true);
             $table->unsignedBigInteger('compSubFam_id') ->nullable();
             $table->foreign('compSubFam_id')->references('id')->on('comp_sub_families') ;

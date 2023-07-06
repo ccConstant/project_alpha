@@ -19,8 +19,7 @@
                 v-for="(component, key) in components"
                 :key="component.key"
                 :is="component.comp"
-                :dimension="component.dimension"
-                :sameValues="component.sameValues"
+                :reference="component.reference"
                 :designation="component.designation"
                 :divClass="component.className"
                 :id="component.id"
@@ -96,6 +95,10 @@ export default {
         artSubFam_ref: {
             type: String
         },
+        importedMembers: {
+            type: Array,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
         components: Array in which will be added the data of a component
@@ -118,7 +121,7 @@ export default {
             data_artFam_ref: this.artFam_ref,
             data_artSubFam_ref: this.artSubFam_ref,
             loaded: false,
-            familyMember: [],
+            familyMember: this.importedMembers
         };
     },
     methods: {
@@ -131,13 +134,12 @@ export default {
             });
         },
         /*Function for adding an imported dimension form with his data*/
-        addImportedComponent(familyMember_dimension, familyMember_sameValues, familyMember_design,familyMember_className, id) {
+        addImportedComponent(familyMember_reference, familyMember_designation,familyMember_className, id) {
             this.components.push({
                 comp: 'ArticleFamilyMemberForm',
                 key: this.uniqueKey++,
-                dimension: familyMember_dimension,
-                sameValues: familyMember_sameValues,
-                designation: familyMember_design,
+                reference: familyMember_reference,
+                designation: familyMember_designation,
                 className: familyMember_className,
                 id: id
             });
@@ -151,10 +153,9 @@ export default {
                 this.loaded = true;
             } else {
                 for (const dt of this.familyMember) {
-                    const className = "importedPurSpe" + dt.id;
+                    const className = "importedFamilyMembers" + dt.id;
                     this.addImportedComponent(
-                        dt.dimension,
-                        Boolean(dt.sameValues),
+                        dt.reference,
                         dt.designation,
                         className,
                         dt.id
@@ -192,11 +193,6 @@ export default {
     /*All functions inside the created option are called after the component has been created.*/
     created() {
         /*If the user chooses importation doc control*/
-        console.log("ReferenceAnArticleFamilyMember")
-        console.log(this.artFam_ref)
-        console.log(this.artSubFam_ref)
-        console.log(this.data_artFam_ref)
-        console.log(this.data_artSubFam_ref)
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
             if (this.data_art_type === 'comp') {

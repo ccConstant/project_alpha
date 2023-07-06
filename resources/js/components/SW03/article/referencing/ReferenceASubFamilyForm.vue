@@ -31,6 +31,7 @@
                 :art_type="data_art_type.toUpperCase()"
                 :art_id="data_art_id"
                 :art_ref="data_art_ref"
+                :validate="component.validate"
                 @deleteStorageCondition="getContent(key)"/>
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
@@ -124,16 +125,20 @@ export default {
             });
         },
         /*Function for adding an imported dimension form with his data*/
-        addImportedComponent(subFam_reference, subFam_designation, subFam_drawingPath, subFam_version, subFam_purchasedBy, id) {
+        addImportedComponent(artFam_ref, artFam_type, artFam_id, subFam_reference, subFam_designation, subFam_drawingPath, subFam_version, subFam_purchasedBy, className, id, subFam_validate) {
             this.components.push({
                 comp: 'ArticleSubFamilyForm',
+                art_ref: artFam_ref,
                 key: this.uniqueKey++,
                 reference: subFam_reference,
                 designation: subFam_designation,
                 drawingPath: subFam_drawingPath,
+                validate: subFam_validate,
                 version:subFam_version,
+                art_type: artFam_type,
+                art_id: artFam_id,
                 purchasedBy:subFam_purchasedBy,
-                className: familyMember_className,
+                className: className,
                 id: id
             });
         },
@@ -148,13 +153,17 @@ export default {
                 for (const dt of this.subFamilies) {
                     const className = "importedSubFamily" + dt.id;
                     this.addImportedComponent(
+                        this.data_art_ref,
+                        this.data_art_type,
+                        this.data_art_id,
                         dt.reference,
                         dt.designation,
                         dt.drawingPath,
                         dt.version,
                         dt.purchasedBy,
                         className,
-                        dt.id
+                        dt.id,
+                        dt.validate,
                     );
                 }
             }
@@ -187,44 +196,20 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("ReferenceASubFamilyForm")
-        console.log(this.artFam_type)
-        console.log(this.data_art_type)
-        this.loaded=true;
-        /*If the user chooses importation doc control
         if (this.import_id !== null) {
-            /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported
-            if (this.data_art_type === 'comp') {
-                axios.get('/comp/mb/send/'+this.import_id)
-                    .then(response => {
-                        this.familyMember = response.data;
-                        this.importFamilyMembers();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            } else if (this.data_art_type === 'cons') {
-                axios.get('/cons/mb/send/'+this.import_id)
-                    .then(response => {
-                        this.familyMember = response.data;
-                        this.importFamilyMembers();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            } else if (this.data_art_type === 'raw') {
-                axios.get('/raw/mb/send/'+this.import_id)
-                    .then(response => {
-                        this.familyMember = response.data;
-                        this.importFamilyMembers();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            }
+            /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
+            axios.get('/'+this.data_art_type+'/subFam/send/'+this.import_id)
+                .then(response => {
+                    this.subFamilies = response.data;
+                    this.importSubFamilies();
+                    this.loaded = true;
+                })
+                .catch(error => {
+                });
         } else {
+            console.log("coucou")
             this.loaded = true;
-        }*/
+        }
     }
 }
 </script>

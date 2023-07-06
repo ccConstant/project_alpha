@@ -156,4 +156,84 @@ class ConsSubFamilyController extends Controller
 
         return response()->json($consSubFamily_id) ;
     }
+
+      /**
+     * Function call by ListOfArticle.vue when the form is submitted for insert with the route : /cons/subFam/send (post)
+     * Get all the family cons corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_consSubFamilies($id){
+        $consSubFamilies = ConsSubFamily::where('consFam_id', '=', $id)->get();
+        $array = [];
+        foreach ($consSubFamilies as $consSubFamily) {
+            $purchaseBy = EnumPurchasedBy::find($consSubFamily->enumPurchasedBy_id);
+            if ($purchaseBy != null) {
+                $purchaseBy = $purchaseBy->first()->value;
+            } else {
+                $purchaseBy = null;
+            }
+            $qualityApprover = User::find($consSubFamily->consSubFam_qualityApproverId);
+            if ($qualityApprover != null){
+                $qualityApprover = strtoupper($qualityApprover->user_lastName) . ' ' . $qualityApprover->user_firstName;
+            } else {
+                $qualityApprover = null;
+            }
+            $technicalReviewer = User::find($consSubFamily->consSubFam_technicalReviewerId);
+            if ($technicalReviewer != null){
+                $technicalReviewer = strtoupper($technicalReviewer->user_lastName) . ' ' . $technicalReviewer->user_firstName;
+            } else {
+                $technicalReviewer = null;
+            }
+            $obj = [
+                'id' => $consSubFamily->id,
+                'reference' => $consSubFamily->consSubFam_ref,
+                'designation' => $consSubFamily->consSubFam_design,
+                'drawingPath' => $consSubFamily->consSubFam_drawingPath,
+                'version' => $consSubFamily->consSubFam_version,
+                'nbrVersion' => $consSubFamily->consSubFam_nbrVersion,
+                'validate' => $consSubFamily->consSubFam_validate,
+                'active' => $consSubFamily->consSubFam_active,
+                'purchasedBy' => $purchaseBy,
+                'qualityApproverId' => $consSubFamily->consSubFam_qualityApproverId,
+                'qualityApproverName' => $qualityApprover,
+                'technicalReviewerId' => $consSubFamily->consSubFam_technicalReviewerId,
+                'technicalReviewerName' => $technicalReviewer,
+                'signatureDate' => $consSubFamily->consSubFam_signatureDate,
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route :/cons/family/update/{id} (post)
+     * Update an enregistrement of cons family in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the cons family we want to update
+     * */
+    public function update_consSubFamily(Request $request, $id) {
+        $consSubFamily = ConsSubFamily::findOrfail($id);
+        if ($consSubFamily->consSubFam_signatureDate != null) {
+            $consSubFamily->update([
+                'consSubFam_nbrVersion' => $consSubFamily->consSubFam_nbrVersion + 1,
+            ]);
+        }
+        $enum=NULL;
+        if ($request->artSubFam_purchasedBy!="" && $request->artSubFam_purchasedBy!=NULL){
+            $enum=EnumPurchasedBy::where('value', '=', $request->artSubFam_purchasedBy)->first() ;
+            $enum=$enum->id ;
+        }
+        $consSubFamily->update([
+            'consSubFam_ref' => $request->artSubFam_ref,
+            'consSubFam_design' => $request->artSubFam_design,
+            'consSubFam_drawingPath' => $request->artSubFam_drawingPath,
+            'consSubFam_version' => $request->artSubFam_version,
+            'consSubFam_qualityApproverId' => null,
+            'consSubFam_technicalReviewerId' => null,
+            'consSubFam_signatureDate' => null,
+            'consSubFam_validate' => $request->artSubFam_validate,
+            'consSubFam_active' => $request->artSubFam_active,
+            'enumPurchasedBy_id' => $enum,
+        ]);
+        return response()->json($consSubFamily);
+    }
 }

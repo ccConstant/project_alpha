@@ -1,3 +1,9 @@
+<!--File name : ArticleUpdate.vue -->
+<!--Creation date : 25 May 2023-->
+<!--Update date : 5 Jul 2023-->
+<!--Vue Component of the update sheet of an article-->
+
+
 <template>
     <div v-if="loaded===false" >
         <b-spinner variant="primary"></b-spinner>
@@ -12,14 +18,12 @@
             :designation="article.design"
             :drawingPath="article.drawingPath"
             :purchasedBy="article.purchasedBy"
-            :variablesCharac="article.variablesCharac"
-            :variablesCharacDesign="article.variablesCharacDesign"
             :version="article.version"
             :type="articleType.toUpperCase()"
+            :ref="articleRef"
             :active="article.active === 1"
-            :genRef="article.genRef"
-            :genDesign="article.genDesign"
-            @generic="genericSetter"
+            :validate="article.validate"
+           
             modifMod
         />
         <div class="accordion">
@@ -27,20 +31,17 @@
                 <h2 class="accordion-header" id="headingOne">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Article Family Member
+                        Article Sub Family
                     </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
                     <div class="accordion-body">
-                        <ReferenceAnArticleFamilyMember
+                        <ReferenceASubFamily
                             modifMod
-                            :artType="this.articleType"
+                            :artFam_type="this.articleType"
                             :artFam_id="this.articleID"
                             :import_id="this.articleID"
-                            :genRef="this.generic.genRef"
-                            :genDesign="this.generic.genDesign"
-                            :varCharac="this.generic.variablesCharac"
-                            :varCharacDesign="this.generic.variablesCharacDesign"
+                            :artFam_ref="this.article.ref"
                         />
                     </div>
                 </div>
@@ -134,14 +135,14 @@ import ValidationButton from "../../../button/ValidationButton.vue";
 import ArticleFamilyForm from "../referencing/ArticleFamilyForm.vue";
 import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp.vue";
 import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
-import ReferenceAnArticleFamilyMember from "../referencing/ReferenceAnArticleFamilyMember.vue";
+import ReferenceASubFamily from "../referencing/ReferenceASubFamilyForm.vue";
 import ReferenceAnArticlePurchaseSpecification from "../referencing/ReferenceAnArticlePurchaseSpecification.vue";
 import ReferenceAStorageCondition from "../referencing/ReferenceAStorageCondition.vue";
 export default {
     components: {
         ReferenceAStorageCondition,
         ReferenceAnArticlePurchaseSpecification,
-        ReferenceAnArticleFamilyMember,
+        ReferenceASubFamily,
         ReferenceACrit,
         ReferenceAnIncmgInsp,
         ArticleFamilyForm,
@@ -152,7 +153,8 @@ export default {
     data() {
         return {
             articleID: Number(this.$route.params.id),
-            articleType: this.$route.params.type,
+            articleType: this.$route.params.type.toLowerCase(),
+            articleRef: this.$route.params.ref,
             article: [],
             validationMethod: this.$route.query.method,
             errors: [],
@@ -175,22 +177,13 @@ export default {
                         design: response.data.rawFam_design,
                         drawingPath: response.data.rawFam_drawingPath,
                         nbrVersion: response.data.rawFam_nbrVersion,
-                        variablesCharac: response.data.rawFam_variablesCharac,
-                        variablesCharacDesign: response.data.rawFam_variablesCharacDesign,
                         active: response.data.rawFam_active,
                         purchasedBy: response.data.rawFam_purchasedBy,
                         version: null,
-                        genRef: response.data.rawFam_genRef,
-                        genDesign: response.data.rawFam_genDesign,
+                        validate: response.data.rawFam_validate,
                         supplier: response.data.supplr_id,
                     };
-                    this.generic = {
-                        variablesCharac: this.article.variablesCharac,
-                        variablesCharacDesign: this.article.variablesCharacDesign,
-                        genRef: this.article.genRef,
-                        genDesign: this.article.genDesign,
-                    };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.rawFam_signatureDate != null}});
+                    this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(), ref:this.article.ref}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -204,22 +197,13 @@ export default {
                         design: response.data.compFam_design,
                         drawingPath: response.data.compFam_drawingPath,
                         nbrVersion: response.data.compFam_nbrVersion,
-                        variablesCharac: response.data.compFam_variablesCharac,
-                        variablesCharacDesign: response.data.compFam_variablesCharacDesign,
                         active: response.data.compFam_active,
                         purchasedBy: response.data.compFam_purchasedBy,
                         version: response.data.compFam_version,
-                        genRef: response.data.compFam_genRef,
-                        genDesign: response.data.compFam_genDesign,
                         supplier: response.data.supplr_id,
+                        validate: response.data.compFam_validate,
                     };
-                    this.generic = {
-                        variablesCharac: this.article.variablesCharac,
-                        variablesCharacDesign: this.article.variablesCharacDesign,
-                        genRef: this.article.genRef,
-                        genDesign: this.article.genDesign,
-                    };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.compFam_signatureDate != null}});
+                    this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(),ref:this.article.ref}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -233,22 +217,13 @@ export default {
                         design: response.data.consFam_design,
                         drawingPath: response.data.consFam_drawingPath,
                         nbrVersion: response.data.consFam_nbrVersion,
-                        variablesCharac: response.data.consFam_variablesCharac,
-                        variablesCharacDesign: response.data.consFam_variablesCharacDesign,
                         active: response.data.consFam_active,
                         purchasedBy: response.data.consFam_purchasedBy,
                         version: response.data.consFam_version,
-                        genRef: response.data.consFam_genRef,
-                        genDesign: response.data.consFam_genDesign,
                         supplier: response.data.supplr_id,
+                        validate: response.data.consFam_validate,
                     };
-                    this.generic = {
-                        variablesCharac: this.article.variablesCharac,
-                        variablesCharacDesign: this.article.variablesCharacDesign,
-                        genRef: this.article.genRef,
-                        genDesign: this.article.genDesign,
-                    };
-                    this.$router.push({name: 'article_url_update', params: {id: this.articleID, type: this.articleType, generic: this.generic}, query: {signed : response.data.consFam_signatureDate != null}});
+                    this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(), ref:this.articleRef}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;
                 })
                 .catch(error => {
@@ -257,14 +232,6 @@ export default {
         }
     },
     methods: {
-        genericSetter(ref, design, variableCharac, variableCharacDesign) {
-            this.generic = {
-                variablesCharac: variableCharac,
-                variablesCharacDesign: variableCharacDesign,
-                genRef: ref,
-                genDesign: design,
-            };
-        },
     }
 }
 </script>
