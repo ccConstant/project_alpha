@@ -11,7 +11,7 @@
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container" @keydown="clearError">
-                <InputSelectForm
+                <!--<InputSelectForm
                     v-if="this.articleType!=='cons'"
                     :name="'Criticality'"
                     :label="this.articleType.toUpperCase() + ' Criticality :'"
@@ -98,7 +98,91 @@
                     :max="255"
                     :inputClassName="null"
                     :Errors="errors.crit_remarks"
+                />-->
+                <InputSelectForm
+                    :name="ArticleContact"
+                    :label="'What is the contact of the article with the patient or the user?'"
+                    isRequired
+                    :options="[
+                        {id_enum: 'Criticality', value: 'No direct contact', number: this.crit_id},
+                        {id_enum: 'Criticality', value: 'No contact but integrated in invasive Medical device', number: this.crit_id},
+                        {id_enum: 'Criticality', value: 'Surface contact', number: this.crit_id},
+                        {id_enum: 'Criticality', value: 'Invasive/Implantable', number: this.crit_id},
+                    ]"
+                    :isDisabled="this.isInConsultMod"
+                    v-model="crit_artCriticality"
+                    :info_text="this.infos_crit[0].info_value"
+                    :Errors="errors.crit_artCriticality"
+                    :selctedOption="crit_artCriticality"
+                    :id_actual="'Criticality'"
                 />
+                <RadioGroupForm v-model="crit_performanceMedicalDevice" :Errors="errors.crit_performanceMedicalDevice"
+                                :checkedOption="crit_performanceMedicalDevice"
+                                :info_text="null" :isDisabled="!!isInConsultMod"
+                                :options="PerformanceOption"
+                                label="Is deficiencies of the article or of the material properties (hardness, grain size...) impact the performance of the medical device ?"
+                                name="crit_performanceMedicalDevice"
+                />
+                <div>Checked names: {{ checkedTests }}</div>
+
+                <input type="checkbox" id="dimTest" value="dimTest" v-model="checkedTests">
+                <label for="dimTest">Dimensional Test</label>
+
+                <div v-if="checkedTests.includes('dimTest')">
+                    <input type="checkbox" id="dimTestAlpha" value="dimTestAlpha" v-model="checkedTests">
+                    <label for="dimTestAlpha"> Alpha</label>
+
+                    <input type="checkbox" id="dimTestSupplier" value="dimTestSupplier" v-model="checkedTests">
+                    <label for="dimTestSupplier"> Supplier</label>
+
+                    <input type="checkbox" id="dimTestBoth" value="dimTestBoth" v-model="checkedTests">
+                    <label for="dimTestBoth"> Both</label>
+                </div>
+
+                <input type="checkbox" id="funcTest" value="funcTest" v-model="checkedTests">
+                <label for="funcTest">Functional Test</label>
+
+                <div v-if="checkedTests.includes('funcTest')">
+                    <input type="checkbox" id="funcTestAlpha" value="funcTestAlpha" v-model="checkedTests">
+                    <label for="funcTestAlpha"> Alpha</label>
+
+                    <input type="checkbox" id="funcTestSupplier" value="funcTestSupplier" v-model="checkedTests">
+                    <label for="funcTestSupplier"> Supplier</label>
+
+                    <input type="checkbox" id="funcTestBoth" value="funcTestBoth" v-model="checkedTests">
+                    <label for="funcTestBoth"> Both</label>
+                </div>
+
+                 <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
+                <label for="aspTest">Aspect control </label>
+
+                <div v-if="checkedTests.includes('aspTest')">
+                    <input type="checkbox" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTests">
+                    <label for="aspTestAlpha"> Alpha</label>
+
+                    <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
+                    <label for="aspTestSupplier"> Supplier</label>
+
+                    <input type="checkbox" id="aspTestBoth" value="aspTestBoth" v-model="checkedTests">
+                    <label for="aspTestBoth"> Both</label>
+                </div>
+
+                <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
+                <label for="docControl">Documentary control </label>
+
+                <div v-if="checkedTests.includes('aspTest')">
+                    <input type="checkbox" id="docControlAlpha" value="docControlAlpha" v-model="checkedTests">
+                    <label for="docControlAlpha"> Alpha</label>
+
+                    <input type="checkbox" id="docControlSupplier" value="docControlSupplier" v-model="checkedTests">
+                    <label for="docControlSupplier"> Supplier</label>
+
+                    <input type="checkbox" id="docControlBoth" value="docControlBoth" v-model="checkedTests">
+                    <label for="docControlBoth"> Both</label>
+                </div>
+
+                 <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
+                <label for="adminControl">Administrative control </label>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addCriticality is called function else the updateCriticality function is called -->
@@ -136,6 +220,7 @@ import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from "../../../input/InputSelectForm.vue";
 import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
+import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
@@ -145,7 +230,8 @@ export default {
         InputTextForm,
         SaveButtonForm,
         DeleteComponentButton,
-        SucessAlert
+        SucessAlert,
+        RadioGroupForm
     },
     /*--------Declaration of the different props:--------
         name : File name given by the database we will put this data in the corresponding field as default value
@@ -232,6 +318,11 @@ export default {
             data_article_type: this.articleType.toLowerCase(),
             crit_validate: this.validate,
             infos_crit: null,
+            PerformanceOption:[
+                {id_enum: 'Performance', value: 'Yes', text: 'Yes'},
+                {id_enum: 'Performance', value: 'No', text: 'No'},
+            ],
+            checkedTests: [],
         }
     },
     methods: {
