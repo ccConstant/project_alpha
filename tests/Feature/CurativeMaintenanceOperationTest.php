@@ -1332,10 +1332,11 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_startDate' => Carbon::now(),
             'curMtnOp_endDate' => Carbon::now()->addWeek(),
             'user_id' => User::all()->last()->id,
+            'reason' => 'add',
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'curMtnOp_validate' => 'You have to entered the realizator of this curative maintenance operation for validate it'
+            'curMtnOp_validate' => 'You have to entered the realizator, the quality and the technical Verifier of this curative maintenance operation for validate it'
         ]);
 
         $response = $this->post('/mme/curMtnOp/verif', [
@@ -1349,7 +1350,7 @@ class CurativeMaintenanceOperationTest extends TestCase
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'curMtnOp_validate' => 'You have to entered the realizator of this curative maintenance operation for validate it'
+            'curMtnOp_validate' => 'You have to entered the realizator, the quality verifier and the technical verifier of this curative maintenance operation for validate it'
         ]);
     }
 
@@ -1399,11 +1400,10 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_startDate' => Carbon::now(),
             'curMtnOp_endDate' => Carbon::now()->addWeek(),
             'user_id' => User::all()->last()->id,
-            'realizedBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'curMtnOp_validate' => 'You have to entered the quality and the technical Verifier of this curative maintenance operation for validate it'
+            'curMtnOp_validate' => 'You have to entered the realizator, the quality and the technical Verifier of this curative maintenance operation for validate it'
         ]);
 
         $response = $this->post('/mme/curMtnOp/verif', [
@@ -1414,11 +1414,10 @@ class CurativeMaintenanceOperationTest extends TestCase
             'curMtnOp_startDate' => Carbon::now(),
             'curMtnOp_endDate' => Carbon::now()->addWeek(),
             'user_id' => User::all()->last()->id,
-            'realizedBy_id' => User::all()->last()->id,
         ]);
         $response->assertStatus(429);
         $response->assertInvalid([
-            'curMtnOp_validate' => 'You have to entered the quality and the technical Verifier of this curative maintenance operation for validate it'
+            'curMtnOp_validate' => 'You have to entered the realizator, the quality verifier and the technical verifier of this curative maintenance operation for validate it'
         ]);
     }
 

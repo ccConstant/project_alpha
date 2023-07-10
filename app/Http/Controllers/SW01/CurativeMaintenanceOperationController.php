@@ -403,16 +403,9 @@ class CurativeMaintenanceOperationController extends Controller
                     ], 429);
                 }
             }else{
-                if ($request->realizedBy_id===NULL) {
-                    return response()->json([
-                        'errors' => [
-                            'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
-                        ]
-                    ], 429);
-                }
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the quality and the technical Verifier of this curative maintenance operation for validate it"]
+                        'curMtnOp_validate' => ["You have to entered the realizator, the quality and the technical Verifier of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
             }
@@ -714,24 +707,11 @@ class CurativeMaintenanceOperationController extends Controller
                     ], 429);
                 }
             }else{
-                if ($curMtnOp->realizedBy_id===NULL)
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
+                        'curMtnOp_validate' => ["You have to entered the realizator, the quality verifier and the technical verifier of this curative maintenance operation for validate it"]
                     ]
-                ], 429);
-
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
-                    ]
-                ], 429);
-
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
-                    ]
-                ], 429);
+                ], 429); 
             }
 
 
