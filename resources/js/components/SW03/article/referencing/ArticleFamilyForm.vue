@@ -17,7 +17,7 @@
                 label="Article Family Type :"
                 :options="enumArticleFam_type"
                 :selctedOption="artFam_type"
-                :isDisabled="this.isInConsultMod"
+                :isDisabled="this.isInConsultMod && !this.isInModifMod"
                 v-model="artFam_type"
                 :info_text="null"
                 :id_actual="ArticleFamilyType"
@@ -29,7 +29,7 @@
                     :Errors="errors.artFam_ref"
                     name="artFam_ref"
                     label="Article Family Reference"
-                    :isDisabled="this.isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artFam_ref"
                     :info_text="this.infos_artFam[0].info_value"
@@ -41,7 +41,7 @@
                     :Errors="errors.artFam_design"
                     name="artFam_design"
                     label="Article Family Designation"
-                    :isDisabled="isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artFam_design"
                     :info_text="this.infos_artFam[1].info_value"
@@ -53,7 +53,7 @@
                     :Errors="errors.artFam_drawingPath"
                     name="artFam_drawingPath"
                     label="Article Family Drawing Path"
-                    :isDisabled="isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artFam_drawingPath"
                     :info_text="this.infos_artFam[2].info_value"
                     :max="255"
@@ -63,7 +63,7 @@
                     :Errors="errors.artFam_version"
                     name="artFam_version"
                     label="Article Family Version"
-                    :isDisabled="isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artFam_version"
                     :info_text="this.infos_artFam[5].info_value"
                     :max="4"
@@ -76,6 +76,7 @@
                     :info_text="null"
                     :inputClassName="null"
                     :Errors="errors['Active']"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     :checkedOption="isInModifMod ? artFam_active : true"
                 />
                 <InputSelectForm
@@ -85,7 +86,7 @@
                     label="Article Family Purchased By :"
                     :options="enum_purchasedBy"
                     :selctedOption="artFam_purchasedBy"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artFam_purchasedBy"
                     :info_text="this.infos_artFam[3].info_value"
                     :id_actual="purchasedBy"
@@ -138,7 +139,7 @@
                     @update="updateArtFam"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
-                    :savedAs="validate"/>
+                    :savedAs="this.artFam_validate"/>
             </div>
         </form>
         <SuccessAlert ref="successAlert"/>
@@ -278,6 +279,14 @@ export default {
         }
     },
     created() {
+        /*console.log("chargement")
+        console.log(this.$route.params.ref)
+        console.log(this.artFam_type)
+        if (this.$route.params.ref === undefined) {
+            console.log("coucou je passe dans le if")
+            console.log(this.artFam_ref)
+            this.$router.replace({name: 'article_url_update', params: {id: this.artFam_id, type: this.artFam_type.toLowerCase(), ref: this.artFam_ref}, query: {signed : this.$route.query.signed}});
+        }*/
         axios.get('/info/send/articleFamily')
             .then(response => {
                 this.infos_artFam = response.data;
@@ -332,6 +341,7 @@ export default {
                                         this.isInConsultMod = true;
                                         this.$snotify.success(`CompFam ID added successfully and saved as ${savedAs}`);
                                         this.artFam_id = response.data;
+                                        this.artFam_validate=savedAs;
                                         this.$emit('ArtFamID', this.artFam_id);
                                         this.$emit('ArtFamType', this.artFam_type);
                                         this.$emit('ArtFamRef', this.artFam_ref);
@@ -370,6 +380,7 @@ export default {
                                 console.log("added")
                                 this.addSuccess = true;
                                 this.isInConsultMod = true;
+                                this.artFam_validate=savedAs;
                                 this.$snotify.success(`RawFam ID added successfully and saved as ${savedAs}`);
                                 this.artFam_id = response.data;
                                 this.$emit('ArtFamID', this.artFam_id);
@@ -396,7 +407,6 @@ export default {
                             /*If the data are correct, we send them to the controller for add them in the database*/
                             .then(response => {
                                 this.errors = {};
-                                console.log("verif passed")
                                 axios.post('/cons/family/add', {
                                     artFam_ref: this.artFam_ref,
                                     artFam_design: this.artFam_design,
@@ -408,11 +418,11 @@ export default {
                                 })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
-                                    console.log("added")
                                     this.addSuccess = true;
                                     this.isInConsultMod = true;
                                     this.$snotify.success(`ConsFam ID added successfully and saved as ${savedAs}`);
                                     this.artFam_id = response.data;
+                                    this.artFam_validate=savedAs;
                                     this.$emit('ArtFamID', this.artFam_id);
                                     this.$emit('ArtFamType', this.artFam_type);
                                     this.$emit('ArtFamRef', this.artFam_ref);
@@ -446,6 +456,7 @@ export default {
             })
                 /*If the data are correct, we send them to the controller for update data in the database*/
                 .then(response => {
+                    console.log("verif passed")
                     this.errors = {};
                     const consultUrl = (id) => '/' + this.artFam_type.toLowerCase() + '/family/update/' + id;
                     axios.post(consultUrl(this.artFam_id), {
@@ -459,10 +470,11 @@ export default {
                         artFam_id: this.artFam_id,
                     })
                         .then(response => {
+                            console.log("added")
                             const id = this.artFam_id;
                             /*We test if an article sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (artSheet_created == true) {
+                            if (lifesheet_created == true) {
                                 axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 }).catch(error => {
@@ -498,7 +510,6 @@ export default {
         },
         checkRef() {
             this.artFam_ref = 'G_' + this.artFam_type;
-            console.log(this.artFam_ref)
             /*if (this.artFam_genRef !== undefined) {
                 let a = this.artFam_genRef.split('_');
                 this.artFam_genRef = this.artFam_ref + '_' + a[2];
@@ -507,21 +518,6 @@ export default {
             }*/
         }
     },
-    beforeUpdate() {
-        if (this.artFam_ref === null && this.artFam_type !== "") {
-            this.artFam_ref = 'G_' + this.artFam_type;
-        }
-        /*if (this.artFam_genRef !== undefined) {
-            let a = this.artFam_genRef.split('_');
-            if (a[2] !== undefined) {
-                this.artFam_genRef = this.artFam_ref + '_' + a[2];
-            } else {
-                this.artFam_genRef = this.artFam_ref + '_';
-            }
-        } else {
-            this.artFam_genRef = this.artFam_ref + '_';
-        }*/
-    }
 }
 </script>
 

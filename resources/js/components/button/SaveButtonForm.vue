@@ -109,7 +109,7 @@
                     </b-modal>
                 </div>
                 <div v-else>
-                    <p v-if="this.saveAll==false">Saved as : {{savedAs}}</p>
+                    <p v-if="this.saveAll==false && savedAs !== null && savedAs !== undefined">Saved as : {{savedAs}}</p>
 
 
                 </div>

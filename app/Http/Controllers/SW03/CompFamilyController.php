@@ -142,6 +142,11 @@ class CompFamilyController extends Controller
         return response()->json($compFamily_id) ;
     }
 
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted for insert with the route : /comp/family/send (post)
+     * Get all the family comp corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
     public function send_compFamilies(){
         $compFamilies=CompFamily::all() ;
         $array = [];
@@ -169,8 +174,6 @@ class CompFamilyController extends Controller
                 'compFam_ref' => $compFamily->compFam_ref,
                 'compFam_design' => $compFamily->compFam_design,
                 'compFam_drawingPath' => $compFamily->compFam_drawingPath,
-                'compFam_variablesCharac' => $compFamily->compFam_variablesCharac,
-                'compFam_variablesCharacDesign' => $compFamily->compFam_variablesCharacDesign,
                 'compFam_version' => $compFamily->compFam_version,
                 'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
                 'compFam_validate' => $compFamily->compFam_validate,
@@ -181,16 +184,18 @@ class CompFamilyController extends Controller
                 'compFam_qualityApproverName' => $qualityApprover,
                 'compFam_purchasedBy' => $purchaseBy,
                 'compFam_signatureDate' => $compFamily->compFam_signatureDate,
-                'compFam_created_at' => $compFamily->created_at,
-                'compFam_updated_at' => $compFamily->updated_at,
-                'compFam_genRef' => $compFamily->compFam_genRef,
-                'compFam_genDesign' => $compFamily->compFam_genDesign,
             ];
             array_push($array, $obj);
         }
         return response()->json($array);
     }
 
+     /**
+     * Function call by ArticleFamilyForm.vue when the form is submitted for insert with the route : /comp/family/send/{id} (post)
+     * Get the family comp corresponding of the id parameter
+     * The id parameter corresponds to the id of the family comp from which we want the informations
+     * @return \Illuminate\Http\Response
+     */
     public function send_compFamily($id) {
         $compFamily = CompFamily::find($id);
         $purchaseBy = EnumPurchasedBy::find($compFamily->enumPurchasedBy_id);
@@ -216,8 +221,6 @@ class CompFamilyController extends Controller
             'compFam_ref' => $compFamily->compFam_ref,
             'compFam_design' => $compFamily->compFam_design,
             'compFam_drawingPath' => $compFamily->compFam_drawingPath,
-            'compFam_variablesCharac' => $compFamily->compFam_variablesCharac,
-            'compFam_variablesCharacDesign' => $compFamily->compFam_variablesCharacDesign,
             'compFam_version' => $compFamily->compFam_version,
             'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
             'compFam_validate' => $compFamily->compFam_validate,
@@ -228,14 +231,15 @@ class CompFamilyController extends Controller
             'compFam_qualityApproverName' => $qualityApprover,
             'compFam_purchasedBy' => $purchaseBy,
             'compFam_signatureDate' => $compFamily->compFam_signatureDate,
-            'compFam_created_at' => $compFamily->created_at,
-            'compFam_updated_at' => $compFamily->updated_at,
-            'compFam_genRef' => $compFamily->compFam_genRef,
-            'compFam_genDesign' => $compFamily->compFam_genDesign,
         ];
         return response()->json($obj);
     }
 
+    /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route :/comp/family/update/{id} (post)
+     * Update an enregistrement of comp family in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the comp family we want to update
+     * */
     public function update_compFamily(Request $request, $id) {
         $compFamily = CompFamily::findOrfail($id);
         if ($compFamily->compFam_signatureDate != null) {
@@ -252,21 +256,23 @@ class CompFamilyController extends Controller
             'compFam_ref' => $request->artFam_ref,
             'compFam_design' => $request->artFam_design,
             'compFam_drawingPath' => $request->artFam_drawingPath,
-            'compFam_variablesCharac' => $request->artFam_variablesCharac,
-            'compFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,
             'compFam_version' => $request->artFam_version,
             'compFam_qualityApproverId' => null,
             'compFam_technicalReviewerId' => null,
             'compFam_signatureDate' => null,
             'compFam_validate' => $request->artFam_validate,
             'compFam_active' => $request->artFam_active,
-            'compFam_genRef' => $request->artFam_genRef,
-            'compFam_genDesign' => $request->artFam_genDesign,
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($compFamily);
     }
 
+    /**
+     * Function call by ArticleConsult.vue when the form is submitted for update with the route : /comp/verifValidation/{id} (post)
+     * Tell if the comp family is ready to be validated
+     * The id parameter is the id of the comp family in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
     public function verifValidation_compFamily($id) {
         $article = CompFamily::all()->where('id', '==', $id)->first();
         if ($article->compFam_validate !== 'validated') {
@@ -300,6 +306,12 @@ class CompFamilyController extends Controller
         }
     }
 
+    /**
+     * Function call by ArticleConsult.vue when the form is submitted for update with the route : /comp/validation/id (post)
+     * Tell if the comp family is ready to be validated
+     * The id parameter is the id of the comp in which we want to validate
+     * @return \Illuminate\Http\Response
+     * */
     public function validate_compFamily(Request $request, $id) {
         $compFamily = CompFamily::findOrfail($id);
         if ($request->reason === 'technical') {

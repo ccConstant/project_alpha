@@ -1,6 +1,6 @@
 <!--File name : ArticleConsultV3.vue-->
 <!--Creation date : 25 May 2023-->
-<!--Update date : 27 Jun 2023-->
+<!--Update date : 5 Jul 2023-->
 <!--Vue Component of the consultation sheet of an article-->
 
 <template>
@@ -257,17 +257,17 @@
                 </table>
                 <!-- Family Members -->
                 <p></p>
-                <table v-if="familyMembers.length > 0" class="header">
+                <table v-if="subFamilies.length > 0" class="header">
                     <thead>
                     <tr>
                         <td class="gray" colspan="4" style="text-align: center">
                             <h2>
-                                Family Member Article List
+                                Sub Family List
                             </h2>
                         </td>
                     </tr>
                     </thead>
-                    <tbody>
+                    <!--<tbody>
                     <tr class="lightGray">
                         <td>
                             <p>
@@ -314,7 +314,7 @@
                             </p>
                         </td>
                     </tr>
-                    </tbody>
+                    </tbody>-->
                 </table>
                 <p></p>
                 <!-- Storage Condition and Purchasing Specification -->
@@ -1065,20 +1065,14 @@ export default {
                         technicalReviewerID: response.data.rawFam_technicalReviewerId,
                         technicalReviewerName: response.data.rawFam_technicalReviewerName,
                         validate: response.data.rawFam_validate,
-                        variablesCharac: response.data.rawFam_variablesCharac,
-                        variablesCharacDesign: response.data.rawFam_variablesCharacDesign,
                         version: '/',
-                        created_at: response.data.rawFam_created_at,
-                        updated_at: response.data.rawFam_updated_at,
-                        genRef: response.data.rawFam_genRef,
-                        genDesign: response.data.rawFam_genDesign,
                     };
                 })
                 .catch(error => {
                 });
-            axios.get('/raw/mb/send/' + this.articleId)
+            axios.get('/comp/subFam/send/' + this.articleId)
                 .then(response => {
-                    this.familyMembers = response.data;
+                    this.subFamilies = response.data;
                 })
                 .catch(error => {
                 });
@@ -1098,20 +1092,14 @@ export default {
                         technicalReviewerID: response.data.compFam_technicalReviewerId,
                         technicalReviewerName: response.data.compFam_technicalReviewerName,
                         validate: response.data.compFam_validate,
-                        variablesCharac: response.data.compFam_variablesCharac,
-                        variablesCharacDesign: response.data.compFam_variablesCharacDesign,
                         version: response.data.compFam_version,
-                        created_at: response.data.compFam_created_at,
-                        updated_at: response.data.compFam_updated_at,
-                        genRef: response.data.compFam_genRef,
-                        genDesign: response.data.compFam_genDesign,
                     };
                 })
                 .catch(error => {
                 });
-            axios.get('/comp/mb/send/' + this.articleId)
+            axios.get('/comp/subFam/send/' + this.articleId)
                 .then(response => {
-                    this.familyMembers = response.data;
+                    this.subFamilies = response.data;
                 })
                 .catch(error => {
                 });
@@ -1131,20 +1119,14 @@ export default {
                         technicalReviewerID: response.data.consFam_technicalReviewerId,
                         technicalReviewerName: response.data.consFam_technicalReviewerName,
                         validate: response.data.consFam_validate,
-                        variablesCharac: response.data.consFam_variablesCharac,
-                        variablesCharacDesign: response.data.consFam_variablesCharacDesign,
                         version: response.data.consFam_version,
-                        created_at: response.data.consFam_created_at,
-                        updated_at: response.data.consFam_updated_at,
-                        genRef: response.data.consFam_genRef,
-                        genDesign: response.data.consFam_genDesign,
                     };
                 })
                 .catch(error => {
                 });
-            axios.get('/cons/mb/send/' + this.articleId)
+            axios.get('/cons/subFam/send/' + this.articleId)
                 .then(response => {
-                    this.familyMembers = response.data;
+                    this.subFamilies = response.data;
                 })
                 .catch(error => {
                 });

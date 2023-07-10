@@ -6,7 +6,7 @@
 
 <template>
     <div>
-        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type"   @ArtFamRef="put_artFamily_ref" @generic="genericSetter"/>
+        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type"   @ArtFamRef="put_artFamily_ref"/>
         
         <div v-if="this.artFam_id!=null">
             <div class="accordion">
@@ -23,26 +23,7 @@
                                 modifMod
                                 :artFam_type="this.artFam_type"
                                 :artFam_id="this.artFam_id"
-                                :import_id="this.artFam_id"
                                 :artFam_ref="this.artFam_ref"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Article Family Member
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-                        <div class="accordion-body">
-                            <ReferenceAnArticleFamilyMember
-                                modifMod
-                                :artType="this.artFam_type"
-                                :artFam_id="this.artFam_id"
-                                :import_id="this.artFam_id"
                             />
                         </div>
                     </div>
@@ -155,7 +136,6 @@ export default {
             artFam_id: null,
             artFam_type: null,
             artFam_ref: null,
-            generic: null,
         }
     },
     methods: {
@@ -168,14 +148,8 @@ export default {
         put_artFamily_ref(value) {
             this.artFam_ref = value;
         },
-        genericSetter(ref, design, variableCharac, variableCharacDesign) {
-            this.generic = {
-                variablesCharac: variableCharac,
-                variablesCharacDesign: variableCharacDesign,
-                genRef: ref,
-                genDesign: design,
-            };
-        }
+    },
+    created(){
     }
 }
 </script>

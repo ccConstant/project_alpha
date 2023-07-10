@@ -1018,6 +1018,9 @@ Route::post('/comp/verifValidation/{id}', [CompFamilyController::class, 'verifVa
 Route::post('/comp/validation/{id}', [CompFamilyController::class, 'validate_compFamily']);
 Route::post('/comp/subFam/verif', [CompSubFamilyController::class, 'verif_compSubFamily']);
 Route::post('/comp/subFam/add', [CompSubFamilyController::class, 'add_compSubFamily']);
+Route::get('/comp/subFam/send/{id}', [CompSubFamilyController::class, 'send_compSubFamilies']);
+Route::post('/comp/subFam/update/{id}', [CompSubFamilyController::class, 'update_compSubFamily']);
+
 
 
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
@@ -1033,6 +1036,9 @@ Route::post('/cons/verifValidation/{id}', [ConsFamilyController::class, 'verifVa
 Route::post('/cons/validation/{id}', [ConsFamilyController::class, 'validate_consFamily']);
 Route::post('/cons/subFam/verif', [ConsSubFamilyController::class, 'verif_consSubFamily']);
 Route::post('/cons/subFam/add', [ConsSubFamilyController::class, 'add_consSubFamily']);
+Route::get('/cons/subFam/send/{id}', [ConsSubFamilyController::class, 'send_consSubFamilies']);
+Route::post('/cons/subFam/update/{id}', [ConsSubFamilyController::class, 'update_consSubFamily']);
+
 
 
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
@@ -1048,7 +1054,8 @@ Route::post('/raw/verifValidation/{id}', [RawFamilyController::class, 'verifVali
 Route::post('/raw/validation/{id}', [RawFamilyController::class, 'validate_rawFamily']);
 Route::post('/raw/subFam/verif', [RawSubFamilyController::class, 'verif_rawSubFamily']);
 Route::post('/raw/subFam/add', [RawSubFamilyController::class, 'add_rawSubFamily']);
-
+Route::get('/raw/subFam/send/{id}', [RawSubFamilyController::class, 'send_rawSubFamilies']);
+Route::post('/raw/subFam/update/{id}', [RawSubFamilyController::class, 'update_rawSubFamily']);
 
 
 // Incoming Inspection Controller

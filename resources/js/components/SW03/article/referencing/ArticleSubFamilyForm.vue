@@ -13,7 +13,7 @@
                     :Errors="errors.artSubFam_ref"
                     name="artSubFam_ref"
                     label="Article Sub Family Reference"
-                    :isDisabled="this.isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artSubFam_ref"
                     :famRef="this.data_artFam_ref"
@@ -26,7 +26,7 @@
                     :Errors="errors.artSubFam_design"
                     name="artSubFam_design"
                     label="Article Sub Family Designation"
-                    :isDisabled="isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artSubFam_design"
                     :info_text="this.infos_artSubFam[1].info_value"
@@ -38,7 +38,7 @@
                     :Errors="errors.artSubFam_drawingPath"
                     name="artSubFam_drawingPath"
                     label="Article Sub Family Drawing Path"
-                    :isDisabled="isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artSubFam_drawingPath"
                     :info_text="this.infos_artSubFam[2].info_value"
                     :max="255"
@@ -48,7 +48,7 @@
                     :Errors="errors.artSubFam_version"
                     name="artSubFam_version"
                     label="Article Sub Family Version"
-                    :isDisabled="isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artSubFam_version"
                     :info_text="this.infos_artSubFam[5].info_value"
                     :max="4"
@@ -60,6 +60,7 @@
                     v-model="artSubFam_active"
                     :info_text="null"
                     :inputClassName="null"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     :Errors="errors['Active']"
                     :checkedOption="isInModifMod ? artSubFam_active : true"
                 />
@@ -70,7 +71,7 @@
                     label="Article Sub Family Purchased By :"
                     :options="enum_purchasedBy"
                     :selctedOption="artSubFam_purchasedBy"
-                    :isDisabled="!!isInConsultMod"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artSubFam_purchasedBy"
                     :info_text="this.infos_artSubFam[3].info_value"
                     :id_actual="purchasedBy"
@@ -81,15 +82,15 @@
                     @update="updateArtSubFam"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
-                    :savedAs="validate"/>
+                    :savedAs="this.artSubFam_validate"/>
         </form>
         <SuccessAlert ref="successAlert"/>
         <div v-if="this.artSubFam_id!==null && modifMod==false && consultMod==false && this.addSuccess" >
-                <ReferenceAnArticleFamilyMember :artType="this.data_artFam_type"  :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref"  :artSubFam_id="this.artSubFam_id"/>
+                <ReferenceAnArticleFamilyMember :importedMembers="importedMember" :consultMod="!!this.consultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref"  :artSubFam_id="this.artSubFam_id"  :modifMod="!!this.isInModifMod" :import_id="this.artSubFam_id"/>
             </div>
-            <div v-else-if="this.artSubFam_id!==null && modifMod==true && this.addSuccess">
-                <ReferenceAnArticleFamilyMember :consultMod="!!isInConsultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref" :artSubFam_id="this.artSubFam_id"
-                                :modifMod="!!this.modifMod"/>
+            <div v-else-if="this.artSubFam_id!==null && modifMod==true && this.loaded">
+                <ReferenceAnArticleFamilyMember :consultMod="!!this.isInConsultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref" :artSubFam_id="this.artSubFam_id"
+                                :modifMod="!!this.isInModifMod"  :importedMembers="importedMember" :import_id="this.artSubFam_id"/>
             </div>
     </div>
 </template>
@@ -135,6 +136,10 @@ export default {
 
     ---------------------------------------------------*/
     props: {
+        id: {
+            type: Number,
+            default: null
+        },
         art_ref:{
             type: String,
             default: null
@@ -216,7 +221,7 @@ export default {
             artSubFam_validate: this.validate,
             isInConsultMod: this.consultMod,
             isInModifMod : this.modifMod,
-            artSubFam_id: this.$route.params.id,
+            artSubFam_id: this.id,
             errors: {},
             addSuccess: false,
             infos_artSubFam: [],
@@ -228,22 +233,53 @@ export default {
             data_artFam_type: this.art_type,
             enum_purchasedBy: [],
             data_artFam_id: this.art_id,
+            importedMember: null,
         }
     },
     created() {
-        console.log(this.artSubFam_id)
         axios.get('/info/send/articleFamily')
+        .then(response => {
+            this.infos_artSubFam = response.data;
+            /*Ask for the controller different purchased by option */
+            axios.get('/artFam/enum/purchasedBy')
             .then(response => {
-                this.infos_artSubFam = response.data;
-                this.loaded=true;
-            })
+                this.enum_purchasedBy = response.data
+                //Make a get request to ask the controller the member corresponding to the id of the sub Fam
+                if (this.artSubFam_id !== null && this.addSuccess == false) {
+                    if (this.data_artFam_type=="COMP"){
+                        const consultUrl = (id) => `/comp/mb/send/${id}`;
+                        axios.get(consultUrl(this.artSubFam_id))
+                        .then(response => {
+                            this.importedMember = response.data;
+                            this.loaded=true;
+                        });
+                    }else{
+                        if (this.data_artFam_type=="RAW"){
+                            const consultUrl = (id) => `/raw/mb/send/${id}`;
+                            axios.get(consultUrl(this.artSubFam_id))
+                            .then(response => {
+                                console.log("coucou c'est moi cococinnelle")
+                                console.log(response.data)
+                                this.importedMember = response.data;
+                                this.loaded=true;
+                            });
+                        }else{
+                            if(this.data_artFam_type=="CONS"){
+                                const consultUrl = (id) => `/cons/mb/send/${id}`;
+                                axios.get(consultUrl(this.artSubFam_id))
+                                .then(response => {
+                                    this.importedMember = response.data;
+                                    this.loaded=true;
+                                });
+                            }
+                        }
+                    }
+                }else{
+                    this.loaded=true;
+                }
+            });
 
-        /*Ask for the controller different purchased by option */
-        axios.get('/artFam/enum/purchasedBy')
-            .then(response => this.enum_purchasedBy = response.data)
-            .catch(error => this.errors = error.response.data.errors);
-            
-
+        });
     },
 
     /*--------Declaration of the different methods:--------*/
@@ -254,7 +290,7 @@ export default {
                 if (this.data_artFam_type=="COMP"){
                     /*We begin by checking if the data entered by the user are correct*/
                     axios.post('/comp/subFam/verif', {
-                        artSubFam_ref: this.data_artFam_ref+this.artSubFam_ref,
+                        artSubFam_ref: this.artSubFam_ref,
                         artSubFam_design: this.artSubFam_design,
                         artSubFam_drawingPath: this.artSubFam_drawingPath,
                         artSubFam_purchasedBy: this.artSubFam_purchasedBy,
@@ -269,7 +305,7 @@ export default {
                         this.errors = {};
                         console.log(this.data_artFam_id)
                         axios.post('/comp/subFam/add', {
-                            artSubFam_ref: this.data_artFam_ref+this.artSubFam_ref,
+                            artSubFam_ref: this.artSubFam_ref,
                             artSubFam_design: this.artSubFam_design,
                             artSubFam_drawingPath: this.artSubFam_drawingPath,
                             artSubFam_purchasedBy: this.artSubFam_purchasedBy,
@@ -286,6 +322,7 @@ export default {
                             this.isInConsultMod = true;
                             this.$snotify.success(`CompSubFam ID added successfully and saved as ${savedAs}`);
                             this.artSubFam_id = response.data;
+                            this.artSubFam_validate=savedAs;
                            /* if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
                                 this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
                             }*/
@@ -296,7 +333,7 @@ export default {
                 }else{
                     if (this.data_artFam_type=="RAW"){
                         axios.post('/raw/subFam/verif', {
-                            artSubFam_ref: this.data_artFam_ref+this.artSubFam_ref,
+                            artSubFam_ref: this.artSubFam_ref,
                             artSubFam_design: this.artSubFam_design,
                             artSubFam_drawingPath: this.artSubFam_drawingPath,
                             artSubFam_purchasedBy: this.artSubFam_purchasedBy,
@@ -310,7 +347,7 @@ export default {
                             this.errors = {};
                             console.log("verif")
                             axios.post('/raw/subFam/add', {
-                                artSubFam_ref: this.data_artFam_ref+this.artSubFam_ref,
+                                artSubFam_ref:this.artSubFam_ref,
                                 artSubFam_design: this.artSubFam_design,
                                 artSubFam_drawingPath: this.artSubFam_drawingPath,
                                 artSubFam_purchasedBy: this.artSubFam_purchasedBy,
@@ -336,7 +373,7 @@ export default {
                     }else{
                         if (this.data_artFam_type=="CONS"){
                             axios.post('/cons/subFam/verif', {
-                                artSubFam_ref: this.data_artFam_ref+this.artSubFam_ref,
+                                artSubFam_ref: this.artSubFam_ref,
                                 artSubFam_design: this.artSubFam_design,
                                 artSubFam_drawingPath: this.artSubFam_drawingPath,
                                 artSubFam_purchasedBy: this.artSubFam_purchasedBy,
@@ -350,7 +387,7 @@ export default {
                             .then(response => {
                                 this.errors = {};
                                 axios.post('/cons/subFam/add', {
-                                    artSubFam_ref: this.data_artFam_ref+"---"+this.artSubFam_ref,
+                                    artSubFam_ref: this.artSubFam_ref,
                                     artSubFam_design: this.artSubFam_design,
                                     artSubFam_drawingPath: this.artSubFam_drawingPath,
                                     artSubFam_purchasedBy: this.artSubFam_purchasedBy,
@@ -380,43 +417,39 @@ export default {
         @param artSheet_created */
         updateArtSubFam(savedAs, reason, lifesheet_created) {
             /*We begin by checking if the data entered by the user are correct*/
-            axios.post('/' + this.artFam_type.toLowerCase() + '/family/verif', {
-                artFam_ref: this.artFam_ref,
-                artFam_design: this.artFam_design,
-                artFam_drawingPath: this.artFam_drawingPath,
-                artFam_purchasedBy: this.artFam_purchasedBy,
-                artFam_variablesCharac: this.artFam_variablesCharac,
-                artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
-                artFam_version: this.artFam_version,
-                artFam_active: this.artFam_active,
-                artFam_validate: savedAs,
-                artFam_id: this.artFam_id,
-                artFam_genRef: this.artFam_genRef,
-                artFam_genDesign: this.artFam_genDesign,
+            axios.post('/' + this.data_artFam_type.toLowerCase() + '/subFam/verif', {
+                artSubFam_ref: this.artSubFam_ref,
+                artSubFam_design: this.artSubFam_design,
+                artSubFam_drawingPath: this.artSubFam_drawingPath,
+                artSubFam_purchasedBy: this.artSubFam_purchasedBy,
+                artSubFam_active: this.artSubFam_active,
+                artSubFam_validate: savedAs,
+                artFam_id: this.data_artFam_id,
+                artSubFam_version: this.artSubFam_version,
+                reason:"update",
+                artSubFam_id: this.artSubFam_id,
             })
                 /*If the data are correct, we send them to the controller for update data in the database*/
                 .then(response => {
                     this.errors = {};
-                    const consultUrl = (id) => '/' + this.artFam_type.toLowerCase() + '/family/update/' + id;
-                    axios.post(consultUrl(this.artFam_id), {
-                        artFam_ref: this.artFam_ref,
-                        artFam_design: this.artFam_design,
-                        artFam_drawingPath: this.artFam_drawingPath,
-                        artFam_purchasedBy: this.artFam_purchasedBy,
-                        artFam_variablesCharac: this.artFam_variablesCharac,
-                        artFam_variablesCharacDesign: this.artFam_variablesCharacDesign,
-                        artFam_version: this.artFam_version,
-                        artFam_active: this.artFam_active,
-                        artFam_validate: savedAs,
-                        artFam_id: this.artFam_id,
-                        artFam_genRef: this.artFam_genRef,
-                        artFam_genDesign: this.artFam_genDesign,
+                    console.log("verif passed")
+                    const consultUrl = (id) => '/' + this.data_artFam_type.toLowerCase() + '/subFam/update/' + id;
+                    axios.post(consultUrl(this.artSubFam_id), {
+                        artSubFam_ref: this.artSubFam_ref,
+                        artSubFam_design: this.artSubFam_design,
+                        artSubFam_drawingPath: this.artSubFam_drawingPath,
+                        artSubFam_purchasedBy: this.artSubFam_purchasedBy,
+                        artSubFam_active: this.artSubFam_active,
+                        artSubFam_validate: savedAs,
+                        artFam_id: this.data_artFam_id,
+                        artSubFam_version: this.artSubFam_version,
                     })
                         .then(response => {
+                            console.log("update passed")
                             const id = this.artFam_id;
                             /*We test if an article sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (artSheet_created == true) {
+                            if (lifesheet_created == true) {
                                 axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                     history_reasonUpdate: reason,
                                 }).catch(error => {
@@ -426,11 +459,8 @@ export default {
                             }
                             this.isInConsultMod = true;
                             /*If the data have been updated in the database, we show a success message*/
-                            this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
-                            this.artFam_validate = savedAs;
-                            if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
-                                this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
-                            }
+                            this.$snotify.success(`${this.data_artFam_type} SubFam ID successfully updated and saved as ${savedAs}`);
+                            this.artSubFam_validate = savedAs;
                         })
                         .catch(error => {
                             this.errors = error.response.data.errors;
@@ -459,21 +489,6 @@ export default {
             }*/
         }
     },
-    beforeUpdate() {
-        if (this.artFam_ref === null && this.artFam_type !== "") {
-            this.artFam_ref = 'G_' + this.artFam_type;
-        }
-        if (this.artFam_genRef !== undefined) {
-            let a = this.artFam_genRef.split('_');
-            if (a[2] !== undefined) {
-                this.artFam_genRef = this.artFam_ref + '_' + a[2];
-            } else {
-                this.artFam_genRef = this.artFam_ref + '_';
-            }
-        } else {
-            this.artFam_genRef = this.artFam_ref + '_';
-        }
-    }
 }
 </script>
 

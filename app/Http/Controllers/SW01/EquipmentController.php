@@ -1192,7 +1192,7 @@ class EquipmentController extends Controller{
     }
 
     /**
-     * Function call by EquipmentConsult.vue when the form is submitted for update with the route : /equipment/validation (post)
+     * Function call by EquipmentConsult.vue when the form is submitted for update with the route : /equipment/validation/id (post)
      * Tell if the equipment is ready to be validated
      * The id parameter is the id of the equipment in which we want to validate
      * @return \Illuminate\Http\Response

@@ -160,17 +160,22 @@ export default {
             if (this.checked.length === 1) {
                 this.compList.forEach(element => {
                     if (element.compFam_ref === this.checked[0]) {
-                        window.location.href = "/article/update/comp/" + element.id;
+                        //window.location.href = "/article/update/comp/" + element.id;
+                        this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'comp', ref:element.compFam_ref}});
+                        
+                        
                     }
                 });
                 this.consList.forEach(element => {
                     if (element.consFam_ref === this.checked[0]) {
-                        window.location.href = "/article/update/cons/" + element.id;
+                        //window.location.href = "/article/update/cons/" + element.id;
+                        this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'cons', ref:element.consFam_ref}});
                     }
                 });
                 this.rawList.forEach(element => {
                     if (element.rawFam_ref === this.checked[0]) {
-                        window.location.href = "/article/update/raw/" + element.id;
+                        //window.location.href = "/article/update/raw/" + element.id;
+                        this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'raw', ref:element.rawFam_ref}});
                     }
                 });
             } else {
