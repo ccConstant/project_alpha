@@ -113,7 +113,6 @@
                                 name="crit_performanceMedicalDevice"
                 />
                 <div v-if="this.crit_performanceMedicalDevice">
-                    
                     <table class="table">
                         <tr>
                             <td>
@@ -124,78 +123,77 @@
                                 <input type="radio" id="dimTestAlpha" value="dimTestAlpha" v-model="checkedTestRadioDim">
                                 <label for="dimTestAlpha"> Alpha</label>
 
-                            <input type="radio" id="dimTestSupplier" value="dimTestSupplier" v-model="checkedTestRadioDim">
-                            <label for="dimTestSupplier"> Supplier</label>
+                                <input type="radio" id="dimTestSupplier" value="dimTestSupplier" v-model="checkedTestRadioDim">
+                                <label for="dimTestSupplier"> Supplier</label>
 
-                            <input type="radio" id="dimTestBoth" value="dimTestBoth" v-model="checkedTestRadioDim">
-                            <label for="dimTestBoth"> Both</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" id="funcTest" value="funcTest" v-model="checkedTests">
-                            <label for="funcTest">Functional Test</label>
-                        </td>
-                        <td v-if="checkedTests.includes('funcTest')">
-                            <input type="radio" id="funcTestAlpha" value="funcTestAlpha" v-model="checkedTestRadioFunc">
-                            <label for="funcTestAlpha"> Alpha</label>
+                                <input type="radio" id="dimTestBoth" value="dimTestBoth" v-model="checkedTestRadioDim">
+                                <label for="dimTestBoth"> Both</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="funcTest" value="funcTest" v-model="checkedTests">
+                                <label for="funcTest">Functional Test</label>
+                            </td>
+                            <td v-if="checkedTests.includes('funcTest')">
+                                <input type="radio" id="funcTestAlpha" value="funcTestAlpha" v-model="checkedTestRadioFunc">
+                                <label for="funcTestAlpha"> Alpha</label>
 
-                            <input type="radio" id="funcTestSupplier" value="funcTestSupplier" v-model="checkedTestRadioFunc">
-                            <label for="funcTestSupplier"> Supplier</label>
+                                <input type="radio" id="funcTestSupplier" value="funcTestSupplier" v-model="checkedTestRadioFunc">
+                                <label for="funcTestSupplier"> Supplier</label>
 
-                            <input type="radio" id="funcTestBoth" value="funcTestBoth" v-model="checkedTestRadioFunc">
-                            <label for="funcTestBoth"> Both</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
-                            <label for="aspTest">Aspect Test </label>
-                        </td>
-                        <td v-if="checkedTests.includes('aspTest')">
-                            <input type="radio" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTestRadioAsp">
-                            <label for="aspTestAlpha"> Alpha</label>
+                                <input type="radio" id="funcTestBoth" value="funcTestBoth" v-model="checkedTestRadioFunc">
+                                <label for="funcTestBoth"> Both</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
+                                <label for="aspTest">Aspect Test </label>
+                            </td>
+                            <td v-if="checkedTests.includes('aspTest')">
+                                <input type="radio" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTestRadioAsp">
+                                <label for="aspTestAlpha"> Alpha</label>
+                                <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
+                                <label for="aspTestSupplier"> Supplier</label>
+                                        <input type="radio" id="aspTestBoth" value="aspTestBoth" v-model="checkedTestRadioAsp">
+                                        <label for="aspTestBoth"> Both</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
+                                <label for="docControl">Documentary control </label>
+                            </td>
+                            <td v-if="checkedTests.includes('docControl')">
+                                <input type="radio" id="docControlAlpha" value="docControlAlpha" v-model="checkedTestRadioDoc">
+                                <label for="docControlAlpha"> Alpha</label>
 
-                    <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
-                    <label for="aspTestSupplier"> Supplier</label>
+                                <input type="radio" id="docControlSupplier" value="docControlSupplier" v-model="checkedTestRadioDoc">
+                                <label for="docControlSupplier"> Supplier</label>
 
-                            <input type="radio" id="aspTestBoth" value="aspTestBoth" v-model="checkedTestRadioAsp">
-                            <label for="aspTestBoth"> Both</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
-                            <label for="docControl">Documentary control </label>
-                        </td>
-                        <td v-if="checkedTests.includes('docControl')">
-                            <input type="radio" id="docControlAlpha" value="docControlAlpha" v-model="checkedTestRadioDoc">
-                            <label for="docControlAlpha"> Alpha</label>
+                                <input type="radio" id="docControlBoth" value="docControlBoth" v-model="checkedTestRadioDoc">
+                                <label for="docControlBoth"> Both</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
+                                <label for="adminControl">Administrative control </label>
+                            </td>
+                            <td v-if="checkedTests.includes('adminControl')">
+                                <input type="radio" id="adminControlAlpha" value="adminControlAlpha" v-model="checkedTestRadioAdm">
+                                <label for="adminControlAlpha"> Alpha</label>
 
-                            <input type="radio" id="docControlSupplier" value="docControlSupplier" v-model="checkedTestRadioDoc">
-                            <label for="docControlSupplier"> Supplier</label>
+                                <input type="radio" id="adminControlSupplier" value="adminControlSupplier" v-model="checkedTestRadioAdm">
+                                <label for="adminControlSupplier"> Supplier</label>
 
-                            <input type="radio" id="docControlBoth" value="docControlBoth" v-model="checkedTestRadioDoc">
-                            <label for="docControlBoth"> Both</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
-                            <label for="adminControl">Administrative control </label>
-                        </td>
-                        <td v-if="checkedTests.includes('adminControl')">
-                            <input type="radio" id="adminControlAlpha" value="adminControlAlpha" v-model="checkedTestRadioAdm">
-                            <label for="adminControlAlpha"> Alpha</label>
-
-                            <input type="radio" id="adminControlSupplier" value="adminControlSupplier" v-model="checkedTestRadioAdm">
-                            <label for="adminControlSupplier"> Supplier</label>
-
-                            <input type="radio" id="adminControlBoth" value="adminControlBoth" v-model="checkedTestRadioAdm">
-                            <label for="adminControlBoth"> Both</label>
-                        </td>
-                    </tr>
-                </table>
+                                <input type="radio" id="adminControlBoth" value="adminControlBoth" v-model="checkedTestRadioAdm">
+                                <label for="adminControlBoth"> Both</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addCriticality is called function else the updateCriticality function is called -->
