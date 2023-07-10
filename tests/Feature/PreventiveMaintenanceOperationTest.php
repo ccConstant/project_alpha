@@ -1796,17 +1796,6 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $response->assertInvalid([
             'prvMtnOp_reformDate' => 'You can\'t enter a date that is older than one month'
         ]);
-        /*$this->assertDatabaseHas('preventive_maintenance_operations', [
-            'prvMtnOp_preventiveOperation' => true,
-            'prvMtnOp_description' => 'three',
-            'prvMtnOp_protocol' => 'three',
-            'prvMtnOp_validate' => 'validated',
-            'prvMtnOp_periodicity' => 1,
-            'prvMtnOp_symbolPeriodicity' => 'M',
-            'prvMtnOp_number' => 1,
-            'prvMtnOp_puttingIntoService' => true,
-            'prvMtnOp_reformDate' => $date,
-        ]);*/
     }
 
     /**

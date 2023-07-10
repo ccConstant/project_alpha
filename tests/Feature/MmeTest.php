@@ -782,7 +782,7 @@ class MmeTest extends TestCase
      * Remarks: /
      * Set: /
      * Expected Result: Receiving an error:
-     *                                      "You must enter at least 3 caracters"
+     *                                      "You must enter at least 3 characters"
      *                                      "You must enter an external reference"
      *                                      "You must enter a name"
      *                                      "You must enter a serial number"

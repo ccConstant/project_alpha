@@ -159,7 +159,7 @@ class MmeStateTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 4
+     * Test Conception Number: 5
      * Try to add a new state with no dates
      * Remarks: "Remarks"
      * Start Date : /
@@ -184,7 +184,7 @@ class MmeStateTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 5
+     * Test Conception Number: 6
      * Try to add a new state with a too old start date
      * Remarks: "Remarks"
      * Start Date: Today - 2 Months
@@ -211,7 +211,7 @@ class MmeStateTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 6
+     * Test Conception Number: 7
      * Try to add a new state with an incorrect name
      * Remarks: "Remarks"
      * Start Date: Today
@@ -297,7 +297,7 @@ class MmeStateTest extends TestCase
      */
 
     /**
-     * Test Conception Number: 7
+     * Test Conception Number: 8
      * Try to add a new state (Waiting_for_referencing -> Waiting_for_referencing)
      * Remarks: "Remarks"
      * Start Date: Today
@@ -331,8 +331,7 @@ class MmeStateTest extends TestCase
      * Start Date: Today
      * End Date: /
      * Name: "Waiting_to_be_in_use"
-     * Expected Result: Receiving an error :
-     *                                          "You can't only go in waiting to be in use state from this one"
+     * Expected Result: The state is added in the database and linked to the mme
      * @returns void
      */
     public function test_add_state_1_to_2()
@@ -1044,6 +1043,49 @@ class MmeStateTest extends TestCase
     }
 
     /**
+     * Test Conception Number: 30
+     * Try to add a new state (In_use -> Under_verification)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_verification"
+     * Expected Result: The state is added in the database and linked to the mme
+     * @returns void
+     */
+    public function test_add_state_3_to_4()
+    {
+        $this->test_add_state_2_to_3();
+        $date = Carbon::now();
+        $response = $this->post('/mme_state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_verification',
+            'state_startDate' => $date,
+            'mme_id' => Mme::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/mme/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_verification',
+            'state_startDate' => $date,
+            'mme_id' => Mme::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_mme_temp_state', [
+            'mmeTemp_id' => MmeTemp::all()->last()->id,
+            'mme_state_Id' => mmeState::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('mme_states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_verification',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
      * Test Conception Number: 31
      * Try to add a new state (In_use -> In_quarantine)
      * Remarks: "Remarks"
@@ -1281,49 +1323,6 @@ class MmeStateTest extends TestCase
         $response->assertStatus(429);
         $response->assertInvalid([
             'state_name' => 'You can\'t only go in In_use, In_quarantine and lost states from this one',
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 30
-     * Try to add a new state (In_use -> Under_verification)
-     * Remarks: "Remarks"
-     * Start Date: Today
-     * End Date: /
-     * Name: "Under_verification"
-     * Expected Result: The state is added in the database and linked to the mme
-     * @returns void
-     */
-    public function test_add_state_3_to_4()
-    {
-        $this->test_add_state_2_to_3();
-        $date = Carbon::now();
-        $response = $this->post('/mme_state/verif', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'Under_verification',
-            'state_startDate' => $date,
-            'mme_id' => Mme::all()->last()->id,
-            'user_id' => user::all()->last()->id,
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/mme/add/state', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'Under_verification',
-            'state_startDate' => $date,
-            'mme_id' => Mme::all()->last()->id,
-            'user_id' => user::all()->last()->id,
-            'state_validate' => 'drafted',
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('pivot_mme_temp_state', [
-            'mmeTemp_id' => MmeTemp::all()->last()->id,
-            'mme_state_Id' => mmeState::all()->last()->id,
-        ]);
-        $this->assertDatabaseHas('mme_states', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'Under_verification',
-            'state_startDate' => $date->format('Y-m-d'),
-            'state_validate' => 'drafted',
         ]);
     }
 
