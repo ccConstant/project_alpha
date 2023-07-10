@@ -44,7 +44,7 @@
                     @update="updateArticleMember"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
-                    :savedAs="validate"/>
+                    :savedAs="this.artFamMb_validate"/>
             </form>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -147,7 +147,7 @@ export default {
         return {
             artFamMb_ref: this.reference,
             artFamMb_design: this.designation,
-            artMb_validate: this.validate,
+            artFamMb_validate: this.validate,
             artFamMember_id: this.id,
             art_id_add: this.art_id,
             artFam_type:this.art_type,
@@ -314,6 +314,7 @@ export default {
                                 }
                                 this.$snotify.success(`CompFamMember updated successfully and saved as ${savedAs}`);
                                 this.artFamMember_id = response.data;
+                                this.artFamMb_validate = savedAs;
                             })
                             .catch(error => {
                                 this.errors = error.response.data.errors;
@@ -350,6 +351,7 @@ export default {
                                     }
                                     this.$snotify.success(`CompFamMember updated successfully and saved as ${savedAs}`);
                                     this.artFamMember_id = response.data;
+                                    this.artFamMb_validate = savedAs;
                                 })
                                 .catch(error => {
                                     this.errors = error.response.data.errors;
@@ -384,6 +386,7 @@ export default {
                                         }
                                         this.$snotify.success(`ConsFamMember updated successfully and saved as ${savedAs}`);
                                         this.artFamMember_id = response.data;
+                                        this.artFamMb_validate = savedAs;
                                     })
                                     .catch(error => {
                                         this.errors = error.response.data.errors;

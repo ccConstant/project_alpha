@@ -82,7 +82,7 @@
                     @update="updateArtSubFam"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
-                    :savedAs="validate"/>
+                    :savedAs="this.artSubFam_validate"/>
         </form>
         <SuccessAlert ref="successAlert"/>
         <div v-if="this.artSubFam_id!==null && modifMod==false && consultMod==false && this.addSuccess" >
@@ -322,6 +322,7 @@ export default {
                             this.isInConsultMod = true;
                             this.$snotify.success(`CompSubFam ID added successfully and saved as ${savedAs}`);
                             this.artSubFam_id = response.data;
+                            this.artSubFam_validate=savedAs;
                            /* if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
                                 this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
                             }*/
@@ -458,8 +459,8 @@ export default {
                             }
                             this.isInConsultMod = true;
                             /*If the data have been updated in the database, we show a success message*/
-                            this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
-                            this.artFam_validate = savedAs;
+                            this.$snotify.success(`${this.data_artFam_type} SubFam ID successfully updated and saved as ${savedAs}`);
+                            this.artSubFam_validate = savedAs;
                         })
                         .catch(error => {
                             this.errors = error.response.data.errors;

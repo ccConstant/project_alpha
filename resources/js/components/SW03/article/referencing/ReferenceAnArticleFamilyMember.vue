@@ -23,6 +23,7 @@
                 :designation="component.designation"
                 :divClass="component.className"
                 :id="component.id"
+                :validate="component.validate"
                 :consultMod="isInConsultMod"
                 :modifMod="component.id !== null"
                 :art_type="data_art_type.toUpperCase()"
@@ -134,14 +135,15 @@ export default {
             });
         },
         /*Function for adding an imported dimension form with his data*/
-        addImportedComponent(familyMember_reference, familyMember_designation,familyMember_className, id) {
+        addImportedComponent(familyMember_reference, familyMember_designation,familyMember_className, id, familyMember_validate) {
             this.components.push({
                 comp: 'ArticleFamilyMemberForm',
                 key: this.uniqueKey++,
                 reference: familyMember_reference,
                 designation: familyMember_designation,
                 className: familyMember_className,
-                id: id
+                id: id,
+                validate: familyMember_validate
             });
         },
         /*Suppression of a dimension component from the vue*/
@@ -158,7 +160,8 @@ export default {
                         dt.reference,
                         dt.designation,
                         className,
-                        dt.id
+                        dt.id,
+                        dt.validate
                     );
                 }
                 this.criticality = null

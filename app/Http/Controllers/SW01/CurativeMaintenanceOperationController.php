@@ -630,6 +630,33 @@ class CurativeMaintenanceOperationController extends Controller
      * Check the informations entered in the form and send errors if it exists
      */
     public function verif_curMtnOp_mme(Request $request){
+        $user=User::findOrFail($request->user_id) ;
+
+        if ($request->reason=="update"){
+            if (!$user->user_makeMmeOpValidationRight){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_validate' => ["You don't have the right to update a curative maintenance operation"]
+                    ]
+                ], 429);
+            }
+            $curMtnOp=CurativeMaintenanceOperation::findOrFail($request->curMtnOp_id) ;
+            if (!$user->user_updateDataInDraftRight && ($curMtnOp->curMtnOp_validate=="drafted" || $curMtnOp->curMtnOp_validate=="to_be_validated")){
+                return response()->json([
+                    'errors' => [
+                        'curMtnOp_validate' => ["You don't have the user right to update a curative maintenance operation save as drafted or in to be validated"]
+                    ]
+                ], 429);
+            }
+        }
+        if(!$user->user_validateOtherDataRight && $request->curMtnOp_validate=="validated"){
+            return response()->json([
+                'errors' => [
+                    'curMtnOp_validate' => ["You don't have the right to validate a curative maintenance operation"]
+                ]
+            ], 429);
+        }
+
         $state=MmeState::findOrFail($request->state_id) ;
         if ($request->curMtnOp_validate=='validated'){
             $this->validate(
