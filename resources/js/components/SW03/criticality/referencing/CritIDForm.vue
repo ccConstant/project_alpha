@@ -154,7 +154,7 @@
                             <td v-if="checkedTests.includes('aspTest')">
                                 <input type="radio" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTestRadioAsp">
                                 <label for="aspTestAlpha"> Alpha</label>
-                                <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
+                                <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTestRadioAsp">
                                 <label for="aspTestSupplier"> Supplier</label>
                                         <input type="radio" id="aspTestBoth" value="aspTestBoth" v-model="checkedTestRadioAsp">
                                         <label for="aspTestBoth"> Both</label>

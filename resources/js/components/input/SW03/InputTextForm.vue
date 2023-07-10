@@ -130,10 +130,18 @@ export default {
                 return false;
             }
             if (this.isRequired) {
-                if (this.data === null) {
+                if (this.data === null || this.data === undefined || this.data === '') {
                     return false;
                 }
-                return this.data.length >= this.min && this.data.length <= this.max;
+                if (this.max !== null && this.max !== undefined && this.min !== null && this.min !== undefined) {
+                    return this.data.length >= this.min && this.data.length <= this.max;
+                } else if (this.max !== null && this.max !== undefined) {
+                    return this.data.length <= this.max;
+                } else if (this.min !== null && this.min !== undefined) {
+                    return this.data.length >= this.min;
+                } else {
+                    return true;
+                }
             }
             if (this.data !== null) {
                 return this.data.length <= this.max;

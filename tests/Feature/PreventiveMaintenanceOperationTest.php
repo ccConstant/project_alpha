@@ -613,7 +613,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 18
-     * Add new preventive maintenance as validated with no values
+     * Add new redundant preventive maintenance as validated with no values
      * Description: /
      * Protocol: /
      * Periodicity: /
@@ -645,7 +645,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 19
-     * Add new preventive maintenance as validated with too short description
+     * Add new redundant preventive maintenance as validated with too short description
      * Description: "in"
      * Protocol: /
      * Periodicity: /
@@ -678,7 +678,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 20
-     * Add new preventive maintenance as validated with too long description
+     * Add new redundant preventive maintenance as validated with too long description
      * Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
      * Protocol: /
      * Periodicity: /
@@ -711,7 +711,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 21
-     * Add new preventive maintenance as validated with too short protocol
+     * Add new redundant preventive maintenance as validated with too short protocol
      * Description: "three"
      * Protocol: "in"
      * Periodicity: /
@@ -743,7 +743,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 22
-     * Add new preventive maintenance as validated with too long periodicity
+     * Add new redundant preventive maintenance as validated with too long periodicity
      * Description: "three"
      * Protocol: "three"
      * Periodicity: 12345
@@ -774,7 +774,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 23
-     * Add new preventive maintenance as validated with correct description, protocol, periodicity and periodicity symbol
+     * Add new redundant preventive maintenance as validated with correct description, protocol, periodicity and periodicity symbol
      * Description: "three"
      * Protocol: "three"
      * Periodicity: 7
@@ -909,12 +909,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 24
-     * Add new preventive maintenance with a too high value of periodicity and with a periodicity symbol equal to "D"
+     * Add new redundant preventive maintenance with a too high value of periodicity and with a periodicity symbol equal to "D"
      * Description: "three"
      * Protocol: "three"
      * Periodicity: 5999
      * Symbol Periodicity: "D"
-     * Expected Result: The preventive maintenance is added to the database
+     * Expected Result: Receiving an error:
+     *                                      "You can't enter a periodicity higher than 5475 days"
      * @returns void
      */
     public function test_add_redundant_preventive_maintenance_validated_too_high_periodicity_day()
@@ -937,12 +938,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 25
-     * Add new preventive maintenance with a too high value of periodicity and with a periodicity symbol equal to "M"
+     * Add new redundant preventive maintenance with a too high value of periodicity and with a periodicity symbol equal to "M"
      * Description: "three"
      * Protocol: "three"
      * Periodicity: 199
      * Symbol Periodicity: "M"
-     * Expected Result: The preventive maintenance is added to the database
+     * Expected Result: Receiving an error:
+     *                                      "You can't enter a periodicity higher than 180 months"
      * @returns void
      */
     public function test_add_redundant_preventive_maintenance_validated_too_high_periodicity_month()
@@ -965,12 +967,13 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 26
-     * Add new preventive maintenance with a too high value of periodicity and with a periodicity symbol equal to "Y"
+     * Add new redundant preventive maintenance with a too high value of periodicity and with a periodicity symbol equal to "Y"
      * Description: "three"
      * Protocol: "three"
      * Periodicity: 20
      * Symbol Periodicity: "Y"
-     * Expected Result: The preventive maintenance is added to the database
+     * Expected Result: Receiving an error:
+     *                                      "You can't enter a periodicity higher than 15 years"
      * @returns void
      */
     public function test_add_redundant_preventive_maintenance_validated_too_high_periodicity_year()
@@ -993,15 +996,15 @@ class PreventiveMaintenanceOperationTest extends TestCase
 
     /**
      * Test Conception Number: 27
-     * Add new preventive maintenance with correct values to a signed equipment
-     * Description: "signed"
-     * Protocol: "signed"
+     * Add new redundant preventive maintenance with correct values to a signed equipment
+     * Description: "three"
+     * Protocol: "three"
      * Periodicity: 1
      * Symbol Periodicity: "M"
      * Expected Result: The preventive maintenance is added to the database and the equipment is no more signed
      * @returns void
      */
-    public function test_add_preventive_maintenance_validated_to_signed_equipment()
+    public function test_add_redundant_preventive_maintenance_validated_to_signed_equipment()
     {
         $this->create_equipment("three", 'validated');
 
@@ -1020,8 +1023,8 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $response = $this->post('/prvMtnOp/verif', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
-            'prvMtnOp_description' => 'signed',
-            'prvMtnOp_protocol' => 'signed',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
@@ -1031,8 +1034,8 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $response = $this->post('/equipment/add/prvMtnOp', [
             'prvMtnOp_validate' => 'validated',
             'eq_id' => Equipment::all()->last()->id,
-            'prvMtnOp_description' => 'signed',
-            'prvMtnOp_protocol' => 'signed',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
             'prvMtnOp_preventiveOperation' => true,
@@ -1040,8 +1043,8 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $response->assertStatus(200);
         $this->assertDatabaseHas('preventive_maintenance_operations', [
             'prvMtnOp_preventiveOperation' => true,
-            'prvMtnOp_description' => 'signed',
-            'prvMtnOp_protocol' => 'signed',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_periodicity' => 1,
             'prvMtnOp_symbolPeriodicity' => 'M',
@@ -1056,8 +1059,8 @@ class PreventiveMaintenanceOperationTest extends TestCase
     /**
      * Test Conception Number: 28
      * Update a preventive maintenance with correct values
-     * Description: "signed"
-     * Protocol: "signed"
+     * Description: "three"
+     * Protocol: "three"
      * Periodicity: 1
      * Symbol Periodicity: "M"
      * Expected Result: The preventive maintenance is updated in the database
@@ -1175,11 +1178,11 @@ class PreventiveMaintenanceOperationTest extends TestCase
     /**
      * Test Conception Number: 29
      * Update a preventive maintenance with correct values of a signed equipment
-     * Description: "signed"
-     * Protocol: "signed"
+     * Description: "three"
+     * Protocol: "three"
      * Periodicity: 1
      * Symbol Periodicity: "M"
-     * Expected Result: The preventive maintenance is updated in the database
+     * Expected Result: The preventive maintenance is updated in the database and the equipment is no longer signed
      * @returns void
      */
     public function test_update_preventive_maintenance_validated_to_signed_equipment()
@@ -1230,8 +1233,8 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $response = $this->post('/equipment/update/prvMtnOp/' . PreventiveMaintenanceOperation::all()->last()->id, [
             'prvMtnOp_preventiveOperation' => true,
             'eq_id' => Equipment::all()->last()->id,
-            'prvMtnOp_description' => 'signed',
-            'prvMtnOp_protocol' => 'signed',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_periodicity' => 2,
             'prvMtnOp_symbolPeriodicity' => 'M',
@@ -1239,8 +1242,8 @@ class PreventiveMaintenanceOperationTest extends TestCase
         $response->assertStatus(200);
         $this->assertDatabaseHas('preventive_maintenance_operations', [
             'prvMtnOp_preventiveOperation' => true,
-            'prvMtnOp_description' => 'signed',
-            'prvMtnOp_protocol' => 'signed',
+            'prvMtnOp_description' => 'three',
+            'prvMtnOp_protocol' => 'three',
             'prvMtnOp_validate' => 'validated',
             'prvMtnOp_periodicity' => 2,
             'prvMtnOp_symbolPeriodicity' => 'M',
@@ -1301,7 +1304,7 @@ class PreventiveMaintenanceOperationTest extends TestCase
     /**
      * Test Conception Number: 31
      * Delete a preventive maintenance from signed equipment
-     * Expected Result: The preventive maintenance is updated in the database
+     * Expected Result: The preventive maintenance is deleted from the database and the equipment is no longer signed
      * @returns void
      */
     public function test_delete_preventive_maintenance_validated_to_signed_equipment()
