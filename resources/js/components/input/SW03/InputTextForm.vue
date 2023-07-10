@@ -94,7 +94,8 @@ export default {
             default: () => ([])
         },
         min:{
-            type:Number
+            type:Number,
+            default:0
         },
         max:{
             type:Number

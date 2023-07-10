@@ -1,6 +1,6 @@
 <!--File name : EquipmentFileForm.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 4 Apr 2023-->
+<!--Update date : 10 Jul 2023-->
 <!--Vue Component of the Form of the equipment file who call all the input component-->
 
 <template>
@@ -113,89 +113,89 @@
                                 name="crit_performanceMedicalDevice"
                 />
                 <div v-if="this.crit_performanceMedicalDevice">
-                    <div>Checked names: {{ checkedTests }}</div>
-
-                    <input type="checkbox" id="dimTest" value="dimTest" v-model="checkedTests">
-                    <label for="dimTest">Dimensional Test</label>
-
-                    <div v-if="checkedTests.includes('dimTest')">
-                        <input type="checkbox" id="dimTestAlpha" value="dimTestAlpha" v-model="checkedTests">
-                        <label for="dimTestAlpha"> Alpha</label>
-
-                        <input type="checkbox" id="dimTestSupplier" value="dimTestSupplier" v-model="checkedTests">
-                        <label for="dimTestSupplier"> Supplier</label>
-
-                        <input type="checkbox" id="dimTestBoth" value="dimTestBoth" v-model="checkedTests">
-                        <label for="dimTestBoth"> Both</label>
-                    </div>
-
-                    <input type="checkbox" id="funcTest" value="funcTest" v-model="checkedTests">
-                    <label for="funcTest">Functional Test</label>
-
-                    <div v-if="checkedTests.includes('funcTest')">
-                        <input type="checkbox" id="funcTestAlpha" value="funcTestAlpha" v-model="checkedTests">
-                        <label for="funcTestAlpha"> Alpha</label>
-
-                        <input type="checkbox" id="funcTestSupplier" value="funcTestSupplier" v-model="checkedTests">
-                        <label for="funcTestSupplier"> Supplier</label>
-
-                        <input type="checkbox" id="funcTestBoth" value="funcTestBoth" v-model="checkedTests">
-                        <label for="funcTestBoth"> Both</label>
-                    </div>
-
-                    <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
-                    <label for="aspTest">Aspect Test </label>
-
-                    <div v-if="checkedTests.includes('aspTest')">
-                        <input type="checkbox" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTests">
-                        <label for="aspTestAlpha"> Alpha</label>
-
-                        <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
-                        <label for="aspTestSupplier"> Supplier</label>
-
-                        <input type="checkbox" id="aspTestBoth" value="aspTestBoth" v-model="checkedTests">
-                        <label for="aspTestBoth"> Both</label>
-                    </div>
-
-                    <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
-                    <label for="docControl">Documentary control </label>
-
-                    <div v-if="checkedTests.includes('docControl')">
-                        <input type="checkbox" id="docControlAlpha" value="docControlAlpha" v-model="checkedTests">
-                        <label for="docControlAlpha"> Alpha</label>
-
-                        <input type="checkbox" id="docControlSupplier" value="docControlSupplier" v-model="checkedTests">
-                        <label for="docControlSupplier"> Supplier</label>
-
-                        <input type="checkbox" id="docControlBoth" value="docControlBoth" v-model="checkedTests">
-                        <label for="docControlBoth"> Both</label>
-                    </div>
-
                     
-                    <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
-                    <label for="adminControl">Administrative control </label>
-                    <div v-if="checkedTests.includes('adminControl')">
-                        <input type="checkbox" id="adminControlAlpha" value="adminControlAlpha" v-model="checkedTests">
-                        <label for="adminControlAlpha"> Alpha</label>
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="dimTest" value="dimTest" v-model="checkedTests">
+                                <label for="dimTest">Dimensional Test</label>
+                            </td>
+                            <td v-if="checkedTests.includes('dimTest')">
+                                <input type="radio" id="dimTestAlpha" value="dimTestAlpha" v-model="checkedTestRadioDim">
+                                <label for="dimTestAlpha"> Alpha</label>
 
-                        <input type="checkbox" id="adminControlSupplier" value="adminControlSupplier" v-model="checkedTests">
-                        <label for="adminControlSupplier"> Supplier</label>
+                            <input type="radio" id="dimTestSupplier" value="dimTestSupplier" v-model="checkedTestRadioDim">
+                            <label for="dimTestSupplier"> Supplier</label>
 
-                        <input type="checkbox" id="adminControlBoth" value="adminControlBoth" v-model="checkedTests">
-                        <label for="adminControlBoth"> Both</label>
-                    </div>
-                </div>
-                <InputTextForm
-                    name="Remarks"
-                    label="Remarks :"
-                    v-model="crit_remarks"
-                    :isDisabled="isInConsultMod"
-                    :info_text="this.infos_crit[4].info_value"
-                    :min="0"
-                    :max="255"
-                    :inputClassName="null"
-                    :Errors="errors.crit_remarks"
-                />
+                            <input type="radio" id="dimTestBoth" value="dimTestBoth" v-model="checkedTestRadioDim">
+                            <label for="dimTestBoth"> Both</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="funcTest" value="funcTest" v-model="checkedTests">
+                            <label for="funcTest">Functional Test</label>
+                        </td>
+                        <td v-if="checkedTests.includes('funcTest')">
+                            <input type="radio" id="funcTestAlpha" value="funcTestAlpha" v-model="checkedTestRadioFunc">
+                            <label for="funcTestAlpha"> Alpha</label>
+
+                            <input type="radio" id="funcTestSupplier" value="funcTestSupplier" v-model="checkedTestRadioFunc">
+                            <label for="funcTestSupplier"> Supplier</label>
+
+                            <input type="radio" id="funcTestBoth" value="funcTestBoth" v-model="checkedTestRadioFunc">
+                            <label for="funcTestBoth"> Both</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
+                            <label for="aspTest">Aspect Test </label>
+                        </td>
+                        <td v-if="checkedTests.includes('aspTest')">
+                            <input type="radio" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTestRadioAsp">
+                            <label for="aspTestAlpha"> Alpha</label>
+
+                    <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
+                    <label for="aspTestSupplier"> Supplier</label>
+
+                            <input type="radio" id="aspTestBoth" value="aspTestBoth" v-model="checkedTestRadioAsp">
+                            <label for="aspTestBoth"> Both</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
+                            <label for="docControl">Documentary control </label>
+                        </td>
+                        <td v-if="checkedTests.includes('docControl')">
+                            <input type="radio" id="docControlAlpha" value="docControlAlpha" v-model="checkedTestRadioDoc">
+                            <label for="docControlAlpha"> Alpha</label>
+
+                            <input type="radio" id="docControlSupplier" value="docControlSupplier" v-model="checkedTestRadioDoc">
+                            <label for="docControlSupplier"> Supplier</label>
+
+                            <input type="radio" id="docControlBoth" value="docControlBoth" v-model="checkedTestRadioDoc">
+                            <label for="docControlBoth"> Both</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
+                            <label for="adminControl">Administrative control </label>
+                        </td>
+                        <td v-if="checkedTests.includes('adminControl')">
+                            <input type="radio" id="adminControlAlpha" value="adminControlAlpha" v-model="checkedTestRadioAdm">
+                            <label for="adminControlAlpha"> Alpha</label>
+
+                            <input type="radio" id="adminControlSupplier" value="adminControlSupplier" v-model="checkedTestRadioAdm">
+                            <label for="adminControlSupplier"> Supplier</label>
+
+                            <input type="radio" id="adminControlBoth" value="adminControlBoth" v-model="checkedTestRadioAdm">
+                            <label for="adminControlBoth"> Both</label>
+                        </td>
+                    </tr>
+                </table>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addCriticality is called function else the updateCriticality function is called -->
@@ -341,6 +341,11 @@ export default {
             ],
             checkedTests: [],
             crit_performanceMedicalDevice: null,
+            checkedTestRadioDim: [],
+            checkedTestRadioFunc: [],
+            checkedTestRadioAsp: [],
+            checkedTestRadioDoc: [],
+            checkedTestRadioAdm: [],
         }
     },
     methods: {
