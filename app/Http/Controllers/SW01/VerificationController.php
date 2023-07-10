@@ -794,6 +794,7 @@ class VerificationController extends Controller
     public function delete_verif(Request $request, $id){
         $mme=Mme::findOrfail($request->mme_id) ;
         $verif=Verification::findOrFail($id) ;
+        $user = User::findOrFail($request->user_id);
 
         if (($verif->verif_validate=="drafted" || $verif->verif_validate=="to_be_validated") && !$user->user_deleteDataNotValidatedLinkedToEqOrMmeRight){
             return response()->json([

@@ -51,7 +51,7 @@ class CurativeMaintenanceOperationController extends Controller
                 'errors' => [
                     'curMtnOp_delete' => ["You don't have the right to delete a curative maintenance operation"]
                 ]
-            ], 429);    
+            ], 429);
         }
 
         if (!$user->user_makeMmeOpValidationRight && $request->reason=="mme"){
@@ -59,7 +59,7 @@ class CurativeMaintenanceOperationController extends Controller
                 'errors' => [
                     'curMtnOp_delete' => ["You don't have the right to delete a curative maintenance operation"]
                 ]
-            ], 429);    
+            ], 429);
         }
 
         $curMtnOp=CurativeMaintenanceOperation::findOrFail($id);
@@ -80,7 +80,7 @@ class CurativeMaintenanceOperationController extends Controller
      * The id parameter correspond to the id of the curative maintenance operation we want to check
      * */
     public function technicalVerification_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
+        $user=User::findOrFail($request->user_id) ;
 
         if (!$user->user_makeTechnicalValidationRight){
             return response()->json([
@@ -89,7 +89,7 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }
-        
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -115,7 +115,7 @@ class CurativeMaintenanceOperationController extends Controller
      * The id parameter correspond to the id of the curative maintenance operation we want to entered the realizator
      * */
     public function realize_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
+        $user=User::findOrFail($request->user_id) ;
         if (!$user->user_makeEqOpValidationRight && $request->reason=="equipment"){
             return response()->json([
                 'errors' => [
@@ -130,7 +130,7 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }
-        
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -151,7 +151,7 @@ class CurativeMaintenanceOperationController extends Controller
      * The id parameter correspond to the id of the curative maintenance operation we want to check
      * */
     public function qualityVerification_curMtnOp(Request $request, $id){
-        $user=User::findOrFail($request->user_id) ; 
+        $user=User::findOrFail($request->user_id) ;
 
         if (!$user->user_makeQualityValidationRight){
             return response()->json([
@@ -160,7 +160,7 @@ class CurativeMaintenanceOperationController extends Controller
                 ]
             ], 429);
         }
-        
+
         if (!Auth::attempt(['user_pseudo' => $request->user_pseudo, 'password' => $request->user_password])) {
             return response()->json([
                 'errors' => [
@@ -340,8 +340,8 @@ class CurativeMaintenanceOperationController extends Controller
             ], 429);
         }
 
-        
-        $state=State::findOrFail($request->state_id) ; 
+
+        $state=State::findOrFail($request->state_id) ;
         if ($request->curMtnOp_validate=='validated'){
             $this->validate(
                 $request,
@@ -403,21 +403,16 @@ class CurativeMaintenanceOperationController extends Controller
                     ], 429);
                 }
             }else{
+                if ($request->realizedBy_id===NULL) {
+                    return response()->json([
+                        'errors' => [
+                            'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
+                        ]
+                    ], 429);
+                }
                 return response()->json([
                     'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the realizator of this curative maintenance operation for validate it"]
-                    ]
-                ], 429);
-
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the quality Verifier of this curative maintenance operation for validate it"]
-                    ]
-                ], 429);
-
-                return response()->json([
-                    'errors' => [
-                        'curMtnOp_validate' => ["You have to entered the technical Verifier of this curative maintenance operation for validate it"]
+                        'curMtnOp_validate' => ["You have to entered the quality and the technical Verifier of this curative maintenance operation for validate it"]
                     ]
                 ], 429);
             }
@@ -636,7 +631,7 @@ class CurativeMaintenanceOperationController extends Controller
                 $request,
                 [
                     'curMtnOp_reportNumber' => 'required|min:3|max:255',
-                    'curMtnOp_description' => 'required|min:3',
+                    'curMtnOp_description' => 'required|min:3|max:50',
                 ],
                 [
                     'curMtnOp_reportNumber.required' => 'You must enter a report number for the curative maintenance operation ',
@@ -644,6 +639,7 @@ class CurativeMaintenanceOperationController extends Controller
                     'curMtnOp_reportNumber.max' => 'You must enter a maximum of 255 characters',
                     'curMtnOp_description.required' => 'You must enter a description for the curative maintenance operation ',
                     'curMtnOp_description.min' => 'You must enter at least three characters ',
+                    'curMtnOp_description.max' => 'You must enter a maximum of 50 characters',
                 ]
             );
 
@@ -718,12 +714,13 @@ class CurativeMaintenanceOperationController extends Controller
             $this->validate(
                 $request,
                 [
-                    'curMtnOp_description' => 'required|min:1|max:50',
+                    'curMtnOp_description' => 'required|min:3|max:50',
                     'curMtnOp_reportNumber' => 'max:255',
                 ],
                 [
                     'curMtnOp_description.required' => 'You must enter a description for the curative maintenance operation ',
                     'curMtnOp_description.min' => 'You must enter at least three characters ',
+                    'curMtnOp_description.max' => 'You must enter a maximum of 50 characters',
                     'curMtnOp_reportNumber.max' => 'You must enter a maximum of 255 characters',
                 ]
             );

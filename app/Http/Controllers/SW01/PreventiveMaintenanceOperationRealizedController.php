@@ -314,7 +314,7 @@ class PreventiveMaintenanceOperationRealizedController extends Controller
      * Delete a preventive maintenance operation realized thanks to the id given in parameter
      * The id parameter correspond to the id of the preventive maintenance operation realized we want to delete
      * */
-    public function delete_prvMtnOpRlz($id){
+    public function delete_prvMtnOpRlz(Request $request, $id){
         $prvMtnOpRlz=PreventiveMaintenanceOperationRealized::findOrFail($id);
 
         $user=User::findOrFail($request->user_id) ;

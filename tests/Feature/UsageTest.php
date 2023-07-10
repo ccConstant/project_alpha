@@ -9,7 +9,9 @@ use App\Models\SW01\EnumEquipmentMassUnit;
 use App\Models\SW01\EnumEquipmentType;
 use App\Models\SW01\Equipment;
 use App\Models\SW01\EquipmentTemp;
+use App\Models\SW01\Usage;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -615,7 +617,7 @@ class UsageTest extends TestCase
     public function test_add_usage_validated_correct_values()
     {
         $user_id = $this->create_user();
-        $eq_id = $this->add_eq();
+        $eq_id = $this->add_eq('validated');
         $response = $this->post('/usage/verif', [
             'usg_validate' => 'validated',
             'usg_type' => 'three',
@@ -681,5 +683,187 @@ class UsageTest extends TestCase
         ]);
     }
 
+    /**
+     * Test Conception Number: 17
+     * Update a usage linked to an equipment
+     * Type: "other"
+     * Precaution: "other"
+     * Expected result: The usage is updated in the database
+     * @return void
+     */
+    public function test_update_usage_linked_to_equipment()
+    {
+        $this->test_add_usage_validated_correct_values();
 
+        $response = $this->post('/equipment/update/usg/'.Usage::all()->last()->id, [
+            'usg_validate' => 'drafted',
+            'usg_type' => 'other',
+            'usg_precaution' => 'other',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('usages', [
+            'usg_type' => 'other',
+            'usg_precaution' => 'other',
+            'usg_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 18
+     * Update a usage linked to a signed equipment
+     * Type: "other"
+     * Precaution: "other"
+     * Expected result: The usage is updated in the database and the equipment is no longer signed
+     * @return void
+     */
+    public function test_update_usage_linked_to_signed_equipment()
+    {
+        $this->test_add_usage_validated_correct_values();
+
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'test')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'test')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->post('/equipment/update/usg/'.Usage::all()->last()->id, [
+            'usg_validate' => 'drafted',
+            'usg_type' => 'other',
+            'usg_precaution' => 'other',
+            'eq_id' => Equipment::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('usages', [
+            'usg_type' => 'other',
+            'usg_precaution' => 'other',
+            'usg_validate' => 'drafted',
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_lifeSheetCreated' => 0,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+            'eqTemp_version' => 2,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 19
+     * Send the usage list linked to equipment
+     * Expected result: The data are sent correctly
+     * @return void
+     */
+    public function test_send_usage_list_linked_to_equipment()
+    {
+        $this->test_add_usage_validated_correct_values();
+
+        $response = $this->get('/usage/send/'.Equipment::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => Usage::all()->last()->id,
+                'usg_type' => 'three',
+                'usg_validate' => 'validated',
+                'usg_precaution' => 'three',
+                'usg_startDate' => strtoupper(Carbon::create(Usage::all()->last()->usg_startDate)->format('d M Y')),
+                'usg_reformDate' => null
+            ]
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 20
+     * Delete a usage linked to an equipment
+     * Expected result: The usage is deleted from the database
+     * @return void
+     */
+    public function test_delete_usage_linked_to_equipment()
+    {
+        $this->test_add_usage_validated_correct_values();
+
+        $id = Usage::all()->last()->id;
+
+        $response = $this->post('/equipment/delete/usg/'.$id, [
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->where('user_pseudo', '=', 'test')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('usages', [
+            'id' => $id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 21
+     * Delete a usage linked to signed equipment
+     * Expected result: The usage is deleted from the database and the equipment is no longer signed
+     * @return void
+     */
+    public function test_delete_usage_linked_to_signed_equipment()
+    {
+        $this->test_add_usage_validated_correct_values();
+
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
+            'reason' => 'technical',
+            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'test')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->post('/equipment/validation/' . Equipment::all()->last()->id, [
+            'reason' => 'quality',
+            'enteredBy_id' => User::all()->where('user_pseudo', '=', 'test')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $id = Usage::all()->last()->id;
+
+        $response = $this->post('/equipment/delete/usg/'.$id, [
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->where('user_pseudo', '=', 'test')->last()->id,
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('usages', [
+            'id' => $id,
+        ]);
+        $this->assertDatabaseHas('equipment_temps', [
+            'equipment_id' => Equipment::all()->last()->id,
+            'eqTemp_lifeSheetCreated' => 0,
+            'qualityVerifier_id' => null,
+            'technicalVerifier_id' => null,
+            'eqTemp_version' => 2,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 22
+     * Reform a usage linked to equipment
+     * Expected result: The usage is reformed in the database
+     * @return void
+     */
+    public function test_reform_usage_linked_to_equipment()
+    {
+        $this->test_add_usage_validated_correct_values();
+
+        $response = $this->post('/equipment/reform/usg/'.Usage::all()->last()->id, [
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => User::all()->where('user_pseudo', '=', 'test')->last()->id,
+            'usg_reformDate' => Carbon::now()->format('Y-m-d'),
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('usages', [
+            'usg_reformDate' => Carbon::now()->format('Y-m-d'),
+        ]);
+    }
 }
