@@ -321,7 +321,7 @@
                 <p></p>
                 <table class="header">
                     <tbody>
-                    <tr>
+                    <tr colspan="2">
                         <td class="tableName" :rowspan="3*purSpes.length" style="text-align: center;">
                             <h2>
                                 Purchasing specifications
@@ -367,7 +367,7 @@
                         </tr>
                     </div>
                     <tr>
-                        <td class="gray" colspan="2" style="text-align: center;">
+                        <td class="gray" style="text-align: center;">
                             <h2>
                                 Storage Conditions
                             </h2>
