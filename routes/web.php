@@ -1059,7 +1059,6 @@ Route::post('/raw/subFam/update/{id}', [RawSubFamilyController::class, 'update_r
 
 
 // Incoming Inspection Controller
-Route::post('/incmgInsp/verif', [IncmgInspController::class, 'verif_incmgInsp']);
 Route::post('/incmgInsp/add', [IncmgInspController::class, 'add_incmgInsp']);
 Route::post('/incmgInsp/update/{id}', [IncmgInspController::class, 'update_incmgInsp']);
 Route::get('/incmgInsp/send', [IncmgInspController::class, 'send_incmgInsp']);

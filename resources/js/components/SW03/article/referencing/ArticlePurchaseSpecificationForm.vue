@@ -14,7 +14,7 @@
                 <InputSelectForm
                     @clearSelectError='clearSelectError'
                     name="supplier"
-                    :Errors="errors.artFam_purchasedBy"
+                    :Errors="errors.purSpe_supplier_id"
                     label="Supplier :"
                     :options="suppliers"
                     :selctedOption="purSpe_supplier_id"
@@ -26,7 +26,7 @@
                 <InputTextForm
                     v-if="this.purSpe_supplier_id !== 'Alpha'"
                     :inputClassName="null"
-                    :Errors="errors.supplr_ref"
+                    :Errors="errors.purSpe_supplier_ref"
                     name="purSpe_supplrRef"
                     label="Supplier's Reference"
                     :isDisabled="this.isInConsultMod"
@@ -34,19 +34,6 @@
                     v-model="purSpe_supplier_ref"
                     :info_text="null"
                     :min="2"
-                    :max="255"
-                />
-                <InputTextForm
-                    v-if="this.purSpe_supplier_id !== 'Alpha'"
-                    :inputClassName="null"
-                    :Errors="errors.purSpe_requiredDoc"
-                    name="purSpe_requiredDoc"
-                    label="Purchase Specification Required Doc"
-                    :isDisabled="this.isInConsultMod"
-                    isRequired
-                    v-model="purSpe_requiredDoc"
-                    :info_text="this.infos_purSpe[0].info_value"
-                    :min="0"
                     :max="255"
                 />
                 <SaveButtonForm v-if="this.addSucces===false"

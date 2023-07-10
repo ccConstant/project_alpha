@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_20_090129_create_purchase_specifications_table.php
 * Creation date : 20 Apr 2023
-* Update date : 27 Jun 2023
+* Update date : 10 Jul 2023
 * This file is used to create the table "purchase_specifications" in the data base. In this file, we can see the different
 * attribute of this table (requiredDoc, technicalReviewer..) and how they are defined (string, boolean, unique or not)
 */
@@ -24,7 +24,6 @@ class CreatePurchaseSpecificationsTable extends Migration
         Schema::create('purchase_specifications', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->longText('purSpe_requiredDoc') ->nullable();
             $table->unsignedBigInteger('purSpe_qualityApproverId') ->nullable();
             $table->foreign('purSpe_qualityApproverId')->references('id')->on('users') ;
             $table->unsignedBigInteger('purSpe_technicalReviewerId') ->nullable();

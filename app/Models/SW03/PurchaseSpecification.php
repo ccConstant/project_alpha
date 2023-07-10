@@ -3,7 +3,7 @@
 /*
 * Filename : PurchaseSpecification.php
 * Creation date : 20 Apr 2023
-* Update date : 20 Apr 2023
+* Update date : 10 Jul 2023
 * This file define the model PurchaseSpecification. We can see more details about this model (like his attributes) in the
 * migration file named "2023_04_20_090129_create_purchase_specifications_table.php"
 *
@@ -24,7 +24,7 @@ class PurchaseSpecification extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['purSpe_requiredDoc', 'purSpe_qualityApproverId', 'purSpe_technicalReviewerId', 'purSpe_signatureDate', 'purSpe_validate', 'rawFam_id', 'consFam_id', 'compFam_id'] ;
+    protected $fillable = ['purSpe_qualityApproverId', 'purSpe_technicalReviewerId', 'purSpe_signatureDate', 'purSpe_validate', 'rawFam_id', 'consFam_id', 'compFam_id'] ;
 
     //Define the relation between a purchaseSpecification and the raw_family which he is linked : a purchaseSpecification can be linked to only one raw_family
     public function raw_family(){

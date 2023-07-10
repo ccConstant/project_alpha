@@ -3,7 +3,7 @@
 /**
  * Filename: 2023_04_20_115421_create_incoming_inspections_table.php
  * Creation date: 20 Apr 2023
- * Update date: 27 Jun 2023
+ * Update date: 10 Jul 2023
  * This file is used to create the table "incoming_inspections" in the data base. In this file, we can see the different
  * attribute of this table (reference, designation..) and how they are defined (string, boolean, unique or not)
  */
@@ -24,10 +24,6 @@ class CreateIncomingInspectionsTable extends Migration
         Schema::create('incoming_inspections', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('incmgInsp_remarks')->nullable();
-            $table->string('incmgInsp_partMaterialComplianceCertificate')->nullable();
-            $table->string('incmgInsp_rawMaterialCertificate')->nullable();
-
             $table->unsignedBigInteger('incmgInsp_qualityApproverId')->nullable();
             $table->foreign('incmgInsp_qualityApproverId')->references('id')->on('users');
             $table->unsignedBigInteger('incmgInsp_technicalReviewerId')->nullable();
@@ -39,8 +35,6 @@ class CreateIncomingInspectionsTable extends Migration
             $table->foreign('incmgInsp_compFam_id')->references('id')->on('comp_families');
             $table->unsignedBigInteger('incmgInsp_rawFam_id')->nullable();
             $table->foreign('incmgInsp_rawFam_id')->references('id')->on('raw_families');
-
-            $table->enum('incmgInsp_validate',  ['drafted', 'to_be_validated', 'validated']);
         });
     }
 

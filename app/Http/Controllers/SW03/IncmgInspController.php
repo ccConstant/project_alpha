@@ -1,5 +1,13 @@
 <?php
 
+/*
+* Filename : IncmgInspController.php
+* Creation date : 25 Apr 2023
+* Update date : 10 Jul 2023
+* This file is used to link the view files and the database that concern the incoming inspection table.
+* For example : add an incoming inspection in the data base, update an incoming inspection...
+*/
+
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
@@ -12,35 +20,14 @@ use Illuminate\Validation\ValidationException;
 
 class IncmgInspController extends Controller
 {
-    /**
-     * @throws ValidationException
-     */
-    public function verif_incmgInsp(Request $request) {
-        if ($request->incmpInsp_articleType == 'raw' || $request->incmpInsp_articleType == 'comp') {
-            if ($request->incmgInsp_validate == 'validated') {
-                $this->validate(
-                    $request,
-                    [
-                        'incmgInsp_partMaterialComplianceCertificate' => 'required|max:255',
-                        'incmgInsp_rawMaterialCertificate' => 'required|max:255',
-                    ],
-                    [
-                        'incmgInsp_partMaterialComplianceCertificate.required' => 'You must enter a part material compliance certificate',
-                        'incmgInsp_partMaterialComplianceCertificate.max' => 'You must enter a maximum of 255 characters',
-                        'incmgInsp_rawMaterialCertificate.required' => 'You must enter a raw material certificate',
-                        'incmgInsp_rawMaterialCertificate.max' => 'You must enter a maximum of 255 characters',
-                    ]
-                );
-            }
-        }
-    }
 
+    /**
+     * Function call by IncmgInspIDForm.vue when the form is submitted for insert with the route : /incmgInsp/add (post)
+     * Add a new enregistrement of Incoming inspection in the data base with the informations entered in the form
+     * @return \Illuminate\Http\Response : id of the new Incoming inspection
+     */
     public function add_incmgInsp(Request $request) {
         $incmgInsp = IncomingInspection::create([
-            'incmgInsp_remarks' => $request->incmgInsp_remarks,
-            'incmgInsp_partMaterialComplianceCertificate' => $request->incmgInsp_partMaterialComplianceCertificate,
-            'incmgInsp_rawMaterialCertificate' => $request->incmgInsp_rawMaterialCertificate,
-            'incmgInsp_validate' => $request->incmgInsp_validate,
             'incmgInsp_consFam_id' => $request->incmgInsp_consFam_id,
             'incmgInsp_compFam_id' => $request->incmgInsp_compFam_id,
             'incmgInsp_rawFam_id' => $request->incmgInsp_rawFam_id,

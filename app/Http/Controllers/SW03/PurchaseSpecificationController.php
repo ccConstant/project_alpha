@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\DB;
 
 class PurchaseSpecificationController extends Controller
 {
+    /**
+     * Function call by ArticlePurchaseSpecificationForm.vue when the form is submitted for verif with the route : '/purSpe/verif (post)
+     * Verify that the informations entered by the user are correct 
+     */
     public function verif_purSpe(Request $request){
         $this->validate(
             $request,
@@ -36,13 +40,9 @@ class PurchaseSpecificationController extends Controller
             $this->validate(
                 $request,
                 [
-                    'purSpe_requiredDoc' => 'required|max:255',
                     'purSpe_supplier_ref' => 'required|max:255',
                 ],
                 [
-                    'purSpe_requiredDoc.required' => 'You must enter a required document',
-                    'purSpe_requiredDoc.max' => 'The required document must not exceed 255 characters',
-
                     'purSpe_supplier_ref.required' => 'You must enter a supplier reference',
                     'purSpe_supplier_ref.max' => 'The supplier reference must not exceed 255 characters',
                 ]
@@ -51,9 +51,9 @@ class PurchaseSpecificationController extends Controller
     }
 
     /**
-     * Function call by ArticleFamilyMemberForm.vue when the form is submitted for insert with the route : /cons/mb/add (post)
-     * Add a new enregistrement of cons family member in the data base with the informations entered in the form
-     * @return \Illuminate\Http\Response : id of the new cons family member
+     * Function call by ArticlePurchaseSpecificationForm.vue when the form is submitted for insert with the route : '/purSpe/add (post)
+     * Add a new enregistrement of purchase specification in the data base with the informations entered in the form
+     * @return \Illuminate\Http\Response : id of the new purchase specification
      */
     public function add_purSpe(Request $request, $id){
         //Creation of a new purchase specification
@@ -74,7 +74,6 @@ class PurchaseSpecificationController extends Controller
             $consFam_id=$id;
         }
         $purSpe=PurchaseSpecification::create([
-            'purSpe_requiredDoc' => $request->purSpe_requiredDoc,
             'consFam_id' => $consFam_id,
             'rawFam_id' => $rawFam_id,
             'compFam_id' => $compFam_id,
@@ -140,7 +139,6 @@ class PurchaseSpecificationController extends Controller
             }
             array_push($array, [
                 'id' => $purSpec->id,
-                'purSpe_requiredDoc' => $purSpec->purSpe_requiredDoc,
                 'purSpe_validate' => $purSpec->purSpe_validate,
                 'consFam_id' => $purSpec->consFam_id,
                 'rawFam_id' => $purSpec->rawFam_id,

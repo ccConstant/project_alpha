@@ -87,17 +87,6 @@
                     :max="255"
                     :inputClassName="null"
                     :Errors="errors.crit_justification"
-                />
-                <InputTextForm
-                    name="Remarks"
-                    label="Remarks :"
-                    v-model="crit_remarks"
-                    :isDisabled="isInConsultMod"
-                    :info_text="this.infos_crit[4].info_value"
-                    :min="0"
-                    :max="255"
-                    :inputClassName="null"
-                    :Errors="errors.crit_remarks"
                 />-->
                 <InputSelectForm
                     :name="ArticleContact"
@@ -123,77 +112,90 @@
                                 label="Is deficiencies of the article or of the material properties (hardness, grain size...) impact the performance of the medical device ?"
                                 name="crit_performanceMedicalDevice"
                 />
-                <div>Checked names: {{ checkedTests }}</div>
+                <div v-if="this.crit_performanceMedicalDevice">
+                    <div>Checked names: {{ checkedTests }}</div>
 
-                <input type="checkbox" id="dimTest" value="dimTest" v-model="checkedTests">
-                <label for="dimTest">Dimensional Test</label>
+                    <input type="checkbox" id="dimTest" value="dimTest" v-model="checkedTests">
+                    <label for="dimTest">Dimensional Test</label>
 
-                <div v-if="checkedTests.includes('dimTest')">
-                    <input type="checkbox" id="dimTestAlpha" value="dimTestAlpha" v-model="checkedTests">
-                    <label for="dimTestAlpha"> Alpha</label>
+                    <div v-if="checkedTests.includes('dimTest')">
+                        <input type="checkbox" id="dimTestAlpha" value="dimTestAlpha" v-model="checkedTests">
+                        <label for="dimTestAlpha"> Alpha</label>
 
-                    <input type="checkbox" id="dimTestSupplier" value="dimTestSupplier" v-model="checkedTests">
-                    <label for="dimTestSupplier"> Supplier</label>
+                        <input type="checkbox" id="dimTestSupplier" value="dimTestSupplier" v-model="checkedTests">
+                        <label for="dimTestSupplier"> Supplier</label>
 
-                    <input type="checkbox" id="dimTestBoth" value="dimTestBoth" v-model="checkedTests">
-                    <label for="dimTestBoth"> Both</label>
+                        <input type="checkbox" id="dimTestBoth" value="dimTestBoth" v-model="checkedTests">
+                        <label for="dimTestBoth"> Both</label>
+                    </div>
+
+                    <input type="checkbox" id="funcTest" value="funcTest" v-model="checkedTests">
+                    <label for="funcTest">Functional Test</label>
+
+                    <div v-if="checkedTests.includes('funcTest')">
+                        <input type="checkbox" id="funcTestAlpha" value="funcTestAlpha" v-model="checkedTests">
+                        <label for="funcTestAlpha"> Alpha</label>
+
+                        <input type="checkbox" id="funcTestSupplier" value="funcTestSupplier" v-model="checkedTests">
+                        <label for="funcTestSupplier"> Supplier</label>
+
+                        <input type="checkbox" id="funcTestBoth" value="funcTestBoth" v-model="checkedTests">
+                        <label for="funcTestBoth"> Both</label>
+                    </div>
+
+                    <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
+                    <label for="aspTest">Aspect Test </label>
+
+                    <div v-if="checkedTests.includes('aspTest')">
+                        <input type="checkbox" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTests">
+                        <label for="aspTestAlpha"> Alpha</label>
+
+                        <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
+                        <label for="aspTestSupplier"> Supplier</label>
+
+                        <input type="checkbox" id="aspTestBoth" value="aspTestBoth" v-model="checkedTests">
+                        <label for="aspTestBoth"> Both</label>
+                    </div>
+
+                    <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
+                    <label for="docControl">Documentary control </label>
+
+                    <div v-if="checkedTests.includes('docControl')">
+                        <input type="checkbox" id="docControlAlpha" value="docControlAlpha" v-model="checkedTests">
+                        <label for="docControlAlpha"> Alpha</label>
+
+                        <input type="checkbox" id="docControlSupplier" value="docControlSupplier" v-model="checkedTests">
+                        <label for="docControlSupplier"> Supplier</label>
+
+                        <input type="checkbox" id="docControlBoth" value="docControlBoth" v-model="checkedTests">
+                        <label for="docControlBoth"> Both</label>
+                    </div>
+
+                    
+                    <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
+                    <label for="adminControl">Administrative control </label>
+                    <div v-if="checkedTests.includes('adminControl')">
+                        <input type="checkbox" id="adminControlAlpha" value="adminControlAlpha" v-model="checkedTests">
+                        <label for="adminControlAlpha"> Alpha</label>
+
+                        <input type="checkbox" id="adminControlSupplier" value="adminControlSupplier" v-model="checkedTests">
+                        <label for="adminControlSupplier"> Supplier</label>
+
+                        <input type="checkbox" id="adminControlBoth" value="adminControlBoth" v-model="checkedTests">
+                        <label for="adminControlBoth"> Both</label>
+                    </div>
                 </div>
-
-                <input type="checkbox" id="funcTest" value="funcTest" v-model="checkedTests">
-                <label for="funcTest">Functional Test</label>
-
-                <div v-if="checkedTests.includes('funcTest')">
-                    <input type="checkbox" id="funcTestAlpha" value="funcTestAlpha" v-model="checkedTests">
-                    <label for="funcTestAlpha"> Alpha</label>
-
-                    <input type="checkbox" id="funcTestSupplier" value="funcTestSupplier" v-model="checkedTests">
-                    <label for="funcTestSupplier"> Supplier</label>
-
-                    <input type="checkbox" id="funcTestBoth" value="funcTestBoth" v-model="checkedTests">
-                    <label for="funcTestBoth"> Both</label>
-                </div>
-
-                 <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
-                <label for="aspTest">Aspect Test </label>
-
-                <div v-if="checkedTests.includes('aspTest')">
-                    <input type="checkbox" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTests">
-                    <label for="aspTestAlpha"> Alpha</label>
-
-                    <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
-                    <label for="aspTestSupplier"> Supplier</label>
-
-                    <input type="checkbox" id="aspTestBoth" value="aspTestBoth" v-model="checkedTests">
-                    <label for="aspTestBoth"> Both</label>
-                </div>
-
-                <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
-                <label for="docControl">Documentary control </label>
-
-                <div v-if="checkedTests.includes('docControl')">
-                    <input type="checkbox" id="docControlAlpha" value="docControlAlpha" v-model="checkedTests">
-                    <label for="docControlAlpha"> Alpha</label>
-
-                    <input type="checkbox" id="docControlSupplier" value="docControlSupplier" v-model="checkedTests">
-                    <label for="docControlSupplier"> Supplier</label>
-
-                    <input type="checkbox" id="docControlBoth" value="docControlBoth" v-model="checkedTests">
-                    <label for="docControlBoth"> Both</label>
-                </div>
-
-                
-                 <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
-                <label for="adminControl">Administrative control </label>
-                <div v-if="checkedTests.includes('adminControl')">
-                    <input type="checkbox" id="adminControlAlpha" value="adminControlAlpha" v-model="checkedTests">
-                    <label for="adminControlAlpha"> Alpha</label>
-
-                    <input type="checkbox" id="adminControlSupplier" value="adminControlSupplier" v-model="checkedTests">
-                    <label for="adminControlSupplier"> Supplier</label>
-
-                    <input type="checkbox" id="adminControlBoth" value="adminControlBoth" v-model="checkedTests">
-                    <label for="adminControlBoth"> Both</label>
-                </div>
+                <InputTextForm
+                    name="Remarks"
+                    label="Remarks :"
+                    v-model="crit_remarks"
+                    :isDisabled="isInConsultMod"
+                    :info_text="this.infos_crit[4].info_value"
+                    :min="0"
+                    :max="255"
+                    :inputClassName="null"
+                    :Errors="errors.crit_remarks"
+                />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addCriticality is called function else the updateCriticality function is called -->
@@ -298,6 +300,10 @@ export default {
         },
         validate: {
             type: String
+        },
+        critPerformance:{
+            type: Boolean,
+            default: false
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -330,10 +336,11 @@ export default {
             crit_validate: this.validate,
             infos_crit: null,
             PerformanceOption:[
-                {id_enum: 'Performance', value: 'Yes', text: 'Yes'},
-                {id_enum: 'Performance', value: 'No', text: 'No'},
+                {id_enum: 'Performance', value: true, text: 'Yes'},
+                {id_enum: 'Performance', value: false, text: 'No'},
             ],
             checkedTests: [],
+            crit_performanceMedicalDevice: null,
         }
     },
     methods: {

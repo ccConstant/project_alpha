@@ -48,7 +48,7 @@
                     isRequired
                     :Errors="errors.funcTest_expectedMethod"
                 />
-                <InputNumberForm
+                <InputTextForm
                     v-if="data_article_type === 'comp'"
                     name="expectedValue"
                     label="Expected Acceptance Criteria :"
