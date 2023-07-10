@@ -849,8 +849,8 @@ class EquipmentController extends Controller{
      * */
     public function send_periode_for_planning(){
         $Allperiode=array();
-        $startDate=Carbon::now('Europe/Paris');
-        $month=$startDate->month ;
+        $startDate = Carbon::create(Carbon::now()->format('Y-m-01'));
+        $month = $startDate->month ;
         if ($month==1){
             $month="Jan" ;
         }

@@ -315,7 +315,7 @@ class StateTest extends TestCase
      * Corresponding state with each number :
      * Effective for each following tests
      * 1 : 'Waiting_for_referencing',
-     * 2 :'Waiting_for_installation',
+     * 2 : 'Waiting_for_installation',
      * 3 : 'In_use',
      * 4 : 'Under_maintenance',
      * 5 : 'On_hold',
@@ -351,6 +351,49 @@ class StateTest extends TestCase
         $response->assertStatus(429);
         $response->assertInvalid([
             'state_name' => 'You can\'t only go in waiting for installation state from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 8
+     * Try to add a new state (Waiting_for_referencing -> Waiting_for_installation)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_installation"
+     * Expected Result: Receiving an error :
+     *                                          "You can't only go in waiting for installation state from this one"
+     * @returns void
+     */
+    public function test_add_state_1_to_2()
+    {
+        $eq_id = $this->create_equipment('three');
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => $eq_id,
+            'user_id' => User::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
         ]);
     }
 
@@ -615,49 +658,6 @@ class StateTest extends TestCase
         $this->assertDatabaseHas('states', [
             'state_remarks' => 'Remarks',
             'state_name' => 'Waiting_for_referencing',
-            'state_startDate' => $date->format('Y-m-d'),
-            'state_validate' => 'drafted',
-        ]);
-    }
-
-    /**
-     * Test Conception Number: 8
-     * Try to add a new state (Waiting_for_referencing -> Waiting_for_installation)
-     * Remarks: "Remarks"
-     * Start Date: Today
-     * End Date: /
-     * Name: "Waiting_for_installation"
-     * Expected Result: Receiving an error :
-     *                                          "You can't only go in waiting for installation state from this one"
-     * @returns void
-     */
-    public function test_add_state_1_to_2()
-    {
-        $eq_id = $this->create_equipment('three');
-        $date = Carbon::now();
-        $response = $this->post('/state/verif', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'Waiting_for_installation',
-            'state_startDate' => $date,
-            'eq_id' => $eq_id,
-            'user_id' => User::all()->last()->id,
-        ]);
-        $response->assertStatus(200);
-        $response = $this->post('/equipment/add/state', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'Waiting_for_installation',
-            'state_startDate' => $date,
-            'eq_id' => Equipment::all()->last()->id,
-            'state_validate' => 'drafted',
-        ]);
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('pivot_equipment_temp_state', [
-            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
-            'state_id' => State::all()->last()->id,
-        ]);
-        $this->assertDatabaseHas('states', [
-            'state_remarks' => 'Remarks',
-            'state_name' => 'Waiting_for_installation',
             'state_startDate' => $date->format('Y-m-d'),
             'state_validate' => 'drafted',
         ]);
@@ -2036,6 +2036,1551 @@ class StateTest extends TestCase
             'state_name' => 'Lost',
             'state_startDate' => $date->format('Y-m-d'),
             'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 57
+     * Try to add a new state (Under_repair -> Waiting_for_referencing)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_referencing"
+     * Expected Result: Receive an error:
+     *                                      "You can't only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one"
+     * @returns void
+     */
+    public function test_add_state_6_to_1()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_referencing',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 58
+     * Try to add a new state (Under_repair -> Waiting_for_installation)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_installation"
+     * Expected Result: Receive an error:
+     *                                      "You can't only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one"
+     * @returns void
+     */
+    public function test_add_state_6_to_2()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 59
+     * Try to add a new state (Under_repair -> In_use)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "In_use"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_6_to_3()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 60
+     * Try to add a new state (Under_repair -> Under_maintenance)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_maintenance"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_6_to_4()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 61
+     * Try to add a new state (Under_repair -> On_hold)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "On_hold"
+     * Expected Result: Receive an error:
+     *                                      "You can't only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one"
+     * @returns void
+     */
+    public function test_add_state_6_to_5()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 62
+     * Try to add a new state (Under_repair -> Under_repair)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_repair"
+     * Expected Result: Receive an error:
+     *                                      "You can't only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one"
+     * @returns void
+     */
+    public function test_add_state_6_to_6()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_repair',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 63
+     * Try to add a new state (Under_repair -> Broken)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Broken"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_6_to_7()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Broken',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Broken',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Broken',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 64
+     * Try to add a new state (Under_repair -> Downgraded)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Downgraded"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_6_to_8()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Downgraded',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Downgraded',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Downgraded',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 65
+     * Try to add a new state (Under_repair -> Reformed)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Reformed"
+     * Expected Result: Receive an error:
+     *                                      "You can't only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one"
+     * @returns void
+     */
+    public function test_add_state_6_to_9()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Reformed',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in In_use, Under_maintenance, Broken, Downgraded and lost states from this one',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 66
+     * Try to add a new state (Under_repair -> Lost)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Lost"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_6_to_10()
+    {
+        $this->test_add_state_5_to_6();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Lost',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Lost',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Lost',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 67
+     * Try to add a new state (Broken -> Waiting_for_referencing)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_referencing"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_1()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_referencing',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 68
+     * Try to add a new state (Broken -> Waiting_for_installation)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_installation"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_2()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 69
+     * Try to add a new state (Broken -> In_use)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "In_use"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_3()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 70
+     * Try to add a new state (Broken -> Under_maintenance)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_maintenance"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_4()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 71
+     * Try to add a new state (Broken -> On_hold)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "On_hold"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_5()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 72
+     * Try to add a new state (Broken -> Under_repair)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_repair"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_6()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_repair',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 73
+     * Try to add a new state (Broken -> Broken)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Broken"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_7()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Broken',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 74
+     * Try to add a new state (Broken -> Downgraded)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Downgraded"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_8()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Downgraded',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 75
+     * Try to add a new state (Broken -> Reformed)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Reformed"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_9()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Reformed',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 76
+     * Try to add a new state (Broken -> Lost)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Lost"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_7_to_10()
+    {
+        $this->test_add_state_6_to_7();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Lost',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 77
+     * Try to add a new state (Downgraded -> Waiting_for_referencing)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_referencing"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_1()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_referencing',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 78
+     * Try to add a new state (Downgraded -> Waiting_for_installation)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_installation"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_2()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 79
+     * Try to add a new state (Downgraded -> In_use)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "In_use"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_3()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 80
+     * Try to add a new state (Downgraded -> Under_maintenance)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_maintenance"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_4()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 81
+     * Try to add a new state (Downgraded -> On_hold)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "On_hold"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_5()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 82
+     * Try to add a new state (Downgraded -> Under_repair)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_repair"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_6()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_repair',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 83
+     * Try to add a new state (Downgraded -> Broken)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Broken"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_7()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Broken',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 84
+     * Try to add a new state (Downgraded -> Downgraded)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Downgraded"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_8()
+    {
+        $this->test_add_state_6_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Downgraded',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 85
+     * Try to add a new state (Downgraded -> Reformed)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Reformed"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_9()
+    {
+        $this->test_add_state_5_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Reformed',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 86
+     * Try to add a new state (Downgraded -> Lost)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Lost"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_8_to_10()
+    {
+        $this->test_add_state_5_to_8();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Lost',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 87
+     * Try to add a new state (Reformed -> Waiting_for_referencing)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_referencing"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_1()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_referencing',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 88
+     * Try to add a new state (Reformed -> Waiting_for_installation)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_installation"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_2()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 89
+     * Try to add a new state (Reformed -> In_use)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "In_use"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_3()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 90
+     * Try to add a new state (Reformed -> Under_maintenance)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_maintenance"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_4()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 91
+     * Try to add a new state (Reformed -> On_hold)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "On_hold"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_5()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 92
+     * Try to add a new state (Reformed -> Under_repair)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_repair"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_6()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_repair',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 93
+     * Try to add a new state (Reformed -> Broken)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Broken"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_7()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Broken',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 94
+     * Try to add a new state (Reformed -> Downgraded)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Downgraded"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_8()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Downgraded',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 95
+     * Try to add a new state (Reformed -> Reformed)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Reformed"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_9()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Reformed',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 96
+     * Try to add a new state (Reformed -> Lost)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Lost"
+     * Expected Result: Receive an error:
+     *                                      "You can't go in another state"
+     * @returns void
+     */
+    public function test_add_state_9_to_10()
+    {
+        $this->test_add_state_5_to_9();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Lost',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t go in another state'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 97
+     * Try to add a new state (Lost -> Waiting_for_referencing)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_referencing"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_1()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_referencing',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in Waiting_for_installation, Under_maintenance, In_use, On_hold and Reformed states from this one'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 98
+     * Try to add a new state (Lost -> Waiting_for_installation)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Waiting_for_installation"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_2()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Waiting_for_installation',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 99
+     * Try to add a new state (Lost -> In_use)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "In_use"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_3()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'In_use',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 100
+     * Try to add a new state (Lost -> Under_maintenance)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_maintenance"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_4()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_maintenance',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 101
+     * Try to add a new state (Lost -> On_hold)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "On_hold"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_5()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'On_hold',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 102
+     * Try to add a new state (Lost -> Under_repair)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Under_repair"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_6()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Under_repair',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in Waiting_for_installation, Under_maintenance, In_use, On_hold and Reformed states from this one'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 103
+     * Try to add a new state (Lost -> Broken)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Broken"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_7()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Broken',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in Waiting_for_installation, Under_maintenance, In_use, On_hold and Reformed states from this one'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 104
+     * Try to add a new state (Lost -> Downgraded)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Downgraded"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_8()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Downgraded',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in Waiting_for_installation, Under_maintenance, In_use, On_hold and Reformed states from this one'
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 105
+     * Try to add a new state (Lost -> Reformed)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Reformed"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_9()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Reformed',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Reformed',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+            'state_validate' => 'drafted',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('pivot_equipment_temp_state', [
+            'equipmentTemp_id' => EquipmentTemp::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+        ]);
+        $this->assertDatabaseHas('states', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Reformed',
+            'state_startDate' => $date->format('Y-m-d'),
+            'state_validate' => 'drafted',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 106
+     * Try to add a new state (Lost -> Lost)
+     * Remarks: "Remarks"
+     * Start Date: Today
+     * End Date: /
+     * Name: "Lost"
+     * Expected Result: The state is added in the database and linked to the equipment
+     * @returns void
+     */
+    public function test_add_state_10_to_10()
+    {
+        $this->test_add_state_5_to_10();
+        $date = Carbon::now();
+        $response = $this->post('/state/verif', [
+            'state_remarks' => 'Remarks',
+            'state_name' => 'Lost',
+            'state_startDate' => $date,
+            'eq_id' => Equipment::all()->last()->id,
+            'user_id' => user::all()->last()->id,
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'state_name' => 'You can\'t only go in Waiting_for_installation, Under_maintenance, In_use, On_hold and Reformed states from this one'
         ]);
     }
 }

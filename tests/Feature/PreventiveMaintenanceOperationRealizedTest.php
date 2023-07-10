@@ -379,7 +379,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
@@ -411,7 +411,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
             'prvMtnOpRlz_startDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
         ]);
@@ -471,7 +471,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subDays(10)->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
@@ -501,8 +501,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
         ]);
@@ -511,10 +511,11 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'drafted',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
         ]);
+        $response->assertStatus(200);
         $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
@@ -720,7 +721,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subMonth()->subMonth()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
@@ -752,7 +753,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
             'prvMtnOpRlz_startDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
         ]);
@@ -812,7 +813,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_endDate' => Carbon::now()->subDays(10)->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
@@ -843,8 +844,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
         ]);
@@ -853,8 +854,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
         ]);
         $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
@@ -871,8 +872,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
         ]);
@@ -881,8 +882,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
         ]);
         $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
@@ -899,8 +900,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
         ]);
@@ -909,8 +910,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
         ]);
         $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
@@ -927,8 +928,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
             'user_id' => User::all()->last()->id,
         ]);
@@ -937,8 +938,8 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
             'prvMtnOpRlz_validate' => 'to_be_validated',
-            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d H:i:s'),
-            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
             'prvMtnOpRlz_reportNumber' => 'three',
         ]);
         $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
@@ -998,7 +999,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_validate' => 'validated',
             'user_id' => User::all()->last()->id,
         ]);
@@ -1027,7 +1028,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_validate' => 'validated',
             'realizedBy_id' => User::all()->last()->id,
             'user_id' => User::all()->last()->id,
@@ -1058,7 +1059,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_validate' => 'validated',
             'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '1',
@@ -1090,7 +1091,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_validate' => 'validated',
             'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',
@@ -1122,7 +1123,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d'),
             'prvMtnOpRlz_validate' => 'validated',
             'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '12345',
@@ -1140,7 +1141,7 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
      * Test Conception Number: 29
      * Add new preventive maintenance realized as validated with correct data and an end date + the realizator
      * Start date: /
-     * End date: Today
+     * End date: Today + 1 day
      * Report number: "12345"
      * Comment: /
      * Symbol Periodicity: /
@@ -1148,14 +1149,14 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
      *                                      "You have to entered the startDate of your preventive maintenance operation realized"
      * @returns void
      */
-    public function test_add_new_prevMaintenance_realized_as_validated_with_correct_data_and_an_end_date_and_realizator()
+    public function test_add_new_prevMaintenance_realized_as_validated_with_correct_data_and_end_data_and_realizator()
     {
         $eq_id = $this->create_equipment('test', 'validated');
         $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
         $response = $this->post('/prvMtnOpRlz/verif', [
             'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
             'state_id' => State::all()->last()->id,
-            'prvMtnOpRlz_endDate' => Carbon::now()->format('Y-m-d H:i:s'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addDay()->format('Y-m-d H:i:s'),
             'prvMtnOpRlz_validate' => 'validated',
             'realizedBy_id' => User::all()->last()->id,
             'prvMtnOpRlz_reportNumber' => '12345',
@@ -1165,6 +1166,612 @@ class PreventiveMaintenanceOperationRealizedTest extends TestCase
         $response->assertStatus(429);
         $response->assertInvalid([
             'prvMtnOpRlz_startDate' => 'You have to entered the startDate of your preventive maintenance operation realized',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 30
+     * Add new preventive maintenance realized as validated with correct data and an both date + the realizator
+     * Start date: Today
+     * End date: Today + 1 month
+     * Report number: "12345"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: The preventive maintenance operation realized is added to the database
+     * @returns void
+     */
+    public function test_add_new_prevMaintenance_realized_as_validated_with_correct_data_and_both_date_and_realizator()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_validate' => 'validated',
+            'realizedBy_id' => User::all()->last()->id,
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_validate' => 'validated',
+            'realizedBy_id' => User::all()->last()->id,
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+            'eq_id' => $eq_id,
+        ]);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * Test Conception Number: 31
+     * Update a preventive maintenance realized as to be validated with correct data and an both date
+     * Start date: Today
+     * End date: Today + 1 month
+     * Report number: "12345"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: The differents data are updated in the database
+     * @returns void
+     */
+    public function test_update_prevMaintenance_realized_as_to_be_validated_with_correct_data_and_both_date()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'H');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/state/prvMtnOpRlz/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/state/prvMtnOpRlz/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7);
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/state/prvMtnOpRlz/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'Y');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $response = $this->post('/equipment/update/state/prvMtnOpRlz/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'to_be_validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * Test Conception Number: 33
+     * Update a preventive maintenance realized as validated with correct data and an both date
+     * Start date: Today
+     * End date: Today + 1 month
+     * Report number: "12345"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receive an error:
+     *                                    "You have to entered the realizator of this preventive maintenance operation realized for validate it"
+     * @returns void
+     */
+    public function test_update_prevMaintenance_realized_as_validated_with_correct_data_and_both_date()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOpRlz_validate' => 'You have to entered the realizator of this preventive maintenance operation realized for validate it',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 33
+     * Update a preventive maintenance realized as validated with correct data and an both date + the realizator
+     * Start date: Today
+     * End date: Today + 1 month
+     * Report number: "12345"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receive an error:
+     *                                    "You have to entered the person who approved this preventive maintenance operation realized for validate it"
+     * @returns void
+     */
+    public function test_update_prevMaintenance_realized_as_validated_with_correct_data_and_both_date_and_realizator()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOpRlz_validate' => 'You have to entered the person who approved this preventive maintenance operation realized for validate it',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 34
+     * Update a preventive maintenance realized as validated with correct data and an both date + the realizator + the approver
+     * Start date: Today
+     * End date: Today + 1 month
+     * Report number: "12345"
+     * Comment: /
+     * Symbol Periodicity: /
+     * Expected Result: Receive an error:
+     *                                    "You can't update a preventive maintenance operation realized already validated"
+     * @returns void
+     */
+    public function test_update_prevMaintenance_realized_as_validated_with_correct_data_and_both_date_and_realizator_and_approver()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/approve/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->post('/prvMtnOpRlz/verif', [
+            'reason' => 'update',
+            'prvMtnOpRlz_validate' => 'validated',
+            'prvMtnOpRlz_id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => '12345',
+            'user_id' => User::all()->last()->id,
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOpRlz_validate' => 'You can\'t update a preventive maintenance operation realized already validated',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 35
+     * Delete a preventive maintenance realized validated
+     * Expected Result: Receive an error:
+     *                                    "You can delete a preventive maintenance operation realized validated"
+     * @returns void
+     */
+    public function test_delete_prevMaintenance_realized_validated()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/approve/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+
+        $response = $this->post('/state/delete/prvMtnOpRlz/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'prvMtnOpRlz_delete' => 'You can delete a preventive maintenance operation realized validated',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 36
+     * Delete a preventive maintenance realized
+     * Expected Result: The preventive maintenance realized is deleted
+     * @returns void
+     */
+    public function test_delete_prevMaintenance_realized()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $id = PreventiveMaintenanceOperationRealized::all()->last()->id;
+        $response = $this->post('/state/delete/prvMtnOpRlz/'.$id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('preventive_maintenance_operation_realizeds', [
+            'id' => $id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 37
+     * Send a preventive maintenance realized list (id of state)
+     * Expected Result: The data are correctly sent
+     * @returns void
+     */
+    public function test_send_prevMaintenance_realized_list_state_id()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $response = $this->post('/prvMtnOpRlz/approve/'.PreventiveMaintenanceOperationRealized::all()->last()->id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+
+        PreventiveMaintenanceOperationRealized::all()->last()->update([
+            'enteredBy_id' => User::all()->last()->id,
+        ]);
+
+        $response = $this->get('/state/prvMtnOpRlz/send/'.State::all()->last()->id);
+        $response->assertStatus(200);
+        $response->assertJson([
+            '0' => [
+                'id' => PreventiveMaintenanceOperationRealized::all()->last()->id,
+                'prvMtnOpRlz_reportNumber' => 'three',
+                'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+                'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+                'prvMtnOpRlz_entryDate' => Carbon::now()->format('Y-m-d'),
+                'prvMtnOpRlz_validate' => 'validated',
+                'prvMtnOpRlz_comment' => null,
+                'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+                'prvMtnOp_number' => '1',
+                'prvMtnOp_description' => 'Days',
+                'prvMtnOp_protocol' => 'Days',
+                'realizedBy_firstName' => 'Verifier',
+                'realizedBy_lastName' => 'Verifier',
+                'enteredBy_firstName' => 'Verifier',
+                'enteredBy_lastName' => 'Verifier',
+                'approvedBy_firstName' => 'Verifier',
+                'approvedBy_lastName' => 'Verifier',
+            ],
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 38
+     * Approve a preventive maintenance realized with correct user information
+     * Expected Result: The preventive maintenance realized is approved
+     * @returns void
+     */
+    public function test_approve_prevMaintenance_realized_correct_user_info()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $id = PreventiveMaintenanceOperationRealized::all()->last()->id;
+
+        $response = $this->post('/prvMtnOpRlz/approve/'.$id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
+            'id' => $id,
+            'approvedBy_id' => User::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'validated',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 39
+     * Approve a preventive maintenance realized with incorrect user information
+     * Expected Result: Receiving an error:
+     *                                          "Verification failed, the couple pseudo password isn't recognized"
+     * @returns void
+     */
+    public function test_approve_prevMaintenance_realized_incorrect_user_info()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $id = PreventiveMaintenanceOperationRealized::all()->last()->id;
+
+        $response = $this->post('/prvMtnOpRlz/approve/'.$id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'Verifier',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'connexion' => 'Verification failed, the couple pseudo password isn\'t recognized',
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 40
+     * Realize a preventive maintenance realized with correct user information
+     * Expected Result: The preventive maintenance realized is realized
+     * @returns void
+     */
+    public function test_realize_prevMaintenance_realized_correct_user_info()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $id = PreventiveMaintenanceOperationRealized::all()->last()->id;
+
+        $response = $this->post('/prvMtnOpRlz/realize/'.$id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'VerifierVerifier',
+        ]);
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('preventive_maintenance_operation_realizeds', [
+            'id' => $id,
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+    }
+
+    /**
+     * Test Conception Number: 41
+     * Realize a preventive maintenance realized with incorrect user information
+     * Expected Result: Receiving an error:
+     *                                          "Verification failed, the couple pseudo password isn't recognized"
+     * @returns void
+     */
+    public function test_realize_prevMaintenance_realized_incorrect_user_info()
+    {
+        $eq_id = $this->create_equipment('test', 'validated');
+        $this->add_prevMaintenance($eq_id, 'Days', 'validated', 7, 'D');
+        $this->post('/equipment/add/state/prvMtnOpRlz', [
+            'prvMtnOp_id' => PreventiveMaintenanceOperation::all()->last()->id,
+            'state_id' => State::all()->last()->id,
+            'prvMtnOpRlz_validate' => 'drafted',
+            'prvMtnOpRlz_startDate' => Carbon::now()->format('Y-m-d'),
+            'prvMtnOpRlz_endDate' => Carbon::now()->addMonth()->format('Y-m-d'),
+            'prvMtnOpRlz_reportNumber' => 'three',
+            'realizedBy_id' => User::all()->last()->id,
+        ]);
+
+        $id = PreventiveMaintenanceOperationRealized::all()->last()->id;
+
+        $response = $this->post('/prvMtnOpRlz/realize/'.$id, [
+            'user_id' => User::all()->last()->id,
+            'user_pseudo' => 'Verifier',
+            'user_password' => 'Verifier',
+        ]);
+        $response->assertStatus(429);
+        $response->assertInvalid([
+            'connexion' => 'Verification failed, the couple pseudo password isn\'t recognized',
         ]);
     }
 }

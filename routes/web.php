@@ -553,7 +553,7 @@ Route::post('/state/delete/curMtnOp/{id}', [CurativeMaintenanceOperationControll
 
 Route::post('/curMtnOp/realize/{id}', [CurativeMaintenanceOperationController::class, 'realize_curMtnOp']);
 
-Route::post('curMtnOp/qualityVerifier/{id}', [CurativeMaintenanceOperationController::class, 'qualityVerification_curMtnOp']);
+Route::post('/curMtnOp/qualityVerifier/{id}', [CurativeMaintenanceOperationController::class, 'qualityVerification_curMtnOp']);
 
 Route::post('/curMtnOp/technicalVerifier/{id}', [CurativeMaintenanceOperationController::class, 'technicalVerification_curMtnOp']);
 
@@ -703,9 +703,9 @@ Route::post('/precaution/enum/type/delete/{id}', [EnumPrecautionTypeController::
 
 Route::post('/precaution/enum/type/add', [EnumPrecautionTypeController::class, 'add_enum_type']);
 
-Route::post('precaution/enum/type/verif/{id}', [EnumPrecautionTypeController::class, 'verif_enum_type']);
+Route::post('/precaution/enum/type/verif/{id}', [EnumPrecautionTypeController::class, 'verif_enum_type']);
 
-Route::post('precaution/enum/type/analyze/{id}', [EnumPrecautionTypeController::class, 'analyze_enum_type']);
+Route::post('/precaution/enum/type/analyze/{id}', [EnumPrecautionTypeController::class, 'analyze_enum_type']);
 
 Route::post('/precaution/enum/type/update/{id}', [EnumPrecautionTypeController::class, 'update_enum_type']);
 
