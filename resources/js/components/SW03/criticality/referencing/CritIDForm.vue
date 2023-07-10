@@ -154,7 +154,7 @@
                 </div>
 
                  <input type="checkbox" id="aspTest" value="aspTest" v-model="checkedTests">
-                <label for="aspTest">Aspect control </label>
+                <label for="aspTest">Aspect Test </label>
 
                 <div v-if="checkedTests.includes('aspTest')">
                     <input type="checkbox" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTests">
@@ -170,7 +170,7 @@
                 <input type="checkbox" id="docControl" value="docControl" v-model="checkedTests">
                 <label for="docControl">Documentary control </label>
 
-                <div v-if="checkedTests.includes('aspTest')">
+                <div v-if="checkedTests.includes('docControl')">
                     <input type="checkbox" id="docControlAlpha" value="docControlAlpha" v-model="checkedTests">
                     <label for="docControlAlpha"> Alpha</label>
 
@@ -181,8 +181,19 @@
                     <label for="docControlBoth"> Both</label>
                 </div>
 
+                
                  <input type="checkbox" id="adminControl" value="adminControl" v-model="checkedTests">
                 <label for="adminControl">Administrative control </label>
+                <div v-if="checkedTests.includes('adminControl')">
+                    <input type="checkbox" id="adminControlAlpha" value="adminControlAlpha" v-model="checkedTests">
+                    <label for="adminControlAlpha"> Alpha</label>
+
+                    <input type="checkbox" id="adminControlSupplier" value="adminControlSupplier" v-model="checkedTests">
+                    <label for="adminControlSupplier"> Supplier</label>
+
+                    <input type="checkbox" id="adminControlBoth" value="adminControlBoth" v-model="checkedTests">
+                    <label for="adminControlBoth"> Both</label>
+                </div>
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addCriticality is called function else the updateCriticality function is called -->
