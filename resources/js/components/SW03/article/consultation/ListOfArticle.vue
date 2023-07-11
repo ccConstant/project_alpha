@@ -154,28 +154,50 @@ export default {
             return true;
         },
         newArticle() {
-            window.location.href = "/article/add";
+            if (!this.$userId.user_SW03_addArticle) {
+                this.$refs.errorAlert.showAlert("You don't have the permission to add an article");
+            } else {
+                window.location.href = "/article/add";
+            }
+        },
+        checkRights(art) {
+            if (art.compFam_signatureDate !== null) {
+                if (!this.$userId.user_SW03_updateArticleSigned) {
+                    this.$refs.errorAlert.showAlert("You don't have the permission to update a signed article");
+                    return false;
+                }
+                return true;
+            }
+            if (!this.$userId.user_SW03_updateArticle) {
+                this.$refs.errorAlert.showAlert("You don't have the permission to update an article");
+                return false;
+            }
+            return true;
         },
         updateArticle() {
             if (this.checked.length === 1) {
                 this.compList.forEach(element => {
                     if (element.compFam_ref === this.checked[0]) {
-                        //window.location.href = "/article/update/comp/" + element.id;
-                        this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'comp', ref:element.compFam_ref}});
-                        
-                        
+                        let res = this.checkRights(element);
+                        if (res) {
+                            this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'comp', ref:element.compFam_ref}});
+                        }
                     }
                 });
                 this.consList.forEach(element => {
                     if (element.consFam_ref === this.checked[0]) {
-                        //window.location.href = "/article/update/cons/" + element.id;
-                        this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'cons', ref:element.consFam_ref}});
+                        let res = this.checkRights(element);
+                        if (res) {
+                            this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'cons', ref:element.consFam_ref}});
+                        }
                     }
                 });
                 this.rawList.forEach(element => {
                     if (element.rawFam_ref === this.checked[0]) {
-                        //window.location.href = "/article/update/raw/" + element.id;
-                        this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'raw', ref:element.rawFam_ref}});
+                        let res = this.checkRights(element);
+                        if (res) {
+                            this.$router.push({name: 'article_url_update', params: {id: element.id, type: 'raw', ref:element.rawFam_ref}});
+                        }
                     }
                 });
             } else {
