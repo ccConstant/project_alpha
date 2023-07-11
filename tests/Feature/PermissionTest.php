@@ -4042,6 +4042,4 @@ class PermissionTest extends TestCase
             'state_name' => 'You don\'t have the user right to update a state save as drafted or in to be validated'
         ]);
     }
-
-
 }

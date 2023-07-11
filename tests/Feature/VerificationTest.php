@@ -277,7 +277,7 @@ class VerificationTest extends TestCase
      * Add mme verification as drafted with too long periodicity
      * Name: "test"
      * Description: "test"
-     * Expected result: "in"
+     * Expected result: /
      * Non compliance limit: /
      * Protocol: /
      * Putting into service: /
@@ -346,7 +346,7 @@ class VerificationTest extends TestCase
      * Add mme verification as drafted with too long non compliance limit
      * Name: "test"
      * Description: "test"
-     * Expected result: "in"
+     * Expected result: /
      * Non compliance limit: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
      * Protocol: /
      * Putting into service: /
@@ -382,8 +382,8 @@ class VerificationTest extends TestCase
      * Add mme verification as drafted with too long protocol
      * Name: "test"
      * Description: "test"
-     * Expected result: "in"
-     * Non compliance limit: "in"
+     * Expected result: /
+     * Non compliance limit: /
      * Protocol: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
      * Putting into service: /
      * Preventive Operation
@@ -1449,8 +1449,7 @@ class VerificationTest extends TestCase
      * Measurement uncertainty: "test"
      * Measurement range: "test"
      * Periodicity: /
-     * Expected Result: Receiving an error:
-     *                                      "You must choose a verif acceptance authority"
+     * Expected Result: The verification is added to the database
      * @returns void
      */
     public function test_add_mme_verification_as_validated_with_verifAcceptanceAuthority()
@@ -1918,8 +1917,8 @@ class VerificationTest extends TestCase
      * Preventive operation: false
      * Measurement uncertainty: "test"
      * Measurement range: "test"
-     * Periodicity: 1
-     * Periodicity symbol: "Y"
+     * Periodicity: 20, 200, 6000
+     * Periodicity symbol: "Y", "M", "D"
      * Required skill: "test"
      * Verif acceptance authority: "test"
      * Expected Result: Receiving an error:
@@ -2011,8 +2010,8 @@ class VerificationTest extends TestCase
      * Preventive operation: false
      * Measurement uncertainty: "test"
      * Measurement range: "test"
-     * Periodicity: 0
-     * Periodicity symbol: "Y"
+     * Periodicity: 1
+     * Periodicity symbol: "H"
      * Required skill: "test"
      * Verif acceptance authority: "test"
      * Expected Result: The verification is added to the mme and the mme is no longer signed
@@ -2105,8 +2104,8 @@ class VerificationTest extends TestCase
      * Preventive operation: false
      * Measurement uncertainty: "test"
      * Measurement range: "test"
-     * Periodicity: 0
-     * Periodicity symbol: "Y"
+     * Periodicity: 1
+     * Periodicity symbol: "Y", "M", "D", "H"
      * Required skill: "test"
      * Verif acceptance authority: "test"
      * Expected Result: The verification is updated in the database
@@ -2316,7 +2315,7 @@ class VerificationTest extends TestCase
      * Preventive operation: false
      * Measurement uncertainty: "test"
      * Measurement range: "test"
-     * Periodicity: 0
+     * Periodicity: 1
      * Periodicity symbol: "Y"
      * Required skill: "test"
      * Verif acceptance authority: "test"
@@ -2860,7 +2859,7 @@ class VerificationTest extends TestCase
     /**
      * Test Conception Number: 48
      * Delete mme verification linked to signed mme
-     * Expected Result: The data are deleted correctly
+     * Expected Result: The data are deleted correctly and the mme is no longer signed
      * @returns void
      */
     public function test_delete_mme_verification_linked_to_signed_mme()

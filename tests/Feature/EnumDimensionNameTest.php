@@ -363,7 +363,7 @@ class EnumDimensionNameTest extends TestCase
     /**
      * Test Conception Number: 4
      * Try to update an enum linked to drafted equipment with a non-existent name in the database
-     * Name: TestDrafted
+     * Name: Name
      * Expected result: The name is correctly updated in the database
      * @returns void
      */
@@ -467,7 +467,7 @@ class EnumDimensionNameTest extends TestCase
     /**
      * Test Conception Number: 5
      * Try to update an enum linked to to_be_validated equipment with a non-existent name in the database
-     * Name: TestToBeValidated
+     * Name: Name
      * Expected result: The name is correctly updated in the database
      * @returns void
      */
@@ -571,7 +571,7 @@ class EnumDimensionNameTest extends TestCase
     /**
      * Test Conception Number: 6
      * Try to update an enum linked to validated equipment with a non-existent name in the database
-     * Name: TestValidated
+     * Name: Name
      * Expected result: The name is correctly updated in the database, and a history is created in the database
      * @returns void
      */
@@ -806,7 +806,7 @@ class EnumDimensionNameTest extends TestCase
      * Test Conception Number: 8
      * Try to delete an enum not linked to an equipment
      * Name: /
-     * Expected result: The name is correctly deleted in the database
+     * Expected result: The enum is correctly deleted in the database
      * @returns void
      */
     public function test_delete_enum_not_linked()
@@ -821,7 +821,6 @@ class EnumDimensionNameTest extends TestCase
     /**
      * Test Conception Number: 9
      * Try to delete an enum linked to an equipment
-     * Name: TestValidated
      * Expected result: Receiving an error:
      *                                      "This value is already used in the data base so you can't delete it"
      * @returns void
