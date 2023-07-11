@@ -275,16 +275,11 @@ export default {
         artCriticality: {
             type: String,
         },
-        artMaterialContactCriticality: {
-            type: String,
+        performanceMedicalDevice: {
+            type: Boolean,
+            default:false,
         },
-        artMaterialFunctionCriticality: {
-            type: String,
-        },
-        artProcessCriticality: {
-            type: String,
-        },
-        justification: {
+        data_checkedTests: {
             type: String,
         },
         remarks: {
@@ -316,10 +311,26 @@ export default {
         validate: {
             type: String
         },
-        critPerformance:{
-            type: Boolean,
-            default: false
-        }
+        data_checkedTestRadioFunc:{
+            type: String,
+            default: 'funcTestAlpha',
+        },
+        data_checkedTestRadioAsp:{
+            type: String,
+            default: 'aspTestAlpha',
+        },
+        data_checkedTestRadioDoc:{
+            type: String,
+            default: 'docControlAlpha',
+        },
+        data_checkedTestRadioAdm:{
+            type: String,
+            default: 'adminControlAlpha',
+        },
+        data_checkedTestRadioDim:{
+            type: String,
+            default: 'dimTestAlpha',
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -351,14 +362,14 @@ export default {
                 {id_enum: 'Performance', value: true, text: 'Yes'},
                 {id_enum: 'Performance', value: false, text: 'No'},
             ],
-            checkedTests: [],
-            crit_performanceMedicalDevice: false,
-            checkedTestRadioDim: 'dimTestAlpha',
-            checkedTestRadioFunc: 'funcTestAlpha',
-            checkedTestRadioAsp: 'aspTestAlpha',
-            checkedTestRadioDoc: 'docControlAlpha',
-            checkedTestRadioAdm: 'adminControlAlpha',
+            crit_performanceMedicalDevice: this.performanceMedicalDevice,
+            checkedTestRadioDim: this.data_checkedTestRadioDim,
+            checkedTestRadioFunc: this.data_checkedTestRadioFunc,
+            checkedTestRadioAsp: this.data_checkedTestRadioAsp,
+            checkedTestRadioDoc: this.data_checkedTestRadioDoc,
+            checkedTestRadioAdm: this.data_checkedTestRadioAdm,
             checkedTestsString: '',
+            checkedTests: [],
         }
     },
     methods: {
@@ -498,6 +509,9 @@ export default {
         }
     },
     created() {
+        if (this.data_checkedTests!=null){
+            this.checkedTests=this.data_checkedTests.split(',');
+        }
         axios.get('/info/send/crit')
             .then(response => {
                 this.infos_crit = response.data;

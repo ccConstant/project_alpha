@@ -215,7 +215,7 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-         if (this.checkedTest.includes('dimTest')) {
+         if (this.checkedTest!=null && this.checkedTest.includes('aspTest')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }
         /*If the user chooses importation doc control*/

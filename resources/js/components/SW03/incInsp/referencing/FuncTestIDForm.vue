@@ -59,19 +59,6 @@
                     isRequired
                     :Errors="errors.funcTest_expectedValue"
                 />
-                <InputTextForm
-                    v-if="data_article_type === 'comp'"
-                    name="unitValue"
-                    label="Unit Value :"
-                    v-model="funcTest_unitValue"
-                    :isDisabled="!!isInConsultedMod"
-                    :info_text="this.info_funcTest[4].info_value"
-                    :min="1"
-                    :max="10"
-                    :inputClassName="null"
-                    isRequired
-                    :Errors="errors.funcTest_unitValue"
-                />
                 <InputSelectForm
                     :name="'Sampling'"
                     :label="'Sampling :'"

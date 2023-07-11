@@ -3,7 +3,7 @@
 /**
  * Filename: 2023_04_20_122132_create_functional_tests_table.php
  * Creation date: 20 Apr 2023
- * Update date: 27 Jun 2023
+ * Update date: 11 Jul 2023
  * This file is used to create the table "functional_tests" in the data base. In this file, we can see the different
  * attribute of this table (reference, designation..) and how they are defined (string, boolean, unique or not)
  */
@@ -30,6 +30,8 @@ class CreateFunctionalTestsTable extends Migration
             $table->string('funcTest_expectedValue');
             $table->unsignedBigInteger('incmgInsp_id');
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
+            $table->unsignedBigInteger('purSpe_id');
+            $table->foreign('purSpe_id')->references('id')->on('purchase_specifications');
             $table->string('funcTest_name');
             $table->enum('funcTest_sampling',  ['Statistics', '100%', 'Other']);
             $table->string('funcTest_desc')->nullable();

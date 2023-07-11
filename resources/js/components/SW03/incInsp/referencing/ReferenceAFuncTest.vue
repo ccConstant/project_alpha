@@ -26,7 +26,6 @@
                 :expectedMethod="component.funcTest_expectedMethod"
                 :expectedValue="component.funcTest_expectedValue"
                 :name="component.funcTest_name"
-                :unitValue="component.funcTest_unitValue"
                 :sampling="component.funcTest_sampling"
                 :incmgInsp_id="incmgInsp_id"
                 :articleID="data_article_id"
@@ -146,7 +145,6 @@ export default {
             funcTest_expectedValue,
             funcTest_name,
             funcTest_sampling,
-            funcTest_unitValue,
             funcTest_desc,
             funcTest_specDoc,
             incmgInsp_id, id, className) {
@@ -159,7 +157,6 @@ export default {
                 funcTest_expectedValue: funcTest_expectedValue,
                 funcTest_name: funcTest_name,
                 funcTest_sampling: funcTest_sampling,
-                funcTest_unitValue: funcTest_unitValue,
                 funcTest_desc: funcTest_desc,
                 funcTest_specDoc: funcTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
@@ -185,7 +182,6 @@ export default {
                         ft.funcTest_expectedValue,
                         ft.funcTest_name,
                         ft.funcTest_sampling,
-                        ft.funcTest_unitValue,
                         ft.funcTest_desc,
                         ft.funcTest_specDoc,
                         ft.incmgInsp_id,
@@ -222,7 +218,7 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-         if (this.checkedTest.includes('dimTest')) {
+         if (this.checkedTest!=null && this.checkedTest.includes('funcTest')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }
         /*If the user chooses importation doc control*/

@@ -142,6 +142,11 @@ class FunctionnalTestController extends Controller
     }
 
 
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted with the route :/incmgInsp/funcTest/send/{id}(post)
+     * Get all the functionnal test of the incoming inspection with the id in parameter
+     * @return \Illuminate\Http\Response
+     */
     public function send_funcTestFromIncmgInsp($id) {
         $funcTest = FunctionalTest::all()->where('incmgInsp_id', '==', $id);
         $array = [];
@@ -162,22 +167,11 @@ class FunctionnalTestController extends Controller
         return response()->json($array);
     }
 
-    public function send_funcTest($id) {
-        $funcTest = FunctionalTest::all()->find($id);
-        return response()->json([
-            'id' => $funcTest->id,
-            'funcTest_severityLevel' => $funcTest->funcTest_severityLevel,
-            'funcTest_levelOfControl' => $funcTest->funcTest_levelOfControl,
-            'funcTest_expectedMethod' => $funcTest->funcTest_expectedMethod,
-            'funcTest_expectedValue' => $funcTest->funcTest_expectedValue,
-            'funcTest_name' => $funcTest->funcTest_name,
-            'funcTest_sampling' => $funcTest->funcTest_sampling,
-            'incmgInsp_id' => $funcTest->incmgInsp_id,
-            'funcTest_desc' => $funcTest->funcTest_desc,
-            'funcTest_specDoc' => $funcTest->funcTest_specDoc,
-        ]);
-    }
-
+     /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route :/incmgInsp/funcTest/update/{id} (post)
+     * Update an enregistrement of functional test in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the functional test we want to update
+     * */
     public function update_funcTest(Request $request, $id) {
         $funcTest = FunctionalTest::all()->where('id', '==', $id)->first();
         if ($funcTest == null) {

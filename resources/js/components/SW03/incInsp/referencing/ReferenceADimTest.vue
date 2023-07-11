@@ -224,7 +224,7 @@ export default {
     created() {
         console.log("Reference A dim test created")
         console.log(this.checkedTest)
-        if (this.checkedTest.includes('dimTest')) {
+        if (this.checkedTest!=null && this.checkedTest.includes('dimTest')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }
         /*If the user chooses importation doc control*/

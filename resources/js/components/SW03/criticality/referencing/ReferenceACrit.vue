@@ -24,11 +24,12 @@
                 :modifMod="isInModifMod"
                 :artCriticality="component.crit_artCriticality"
                 :performanceMedicalDevice="component.crit_performanceMedicalDevice"
-                :checkedTests="component.crit_checkedTests"
-                :checkedTestRadioFunc="component.crit_checkedTestRadioFunc"
-                :checkedTestRadioAsp="component.crit_checkedTestRadioAsp"
-                :checkedTestRadioDoc="component.crit_checkedTestRadioDoc"
-                :checkedTestRadioAdm="component.crit_checkedTestRadioAdm"
+                :data_checkedTests="component.crit_checkedTests"
+                :data_checkedTestRadioDim="component.crit_checkedTestRadioDim"
+                :data_checkedTestRadioFunc="component.crit_checkedTestRadioFunc"
+                :data_checkedTestRadioAsp="component.crit_checkedTestRadioAsp"
+                :data_checkedTestRadioDoc="component.crit_checkedTestRadioDoc"
+                :data_checkedTestRadioAdm="component.crit_checkedTestRadioAdm"
                 :remarks="component.crit_remarks"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
@@ -137,9 +138,12 @@ export default {
             crit_checkedTestRadioAsp,
             crit_checkedTestRadioDoc,
             crit_checkedTestRadioAdm,
+            crit_checkedTestRadioDim,
             crit_remarks,
             crit_validate,
             incmgInsp_id, id, className) {
+                console.log("crit_performanceMedicalDevice :"+crit_performanceMedicalDevice )
+                    console.log("crit_checkedTests :"+crit_checkedTests )
             this.components.push({
                 comp: 'CritIDForm',
                 key: this.uniqueKey++,
@@ -150,6 +154,7 @@ export default {
                 crit_checkedTestRadioAsp: crit_checkedTestRadioAsp,
                 crit_checkedTestRadioDoc: crit_checkedTestRadioDoc,
                 crit_checkedTestRadioAdm: crit_checkedTestRadioAdm,
+                crit_checkedTestRadioDim: crit_checkedTestRadioDim,
                 crit_remarks: crit_remarks,
                 validate: crit_validate,
                 incmgInsp_id: incmgInsp_id,
@@ -176,6 +181,7 @@ export default {
                         dt.crit_checkedTestRadioAsp,
                         dt.crit_checkedTestRadioDoc,
                         dt.crit_checkedTestRadioAdm,
+                        dt.crit_checkedTestRadioDim,
                         dt.crit_remarks,
                         dt.crit_validate,
                         dt.incmgInsp_id,

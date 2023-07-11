@@ -29,6 +29,8 @@ class CreateAdminControlsTable extends Migration
             $table->string('adminControl_materialCertifSpe')->nullable();
             $table->unsignedBigInteger('incmgInsp_id');
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
+            $table->unsignedBigInteger('purSpe_id');
+            $table->foreign('purSpe_id')->references('id')->on('purchase_specifications');
             $table->string('adminControl_FDS')->nullable();
             /*$table->string('docControl_specDoc')->nullable();*/
         });
