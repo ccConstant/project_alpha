@@ -66,6 +66,13 @@ class UserController extends Controller{
                     "user_declareNewStateRight" => $user->user_declareNewStateRight,
                     "user_makeMmeOpValidationRight" => $user->user_makeEqOpValidationRight,
                     "user_makeMmeRespValidationRight" => $user->user_makeEqRespValidationRight,
+                    'user_SW03_addArticle' => $user->user_SW03_addArticle,
+                    'user_SW03_updateArticle' => $user->user_SW03_updateArticle,
+                    'user_SW03_updateArticleSigned' => $user->user_SW03_updateArticleSigned,
+                    'user_SW03_addSupplier' => $user->user_SW03_addSupplier,
+                    'user_SW03_updateSupplier' => $user->user_SW03_updateSupplier,
+                    'user_SW03_updateSupplierSigned' => $user->user_SW03_updateSupplierSigned,
+                    'user_SW03_technicalValidate' => $user->user_SW03_technicalValidate,
                 ]);
                 array_push($container_userInfo,$infoUser);
             }
@@ -781,6 +788,209 @@ class UserController extends Controller{
         }
     }
 
+    /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/addArticle/{id} (post)
+     * Update the right addArticle of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the addArticle
+     */
+    public function update_addArticle($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $userResponsable = User::findOrFail($request->user_id);
+        if ($user->id != $userResponsable->id) {
+            if ($user->user_pseudo == "admin") {
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_SW03_addArticle' => $request->user_value,
+            ]);
+        } else {
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
+    /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/updateArticle/{id} (post)
+     * Update the right updateArticle of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the updateArticle
+     */
+    public function update_updateArticle($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $userResponsable = User::findOrFail($request->user_id);
+        if ($user->id != $userResponsable->id) {
+            if ($user->user_pseudo == "admin") {
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_SW03_updateArticle' => $request->user_value,
+            ]);
+        } else {
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
+    /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/updateArticleSigned/{id} (post)
+     * Update the right updateArticleSigned of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the updateArticleSigned
+     */
+    public function update_updateArticleSigned($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $userResponsable = User::findOrFail($request->user_id);
+        if ($user->id != $userResponsable->id) {
+            if ($user->user_pseudo == "admin") {
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_SW03_updateArticleSigned' => $request->user_value,
+            ]);
+        } else {
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
+    /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/addSupplier/{id} (post)
+     * Update the right addSupplier of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the addSupplier
+     */
+    public function update_addSupplier($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $userResponsable = User::findOrFail($request->user_id);
+        if ($user->id != $userResponsable->id) {
+            if ($user->user_pseudo == "admin") {
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_SW03_addSupplier' => $request->user_value,
+            ]);
+        } else {
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
+    /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/updateSupplier/{id} (post)
+     * Update the right updateSupplier of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the updateSupplier
+     */
+    public function update_updateSupplier($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $userResponsable = User::findOrFail($request->user_id);
+        if ($user->id != $userResponsable->id) {
+            if ($user->user_pseudo == "admin") {
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_SW03_updateSupplier' => $request->user_value,
+            ]);
+        } else {
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
+    /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/updateSupplierSigned/{id} (post)
+     * Update the right updateSupplierSigned of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the updateSupplierSigned
+     */
+    public function update_updateSupplierSigned($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $userResponsable = User::findOrFail($request->user_id);
+        if ($user->id != $userResponsable->id) {
+            if ($user->user_pseudo == "admin") {
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_SW03_updateSupplierSigned' => $request->user_value,
+            ]);
+        } else {
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
+    /**
+     * Function call by AccountManagementElement.vue with the route : /user/update_right/technicalValidate/{id} (post)
+     * Update the right technicalValidate of the user which the id is passed in parameter
+     * The id parameter correspond to the id of the user we want to change the technicalValidate
+     */
+    public function update_technicalValidate($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $userResponsable = User::findOrFail($request->user_id);
+        if ($user->id != $userResponsable->id) {
+            if ($user->user_pseudo == "admin") {
+                return response()->json([
+                    'errors' => [
+                        'user' => ["You can't modify the rights of the admin"]
+                    ]
+                ], 429);
+            }
+            $user->update([
+                'user_SW03_technicalValidate' => $request->user_value,
+            ]);
+        } else {
+            return response()->json([
+                'errors' => [
+                    'user' => ["You can't modify your own right"]
+                ]
+            ], 429);
+        }
+    }
+
      /**
      * Function call by AccountManagementElement.vue with the route : /user/update/infos/{id} (post)
      * Update the personnal informations of the user like his password or his initials
@@ -859,6 +1069,13 @@ class UserController extends Controller{
                     "user_makeMmeRespValidationRight" => false,
                     "user_makeReformRight" => false,
                     "user_declareNewStateRight" => false,
+                    "user_SW03_addArticle" => false,
+                    "user_SW03_updateArticle" => false,
+                    "user_SW03_updateArticleSigned" => false,
+                    "user_SW03_addSupplier" => false,
+                    "user_SW03_updateSupplier" => false,
+                    "user_SW03_updateSupplierSigned" => false,
+                    "user_SW03_technicalValidate" => false,
                 ]);
             }
 

@@ -850,6 +850,20 @@ Route::post('/user/update_right/user_makeReformRight/{id}', [UserController::cla
 
 Route::post('/user/update_right/user_declareNewStateRight/{id}', [UserController::class, 'update_declareNewStateRight']);
 
+Route::post('/user/update_right/user_SW03_addArticle/{id}', [UserController::class, 'update_addArticle']);
+
+Route::post('/user/update_right/user_SW03_updateArticle/{id}', [UserController::class, 'update_updateArticle']);
+
+Route::post('/user/update_right/user_SW03_updateArticleSigned/{id}', [UserController::class, 'update_updateArticleSigned']);
+
+Route::post('/user/update_right/user_SW03_addSupplier/{id}', [UserController::class, 'update_addSupplier']);
+
+Route::post('/user/update_right/user_SW03_updateSupplier/{id}', [UserController::class, 'update_updateSupplier']);
+
+Route::post('/user/update_right/user_SW03_updateSupplierSigned/{id}', [UserController::class, 'update_updateSupplierSigned']);
+
+Route::post('/user/update_right/user_SW03_technicalValidate/{id}', [UserController::class, 'update_technicalValidate']);
+
 Route::post('/user/update/infos/{id} ', [UserController::class, 'update_info']);
 
 Route::post('/user/update/myAccount/{id} ', [UserController::class, 'update_myAccount']);

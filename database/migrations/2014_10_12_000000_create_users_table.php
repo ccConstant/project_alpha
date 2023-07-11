@@ -70,8 +70,18 @@ class CreateUsersTable extends Migration
             $table->boolean('user_makeMmeOpValidationRight') ->default(false);
             $table->boolean('user_makeMmeRespValidationRight') ->default(false);
 
-            $table->rememberToken();
-            $table->timestamps();
+            //right level for article
+            $table->boolean('user_SW03_addArticle') ->default(false);
+            $table->boolean('user_SW03_updateArticle') ->default(false);
+            $table->boolean('user_SW03_updateArticleSigned') ->default(false);
+
+            //right level for supplier
+            $table->boolean('user_SW03_addSupplier') ->default(false);
+            $table->boolean('user_SW03_updateSupplier') ->default(false);
+            $table->boolean('user_SW03_updateSupplierSigned') ->default(false);
+
+            //right level for SW03
+            $table->boolean('user_SW03_technicalValidate') ->default(false);
         });
     }
 

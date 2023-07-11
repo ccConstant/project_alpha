@@ -4,10 +4,10 @@
 * Filename : User.php
 * Creation date : 9 Jun 2022
 * Update date : 8 Feb 2023
-* This file define the model User. We can see more details about this model (like his attributes) in the 
-* migration file named "2014_10_12_000000_create_users_table.php" in Database>migrations." 
-* 
-*/ 
+* This file define the model User. We can see more details about this model (like his attributes) in the
+* migration file named "2014_10_12_000000_create_users_table.php" in Database>migrations."
+*
+*/
 
 namespace App\Models;
 
@@ -36,7 +36,7 @@ class User extends Authenticatable
         'user_endDate',
         'user_pseudo',
 
-        //Right level general 
+        //Right level general
         'user_menuUserAcessRight',
         'user_resetUserPasswordRight',
         'user_updateDataInDraftRight',
@@ -70,7 +70,19 @@ class User extends Authenticatable
         'user_formationMmeDate',
         'user_makeMmeOpValidationRight',
         'user_makeMmeRespValidationRight',
-      
+
+        //right level for article
+        'user_SW03_addArticle',
+        'user_SW03_updateArticle',
+        'user_SW03_updateArticleSigned',
+
+        //right level for supplier
+        'user_SW03_addSupplier',
+        'user_SW03_updateSupplier',
+        'user_SW03_updateSupplierSigned',
+
+        //right level for SW03
+        'user_SW03_technicalValidate',
     ];
 
     /**
