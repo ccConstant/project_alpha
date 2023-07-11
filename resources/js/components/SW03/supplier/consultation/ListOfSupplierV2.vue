@@ -127,13 +127,34 @@ export default {
             return true;
         },
         newSupplier() {
-            window.location.href = "/supplier/add";
+            if (!this.$userId.user_SW03_addSupplier) {
+                this.$refs.errorAlert.showAlert("You don't have the permission to add a supplier");
+            } else {
+                window.location.href = "/supplier/add";
+            }
+        },
+        checkRights(sup) {
+            if (sup.signatureDate !== null) {
+                if (!this.$userId.user_SW03_updateSupplierSigned) {
+                    this.$refs.errorAlert.showAlert("You don't have the permission to update a signed supplier");
+                    return false;
+                }
+                return true;
+            }
+            if (!this.$userId.user_SW03_updateSupplier) {
+                this.$refs.errorAlert.showAlert("You don't have the permission to update a supplier");
+                return false;
+            }
+            return true;
         },
         updateSupplier() {
             if (this.checked.length === 1) {
                 this.supplierList.forEach(element => {
                     if (element.formID === this.checked[0]) {
-                        window.location.href = "/supplier/list/update/" + element.id;
+                        let res = this.checkRights(element);
+                        if (res) {
+                            window.location.href = "/supplier/list/update/" + element.id;
+                        }
                     }
                 });
             } else {

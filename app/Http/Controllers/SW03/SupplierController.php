@@ -209,7 +209,7 @@ class SupplierController extends Controller
     }
 
     public function send_suppliers() {
-        $suppliers = Supplier::all()->orderBy('supplr_name', 'asc');
+        $suppliers = Supplier::all();
         return response()->json($suppliers);
     }
 

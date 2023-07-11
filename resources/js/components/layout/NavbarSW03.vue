@@ -12,12 +12,12 @@
 				<!-- Navbar dropdowns -->
                 <!-- For the Equipment drop-down menu -->
 				<b-nav-item-dropdown text="Article" right>
-					<b-dropdown-item href="/article/add">Add a new article</b-dropdown-item>
+					<b-dropdown-item v-if="this.$userId.user_SW03_addArticle" href="/article/add">Add a new article</b-dropdown-item>
 					<b-dropdown-item href="/article/list">List of all article</b-dropdown-item>
 				</b-nav-item-dropdown>
                 <!-- For the MME drop-down menu -->
 				<b-nav-item-dropdown text="Supplier" right>
-					<b-dropdown-item href="/supplier/add">Add a new supplier</b-dropdown-item>
+					<b-dropdown-item v-if="this.$userId.user_SW03_addSupplier" href="/supplier/add">Add a new supplier</b-dropdown-item>
 					<b-dropdown-item href="/supplier/list">List of all supplier</b-dropdown-item>
 				</b-nav-item-dropdown>
                 <!-- For the all simple menu -->
