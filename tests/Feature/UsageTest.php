@@ -299,7 +299,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 3
+     * Test Conception Number: 4
      * Add a usage as drafted with a too long precaution
      * Type: "three"
      * Precaution: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
@@ -323,7 +323,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 4
+     * Test Conception Number: 5
      * Add a usage as to_be_validated with no value
      * Type: /
      * Precaution: /
@@ -345,7 +345,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 5
+     * Test Conception Number: 6
      * Add a usage as to_be_validated with a too short type
      * Type: "in"
      * Precaution: /
@@ -368,7 +368,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 6
+     * Test Conception Number: 7
      * Add a usage as to_be_validated with a too long type
      * Type: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
      * Precaution: /
@@ -391,7 +391,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 7
+     * Test Conception Number: 8
      * Add a usage as to_be_validated with a too long precaution
      * Type: "three"
      * Precaution: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
@@ -415,7 +415,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 8
+     * Test Conception Number: 9
      * Add a usage as validated with no value
      * Type: /
      * Precaution: /
@@ -439,7 +439,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 9
+     * Test Conception Number: 10
      * Add a usage as validated with a too short type
      * Type: "in"
      * Precaution: /
@@ -464,7 +464,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 10
+     * Test Conception Number: 11
      * Add a usage as validated with a too long type
      * Type: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
      * Precaution: /
@@ -489,7 +489,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 11
+     * Test Conception Number: 12
      * Add a usage as validated with a too short precaution
      * Type: "three"
      * Precaution: "in"
@@ -513,7 +513,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 12
+     * Test Conception Number: 13
      * Add a usage as validated with a too long precaution
      * Type: "three"
      * Precaution: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non "
@@ -537,7 +537,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 13
+     * Test Conception Number: 14
      * Add a usage as drafted with correct values
      * Type: "three"
      * Precaution: "three"
@@ -572,7 +572,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 14
+     * Test Conception Number: 15
      * Add a usage as to_be_validated with correct values
      * Type: "three"
      * Precaution: "three"
@@ -607,7 +607,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 15
+     * Test Conception Number: 16
      * Add a usage as validated with correct values
      * Type: "three"
      * Precaution: "three"
@@ -642,7 +642,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 16
+     * Test Conception Number: 17
      * Add a usage to a signed equipment
      * Type: "three"
      * Precaution: "three"
@@ -684,7 +684,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 17
+     * Test Conception Number: 18
      * Update a usage linked to an equipment
      * Type: "other"
      * Precaution: "other"
@@ -711,7 +711,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 18
+     * Test Conception Number: 19
      * Update a usage linked to a signed equipment
      * Type: "other"
      * Precaution: "other"
@@ -757,7 +757,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 19
+     * Test Conception Number: 20
      * Send the usage list linked to equipment
      * Expected result: The data are sent correctly
      * @return void
@@ -781,7 +781,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 20
+     * Test Conception Number: 21
      * Delete a usage linked to an equipment
      * Expected result: The usage is deleted from the database
      * @return void
@@ -804,7 +804,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 21
+     * Test Conception Number: 22
      * Delete a usage linked to signed equipment
      * Expected result: The usage is deleted from the database and the equipment is no longer signed
      * @return void
@@ -846,7 +846,7 @@ class UsageTest extends TestCase
     }
 
     /**
-     * Test Conception Number: 22
+     * Test Conception Number: 23
      * Reform a usage linked to equipment
      * Expected result: The usage is reformed in the database
      * @return void

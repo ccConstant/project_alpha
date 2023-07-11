@@ -154,7 +154,7 @@ class RiskForTest extends TestCase
      * Way Of Control: /
      * Risk For: /
      * Expected result: Receiving an error
-     *                                      "You must enter a value for your dimension"
+     *                                      "You must enter a remark for your risk"
      * @return void
      */
     public function test_add_risk_drafted_no_values()
@@ -285,7 +285,7 @@ class RiskForTest extends TestCase
      * Way Of Control: /
      * Risk For: /
      * Expected result: Receiving an error
-     *                                      "You must enter a value for your dimension"
+     *                                      "You must enter a remark for your risk"
      * @return void
      */
     public function test_add_risk_to_be_validated_no_values()
@@ -999,7 +999,7 @@ class RiskForTest extends TestCase
      * Remarks: "three"
      * Way Of Control: "three"
      * Risk For: "Risk"
-     * Expected result: The risk is added in the database
+     * Expected result: The risk is added in the database and the equipment is no longer signed
      * @return void
      */
     public function test_add_risk_correct_values_preventive_maintenance_signed()
