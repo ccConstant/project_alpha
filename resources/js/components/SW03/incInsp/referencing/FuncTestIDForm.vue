@@ -222,6 +222,10 @@ export default {
             type: String,
             default: null
         },
+        purSpe_id: {
+            type: Number,
+            default: null
+        }
     },
     data() {
         return {
@@ -243,12 +247,15 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            data_purSpe_id: this.purSpe_id,
             info_funcTest: []
         }
     },
     methods: {
         addFuncTest(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
+                console.log("here")
+                console.log(this.data_purSpe_id)
                 axios.post('/incmgInsp/funcTest/verif', {
                     funcTest_name: this.funcTest_name,
                     funcTest_severityLevel: this.funcTest_severityLevel,
@@ -256,6 +263,7 @@ export default {
                     funcTest_expectedMethod: this.funcTest_expectedMethod,
                     funcTest_expectedValue: this.funcTest_expectedValue,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    purSpe_id: this.data_purSpe_id,
                     funcTest_articleType: this.data_article_type,
                     funcTest_sampling: this.funcTest_sampling,
                     funcTest_unitValue: this.funcTest_unitValue,
@@ -267,6 +275,7 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
+                    console.log("verif passed")
                     axios.post('/incmgInsp/funcTest/add', {
                         funcTest_name: this.funcTest_name,
                         funcTest_severityLevel: this.funcTest_severityLevel,
@@ -274,6 +283,7 @@ export default {
                         funcTest_expectedMethod: this.funcTest_expectedMethod,
                         funcTest_expectedValue: this.funcTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        purSpe_id: this.data_purSpe_id,
                         funcTest_articleType: this.data_article_type,
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,

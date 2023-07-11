@@ -15,6 +15,7 @@ use App\Models\SW03\CompFamily;
 use App\Models\SW03\ConsFamily;
 use App\Models\SW03\FunctionalTest;
 use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\PurchaseSpecification;
 use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 
@@ -29,13 +30,10 @@ class FunctionnalTestController extends Controller
             $request,
             [
                 'funcTest_sampling' => 'required',
-                'incmgInsp_id' => 'required|integer',
             ],
             [
                 'funcTest_sampling.required' => 'You must enter a sampling',
 
-                'incmgInsp_id.required' => 'You must enter an incoming inspection id',
-                'incmgInsp_id.integer' => 'The incoming inspection id must be an integer',
             ]
         );
         if ($request->funcTest_sampling === 'Statistics') {
@@ -98,27 +96,55 @@ class FunctionnalTestController extends Controller
                 ]
             );
         }
-        $insp = null;
-        if ($request->funcTest_articleType === 'comp') {
-            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
-        } else if ($request->funcTest_articleType === 'raw') {
-            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
-        } else if ($request->funcTest_articleType === 'cons') {
-            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+        if ($request->purSpe_id !== null) {
+            $purSpe = null;
+            if ($request->funcTest_articleType === 'comp') {
+                $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
+            } else if ($request->funcTest_articleType === 'raw') {
+                $purSpe = PurchaseSpecification::all()->where('rawFam_id', '==', $request->article_id);
+            } else if ($request->funcTest_articleType === 'cons') {
+                $purSpe = PurchaseSpecification::all()->where('consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($purSpe as $pur) {
+                array_push($val, $pur->id);
+            }
+            $find = FunctionalTest::all()->where('funcTest_name', '==', $request->funcTest_name)
+                ->whereIn('purSpe_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'funcTest_name' => 'This aspect test already exists',
+                ], 429);
+            }
+        }else{
+            $insp = null;
+            if ($request->funcTest_articleType === 'comp') {
+                $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+            } else if ($request->funcTest_articleType === 'raw') {
+                $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+            } else if ($request->funcTest_articleType === 'cons') {
+                $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($insp as $in) {
+                array_push($val, $in->id);
+            }
+            $find = FunctionalTest::all()->where('funcTest_name', '==', $request->funcTest_name)
+                ->whereIn('incmgInsp_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'funcTest_name' => 'This functional test already exists',
+                ], 429);
+            }
         }
-        $val = [];
-        foreach ($insp as $in) {
-            array_push($val, $in->id);
-        }
-        $find = FunctionalTest::all()->where('funcTest_name', '==', $request->funcTest_name)
-            ->whereIn('incmgInsp_id', $val)
-            ->where('id', '<>', $request->id)
-            ->count();
-        if ($find !== 0) {
-            return response()->json([
-                'funcTest_name' => 'This functional test already exists',
-            ], 429);
-        }
+
+
+
+        
     }
 
     /**
@@ -135,6 +161,7 @@ class FunctionnalTestController extends Controller
             'funcTest_name' => $request->funcTest_name,
             'funcTest_sampling' => $request->funcTest_sampling,
             'incmgInsp_id' => $request->incmgInsp_id,
+            'purSpe_id' => $request->purSpe_id,
             'funcTest_desc' => $request->funcTest_desc,
             'funcTest_specDoc' => $request->funcTest_specDoc,
         ]);

@@ -7,6 +7,7 @@ use App\Models\SW03\CompFamily;
 use App\Models\SW03\ConsFamily;
 use App\Models\SW03\DimensionalTest;
 use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\PurchaseSpecification;
 use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 
@@ -17,11 +18,9 @@ class DimensionnalTestController extends Controller
             $request,
             [
                 'dimTest_sampling' => 'required',
-                'incmgInsp_id' => 'required',
             ],
             [
                 'dimTest_sampling.required' => 'You must enter a sampling',
-                'incmgInsp_id.required' => 'You must enter an incoming inspection',
             ]
         );
         if ($request->dimTest_sampling === 'Statistics') {
@@ -87,27 +86,52 @@ class DimensionnalTestController extends Controller
                 ]
             );
         }
-        $insp = null;
-        if ($request->dimTest_articleType === 'comp') {
-            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
-        } else if ($request->dimTest_articleType === 'raw') {
-            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
-        } else if ($request->dimTest_articleType === 'cons') {
-            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+        if ($request->purSpe_id !== null) {
+            $purSpe = null;
+            if ($request->dimTest_articleType === 'comp') {
+                $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
+            } else if ($request->dimTest_articleType === 'raw') {
+                $purSpe = PurchaseSpecification::all()->where('rawFam_id', '==', $request->article_id);
+            } else if ($request->dimTest_articleType === 'cons') {
+                $purSpe = PurchaseSpecification::all()->where('consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($purSpe as $pur) {
+                array_push($val, $pur->id);
+            }
+            $find = DimensionalTest::all()->where('dimTest_name', '==', $request->dimTest_name)
+                ->whereIn('purSpe_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'dimTest_name' => 'This aspect test already exists',
+                ], 429);
+            }
+        }else{
+            $insp = null;
+            if ($request->dimTest_articleType === 'comp') {
+                $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+            } else if ($request->dimTest_articleType === 'raw') {
+                $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+            } else if ($request->dimTest_articleType === 'cons') {
+                $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($insp as $in) {
+                array_push($val, $in->id);
+            }
+            $find = DimensionalTest::all()->where('dimTest_name', '==', $request->dimTest_name)
+                ->whereIn('incmgInsp_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'dimTest_name' => 'This dimensional test already exists',
+                ], 429);
+            }
         }
-        $val = [];
-        foreach ($insp as $in) {
-            array_push($val, $in->id);
-        }
-        $find = DimensionalTest::all()->where('dimTest_name', '==', $request->dimTest_name)
-            ->whereIn('incmgInsp_id', $val)
-            ->where('id', '<>', $request->id)
-            ->count();
-        if ($find !== 0) {
-            return response()->json([
-                'dimTest_name' => 'This dimensional test already exists',
-            ], 429);
-        }
+    
     }
 
     public function add_dimTest(Request $request) {

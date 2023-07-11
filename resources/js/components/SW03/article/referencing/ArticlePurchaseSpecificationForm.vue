@@ -104,7 +104,7 @@
                                         :articleType="artFam_type"
                                         :article_id="art_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                        :purSpe="purSpe_id"
+                                        :purSpe_id="purSpe_id"
                                         :consultMod="!this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                     />

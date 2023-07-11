@@ -28,6 +28,7 @@
                 :name="component.funcTest_name"
                 :sampling="component.funcTest_sampling"
                 :incmgInsp_id="incmgInsp_id"
+                :purSpe_id="purSpe_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.funcTest_desc"
@@ -102,6 +103,10 @@ export default {
         },
         checkedTest: {
             type: Array,
+            default: null
+        },
+        purSpe_id: {
+            type: Number,
             default: null
         }
     },
