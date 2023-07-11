@@ -1,5 +1,14 @@
 <?php
 
+/*
+* Filename : CriticalityController.php
+* Creation date : 2 May 2023
+* Update date : 10 Jul 2023
+* This file is used to link the view files and the database that concern the criticality table.
+* For example : add a criticality in the data base, update a cons family...
+*/
+
+
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
@@ -11,28 +20,41 @@ use Illuminate\Http\Request;
 
 class CriticalityController extends Controller
 {
+
+
+    /**
+     * Function call by CritIDForm.vue when the form is submitted for check data with the route : /artFam/criticality/verif'(post)
+     * Check the informations entered in the form and send errors if it exists
+     */
     public function verif_criticality(Request $request) {
         if ($request->crit_validate === 'validated') {
             $this->validate(
                 $request,
                 [
                     'crit_artCriticality' => 'required',
-                    'crit_artMaterialContactCriticality' => 'required',
-                    'crit_artMaterialFunctionCriticality' => 'required',
-                    'crit_artProcessCriticality' => 'required',
+                    'crit_performanceMedicalDevice' => 'required',
+                    'crit_checkedTests' => 'required',
+                    'crit_checkedTestRadioDim' => 'required',
+                    'crit_checkedTestRadioFunc' => 'required',
+                    'crit_checkedTestRadioAsp' => 'required',
+                    'crit_checkedTestRadioDoc' => 'required',
+                    'crit_checkedTestRadioAdm' => 'required',
                     'crit_remarks' => 'required|max:255',
                     'crit_articleID' => 'required',
                     'crit_articleType' => 'required',
-                    'crit_justification' => 'required|max:255',
                 ],
                 [
-                    'crit_artCriticality.required' => 'You must enter an article criticality',
+                    'crit_artCriticality.required' => 'You must inform what is the contact of the article with the patient or the user an article',
 
-                    'crit_artMaterialContactCriticality.required' => 'You must enter an article material contact criticality',
+                    'crit_performanceMedicalDevice.required' => 'You must inform if the deficiencies of the article or of the material properties impact the performance of the medical device',
+                    
+                    'crit_checkedTests.required' => 'You must inform if the article is subject to tests',
 
-                    'crit_artMaterialFunctionCriticality.required' => 'You must enter an article material function criticality',
-
-                    'crit_artProcessCriticality.required' => 'You must enter an article process criticality',
+                    'crit_checkedTestRadioDim.required' => 'You must inform who must realize the dimensional tests',
+                    'crit_checkedTestRadioFunc.required' => 'You must inform who must realize the functional tests',
+                    'crit_checkedTestRadioAsp.required' => 'You must inform who must realize the aspect tests',
+                    'crit_checkedTestRadioDoc.required' => 'You must inform who must realize the documentation tests',
+                    'crit_checkedTestRadioAdm.required' => 'You must inform who must realize the administrative tests',
 
                     'crit_remarks.required' => 'You must enter a remark',
                     'crit_remarks.max' => 'You must enter a maximum of 255 characters',
@@ -41,8 +63,6 @@ class CriticalityController extends Controller
 
                     'crit_articleType.required' => 'You must enter an article type',
 
-                    'crit_justification.required' => 'You must enter a justification',
-                    'crit_justification.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         } else {
@@ -50,17 +70,19 @@ class CriticalityController extends Controller
                 $request,
                 [
                     'crit_remarks' => 'max:255',
-                    'crit_justification' => 'max:255',
                 ],
                 [
                     'crit_remarks.max' => 'You must enter a maximum of 255 characters',
-
-                    'crit_justification.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
     }
 
+    /**
+     * Function call by CritIDForm.vue when the form is submitted for insert with the route : /artFam/criticality/add (post)
+     * Add a new enregistrement of criticality in the data base with the informations entered in the form
+     * @return \Illuminate\Http\Response : id of the new criticality
+     */
     public function add_criticality(Request $request) {
         $compFam_id = null;
         $consFam_id = null;
@@ -74,10 +96,13 @@ class CriticalityController extends Controller
         }
         Criticality::create([
             'crit_artCriticality' => $request->crit_artCriticality,
-            'crit_artMaterialContactCriticality' => $request->crit_artMaterialContactCriticality,
-            'crit_artMaterialFunctionCriticality' => $request->crit_artMaterialFunctionCriticality,
-            'crit_artProcessCriticality' => $request->crit_artProcessCriticality,
-            'crit_justification' => $request->crit_justification,
+            'crit_performanceMedicalDevice' => $request->crit_performanceMedicalDevice,
+            'crit_checkedTests' => $request->crit_checkedTests,
+            'crit_checkedTestRadioDim' => $request->crit_checkedTestRadioDim,
+            'crit_checkedTestRadioFunc' => $request->crit_checkedTestRadioFunc,
+            'crit_checkedTestRadioAsp' => $request->crit_checkedTestRadioAsp,
+            'crit_checkedTestRadioDoc' => $request->crit_checkedTestRadioDoc,
+            'crit_checkedTestRadioAdm' => $request->crit_checkedTestRadioAdm,
             'crit_remarks' => $request->crit_remarks,
             'crit_validate' => $request->crit_validate,
             'consFam_id' => $consFam_id,
@@ -86,6 +111,11 @@ class CriticalityController extends Controller
         ]);
     }
 
+     /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route :/artFam/criticality/update/{id} (post)
+     * Update an enregistrement of criticality in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the criticality we want to update
+     * */
     public function update_criticality(Request $request, $id) {
         $crit = Criticality::findOrfail($id);
         $compFam_id = null;
@@ -145,6 +175,11 @@ class CriticalityController extends Controller
         ]);
     }
 
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted with the route : /artFam/criticality/send/{id} (post)
+     * Get the criticality corresponding to the id in parameter
+     * @return \Illuminate\Http\Response
+     */
     public function send_criticality($id) {
         $crit = Criticality::findOrfail($id);
         return response()->json([
@@ -162,6 +197,11 @@ class CriticalityController extends Controller
         ]);
     }
 
+    /**
+     * Function call by CritIDForm.vue with the route : /artFam/criticality/send/{type}/{id}(post)
+     * Get all the criticalies corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
     public function send_criticalities($type, $id) {
         $array = [];
         if ($type === 'comp') {

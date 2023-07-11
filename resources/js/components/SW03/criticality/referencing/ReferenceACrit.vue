@@ -22,10 +22,12 @@
                 :consultMod="isInConsultMod"
                 :modifMod="isInModifMod"
                 :artCriticality="component.crit_artCriticality"
-                :artMaterialContactCriticality="component.crit_artMaterialContactCriticality"
-                :artMaterialFunctionCriticality="component.crit_artMaterialFunctionCriticality"
-                :artProcessCriticality="component.crit_artProcessCriticality"
-                :justification="component.crit_justification"
+                :performanceMedicalDevice="component.crit_performanceMedicalDevice"
+                :checkedTests="component.crit_checkedTests"
+                :checkedTestRadioFunc="component.crit_checkedTestRadioFunc"
+                :checkedTestRadioAsp="component.crit_checkedTestRadioAsp"
+                :checkedTestRadioDoc="component.crit_checkedTestRadioDoc"
+                :checkedTestRadioAdm="component.crit_checkedTestRadioAdm"
                 :remarks="component.crit_remarks"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
@@ -35,7 +37,7 @@
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another file button appear -->
-                <button v-on:click="addComponent">Add</button>
+                <button v-on:click="addComponent">Add Criticality</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
             </div>
             <SaveButtonForm
@@ -128,10 +130,12 @@ export default {
         /*Function for adding an imported file form with his data*/
         addImportedComponent(
             crit_artCriticality,
-            crit_artMaterialContactCriticality,
-            crit_artMaterialFunctionCriticality,
-            crit_artProcessCriticality,
-            crit_justification,
+            crit_performanceMedicalDevice,
+            crit_checkedTests,
+            crit_checkedTestRadioFunc,
+            crit_checkedTestRadioAsp,
+            crit_checkedTestRadioDoc,
+            crit_checkedTestRadioAdm,
             crit_remarks,
             crit_validate,
             incmgInsp_id, id, className) {
@@ -139,10 +143,12 @@ export default {
                 comp: 'CritIDForm',
                 key: this.uniqueKey++,
                 crit_artCriticality: crit_artCriticality,
-                crit_artMaterialContactCriticality: crit_artMaterialContactCriticality,
-                crit_artMaterialFunctionCriticality: crit_artMaterialFunctionCriticality,
-                crit_artProcessCriticality: crit_artProcessCriticality,
-                crit_justification: crit_justification,
+                crit_performanceMedicalDevice: crit_performanceMedicalDevice,
+                crit_checkedTests: crit_checkedTests,
+                crit_checkedTestRadioFunc: crit_checkedTestRadioFunc,
+                crit_checkedTestRadioAsp: crit_checkedTestRadioAsp,
+                crit_checkedTestRadioDoc: crit_checkedTestRadioDoc,
+                crit_checkedTestRadioAdm: crit_checkedTestRadioAdm,
                 crit_remarks: crit_remarks,
                 validate: crit_validate,
                 incmgInsp_id: incmgInsp_id,
@@ -163,10 +169,12 @@ export default {
                     const className = "importedCrit" + dt.id;
                     this.addImportedComponent(
                         dt.crit_artCriticality,
-                        dt.crit_artMaterialContactCriticality,
-                        dt.crit_artMaterialFunctionCriticality,
-                        dt.crit_artProcessCriticality,
-                        dt.crit_justification,
+                        dt.crit_performanceMedicalDevice,
+                        dt.crit_checkedTests,
+                        dt.crit_checkedTestRadioFunc,
+                        dt.crit_checkedTestRadioAsp,
+                        dt.crit_checkedTestRadioDoc,
+                        dt.crit_checkedTestRadioAdm,
                         dt.crit_remarks,
                         dt.crit_validate,
                         dt.incmgInsp_id,
@@ -177,29 +185,6 @@ export default {
                 this.criticality = null
             }
         },
-        /*Function for saving all the data in one time*/
-        saveAll(savedAs) {
-            for (const component of this.$refs.ask_crit_data) {
-                /*If the user is in modification mode*/
-                if (this.modifMod == true) {
-                    /*If the file doesn't have, an id*/
-                    if (component.id == null) {
-                        /*AddequipmentFile is used*/
-                        component.addEquipmentFile(savedAs);
-                    } else
-                        /*Else if the file has an id and addSucces is equal to true*/
-                    if (component.id != null || component.addSucces == true) {
-                        /*updateEquipmentFile is used*/
-                        /*if (component !== "validated") {
-                            component.updateEquipmentFile(savedAs);
-                        }*/ // FIXME ?
-                    }
-                } else {
-                    /*Else If the user is not in modification mode*/
-                    component.addEquipmentFile(savedAs);
-                }
-            }
-        }
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {

@@ -3,7 +3,7 @@
 /*
 * Filename : Criticality.php
 * Creation date : 20 Apr 2023
-* Update date : 26 Apr 2023
+* Update date : 10 Jul 2023
 * This file define the model Criticality. We can see more details about this model (like his attributes) in the
 * migration file named "2023_04_20_091843_create_criticalities_table.php" in Database>migrations."
 *
@@ -23,7 +23,7 @@ class Criticality extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['crit_artCriticality', 'crit_artMaterialContactCriticality', 'crit_artMaterialFunctionCriticality', 'crit_artProcessCriticality', 'crit_qualityApproverId', 'crit_technicalReviewerId', 'crit_signatureDate', 'crit_validate', 'crit_remarks', 'compFam_id', 'consFam_id', 'rawFam_id', 'crit_justification'] ;
+    protected $fillable = ['crit_performanceMedicalDevice', 'crit_checkedTests', 'crit_checkedTestRadioFunc','crit_checkedTestRadioAsp' ,'crit_checkedTestRadioDoc','crit_checkedTestRadioAdm','crit_artCriticality', 'crit_qualityApproverId', 'crit_technicalReviewerId', 'crit_signatureDate', 'crit_validate', 'crit_remarks', 'compFam_id', 'consFam_id', 'rawFam_id'] ;
 
     //Define the relation between a compCriticality and the comp_family which he is linked : a compCriticality can be linked to only one comp_family
     public function comp_family(){

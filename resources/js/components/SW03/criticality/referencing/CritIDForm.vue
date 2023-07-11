@@ -154,10 +154,10 @@
                             <td v-if="checkedTests.includes('aspTest')">
                                 <input type="radio" id="aspTestAlpha" value="aspTestAlpha" v-model="checkedTestRadioAsp">
                                 <label for="aspTestAlpha"> Alpha</label>
-                                <input type="checkbox" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTests">
+                                <input type="radio" id="aspTestSupplier" value="aspTestSupplier" v-model="checkedTestRadioAsp">
                                 <label for="aspTestSupplier"> Supplier</label>
-                                        <input type="radio" id="aspTestBoth" value="aspTestBoth" v-model="checkedTestRadioAsp">
-                                        <label for="aspTestBoth"> Both</label>
+                                <input type="radio" id="aspTestBoth" value="aspTestBoth" v-model="checkedTestRadioAsp">
+                                <label for="aspTestBoth"> Both</label>
                             </td>
                         </tr>
                         <tr>
@@ -194,6 +194,18 @@
                         </tr>
                     </table>
                 </div>
+
+                 <InputTextForm
+                    name="Remarks"
+                    label="Remarks :"
+                    v-model="crit_remarks"
+                    :isDisabled="isInConsultMod"
+                    :info_text="this.infos_crit[4].info_value"
+                    :min="0"
+                    :max="255"
+                    :inputClassName="null"
+                    :Errors="errors.crit_remarks"
+                />
                 <!--If addSucces is equal to false, the buttons appear -->
                 <div v-if="this.addSucces==false ">
                     <!--If this file doesn't have a id the addCriticality is called function else the updateCriticality function is called -->
@@ -318,11 +330,7 @@ export default {
     data() {
         return {
             crit_id: this.id,
-            crit_artMaterialContactCriticality: this.artMaterialContactCriticality,
-            crit_artMaterialFunctionCriticality: this.artMaterialFunctionCriticality,
-            crit_artProcessCriticality: this.artProcessCriticality,
             crit_artCriticality: this.artCriticality,
-            crit_justification: this.justification,
             crit_remarks: this.remarks,
             errors: {},
             addSucces: false,
@@ -338,16 +346,16 @@ export default {
                 {id_enum: 'Performance', value: false, text: 'No'},
             ],
             checkedTests: [],
-            crit_performanceMedicalDevice: null,
-            checkedTestRadioDim: [],
-            checkedTestRadioFunc: [],
-            checkedTestRadioAsp: [],
-            checkedTestRadioDoc: [],
-            checkedTestRadioAdm: [],
+            crit_performanceMedicalDevice: false,
+            checkedTestRadioDim: 'dimTestAlpha',
+            checkedTestRadioFunc: 'funcTestAlpha',
+            checkedTestRadioAsp: 'aspTestAlpha',
+            checkedTestRadioDoc: 'docControlAlpha',
+            checkedTestRadioAdm: 'adminControlAlpha',
         }
     },
     methods: {
-        /*Sending to the controller all the information about the equipment so that it can be updated in the database
+        /*Sending to the controller all the information about the crit so that it can be added in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
@@ -363,29 +371,36 @@ export default {
                 console.log("crit_remarks : " + this.crit_remarks);
                 axios.post('/artFam/criticality/verif', {
                     crit_artCriticality: this.crit_artCriticality,
-                    crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
-                    crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
-                    crit_artProcessCriticality: this.crit_artProcessCriticality,
                     crit_remarks: this.crit_remarks,
                     crit_validate: savedAs,
                     crit_articleType: this.data_article_type,
                     crit_articleID: this.data_article_id,
-                    crit_justification: this.crit_justification,
+                    crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                    crit_checkedTests: this.checkedTests,
+                    crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                    crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                    crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                    crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                    crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
+
                 })
                 .then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
                     axios.post('/artFam/criticality/add', {
-                        crit_artCriticality: this.crit_artCriticality,
-                        crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
-                        crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
-                        crit_artProcessCriticality: this.crit_artProcessCriticality,
+                       crit_artCriticality: this.crit_artCriticality,
                         crit_remarks: this.crit_remarks,
                         crit_validate: savedAs,
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
-                        crit_justification: this.crit_justification,
+                        crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                        crit_checkedTests: this.checkedTests,
+                        crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                        crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                        crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                        crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                        crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                     }).then(response => {
                         this.$snotify.success(`Criticality added successfully and saved as ${savedAs}`);
                         this.isInConsultMod = true;

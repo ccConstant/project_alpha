@@ -3,7 +3,7 @@
 /*
 * Filename : 2023_04_20_091843_create_criticalities_table.php
 * Creation date : 20 Apr 2023
-* Update date : 27 Jun 2023
+* Update date : 10 Jul 2023
 * This file is used to create the table "comp_criticalities" in the data base. In this file, we can see the different
 * attribute of this table (compCriticality, technicalReviewer..) and how they are defined (string, boolean, unique or not)
 */
@@ -24,10 +24,6 @@ class CreateCriticalitiesTable extends Migration
         Schema::create('criticalities', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('crit_artCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
-            $table->enum('crit_artMaterialContactCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
-            $table->enum('crit_artMaterialFunctionCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
-            $table->enum('crit_artProcessCriticality',  ['NOT_CRITICAL', 'DETECTABLE', 'CRITICAL', 'TO_BE_DEFINED'])->nullable();
             $table->unsignedBigInteger('crit_qualityApproverId') ->nullable();
             $table->foreign('crit_qualityApproverId')->references('id')->on('users') ;
             $table->unsignedBigInteger('crit_technicalReviewerId') ->nullable();
@@ -41,8 +37,15 @@ class CreateCriticalitiesTable extends Migration
             $table->foreign('consFam_id')->references('id')->on('cons_families') ;
             $table->unsignedBigInteger('rawFam_id') ->nullable();
             $table->foreign('rawFam_id')->references('id')->on('raw_families') ;
-            $table->string('crit_justification')->nullable();
-        });
+            $table->enum('crit_artCriticality', ['No direct contact', 'No contact but integrated in invasive Medical device','Surface contact', 'Invasive/Implantable'])->nullable();
+            $table->boolean('crit_performanceMedicalDevice')->nullable();
+            $table->string('crit_checkedTests')->nullable();
+            $table->string('crit_checkedTestRadioFunc')->nullable();
+            $table->string('crit_checkedTestRadioAsp')->nullable();
+            $table->string('crit_checkedTestRadioDoc')->nullable();
+            $table->string('crit_checkedTestRadioAdm')->nullable();
+            $table->string('crit_checkedTestRadioDim')->nullable();
+            });
     }
 
     /**

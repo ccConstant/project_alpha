@@ -147,7 +147,7 @@ class ConsFamilyController extends Controller
     }
 
     /**
-     * Function call by ListOfArticle.vue when the form is submitted for insert with the route : /cons/family/send (post)
+     * Function call by ListOfArticle.vue when the form is submitted with the route : /cons/family/send (post)
      * Get all the family cons corresponding in the data base
      * @return \Illuminate\Http\Response
      */

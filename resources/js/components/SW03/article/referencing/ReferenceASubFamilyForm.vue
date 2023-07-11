@@ -36,7 +36,7 @@
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->
-                <button v-on:click="addComponent">Add</button>
+                <button v-on:click="addComponent">Add Article Sub Family</button>
             </div>
             <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
                             :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>

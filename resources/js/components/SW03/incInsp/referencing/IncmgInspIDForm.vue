@@ -9,7 +9,7 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <button @click="addIncmgInsp">New Incoming Inspection</button>
+            <button @click="addIncmgInsp">Create a new Incoming Inspection</button>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
                 <div v-if="this.incmgInsp_id!=null">
                     <div class="accordion">
