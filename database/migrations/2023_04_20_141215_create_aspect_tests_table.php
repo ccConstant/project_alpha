@@ -27,9 +27,9 @@ class CreateAspectTestsTable extends Migration
             $table->enum('aspTest_severityLevel', ['I', 'II', 'III', 'IV'])->nullable();
             $table->enum('aspTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
             $table->string('aspTest_expectedAspect');
-            $table->unsignedBigInteger('incmgInsp_id');
+            $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
-            $table->unsignedBigInteger('purSpe_id');
+            $table->unsignedBigInteger('purSpe_id')->nullable();
             $table->foreign('purSpe_id')->references('id')->on('purchase_specifications');
             $table->string('aspTest_name');
             $table->enum('aspTest_sampling',  ['Statistics', '100%', 'Other']);

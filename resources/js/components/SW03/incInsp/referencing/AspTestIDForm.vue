@@ -1,6 +1,6 @@
 <!--File name : AspTestIDForm.vue-->
 <!--Creation date : 22 May 2023-->
-<!--Update date : 22 May 2023-->
+<!--Update date : 11 Jul 2023-->
 <!--Vue Component of the Form of an aspect test for an article-->
 
 <template>
@@ -201,6 +201,10 @@ export default {
             type: String,
             default: null
         },
+        purSpe_id: {
+            type: Number,
+            default: null
+        },
     },
     data() {
         return {
@@ -220,6 +224,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            data_purSpe_id: this.purSpe_id,
             info_aspTest: [],
         }
     },
@@ -235,6 +240,7 @@ export default {
                     aspTest_desc: this.aspTest_desc,
                     aspTest_specDoc: this.aspTest_specDoc,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    purSpe_id: this.data_purSpe_id,
                     reason: 'add',
                     id: this.aspTest_id,
                     article_id: this.data_article_id,
@@ -242,6 +248,8 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
+                    console.log("verif passed")
+                    console.log(this.data_purSpe_id)
                     axios.post('/incmgInsp/aspTest/add', {
                         aspTest_name: this.aspTest_name,
                         aspTest_severityLevel: this.aspTest_severityLevel,
@@ -251,6 +259,7 @@ export default {
                         aspTest_desc: this.aspTest_desc,
                         aspTest_specDoc: this.aspTest_specDoc,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        purSpe_id: this.data_purSpe_id,
                         reason: 'add',
                         id: this.aspTest_id,
                         article_id: this.data_article_id,
@@ -289,6 +298,7 @@ export default {
             })
                 .then(response => {
                     this.errors = {};
+
                     axios.post('/incmgInsp/aspTest/update/' + this.aspTest_id, {
                         aspTest_name: this.aspTest_name,
                         aspTest_severityLevel: this.aspTest_severityLevel,

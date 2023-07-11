@@ -62,6 +62,7 @@
                                     :artType="this.artFam_type"
                                     :artFam_id="this.artFam_id"
                                     :import_id="this.artFam_id"
+                                    :checkedTest="this.checkedTest"
                                 />
                             </div>
                         </div>

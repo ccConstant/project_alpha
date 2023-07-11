@@ -28,6 +28,7 @@
                 :modifMod="component.id !== null"
                 :art_type="data_art_type"
                 :art_id="data_art_id"
+                :checkedTest="data_checkedTest"
                 @deleteStorageCondition="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -86,6 +87,10 @@ export default {
             type: Number,
             default: null
         },
+        checkedTest: {
+            type: Array,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
         components: Array in which will be added the data of a component
@@ -106,7 +111,8 @@ export default {
             title_info: null,
             data_art_type: this.artType.toLowerCase(),
             loaded: false,
-            purchaseSpec: null
+            purchaseSpec: null,
+            data_checkedTest: this.checkedTest
         };
     },
     methods: {

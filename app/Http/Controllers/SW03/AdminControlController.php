@@ -54,7 +54,7 @@ class AdminControlController extends Controller
                 ]
             );
         } else if ($request->adminControl_articleType === 'cons') {
-           /* $this->validate(
+            $this->validate(
                 $request,
                 [
                     'adminControl_FDS' => 'required|min:2|max:255',
@@ -77,7 +77,7 @@ class AdminControlController extends Controller
 
                     'incmgInsp_id.required' => 'You must enter an incoming inspection id'
                 ]
-            );*/
+            );
         }
         $insp = null;
         if ($request->adminControl_articleType === 'comp') {

@@ -1,5 +1,13 @@
 <?php
 
+/*
+* Filename : AspectTestController.php
+* Creation date : 10 Jul 2023
+* Update date : 11 Jul 2023
+* This file is used to link the view files and the database that concern the aspect test table.
+* For example : add an aspect test in the data base, update an aspect test...
+*/
+
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
@@ -7,11 +15,17 @@ use App\Models\SW03\AspectTest;
 use App\Models\SW03\CompFamily;
 use App\Models\SW03\ConsFamily;
 use App\Models\SW03\IncomingInspection;
+use App\Models\SW03\PurchaseSpecification;
 use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 
 class AspectTestController extends Controller
 {
+
+    /**
+     * Function call by AspTestIDForm.vue when the form is submitted for check data with the route : /incmgInsp/aspTest/verif'(post)
+     * Check the informations entered in the form and send errors if it exists
+     */
     public function verif_aspectTest(Request $request) {
         $this->validate(
             $request,
@@ -19,7 +33,6 @@ class AspectTestController extends Controller
                 'aspTest_expectedAspect' => 'required|string|min:2|max:255',
                 'aspTest_name' => 'required|string|min:2|max:255',
                 'aspTest_sampling' => 'required',
-                'incmgInsp_id' => 'required|integer',
                 'aspTest_specDoc' => 'required|min:2|max:255',
             ],
             [
@@ -34,9 +47,6 @@ class AspectTestController extends Controller
                 'aspTest_name.max' => 'You must enter a maximum of 255 characters',
 
                 'aspTest_sampling.required' => 'You must enter a sampling',
-
-                'incmgInsp_id.required' => 'You must enter an incoming inspection id',
-                'incmgInsp_id.integer' => 'The incoming inspection id must be an integer',
 
                 'aspTest_specDoc.required' => 'You must enter a specification document',
                 'aspTest_specDoc.min' => 'You must enter at least two characters',
@@ -71,30 +81,59 @@ class AspectTestController extends Controller
                 ]
             );
         }
-        $insp = null;
-        if ($request->aspTest_articleType === 'comp') {
-            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
-        } else if ($request->aspTest_articleType === 'raw') {
-            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
-        } else if ($request->aspTest_articleType === 'cons') {
-            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
-        }
-        $val = [];
-        foreach ($insp as $in) {
-            array_push($val, $in->id);
-        }
-        $find = AspectTest::all()->where('aspTest_name', '==', $request->aspTest_name)
-            ->whereIn('incmgInsp_id', $val)
-            ->where('id', '<>', $request->id)
-            ->count();
-        if ($find !== 0) {
-            return response()->json([
-                'aspTest_name' => 'This aspect test already exists',
-            ], 429);
+        if ($request->purSpe_id !== null) {
+            $purSpe = null;
+            if ($request->aspTest_articleType === 'comp') {
+                $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
+            } else if ($request->aspTest_articleType === 'raw') {
+                $purSpe = PurchaseSpecification::all()->where('rawFam_id', '==', $request->article_id);
+            } else if ($request->aspTest_articleType === 'cons') {
+                $purSpe = PurchaseSpecification::all()->where('consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($purSpe as $pur) {
+                array_push($val, $pur->id);
+            }
+            $find = AspectTest::all()->where('aspTest_name', '==', $request->aspTest_name)
+                ->whereIn('purSpe_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'aspTest_name' => 'This aspect test already exists',
+                ], 429);
+            }
+        }else{
+            $insp = null;
+            if ($request->aspTest_articleType === 'comp') {
+                $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+            } else if ($request->aspTest_articleType === 'raw') {
+                $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+            } else if ($request->aspTest_articleType === 'cons') {
+                $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($insp as $in) {
+                array_push($val, $in->id);
+            }
+            $find = AspectTest::all()->where('aspTest_name', '==', $request->aspTest_name)
+                ->whereIn('incmgInsp_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'aspTest_name' => 'This aspect test already exists',
+                ], 429);
+            }
         }
 
     }
 
+    /**
+     * Function call by AspTestIDForm.vue when the form is submitted for insert with the route : /incmgInsp/aspTest/add (post)
+     * Add a new enregistrement of a aspect control in the data base with the informations entered in the form
+     * @return \Illuminate\Http\Response : id of the new aspect test
+     */
     public function add_aspectTest(Request $request) {
         $aspTest = AspectTest::create([
             'aspTest_severityLevel' => $request->aspTest_severityLevel,
@@ -104,11 +143,17 @@ class AspectTestController extends Controller
             'aspTest_sampling' => $request->aspTest_sampling,
             'aspTest_desc' => $request->aspTest_desc,
             'incmgInsp_id' => $request->incmgInsp_id,
+            'purSpe_id' => $request->purSpe_id,
             'aspTest_specDoc' => $request->aspTest_specDoc,
         ]);
         return response()->json($aspTest);
     }
 
+    /**
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/aspTest/sendFromIncmgInsp/{id} (get)
+     * Get all the aspect test corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
     public function send_aspectTestFromIncmgInsp($id) {
         $aspTest = AspectTest::all()->where('incmgInsp_id', '==', $id);
         $array = [];
@@ -129,21 +174,36 @@ class AspectTestController extends Controller
         return response()->json($array);
     }
 
-    public function send_aspectTest($id) {
-        $aspTest = AspectTest::find($id);
-        return response()->json([
-            'id' => $aspTest->id,
-            'aspTest_severityLevel' => $aspTest->aspTest_severityLevel,
-            'aspTest_levelOfControl' => $aspTest->aspTest_levelOfControl,
-            'aspTest_expectedAspect' => $aspTest->aspTest_expectedAspect,
-            'aspTest_name' => $aspTest->aspTest_name,
-            'aspTest_sampling' => $aspTest->aspTest_sampling,
-            'aspTest_desc' => $aspTest->aspTest_desc,
-            'incmgInsp_id' => $aspTest->incmgInsp_id,
-            'aspTest_specDoc' => $aspTest->aspTest_specDoc,
-        ]);
+    /**
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/aspTest/sendFromPurSpe/{id} (get)
+     * Get all the aspect test corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_aspectTestFromPurSpe($id) {
+        $aspTest = AspectTest::all()->where('purSpe_id', '==', $id);
+        $array = [];
+        foreach ($aspTest as $asp) {
+            $obj = [
+                'id' => $asp->id,
+                'aspTest_severityLevel' => $asp->aspTest_severityLevel,
+                'aspTest_levelOfControl' => $asp->aspTest_levelOfControl,
+                'aspTest_expectedAspect' => $asp->aspTest_expectedAspect,
+                'aspTest_name' => $asp->aspTest_name,
+                'aspTest_sampling' => $asp->aspTest_sampling,
+                'aspTest_desc' => $asp->aspTest_desc,
+                'incmgInsp_id' => $asp->incmgInsp_id,
+                'aspTest_specDoc' => $asp->aspTest_specDoc,
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
     }
 
+    /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route : /incmgInsp/aspTest/update/{id} (post)
+     * Update an enregistrement of an aspect test in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the aspect test we want to update
+     * */
     public function update_aspectTest(Request $request, $id) {
         $aspTest = AspectTest::all()->where('id', '==', $id)->first();
         if ($aspTest == null) {

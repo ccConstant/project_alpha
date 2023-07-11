@@ -28,9 +28,9 @@ class CreateFunctionalTestsTable extends Migration
             $table->enum('funcTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
             $table->string('funcTest_expectedMethod');
             $table->string('funcTest_expectedValue');
-            $table->unsignedBigInteger('incmgInsp_id');
+            $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
-            $table->unsignedBigInteger('purSpe_id');
+            $table->unsignedBigInteger('purSpe_id')->nullable();
             $table->foreign('purSpe_id')->references('id')->on('purchase_specifications');
             $table->string('funcTest_name');
             $table->enum('funcTest_sampling',  ['Statistics', '100%', 'Other']);

@@ -20,7 +20,7 @@ class DocumentaryControl extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['docControl_name', 'docControl_reference', 'docControl_materialCertifSpe', 'incmgInsp_id', 'docControl_FDS'];
+    protected $fillable = ['purSpe_id','docControl_name', 'docControl_reference', 'docControl_materialCertifSpe', 'incmgInsp_id', 'docControl_FDS'];
 
     //Define the relation between a documentaryControl and its inspection: a documentaryControl has only one inspection
     public function incomingInspection(){

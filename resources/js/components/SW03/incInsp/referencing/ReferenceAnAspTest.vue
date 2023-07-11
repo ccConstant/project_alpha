@@ -27,6 +27,7 @@
                 :name="component.aspTest_name"
                 :sampling="component.aspTest_sampling"
                 :incmgInsp_id="incmgInsp_id"
+                :purSpe_id="purSpe_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.aspTest_desc"
@@ -102,6 +103,10 @@ export default {
         },
         checkedTest: {
             type: Array,
+            default: null
+        },
+        purSpe_id: {
+            type: Number,
             default: null
         }
     },
@@ -219,9 +224,17 @@ export default {
             this.addComponent("Test required to ensure performance of the medical device");
         }
         /*If the user chooses importation doc control*/
+        var consultUrl=""
+        if (this.purSpe_id!=null){
+            consultUrl = (id) => `/incmgInsp/aspTest/sendFromPurSpe/${id}`; 
+        }else{
+            consultUrl = (id) => `/incmgInsp/aspTest/sendFromIncmgInsp/${id}`; 
+        }
+        console.log("created")
+        console.log(consultUrl(this.import_id))
+        console.log(this.isInConsultMod)
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/aspTest/sendFromIncmgInsp/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
                 .then(response => {
                     this.aspTest = response.data;

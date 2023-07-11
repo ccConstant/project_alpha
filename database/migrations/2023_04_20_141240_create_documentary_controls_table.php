@@ -27,9 +27,9 @@ class CreateDocumentaryControlsTable extends Migration
             $table->string('docControl_name');
             $table->string('docControl_reference');
             $table->string('docControl_materialCertifSpe')->nullable();
-            $table->unsignedBigInteger('incmgInsp_id');
+            $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
-            $table->unsignedBigInteger('purSpe_id');
+            $table->unsignedBigInteger('purSpe_id')->nullable();
             $table->foreign('purSpe_id')->references('id')->on('purchase_specifications');
             $table->string('docControl_FDS')->nullable();
             /*$table->string('docControl_specDoc')->nullable();*/

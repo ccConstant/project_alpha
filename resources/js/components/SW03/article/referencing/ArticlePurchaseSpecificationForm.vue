@@ -1,6 +1,6 @@
 <!--File name : ArticlePurchaseSpecificationForm.vue -->
 <!--Creation date : 2 May 2023-->
-<!--Update date : 2 May 2023 -->
+<!--Update date : 11 Jul 2023 -->
 <!--Vue Component of the Form of the article purchase specification who call all the input component-->
 
 <template>
@@ -46,6 +46,137 @@
                 <DeleteComponentButton :validationMode="purSpe_validate" :consultMod="this.isInConsultMod"
                                        @deleteOk="deleteComponent"/>
             </form>
+            <div v-if="this.purSpe_id!=null">
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingDocControl">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseDocControl" aria-expanded="true" aria-controls="collapseDocControl">
+                                    Documentary Control
+                                </button>
+                            </h2>
+                            <div id="collapseDocControl" class="accordion-collapse collapse show" aria-labelledby="headingDocControl">
+                                <div class="accordion-body">
+                                    <ReferenceADocControl
+                                        :articleType="artFam_type"
+                                        :article_id="art_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                        :purSpe_id="purSpe_id"
+                                        :consultMod="!this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingAspTest">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
+                                    Aspect Test
+                                </button>
+                            </h2>
+                            <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
+                                <div class="accordion-body">
+                                    <ReferenceAnAspTest
+                                        :articleType="artFam_type"
+                                        :article_id="art_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                        :purSpe_id="purSpe_id"
+                                        :consultMod="!this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FuncTest -->
+                        <div class="accordion-item" v-if="artFam_type === 'comp'">
+                            <h2 class="accordion-header" id="headingFuncTest">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseFuncTest" aria-expanded="true" aria-controls="collapseFuncTest">
+                                    Functional Test
+                                </button>
+                            </h2>
+                            <div id="collapseFuncTest" class="accordion-collapse collapse show" aria-labelledby="headingFuncTest">
+                                <div class="accordion-body">
+                                    <ReferenceAFuncTest
+                                        :articleType="artFam_type"
+                                        :article_id="art_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                        :purSpe="purSpe_id"
+                                        :consultMod="!this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DimTest -->
+                        <div class="accordion-item" v-if="artFam_type === 'comp' || artFam_type === 'raw'">
+                            <h2 class="accordion-header" id="headingDimTest">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseDimTest" aria-expanded="true" aria-controls="collapseDimTest">
+                                    Dimensional Test
+                                </button>
+                            </h2>
+                            <div id="collapseDimTest" class="accordion-collapse collapse show" aria-labelledby="headingDimTest">
+                                <div class="accordion-body">
+                                    <ReferenceADimTest
+                                        :articleType="artFam_type"
+                                        :article_id="art_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                        :purSpe_id="purSpe_id"
+                                        :consultMod="!this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                    />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingAspTest">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
+                                    Administrative Test
+                                </button>
+                            </h2>
+                            <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
+                                <div class="accordion-body">
+                                    <ReferenceAnAdminControl
+                                        :articleType="artFam_type"
+                                        :article_id="art_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                        :purSpe_id="purSpe_id"
+                                        :consultMod="!this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- CompTest -->
+                        <div class="accordion-item" v-if="artFam_type === 'cons'">
+                            <h2 class="accordion-header" id="headingCompTest">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseCompTest" aria-expanded="true" aria-controls="collapseCompTest">
+                                    Complementary Test
+                                </button>
+                            </h2>
+                            <div id="collapseCompTest" class="accordion-collapse collapse show" aria-labelledby="headingCompTest">
+                                <div class="accordion-body">
+                                    <ReferenceACompTest
+                                        :articleType="artFam_type"
+                                        :article_id="art_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                        :purSpe_id="purSpe_id"
+                                        :consultMod="!this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <SucessAlert ref="sucessAlert"/>
         </div>
     </div>
@@ -58,6 +189,12 @@ import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import DeleteComponentButton from '../../../button/DeleteComponentButton.vue'
 import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from "../../../input/InputSelectForm.vue";
+import ReferenceADocControl from "../../incInsp/referencing/ReferenceADocControl.vue";
+import ReferenceAnAspTest from "../../incInsp/referencing/ReferenceAnAspTest.vue";
+import ReferenceAFuncTest from "../../incInsp/referencing/ReferenceAFuncTest.vue";
+import ReferenceADimTest from "../../incInsp/referencing/ReferenceADimTest.vue";
+import ReferenceACompTest from "../../incInsp/referencing/ReferenceACompTest.vue";
+import ReferenceAnAdminControl from "../../incInsp/referencing/ReferenceAnAdminControl.vue";
 
 
 export default {
@@ -68,6 +205,12 @@ export default {
         SaveButtonForm,
         DeleteComponentButton,
         SucessAlert,
+        ReferenceADocControl,
+        ReferenceAnAspTest,
+        ReferenceAFuncTest,
+        ReferenceADimTest,
+        ReferenceACompTest,
+        ReferenceAnAdminControl,
 
     },
 
@@ -114,7 +257,10 @@ export default {
         },
         art_type:{
             type: String
-        }
+        },
+        checkedTest: {
+            type: Array
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -144,6 +290,7 @@ export default {
             loaded: false,
             infos_purSpe: [],
             suppliers: [],
+            data_checkedTest: this.checkedTest,
         }
     },
     methods: {

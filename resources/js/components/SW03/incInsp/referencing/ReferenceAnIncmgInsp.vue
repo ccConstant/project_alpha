@@ -1,6 +1,6 @@
 <!--File name :ReferenceAFile.vue-->
 <!--Creation date : 10 May 2022-->
-<!--Update date : 12 Apr 2023-->
+<!--Update date : 11 Jul 2023-->
 <!--Vue Component used to reference a file in the equipment-->
 
 <template>
@@ -186,7 +186,6 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("reference an incoming insp") 
         if (this.data_checkedTest!=null && (this.data_checkedTest.includes("dimTest") || this.data_checkedTest.includes("funcTest") || this.data_checkedTest.includes("aspTest") || this.data_checkedTest.includes("docControl") || this.data_checkedTest.includes("adminControl"))) {
             this.addComponent();
         }

@@ -1088,8 +1088,9 @@ Route::get('/incmgInsp/adminControl/sendFromIncmgInsp/{id}', [AdminControlContro
 Route::post('/incmgInsp/aspTest/verif', [AspectTestController::class, 'verif_aspectTest']);
 Route::post('/incmgInsp/aspTest/add', [AspectTestController::class, 'add_aspectTest']);
 Route::post('/incmgInsp/aspTest/update/{id}', [AspectTestController::class, 'update_aspectTest']);
-Route::get('/incmgInsp/aspTest/send/{id}', [AspectTestController::class, 'send_aspectTest']);
 Route::get('/incmgInsp/aspTest/sendFromIncmgInsp/{id}', [AspectTestController::class, 'send_aspectTestFromIncmgInsp']);
+Route::get('/incmgInsp/aspTest/sendFromPurSpe/{id}', [AspectTestController::class, 'send_aspectTestFromPurSpe']);
+
 
 // Functionnal Test Controller
 Route::post('/incmgInsp/funcTest/verif', [FunctionnalTestController::class, 'verif_funcTest']);
@@ -1097,6 +1098,8 @@ Route::post('/incmgInsp/funcTest/add', [FunctionnalTestController::class, 'add_f
 Route::post('/incmgInsp/funcTest/update/{id}', [FunctionnalTestController::class, 'update_funcTest']);
 Route::get('/incmgInsp/funcTest/send/{id}', [FunctionnalTestController::class, 'send_funcTest']);
 Route::get('/incmgInsp/funcTest/sendFromIncmgInsp/{id}', [FunctionnalTestController::class, 'send_funcTestFromIncmgInsp']);
+Route::get('/incmgInsp/funcTest/sendFromPurSpe/{id}', [FunctionnalTestController::class, 'send_funcTestFromPurSpe']);
+
 
 // Dimensionnal Test Controller
 Route::post('/incmgInsp/dimTest/verif', [DimensionnalTestController::class, 'verif_dimTest']);

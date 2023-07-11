@@ -28,9 +28,9 @@ class CreateDimensionalTestsTable extends Migration
             $table->enum('dimTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
             $table->string('dimTest_expectedMethod');
             $table->double('dimTest_expectedValue');
-            $table->unsignedBigInteger('incmgInsp_id');
+            $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
-            $table->unsignedBigInteger('purSpe_id');
+            $table->unsignedBigInteger('purSpe_id')->nullable();
             $table->foreign('purSpe_id')->references('id')->on('purchase_specifications');
             $table->string('dimTest_name');
             $table->string('dimTest_unitValue');

@@ -192,9 +192,15 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log("coucou")
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
+            if (this.incmgInsp_id === null) {
+                const consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`; 
+            }else{
+                const consultUrl = (id) => `/incmgInsp/docControl/sendFromPurSpe/${id}`; // FIXME
+            }
             const consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
                 .then(response => {
