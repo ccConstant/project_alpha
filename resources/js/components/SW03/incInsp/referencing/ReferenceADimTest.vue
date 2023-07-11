@@ -38,7 +38,7 @@
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another file button appear -->
-                <button v-on:click="addComponent">Add</button>
+                <button v-on:click="addComponent('')">Add</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
             </div>
             <SaveButtonForm
@@ -100,6 +100,10 @@ export default {
         incmgInsp_id: {
             type: Number,
             default: null
+        },
+        checkedTest: {
+            type: Array,
+            default: null
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -125,12 +129,13 @@ export default {
     },
     methods: {
         /*Function for adding a new empty file form*/
-        addComponent() {
+        addComponent(name) {
             this.components.push({
                 comp: 'DimTestIDForm',
                 key: this.uniqueKey++,
                 id: null,
                 dimTest_sampling: "100%",
+                dimTest_name:name,
             });
         },
         /*Function for adding an imported file form with his data*/
@@ -217,6 +222,11 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log("Reference A dim test created")
+        console.log(this.checkedTest)
+        if (this.checkedTest.includes('dimTest')) {
+            this.addComponent("Test required to ensure performance of the medical device");
+        }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/

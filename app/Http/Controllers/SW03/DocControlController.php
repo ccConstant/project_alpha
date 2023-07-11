@@ -1,5 +1,13 @@
 <?php
 
+/*
+* Filename : DocControlController.php
+* Creation date : 2 May 2023
+* Update date : 11 Jul 2023
+* This file is used to link the view files and the database that concern the doc control table.
+* For example : add a doc control in the data base, update a doc control...
+*/
+
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
@@ -13,8 +21,9 @@ use Illuminate\Validation\ValidationException;
 
 class DocControlController extends Controller
 {
-    /**
-     * @throws ValidationException
+     /**
+     * Function call by DocControlIDForm.vue when the form is submitted for check data with the route : /incmgInsp/docControl/verif'(post)
+     * Check the informations entered in the form and send errors if it exists
      */
     public function verif_docControl(Request $request)
     {
@@ -92,6 +101,11 @@ class DocControlController extends Controller
         }
     }
 
+    /**
+     * Function call by DocControlIDForm.vue when the form is submitted for insert with the route : /incmgInsp/docControl/add (post)
+     * Add a new enregistrement of a doc control in the data base with the informations entered in the form
+     * @return \Illuminate\Http\Response : id of the new doc control
+     */
     public function add_docControl(Request $request) {
         $docControl = DocumentaryControl::create([
             'docControl_name' => $request->docControl_name,
@@ -103,11 +117,11 @@ class DocControlController extends Controller
         return response()->json($docControl);
     }
 
-    public function send_docControlGlob() {
-        $docControl = DocumentaryControl::all();
-        return response()->json($docControl);
-    }
-
+    /**
+     * Function call by ReferenceADocControl.vue with the route : /incmgInsp/docControl/sendFromIncmgInsp/{id} (get)
+     * Get all the doc control corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
     public function send_docControlFromIncmgInsp($id) {
         $docControl = DocumentaryControl::all()->where('incmgInsp_id', "==", $id)->all();
         $array = [];
@@ -125,18 +139,12 @@ class DocControlController extends Controller
         return response()->json($array);
     }
 
-    public function send_docControl($id) {
-        $docControl = DocumentaryControl::all()->find($id)->first();
-        return response()->json([
-            'docControl_name' => $docControl->docControl_name,
-            'docControl_reference' => $docControl->docControl_reference,
-            'docControl_materialCertifSpe' => $docControl->docControl_materialCertifSpe,
-            'incmgInsp_id' => $docControl->incmgInsp_id,
-            'docControl_FDS' => $docControl->docControl_FDS,
-            'id' => $docControl->id
-        ]);
-    }
 
+    /**
+     * Function call by ArticleUpdate.vue when the form is submitted for update with the route :/incmgInsp/docControl/update/{id} (post)
+     * Update an enregistrement of doc control in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the doc control we want to update
+     * */
     public function update_docControl(Request $request, $id) {
         $docControl = DocumentaryControl::all()->where('id', '==', $id)->first();
         if ($docControl === null) {

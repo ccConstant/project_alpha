@@ -38,6 +38,7 @@
                     <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceACrit
+                                @checkedTests="createTest"
                                 modifMod
                                 :articleType="this.artFam_type"
                                 :article_id="this.artFam_id"
@@ -46,7 +47,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion">
+                <div v-if="this.checkedTest!=null && this.checkedTest.length!=0" class="accordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -66,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion">
+                <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -81,6 +82,7 @@
                                     :articleType="this.artFam_type"
                                     :article_id="this.artFam_id"
                                     :import_id="this.artFam_id"
+                                    :checkedTest="this.checkedTest"
                                 />
                             </div>
                         </div>
@@ -136,6 +138,7 @@ export default {
             artFam_id: null,
             artFam_type: null,
             artFam_ref: null,
+            checkedTest: [],
         }
     },
     methods: {
@@ -147,6 +150,11 @@ export default {
         },
         put_artFamily_ref(value) {
             this.artFam_ref = value;
+        },
+        createTest(value) {
+            console.log("createTest in Reference an article family")
+            console.log("checkedTest : " + value)
+            this.checkedTest = value;
         },
     },
     created(){

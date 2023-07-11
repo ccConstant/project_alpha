@@ -49,6 +49,7 @@ use App\Http\Controllers\SW03\ConsFamilyMemberController;
 use App\Http\Controllers\SW03\CriticalityController;
 use App\Http\Controllers\SW03\DimensionnalTestController;
 use App\Http\Controllers\SW03\DocControlController;
+use App\Http\Controllers\SW03\AdminControlController;
 use App\Http\Controllers\SW03\EnumPurchasedByController;
 use App\Http\Controllers\SW03\EnumStorageConditionController;
 use App\Http\Controllers\SW03\FunctionnalTestController;
@@ -790,6 +791,8 @@ Route::get('/info/send/funcTest', [InformationController::class, 'send_informati
 
 Route::get('/info/send/docControl', [InformationController::class, 'send_informations_docControl']);
 
+Route::get('/info/send/adminControl', [InformationController::class, 'send_informations_adminControl']);
+
 Route::get('/info/send/compTest', [InformationController::class, 'send_informations_compTest']);
 
 
@@ -1072,6 +1075,14 @@ Route::post('/incmgInsp/docControl/add', [DocControlController::class, 'add_docC
 Route::post('/incmgInsp/docControl/update/{id}', [DocControlController::class, 'update_docControl']);
 Route::get('/incmgInsp/docControl/send/{id}', [DocControlController::class, 'send_docControl']);
 Route::get('/incmgInsp/docControl/sendFromIncmgInsp/{id}', [DocControlController::class, 'send_docControlFromIncmgInsp']);
+
+// Administrativr Control Controller
+Route::post('/incmgInsp/adminControl/verif', [AdminControlController::class, 'verif_adminControl']);
+Route::post('/incmgInsp/adminControl/add', [AdminControlController::class, 'add_adminControl']);
+Route::post('/incmgInsp/adminControl/update/{id}', [AdminControlController::class, 'update_adminControl']);
+Route::get('/incmgInsp/adminControl/send/{id}', [AdminControlController::class, 'send_adminControl']);
+Route::get('/incmgInsp/adminControl/sendFromIncmgInsp/{id}', [AdminControlController::class, 'send_adminControlFromIncmgInsp']);
+
 
 // Aspect Test Controller
 Route::post('/incmgInsp/aspTest/verif', [AspectTestController::class, 'verif_aspectTest']);

@@ -28,6 +28,7 @@
                 :modifMod="component.id !== null"
                 :article_id="data_article_id"
                 :article_type="data_article_type"
+                :checkedTest="data_checkedTest"
                 @deleteFile="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -87,6 +88,10 @@ export default {
         },
         articleType: {
             type: String
+        },
+        checkedTest: {
+            type: Array,
+            default: null
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -107,7 +112,8 @@ export default {
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
             data_article_type: this.articleType === null ? 'raw' : this.articleType.toLowerCase(),
-            loaded: false
+            loaded: false,
+            data_checkedTest: this.checkedTest
         };
     },
     methods: {
@@ -180,6 +186,10 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log("reference an incoming insp") 
+        if (this.data_checkedTest!=null && (this.data_checkedTest.includes("dimTest") || this.data_checkedTest.includes("funcTest") || this.data_checkedTest.includes("aspTest") || this.data_checkedTest.includes("docControl") || this.data_checkedTest.includes("adminControl"))) {
+            this.addComponent();
+        }
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/

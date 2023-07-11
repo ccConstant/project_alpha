@@ -14,6 +14,7 @@
             <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
             <!--The emitted deleteFile is caught here and call the function getContent -->
             <CritIDForm
+                @checkedTests="createTest"
                 ref="ask_crit_data"
                 v-for="(component, key) in components"
                 :key="component.key"
@@ -185,6 +186,11 @@ export default {
                 this.criticality = null
             }
         },
+        createTest(value){
+            console.log("Create Test in reference a crit")
+            console.log("checked test :"+value )
+            this.$emit('checkedTests', value);
+        }
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {

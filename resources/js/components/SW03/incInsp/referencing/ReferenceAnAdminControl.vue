@@ -1,37 +1,34 @@
-<!--File name :ReferenceADocControl.vue-->
-<!--Creation date : 10 May 2022-->
-<!--Update date : 12 Apr 2023-->
-<!--Vue Component used to reference a documentary control in as incoming inspection-->
+<!--File name : ReferenceAnAdminControl.vue-->
+<!--Creation date : 10 Jul 2022-->
+<!--Update date : 10 Jul 2023-->
+<!--Vue Component used to reference a administrative control in as incoming inspection-->
 
 <template>
     <div>
         <div v-if="loaded===false">
             <b-spinner variant="primary"></b-spinner>
         </div>
-        <div v-else class="aspTest">
-            <h2 class="titleForm" v-if="components.length > 0">Aspect Test</h2>
-            <!--Adding to the vue aspTestIDForm by going through the components array with the v-for-->
-            <!--ref="ask_aspTest_data" is used to call the child elements in this component-->
+        <div v-else class="adminControl">
+            <h2 class="titleForm" v-if="components.length > 0">Administrative Control</h2>
+            <!--Adding to the vue adminControlIDForm by going through the components array with the v-for-->
+            <!--ref="ask_adminControl_data" is used to call the child elements in this component-->
             <!--The emitted deleteFile is caught here and call the function getContent -->
-            <AspTestIDForm
-                ref="ask_aspTest_data"
+            <AdminControlIDForm
+                ref="ask_adminControl_data"
                 v-for="(component, key) in components"
                 :key="component.key"
                 :is="component.comp"
                 :id="component.id"
                 :consultMod="isInConsultMod"
                 :modifMod="component.id !== null"
-                :severityLevel="component.aspTest_severityLevel"
-                :controlLevel="component.aspTest_controlLevel"
-                :expectedAspect="component.aspTest_expectedAspect"
-                :name="component.aspTest_name"
-                :sampling="component.aspTest_sampling"
+                :reference="component.reference"
+                :adminControlName="component.adminControlName"
+                :materialCertiSpec="component.materialCertiSpec"
+                :fds="component.fds"
                 :incmgInsp_id="incmgInsp_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
-                :desc="component.aspTest_desc"
-                :specDoc="component.aspTest_specDoc"
-                @deleteAspTest="getContent(key)"
+                @deleteAdminControl="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
@@ -49,19 +46,18 @@
             />
         </div>
     </div>
-
 </template>
 
 <script>
 /*Importation of the other Components who will be used here*/
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import ImportationAlert from '../../../alert/ImportationAlert.vue'
-import AspTestIDForm from "./AspTestIDForm.vue";
+import AdminControlIDForm from "./AdminControlIDForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
-        AspTestIDForm,
+        AdminControlIDForm,
         SaveButtonForm,
         ImportationAlert
 
@@ -69,7 +65,7 @@ export default {
     /*--------Declaration of the different props:--------
         consultMod: If this props is present the form is in consult mode we disable all the field
         modifMod: If this props is present, the form is in modification mode we disable the save button and show update button
-        importedAspTest: All article imported from the database
+        importedAdminControl: All article imported from the database
         article_id: ID of the equipment in which the file will be added
         import_id: ID of the equipment with which article will be imported
     ---------------------------------------------------*/
@@ -82,7 +78,7 @@ export default {
             type: Boolean,
             default: false
         },
-        importedAspTest: {
+        importedAdminControl: {
             type: Array,
             default: null
         },
@@ -117,12 +113,13 @@ export default {
         return {
             components: [],
             uniqueKey: 0,
-            aspTest: this.importedAspTest,
+            adminControl: this.importedAdminControl,
             count: 0,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
             data_article_type: this.articleType,
+            data_incmingInsp_id: this.incmgInsp_id,
             loaded: false
         };
     },
@@ -130,34 +127,23 @@ export default {
         /*Function for adding a new empty file form*/
         addComponent(name) {
             this.components.push({
-                comp: 'AspTestIDForm',
+                comp: 'AdminControlIDForm',
                 key: this.uniqueKey++,
                 id: null,
-                aspTest_sampling: "100%",
-                aspTest_name:name
+                adminControlName: name
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(
-            aspTest_severityLevel,
-            aspTest_controlLevel,
-            aspTest_expectedAspect,
-            aspTest_name,
-            aspTest_sampling,
-            aspTest_desc,
-            aspTest_specDoc,
-            incmgInsp_id, id, className) {
+        addImportedComponent(adminControl_name, adminControl_reference, adminControl_materialCertifSpe, incmgInsp_id, adminControl_FDS, id, className) {
+            console.log("addImportedComponent")
             this.components.push({
-                comp: 'AspTestIDForm',
+                comp: 'AdminControlIDForm',
                 key: this.uniqueKey++,
-                aspTest_severityLevel: aspTest_severityLevel,
-                aspTest_controlLevel: aspTest_controlLevel,
-                aspTest_expectedAspect: aspTest_expectedAspect,
-                aspTest_name: aspTest_name,
-                aspTest_sampling: aspTest_sampling,
-                aspTest_desc: aspTest_desc,
-                aspTest_specDoc: aspTest_specDoc,
+                adminControlName: adminControl_name,
+                reference: adminControl_reference,
+                materialCertiSpec: adminControl_materialCertifSpe,
                 incmgInsp_id: incmgInsp_id,
+                fds: adminControl_FDS,
                 id: id,
                 className: className
             });
@@ -167,31 +153,29 @@ export default {
             this.components.splice(key, 1);
         },
         /*Function for adding to the vue the imported article*/
-        importAspTest() {
-            if (this.aspTest.length === 0 && !this.isInModifMod) {
+        importAdminControl() {
+            console.log("importAdminControl");
+            if (this.adminControl.length === 0 && !this.isInModifMod) {
                 this.loaded = true;
             } else {
-                for (const at of this.aspTest) {
-                    const className = "importedAspTest" + at.id;
+                for (const dc of this.adminControl) {
+                    const className = "importedAdminControl" + dc.id;
                     this.addImportedComponent(
-                        at.aspTest_severityLevel,
-                        at.aspTest_levelOfControl,
-                        at.aspTest_expectedAspect,
-                        at.aspTest_name,
-                        at.aspTest_sampling,
-                        at.aspTest_desc,
-                        at.aspTest_specDoc,
-                        at.incmgInsp_id,
-                        at.id,
+                        dc.adminControl_name,
+                        dc.adminControl_reference,
+                        dc.adminControl_materialCertifSpe,
+                        dc.incmgInsp_id,
+                        dc.adminControl_FDS,
+                        dc.id,
                         className
                     );
                 }
-                this.aspTest = null
+                this.adminControl = null
             }
         },
         /*Function for saving all the data in one time*/
         saveAll(savedAs) {
-            for (const component of this.$refs.ask_aspTest_data) {
+            for (const component of this.$refs.ask_adminControl_data) {
                 /*If the user is in modification mode*/
                 if (this.modifMod == true) {
                     /*If the file doesn't have, an id*/
@@ -220,17 +204,19 @@ export default {
         }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
+            console.log("import_id", this.import_id)
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/aspTest/sendFromIncmgInsp/${id}`; // FIXME
+            const consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
                 .then(response => {
-                    this.aspTest = response.data;
-                    this.importAspTest();
+                    this.adminControl = response.data;
+                    this.importAdminControl();
                     this.loaded = true;
                 })
                 .catch(error => {
                 });
         } else {
+            console.log("else")
             this.loaded = true;
         }
     },
@@ -238,7 +224,7 @@ export default {
     mounted() {
         /*If the user is in consultation or modification mode, dimensions will be added to the vue automatically*/
         /*if (this.consultMod || this.modifMod) {
-            this.importAspTest();
+            this.importAdminControl();
         }*/
     }
 }

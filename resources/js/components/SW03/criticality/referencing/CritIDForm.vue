@@ -89,7 +89,7 @@
                     :Errors="errors.crit_justification"
                 />-->
                 <InputSelectForm
-                    :name="ArticleContact"
+                    :name="crit_artCriticality"
                     :label="'What is the contact of the article with the patient or the user?'"
                     isRequired
                     :options="[
@@ -244,6 +244,11 @@ import SucessAlert from '../../../alert/SuccesAlert.vue'
 import InputSelectForm from "../../../input/InputSelectForm.vue";
 import InputNumberForm from "../../../input/SW03/InputNumberForm.vue";
 import RadioGroupForm from "../../../input/SW03/RadioGroupForm.vue";
+import FuncTestIDForm from "../../incInsp/referencing/FuncTestIDForm.vue";
+import DimTestIDForm from "../../incInsp/referencing/DimTestIDForm.vue";
+import AspTestIDForm from "../../incInsp/referencing/AspTestIDForm.vue";
+import DocControlIDForm from "../../incInsp/referencing/DocControlIDForm.vue";
+import AdminControlIDForm from "../../incInsp/referencing/AdminControlIDForm.vue";
 
 export default {
     /*--------Declaration of the others Components:--------*/
@@ -254,7 +259,7 @@ export default {
         SaveButtonForm,
         DeleteComponentButton,
         SucessAlert,
-        RadioGroupForm
+        RadioGroupForm,
     },
     /*--------Declaration of the different props:--------
         name : File name given by the database we will put this data in the corresponding field as default value
@@ -333,6 +338,7 @@ export default {
             crit_artCriticality: this.artCriticality,
             crit_remarks: this.remarks,
             errors: {},
+            components: [],
             addSucces: false,
             isInConsultMod: this.consultMod,
             loaded: false,
@@ -352,6 +358,7 @@ export default {
             checkedTestRadioAsp: 'aspTestAlpha',
             checkedTestRadioDoc: 'docControlAlpha',
             checkedTestRadioAdm: 'adminControlAlpha',
+            checkedTestsString: '',
         }
     },
     methods: {
@@ -361,14 +368,26 @@ export default {
         @param lifesheet_created */
         addCriticality(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
+                if (this.checkedTests!=null && this.checkedTests.length === 0) {
+                    this.checkedTests=["nothing"];
+                }
+                this.$emit('checkedTests', this.checkedTests);
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
                 console.log("addCriticality");
                 console.log("crit_artCriticality : " + this.crit_artCriticality);
-                console.log("crit_artMaterialContactCriticality : " + this.crit_artMaterialContactCriticality);
-                console.log("crit_artMaterialFunctionCriticality : " + this.crit_artMaterialFunctionCriticality);
-                console.log("crit_artProcessCriticality : " + this.crit_artProcessCriticality);
+                console.log("crit_performanceMedicalDevice : " + this.crit_performanceMedicalDevice)
+                console.log("crit_checkedTests : " + this.checkedTests)
+                console.log("crit_checkedTestRadioDim : " + this.checkedTestRadioDim)
+                console.log("crit_checkedTestRadioFunc : " + this.checkedTestRadioFunc)
+                console.log("crit_checkedTestRadioAsp : " + this.checkedTestRadioAsp)
+                console.log("crit_checkedTestRadioDoc : " + this.checkedTestRadioDoc)
+                console.log("crit_checkedTestRadioAdm : " + this.checkedTestRadioAdm)
                 console.log("crit_remarks : " + this.crit_remarks);
+                this.checkedTests.forEach((test) => {
+                    this.checkedTestsString += test + ',';
+                });
+                console.log("crit_checkedTestsString : " + this.checkedTestsString);
                 axios.post('/artFam/criticality/verif', {
                     crit_artCriticality: this.crit_artCriticality,
                     crit_remarks: this.crit_remarks,
@@ -376,7 +395,7 @@ export default {
                     crit_articleType: this.data_article_type,
                     crit_articleID: this.data_article_id,
                     crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
-                    crit_checkedTests: this.checkedTests,
+                    crit_checkedTests: this.checkedTestsString,
                     crit_checkedTestRadioDim: this.checkedTestRadioDim,
                     crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
                     crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
@@ -386,6 +405,7 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
+                    console.log("verif passed")
                     /*If all the verifications passed, a new post this time to add the file in the database
                     The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
                     axios.post('/artFam/criticality/add', {
@@ -395,7 +415,7 @@ export default {
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
                         crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
-                        crit_checkedTests: this.checkedTests,
+                        crit_checkedTests: this.checkedTestsString,
                         crit_checkedTestRadioDim: this.checkedTestRadioDim,
                         crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
                         crit_checkedTestRadioAsp: this.checkedTestRadioAsp,

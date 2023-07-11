@@ -343,6 +343,16 @@ class InformationController extends Controller
     }
 
      /**
+     * Function call by InfoManagement.vue with the route : /info/send/adminControl(get)
+     * Get all the informations (=the dictionnary) about an adminControl in the data base and send them to the vue
+     * @return \Illuminate\Http\Response
+     */
+    public function send_informations_adminControl(){
+        $informations=Information::where('info_set', '=', 'adminControl')->get() ;
+        return response()->json($informations) ;
+    }
+
+     /**
      * Function call by InfoManagement.vue with the route : /info/send/compTest(get)
      * Get all the informations (=the dictionnary) about an compTest in the data base and send them to the vue
      * @return \Illuminate\Http\Response

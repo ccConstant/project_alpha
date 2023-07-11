@@ -33,7 +33,7 @@
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another file button appear -->
-                <button v-on:click="addComponent">Add</button>
+                <button v-on:click="addComponent('')">Add</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
             </div>
             <SaveButtonForm

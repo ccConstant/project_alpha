@@ -28,6 +28,7 @@
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
                             </div>
@@ -49,6 +50,7 @@
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
                             </div>
@@ -69,6 +71,7 @@
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
                             </div>
@@ -90,10 +93,31 @@
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
                             </div>
 
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingAspTest">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
+                                    Administrative Test
+                                </button>
+                            </h2>
+                            <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
+                                <div class="accordion-body">
+                                    <ReferenceAnAdminControl
+                                        :articleType="article_type"
+                                        :article_id="article_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
+                                        :incmgInsp_id="incmgInsp_id"
+                                        :consultMod="this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <!-- CompTest -->
                         <div class="accordion-item" v-if="article_type === 'cons'">
@@ -111,6 +135,7 @@
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
                             </div>
@@ -133,6 +158,7 @@ import ReferenceAnAspTest from "./ReferenceAnAspTest.vue";
 import ReferenceAFuncTest from "./ReferenceAFuncTest.vue";
 import ReferenceADimTest from "./ReferenceADimTest.vue";
 import ReferenceACompTest from "./ReferenceACompTest.vue";
+import ReferenceAnAdminControl from "./ReferenceAnAdminControl.vue";
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
@@ -141,6 +167,7 @@ export default {
         ReferenceAFuncTest,
         ReferenceAnAspTest,
         ReferenceADocControl,
+        ReferenceAnAdminControl,
         InputTextForm,
         SaveButtonForm,
         DeleteComponentButton,
@@ -189,7 +216,11 @@ export default {
         },
         article_type: {
             type: String
-        }
+        },
+        checkedTest: {
+            type: Array,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -209,6 +240,7 @@ export default {
             addSucces: false,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
+            data_checkedTest: this.checkedTest,
             loaded: false,
             infos_incmgInsp: [],
             rawFam_id: null,
@@ -321,6 +353,9 @@ export default {
         }
     },
     created() {
+        if (this.data_checkedTest!=null && this.data_checkedTest.includes('docControl') || this.data_checkedTest.includes('dimTest') || this.data_checkedTest.includes('funcTest') || this.data_checkedTest.includes('aspTest') || this.data_checkedTest.includes('compTest') || this.data_checkedTest.includes('adminControl')) {
+            this.addIncmgInsp() ;
+        }
         axios.get('/info/send/IncmgInsp')
             .then(response => {
                 this.infos_incmgInsp = response.data;
