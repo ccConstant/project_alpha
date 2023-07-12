@@ -189,7 +189,7 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
-                axios.post('/purSpe/verif', {
+                axios.post('/artFam/purSpe/verif', {
                     purSpe_validate: savedAs,
                     purSpe_supplier_id: this.purSpe_supplier_id,
                     purSpe_supplier_ref: this.purSpe_supplier_ref,
@@ -198,7 +198,7 @@ export default {
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
                         this.errors = {};
-                        const consultUrl = (id) => `/purSpe/add/${id}`;
+                        const consultUrl = (id) => `/artFam/purSpe/add/${id}`;
                         axios.post(consultUrl(id), {
                             purSpe_validate: savedAs,
                             artFam_type: this.artFam_type.toUpperCase(),
@@ -226,7 +226,7 @@ export default {
         updatePurchaseSpecification(savedAs, reason, lifesheet_created) {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
-            axios.post('/purSpe/verif', {
+            axios.post('/artFam/purSpe/verif', {
                 purSpe_validate: savedAs,
                 purSpe_supplier_id: this.purSpe_supplier_id,
                 purSpe_supplier_ref: this.purSpe_supplier_ref,
@@ -236,7 +236,7 @@ export default {
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the file who will be updated*/
-                    axios.post('/purSpe/update/' + this.artFam_type + '/' + this.purSpe_id, {
+                    axios.post('/artFam/purSpe/update/' + this.artFam_type + '/' + this.purSpe_id, {
                         purSpe_validate: savedAs,
                         purSpe_supplier_id: this.purSpe_supplier_id,
                         purSpe_supplier_ref: this.purSpe_supplier_ref,

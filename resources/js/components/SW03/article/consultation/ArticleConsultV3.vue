@@ -1196,7 +1196,7 @@ export default {
                 this.stoConds = response.data;
             }).catch(error => {
         });
-        axios.get('/purSpe/send/' + this.articleType + '/' + this.articleId)
+        axios.get('/artFam/purSpe/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.purSpes = response.data;
                 this.loaded = true;
