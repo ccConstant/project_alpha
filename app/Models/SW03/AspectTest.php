@@ -20,7 +20,7 @@ class AspectTest extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['purSpe_id','aspTest_severityLevel', 'aspTest_levelOfControl', 'aspTest_expectedAspect', 'incmgInsp_id', 'aspTest_name', 'aspTest_sampling', 'aspTest_desc', 'aspTest_specDoc'];
+    protected $fillable = ['compSubFam_id', 'consSubFam_id','rawSubFam_id','compFam_id','consFam_id', 'rawFam_id','aspTest_severityLevel', 'aspTest_levelOfControl', 'aspTest_expectedAspect', 'incmgInsp_id', 'aspTest_name', 'aspTest_sampling', 'aspTest_desc', 'aspTest_specDoc'];
 
     //Define the relation between an aspectTest and its inspection: an aspectTest has only one inspection
     public function incomingInspection(){

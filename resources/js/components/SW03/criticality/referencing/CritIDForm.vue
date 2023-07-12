@@ -446,10 +446,7 @@ export default {
                 }else{
                     this.docControl_name='Test required to ensure performance of the medical device';
                 }
-                console.log("critIdForm")
-                console.log(this.docControl_name)
                 this.$emit('docControl_name', this.docControl_name);
-                console.log(this.checkedTestsAlpha)
                 this.$emit('checkedTestsAlpha', this.checkedTestsAlpha);
                 this.$emit('checkedTestsSupplier', this.checkedTestsSupplier);
                 /*The First post to verify if all the fields are filled correctly

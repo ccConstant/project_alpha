@@ -26,9 +26,9 @@
                             <ReferenceADocControl
                                 :articleType="data_art_type"
                                 :article_id="data_art_id"
+                                :articleSubFam_id="data_artSubFam_id"
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                :purSpe_id="purSpe_id"
                                 :docControl_name="data_docControlName"
                             />
                         </div>
@@ -52,7 +52,7 @@
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                :purSpe_id="purSpe_id"
+                                :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                :purSpe_id="purSpe_id"
+                                :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                :purSpe_id="purSpe_id"
+                                :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                :purSpe_id="purSpe_id"
+                                :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                :purSpe_id="purSpe_id"
+                                :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
                     </div>

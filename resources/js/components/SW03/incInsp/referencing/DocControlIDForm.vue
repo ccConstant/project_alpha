@@ -131,16 +131,16 @@ export default {
             type: Number,
             default: null
         },
-        purSpe_id:{
-            type: Number,
-            default: null
-        },
         articleID: {
             type: Number,
             default: null
         },
         articleType: {
             type: String,
+            default: null
+        },
+        articleSubFam_id: {
+            type: Number,
             default: null
         },
     },
@@ -159,51 +159,63 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
-            data_purSpe_id: this.purSpe_id,
+            data_subFam_id: this.articleSubFam_id,
             info_docControl: []
         }
     },
     methods: {
         addDocControl(savedAs, reason, lifesheet_created) {
-            if (!this.addSucces) {
-                axios.post('/incmgInsp/docControl/verif', {
+            if (this.data_article_id!=null) {
+                //link to article family
+            }else{
+                if (this.data_subFam_id!=null) {
+                    //link to article sub family
+                }else{
+                    if (this.data_incmgInsp_id!=null) {
+                        //link to incoming inspection
+                    }
+                }
+            }
+            axios.post('/incmgInsp/docControl/verif', {
+                docControl_articleType: this.data_article_type,
+                docControl_reference: this.docControl_reference,
+                docControl_name: this.docControl_name,
+                docControl_materialCertifSpe: this.docControl_materialCertiSpec,
+                docControl_FDS: this.docControl_fds,
+                incmgInsp_id: this.data_incmgInsp_id,
+                article_id: this.data_article_id,
+                subFam_id : this.data_subFam_id,
+                reason: 'add',
+                id: this.docControl_id,
+                article_id: this.data_article_id,
+            })
+            .then(response => {
+                this.errors = {};
+                axios.post('/incmgInsp/docControl/add', {
                     docControl_articleType: this.data_article_type,
                     docControl_reference: this.docControl_reference,
                     docControl_name: this.docControl_name,
                     docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                     docControl_FDS: this.docControl_fds,
                     incmgInsp_id: this.data_incmgInsp_id,
-                    purSpe_id: this.data_purSpe_id,
+                    article_type: this.data_article_type,
+                    article_id: this.data_article_id,
+                    subFam_id : this.data_subFam_id,
                     reason: 'add',
                     id: this.docControl_id,
                     article_id: this.data_article_id,
                 })
                 .then(response => {
-                    this.errors = {};
-                    axios.post('/incmgInsp/docControl/add', {
-                        docControl_articleType: this.data_article_type,
-                        docControl_reference: this.docControl_reference,
-                        docControl_name: this.docControl_name,
-                        docControl_materialCertifSpe: this.docControl_materialCertiSpec,
-                        docControl_FDS: this.docControl_fds,
-                        incmgInsp_id: this.data_incmgInsp_id,
-                        purSpe_id: this.data_purSpe_id,
-                        reason: 'add',
-                        id: this.docControl_id,
-                        article_id: this.data_article_id,
-                    })
-                    .then(response => {
-                        this.$refs.sucessAlert.showAlert(`Documentary control added successfully`);
-                        this.isInConsultedMod = true;
-                        this.addSucces = true
+                    this.$refs.sucessAlert.showAlert(`Documentary control added successfully`);
+                    this.isInConsultedMod = true;
+                    this.addSucces = true
 
-                    })
-                    .catch(error => {
-                        this.errors = error.response.data.errors;
-                    });
                 })
-                .catch(error => this.errors = error.response.data.errors);
-            }
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
+            })
+            .catch(error => this.errors = error.response.data.errors);
         },
         updateDocControl(savedAs, reason, artSheet_created) {
             axios.post('/incmgInsp/docControl/verif', {

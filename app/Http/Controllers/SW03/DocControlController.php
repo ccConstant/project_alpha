@@ -73,51 +73,6 @@ class DocControlController extends Controller
                 ]
             );
         }
-        if ($request->purSpe_id !== null) {
-            $purSpe = null;
-            if ($request->docControl_articleType === 'comp') {
-                $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
-            } else if ($request->docControl_articleType === 'raw') {
-                $purSpe = PurchaseSpecification::all()->where('rawFam_id', '==', $request->article_id);
-            } else if ($request->docControl_articleType === 'cons') {
-                $purSpe = PurchaseSpecification::all()->where('consFam_id', '==', $request->article_id);
-            }
-            $val = [];
-            foreach ($purSpe as $pur) {
-                array_push($val, $pur->id);
-            }
-            $find = DocumentaryControl::all()->where('docControl_name', '==', $request->docControl_name)
-                ->whereIn('purSpe_id', $val)
-                ->where('id', '<>', $request->id)
-                ->count();
-            if ($find !== 0) {
-                return response()->json([
-                    'docControl_name' => 'This aspect test already exists',
-                ], 429);
-            }
-        }else{
-            $insp = null;
-            if ($request->docControl_articleType === 'comp') {
-                $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
-            } else if ($request->docControl_articleType === 'raw') {
-                $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
-            } else if ($request->docControl_articleType === 'cons') {
-                $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
-            }
-            $val = [];
-            foreach ($insp as $in) {
-                array_push($val, $in->id);
-            }
-            $find = DocumentaryControl::all()->where('docControl_name', '==', $request->docControl_name)
-                ->whereIn('incmgInsp_id', $val)
-                ->where('id', '<>', $request->id)
-                ->count();
-            if ($find !== 0) {
-                return response()->json([
-                    'docControl_name' => 'This documentary control already exists',
-                ], 429);
-            }
-        }
     }
 
     /**
@@ -126,12 +81,43 @@ class DocControlController extends Controller
      * @return \Illuminate\Http\Response : id of the new doc control
      */
     public function add_docControl(Request $request) {
+        $cons=null;
+        $raw=null;
+        $comp=null;
+        if ($request->article_id!=null){
+            if ($request->article_type=='cons'){
+                $cons=$request->article_id;
+            }
+            else if ($request->article_type=='raw'){
+                $raw=$request->article_id;
+            }
+            else if ($request->article_type=='comp'){
+                $comp=$request->article_id;
+            }
+        }else{
+            if ($request->incmgInsp_id==null){
+                if ($request->article_type=='cons'){
+                    $subCons=$request->subFam_id;
+                }
+                else if ($request->article_type=='raw'){
+                    $subRaw=$request->subFam_id;
+                }
+                else if ($request->article_type=='comp'){
+                    $subComp=$request->subFam_id;
+                }
+            }
+        }
         $docControl = DocumentaryControl::create([
             'docControl_name' => $request->docControl_name,
             'docControl_reference' => $request->docControl_reference,
             'docControl_materialCertifSpe' => $request->docControl_materialCertifSpe,
             'incmgInsp_id' => $request->incmgInsp_id,
-            'purSpe_id' => $request->purSpe_id,
+            'rawFam_id' => $raw,
+            'consFam_id' => $cons,
+            'compFam_id' => $comp,
+            'rawSubFam_id' => $subRaw,
+            'consSubFam_id' => $subCons,
+            'compSubFam_id' => $subComp,
             'docControl_FDS' => $request->docControl_FDS,
         ]);
         return response()->json($docControl);

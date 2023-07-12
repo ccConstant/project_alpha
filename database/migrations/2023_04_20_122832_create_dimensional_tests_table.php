@@ -30,8 +30,20 @@ class CreateDimensionalTestsTable extends Migration
             $table->double('dimTest_expectedValue');
             $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
-            $table->unsignedBigInteger('purSpe_id')->nullable();
-            $table->foreign('purSpe_id')->references('id')->on('purchase_specifications');
+            
+            $table->unsignedBigInteger('compSubFam_id') ->nullable();
+            $table->foreign('compSubFam_id')->references('id')->on('comp_sub_families') ;
+            $table->unsignedBigInteger('consSubFam_id') ->nullable();
+            $table->foreign('consSubFam_id')->references('id')->on('cons_sub_families') ;
+            $table->unsignedBigInteger('rawSubFam_id') ->nullable();
+            $table->foreign('rawSubFam_id')->references('id')->on('raw_sub_families') ;
+            $table->unsignedBigInteger('compFam_id') ->nullable();
+            $table->foreign('compFam_id')->references('id')->on('comp_families') ;
+            $table->unsignedBigInteger('consFam_id') ->nullable();
+            $table->foreign('consFam_id')->references('id')->on('cons_families') ;
+            $table->unsignedBigInteger('rawFam_id') ->nullable();
+            $table->foreign('rawFam_id')->references('id')->on('raw_families') ;
+            
             $table->string('dimTest_name');
             $table->string('dimTest_unitValue');
             $table->enum('dimTest_sampling',  ['Statistics', '100%', 'Other']);

@@ -195,7 +195,7 @@ export default {
                         dt.id,
                         className
                     );
-                    this.createTest(dt.crit_checkedTests);
+
                 }
                 this.criticality = null
             }

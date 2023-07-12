@@ -165,15 +165,9 @@ export default {
     },
     methods: {
         addAdminControl(savedAs, reason, lifesheet_created) {
-            if (!this.addSucces) {
-                console.log("adminControl_articleType: " + this.data_article_type)
-                console.log("adminControl_reference: " + this.adminControl_reference)
-                console.log("adminControl_name: " + this.adminControl_name)
-                console.log("adminControl_materialCertifSpe: " + this.adminControl_materialCertiSpec)
-                console.log("adminControl_FDS: " + this.adminControl_fds)
-                console.log("incmgInsp_id: " + this.data_incmgInsp_id)
-                console.log("article_id: " + this.data_article_id)
-                console.log("purSpeId:"+this.purSpe_id)
+            if (this.articleID !== null) {
+
+            }else{
                 axios.post('/incmgInsp/adminControl/verif', {
                     adminControl_articleType: this.data_article_type,
                     adminControl_reference: this.adminControl_reference,

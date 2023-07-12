@@ -19,8 +19,10 @@ class AdminControl extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['purSpe_id','adminControl_name', 'adminControl_reference', 'adminControl_materialCertifSpe', 'incmgInsp_id', 'adminControl_FDS'];
+            protected $fillable = ['compSubFam_id', 'consSubFam_id','rawSubFam_id','compFam_id','consFam_id', 'rawFam_id','adminControl_name', 'adminControl_reference', 'adminControl_materialCertifSpe', 'incmgInsp_id', 'adminControl_FDS'];
 
+   
+    
     //Define the relation between a adminControl and its inspection: a adminControl has only one inspection
     public function incomingInspection(){
         return $this->belongsTo(IncomingInspection::class, 'incmgInsp_id') ;

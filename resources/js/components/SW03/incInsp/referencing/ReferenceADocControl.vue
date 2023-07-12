@@ -26,7 +26,7 @@
                 :materialCertiSpec="component.materialCertiSpec"
                 :fds="component.fds"
                 :incmgInsp_id="incmgInsp_id"
-                :purSpe_id="purSpe_id"
+                :articleSubFam_id="data_sub_fam_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 @deleteDocControl="getContent(key)"
@@ -97,10 +97,6 @@ export default {
             type: Number,
             default: null
         },
-        purSpe_id: {
-            type: Number,
-            default: null
-        },
         docControl_name: {
             type: String,
             default: null
@@ -108,7 +104,11 @@ export default {
         checkedTest: {
             type: Array,
             default: null
-        }
+        },
+        articleSubFam_id: {
+            type: Number,
+            default: null
+        },
     },
     /*--------Declaration of the different returned data:--------
         components: Array in which will be added the data of a component
@@ -129,6 +129,7 @@ export default {
             data_article_id: this.article_id,
             data_article_type: this.articleType,
             data_incmingInsp_id: this.incmgInsp_id,
+            data_sub_fam_id: this.articleSubFam_id,
             loaded: false
         };
     },

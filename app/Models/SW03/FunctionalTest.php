@@ -20,7 +20,7 @@ class FunctionalTest extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['purSpe_id','funcTest_severityLevel', 'funcTest_levelOfControl', 'funcTest_expectedMethod', 'funcTest_expectedValue', 'incmgInsp_id', 'funcTest_name', 'funcTest_unitValue', 'funcTest_desc', 'funcTest_sampling', 'funcTest_specDoc'];
+    protected $fillable = ['compSubFam_id', 'consSubFam_id','rawSubFam_id','compFam_id','consFam_id', 'rawFam_id','funcTest_severityLevel', 'funcTest_levelOfControl', 'funcTest_expectedMethod', 'funcTest_expectedValue', 'incmgInsp_id', 'funcTest_name', 'funcTest_unitValue', 'funcTest_desc', 'funcTest_sampling', 'funcTest_specDoc'];
 
     //Define the relation between a functionalTest and its inspection: a functionalTest has only one inspection
     public function incomingInspection(){
