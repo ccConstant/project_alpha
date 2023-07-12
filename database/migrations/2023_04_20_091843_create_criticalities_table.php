@@ -31,12 +31,21 @@ class CreateCriticalitiesTable extends Migration
             $table->date('crit_signatureDate') -> nullable() ;
             $table->enum('crit_validate',  ['drafted', 'to_be_validated', 'validated']) ;
             $table->string('crit_remarks') ->nullable();
+
             $table->unsignedBigInteger('compFam_id') ->nullable();
             $table->foreign('compFam_id')->references('id')->on('comp_families') ;
             $table->unsignedBigInteger('consFam_id') ->nullable();
             $table->foreign('consFam_id')->references('id')->on('cons_families') ;
             $table->unsignedBigInteger('rawFam_id') ->nullable();
             $table->foreign('rawFam_id')->references('id')->on('raw_families') ;
+
+            $table->unsignedBigInteger('compSubFam_id') ->nullable();
+            $table->foreign('compSubFam_id')->references('id')->on('comp_sub_families') ;
+            $table->unsignedBigInteger('consSubFam_id') ->nullable();
+            $table->foreign('consSubFam_id')->references('id')->on('cons_sub_families') ;
+            $table->unsignedBigInteger('rawSubFam_id') ->nullable();
+            $table->foreign('rawSubFam_id')->references('id')->on('raw_sub_families') ;
+
             $table->enum('crit_artCriticality', ['No direct contact', 'No contact but integrated in invasive Medical device','Surface contact', 'Invasive/Implantable'])->nullable();
             $table->boolean('crit_performanceMedicalDevice')->nullable();
             $table->string('crit_checkedTests')->nullable();

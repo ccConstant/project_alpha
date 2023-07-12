@@ -331,6 +331,9 @@ export default {
             type: String,
             default: 'dimTestAlpha',
         },
+        artSubFam_id: {
+            type: Number
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -355,6 +358,7 @@ export default {
             loaded: false,
             isInModifMod: this.modifMod,
             data_article_id: this.articleID,
+            data_article_subFam_id: this.artSubFam_id,
             data_article_type: this.articleType.toLowerCase(),
             crit_validate: this.validate,
             infos_crit: null,
@@ -435,42 +439,13 @@ export default {
                 this.$emit('checkedTestsSupplier', this.checkedTestsSupplier);
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
-                console.log("addCriticality");
-                console.log("crit_artCriticality : " + this.crit_artCriticality);
-                console.log("crit_performanceMedicalDevice : " + this.crit_performanceMedicalDevice)
-                console.log("crit_checkedTests : " + this.checkedTests)
-                console.log("crit_checkedTestRadioDim : " + this.checkedTestRadioDim)
-                console.log("crit_checkedTestRadioFunc : " + this.checkedTestRadioFunc)
-                console.log("crit_checkedTestRadioAsp : " + this.checkedTestRadioAsp)
-                console.log("crit_checkedTestRadioDoc : " + this.checkedTestRadioDoc)
-                console.log("crit_checkedTestRadioAdm : " + this.checkedTestRadioAdm)
-                console.log("crit_remarks : " + this.crit_remarks);
                 this.checkedTests.forEach((test) => {
                     this.checkedTestsString += test + ',';
                 });
                 console.log("crit_checkedTestsString : " + this.checkedTestsString);
-                axios.post('/artFam/criticality/verif', {
-                    crit_artCriticality: this.crit_artCriticality,
-                    crit_remarks: this.crit_remarks,
-                    crit_validate: savedAs,
-                    crit_articleType: this.data_article_type,
-                    crit_articleID: this.data_article_id,
-                    crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
-                    crit_checkedTests: this.checkedTestsString,
-                    crit_checkedTestRadioDim: this.checkedTestRadioDim,
-                    crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
-                    crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
-                    crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
-                    crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
-
-                })
-                .then(response => {
-                    this.errors = {};
-                    console.log("verif passed")
-                    /*If all the verifications passed, a new post this time to add the file in the database
-                    The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
-                    axios.post('/artFam/criticality/add', {
-                       crit_artCriticality: this.crit_artCriticality,
+                if (this.articleID !== null) {
+                    axios.post('/artFam/criticality/verif', {
+                        crit_artCriticality: this.crit_artCriticality,
                         crit_remarks: this.crit_remarks,
                         crit_validate: savedAs,
                         crit_articleType: this.data_article_type,
@@ -483,35 +458,105 @@ export default {
                         crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
                         crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                     }).then(response => {
-                        this.$snotify.success(`Criticality added successfully and saved as ${savedAs}`);
-                        this.isInConsultMod = true;
-                        this.addSucces = true
+                        this.errors = {};
+                        console.log("verif passed")
+                        /*If all the verifications passed, a new post this time to add the file in the database
+                        The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                        axios.post('/artFam/criticality/add', {
+                            crit_artCriticality: this.crit_artCriticality,
+                            crit_remarks: this.crit_remarks,
+                            crit_validate: savedAs,
+                            crit_articleType: this.data_article_type,
+                            crit_articleID: this.data_article_id,
+                            crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                            crit_checkedTests: this.checkedTestsString,
+                            crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                            crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                            crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                            crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                            crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
+                        }).then(response => {
+                            this.$snotify.success(`Criticality added successfully and saved as ${savedAs}`);
+                            this.isInConsultMod = true;
+                            this.addSucces = true
+                        }).catch(error => {
+                            this.errors = error.response.data.errors;
+                            console.log(error.response.data);
+                        });
                     }).catch(error => {
                         this.errors = error.response.data.errors;
                         console.log(error.response.data);
                     });
-                }).catch(error => {
-                    this.errors = error.response.data.errors;
-                    console.log(error.response.data);
-                });
+                } else {
+                    console.log("addCriticality/subFamily");
+                    console.log("data_artType: " + this.data_article_type);
+                    console.log("data_artID: " + this.data_article_id);
+                    console.log("data_artSubFamID: " + this.data_article_subFam_id);
+                    axios.post('/artFam/criticality/verif', {
+                        crit_artCriticality: this.crit_artCriticality,
+                        crit_remarks: this.crit_remarks,
+                        crit_validate: savedAs,
+                        crit_articleType: this.data_article_type,
+                        crit_articleID: this.data_article_id,
+                        crit_articleSubFamID: this.data_article_subFam_id,
+                        crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                        crit_checkedTests: this.checkedTestsString,
+                        crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                        crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                        crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                        crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                        crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
+                    }).then(response => {
+                        this.errors = {};
+                        console.log("verif passed")
+                        /*If all the verifications passed, a new post this time to add the file in the database
+                        The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
+                        axios.post('/artSubFam/criticality/add', {
+                            crit_artCriticality: this.crit_artCriticality,
+                            crit_remarks: this.crit_remarks,
+                            crit_validate: savedAs,
+                            crit_articleType: this.data_article_type,
+                            crit_articleID: this.data_article_id,
+                            crit_articleSubFamID: this.data_article_subFam_id,
+                            crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                            crit_checkedTests: this.checkedTestsString,
+                            crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                            crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                            crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                            crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                            crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
+                        }).then(response => {
+                            this.$snotify.success(`Criticality added successfully and saved as ${savedAs}`);
+                            this.isInConsultMod = true;
+                            this.addSucces = true
+                        }).catch(error => {
+                            this.errors = error.response.data.errors;
+                            console.log(error.response.data);
+                        });
+                    }).catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
+                    });
+                }
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updateCriticality(savedAs, reason, lifesheet_created) { // TODO: update
-            axios.post('/artFam/criticality/verif', {
-                crit_artCriticality: this.crit_artCriticality,
-                crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
-                crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
-                crit_artProcessCriticality: this.crit_artProcessCriticality,
-                crit_remarks: this.crit_remarks,
-                crit_validate: savedAs,
-                crit_articleType: this.data_article_type,
-                crit_articleID: this.data_article_id,
-                crit_justification: this.crit_justification,
-            }).then(response => {
+        updateCriticality(savedAs, reason, lifesheet_created) {
+            if (this.articleID !== null) {
+                axios.post('/artFam/criticality/verif', {
+                    crit_artCriticality: this.crit_artCriticality,
+                    crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
+                    crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
+                    crit_artProcessCriticality: this.crit_artProcessCriticality,
+                    crit_remarks: this.crit_remarks,
+                    crit_validate: savedAs,
+                    crit_articleType: this.data_article_type,
+                    crit_articleID: this.data_article_id,
+                    crit_justification: this.crit_justification,
+                }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
@@ -528,25 +573,76 @@ export default {
                         crit_articleID: this.data_article_id,
                         crit_justification: this.crit_justification,
                     }).then(response => {
-                            this.crit_validate = savedAs;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post('/artFam/history/add/' + this.data_article_type.toLowerCase() + '/' + this.data_article_id, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.sucessAlert.showAlert(`Criticality updated successfully and saved as ${savedAs}`);
-                            this.isInConsultMod = true;
-                        }).catch(error => {
+                        this.crit_validate = savedAs;
+                        /*We test if a life sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                        if (lifesheet_created == true) {
+                            axios.post('/artFam/history/add/' + this.data_article_type.toLowerCase() + '/' + this.data_article_id, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
+                        this.$refs.sucessAlert.showAlert(`Criticality updated successfully and saved as ${savedAs}`);
+                        this.isInConsultMod = true;
+                    }).catch(error => {
                         this.errors = error.response.data.errors;
                         console.log(error.response.data);
-                        });
+                    });
                 }).catch(error => {
-                this.errors = error.response.data.errors;
-                console.log(error.response.data);
-            });
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                });
+            } else {
+                console.log("update subfam")
+                axios.post('/artFam/criticality/verif', {
+                    crit_artCriticality: this.crit_artCriticality,
+                    crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
+                    crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
+                    crit_artProcessCriticality: this.crit_artProcessCriticality,
+                    crit_remarks: this.crit_remarks,
+                    crit_validate: savedAs,
+                    crit_articleType: this.data_article_type,
+                    crit_articleID: this.data_article_id,
+                    crit_articleSubFamID: this.data_article_subFam_id,
+                    crit_justification: this.crit_justification,
+                }).then(response => {
+                    this.errors = {};
+                    /*If all the verifications passed, a new post this time to add the file in the database
+                    Type, name, value, unit, validate option and id of the equipment is sent to the controller
+                    In the post url the id correspond to the id of the file who will be updated*/
+                    const consultUrl = (id) => `/artSubFam/criticality/update/${id}`;
+                    axios.post(consultUrl(this.crit_id), {
+                        crit_artCriticality: this.crit_artCriticality,
+                        crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
+                        crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
+                        crit_artProcessCriticality: this.crit_artProcessCriticality,
+                        crit_remarks: this.crit_remarks,
+                        crit_validate: savedAs,
+                        crit_articleType: this.data_article_type,
+                        crit_articleID: this.data_article_id,
+                        crit_articleSubFamID: this.data_article_subFam_id,
+                        crit_justification: this.crit_justification,
+                    }).then(response => {
+                        this.crit_validate = savedAs;
+                        /*We test if a life sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                        if (lifesheet_created == true) {
+                            axios.post('/artSubFam/history/add/' + this.data_article_type.toLowerCase() + '/' + this.data_article_id, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
+                        this.$refs.sucessAlert.showAlert(`Criticality updated successfully and saved as ${savedAs}`);
+                        this.isInConsultMod = true;
+                    }).catch(error => {
+                        this.errors = error.response.data.errors;
+                        console.log(error.response.data);
+                    });
+                }).catch(error => {
+                    this.errors = error.response.data.errors;
+                    console.log(error.response.data);
+                });
+            }
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

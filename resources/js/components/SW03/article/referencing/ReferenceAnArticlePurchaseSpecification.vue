@@ -170,7 +170,7 @@
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->
-                <button v-on:click="addComponent">Add Purchase Specification</button>
+                <button v-on:click="addComponent">Add Supplier Specification</button>
             </div>
 <!--            <SaveButtonForm
                 v-if="components.length>1"

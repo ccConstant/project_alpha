@@ -221,6 +221,9 @@ export default {
             type: Array,
             default: null
         },
+        artSubFam_id: {
+            type: Number
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically

@@ -1155,6 +1155,11 @@ Route::post('/artFam/criticality/update/{id}', [CriticalityController::class, 'u
 Route::get('/artFam/criticality/send/{id}', [CriticalityController::class, 'send_criticality']);
 Route::get('/artFam/criticality/send/{type}/{id}', [CriticalityController::class, 'send_criticalities']);
 
+Route::post('/artSubFam/criticality/add', [CriticalityController::class, 'add_criticality_subFam']);
+Route::post('/artSubFam/criticality/update/{id}', [CriticalityController::class, 'update_criticality_subFam']);
+Route::get('/artSubFam/criticality/send/{id}', [CriticalityController::class, 'send_criticality_subFam']);
+Route::get('/artSubFam/criticality/send/{type}/{id}', [CriticalityController::class, 'send_criticalities_subFam']);
+
 
 //purchase Specification
 Route::post('/artFam/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);

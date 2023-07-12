@@ -21,6 +21,7 @@
                 ref="ask_crit_data"
                 :artCriticality="component.crit_artCriticality"
                 :articleID="data_article_id"
+                :artSubFam_id="data_artSubFam_id"
                 :articleType="data_article_type"
                 :consultMod="isInConsultMod"
                 :data_checkedTestRadioAdm="component.crit_checkedTestRadioAdm"
@@ -37,7 +38,7 @@
                 @deleteCrit="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
-            <div v-if="!this.consultMod">
+            <div v-if="!this.consultMod && this.components.length === 0">
                 <!--Add another file button appear -->
                 <button v-on:click="addComponent">Add Criticality</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
@@ -208,7 +209,8 @@ export default {
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            if (this.data_article_id !== null) {
+            if (this.data_article_id !== null && this.data_article_id !== undefined) {
+                console.log("article_id :" + this.data_article_id)
                 axios.get('/artFam/criticality/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
                         this.criticality = response.data;
@@ -217,6 +219,7 @@ export default {
                     }).catch(error => {
                 });
             } else {
+                console.log("articleSubFam_id :" + this.data_artSubFam_id)
                 axios.get('/artSubFam/criticality/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
                         this.criticality = response.data;

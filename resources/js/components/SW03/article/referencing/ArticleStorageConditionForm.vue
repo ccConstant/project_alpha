@@ -99,7 +99,10 @@ export default {
         },
         art_type:{
             type: String
-        }
+        },
+        artSubFam_id: {
+            type: Number
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -118,6 +121,7 @@ export default {
             storageCondition_validate: this.validate,
             storageCondition_id: this.id,
             art_id_add: this.art_id,
+            artSubFam_id_add: this.artSubFam_id,
             artFam_type:this.art_type,
             art_id_update: this.$route.params.id,
             errors: {},
