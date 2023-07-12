@@ -100,6 +100,14 @@ export default {
         purSpe_id: {
             type: Number,
             default: null
+        },
+        docControl_name: {
+            type: String,
+            default: null
+        },
+        checkedTest: {
+            type: Array,
+            default: null
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -126,11 +134,13 @@ export default {
     },
     methods: {
         /*Function for adding a new empty file form*/
-        addComponent() {
+        addComponent(name) {
             this.components.push({
                 comp: 'DocControlIDForm',
                 key: this.uniqueKey++,
                 id: null,
+                docControlName: name,
+
             });
         },
         /*Function for adding an imported file form with his data*/
@@ -197,7 +207,9 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("coucou")
+        if (this.checkedTest!=null && this.checkedTest.includes('docControl') || this.docControl_name !== "Test required to ensure performance of the medical device") {
+            this.addComponent(this.docControl_name);
+        }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/

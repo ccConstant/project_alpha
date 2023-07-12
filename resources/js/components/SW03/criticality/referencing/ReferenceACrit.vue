@@ -33,7 +33,9 @@
                 :performanceMedicalDevice="component.crit_performanceMedicalDevice"
                 :remarks="component.crit_remarks"
                 :validate="component.validate"
-                @checkedTests="createTest"
+                @checkedTestsAlpha="createTestAlpha"
+                @checkedTestsSupplier="createTestSupplier"
+                @docControl_name="createDocControlName"
                 @deleteCrit="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -197,10 +199,20 @@ export default {
                 this.criticality = null
             }
         },
-        createTest(value) {
+        createTestAlpha(value) {
             console.log("Create Test in reference a crit")
             console.log("checked test :" + value)
-            this.$emit('checkedTests', value);
+            this.$emit('checkedTestsAlpha', value);
+        },
+        createTestSupplier(value) {
+            console.log("Create Test in reference a crit")
+            console.log("checked test :" + value)
+            this.$emit('checkedTestsSupplier', value);
+        },
+        createDocControlName(value) {
+            console.log("Create Test in reference a crit")
+            console.log("checked test :" + value)
+            this.$emit('docControl_name', value);
         }
     },
     /*All functions inside the created option are called after the component has been created.*/

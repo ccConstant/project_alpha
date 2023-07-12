@@ -29,6 +29,7 @@
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
+                                        :docControl_name="this.data_docControl_name"
                                     />
                                 </div>
                             </div>
@@ -221,6 +222,10 @@ export default {
             type: Array,
             default: null
         },
+        docControl_name: {
+            type: String,
+            default: null
+        }
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -241,6 +246,7 @@ export default {
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_checkedTest: this.checkedTest,
+            data_docControl_name: this.docControl_name,
             loaded: false,
             infos_incmgInsp: [],
             rawFam_id: null,
@@ -254,7 +260,6 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         addIncmgInsp() {
-            console.log("addIncoming")
             if (this.article_type === 'cons') {
                 this.consFam_id = this.article_id;
             } else if (this.article_type === 'raw') {
@@ -262,7 +267,6 @@ export default {
             } else if (this.article_type === 'comp') {
                 this.compFam_id = this.article_id;
             }
-            console.log("addIncoming post if")
                 axios.post('/artFam/incmgInsp/add', {
                     incmgInsp_consFam_id: this.consFam_id,
                     incmgInsp_rawFam_id: this.rawFam_id,
@@ -354,7 +358,7 @@ export default {
     },
     created() {
         console.log(this.data_checkedTest)
-        if (this.data_checkedTest!=null && (this.data_checkedTest.includes('docControl') || this.data_checkedTest.includes('dimTest') || this.data_checkedTest.includes('funcTest') || this.data_checkedTest.includes('aspTest') || this.data_checkedTest.includes('compTest') || this.data_checkedTest.includes('adminControl'))) {
+        if (this.data_checkedTest!=null && (this.data_checkedTest.includes('docControl') || this.data_checkedTest.includes('dimTest') || this.data_checkedTest.includes('funcTest') || this.data_checkedTest.includes('aspTest') || this.data_checkedTest.includes('compTest') || this.data_checkedTest.includes('adminControl')|| this.data_docControl_name!='Test required to ensure performance of the medical device')) {
             this.addIncmgInsp() ;
         }
         axios.get('/info/send/IncmgInsp')

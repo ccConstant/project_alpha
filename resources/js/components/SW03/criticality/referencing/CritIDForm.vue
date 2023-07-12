@@ -372,6 +372,7 @@ export default {
             checkedTests: [],
             checkedTestsAlpha: [],
             checkedTestsSupplier: [],
+            docControl_name:[],
         }
     },
     methods: {
@@ -386,43 +387,43 @@ export default {
                 }
                 if (this.checkedTests.includes('funcTest') ){
                     if (this.checkedTestRadioFunc=='funcTestAlpha' || this.checkedTestRadioFunc=='funcTestBoth'){
-                       checkedTestsAlpha.push('funcTest');
+                       this.checkedTestsAlpha.push('funcTest');
                     }
                     if (this.checkedTestRadioFunc=='funcTestSupplier' || this.checkedTestRadioFunc=='funcTestBoth'){
-                        checkedTestsSupplier.push('funcTest');
+                        this.checkedTestsSupplier.push('funcTest');
                     }
                 }
                 if (this.checkedTests.includes('dimTest') ){
                     if(this.checkedTestRadioDim=='dimTestAlpha' || this.checkedTestRadioDim=='dimTestBoth'){
-                        checkedTestsAlpha.push('dimTest');
+                        this.checkedTestsAlpha.push('dimTest');
                     }
                     if(this.checkedTestRadioDim=='dimTestSupplier' || this.checkedTestRadioDim=='dimTestBoth'){
-                        checkedTestsSupplier.push('dimTest');
+                        this.checkedTestsSupplier.push('dimTest');
                     }
                 }
                 if (this.checkedTests.includes('aspTest') ){
 
                     if(this.checkedTestRadioAsp=='aspTestAlpha' || this.checkedTestRadioAsp=='aspTestBoth'){
-                        checkedTestsAlpha.push('aspTest');
+                        this.checkedTestsAlpha.push('aspTest');
                     }
                     if(this.checkedTestRadioAsp=='aspTestSupplier' || this.checkedTestRadioAsp=='aspTestBoth'){
-                        checkedTestsSupplier.push('aspTest');
+                        this.checkedTestsSupplier.push('aspTest');
                     }
                 }
                 if (this.checkedTests.includes('docControl') ){
                     if(this.checkedTestRadioDoc=='docControlAlpha' || this.checkedTestRadioDoc=='docControlBoth'){
-                        checkedTestsAlpha.push('docControl');
+                        this.checkedTestsAlpha.push('docControl');
                     }
                     if(this.checkedTestRadioDoc=='docControlSupplier' || this.checkedTestRadioDoc=='docControlBoth'){
-                        checkedTestsSupplier.push('docControl');
+                        this.checkedTestsSupplier.push('docControl');
                     }
                 }
                 if (this.checkedTests.includes('adminControl') ){
                     if(this.checkedTestRadioAdm=='adminControlAlpha' || this.checkedTestRadioAdm=='adminControlBoth'){
-                        checkedTestsAlpha.push('adminControl');
+                        this.checkedTestsAlpha.push('adminControl');
                     }
                     if(this.checkedTestRadioAdm=='adminControlSupplier' || this.checkedTestRadioAdm=='adminControlBoth'){
-                        checkedTestsSupplier.push('adminControl');
+                        this.checkedTestsSupplier.push('adminControl');
                     }
                 }
                 if (this.checkedTestsAlpha!=null && this.checkedTestsAlpha.length === 0) {
@@ -431,6 +432,20 @@ export default {
                 if (this.checkedTestsSupplier!=null && this.checkedTestsSupplier.length === 0) {
                     this.checkedTestsSupplier=["nothing"];
                 }
+                if (this.crit_artCriticality!='No direct contact'){
+                    if (this.crit_artCriticality=='No contact but integrated in invasive Medical device' || this.crit_artCriticality=='Surface contact'){
+                        this.docControl_name='Declaration of Material Conformity';
+                    }
+                    if(this.crit_artCriticality=='Invasive/Implantable'){
+                        this.crit_artCriticality='Material Analysis Certificate';
+                    }
+                }else{
+                    this.docControl_name='Test required to ensure performance of the medical device';
+                }
+                console.log("critIdForm")
+                console.log(this.docControl_name)
+                this.$emit('docControl_name', this.docControl_name);
+                console.log(this.checkedTestsAlpha)
                 this.$emit('checkedTestsAlpha', this.checkedTestsAlpha);
                 this.$emit('checkedTestsSupplier', this.checkedTestsSupplier);
                 /*The First post to verify if all the fields are filled correctly

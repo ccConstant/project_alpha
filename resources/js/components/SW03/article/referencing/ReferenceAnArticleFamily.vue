@@ -40,6 +40,7 @@
                             <ReferenceACrit
                                 @checkedTestsSupplier="createTestSupplier"
                                 @checkedTestsAlpha="createTestAlpha"
+                                @docControl_name="createDocControlName"
                                 modifMod
                                 :articleType="this.artFam_type"
                                 :article_id="this.artFam_id"
@@ -64,6 +65,7 @@
                                     :artFam_id="this.artFam_id"
                                     :import_id="this.artFam_id"
                                     :checkedTest="this.checkedTestsSupplier"
+                                    :docControl_name="this.docControl_name"
                                 />
                             </div>
                         </div>
@@ -85,6 +87,7 @@
                                     :article_id="this.artFam_id"
                                     :import_id="this.artFam_id"
                                     :checkedTest="this.checkedTestsAlpha"
+                                    :docControl_name="this.docControl_name"
                                 />
                             </div>
                         </div>
@@ -141,7 +144,9 @@ export default {
             artFam_type: null,
             artFam_ref: null,
             artFam_subFam: null,
-            checkedTest: [],
+            checkedTestsAlpha: [],
+            checkedTestsSupplier: [],
+            docControl_name:"",
         }
     },
     methods: {
@@ -157,8 +162,16 @@ export default {
         put_artFamily_subFam(value) {
             this.artFam_subFam = value;
         },
-        createTest(value) {
-            this.checkedTest = value;
+        createTestAlpha(value) {
+            this.checkedTestsAlpha = value;
+        },
+        createTestSupplier(value) {
+            this.checkedTestsSupplier = value;
+        },
+        createDocControlName(value) {
+            console.log("ArticleFamily");
+            console.log(value);
+            this.docControl_name = value;
         },
     },
     created(){
