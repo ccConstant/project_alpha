@@ -63,7 +63,7 @@
                 <div v-if="this.addSucces===false ">
                     <div v-if="this.incmgInsp_id===null ">
                         <div v-if="modifMod===true">
-                            <SaveButtonForm @add="addAdminControl" @update="updateAdminControl"
+                            <SaveButtonForm @add="addAdminControl" @update="updateAdminControl" :modifMod="this.modifMod"
                                             :consultMod="this.isInConsultedMod" :savedAs="'validated'"
                                             :AddinUpdate="true"/>
                         </div>
@@ -226,6 +226,7 @@ export default {
             })
                 .then(response => {
                     this.errors = {};
+                    console.log("verif update passed")
                     axios.post('/incmgInsp/adminControl/update/' + this.adminControl_id, {
                         adminControl_articleType: this.data_article_type,
                         adminControl_reference: this.adminControl_reference,
@@ -260,7 +261,7 @@ export default {
         },
         deleteComponent(reason, lifesheet_created) {
             this.$emit('deleteAdminControl', '')
-            this.$refs.sucessAlert.showAlert(`Documentary Control Form deleted successfully`);
+            this.$refs.sucessAlert.showAlert(`Admin Control Form deleted successfully`);
         }
     },
     created() {

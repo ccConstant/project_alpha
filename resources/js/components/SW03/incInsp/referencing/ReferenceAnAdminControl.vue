@@ -37,14 +37,9 @@
                 <button v-on:click="addComponent('')">Add</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
             </div>
-            <SaveButtonForm
-                saveAll
-                v-if="components.length>1"
-                @add="saveAll"
-                @update="saveAll"
-                :consultMod="this.isInConsultMod"
-                :modifMod="this.isInModifMod"
-            />
+            <SaveButtonForm v-if="components.length>1" :consultMod="this.isInModifMod" :modifMod="this.isInModifMod"
+                        saveAll
+                        @add="saveAll" @update="saveAll"/>
         </div>
     </div>
 </template>
@@ -203,6 +198,7 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log(this.modifMod);
          if (this.checkedTest!=null && this.checkedTest.includes('adminControl')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }

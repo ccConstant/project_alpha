@@ -29,7 +29,8 @@
         </div>
         <SaveButtonForm v-if="components.length>1" :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"
                         saveAll
-                        @add="saveAll" @update="saveAll"/>
+                        @add="saveAll" @update="saveAll"
+                        />
         <ImportationAlert ref="importAlert"/>
     </div>
 

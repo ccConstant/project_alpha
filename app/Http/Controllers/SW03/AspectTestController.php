@@ -191,7 +191,6 @@ class AspectTestController extends Controller
                 'aspTest_name' => $asp->aspTest_name,
                 'aspTest_sampling' => $asp->aspTest_sampling,
                 'aspTest_desc' => $asp->aspTest_desc,
-                'incmgInsp_id' => $asp->incmgInsp_id,
                 'aspTest_specDoc' => $asp->aspTest_specDoc,
             ];
             array_push($array, $obj);
@@ -211,13 +210,33 @@ class AspectTestController extends Controller
                 'message' => 'Aspect test not found',
             ], 404);
         };
-        $incmgInsp = IncomingInspection::all()->where('id', '==', $aspTest->incmgInsp_id)->first();
-        if ($incmgInsp == null) {
-            return response()->json([
-                'message' => 'Incoming inspection not found',
-            ], 404);
-        };
-        $article = null;
+        if ($aspTest->incmgInsp_id!=null){
+            $incmgInsp = IncomingInspection::all()->where('id', '==', $asptest->incmgInsp_id)->first();
+            if ($incmgInsp === null) {
+                return response()->json([
+                    'message' => 'Incoming inspection not found'
+                ], 404);
+            };
+            $incmgInsp->update([
+                'incmgInsp_qualityApproverId' => null,
+                'incmgInsp_technicalReviewerId' => null,
+                'incmgInsp_signatureDate' => null,
+            ]);
+        }
+        if ($asptest->purSpe_id!=null){
+            $purSpe = PurchaseSpecification::all()->where('id', '==', $asptest->purSpe_id)->first();
+            if ($purSpe === null) {
+                return response()->json([
+                    'message' => 'purchase spec not found'
+                ], 404);
+            };
+            $purSpe->update([
+                'incmgInsp_qualityApproverId' => null,
+                'incmgInsp_technicalReviewerId' => null,
+                'incmgInsp_signatureDate' => null,
+            ]);
+        }
+        /*$article = null;
         if ($request->aspTest_articleType === 'cons') {
             $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
             $signed = $article->consFam_signatureDate;
@@ -252,7 +271,7 @@ class AspectTestController extends Controller
             'incmgInsp_qualityApproverId' => null,
             'incmgInsp_technicalReviewerId' => null,
             'incmgInsp_signatureDate' => null,
-        ]);
+        ]);*/
         $aspTest->update([
             'aspTest_severityLevel' => $request->aspTest_severityLevel,
             'aspTest_levelOfControl' => $request->aspTest_levelOfControl,

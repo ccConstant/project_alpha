@@ -194,14 +194,34 @@ class AdminControlController extends Controller
                 'message' => 'Documentary control not found'
             ], 404);
         };
-        $incmgInsp = IncomingInspection::all()->where('id', '==', $adminControl->incmgInsp_id)->first();
-        if ($incmgInsp === null) {
-            return response()->json([
-                'message' => 'Incoming inspection not found'
-            ], 404);
-        };
+        if ($adminControl->incmgInsp_id!=null){
+            $incmgInsp = IncomingInspection::all()->where('id', '==', $adminControl->incmgInsp_id)->first();
+            if ($incmgInsp === null) {
+                return response()->json([
+                    'message' => 'Incoming inspection not found'
+                ], 404);
+            };
+            $incmgInsp->update([
+                'incmgInsp_qualityApproverId' => null,
+                'incmgInsp_technicalReviewerId' => null,
+                'incmgInsp_signatureDate' => null,
+            ]);
+        }
+        if ($adminControl->purSpe_id!=null){
+            $purSpe = PurchaseSpecification::all()->where('id', '==', $adminControl->purSpe_id)->first();
+            if ($purSpe === null) {
+                return response()->json([
+                    'message' => 'purchase spec not found'
+                ], 404);
+            };
+            $purSpe->update([
+                'incmgInsp_qualityApproverId' => null,
+                'incmgInsp_technicalReviewerId' => null,
+                'incmgInsp_signatureDate' => null,
+            ]);
+        }
         $article = null;
-        if ($request->adminControl_articleType === 'cons') {
+        /*if ($request->adminControl_articleType === 'cons') {
             $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
             $signed = $article->consFam_signatureDate;
             if ($signed !== null) {
@@ -230,12 +250,7 @@ class AdminControlController extends Controller
             $request->adminControl_articleType.'Fam_signatureDate' => null,
             $request->adminControl_articleType.'Fam_qualityApproverId' => null,
             $request->adminControl_articleType.'Fam_technicalReviewerId' => null,
-        ]);
-        $incmgInsp->update([
-            'incmgInsp_qualityApproverId' => null,
-            'incmgInsp_technicalReviewerId' => null,
-            'incmgInsp_signatureDate' => null,
-        ]);
+        ]);*/
         $adminControl->update([
             'adminControl_name' => $request->adminControl_name,
             'adminControl_reference' => $request->adminControl_reference,
