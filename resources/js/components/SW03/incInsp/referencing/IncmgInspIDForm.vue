@@ -14,13 +14,13 @@
                 <div v-if="this.incmgInsp_id!=null">
                     <div class="accordion">
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingDocControl">
+                            <h2 class="accordion-header" id="headingDocControlIncmg">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseDocControl" aria-expanded="true" aria-controls="collapseDocControl">
+                                        data-bs-target="#collapseDocControlIncmg" aria-expanded="true" aria-controls="collapseDocControlIncmg">
                                     Documentary Control
                                 </button>
                             </h2>
-                            <div id="collapseDocControl" class="accordion-collapse collapse show" aria-labelledby="headingDocControl">
+                            <div id="collapseDocControlIncmg" class="accordion-collapse collapse show" aria-labelledby="headingDocControlIncmg">
                                 <div class="accordion-body">
                                     <ReferenceADocControl
                                         :articleType="article_type"
@@ -37,13 +37,13 @@
                     </div>
                     <div class="accordion">
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingAspTest">
+                            <h2 class="accordion-header" id="headingAspTestIncmg">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
+                                        data-bs-target="#collapseAspTestIncmg" aria-expanded="true" aria-controls="collapseAspTestIncmg">
                                     Aspect Test
                                 </button>
                             </h2>
-                            <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
+                            <div id="collapseAspTestIncmg" class="accordion-collapse collapse show" aria-labelledby="headingAspTestIncmg">
                                 <div class="accordion-body">
                                     <ReferenceAnAspTest
                                         :articleType="article_type"
@@ -58,13 +58,13 @@
                         </div>
                         <!-- FuncTest -->
                         <div class="accordion-item" v-if="article_type === 'comp'">
-                            <h2 class="accordion-header" id="headingFuncTest">
+                            <h2 class="accordion-header" id="headingFuncTestIncmg">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseFuncTest" aria-expanded="true" aria-controls="collapseFuncTest">
+                                        data-bs-target="#collapseFuncTestIncmg" aria-expanded="true" aria-controls="collapseFuncTestIncmg">
                                     Functional Test
                                 </button>
                             </h2>
-                            <div id="collapseFuncTest" class="accordion-collapse collapse show" aria-labelledby="headingFuncTest">
+                            <div id="collapseFuncTestIncmg" class="accordion-collapse collapse show" aria-labelledby="headingFuncTestIncmg">
                                 <div class="accordion-body">
                                     <ReferenceAFuncTest
                                         :articleType="article_type"
@@ -80,13 +80,13 @@
 
                         <!-- DimTest -->
                         <div class="accordion-item" v-if="article_type === 'comp' || article_type === 'raw'">
-                            <h2 class="accordion-header" id="headingDimTest">
+                            <h2 class="accordion-header" id="headingDimTestIncmg">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseDimTest" aria-expanded="true" aria-controls="collapseDimTest">
+                                        data-bs-target="#collapseDimTestIncmg" aria-expanded="true" aria-controls="collapseDimTestIncmg">
                                     Dimensional Test
                                 </button>
                             </h2>
-                            <div id="collapseDimTest" class="accordion-collapse collapse show" aria-labelledby="headingDimTest">
+                            <div id="collapseDimTestIncmg" class="accordion-collapse collapse show" aria-labelledby="headingDimTestIncmg">
                                 <div class="accordion-body">
                                     <ReferenceADimTest
                                         :articleType="article_type"
@@ -101,13 +101,15 @@
 
                         </div>
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingAspTest">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
-                                    Administrative Test
+                            <h2 id="headingAdmTestIncmg" class="accordion-header">
+                                <button aria-controls="collapseAdmTestIncmg" aria-expanded="true" class="accordion-button"
+                                        data-bs-target="#collapseAdmTestIncmg" data-bs-toggle="collapse"
+                                        type="button">
+                                    Administrative Control
                                 </button>
                             </h2>
-                            <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
+                            <div id="collapseAdmTestIncmg" aria-labelledby="headingAdmTestIncmg"
+                                 class="accordion-collapse collapse show">
                                 <div class="accordion-body">
                                     <ReferenceAnAdminControl
                                         :articleType="article_type"
@@ -122,13 +124,13 @@
                         </div>
                         <!-- CompTest -->
                         <div class="accordion-item" v-if="article_type === 'cons'">
-                            <h2 class="accordion-header" id="headingCompTest">
+                            <h2 class="accordion-header" id="headingCompTestIncmg">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseCompTest" aria-expanded="true" aria-controls="collapseCompTest">
+                                        data-bs-target="#collapseCompTestIncmg" aria-expanded="true" aria-controls="collapseCompTestIncmg">
                                     Complementary Test
                                 </button>
                             </h2>
-                            <div id="collapseCompTest" class="accordion-collapse collapse show" aria-labelledby="headingCompTest">
+                            <div id="collapseCompTestIncmg" class="accordion-collapse collapse show" aria-labelledby="headingCompTestIncmg">
                                 <div class="accordion-body">
                                     <ReferenceACompTest
                                         :articleType="article_type"

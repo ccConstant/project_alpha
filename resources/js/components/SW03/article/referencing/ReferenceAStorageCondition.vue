@@ -22,6 +22,7 @@
             :modifMod="component.id !== null && isInModifMod"
             :art_type="data_art_type"
             :art_id="data_art_id"
+            :artSubFam_id="data_artSubFam_id"
             @deleteStorageCondition="getContent(key)"
             :validate="component.validate"
         />
@@ -69,7 +70,8 @@ export default {
             default: false
         },
         artFam_id: {
-            type: Number
+            type: Number,
+            default: null
         },
         artType:{
             type: String

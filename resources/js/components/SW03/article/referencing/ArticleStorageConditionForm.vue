@@ -150,36 +150,57 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
-                const consultUrl = (id) => `/artFam/enum/storageCondition/link/${id}`;
-                axios.post(consultUrl(id), {
-                    artFam_type: this.artFam_type.toUpperCase(),
-                    artFam_storageCondition: this.artFam_storageCondition,
-                    validate: savedAs,
-                })
-
-                /*If the storage condition have been linked successfully*/
-                .then(response => {
-                    /*We test if a article sheet has been already created*/
-                    /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                    /* TODO
-                    if (lifesheet_created == true) {
-                        axios.post(`/history/add/equipment/${id}`, {
-                            history_reasonUpdate: reason,
-                        });
-                        window.location.reload();
-                    }*/
-                    this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
-                    /*If the user is not in modification mode*/
-                    this.isInConsultedMod = true;
-                    this.addSucces = true
-                    /*the id of the file take the value of the newly created id*/
-                    this.storageCondition_id = response.data;
-                    /*The validate option of this file takes the value of savedAs(Params of the function)*/
-                    this.storageCondition_validate = savedAs;
-                    console.log(this.storageCondition_validate);
-                })
-                /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+                if (this.art_id_add !== null) {
+                    const consultUrl = (id) => `/artFam/enum/storageCondition/link/${id}`;
+                    axios.post(consultUrl(id), {
+                        artFam_type: this.artFam_type.toUpperCase(),
+                        artFam_storageCondition: this.artFam_storageCondition,
+                        validate: savedAs,
+                    }).then(response => {
+                        /*We test if a article sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                        /* TODO
+                        if (lifesheet_created == true) {
+                            axios.post(`/history/add/equipment/${id}`, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }*/
+                        this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
+                        /*If the user is not in modification mode*/
+                        this.isInConsultedMod = true;
+                        this.addSucces = true
+                        /*the id of the file take the value of the newly created id*/
+                        this.storageCondition_id = response.data;
+                        /*The validate option of this file takes the value of savedAs(Params of the function)*/
+                        this.storageCondition_validate = savedAs;
+                    }).catch(error => this.errors = error.response.data.errors);
+                } else {
+                    const consultUrl = (id) => `/artSubFam/enum/storageCondition/link/${id}`;
+                    axios.post(consultUrl(this.artSubFam_id), {
+                        artFam_type: this.artFam_type.toUpperCase(),
+                        artFam_storageCondition: this.artFam_storageCondition,
+                        validate: savedAs,
+                    }).then(response => {
+                        /*We test if a article sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
+                        /* TODO
+                        if (lifesheet_created == true) {
+                            axios.post(`/history/add/equipment/${id}`, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }*/
+                        this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
+                        /*If the user is not in modification mode*/
+                        this.isInConsultedMod = true;
+                        this.addSucces = true
+                        /*the id of the file take the value of the newly created id*/
+                        this.storageCondition_id = response.data;
+                        /*The validate option of this file takes the value of savedAs(Params of the function)*/
+                        this.storageCondition_validate = savedAs;
+                    }).catch(error => this.errors = error.response.data.errors);
+                }
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -187,32 +208,52 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updateStorageConditions(savedAs, reason, lifesheet_created) {
-            const consultUrl = (id) => `/artFam/storageCondition/update/${id}`;
-            console.log(this.artFam_storageCondition);
-            console.log(this.oldValue);
-            console.log(this.art_id);
-            console.log(this.artFam_type);
-            axios.post(consultUrl(this.storageCondition_id), {
-                value: this.artFam_storageCondition,
-                validate: savedAs,
-                artFam_id : this.art_id,
-                artFam_type: this.artFam_type.toLowerCase(),
-                oldValue: this.oldValue,
-            }).then(response =>{
-                if (lifesheet_created == true) {
-                    axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
-                        history_reasonUpdate: reason,
-                    });
-                    window.location.reload();
-                }
-                this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
-                /*If the user is not in modification mode*/
-                this.isInConsultedMod = true;
-                this.addSucces = true
-            }).catch(error =>{
-                this.errors = error.response.data.errors;
-                console.log(error.response.data);
-            })
+            if (this.art_id !== null) {
+                const consultUrl = (id) => `/artFam/storageCondition/update/${id}`;
+                axios.post(consultUrl(this.storageCondition_id), {
+                    value: this.artFam_storageCondition,
+                    validate: savedAs,
+                    artFam_id : this.art_id,
+                    artFam_type: this.artFam_type.toLowerCase(),
+                    oldValue: this.oldValue,
+                }).then(response =>{
+                    if (lifesheet_created == true) {
+                        axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
+                    /*If the user is not in modification mode*/
+                    this.isInConsultedMod = true;
+                    this.addSucces = true
+                }).catch(error =>{
+                    this.errors = error.response.data.errors;
+                });
+            } else {
+                const consultUrl = (id) => `/artSubFam/storageCondition/update/${id}`;
+                axios.post(consultUrl(this.storageCondition_id), {
+                    value: this.artFam_storageCondition,
+                    validate: savedAs,
+                    artSubFam_id : this.artSubFam_id,
+                    artFam_type: this.artFam_type.toLowerCase(),
+                    oldValue: this.oldValue,
+                }).then(response =>{
+                    if (lifesheet_created == true) {
+                        axios.post('/artSubFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artSubFam_id, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
+                    /*If the user is not in modification mode*/
+                    this.isInConsultedMod = true;
+                    this.addSucces = true
+                }).catch(error =>{
+                    this.errors = error.response.data.errors;
+                });
+            }
+
         },
         clearSelectError(value) {
             delete this.errors[value];
@@ -222,16 +263,16 @@ export default {
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.storageCondition_id !== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
-                const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
-                axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
-                    artFam_id: this.art_id
-                })
-                    .then(response => {
+                if (this.art_id !== null) {
+                    const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
+                    axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
+                        artFam_id: this.art_id
+                    }).then(response => {
                         const id = this.equipment_id_update;
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
                         if (artSheet_created == true) {
-                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                            axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                 history_reasonUpdate: reason,
                             });
                             window.location.reload();
@@ -239,9 +280,26 @@ export default {
                         /*Emit to the parent component that we want to delete this component*/
                         this.$emit('deleteFile', '')
                         this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                    }).catch(error => this.errors = error.response.data.errors);
+                } else {
+                    const consultUrl = (type, id) => `/artSubFam/enum/storageCondition/unlink/${type}/${id}`;
+                    axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
+                        artSubFam_id: this.artSubFam_id
+                    }).then(response => {
+                        /*We test if a life sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                        if (artSheet_created == true) {
+                            axios.post('/artSubFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artSubFam_id, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
+                        /*Emit to the parent component that we want to delete this component*/
+                        this.$emit('deleteFile', '')
+                        this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
+                    }).catch(error => this.errors = error.response.data.errors);
+                }
+
             } else {
                 this.$emit('deleteFile', '')
                 this.$refs.sucessAlert.showAlert(`Empty storage condition deleted successfully`);
