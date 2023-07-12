@@ -370,6 +370,8 @@ export default {
             checkedTestRadioAdm: this.data_checkedTestRadioAdm,
             checkedTestsString: '',
             checkedTests: [],
+            checkedTestsAlpha: [],
+            checkedTestsSupplier: [],
         }
     },
     methods: {
@@ -382,7 +384,49 @@ export default {
                 if (this.checkedTests!=null && this.checkedTests.length === 0) {
                     this.checkedTests=["nothing"];
                 }
-                this.$emit('checkedTests', this.checkedTests);
+                if (this.checkedTests.includes('funcTest') ){
+                    if (this.checkedTestRadioFunc=='funcTestAlpha' || this.checkedTestRadioFunc=='funcTestBoth'){
+                       checkedTestsAlpha.push('funcTest');
+                    }
+                    if (this.checkedTestRadioFunc=='funcTestSupplier' || this.checkedTestRadioFunc=='funcTestBoth'){
+                        checkedTestsSupplier.push('funcTest');
+                    }
+                }
+                if (this.checkedTests.includes('dimTest') ){
+                    if(this.checkedTestRadioDim=='dimTestAlpha' || this.checkedTestRadioDim=='dimTestBoth'){
+                        checkedTestsAlpha.push('dimTest');
+                    }
+                    if(this.checkedTestRadioDim=='dimTestSupplier' || this.checkedTestRadioDim=='dimTestBoth'){
+                        checkedTestsSupplier.push('dimTest');
+                    }
+                }
+                if (this.checkedTests.includes('aspTest') ){
+
+                    if(this.checkedTestRadioAsp=='aspTestAlpha' || this.checkedTestRadioAsp=='aspTestBoth'){
+                        checkedTestsAlpha.push('aspTest');
+                    }
+                    if(this.checkedTestRadioAsp=='aspTestSupplier' || this.checkedTestRadioAsp=='aspTestBoth'){
+                        checkedTestsSupplier.push('aspTest');
+                    }
+                }
+                if (this.checkedTests.includes('docControl') ){
+                    if(this.checkedTestRadioDoc=='docControlAlpha' || this.checkedTestRadioDoc=='docControlBoth'){
+                        checkedTestsAlpha.push('docControl');
+                    }
+                    if(this.checkedTestRadioDoc=='docControlSupplier' || this.checkedTestRadioDoc=='docControlBoth'){
+                        checkedTestsSupplier.push('docControl');
+                    }
+                }
+                if (this.checkedTests.includes('adminControl') ){
+                    if(this.checkedTestRadioAdm=='adminControlAlpha' || this.checkedTestRadioAdm=='adminControlBoth'){
+                        checkedTestsAlpha.push('adminControl');
+                    }
+                    if(this.checkedTestRadioAdm=='adminControlSupplier' || this.checkedTestRadioAdm=='adminControlBoth'){
+                        checkedTestsSupplier.push('adminControl');
+                    }
+                }
+                this.$emit('checkedTestsAlpha', this.checkedTestsAlpha);
+                this.$emit('checkedTestsSupplier', this.checkedTestsSupplier);
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
                 console.log("addCriticality");
