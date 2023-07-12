@@ -93,7 +93,8 @@ export default {
             default: null
         },
         article_id: {
-            type: Number
+            type: Number,
+            default: null
         },
         import_id: {
             type: Number,
@@ -201,20 +202,17 @@ export default {
             }
         },
         createTestAlpha(value) {
-            console.log("Create Test in reference a crit")
-            console.log("checked test :" + value)
             this.$emit('checkedTestsAlpha', value);
         },
         createTestSupplier(value) {
-            console.log("Create Test in reference a crit")
-            console.log("checked test :" + value)
             this.$emit('checkedTestsSupplier', value);
         },
         createDocControlName(value) {
-            console.log("Create Test in reference a crit")
-            console.log("checked test :" + value)
             this.$emit('docControl_name', value);
-        }
+        },
+        createTest(value) {
+            this.$emit('checkedTests', value);
+        },
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
@@ -222,7 +220,6 @@ export default {
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
             if (this.data_article_id !== null && this.data_article_id !== undefined) {
-                console.log("article_id :" + this.data_article_id)
                 axios.get('/artFam/criticality/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
                         this.criticality = response.data;
@@ -231,7 +228,6 @@ export default {
                     }).catch(error => {
                 });
             } else {
-                console.log("articleSubFam_id :" + this.data_artSubFam_id)
                 axios.get('/artSubFam/criticality/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
                         this.criticality = response.data;

@@ -81,7 +81,8 @@ export default {
             default: null
         },
         article_id: {
-            type: Number
+            type: Number,
+            default: null
         },
         import_id: {
             type: Number,

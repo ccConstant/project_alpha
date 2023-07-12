@@ -104,14 +104,14 @@
 
                 </div>
                 <div class="accordion-item">
-                    <h2 id="headingAspTest" class="accordion-header">
-                        <button aria-controls="collapseAspTest" aria-expanded="true" class="accordion-button"
-                                data-bs-target="#collapseAspTest" data-bs-toggle="collapse"
+                    <h2 id="headingAdmTest" class="accordion-header">
+                        <button aria-controls="collapseAdmTest" aria-expanded="true" class="accordion-button"
+                                data-bs-target="#collapseAdmTest" data-bs-toggle="collapse"
                                 type="button">
                             Administrative Control
                         </button>
                     </h2>
-                    <div id="collapseAspTest" aria-labelledby="headingAspTest"
+                    <div id="collapseAdmTest" aria-labelledby="headingAdmTest"
                          class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             <ReferenceAnAdminControl
@@ -227,7 +227,8 @@ export default {
             default: false
         },
         artFam_id: {
-            type: Number
+            type: Number,
+            default: null
         },
         artType: {
             type: String
