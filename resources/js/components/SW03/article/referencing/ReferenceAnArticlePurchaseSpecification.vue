@@ -29,6 +29,7 @@
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
                                 :purSpe_id="purSpe_id"
+                                :docControl_name="data_docControlName"
                             />
                         </div>
                     </div>
@@ -241,6 +242,9 @@ export default {
         },
         articleSubFam_id: {
             type: Number
+        },
+        docControl_name: {
+            type: String
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -264,6 +268,7 @@ export default {
             loaded: false,
             purchaseSpec: null,
             data_checkedTest: this.checkedTest,
+            data_docControlName: this.docControl_name,
             data_artSubFam_id: this.articleSubFam_id
         };
     },
@@ -340,6 +345,8 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log("ref an article purchase spec")
+        console.log(this.data_docControlName)
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/

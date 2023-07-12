@@ -29,6 +29,7 @@
                 :article_id="data_article_id"
                 :article_type="data_article_type"
                 :checkedTest="data_checkedTest"
+                :docControl_name="data_docControl_name"
                 @deleteFile="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -93,6 +94,10 @@ export default {
             type: Array,
             default: null
         },
+        docControl_name: {
+            type: String,
+            default: null
+        },
         articleSubFam_id: {
             type: Number
         }
@@ -117,6 +122,7 @@ export default {
             data_article_type: this.articleType === null ? 'raw' : this.articleType.toLowerCase(),
             loaded: false,
             data_checkedTest: this.checkedTest,
+            data_docControl_name: this.docControl_name,
             data_artSubFam_id: this.articleSubFam_id
         };
     },
@@ -190,7 +196,7 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        if (this.data_checkedTest!=null && (this.data_checkedTest.includes("dimTest") || this.data_checkedTest.includes("funcTest") || this.data_checkedTest.includes("aspTest") || this.data_checkedTest.includes("docControl") || this.data_checkedTest.includes("adminControl"))) {
+        if (this.data_checkedTest!=null && (this.data_checkedTest.includes("dimTest") || this.data_checkedTest.includes("funcTest") || this.data_checkedTest.includes("aspTest") || this.data_checkedTest.includes("docControl") || this.data_checkedTest.includes("adminControl") || this.data_docControl_name!='Test required to ensure performance of the medical device')) {
             this.addComponent();
         }
         /*If the user chooses importation equipment*/

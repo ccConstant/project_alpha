@@ -180,9 +180,6 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
-                    console.log("verif passed")
-                    console.log("purSpe"+this.data_purSpe_id)
-                    console.log("purSpe"+this.purSpe_id)
                     axios.post('/incmgInsp/docControl/add', {
                         docControl_articleType: this.data_article_type,
                         docControl_reference: this.docControl_reference,
