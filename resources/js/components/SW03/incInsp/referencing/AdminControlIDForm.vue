@@ -165,9 +165,6 @@ export default {
     },
     methods: {
         addAdminControl(savedAs, reason, lifesheet_created) {
-            if (this.articleID !== null) {
-
-            }else{
                 axios.post('/incmgInsp/adminControl/verif', {
                     adminControl_articleType: this.data_article_type,
                     adminControl_reference: this.adminControl_reference,
@@ -204,8 +201,7 @@ export default {
                     });
                 })
                 .catch(error => this.errors = error.response.data.errors);
-            }
-        },
+            },
         updateAdminControl(savedAs, reason, artSheet_created) {
             axios.post('/incmgInsp/adminControl/verif', {
                 adminControl_articleType: this.data_article_type,
@@ -218,37 +214,37 @@ export default {
                 id: this.adminControl_id,
                 article_id: this.data_article_id,
             })
+            .then(response => {
+                this.errors = {};
+                console.log("verif update passed")
+                axios.post('/incmgInsp/adminControl/update/' + this.adminControl_id, {
+                    adminControl_articleType: this.data_article_type,
+                    adminControl_reference: this.adminControl_reference,
+                    adminControl_name: this.adminControl_name,
+                    adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
+                    adminControl_FDS: this.adminControl_fds,
+                    reason: 'update',
+                    id: this.adminControl_id,
+                    article_id: this.data_article_id,
+                })
                 .then(response => {
-                    this.errors = {};
-                    console.log("verif update passed")
-                    axios.post('/incmgInsp/adminControl/update/' + this.adminControl_id, {
-                        adminControl_articleType: this.data_article_type,
-                        adminControl_reference: this.adminControl_reference,
-                        adminControl_name: this.adminControl_name,
-                        adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
-                        adminControl_FDS: this.adminControl_fds,
-                        reason: 'update',
-                        id: this.adminControl_id,
-                        article_id: this.data_article_id,
-                    })
-                        .then(response => {
-                            if (artSheet_created == true) {
-                                axios.post('/artFam/history/add/' + this.articleType.toLowerCase() + '/' + this.articleID, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$snotify.success(`Administrative Control successfully updated`);
-                            this.isInConsultedMod = true;
-                            this.addSucces = true
-                        })
-                        .catch(error => {
-                            this.errors = error.response.data.errors;
+                    if (artSheet_created == true) {
+                        axios.post('/artFam/history/add/' + this.articleType.toLowerCase() + '/' + this.articleID, {
+                            history_reasonUpdate: reason,
                         });
+                        window.location.reload();
+                    }
+                    this.$snotify.success(`Administrative Control successfully updated`);
+                    this.isInConsultedMod = true;
+                    this.addSucces = true
                 })
                 .catch(error => {
                     this.errors = error.response.data.errors;
                 });
+            })
+            .catch(error => {
+                this.errors = error.response.data.errors;
+            });
         },
         clearError(event) {
             delete this.errors[event.target.name];
