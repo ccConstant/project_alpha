@@ -37,8 +37,8 @@
                 <!--Add another dimension button appear -->
                 <button v-on:click="addComponent">Add Article Family Member</button>
             </div>
-            <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                            :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+<!--            <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
+                            :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>-->
         </div>
     </div>
 

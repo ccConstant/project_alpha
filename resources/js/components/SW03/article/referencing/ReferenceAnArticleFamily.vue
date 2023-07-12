@@ -6,11 +6,11 @@
 
 <template>
     <div>
-        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type"   @ArtFamRef="put_artFamily_ref"/>
-        
+        <ArticleFamilyForm @ArtFamID="put_artFamily_id" @ArtFamType="put_artFamily_type" @ArtFamRef="put_artFamily_ref" @ArtFamSubFam="put_artFamily_subFam"/>
+
         <div v-if="this.artFam_id!=null">
             <div class="accordion">
-                <div class="accordion-item">
+                <div class="accordion-item" v-if="artFam_subFam">
                     <h2 class="accordion-header" id="headingZero">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item">
+                <div class="accordion-item" v-if="!artFam_subFam">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
@@ -47,7 +47,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="this.checkedTest!=null && this.checkedTest.length!=0" class="accordion">
+                <div v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !artFam_subFam" class="accordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0">
+                <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !artFam_subFam">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -89,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion">
+                <div class="accordion" v-if="!artFam_subFam">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -139,6 +139,7 @@ export default {
             artFam_id: null,
             artFam_type: null,
             artFam_ref: null,
+            artFam_subFam: null,
             checkedTest: [],
         }
     },
@@ -152,9 +153,10 @@ export default {
         put_artFamily_ref(value) {
             this.artFam_ref = value;
         },
+        put_artFamily_subFam(value) {
+            this.artFam_subFam = value;
+        },
         createTest(value) {
-            console.log("createTest in Reference an article family")
-            console.log("checkedTest : " + value)
             this.checkedTest = value;
         },
     },

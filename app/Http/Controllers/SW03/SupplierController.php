@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\SW03\Supplier;
 
@@ -18,6 +19,27 @@ class SupplierController extends Controller
      */
     public function verif_supplier(Request $request)
     {
+        $user = User::findOrfail($request->user_id);
+        if ($request->reason = 'add') {
+            if ($user->user_SW03_addSupplier !== 1) {
+                return response()->json([
+                    'authentification' => 'You are not allowed to add a supplier'
+                ], 429);
+            }
+        }else if($request->reason = 'update') {
+            if ($request->lifesheet_created) {
+                if ($user->user_SW03_updateSupplierSigned !== 1) {
+                    return response()->json([
+                        'authentification' => 'You are not allowed to update a signed supplier'
+                    ], 429);
+                }
+            }
+            if ($user->user_SW03_updateSupplier) {
+                return response()->json([
+                    'authentification' => 'You are not allowed to update a supplier'
+                ], 429);
+            }
+        }
         if ($request->supplr_validate === 'validated') {
             if ($request->supplr_critical) {
                 $this->validate(
@@ -214,11 +236,17 @@ class SupplierController extends Controller
     }
 
     public function send_active_suppliers() {
-        $suppliers = Supplier::all()->where('supplr_active', '=', 1);
+        $suppliers = Supplier::all()->where('supplr_active', '=', 1)->get();
         return response()->json($suppliers);
     }
 
     public function update_supplier(Request $request, $id) {
+        $user = User::findOrfail($request->user_id);
+        if (!$user->user_SW03_updateSupplier) {
+            return response()->json([
+                'authentification' => 'You are not allowed to update a supplier'
+            ], 429);
+        }
         $supplier = Supplier::findOrfail($id);
         if ($supplier->supplr_technicalReviewerId !== null) {
             $supplier->update([

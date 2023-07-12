@@ -84,14 +84,101 @@
                     :modifMod="this.isInModifMod"
                     :savedAs="this.artSubFam_validate"/>
         </form>
+
         <SuccessAlert ref="successAlert"/>
         <div v-if="this.artSubFam_id!==null && modifMod==false && consultMod==false && this.addSuccess" >
-                <ReferenceAnArticleFamilyMember :importedMembers="importedMember" :consultMod="!!this.consultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref"  :artSubFam_id="this.artSubFam_id"  :modifMod="!!this.isInModifMod" :import_id="this.artSubFam_id"/>
+            <ReferenceAnArticleFamilyMember :importedMembers="importedMember" :consultMod="!!this.consultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref"  :artSubFam_id="this.artSubFam_id"  :modifMod="!!this.isInModifMod" :import_id="this.artSubFam_id"/>
+        </div>
+        <div v-else-if="this.artSubFam_id!==null && modifMod==true && this.loaded">
+            <ReferenceAnArticleFamilyMember :consultMod="!!this.isInConsultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref" :artSubFam_id="this.artSubFam_id"
+                                            :modifMod="!!this.isInModifMod"  :importedMembers="importedMember" :import_id="this.artSubFam_id"/>
+        </div>
+
+        <div v-if="this.artSubFam_id!=null">
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            Criticality
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            <ReferenceACrit
+                                @checkedTests="createTest"
+                                modifMod
+                                :articleType="this.data_artFam_type"
+                                :articleSubFam_id="this.artSubFam_id"
+                                :import_id="this.artSubFam_id"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div v-if="this.checkedTest!=null && this.checkedTest.length!=0" class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                Article Purchase Specification
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
+                            <div class="accordion-body">
+                                <ReferenceAnArticlePurchaseSpecification
+                                    modifMod
+                                    :artType="this.data_artFam_type"
+                                    :articleSubFam_id="this.artSubFam_id"
+                                    :import_id="this.artSubFam_id"
+                                    :checkedTest="this.checkedTest"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                Incoming Inspection
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour">
+                            <div class="accordion-body">
+                                <ReferenceAnIncmgInsp
+                                    modifMod
+                                    :articleType="this.data_artFam_type"
+                                    :articleSubFam_id="this.artSubFam_id"
+                                    :import_id="this.artSubFam_id"
+                                    :checkedTest="this.checkedTest"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                                Article Storage Condition
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse show" aria-labelledby="headingFive">
+                            <div class="accordion-body">
+                                <ReferenceAStorageCondition
+                                    modifMod
+                                    :artType="this.data_artFam_type"
+                                    :articleSubFam_id="this.artSubFam_id"
+                                    :import_id="this.artSubFam_id"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div v-else-if="this.artSubFam_id!==null && modifMod==true && this.loaded">
-                <ReferenceAnArticleFamilyMember :consultMod="!!this.isInConsultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref" :artSubFam_id="this.artSubFam_id"
-                                :modifMod="!!this.isInModifMod"  :importedMembers="importedMember" :import_id="this.artSubFam_id"/>
-            </div>
+        </div>
     </div>
 </template>
 
@@ -106,9 +193,17 @@ import RadioGroupForm from '../../../input/SW03/RadioGroupForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
 import SuccessAlert from '../../../alert/SuccesAlert.vue'
 import ReferenceAnArticleFamilyMember from './ReferenceAnArticleFamilyMember.vue'
+import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp.vue";
+import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
+import ReferenceAnArticlePurchaseSpecification from "./ReferenceAnArticlePurchaseSpecification.vue";
+import ReferenceAStorageCondition from "./ReferenceAStorageCondition.vue";
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
+        ReferenceAStorageCondition,
+        ReferenceAnArticlePurchaseSpecification,
+        ReferenceACrit,
+        ReferenceAnIncmgInsp,
         InputTextForm,
         InputSelectForm,
         InputNumberForm,
@@ -117,9 +212,7 @@ export default {
         RadioGroupForm,
         SaveButtonForm,
         SuccessAlert,
-        ReferenceAnArticleFamilyMember
-
-
+        ReferenceAnArticleFamilyMember,
     },
     /*--------Declaration of the different props:--------
         Id : Id of the article sub family
@@ -234,6 +327,7 @@ export default {
             enum_purchasedBy: [],
             data_artFam_id: this.art_id,
             importedMember: null,
+            checkedTest: [],
         }
     },
     created() {
@@ -487,7 +581,10 @@ export default {
             } else {
                 this.artFam_genRef = this.artFam_ref + '_';
             }*/
-        }
+        },
+        createTest(value) {
+            this.checkedTest = value;
+        },
     },
 }
 </script>

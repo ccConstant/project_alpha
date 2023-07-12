@@ -263,7 +263,7 @@ export default {
                 this.compFam_id = this.article_id;
             }
             console.log("addIncoming post if")
-                axios.post('/incmgInsp/add', {
+                axios.post('/artFam/incmgInsp/add', {
                     incmgInsp_consFam_id: this.consFam_id,
                     incmgInsp_rawFam_id: this.rawFam_id,
                     incmgInsp_compFam_id: this.compFam_id,
@@ -288,7 +288,7 @@ export default {
             /*If all the verifications passed, a new post this time to add the file in the database
             Type, name, value, unit, validate option and id of the equipment is sent to the controller
             In the post url the id correspond to the id of the file who will be updated*/
-            const consultUrl = (id) => `/incmgInsp/update/${id}`;
+            const consultUrl = (id) => `/artFam/incmgInsp/update/${id}`;
             axios.post(consultUrl(this.incmgInsp_id), {
                 incmgInsp_remarks: this.incmgInsp_remarks,
                 incmgInsp_partMaterialComplianceCertificate: this.incmgInsp_partMaterialCertif,

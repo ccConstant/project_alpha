@@ -27,7 +27,8 @@ class CompFamily extends Model
     use HasFactory;
 
      //Data which can be added, updated or deleted by us in the data base.
-     protected $fillable = ['compFam_ref',
+     protected $fillable = [
+         'compFam_ref',
          'compFam_design',
          'compFam_drawingPath',
          'enumPurchasedBy_id',
@@ -41,7 +42,9 @@ class CompFamily extends Model
          'compFam_version',
          'compFam_active',
          'compFam_genDesign',
-         'compFam_genRef'] ;
+         'compFam_genRef',
+         'compFam_subFam'
+     ] ;
 
      //Define the relation between a compFamily and its compSubFamily : a compSubFamily can correspond to only one compFamily
      public function comp_sub_family(){

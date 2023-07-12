@@ -37,11 +37,12 @@ class CreateRawFamiliesTable extends Migration
             $table->date('rawFam_signatureDate')->nullable();
             $table->enum('rawFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->boolean('rawFam_active')->default(true);
+            $table->boolean('rawFam_subFam')->default(false);
            /* $table->string('rawFam_genDesign')->nullable();
             $table->string('rawFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
-          
+
         });
     }
 

@@ -139,6 +139,7 @@ class ConsFamilyController extends Controller
             'consFam_validate' => $request->artFam_validate,
             'consFam_version' => $request->artFam_version,
             'consFam_active' => $request->artFam_active,
+            'consFam_subFam' => $request->artFam_subFam,
         ]) ;
 
         $consFamily_id=$consFamily->id ;
@@ -188,6 +189,7 @@ class ConsFamilyController extends Controller
                 'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
                 'consFam_technicalReviewerName' => $technicalReviewer,
                 'consFam_signatureDate' => $consFamily->consFam_signatureDate,
+                'consFam_subFam' => $consFamily->consFam_subFam,
             ];
             array_push($array, $obj);
         }
@@ -236,6 +238,7 @@ class ConsFamilyController extends Controller
             'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
             'consFam_technicalReviewerName' => $technicalReviewer,
             'consFam_signatureDate' => $consFamily->consFam_signatureDate,
+            'consFam_subFam' => $consFamily->consFam_subFam,
         ];
         return response()->json($obj);
     }
@@ -268,6 +271,7 @@ class ConsFamilyController extends Controller
             'consFam_validate' => $request->artFam_validate,
             'consFam_active' => $request->artFam_active,
             'enumPurchasedBy_id' => $enum,
+            'consFam_subFam' => $request->artFam_subFam,
         ]);
         return response()->json($consFamily);
     }

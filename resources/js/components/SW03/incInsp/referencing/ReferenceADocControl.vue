@@ -37,14 +37,14 @@
                 <button v-on:click="addComponent('')">Add</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
             </div>
-            <SaveButtonForm
+<!--            <SaveButtonForm
                 saveAll
                 v-if="components.length>1"
                 @add="saveAll"
                 @update="saveAll"
                 :consultMod="this.isInConsultMod"
                 :modifMod="this.isInModifMod"
-            />
+            />-->
         </div>
     </div>
 </template>
@@ -172,28 +172,28 @@ export default {
             }
         },
         /*Function for saving all the data in one time*/
-        saveAll(savedAs) {
+        /*saveAll(savedAs) {
             for (const component of this.$refs.ask_docControl_data) {
-                /*If the user is in modification mode*/
+                /!*If the user is in modification mode*!/
                 if (this.modifMod == true) {
-                    /*If the file doesn't have, an id*/
+                    /!*If the file doesn't have, an id*!/
                     if (component.id == null) {
-                        /*AddequipmentFile is used*/
+                        /!*AddequipmentFile is used*!/
                         component.addEquipmentFile(savedAs);
                     } else
-                        /*Else if the file has an id and addSucces is equal to true*/
+                        /!*Else if the file has an id and addSucces is equal to true*!/
                     if (component.id != null || component.addSucces == true) {
-                        /*updateEquipmentFile is used*/
-                        /*if (component !== "validated") {
+                        /!*updateEquipmentFile is used*!/
+                        /!*if (component !== "validated") {
                             component.updateEquipmentFile(savedAs);
-                        }*/ // FIXME ?
+                        }*!/ // FIXME ?
                     }
                 } else {
-                    /*Else If the user is not in modification mode*/
+                    /!*Else If the user is not in modification mode*!/
                     component.addEquipmentFile(savedAs);
                 }
             }
-        }
+        }*/
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
@@ -202,7 +202,7 @@ export default {
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
             if (this.incmgInsp_id === null) {
-                const consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`; 
+                const consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`;
             }else{
                 const consultUrl = (id) => `/incmgInsp/docControl/sendFromPurSpe/${id}`; // FIXME
             }

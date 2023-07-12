@@ -92,6 +92,9 @@ export default {
         checkedTest: {
             type: Array,
             default: null
+        },
+        articleSubFam_id: {
+            type: Number
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -113,7 +116,8 @@ export default {
             data_article_id: this.article_id,
             data_article_type: this.articleType === null ? 'raw' : this.articleType.toLowerCase(),
             loaded: false,
-            data_checkedTest: this.checkedTest
+            data_checkedTest: this.checkedTest,
+            data_artSubFam_id: this.articleSubFam_id
         };
     },
     methods: {
@@ -161,28 +165,28 @@ export default {
             }
         },
         /*Function for saving all the data in one time*/
-        saveAll(savedAs) {
+        /*saveAll(savedAs) {
             for (const component of this.$refs.ask_incmgInsp_data) {
-                /*If the user is in modification mode*/
+                /!*If the user is in modification mode*!/
                 if (this.modifMod === true) {
-                    /*If the file doesn't have, an id*/
+                    /!*If the file doesn't have, an id*!/
                     if (component.id == null) {
-                        /*AddequipmentFile is used*/
+                        /!*AddequipmentFile is used*!/
                         component.addIncmgInsp(savedAs);
                     } else
-                        /*Else if the file has an id and addSucces is equal to true*/
+                        /!*Else if the file has an id and addSucces is equal to true*!/
                     if (component.id != null || component.addSucces == true) {
-                        /*updateEquipmentFile is used*/
+                        /!*updateEquipmentFile is used*!/
                         if (component.incmgInsp_validate !== "validated") {
                             component.updateIncmgInsp(savedAs);
                         }
                     }
                 } else {
-                    /*Else If the user is not in modification mode*/
+                    /!*Else If the user is not in modification mode*!/
                     component.addIncmgInsp(savedAs);
                 }
             }
-        }
+        }*/
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
@@ -192,7 +196,24 @@ export default {
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
-            if (this.data_article_type === 'raw') {
+            if (this.data_article_id !== null) {
+                axios.get('/artFam/incmgInsp/send/' + this.data_article_type + '/' + this.import_id)
+                    .then(response => {
+                        this.incmgInsp = response.data;
+                        this.importIncmgInsp();
+                        this.loaded = true;
+                    }).catch(error => {
+                });
+            } else {
+                axios.get('/artSubFam/incmgInsp/send/' + this.data_article_type + '/' + this.import_id)
+                    .then(response => {
+                        this.incmgInsp = response.data;
+                        this.importIncmgInsp();
+                        this.loaded = true;
+                    }).catch(error => {
+                });
+            }
+            /*if (this.data_article_type === 'raw') {
                 axios.get('/incmgInsp/send/raw/' + this.data_article_id)
                     .then(response => {
                         this.incmgInsp = response.data;
@@ -219,7 +240,7 @@ export default {
                     })
                     .catch(error => {
                     });
-            }
+            }*/
         } else {
             this.loaded = true;
         }

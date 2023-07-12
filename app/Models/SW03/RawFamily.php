@@ -41,7 +41,8 @@ class RawFamily extends Model
         'rawFam_validate',
         'rawFam_active',
         'rawFam_genDesign',
-        'rawFam_genRef'
+        'rawFam_genRef',
+        'rawFam_subFam'
     ] ;
 
     //Define the relation between a rawFamily and its rawFamilyMember : a rawFamilyMember can correspond to only one rawFamily
