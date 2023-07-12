@@ -131,6 +131,10 @@ export default {
             type: Number,
             default: null
         },
+        purSpe_id:{
+            type: Number,
+            default: null
+        },
         articleID: {
             type: Number,
             default: null
@@ -155,6 +159,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            data_purSpe_id: this.purSpe_id,
             info_docControl: []
         }
     },
@@ -168,12 +173,16 @@ export default {
                     docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                     docControl_FDS: this.docControl_fds,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    purSpe_id: this.data_purSpe_id,
                     reason: 'add',
                     id: this.docControl_id,
                     article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
+                    console.log("verif passed")
+                    console.log("purSpe"+this.data_purSpe_id)
+                    console.log("purSpe"+this.purSpe_id)
                     axios.post('/incmgInsp/docControl/add', {
                         docControl_articleType: this.data_article_type,
                         docControl_reference: this.docControl_reference,
@@ -181,6 +190,7 @@ export default {
                         docControl_materialCertifSpe: this.docControl_materialCertiSpec,
                         docControl_FDS: this.docControl_fds,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        purSpe_id: this.data_purSpe_id,
                         reason: 'add',
                         id: this.docControl_id,
                         article_id: this.data_article_id,

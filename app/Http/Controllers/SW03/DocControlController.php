@@ -17,6 +17,7 @@ use App\Models\SW03\DocumentaryControl;
 use App\Models\SW03\IncomingInspection;
 use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
+use App\Models\SW03\PurchaseSpecification;
 use Illuminate\Validation\ValidationException;
 
 class DocControlController extends Controller
@@ -34,7 +35,6 @@ class DocControlController extends Controller
                     'docControl_materialCertifSpe' => 'required|min:2|max:255',
                     'docControl_reference' => "required|min:2|max:255",
                     'docControl_name' => "required|min:2|max:255",
-                    'incmgInsp_id' => "required",
                 ],
                 [
                     'docControl_materialCertifSpe.required' => 'You must enter a material certificate',
@@ -48,8 +48,6 @@ class DocControlController extends Controller
                     'docControl_name.required' => 'You must enter a name',
                     'docControl_name.min' => 'You must enter at least two characters',
                     'docControl_name.max' => 'You must enter a maximum of 255 characters',
-
-                    'incmgInsp_id.required' => 'You must enter an incoming inspection id'
                 ]
             );
         } else if ($request->docControl_articleType === 'cons') {
@@ -59,7 +57,6 @@ class DocControlController extends Controller
                     'docControl_FDS' => 'required|min:2|max:255',
                     'docControl_reference' => "required|min:2|max:255",
                     'docControl_name' => "required|min:2|max:255",
-                    'incmgInsp_id' => "required",
                 ],
                 [
                     'docControl_FDS.required' => 'You must enter a FDS',
@@ -73,31 +70,53 @@ class DocControlController extends Controller
                     'docControl_name.required' => 'You must enter a name',
                     'docControl_name.min' => 'You must enter at least two characters',
                     'docControl_name.max' => 'You must enter a maximum of 255 characters',
-
-                    'incmgInsp_id.required' => 'You must enter an incoming inspection id'
                 ]
             );
         }
-        $insp = null;
-        if ($request->docControl_articleType === 'comp') {
-            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
-        } else if ($request->docControl_articleType === 'raw') {
-            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
-        } else if ($request->docControl_articleType === 'cons') {
-            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
-        }
-        $val = [];
-        foreach ($insp as $in) {
-            array_push($val, $in->id);
-        }
-        $find = DocumentaryControl::all()->where('docControl_name', '==', $request->docControl_name)
-            ->whereIn('incmgInsp_id', $val)
-            ->where('id', '<>', $request->id)
-            ->count();
-        if ($find !== 0) {
-            return response()->json([
-                'docControl_name' => 'This documentary control already exists',
-            ], 429);
+        if ($request->purSpe_id !== null) {
+            $purSpe = null;
+            if ($request->docControl_articleType === 'comp') {
+                $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
+            } else if ($request->docControl_articleType === 'raw') {
+                $purSpe = PurchaseSpecification::all()->where('rawFam_id', '==', $request->article_id);
+            } else if ($request->docControl_articleType === 'cons') {
+                $purSpe = PurchaseSpecification::all()->where('consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($purSpe as $pur) {
+                array_push($val, $pur->id);
+            }
+            $find = DocumentaryControl::all()->where('docControl_name', '==', $request->docControl_name)
+                ->whereIn('purSpe_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'docControl_name' => 'This aspect test already exists',
+                ], 429);
+            }
+        }else{
+            $insp = null;
+            if ($request->docControl_articleType === 'comp') {
+                $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+            } else if ($request->docControl_articleType === 'raw') {
+                $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+            } else if ($request->docControl_articleType === 'cons') {
+                $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($insp as $in) {
+                array_push($val, $in->id);
+            }
+            $find = DocumentaryControl::all()->where('docControl_name', '==', $request->docControl_name)
+                ->whereIn('incmgInsp_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'docControl_name' => 'This documentary control already exists',
+                ], 429);
+            }
         }
     }
 
@@ -112,6 +131,7 @@ class DocControlController extends Controller
             'docControl_reference' => $request->docControl_reference,
             'docControl_materialCertifSpe' => $request->docControl_materialCertifSpe,
             'incmgInsp_id' => $request->incmgInsp_id,
+            'purSpe_id' => $request->purSpe_id,
             'docControl_FDS' => $request->docControl_FDS,
         ]);
         return response()->json($docControl);

@@ -131,6 +131,10 @@ export default {
             type: Number,
             default: null
         },
+        purSpe_id: {
+            type: Number,
+            default: null
+        },
         articleID: {
             type: Number,
             default: null
@@ -155,6 +159,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            data_purSpe_id: this.purSpe_id,
             info_adminControl: []
         }
     },
@@ -168,6 +173,7 @@ export default {
                 console.log("adminControl_FDS: " + this.adminControl_fds)
                 console.log("incmgInsp_id: " + this.data_incmgInsp_id)
                 console.log("article_id: " + this.data_article_id)
+                console.log("purSpeId:"+this.purSpe_id)
                 axios.post('/incmgInsp/adminControl/verif', {
                     adminControl_articleType: this.data_article_type,
                     adminControl_reference: this.adminControl_reference,
@@ -175,12 +181,12 @@ export default {
                     adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                     adminControl_FDS: this.adminControl_fds,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    purSpe_id: this.purSpe_id,
                     reason: 'add',
                     article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
-                    console.log("verif passed")
                     axios.post('/incmgInsp/adminControl/add', {
                         adminControl_articleType: this.data_article_type,
                         adminControl_reference: this.adminControl_reference,
@@ -188,12 +194,13 @@ export default {
                         adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                         adminControl_FDS: this.adminControl_fds,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        purSpe_id: this.purSpe_id,
                         reason: 'add',
                         id: this.adminControl_id,
                         article_id: this.data_article_id,
                     })
                     .then(response => {
-                        this.$refs.sucessAlert.showAlert(`Documentary control added successfully`);
+                        this.$refs.sucessAlert.showAlert(`Administrative control added successfully`);
                         this.isInConsultedMod = true;
                         this.addSucces = true
 
@@ -225,7 +232,6 @@ export default {
                         adminControl_name: this.adminControl_name,
                         adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                         adminControl_FDS: this.adminControl_fds,
-                        incmgInsp_id: this.data_incmgInsp_id,
                         reason: 'update',
                         id: this.adminControl_id,
                         article_id: this.data_article_id,
@@ -237,7 +243,7 @@ export default {
                                 });
                                 window.location.reload();
                             }
-                            this.$snotify.success(`Documentary Control successfully updated`);
+                            this.$snotify.success(`Administrative Control successfully updated`);
                             this.isInConsultedMod = true;
                             this.addSucces = true
                         })

@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 class FunctionnalTestController extends Controller
 {
     /**
-     * Function call by FuncTestIdForm.vue when the form is submitted for verif with the route : /incmgInsp/funcTest/verif (post)
+     * Function call by FuncTestIdForm.vue when the form is submitted for verif with the route : /incmgInsp/dimTest/verif (post)
      * Verify that the informations entered by the user are correct 
      */
     public function verif_funcTest(Request $request) {
@@ -141,9 +141,6 @@ class FunctionnalTestController extends Controller
                 ], 429);
             }
         }
-
-
-
         
     }
 

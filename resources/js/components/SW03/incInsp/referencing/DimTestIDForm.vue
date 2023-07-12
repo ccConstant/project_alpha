@@ -215,6 +215,10 @@ export default {
             type: Number,
             default: null
         },
+        purSpe_id: {
+            type: Number,
+            default: null
+        },
         articleID: {
             type: Number,
             default: null
@@ -252,6 +256,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
+            data_purSpe_id: this.purSpe_id,
             info_dimTest: []
         }
     },
@@ -265,6 +270,7 @@ export default {
                     dimTest_expectedMethod: this.dimTest_expectedMethod,
                     dimTest_expectedValue: this.dimTest_expectedValue,
                     incmgInsp_id: this.data_incmgInsp_id,
+                    purSpe_id: this.data_purSpe_id,
                     dimTest_articleType: this.data_article_type,
                     dimTest_sampling: this.dimTest_sampling,
                     dimTest_unitValue: this.dimTest_unitValue,
@@ -276,6 +282,8 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
+                    console.log("verif passed")
+                    console.log(this.data_purSpe_id)
                     axios.post('/incmgInsp/dimTest/add', {
                         dimTest_name: this.dimTest_name,
                         dimTest_severityLevel: this.dimTest_severityLevel,
@@ -283,6 +291,7 @@ export default {
                         dimTest_expectedMethod: this.dimTest_expectedMethod,
                         dimTest_expectedValue: this.dimTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
+                        purSpe_id: this.data_purSpe_id,
                         dimTest_articleType: this.data_article_type,
                         dimTest_sampling: this.dimTest_sampling,
                         dimTest_unitValue: this.dimTest_unitValue,
@@ -293,7 +302,7 @@ export default {
                         article_id: this.data_article_id,
                     })
                     .then(response => {
-                        this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);
+                        this.$snotify.success(`Dimensional Test added successfully and saved as ${savedAs}`);
                         if (!this.modifMod) {
                             this.isInConsultedMod = true;
                             this.addSucces = true

@@ -26,6 +26,7 @@
                 :materialCertiSpec="component.materialCertiSpec"
                 :fds="component.fds"
                 :incmgInsp_id="incmgInsp_id"
+                :purSpe_id="purSpe_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 @deleteDocControl="getContent(key)"
@@ -93,6 +94,10 @@ export default {
             type: String
         },
         incmgInsp_id: {
+            type: Number,
+            default: null
+        },
+        purSpe_id: {
             type: Number,
             default: null
         }

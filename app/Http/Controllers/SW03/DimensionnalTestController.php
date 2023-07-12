@@ -1,5 +1,14 @@
 <?php
 
+/*
+* Filename : DimensionnalTestController.php
+* Creation date : 25 Apr 2023
+* Update date : 11 Jul 2023
+* This file is used to link the view files and the database that concern the dimensional test table.
+* For example : add a dimensional test in the data base, update a dimensional test...
+*/
+
+
 namespace App\Http\Controllers\SW03;
 
 use App\Http\Controllers\Controller;
@@ -13,6 +22,10 @@ use Illuminate\Http\Request;
 
 class DimensionnalTestController extends Controller
 {
+     /**
+     * Function call by DimTestIDForm.vue when the form is submitted for verif with the route : /incmgInsp/funcTest/verif (post)
+     * Verify that the informations entered by the user are correct 
+     */
     public function verif_dimTest(Request $request) {
         $this->validate(
             $request,
@@ -134,6 +147,11 @@ class DimensionnalTestController extends Controller
     
     }
 
+    /**
+     * Function call by FuncTestIdForm.vue when the form is submitted for insert with the route : /incmgInsp/dimTest/add (post)
+     * Add a new enregistrement of dimensional test in the data base with the informations entered in the form
+     * @return \Illuminate\Http\Response : id of the new dimensional test
+     */
     public function add_dimTest(Request $request) {
         $dimTest = DimensionalTest::create([
             'dimTest_sampling' => $request->dimTest_sampling,
@@ -144,12 +162,18 @@ class DimensionnalTestController extends Controller
             'dimTest_name' => $request->dimTest_name,
             'dimTest_unitValue' => $request->dimTest_unitValue,
             'incmgInsp_id' => $request->incmgInsp_id,
+            'purSpe_id' => $request->purSpe_id,
             'dimTest_desc' => $request->dimTest_desc,
             'dimTest_specDoc' => $request->dimTest_specDoc,
         ]);
         return response()->json($dimTest);
     }
 
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted with the route /incmgInsp/dimTest/sendFromIncmgInsp/{id} (get)
+     * Get all the dimensional test of the incoming inspection with the id in parameter
+     * @return \Illuminate\Http\Response
+     */
     public function send_dimTestFromIncmgInsp($id) {
         $dimTest = DimensionalTest::all()->where('incmgInsp_id', $id);
         $array = [];
@@ -172,23 +196,11 @@ class DimensionnalTestController extends Controller
         return response()->json($array);
     }
 
-    public function send_dimTest($id) {
-        $dimTest = DimensionalTest::all()->find($id);
-        return response()->json([
-            'id' => $dimTest->id,
-            'dimTest_sampling' => $dimTest->dimTest_sampling,
-            'dimTest_severityLevel' => $dimTest->dimTest_severityLevel,
-            'dimTest_levelOfControl' => $dimTest->dimTest_levelOfControl,
-            'dimTest_expectedMethod' => $dimTest->dimTest_expectedMethod,
-            'dimTest_expectedValue' => $dimTest->dimTest_expectedValue,
-            'dimTest_name' => $dimTest->dimTest_name,
-            'dimTest_unitValue' => $dimTest->dimTest_unitValue,
-            'incmgInsp_id' => $dimTest->incmgInsp_id,
-            'dimTest_desc' => $dimTest->dimTest_desc,
-            'dimTest_specDoc' => $dimTest->dimTest_specDoc,
-        ]);
-    }
-
+    /**
+     * Function call by ArticleUpdate.vue when the form is submitted with the route /incmgInsp/dimTest/update/{id} (get)
+     * Update an enregistrement of dimensional test in the data base with the informations entered in the form
+     * The id parameter correspond to the id of the dimensional test we want to update
+     */
     public function update_dimTest(Request $request, $id) {
         $dimTest = DimensionalTest::all()->where('id', '==', $id)->first();
         if ($dimTest == null) {

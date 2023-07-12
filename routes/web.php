@@ -1090,12 +1090,12 @@ Route::post('/incmgInsp/docControl/update/{id}', [DocControlController::class, '
 Route::get('/incmgInsp/docControl/send/{id}', [DocControlController::class, 'send_docControl']);
 Route::get('/incmgInsp/docControl/sendFromIncmgInsp/{id}', [DocControlController::class, 'send_docControlFromIncmgInsp']);
 
-// Administrativr Control Controller
+// Administrative Control Controller
 Route::post('/incmgInsp/adminControl/verif', [AdminControlController::class, 'verif_adminControl']);
 Route::post('/incmgInsp/adminControl/add', [AdminControlController::class, 'add_adminControl']);
 Route::post('/incmgInsp/adminControl/update/{id}', [AdminControlController::class, 'update_adminControl']);
-Route::get('/incmgInsp/adminControl/send/{id}', [AdminControlController::class, 'send_adminControl']);
 Route::get('/incmgInsp/adminControl/sendFromIncmgInsp/{id}', [AdminControlController::class, 'send_adminControlFromIncmgInsp']);
+Route::get('/incmgInsp/adminControl/sendFromPurSpe/{id}', [AdminControlController::class, 'send_adminControlFromPurSpe']);
 
 
 // Aspect Test Controller

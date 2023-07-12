@@ -26,6 +26,7 @@
                 :materialCertiSpec="component.materialCertiSpec"
                 :fds="component.fds"
                 :incmgInsp_id="incmgInsp_id"
+                :purSpe_id="purSpe_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 @deleteAdminControl="getContent(key)"
@@ -99,6 +100,10 @@ export default {
         checkedTest: {
             type: Array,
             default: null
+        },
+        purSpe_id: {
+            type: Number,
+            default: null
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -120,7 +125,8 @@ export default {
             data_article_id: this.article_id,
             data_article_type: this.articleType,
             data_incmingInsp_id: this.incmgInsp_id,
-            loaded: false
+            loaded: false,
+            
         };
     },
     methods: {
@@ -135,7 +141,6 @@ export default {
         },
         /*Function for adding an imported file form with his data*/
         addImportedComponent(adminControl_name, adminControl_reference, adminControl_materialCertifSpe, incmgInsp_id, adminControl_FDS, id, className) {
-            console.log("addImportedComponent")
             this.components.push({
                 comp: 'AdminControlIDForm',
                 key: this.uniqueKey++,
@@ -154,7 +159,6 @@ export default {
         },
         /*Function for adding to the vue the imported article*/
         importAdminControl() {
-            console.log("importAdminControl");
             if (this.adminControl.length === 0 && !this.isInModifMod) {
                 this.loaded = true;
             } else {
@@ -204,11 +208,19 @@ export default {
         }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
-            console.log("import_id", this.import_id)
+             var consultUrl="";
+            if (this.purSpe_id!=null){
+            consultUrl = (id) => `/incmgInsp/adminControl/sendFromPurSpe/${id}`; 
+            console.log("ce cas la")
+            console.log(this.import_id)
+            }else{
+                consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`; 
+            }
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`; // FIXME
             axios.get(consultUrl(this.import_id))
                 .then(response => {
+                    console.log("adminControl")
+                    console.log(response.data)
                     this.adminControl = response.data;
                     this.importAdminControl();
                     this.loaded = true;
@@ -216,7 +228,6 @@ export default {
                 .catch(error => {
                 });
         } else {
-            console.log("else")
             this.loaded = true;
         }
     },

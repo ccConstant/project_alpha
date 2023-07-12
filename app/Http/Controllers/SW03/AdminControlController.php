@@ -19,6 +19,7 @@ use App\Models\SW03\RawFamily;
 use Illuminate\Http\Request;
 use App\Models\SW03\AdminControl;
 use Illuminate\Validation\ValidationException;
+use App\Models\SW03\PurchaseSpecification;
 
 class AdminControlController extends Controller
 {
@@ -35,7 +36,6 @@ class AdminControlController extends Controller
                     'adminControl_materialCertifSpe' => 'required|min:2|max:255',
                     'adminControl_reference' => "required|min:2|max:255",
                     'adminControl_name' => "required|min:2|max:255",
-                    'incmgInsp_id' => "required",
                 ],
                 [
                     'adminControl_materialCertifSpe.required' => 'You must enter a material certificate',
@@ -49,8 +49,6 @@ class AdminControlController extends Controller
                     'adminControl_name.required' => 'You must enter a name',
                     'adminControl_name.min' => 'You must enter at least two characters',
                     'adminControl_name.max' => 'You must enter a maximum of 255 characters',
-
-                    'incmgInsp_id.required' => 'You must enter an incoming inspection id'
                 ]
             );
         } else if ($request->adminControl_articleType === 'cons') {
@@ -60,7 +58,6 @@ class AdminControlController extends Controller
                     'adminControl_FDS' => 'required|min:2|max:255',
                     'adminControl_reference' => "required|min:2|max:255",
                     'adminControl_name' => "required|min:2|max:255",
-                    'incmgInsp_id' => "required",
                 ],
                 [
                     'adminControl_FDS.required' => 'You must enter a FDS',
@@ -74,31 +71,53 @@ class AdminControlController extends Controller
                     'adminControl_name.required' => 'You must enter a name',
                     'adminControl_name.min' => 'You must enter at least two characters',
                     'adminControl_name.max' => 'You must enter a maximum of 255 characters',
-
-                    'incmgInsp_id.required' => 'You must enter an incoming inspection id'
                 ]
             );
         }
-        $insp = null;
-        if ($request->adminControl_articleType === 'comp') {
-            $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
-        } else if ($request->adminControl_articleType === 'raw') {
-            $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
-        } else if ($request->adminControl_articleType === 'cons') {
-            $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
-        }
-        $val = [];
-        foreach ($insp as $in) {
-            array_push($val, $in->id);
-        }
-        $find = AdminControl::all()->where('adminControl_name', '==', $request->adminControl_name)
-            ->whereIn('incmgInsp_id', $val)
-            ->where('id', '<>', $request->id)
-            ->count();
-        if ($find !== 0) {
-            return response()->json([
-                'adminControl_name' => 'This documentary control already exists',
-            ], 429);
+        if ($request->purSpe_id !== null) {
+            $purSpe = null;
+            if ($request->adminControl_articleType === 'comp') {
+                $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
+            } else if ($request->adminControl_articleType === 'raw') {
+                $purSpe = PurchaseSpecification::all()->where('rawFam_id', '==', $request->article_id);
+            } else if ($request->adminControl_articleType === 'cons') {
+                $purSpe = PurchaseSpecification::all()->where('consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($purSpe as $pur) {
+                array_push($val, $pur->id);
+            }
+            $find = AdminControl::all()->where('adminControl_name', '==', $request->adminControl_name)
+                ->whereIn('purSpe_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'adminControl_name' => 'This aspect test already exists',
+                ], 429);
+            }
+        }else{
+            $insp = null;
+            if ($request->adminControl_articleType === 'comp') {
+                $insp = IncomingInspection::all()->where('incmgInsp_compFam_id', '==', $request->article_id);
+            } else if ($request->adminControl_articleType === 'raw') {
+                $insp = IncomingInspection::all()->where('incmgInsp_rawFam_id', '==', $request->article_id);
+            } else if ($request->adminControl_articleType === 'cons') {
+                $insp = IncomingInspection::all()->where('incmgInsp_consFam_id', '==', $request->article_id);
+            }
+            $val = [];
+            foreach ($insp as $in) {
+                array_push($val, $in->id);
+            }
+            $find = AdminControl::all()->where('adminControl_name', '==', $request->adminControl_name)
+                ->whereIn('incmgInsp_id', $val)
+                ->where('id', '<>', $request->id)
+                ->count();
+            if ($find !== 0) {
+                return response()->json([
+                    'adminControl_name' => 'This documentary control already exists',
+                ], 429);
+            }
         }
     }
 
@@ -113,6 +132,7 @@ class AdminControlController extends Controller
             'adminControl_reference' => $request->adminControl_reference,
             'adminControl_materialCertifSpe' => $request->adminControl_materialCertifSpe,
             'incmgInsp_id' => $request->incmgInsp_id,
+            'purSpe_id' => $request->purSpe_id,
             'adminControl_FDS' => $request->adminControl_FDS,
         ]);
         return response()->json($adminControl);
@@ -132,6 +152,28 @@ class AdminControlController extends Controller
                 'adminControl_reference' => $doc->adminControl_reference,
                 'adminControl_materialCertifSpe' => $doc->adminControl_materialCertifSpe,
                 'incmgInsp_id' => $doc->incmgInsp_id,
+                'adminControl_FDS' => $doc->adminControl_FDS,
+                'id' => $doc->id
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+     /**
+     * Function call by ReferenceAnAdminControl.vue with the route : /incmgInsp/adminControl/sendFromPurSpe/{id} (get)
+     * Get all the doc control corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_adminControlFromPurSpe($id) {
+        $adminControl = AdminControl::all()->where('purSpe_id', "==", $id)->all();
+        $array = [];
+        foreach ($adminControl as $doc) {
+            $obj = ([
+                'adminControl_name' => $doc->adminControl_name,
+                'adminControl_reference' => $doc->adminControl_reference,
+                'adminControl_materialCertifSpe' => $doc->adminControl_materialCertifSpe,
+                'purSpe_id' => $doc->purSpe_id,
                 'adminControl_FDS' => $doc->adminControl_FDS,
                 'id' => $doc->id
             ]);
@@ -198,7 +240,6 @@ class AdminControlController extends Controller
             'adminControl_name' => $request->adminControl_name,
             'adminControl_reference' => $request->adminControl_reference,
             'adminControl_materialCertifSpe' => $request->adminControl_materialCertifSpe,
-            'incmgInsp_id' => $request->incmgInsp_id,
             'adminControl_FDS' => $request->adminControl_FDS,
         ]);
         return response()->json($adminControl);

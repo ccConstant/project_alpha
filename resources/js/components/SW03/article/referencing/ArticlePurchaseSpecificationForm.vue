@@ -62,7 +62,6 @@
                                         :article_id="art_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
                                         :purSpe_id="purSpe_id"
-                                        :consultMod="!this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
@@ -84,7 +83,6 @@
                                         :article_id="art_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
                                         :purSpe_id="purSpe_id"
-                                        :consultMod="!this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
@@ -105,7 +103,6 @@
                                         :article_id="art_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
                                         :purSpe_id="purSpe_id"
-                                        :consultMod="!this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
@@ -127,7 +124,6 @@
                                         :article_id="art_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
                                         :purSpe_id="purSpe_id"
-                                        :consultMod="!this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
@@ -138,7 +134,7 @@
                             <h2 class="accordion-header" id="headingAspTest">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
-                                    Administrative Test
+                                    Administrative Control
                                 </button>
                             </h2>
                             <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
@@ -148,7 +144,6 @@
                                         :article_id="art_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
                                         :purSpe_id="purSpe_id"
-                                        :consultMod="!this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
@@ -169,7 +164,6 @@
                                         :article_id="art_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
                                         :purSpe_id="purSpe_id"
-                                        :consultMod="!this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                     />
                                 </div>
