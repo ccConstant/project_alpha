@@ -38,7 +38,8 @@
                     <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceACrit
-                                @checkedTests="createTest"
+                                @checkedTestsSupplier="createTestSupplier"
+                                @checkedTestsAlpha="createTestAlpha"
                                 modifMod
                                 :articleType="this.artFam_type"
                                 :article_id="this.artFam_id"
@@ -47,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !artFam_subFam" class="accordion">
+                <div v-if="this.checkedTestsSupplier!=null && this.checkedTestsSupplier.length!=0 && !artFam_subFam" class="accordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -62,13 +63,13 @@
                                     :artType="this.artFam_type"
                                     :artFam_id="this.artFam_id"
                                     :import_id="this.artFam_id"
-                                    :checkedTest="this.checkedTest"
+                                    :checkedTest="this.checkedTestsSupplier"
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !artFam_subFam">
+                <div class="accordion" v-if="this.checkedTestsAlpha!=null && this.checkedTestsAlpha.length!=0 && !artFam_subFam">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -83,7 +84,7 @@
                                     :articleType="this.artFam_type"
                                     :article_id="this.artFam_id"
                                     :import_id="this.artFam_id"
-                                    :checkedTest="this.checkedTest"
+                                    :checkedTest="this.checkedTestsAlpha"
                                 />
                             </div>
                         </div>

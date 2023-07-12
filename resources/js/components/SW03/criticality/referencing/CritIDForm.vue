@@ -425,6 +425,12 @@ export default {
                         checkedTestsSupplier.push('adminControl');
                     }
                 }
+                if (this.checkedTestsAlpha!=null && this.checkedTestsAlpha.length === 0) {
+                    this.checkedTestsAlpha=["nothing"];
+                }
+                if (this.checkedTestsSupplier!=null && this.checkedTestsSupplier.length === 0) {
+                    this.checkedTestsSupplier=["nothing"];
+                }
                 this.$emit('checkedTestsAlpha', this.checkedTestsAlpha);
                 this.$emit('checkedTestsSupplier', this.checkedTestsSupplier);
                 /*The First post to verify if all the fields are filled correctly
