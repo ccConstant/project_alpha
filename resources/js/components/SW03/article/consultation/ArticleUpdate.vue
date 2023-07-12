@@ -23,11 +23,12 @@
             :ref="articleRef"
             :active="article.active === 1"
             :validate="article.validate"
-           
+            :subFam="article.subFam === 1"
             modifMod
+            @ArtFamSubFam="put_artFamily_subFam"
         />
         <div class="accordion">
-            <div class="accordion-item">
+            <div class="accordion-item" v-if="article.subFam">
                 <h2 class="accordion-header" id="headingOne">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -46,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="accordion-item">
+            <div class="accordion-item" v-if="!article.subFam">
                 <h2 class="accordion-header" id="headingTwo">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
@@ -56,6 +57,7 @@
                 <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
                     <div class="accordion-body">
                         <ReferenceACrit
+                            @checkedTests="createTest"
                             modifMod
                             :articleType="this.articleType"
                             :article_id="this.articleID"
@@ -64,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div class="accordion">
+            <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !article.subFam">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -84,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            <div class="accordion">
+            <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !article.subFam">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFour">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -104,7 +106,7 @@
                     </div>
                 </div>
             </div>
-            <div class="accordion">
+            <div class="accordion" v-if="!article.subFam">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFive">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -160,6 +162,7 @@ export default {
             errors: [],
             loaded: false,
             generic: null,
+            checkedTest: [],
         }
     },
     created() {
@@ -180,8 +183,9 @@ export default {
                         active: response.data.rawFam_active,
                         purchasedBy: response.data.rawFam_purchasedBy,
                         version: null,
-                        validate: response.data.rawFam_validate,
                         supplier: response.data.supplr_id,
+                        validate: response.data.rawFam_validate,
+                        subFam: response.data.rawFam_subFam,
                     };
                     this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(), ref:this.article.ref}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
@@ -202,6 +206,7 @@ export default {
                         version: response.data.compFam_version,
                         supplier: response.data.supplr_id,
                         validate: response.data.compFam_validate,
+                        subFam: response.data.compFam_subFam,
                     };
                     this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(),ref:this.article.ref}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
@@ -222,6 +227,7 @@ export default {
                         version: response.data.consFam_version,
                         supplier: response.data.supplr_id,
                         validate: response.data.consFam_validate,
+                        subFam: response.data.consFam_subFam,
                     };
                     this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(), ref:this.articleRef}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;
@@ -232,6 +238,12 @@ export default {
         }
     },
     methods: {
+        put_artFamily_subFam(value) {
+            this.article.subFam = value;
+        },
+        createTest(value) {
+            this.checkedTest = value;
+        },
     }
 }
 </script>

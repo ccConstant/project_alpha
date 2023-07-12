@@ -30,8 +30,8 @@
             <!--Add another dimension button appear -->
             <button v-on:click="addComponent">Add Storage Conditions</button>
         </div>
-        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+<!--        <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
+                        :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>-->
     </div>
 
 
@@ -78,6 +78,9 @@ export default {
             type: Number,
             default: null
         },
+        articleSubFam_id: {
+            type: Number
+        }
     },
     /*--------Declaration of the different returned data:--------
         components: Array in which will be added the data of a component
@@ -98,7 +101,8 @@ export default {
             title_info: null,
             data_art_type: this.artType,
             sto_conds: [],
-            loaded: false
+            loaded: false,
+            data_artSubFam_id: this.articleSubFam_id
         };
     },
     methods: {
@@ -170,7 +174,24 @@ export default {
     created() {
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
-            axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
+            if (this.data_article_id !== null) {
+                axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
+                    .then(response => {
+                        this.sto_conds = response.data;
+                        this.importStoConds();
+                        this.loaded = true;
+                    }).catch(error => {
+                });
+            } else {
+                axios.get('/artSubFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
+                    .then(response => {
+                        this.sto_conds = response.data;
+                        this.importStoConds();
+                        this.loaded = true;
+                    }).catch(error => {
+                });
+            }
+            /*axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
                 .then(response => {
                     this.sto_conds = response.data;
                     console.log(this.sto_conds);
@@ -178,7 +199,7 @@ export default {
                     this.loaded = true;
                 })
                 .catch(error => {
-                });
+                });*/
         } else {
             this.loaded = true;
         }

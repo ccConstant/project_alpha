@@ -899,7 +899,7 @@ export default {
                 .catch(error => {
                 });
         }
-        axios.get('/incmgInsp/send/' + this.articleType + '/' + this.articleId)
+        axios.get('/artFam/incmgInsp/send/' + this.articleType + '/' + this.articleId)
             .then(response => {
                 this.incmgInsps = response.data;
                 for (let i = 0; i < this.incmgInsps.length; i++) {

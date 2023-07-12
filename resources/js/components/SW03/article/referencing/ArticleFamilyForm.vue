@@ -91,6 +91,17 @@
                     :info_text="this.infos_artFam[3].info_value"
                     :id_actual="purchasedBy"
                 />
+                <RadioGroupForm
+                    :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
+                    :name="'SubFAm'"
+                    :label="'Is there a sub family ?'"
+                    v-model="artFam_subFam"
+                    :info_text="null"
+                    :inputClassName="null"
+                    :Errors="errors['Active']"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
+                    :checkedOption="isInModifMod ? artFam_subFam : false"
+                />
                <!-- <h2>
                     Generic Member Information
                 </h2>
@@ -215,7 +226,10 @@ export default {
             type: Boolean,
             default: false
         },
-     
+        subFam: {
+            type: Boolean,
+            default: false
+        },
         consultMod: {
             type: Boolean,
             default: false
@@ -257,6 +271,7 @@ export default {
             artFam_version: this.version,
             artFam_storageCondition : this.storageCondition,
             artFam_active: this.active,
+            artFam_subFam: this.subFam,
             artFam_validate: this.validate,
             isInConsultMod: this.consultMod,
             isInModifMod : this.modifMod,
@@ -321,6 +336,7 @@ export default {
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
+                        artFam_subFam: this.artFam_subFam,
                     })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
@@ -333,6 +349,7 @@ export default {
                                     artFam_version: this.artFam_version,
                                     artFam_active: this.artFam_active,
                                     artFam_validate: savedAs,
+                                    artFam_subFam: this.artFam_subFam,
 
                                 })
                                     /*If the data have been added in the database, we show a success message*/
@@ -345,9 +362,7 @@ export default {
                                         this.$emit('ArtFamID', this.artFam_id);
                                         this.$emit('ArtFamType', this.artFam_type);
                                         this.$emit('ArtFamRef', this.artFam_ref);
-                                        /*if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
-                                            this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
-                                        }*/
+                                        this.$emit('ArtFamSubFam', this.artFam_subFam);
                                     })
                                     .catch(error => this.errors = error.response.data.errors);
                             })
@@ -361,7 +376,8 @@ export default {
                             artFam_purchasedBy: this.artFam_purchasedBy,
                             artFam_active: this.artFam_active,
                             artFam_validate: savedAs,
-                        
+                            artFam_subFam: this.artFam_subFam,
+
                         })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
@@ -373,6 +389,7 @@ export default {
                                 artFam_purchasedBy: this.artFam_purchasedBy,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
+                                artFam_subFam: this.artFam_subFam,
 
                             })
                             /*If the data have been added in the database, we show a success message*/
@@ -386,9 +403,7 @@ export default {
                                 this.$emit('ArtFamID', this.artFam_id);
                                 this.$emit('ArtFamRef', this.artFam_ref);
                                 this.$emit('ArtFamType', this.artFam_type);
-                               /* if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
-                                    this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
-                                }*/
+                                this.$emit('ArtFamSubFam', this.artFam_subFam)
                             })
                             .catch(error => this.errors = error.response.data.errors);
                         })
@@ -403,6 +418,7 @@ export default {
                                 artFam_version: this.artFam_version,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
+                                artFam_subFam: this.artFam_subFam,
                             })
                             /*If the data are correct, we send them to the controller for add them in the database*/
                             .then(response => {
@@ -415,6 +431,7 @@ export default {
                                     artFam_active: this.artFam_active,
                                     artFam_version: this.artFam_version,
                                     artFam_validate: savedAs,
+                                    artFam_subFam: this.artFam_subFam,
                                 })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -426,9 +443,7 @@ export default {
                                     this.$emit('ArtFamID', this.artFam_id);
                                     this.$emit('ArtFamType', this.artFam_type);
                                     this.$emit('ArtFamRef', this.artFam_ref);
-                                    /*if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
-                                        this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
-                                    }*/
+                                    this.$emit('ArtFamSubFam', this.artFam_subFam)
                                 })
                                 .catch(error => this.errors = error.response.data.errors);
                             })
@@ -453,10 +468,10 @@ export default {
                 artFam_active: this.artFam_active,
                 artFam_validate: savedAs,
                 artFam_id: this.artFam_id,
+                artFam_subFam: this.artFam_subFam,
             })
                 /*If the data are correct, we send them to the controller for update data in the database*/
                 .then(response => {
-                    console.log("verif passed")
                     this.errors = {};
                     const consultUrl = (id) => '/' + this.artFam_type.toLowerCase() + '/family/update/' + id;
                     axios.post(consultUrl(this.artFam_id), {
@@ -468,9 +483,9 @@ export default {
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
                         artFam_id: this.artFam_id,
+                        artFam_subFam: this.artFam_subFam,
                     })
                         .then(response => {
-                            console.log("added")
                             const id = this.artFam_id;
                             /*We test if an article sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
@@ -486,6 +501,7 @@ export default {
                             /*If the data have been updated in the database, we show a success message*/
                             this.$snotify.success(`CompFam ID successfully updated and saved as ${savedAs}`);
                             this.artFam_validate = savedAs;
+                            this.$emit('ArtFamSubFam', this.artFam_subFam);
                            /* if (this.artFam_genRef !== null && this.artFam_genDesign !== null && this.artFam_variablesCharac !== null && this.artFam_variablesCharacDesign !== null) {
                                 this.$emit('generic', this.artFam_ref+'_'+this.artFam_genRef, this.artFam_genDesign, this.artFam_variablesCharac, this.artFam_variablesCharacDesign);
                             }*/

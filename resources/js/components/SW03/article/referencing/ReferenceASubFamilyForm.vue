@@ -8,13 +8,13 @@
         <div v-if="loaded===false">
             <b-spinner variant="primary"></b-spinner>
         </div>
-        <div v-else class="articleSubFamily">
+        <div v-else class="ArticleSubFamilyForm">
             <h2 v-if="components.length>0" class="titleForm">Article Sub Family </h2>
             <InputInfo class="info_title" :info="title_info.info_value" v-if="title_info!=null "/>
             <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
             <!--ref="ask_dim_data" is used to call the child elements in this component-->
             <!--The emitted deleteDim is caught here and call the function getContent -->
-            <ArticleSubFamily
+            <ArticleSubFamilyForm
                 ref="ask_familyMember_data"
                 v-for="(component, key) in components"
                 :key="component.key"
@@ -38,13 +38,10 @@
                 <!--Add another dimension button appear -->
                 <button v-on:click="addComponent">Add Article Sub Family</button>
             </div>
-            <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
-                            :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>
+<!--            <SaveButtonForm saveAll v-if="components.length>1" @add="saveAll" @update="saveAll"
+                            :consultMod="this.isInConsultMod" :modifMod="this.isInModifMod"/>-->
         </div>
     </div>
-
-
-
 </template>
 
 <script>
@@ -60,8 +57,6 @@ export default {
         ArticleSubFamilyForm,
         SaveButtonForm,
         InputInfo
-
-
     },
     /*--------Declaration of the different props:--------
         consultMod: If this props is present the form is in consult mode we disable all the field

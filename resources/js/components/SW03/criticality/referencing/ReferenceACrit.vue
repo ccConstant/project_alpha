@@ -14,26 +14,26 @@
             <!--ref="ask_dimTest_data" is used to call the child elements in this component-->
             <!--The emitted deleteFile is caught here and call the function getContent -->
             <CritIDForm
-                @checkedTests="createTest"
-                ref="ask_crit_data"
-                v-for="(component, key) in components"
-                :key="component.key"
                 :is="component.comp"
+                v-for="(component, key) in components"
                 :id="component.id"
-                :consultMod="isInConsultMod"
-                :modifMod="isInModifMod"
+                :key="component.key"
+                ref="ask_crit_data"
                 :artCriticality="component.crit_artCriticality"
-                :performanceMedicalDevice="component.crit_performanceMedicalDevice"
-                :data_checkedTests="component.crit_checkedTests"
-                :data_checkedTestRadioDim="component.crit_checkedTestRadioDim"
-                :data_checkedTestRadioFunc="component.crit_checkedTestRadioFunc"
-                :data_checkedTestRadioAsp="component.crit_checkedTestRadioAsp"
-                :data_checkedTestRadioDoc="component.crit_checkedTestRadioDoc"
-                :data_checkedTestRadioAdm="component.crit_checkedTestRadioAdm"
-                :remarks="component.crit_remarks"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :consultMod="isInConsultMod"
+                :data_checkedTestRadioAdm="component.crit_checkedTestRadioAdm"
+                :data_checkedTestRadioAsp="component.crit_checkedTestRadioAsp"
+                :data_checkedTestRadioDim="component.crit_checkedTestRadioDim"
+                :data_checkedTestRadioDoc="component.crit_checkedTestRadioDoc"
+                :data_checkedTestRadioFunc="component.crit_checkedTestRadioFunc"
+                :data_checkedTests="component.crit_checkedTests"
+                :modifMod="isInModifMod"
+                :performanceMedicalDevice="component.crit_performanceMedicalDevice"
+                :remarks="component.crit_remarks"
                 :validate="component.validate"
+                @checkedTests="createTest"
                 @deleteCrit="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -42,14 +42,14 @@
                 <button v-on:click="addComponent">Add Criticality</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
             </div>
-            <SaveButtonForm
-                saveAll
-                v-if="components.length>1"
-                @add="saveAll"
-                @update="saveAll"
-                :consultMod="this.isInConsultMod"
-                :modifMod="this.isInModifMod"
-            />
+            <!--            <SaveButtonForm
+                            saveAll
+                            v-if="components.length>1"
+                            @add="saveAll"
+                            @update="saveAll"
+                            :consultMod="this.isInConsultMod"
+                            :modifMod="this.isInModifMod"
+                        />-->
         </div>
     </div>
 
@@ -98,6 +98,9 @@ export default {
         },
         articleType: {
             type: String
+        },
+        articleSubFam_id: {
+            type: Number
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -118,7 +121,8 @@ export default {
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
             data_article_type: this.articleType.toLowerCase(),
-            loaded: false
+            loaded: false,
+            data_artSubFam_id: this.articleSubFam_id
         };
     },
     methods: {
@@ -142,8 +146,8 @@ export default {
             crit_remarks,
             crit_validate,
             incmgInsp_id, id, className) {
-                console.log("crit_performanceMedicalDevice :"+crit_performanceMedicalDevice )
-                    console.log("crit_checkedTests :"+crit_checkedTests )
+            console.log("crit_performanceMedicalDevice :" + crit_performanceMedicalDevice)
+            console.log("crit_checkedTests :" + crit_checkedTests)
             this.components.push({
                 comp: 'CritIDForm',
                 key: this.uniqueKey++,
@@ -188,13 +192,14 @@ export default {
                         dt.id,
                         className
                     );
+                    this.createTest(dt.crit_checkedTests);
                 }
                 this.criticality = null
             }
         },
-        createTest(value){
+        createTest(value) {
             console.log("Create Test in reference a crit")
-            console.log("checked test :"+value )
+            console.log("checked test :" + value)
             this.$emit('checkedTests', value);
         }
     },
@@ -203,14 +208,23 @@ export default {
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            axios.get('/artFam/criticality/send/'+this.data_article_type+'/'+this.import_id)
-                .then(response => {
-                    this.criticality = response.data;
-                    this.importCrit();
-                    this.loaded = true;
-                })
-                .catch(error => {
+            if (this.data_article_id !== null) {
+                axios.get('/artFam/criticality/send/' + this.data_article_type + '/' + this.import_id)
+                    .then(response => {
+                        this.criticality = response.data;
+                        this.importCrit();
+                        this.loaded = true;
+                    }).catch(error => {
                 });
+            } else {
+                axios.get('/artSubFam/criticality/send/' + this.data_article_type + '/' + this.import_id)
+                    .then(response => {
+                        this.criticality = response.data;
+                        this.importCrit();
+                        this.loaded = true;
+                    }).catch(error => {
+                });
+            }
         } else {
             this.loaded = true;
         }

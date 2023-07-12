@@ -34,14 +34,14 @@
                     <button v-if="!modifMod " v-on:click="importContact">import</button>
                 </div>
             </div>
-            <SaveButtonForm
+<!--            <SaveButtonForm
                 saveAll
                 v-if="components.length > 1"
                 @add="saveAllContact"
                 @update="saveAllContact"
                 :consultMod="this.isInConsultMod"
                 :modifMod="this.isInModifMod"
-            />
+            />-->
             <ImportationAlert ref="importAlert"/>
         </div>
     </div>

@@ -38,6 +38,7 @@ class CreateCompFamiliesTable extends Migration
             $table->enum('compFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('compFam_version')->nullable();
             $table->boolean('compFam_active')->default(true);
+            $table->boolean('compFam_subFam')->default(false);
            /* $table->string('compFam_genDesign')->nullable();
             $table->string('compFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();

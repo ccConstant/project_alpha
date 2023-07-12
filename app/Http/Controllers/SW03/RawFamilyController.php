@@ -131,6 +131,7 @@ class RawFamilyController extends Controller
             'rawFam_active' => $request->artFam_active,
            /* 'rawFam_genRef' => $request->artFam_genRef,
             'rawFam_genDesign' => $request->artFam_genDesign,*/
+            'rawFam_subFam' => $request->artFam_subFam,
         ]) ;
 
         $rawFamily_id=$rawFamily->id ;
@@ -179,6 +180,7 @@ class RawFamilyController extends Controller
                 'rawFam_technicalReviewerName' => $technicalReviewer,
                 'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
                 'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion,
+                'rawFam_subFam' => $rawFamily->rawFam_subFam,
             ];
             array_push($array, $obj);
         }
@@ -225,6 +227,7 @@ class RawFamilyController extends Controller
             'rawFam_technicalReviewerName' => $technicalReviewer,
             'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
             'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion,
+            'rawFam_subFam' => $rawFamily->rawFam_subFam,
         ];
         return response()->json($obj);
     }
@@ -256,6 +259,7 @@ class RawFamilyController extends Controller
             'rawFam_validate' => $request->artFam_validate,
             'rawFam_active' => $request->artFam_active,
             'enumPurchasedBy_id' => $enum,
+            'rawFam_subFam' => $request->artFam_subFam,
         ]);
         return response()->json($rawFamily);
     }

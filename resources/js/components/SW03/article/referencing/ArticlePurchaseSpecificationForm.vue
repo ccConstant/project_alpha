@@ -10,167 +10,53 @@
         </div>
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
-            <form class="container" >
+            <form class="container">
                 <InputSelectForm
-                    @clearSelectError='clearSelectError'
-                    name="supplier"
+                    v-model="purSpe_supplier_id"
                     :Errors="errors.purSpe_supplier_id"
-                    label="Supplier :"
+                    :id_actual="supplier_id"
+                    :info_text="null"
+                    :isDisabled="!!isInConsultMod"
                     :options="suppliers"
                     :selctedOption="purSpe_supplier_id"
-                    :isDisabled="!!isInConsultMod"
-                    v-model="purSpe_supplier_id"
-                    :info_text="null"
-                    :id_actual="supplier_id"
+                    label="Supplier :"
+                    name="supplier"
+                    @clearSelectError='clearSelectError'
                 />
                 <InputTextForm
                     v-if="this.purSpe_supplier_id !== 'Alpha'"
-                    :inputClassName="null"
-                    :Errors="errors.purSpe_supplier_ref"
-                    name="purSpe_supplrRef"
-                    label="Supplier's Reference"
-                    :isDisabled="this.isInConsultMod"
-                    isRequired
                     v-model="purSpe_supplier_ref"
+                    :Errors="errors.purSpe_supplier_ref"
                     :info_text="null"
-                    :min="2"
+                    :inputClassName="null"
+                    :isDisabled="this.isInConsultMod"
                     :max="255"
+                    :min="2"
+                    isRequired
+                    label="Supplier's article Reference"
+                    name="purSpe_supplrRef"
+                />
+                <InputTextForm
+                    v-model="purSpe_remark"
+                    :Errors="errors.purSpe_remark"
+                    :info_text="null"
+                    :inputClassName="null"
+                    :isDisabled="this.isInConsultMod"
+                    :max="255"
+                    :min="2"
+                    label="Remarks"
+                    name="purSpe_remark"
                 />
                 <SaveButtonForm v-if="this.addSucces===false"
-                    ref="saveButton"
-                    @add="addPurchaseSpecification"
-                    @update="updatePurchaseSpecification"
-                    :consultMod="this.isInConsultMod"
-                    :modifMod="this.isInModifMod"
-                    :savedAs="validate"/>
-                <DeleteComponentButton :validationMode="purSpe_validate" :consultMod="this.isInConsultMod"
+                                ref="saveButton"
+                                :consultMod="this.isInConsultMod"
+                                :modifMod="this.isInModifMod"
+                                :savedAs="validate"
+                                @add="addPurchaseSpecification"
+                                @update="updatePurchaseSpecification"/>
+                <DeleteComponentButton :consultMod="this.isInConsultMod" :validationMode="purSpe_validate"
                                        @deleteOk="deleteComponent"/>
             </form>
-            <div v-if="this.purSpe_id!=null">
-                    <div class="accordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingDocControl">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseDocControl" aria-expanded="true" aria-controls="collapseDocControl">
-                                    Documentary Control
-                                </button>
-                            </h2>
-                            <div id="collapseDocControl" class="accordion-collapse collapse show" aria-labelledby="headingDocControl">
-                                <div class="accordion-body">
-                                    <ReferenceADocControl
-                                        :articleType="artFam_type"
-                                        :article_id="art_id"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                        :purSpe_id="purSpe_id"
-                                        :checkedTest="this.data_checkedTest"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingAspTest">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
-                                    Aspect Test
-                                </button>
-                            </h2>
-                            <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
-                                <div class="accordion-body">
-                                    <ReferenceAnAspTest
-                                        :articleType="artFam_type"
-                                        :article_id="art_id"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                        :purSpe_id="purSpe_id"
-                                        :checkedTest="this.data_checkedTest"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <!-- FuncTest -->
-                        <div class="accordion-item" v-if="artFam_type === 'comp'">
-                            <h2 class="accordion-header" id="headingFuncTest">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseFuncTest" aria-expanded="true" aria-controls="collapseFuncTest">
-                                    Functional Test
-                                </button>
-                            </h2>
-                            <div id="collapseFuncTest" class="accordion-collapse collapse show" aria-labelledby="headingFuncTest">
-                                <div class="accordion-body">
-                                    <ReferenceAFuncTest
-                                        :articleType="artFam_type"
-                                        :article_id="art_id"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                        :purSpe_id="purSpe_id"
-                                        :checkedTest="this.data_checkedTest"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- DimTest -->
-                        <div class="accordion-item" v-if="artFam_type === 'comp' || artFam_type === 'raw'">
-                            <h2 class="accordion-header" id="headingDimTest">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseDimTest" aria-expanded="true" aria-controls="collapseDimTest">
-                                    Dimensional Test
-                                </button>
-                            </h2>
-                            <div id="collapseDimTest" class="accordion-collapse collapse show" aria-labelledby="headingDimTest">
-                                <div class="accordion-body">
-                                    <ReferenceADimTest
-                                        :articleType="artFam_type"
-                                        :article_id="art_id"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                        :purSpe_id="purSpe_id"
-                                        :checkedTest="this.data_checkedTest"
-                                    />
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingAspTest">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseAspTest" aria-expanded="true" aria-controls="collapseAspTest">
-                                    Administrative Control
-                                </button>
-                            </h2>
-                            <div id="collapseAspTest" class="accordion-collapse collapse show" aria-labelledby="headingAspTest">
-                                <div class="accordion-body">
-                                    <ReferenceAnAdminControl
-                                        :articleType="artFam_type"
-                                        :article_id="art_id"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                        :purSpe_id="purSpe_id"
-                                        :checkedTest="this.data_checkedTest"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <!-- CompTest -->
-                        <div class="accordion-item" v-if="artFam_type === 'cons'">
-                            <h2 class="accordion-header" id="headingCompTest">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseCompTest" aria-expanded="true" aria-controls="collapseCompTest">
-                                    Complementary Test
-                                </button>
-                            </h2>
-                            <div id="collapseCompTest" class="accordion-collapse collapse show" aria-labelledby="headingCompTest">
-                                <div class="accordion-body">
-                                    <ReferenceACompTest
-                                        :articleType="artFam_type"
-                                        :article_id="art_id"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
-                                        :purSpe_id="purSpe_id"
-                                        :checkedTest="this.data_checkedTest"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             <SucessAlert ref="sucessAlert"/>
         </div>
     </div>
@@ -219,7 +105,7 @@ export default {
         eq_id: ID of the equipment in which the file will be added
     ---------------------------------------------------*/
     props: {
-        requiredDoc: {
+        remark: {
             type: String
         },
         supplier_id: {
@@ -249,7 +135,7 @@ export default {
         art_id: {
             type: Number
         },
-        art_type:{
+        art_type: {
             type: String
         },
         checkedTest: {
@@ -269,13 +155,13 @@ export default {
 -----------------------------------------------------------*/
     data() {
         return {
-            purSpe_requiredDoc: this.requiredDoc,
+            purSpe_remark: this.remark,
             purSpe_supplier_id: this.supplier_id,
             purSpe_supplier_ref: this.supplier_ref,
             purSpe_validate: this.validate,
             purSpe_id: this.id,
             art_id_add: this.art_id,
-            artFam_type:this.art_type,
+            artFam_type: this.art_type,
             art_id_update: this.$route.params.id,
             errors: {},
             addSucces: false,
@@ -304,35 +190,33 @@ export default {
                     id = this.art_id_update;
                 }
                 axios.post('/purSpe/verif', {
-                    purSpe_requiredDoc: this.purSpe_requiredDoc,
                     purSpe_validate: savedAs,
                     purSpe_supplier_id: this.purSpe_supplier_id,
                     purSpe_supplier_ref: this.purSpe_supplier_ref,
+                    purSpe_remark: this.purSpe_remark,
                 })
-                /*If the data are correct, we send them to the controller for add them in the database*/
-                .then(response => {
-                    this.errors = {};
-                    const consultUrl = (id) => `/purSpe/add/${id}`;
-                    axios.post(consultUrl(id), {
-                        purSpe_requiredDoc: this.purSpe_requiredDoc,
-                        purSpe_validate: savedAs,
-                        artFam_type : this.artFam_type.toUpperCase(),
-                        purSpe_supplier_id: this.purSpe_supplier_id,
-                        purSpe_supplier_ref: this.purSpe_supplier_ref,
-                    })
-                    /*If the data have been added in the database, we show a success message*/
+                    /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
-                        this.addSuccess = true;
-                        this.isInConsultMod = true;
-                        this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
-                        this.purSpe_id = response.data;
-                        this.purSpe_validate=savedAs;
-                    })
-                    .catch(error => {
-                        this.errors = error.response.data.errors;
-                    });
-                })
-                .catch(error => this.errors = error.response.data.errors);
+                        this.errors = {};
+                        const consultUrl = (id) => `/purSpe/add/${id}`;
+                        axios.post(consultUrl(id), {
+                            purSpe_validate: savedAs,
+                            artFam_type: this.artFam_type.toUpperCase(),
+                            purSpe_supplier_id: this.purSpe_supplier_id,
+                            purSpe_supplier_ref: this.purSpe_supplier_ref,
+                            purSpe_remark: this.purSpe_remark,
+                        })
+                            /*If the data have been added in the database, we show a success message*/
+                            .then(response => {
+                                this.addSuccess = true;
+                                this.isInConsultMod = true;
+                                this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
+                                this.purSpe_id = response.data;
+                                this.purSpe_validate = savedAs;
+                            }).catch(error => {
+                                this.errors = error.response.data.errors;
+                            });
+                    }).catch(error => this.errors = error.response.data.errors);
             }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
@@ -343,23 +227,21 @@ export default {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
             axios.post('/purSpe/verif', {
-                purSpe_requiredDoc: this.purSpe_requiredDoc,
                 purSpe_validate: savedAs,
                 purSpe_supplier_id: this.purSpe_supplier_id,
                 purSpe_supplier_ref: this.purSpe_supplier_ref,
-            })
-                .then(response => {
+                purSpe_remark: this.purSpe_remark,
+            }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
                     Type, name, value, unit, validate option and id of the equipment is sent to the controller
                     In the post url the id correspond to the id of the file who will be updated*/
                     axios.post('/purSpe/update/' + this.artFam_type + '/' + this.purSpe_id, {
-                        purSpe_requiredDoc: this.purSpe_requiredDoc,
                         purSpe_validate: savedAs,
                         purSpe_supplier_id: this.purSpe_supplier_id,
                         purSpe_supplier_ref: this.purSpe_supplier_ref,
-                    })
-                        .then(response => {
+                        purSpe_remark: this.purSpe_remark,
+                    }).then(response => {
                             this.file_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
@@ -427,6 +309,7 @@ export default {
                     value: 'Alpha',
                     text: -1,
                 })*/
+                console.log(response.data);
                 for (let i = 0; i < response.data.length; i++) {
                     this.suppliers.push({
                         id_enum: 'suppliers',
@@ -434,7 +317,7 @@ export default {
                         text: response.data[i].id,
                     });
                 }
-                this.loaded=true;
+                this.loaded = true;
             })
             .catch(error => {
             });

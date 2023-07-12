@@ -38,6 +38,7 @@ class CreateConsFamiliesTable extends Migration
             $table->enum('consFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->string('consFam_version')->nullable();
             $table->boolean('consFam_active')->default(true);
+            $table->boolean('consFam_subFam')->default(false);
           /*  $table->string('consFam_genDesign')->nullable();
             $table->string('consFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();

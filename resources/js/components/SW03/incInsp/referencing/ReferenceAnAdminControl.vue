@@ -37,9 +37,9 @@
                 <button v-on:click="addComponent('')">Add</button>
                 <!--If file array is not empty and if the user is not in modification mode -->
             </div>
-            <SaveButtonForm v-if="components.length>1" :consultMod="this.isInModifMod" :modifMod="this.isInModifMod"
+<!--            <SaveButtonForm v-if="components.length>1" :consultMod="this.isInModifMod" :modifMod="this.isInModifMod"
                         saveAll
-                        @add="saveAll" @update="saveAll"/>
+                        @add="saveAll" @update="saveAll"/>-->
         </div>
     </div>
 </template>
@@ -121,7 +121,7 @@ export default {
             data_article_type: this.articleType,
             data_incmingInsp_id: this.incmgInsp_id,
             loaded: false,
-            
+
         };
     },
     methods: {
@@ -173,28 +173,28 @@ export default {
             }
         },
         /*Function for saving all the data in one time*/
-        saveAll(savedAs) {
+        /*saveAll(savedAs) {
             for (const component of this.$refs.ask_adminControl_data) {
-                /*If the user is in modification mode*/
+                /!*If the user is in modification mode*!/
                 if (this.modifMod == true) {
-                    /*If the file doesn't have, an id*/
+                    /!*If the file doesn't have, an id*!/
                     if (component.id == null) {
-                        /*AddequipmentFile is used*/
+                        /!*AddequipmentFile is used*!/
                         component.addEquipmentFile(savedAs);
                     } else
-                        /*Else if the file has an id and addSucces is equal to true*/
+                        /!*Else if the file has an id and addSucces is equal to true*!/
                     if (component.id != null || component.addSucces == true) {
-                        /*updateEquipmentFile is used*/
-                        /*if (component !== "validated") {
+                        /!*updateEquipmentFile is used*!/
+                        /!*if (component !== "validated") {
                             component.updateEquipmentFile(savedAs);
-                        }*/ // FIXME ?
+                        }*!/ // FIXME ?
                     }
                 } else {
-                    /*Else If the user is not in modification mode*/
+                    /!*Else If the user is not in modification mode*!/
                     component.addEquipmentFile(savedAs);
                 }
             }
-        }
+        }*/
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
@@ -206,11 +206,11 @@ export default {
         if (this.import_id !== null) {
              var consultUrl="";
             if (this.purSpe_id!=null){
-            consultUrl = (id) => `/incmgInsp/adminControl/sendFromPurSpe/${id}`; 
+            consultUrl = (id) => `/incmgInsp/adminControl/sendFromPurSpe/${id}`;
             console.log("ce cas la")
             console.log(this.import_id)
             }else{
-                consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`; 
+                consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`;
             }
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
             axios.get(consultUrl(this.import_id))

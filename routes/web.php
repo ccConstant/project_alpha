@@ -1076,12 +1076,12 @@ Route::post('/raw/subFam/update/{id}', [RawSubFamilyController::class, 'update_r
 
 
 // Incoming Inspection Controller
-Route::post('/incmgInsp/add', [IncmgInspController::class, 'add_incmgInsp']);
-Route::post('/incmgInsp/update/{id}', [IncmgInspController::class, 'update_incmgInsp']);
-Route::get('/incmgInsp/send', [IncmgInspController::class, 'send_incmgInsp']);
-Route::get('/incmgInsp/send/raw/{id}', [IncmgInspController::class, 'send_incmgInspRaw']);
-Route::get('/incmgInsp/send/comp/{id}', [IncmgInspController::class, 'send_incmgInspComp']);
-Route::get('/incmgInsp/send/cons/{id}', [IncmgInspController::class, 'send_incmgInspCons']);
+Route::post('/artFam/incmgInsp/add', [IncmgInspController::class, 'add_incmgInsp']);
+Route::post('/artFam/incmgInsp/update/{id}', [IncmgInspController::class, 'update_incmgInsp']);
+Route::get('/artFam/incmgInsp/send', [IncmgInspController::class, 'send_incmgInsp']);
+Route::get('/artFam/incmgInsp/send/raw/{id}', [IncmgInspController::class, 'send_incmgInspRaw']);
+Route::get('/artFam/incmgInsp/send/comp/{id}', [IncmgInspController::class, 'send_incmgInspComp']);
+Route::get('/artFam/incmgInsp/send/cons/{id}', [IncmgInspController::class, 'send_incmgInspCons']);
 
 // Documentary Control Controller
 Route::post('/incmgInsp/docControl/verif', [DocControlController::class, 'verif_docControl']);
@@ -1157,11 +1157,11 @@ Route::get('/artFam/criticality/send/{type}/{id}', [CriticalityController::class
 
 
 //purchase Specification
-Route::post('/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);
-Route::post('/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
-Route::post('/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
-Route::get('/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
-Route::get('/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);
+Route::post('/artFam/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);
+Route::post('/artFam/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
+Route::post('/artFam/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
+Route::get('/artFam/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
+Route::get('/artFam/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);
 
 //History for article
 Route::post('/artFam/history/add/{type}/{id}', [HistoryController::class, 'add_history_for_article']);

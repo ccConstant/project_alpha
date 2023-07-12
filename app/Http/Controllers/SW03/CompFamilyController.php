@@ -135,6 +135,7 @@ class CompFamilyController extends Controller
             'compFam_validate' => $request->artFam_validate,
             'compFam_version' => $request->artFam_version,
             'compFam_active' => $request->artFam_active,
+            'compFam_subFam' => $request->artFam_subFam,
         ]) ;
 
         $compFamily_id=$compFamily->id ;
@@ -184,6 +185,7 @@ class CompFamilyController extends Controller
                 'compFam_qualityApproverName' => $qualityApprover,
                 'compFam_purchasedBy' => $purchaseBy,
                 'compFam_signatureDate' => $compFamily->compFam_signatureDate,
+                'compFam_subFam' => $compFamily->compFam_subFam,
             ];
             array_push($array, $obj);
         }
@@ -231,6 +233,7 @@ class CompFamilyController extends Controller
             'compFam_qualityApproverName' => $qualityApprover,
             'compFam_purchasedBy' => $purchaseBy,
             'compFam_signatureDate' => $compFamily->compFam_signatureDate,
+            'compFam_subFam' => $compFamily->compFam_subFam,
         ];
         return response()->json($obj);
     }
@@ -263,6 +266,7 @@ class CompFamilyController extends Controller
             'compFam_validate' => $request->artFam_validate,
             'compFam_active' => $request->artFam_active,
             'enumPurchasedBy_id' => $enum,
+            'compFam_subFam' => $request->artFam_subFam,
         ]);
         return response()->json($compFamily);
     }

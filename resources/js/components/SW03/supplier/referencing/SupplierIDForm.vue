@@ -403,7 +403,9 @@ export default {
                 supplr_VATnumber: this.supplr_VatNumber,
                 supplr_critical: this.supplr_critical,
                 supplr_endLinkToFolder: this.supplr_endLinkToFolder,
-                supplr_active: this.supplr_active
+                supplr_active: this.supplr_active,
+                user_id: this.$userId.id,
+                reason: 'add',
             }).then(response => {
                 this.errors = [];
                 axios.post('/supplier/add', {
@@ -424,7 +426,9 @@ export default {
                     supplr_VATnumber: this.supplr_VatNumber,
                     supplr_critical: this.supplr_critical,
                     supplr_endLinkToFolder: this.supplr_endLinkToFolder,
-                    supplr_active: this.supplr_active
+                    supplr_active: this.supplr_active,
+                    user_id: this.$userId.id,
+                    reason: 'add',
                 }).then(response => {
                     this.$snotify.success('Supplier\'s ID card is correctly added in the database as ' + savedAs);
                     this.addSuccess = true;

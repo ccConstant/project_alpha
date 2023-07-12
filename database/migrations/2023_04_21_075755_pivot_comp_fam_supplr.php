@@ -28,6 +28,7 @@ class PivotCompFamSupplr extends Migration
             $table->unsignedBigInteger('supplr_id');
             $table->foreign('supplr_id')->references('id')->on('suppliers')->onDelete('cascade');
             $table->string('supplr_ref')->nullable();
+            $table->string('remark')->nullable();
             $table->unsignedBigInteger('purSpec_id');
             $table->timestamps();
         });

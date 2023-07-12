@@ -10,22 +10,24 @@
 
 namespace App\Http\Controllers\SW03;
 
+use App\Http\Controllers\Controller;
 use App\Models\SW03\CompFamily;
 use App\Models\SW03\ConsFamily;
+use App\Models\SW03\PurchaseSpecification;
 use App\Models\SW03\RawFamily;
 use App\Models\SW03\Supplier;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\SW03\PurchaseSpecification;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class PurchaseSpecificationController extends Controller
 {
     /**
      * Function call by ArticlePurchaseSpecificationForm.vue when the form is submitted for verif with the route : '/purSpe/verif (post)
-     * Verify that the informations entered by the user are correct 
+     * Verify that the informations entered by the user are correct
      */
-    public function verif_purSpe(Request $request){
+    public function verif_purSpe(Request $request)
+    {
         $this->validate(
             $request,
             [
@@ -36,7 +38,7 @@ class PurchaseSpecificationController extends Controller
                 'purSpe_supplier_id.required' => 'You must enter a supplier id',
             ]
         );
-        if ($request->purSpe_supplier_id != "Alpha"){
+        if ($request->purSpe_supplier_id != "Alpha") {
             $this->validate(
                 $request,
                 [
@@ -53,58 +55,72 @@ class PurchaseSpecificationController extends Controller
     /**
      * Function call by ArticlePurchaseSpecificationForm.vue when the form is submitted for insert with the route : '/purSpe/add (post)
      * Add a new enregistrement of purchase specification in the data base with the informations entered in the form
-     * @return \Illuminate\Http\Response : id of the new purchase specification
+     * @return Response : id of the new purchase specification
      */
-    public function add_purSpe(Request $request, $id){
+    public function add_purSpe(Request $request, $id)
+    {
         //Creation of a new purchase specification
-        $consFam_id=null ;
-        $rawFam_id=null ;
-        $compFam_id=null ;
+        $consFam_id = null;
+        $rawFam_id = null;
+        $compFam_id = null;
         $supplier = Supplier::all()->where('supplr_name', '==', $request->purSpe_supplier_id)->first();
         if ($supplier === null) {
             return response()->json('error', 429);
         }
-        if ($request->artFam_type=="COMP"){
-            $compFam_id=$id;
+        if ($request->artFam_type == "COMP") {
+            $compFam_id = $id;
         }
-        if($request->artFam_type=="RAW"){
-            $rawFam_id=$id;
+        if ($request->artFam_type == "RAW") {
+            $rawFam_id = $id;
         }
-        if($request->artFam_type=="CONS"){
-            $consFam_id=$id;
+        if ($request->artFam_type == "CONS") {
+            $consFam_id = $id;
         }
-        $purSpe=PurchaseSpecification::create([
+        $purSpe = PurchaseSpecification::create([
             'consFam_id' => $consFam_id,
             'rawFam_id' => $rawFam_id,
             'compFam_id' => $compFam_id,
             'purSpe_validate' => $request->purSpe_validate
-        ]) ;
-        if ($request->artFam_type=="COMP"){
+        ]);
+        if ($request->artFam_type == "COMP") {
             $comp = CompFamily::all()->where('id', '==', $id)->first();
-            $comp->suppliers()->attach($supplier, [
-                'supplr_ref' => $request->purSpe_supplier_ref,
-                'purSpec_id' => $purSpe->id,
-            ]);
+            $comp->suppliers()->attach(
+                $supplier,
+                [
+                    'supplr_ref' => $request->purSpe_supplier_ref,
+                    'purSpec_id' => $purSpe->id,
+                    'remark' => $request->purSpe_remark,
+                ]
+            );
         }
-        if($request->artFam_type=="RAW"){
+        if ($request->artFam_type == "RAW") {
             $raw = RawFamily::all()->where('id', '==', $id)->first();
-            $raw->suppliers()->attach($supplier, [
-                'supplr_ref' => $request->purSpe_supplier_ref,
-                'purSpec_id' => $purSpe->id,
-            ]);
+            $raw->suppliers()->attach(
+                $supplier,
+                [
+                    'supplr_ref' => $request->purSpe_supplier_ref,
+                    'purSpec_id' => $purSpe->id,
+                    'remark' => $request->purSpe_remark,
+                ]
+            );
         }
-        if($request->artFam_type=="CONS"){
+        if ($request->artFam_type == "CONS") {
             $cons = ConsFamily::all()->where('id', '==', $id)->first();
-            $cons->suppliers()->attach($supplier, [
-                'supplr_ref' => $request->purSpe_supplier_ref,
-                'purSpec_id' => $purSpe->id,
-            ]);
+            $cons->suppliers()->attach(
+                $supplier,
+                [
+                    'supplr_ref' => $request->purSpe_supplier_ref,
+                    'purSpec_id' => $purSpe->id,
+                    'remark' => $request->purSpe_remark,
+                ]
+            );
         }
-        $purSpe_id=$purSpe->id ;
-        return response()->json($purSpe_id) ;
+        $purSpe_id = $purSpe->id;
+        return response()->json($purSpe_id);
     }
 
-    public function send_purSpes($type, $id) {
+    public function send_purSpes($type, $id)
+    {
         $array = [];
         $pivot = [];
         $supplier = null;
@@ -145,12 +161,14 @@ class PurchaseSpecificationController extends Controller
                 'compFam_id' => $purSpec->compFam_id,
                 'purSpe_supplier_id' => Supplier::all()->where('id', '==', $supp->supplr_id)->first()->supplr_name,
                 'purSpe_supplier_ref' => $supp->supplr_ref,
+                'purSpe_remark' => $supp->remark,
             ]);
         }
         return response()->json($array);
     }
 
-    public function update_purSpe(Request $request, $type, $id) {
+    public function update_purSpe(Request $request, $type, $id)
+    {
         $purSpec = PurchaseSpecification::all()->where('id', '==', $id)->first();
         if ($type === 'cons') {
             $article = ConsFamily::all()->where('id', '==', $purSpec->consFam_id)->first();
@@ -180,18 +198,18 @@ class PurchaseSpecificationController extends Controller
             return response()->json('error', 429);
         }
         $article->update([
-            $type.'Fam_signatureDate' => null,
-            $type.'Fam_qualityApproverId' => null,
-            $type.'Fam_technicalReviewerId' => null,
+            $type . 'Fam_signatureDate' => null,
+            $type . 'Fam_qualityApproverId' => null,
+            $type . 'Fam_technicalReviewerId' => null,
         ]);
         $purSpec->update([
-            'purSpe_requiredDoc' => $request->purSpe_requiredDoc,
             'purSpe_validate' => $request->purSpe_validate,
             'purSpe_supplier_ref' => $request->purSpe_supplier_ref,
             'purSpe_supplier_id' => $request->purSpe_supplier_id,
             'purSpe_qualityApproverId' => null,
             'purSpe_technicalReviewerId' => null,
             'purSpe_signatureDate' => null,
+            'purSpe_remark' => $request->purSpe_remark,
         ]);
         return response()->json($purSpec);
     }
