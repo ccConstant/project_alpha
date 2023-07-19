@@ -24,7 +24,7 @@ class PurchaseSpecification extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the data base.
-    protected $fillable = ['purSpe_qualityApproverId', 'purSpe_technicalReviewerId', 'purSpe_signatureDate', 'purSpe_validate', 'rawFam_id', 'consFam_id', 'compFam_id'] ;
+    protected $fillable = ['purSpe_qualityApproverId', 'purSpe_technicalReviewerId', 'purSpe_signatureDate', 'purSpe_validate', 'rawFam_id', 'consFam_id', 'compFam_id', 'rawSubFam_id', 'consSubFam_id', 'compSubFam_id'] ;
 
     //Define the relation between a purchaseSpecification and the raw_family which he is linked : a purchaseSpecification can be linked to only one raw_family
     public function raw_family(){

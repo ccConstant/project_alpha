@@ -15,6 +15,7 @@ namespace App\Models\SW03;
 use App\Models\SW03\CompFamilyMember;
 use App\Models\User;
 use App\Models\SW03\EnumPurchasedBy;
+use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\CompFamily;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -41,6 +42,16 @@ class CompSubFamily extends Model
     //Define the relation between a compFamily and its compSubFamily : a compSubFamily can correspond to only one compFamily
     public function comp_family_member(){
         return $this->hasMany(CompFamilyMember::class) ;
+    }
+
+     //Define the relation between a supplier and its compSubFamily : a compSubFamily can correspond to many suppliers
+     public function suppliers(){
+        return $this->belongsToMany(Supplier::class, 'pivot_comp_sub_fam_supplr', 'compSubFam_id', 'supplr_id') ;
+    }
+
+     //Define the relation between an EnumStorageCondition and its compSubFamily : a compSubFamily can correspond to many EnumStorageCondition
+     public function storage_conditions(){
+        return $this->belongsToMany(EnumStorageCondition::class, 'pivot_comp_sub_fam_sto_cond', 'compSubFam_id', 'storageCondition_id') ;
     }
 
     //Define the relation between a comp_sub_family and the comp_family which he is linked : a comp_sub_family can be linked to only one comp_family

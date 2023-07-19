@@ -131,7 +131,7 @@ export default {
             type: Number,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         },
@@ -159,7 +159,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
-            data_purSpe_id: this.purSpe_id,
+            data_subFam_id: this.articleSubFam_id,
             info_adminControl: []
         }
     },
@@ -172,7 +172,9 @@ export default {
                     adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                     adminControl_FDS: this.adminControl_fds,
                     incmgInsp_id: this.data_incmgInsp_id,
-                    purSpe_id: this.purSpe_id,
+                    article_type: this.data_article_type,
+                    article_id: this.data_article_id,
+                    subFam_id : this.data_subFam_id,
                     reason: 'add',
                     article_id: this.data_article_id,
                 })
@@ -185,10 +187,11 @@ export default {
                         adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                         adminControl_FDS: this.adminControl_fds,
                         incmgInsp_id: this.data_incmgInsp_id,
-                        purSpe_id: this.purSpe_id,
+                        article_type: this.data_article_type,
+                        article_id: this.data_article_id,
+                        subFam_id : this.data_subFam_id,
                         reason: 'add',
                         id: this.adminControl_id,
-                        article_id: this.data_article_id,
                     })
                     .then(response => {
                         this.$refs.sucessAlert.showAlert(`Administrative control added successfully`);

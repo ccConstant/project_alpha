@@ -778,6 +778,11 @@ Route::get('/artFam/incmgInsp/send', [IncmgInspController::class, 'send_incmgIns
 Route::get('/artFam/incmgInsp/send/raw/{id}', [IncmgInspController::class, 'send_incmgInspRaw']);
 Route::get('/artFam/incmgInsp/send/comp/{id}', [IncmgInspController::class, 'send_incmgInspComp']);
 Route::get('/artFam/incmgInsp/send/cons/{id}', [IncmgInspController::class, 'send_incmgInspCons']);
+Route::get('/subFam/incmgInsp/send/raw/{id}', [IncmgInspController::class, 'send_subFamIncmgInspRaw']);
+Route::get('/subFam/incmgInsp/send/comp/{id}', [IncmgInspController::class, 'send_subFamIncmgInspComp']);
+Route::get('/subFam/incmgInsp/send/cons/{id}', [IncmgInspController::class, 'send_subFamIncmgInspCons']);
+
+
 
 // Documentary Control Controller
 Route::post('/incmgInsp/docControl/verif', [DocControlController::class, 'verif_docControl']);
@@ -785,20 +790,27 @@ Route::post('/incmgInsp/docControl/add', [DocControlController::class, 'add_docC
 Route::post('/incmgInsp/docControl/update/{id}', [DocControlController::class, 'update_docControl']);
 Route::get('/incmgInsp/docControl/send/{id}', [DocControlController::class, 'send_docControl']);
 Route::get('/incmgInsp/docControl/sendFromIncmgInsp/{id}', [DocControlController::class, 'send_docControlFromIncmgInsp']);
+Route::get('/incmgInsp/docControl/sendFromFamily/{type}/{id}', [DocControlController::class, 'send_docControlFromFamily']);
+Route::get('/incmgInsp/docControl/sendFromSubFamily/{type}/{id}', [DocControlController::class, 'send_docControlFromSubFamily']);
+
+
+
 
 // Administrative Control Controller
 Route::post('/incmgInsp/adminControl/verif', [AdminControlController::class, 'verif_adminControl']);
 Route::post('/incmgInsp/adminControl/add', [AdminControlController::class, 'add_adminControl']);
 Route::post('/incmgInsp/adminControl/update/{id}', [AdminControlController::class, 'update_adminControl']);
 Route::get('/incmgInsp/adminControl/sendFromIncmgInsp/{id}', [AdminControlController::class, 'send_adminControlFromIncmgInsp']);
-Route::get('/incmgInsp/adminControl/sendFromPurSpe/{id}', [AdminControlController::class, 'send_adminControlFromPurSpe']);
+Route::get('/incmgInsp/adminControl/sendFromFamily/{type}/{id}', [AdminControlController::class, 'send_adminControlFromFamily']);
+Route::get('/incmgInsp/adminControl/sendFromSubFamily/{type}/{id}', [AdminControlController::class, 'send_adminControlFromSubFamily']);
 
 // Aspect Test Controller
 Route::post('/incmgInsp/aspTest/verif', [AspectTestController::class, 'verif_aspectTest']);
 Route::post('/incmgInsp/aspTest/add', [AspectTestController::class, 'add_aspectTest']);
 Route::post('/incmgInsp/aspTest/update/{id}', [AspectTestController::class, 'update_aspectTest']);
 Route::get('/incmgInsp/aspTest/sendFromIncmgInsp/{id}', [AspectTestController::class, 'send_aspectTestFromIncmgInsp']);
-Route::get('/incmgInsp/aspTest/sendFromPurSpe/{id}', [AspectTestController::class, 'send_aspectTestFromPurSpe']);
+Route::get('/incmgInsp/aspTest/sendFromFamily/{type}/{id}', [AspectTestController::class, 'send_aspectTestFromFamily']);
+Route::get('/incmgInsp/aspTest/sendFromSubFamily/{type}/{id}', [AspectTestController::class, 'send_aspectTestFromSubFamily']);
 
 // Functionnal Test Controller
 Route::post('/incmgInsp/funcTest/verif', [FunctionnalTestController::class, 'verif_funcTest']);
@@ -806,7 +818,8 @@ Route::post('/incmgInsp/funcTest/add', [FunctionnalTestController::class, 'add_f
 Route::post('/incmgInsp/funcTest/update/{id}', [FunctionnalTestController::class, 'update_funcTest']);
 Route::get('/incmgInsp/funcTest/send/{id}', [FunctionnalTestController::class, 'send_funcTest']);
 Route::get('/incmgInsp/funcTest/sendFromIncmgInsp/{id}', [FunctionnalTestController::class, 'send_funcTestFromIncmgInsp']);
-Route::get('/incmgInsp/funcTest/sendFromPurSpe/{id}', [FunctionnalTestController::class, 'send_funcTestFromPurSpe']);
+Route::get('/incmgInsp/funcTest/sendFromFamily/{type}/{id}', [FunctionnalTestController::class, 'send_funcTestFromFamily']);
+Route::get('/incmgInsp/funcTest/sendFromSubFamily/{type}/{id}', [FunctionnalTestController::class, 'send_funcTestFromSubFamily']);
 
 // Dimensionnal Test Controller
 Route::post('/incmgInsp/dimTest/verif', [DimensionnalTestController::class, 'verif_dimTest']);
@@ -814,6 +827,9 @@ Route::post('/incmgInsp/dimTest/add', [DimensionnalTestController::class, 'add_d
 Route::post('/incmgInsp/dimTest/update/{id}', [DimensionnalTestController::class, 'update_dimTest']);
 Route::get('/incmgInsp/dimTest/send/{id}', [DimensionnalTestController::class, 'send_dimTest']);
 Route::get('/incmgInsp/dimTest/sendFromIncmgInsp/{id}', [DimensionnalTestController::class, 'send_dimTestFromIncmgInsp']);
+Route::get('/incmgInsp/dimTest/sendFromFamily/{type}/{id}', [DimensionnalTestController::class, 'send_dimTestFromFamily']);
+Route::get('/incmgInsp/dimTest/sendFromSubFamily/{type}/{id}', [DimensionnalTestController::class, 'send_dimTestFromSubFamily']);
+
 
 // Complementary Test Controller
 Route::post('/incmgInsp/compTest/verif', [ComplementaryTestController::class, 'verif_compTest']);
@@ -860,6 +876,7 @@ Route::get('/artSubFam/criticality/send/{type}/{id}', [CriticalityController::cl
 //purchase Specification
 Route::post('/artFam/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);
 Route::post('/artFam/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
+Route::post('/artSubFam/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe_subFam']);
 Route::post('/artFam/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
 Route::get('/artFam/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
 Route::get('/artFam/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);

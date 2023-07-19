@@ -26,6 +26,7 @@
                 :materialCertiSpec="component.materialCertiSpec"
                 :fds="component.fds"
                 :incmgInsp_id="incmgInsp_id"
+
                 :articleSubFam_id="data_sub_fam_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
@@ -208,26 +209,45 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        if (this.checkedTest!=null && this.checkedTest.includes('docControl') || this.docControl_name !== "Test required to ensure performance of the medical device") {
+        if (this.checkedTest!=null && this.checkedTest.includes('docControl') || this.docControl_name !== "Test required to ensure performance of the medical device" && this.docControl_name!=null) {
             this.addComponent(this.docControl_name);
-        }
+        }   
         /*If the user chooses importation doc control*/
-        if (this.import_id !== null) {
+        if (this.import_id !== null && this.modifMod) {
+            var consultUrl="";
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
-            if (this.incmgInsp_id === null) {
-                const consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`;
+            if (this.data_article_id != null && this.data_article_id == this.import_id) {
+                consultUrl = (type,id) => `/incmgInsp/docControl/sendFromFamily/${type}/${id}`;
             }else{
-                const consultUrl = (id) => `/incmgInsp/docControl/sendFromPurSpe/${id}`; // FIXME
+                if (this.incmgInsp_id != null && this.incmgInsp_id == this.import_id){
+                    consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`;
+                }else{
+                    if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
+                        consultUrl = (id) => `/incmgInsp/docControl/sendFromSubFam/${type}/${id}`; // FIXME
+                    }    
+                }
+
             }
-            const consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`; // FIXME
-            axios.get(consultUrl(this.import_id))
-                .then(response => {
-                    this.docControl = response.data;
-                    this.importDocControl();
-                    this.loaded = true;
-                })
-                .catch(error => {
-                });
+
+            if (this.data_article_id != null && this.data_article_id == this.import_id || this.data_sub_fam_id!=null && this.data_sub_fam_id == this.import_id ){
+                axios.get(consultUrl(this.articleType,this.import_id))
+                    .then(response => {
+                        this.docControl = response.data;
+                        this.importDocControl();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            }else{
+                axios.get(consultUrl(this.import_id))
+                    .then(response => {
+                        this.docControl = response.data;
+                        this.importDocControl();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            }
         } else {
             this.loaded = true;
         }

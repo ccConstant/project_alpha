@@ -74,7 +74,7 @@ class AdminControlController extends Controller
                 ]
             );
         }
-        if ($request->purSpe_id !== null) {
+        /*if ($request->purSpe_id !== null) {
             $purSpe = null;
             if ($request->adminControl_articleType === 'comp') {
                 $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
@@ -118,7 +118,7 @@ class AdminControlController extends Controller
                     'adminControl_name' => 'This documentary control already exists',
                 ], 429);
             }
-        }
+        }*/
     }
 
     /**
@@ -127,12 +127,46 @@ class AdminControlController extends Controller
      * @return \Illuminate\Http\Response : id of the new admin control
      */
     public function add_adminControl(Request $request) {
+        $cons=null;
+        $raw=null;
+        $comp=null;
+        $subComp=null;
+        $subCons=null;
+        $subRaw=null;
+        if ($request->article_id!=null && $request->incmgInsp_id==null){
+            if ($request->article_type=='cons'){
+                $cons=$request->article_id;
+            }
+            else if ($request->article_type=='raw'){
+                $raw=$request->article_id;
+            }
+            else if ($request->article_type=='comp'){
+                $comp=$request->article_id;
+            }
+        }else{
+            if ($request->incmgInsp_id==null){
+                if ($request->article_type=='cons'){
+                    $subCons=$request->subFam_id;
+                }
+                else if ($request->article_type=='raw'){
+                    $subRaw=$request->subFam_id;
+                }
+                else if ($request->article_type=='comp'){
+                    $subComp=$request->subFam_id;
+                }
+            }
+        }
         $adminControl = AdminControl::create([
             'adminControl_name' => $request->adminControl_name,
             'adminControl_reference' => $request->adminControl_reference,
             'adminControl_materialCertifSpe' => $request->adminControl_materialCertifSpe,
             'incmgInsp_id' => $request->incmgInsp_id,
-            'purSpe_id' => $request->purSpe_id,
+            'rawFam_id' => $raw,
+            'consFam_id' => $cons,
+            'compFam_id' => $comp,
+            'rawSubFam_id' => $subRaw,
+            'consSubFam_id' => $subCons,
+            'compSubFam_id' => $subComp,
             'adminControl_FDS' => $request->adminControl_FDS,
         ]);
         return response()->json($adminControl);
@@ -160,20 +194,58 @@ class AdminControlController extends Controller
         return response()->json($array);
     }
 
-     /**
-     * Function call by ReferenceAnAdminControl.vue with the route : /incmgInsp/adminControl/sendFromPurSpe/{id} (get)
-     * Get all the doc control corresponding in the data base
+    /**
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/adminControl/sendFromFamily/{type}/{id} (get)
+     * Get all the aspect test corresponding in the data base
      * @return \Illuminate\Http\Response
      */
-    public function send_adminControlFromPurSpe($id) {
-        $adminControl = AdminControl::all()->where('purSpe_id', "==", $id)->all();
+    public function send_adminControlFromFamily($type,$id) {
+        if ($type=="comp"){
+            $adminControl = AdminControl::all()->where('compFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $adminControl = AdminControl::all()->where('rawFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $adminControl = AdminControl::all()->where('consFam_id', "==", $id)->all();
+        }
         $array = [];
         foreach ($adminControl as $doc) {
             $obj = ([
                 'adminControl_name' => $doc->adminControl_name,
                 'adminControl_reference' => $doc->adminControl_reference,
                 'adminControl_materialCertifSpe' => $doc->adminControl_materialCertifSpe,
-                'purSpe_id' => $doc->purSpe_id,
+                'incmgInsp_id' => $doc->incmgInsp_id,
+                'adminControl_FDS' => $doc->adminControl_FDS,
+                'id' => $doc->id
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/aspTest/sendFromFamily/{type}/{id} (get)
+     * Get all the aspect test corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_aspectTestFromSubFamily($type,$id) {
+        if ($type=="comp"){
+            $adminControl = AdminControl::all()->where('compSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $adminControl = AdminControl::all()->where('rawSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $adminControl = AdminControl::all()->where('consSubFam_id', "==", $id)->all();
+        }
+        $array = [];
+        foreach ($adminControl as $doc) {
+            $obj = ([
+                'adminControl_name' => $doc->adminControl_name,
+                'adminControl_reference' => $doc->adminControl_reference,
+                'adminControl_materialCertifSpe' => $doc->adminControl_materialCertifSpe,
+                'incmgInsp_id' => $doc->incmgInsp_id,
                 'adminControl_FDS' => $doc->adminControl_FDS,
                 'id' => $doc->id
             ]);

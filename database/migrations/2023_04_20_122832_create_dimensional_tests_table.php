@@ -27,7 +27,7 @@ class CreateDimensionalTestsTable extends Migration
             $table->enum('dimTest_severityLevel', ['I', 'II', 'III', 'IV'])->nullable();
             $table->enum('dimTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
             $table->string('dimTest_expectedMethod');
-            $table->double('dimTest_expectedValue');
+            $table->string('dimTest_expectedValue');
             $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             

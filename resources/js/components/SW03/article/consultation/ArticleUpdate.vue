@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !article.subFam">
+            <div class="accordion" v-if="!article.subFam">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -81,12 +81,13 @@
                                 :artType="this.articleType"
                                 :artFam_id="this.articleID"
                                 :import_id="this.articleID"
+                                :addAuto="false"
                             />
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0 && !article.subFam">
+            <div class="accordion" v-if="!article.subFam">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFour">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"

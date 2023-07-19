@@ -28,6 +28,7 @@
                 :modifMod="component.id !== null"
                 :article_id="data_article_id"
                 :article_type="data_article_type"
+                :artSubFam_id="data_artSubFam_id"
                 :checkedTest="data_checkedTest"
                 :docControl_name="data_docControl_name"
                 @deleteFile="getContent(key)"
@@ -155,6 +156,7 @@ export default {
         },
         /*Function for adding to the vue the imported article*/
         importIncmgInsp() {
+            console.log("importIncmgInsp")
             if (this.incmgInsp.length === 0 && !this.isInModifMod) {
                 this.loaded = true;
             } else {
@@ -197,58 +199,39 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log("created Reference An Incoming")
+
+        console.log(this.data_docControl_name)
+        console.log(this.data_checkedTest)
         if (this.data_checkedTest!=null && (this.data_checkedTest.includes("dimTest") || this.data_checkedTest.includes("funcTest") || this.data_checkedTest.includes("aspTest") || this.data_checkedTest.includes("docControl") || this.data_checkedTest.includes("adminControl") || this.data_docControl_name!='Test required to ensure performance of the medical device')) {
             this.addComponent();
         }
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
+            console.log("import_id")
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             if (this.data_article_id !== null) {
+                console.log("different de null")
                 axios.get('/artFam/incmgInsp/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
                         this.incmgInsp = response.data;
                         this.importIncmgInsp();
                         this.loaded = true;
-                    }).catch(error => {
+                    }).catch(error => { 
                 });
             } else {
-                axios.get('/artSubFam/incmgInsp/send/' + this.data_article_type + '/' + this.import_id)
+                console.log("else")
+                axios.get('/subFam/incmgInsp/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
+                        console.log("response")
                         this.incmgInsp = response.data;
                         this.importIncmgInsp();
                         this.loaded = true;
-                    }).catch(error => {
+                    }).catch(error => {console.log("error")
                 });
             }
-            /*if (this.data_article_type === 'raw') {
-                axios.get('/incmgInsp/send/raw/' + this.data_article_id)
-                    .then(response => {
-                        this.incmgInsp = response.data;
-                        this.importIncmgInsp();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            } else if (this.data_article_type === 'cons') {
-                axios.get('/incmgInsp/send/cons/' + this.data_article_id)
-                    .then(response => {
-                        this.incmgInsp = response.data;
-                        this.importIncmgInsp();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            } else if (this.data_article_type === 'comp') {
-                axios.get('/incmgInsp/send/comp/' + this.data_article_id)
-                    .then(response => {
-                        this.incmgInsp = response.data;
-                        this.importIncmgInsp();
-                        this.loaded = true;
-                    })
-                    .catch(error => {
-                    });
-            }*/
         } else {
+            console.log("c'est null")
             this.loaded = true;
         }
     },

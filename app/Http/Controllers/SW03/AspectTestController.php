@@ -81,7 +81,7 @@ class AspectTestController extends Controller
                 ]
             );
         }
-        if ($request->purSpe_id !== null) {
+        /*if ($request->purSpe_id !== null) {
             $purSpe = null;
             if ($request->aspTest_articleType === 'comp') {
                 $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
@@ -125,7 +125,7 @@ class AspectTestController extends Controller
                     'aspTest_name' => 'This aspect test already exists',
                 ], 429);
             }
-        }
+        }*/
 
     }
 
@@ -135,6 +135,35 @@ class AspectTestController extends Controller
      * @return \Illuminate\Http\Response : id of the new aspect test
      */
     public function add_aspectTest(Request $request) {
+        $cons=null;
+        $raw=null;
+        $comp=null;
+        $subComp=null;
+        $subCons=null;
+        $subRaw=null;
+        if ($request->article_id!=null && $request->incmgInsp_id==null){
+            if ($request->article_type=='cons'){
+                $cons=$request->article_id;
+            }
+            else if ($request->article_type=='raw'){
+                $raw=$request->article_id;
+            }
+            else if ($request->article_type=='comp'){
+                $comp=$request->article_id;
+            }
+        }else{
+            if ($request->incmgInsp_id==null){
+                if ($request->article_type=='cons'){
+                    $subCons=$request->subFam_id;
+                }
+                else if ($request->article_type=='raw'){
+                    $subRaw=$request->subFam_id;
+                }
+                else if ($request->article_type=='comp'){
+                    $subComp=$request->subFam_id;
+                }
+            }
+        }
         $aspTest = AspectTest::create([
             'aspTest_severityLevel' => $request->aspTest_severityLevel,
             'aspTest_levelOfControl' => $request->aspTest_levelOfControl,
@@ -143,7 +172,12 @@ class AspectTestController extends Controller
             'aspTest_sampling' => $request->aspTest_sampling,
             'aspTest_desc' => $request->aspTest_desc,
             'incmgInsp_id' => $request->incmgInsp_id,
-            'purSpe_id' => $request->purSpe_id,
+            'rawFam_id' => $raw,
+            'consFam_id' => $cons,
+            'compFam_id' => $comp,
+            'rawSubFam_id' => $subRaw,
+            'consSubFam_id' => $subCons,
+            'compSubFam_id' => $subComp,
             'aspTest_specDoc' => $request->aspTest_specDoc,
         ]);
         return response()->json($aspTest);
@@ -175,12 +209,52 @@ class AspectTestController extends Controller
     }
 
     /**
-     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/aspTest/sendFromPurSpe/{id} (get)
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/aspTest/sendFromFamily/{type}/{id} (get)
      * Get all the aspect test corresponding in the data base
      * @return \Illuminate\Http\Response
      */
-    public function send_aspectTestFromPurSpe($id) {
-        $aspTest = AspectTest::all()->where('purSpe_id', '==', $id);
+    public function send_aspectTestFromFamily($type,$id) {
+        if ($type=="comp"){
+            $aspTest = AspectTest::all()->where('compFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $aspTest = AspectTest::all()->where('rawFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $aspTest = AspectTest::all()->where('consFam_id', "==", $id)->all();
+        }
+        $array = [];
+        foreach ($aspTest as $asp) {
+            $obj = [
+                'id' => $asp->id,
+                'aspTest_severityLevel' => $asp->aspTest_severityLevel,
+                'aspTest_levelOfControl' => $asp->aspTest_levelOfControl,
+                'aspTest_expectedAspect' => $asp->aspTest_expectedAspect,
+                'aspTest_name' => $asp->aspTest_name,
+                'aspTest_sampling' => $asp->aspTest_sampling,
+                'aspTest_desc' => $asp->aspTest_desc,
+                'aspTest_specDoc' => $asp->aspTest_specDoc,
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/aspTest/sendFromFamily/{type}/{id} (get)
+     * Get all the aspect test corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_aspectTestFromSubFamily($type,$id) {
+        if ($type=="comp"){
+            $aspTest = AspectTest::all()->where('compSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $aspTest = AspectTest::all()->where('rawSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $aspTest = AspectTest::all()->where('consSubFam_id', "==", $id)->all();
+        }
         $array = [];
         foreach ($aspTest as $asp) {
             $obj = [

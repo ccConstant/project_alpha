@@ -30,6 +30,7 @@
                 :purSpe_id="purSpe_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :articleSubFam_id="articleSubFam_id"
                 :desc="component.aspTest_desc"
                 :specDoc="component.aspTest_specDoc"
                 @deleteAspTest="getContent(key)"
@@ -105,7 +106,7 @@ export default {
             type: Array,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         }
@@ -223,27 +224,42 @@ export default {
          if (this.checkedTest!=null && this.checkedTest.includes('aspTest')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }
-        /*If the user chooses importation doc control*/
-        var consultUrl=""
-        if (this.purSpe_id!=null){
-            consultUrl = (id) => `/incmgInsp/aspTest/sendFromPurSpe/${id}`;
-        }else{
-            consultUrl = (id) => `/incmgInsp/aspTest/sendFromIncmgInsp/${id}`;
-        }
-        console.log("created")
-        console.log(consultUrl(this.import_id))
-        console.log(this.isInConsultMod)
-        if (this.import_id !== null) {
+         if (this.import_id !== null && this.modifMod) {
+            /*If the user chooses importation doc control*/
+            var consultUrl="";
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
-            axios.get(consultUrl(this.import_id))
-                .then(response => {
-                    this.aspTest = response.data;
-                    this.importAspTest();
-                    this.loaded = true;
-                })
-                .catch(error => {
-                });
-        } else {
+            if (this.data_article_id != null && this.data_article_id == this.import_id) {
+                consultUrl = (type,id) => `/incmgInsp/aspTest/sendFromFamily/${type}/${id}`;
+            }else{
+                if (this.incmgInsp_id != null && this.incmgInsp_id == this.import_id){
+                    consultUrl = (id) => `/incmgInsp/aspTest/sendFromIncmgInsp/${id}`;
+                }else{
+                    if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
+                        consultUrl = (type,id) => `/incmgInsp/aspTest/sendFromSubFam/${type}/${id}`; // FIXME
+                    }    
+                }
+
+            }
+            if (this.data_article_id != null && this.data_article_id == this.import_id || this.data_sub_fam_id!=null && this.data_sub_fam_id == this.import_id ){
+                axios.get(consultUrl(this.articleType,this.import_id))
+                    .then(response => {
+                        this.aspTest = response.data;
+                        this.importAspTest();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            }else{
+                axios.get(consultUrl(this.import_id))
+                    .then(response => {
+                        this.aspTest = response.data;
+                        this.importAspTest();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            } 
+        }else{
             this.loaded = true;
         }
     },

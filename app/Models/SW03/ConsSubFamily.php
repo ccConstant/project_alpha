@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\SW03\ConsFamilyMember;
 use App\Models\User;
 use App\Models\SW03\EnumPurchasedBy;
+use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\ConsFamily;
 
 class ConsSubFamily extends Model
@@ -42,6 +43,11 @@ class ConsSubFamily extends Model
         return $this->hasMany(ConsFamilyMember::class) ;
     }
 
+     //Define the relation between an EnumStorageCondition and its consSubFamily : a consSubFamily can correspond to many EnumStorageCondition
+     public function storage_conditions(){
+        return $this->belongsToMany(EnumStorageCondition::class, 'pivot_cons_sub_fam_sto_cond', 'consSubFam_id', 'storageCondition_id') ;
+    }
+
     //Define the relation between a cons_sub_family and the cons_family which he is linked : a cons_sub_family can be linked to only one cons_family
     public function cons_family(){
         return $this->belongsTo(ConsFamily::class, 'consFam_id') ;
@@ -49,17 +55,22 @@ class ConsSubFamily extends Model
 
     //Define the relation between a consSubFamily and the user who approved it : a consSubFamily has only one qualityApprover
     public function quality_approver(){
-    return $this->belongsTo(User::class, 'consSubFam_qualityApproverId') ;
+        return $this->belongsTo(User::class, 'consSubFam_qualityApproverId') ;
     }
 
     //Define the relation between a consSubFamily and the user who reviewed it : a consSubFamily has only one technicalReviewer
     public function technical_reviewer(){
-    return $this->belongsTo(User::class, 'compSubFam_technicalReviewerId') ;
+        return $this->belongsTo(User::class, 'consSubFam_technicalReviewerId') ;
     }
 
     //Define the relation between an EnumPurchasedBy and its consSubFamily : a consSubFamily has only one EnumPurchasedBy
     public function purchased_by(){
-    return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
+        return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
+    }
+
+    //Define the relation between a supplier and its consSubFamily : a consSubFamily can correspond to many suppliers
+    public function suppliers(){
+        return $this->belongsToMany(Supplier::class, 'pivot_cons_sub_fam_supplr', 'consSubFam_id', 'supplr_id') ;
     }
 }
 

@@ -26,9 +26,9 @@
                 :materialCertiSpec="component.materialCertiSpec"
                 :fds="component.fds"
                 :incmgInsp_id="incmgInsp_id"
-                :purSpe_id="purSpe_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
+                :articleSubFam_id="articleSubFam_id"
                 @deleteAdminControl="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -96,7 +96,7 @@ export default {
             type: Array,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         }
@@ -198,31 +198,44 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log(this.modifMod);
          if (this.checkedTest!=null && this.checkedTest.includes('adminControl')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }
-        /*If the user chooses importation doc control*/
-        if (this.import_id !== null) {
-             var consultUrl="";
-            if (this.purSpe_id!=null){
-            consultUrl = (id) => `/incmgInsp/adminControl/sendFromPurSpe/${id}`;
-            console.log("ce cas la")
-            console.log(this.import_id)
-            }else{
-                consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`;
-            }
+        if (this.import_id !== null && this.modifMod) {
+            /*If the user chooses importation doc control*/
+            var consultUrl="";
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
-            axios.get(consultUrl(this.import_id))
-                .then(response => {
-                    console.log("adminControl")
-                    console.log(response.data)
+            if (this.data_article_id != null && this.data_article_id == this.import_id) {
+                consultUrl = (type,id) => `/incmgInsp/adminControl/sendFromFamily/${type}/${id}`;
+            }else{
+                if (this.incmgInsp_id != null && this.incmgInsp_id == this.import_id){
+                    consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`;
+                }else{
+                    if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
+                        consultUrl = (type,id) => `/incmgInsp/adminControl/sendFromSubFam/${type}/${id}`; // FIXME
+                    }    
+                }
+
+            }
+            if (this.data_article_id != null && this.data_article_id == this.import_id || this.data_sub_fam_id!=null && this.data_sub_fam_id == this.import_id ){
+                axios.get(consultUrl(this.articleType,this.import_id))
+                    .then(response => {
                     this.adminControl = response.data;
-                    this.importAdminControl();
-                    this.loaded = true;
-                })
-                .catch(error => {
-                });
+                        this.importAdminControl();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            }else{
+                axios.get(consultUrl(this.import_id))
+                    .then(response => {
+                        this.adminControl = response.data;
+                        this.importAdminControl();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            } 
         } else {
             this.loaded = true;
         }

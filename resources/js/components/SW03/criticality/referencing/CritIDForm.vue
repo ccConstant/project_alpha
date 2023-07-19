@@ -386,9 +386,6 @@ export default {
         @param lifesheet_created */
         addCriticality(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
-                if (this.checkedTests!=null && this.checkedTests.length === 0) {
-                    this.checkedTests=["nothing"];
-                }
                 if (this.checkedTests.includes('funcTest') ){
                     if (this.checkedTestRadioFunc=='funcTestAlpha' || this.checkedTestRadioFunc=='funcTestBoth'){
                        this.checkedTestsAlpha.push('funcTest');

@@ -113,6 +113,75 @@ class IncmgInspController extends Controller
         return response()->json($array);
     }
 
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted with the route : /subFam/incmgInsp/send/raw/{id}(post)
+     * Get all the incoming inspection from subFam with the id in parameter
+     * @return \Illuminate\Http\Response
+     */
+    public function send_subFamIncmgInspRaw($id) {
+        $incmgInsps = IncomingInspection::all()->where('incmg_rawSubFam_id', "==", $id);
+        $array = [];
+        foreach ($incmgInsps as $incmgInsp) {
+            $obj = ([
+                'id' => $incmgInsp->id,
+                'incmgInsp_remarks' => $incmgInsp->incmgInsp_remarks,
+                'incmgInsp_partMaterialComplianceCertificate' => $incmgInsp->incmgInsp_partMaterialComplianceCertificate,
+                'incmgInsp_rawMaterialCertificate' => $incmgInsp->incmgInsp_rawMaterialCertificate,
+                'incmgInsp_validate' => $incmgInsp->incmgInsp_validate,
+                'incmgInsp_qualityApproverId' => $incmgInsp->incmgInsp_qualityApproverId,
+                'incmgInsp_technicalReviewerId' => $incmgInsp->incmgInsp_technicalReviewerId,
+                'incmgInsp_signatureDate' => $incmgInsp->incmgInsp_signatureDate,
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted with the route : /incmgInsp/send/cons/{id}(post)
+     * Get all the incoming inspection of the cons with the id in parameter
+     * @return \Illuminate\Http\Response
+     */
+    public function send_subFamIncmgInspCons($id) {
+        $incmgInsps = IncomingInspection::all()->where('incmgInsp_consSubFam_id', "==", $id);
+        $array = [];
+        foreach ($incmgInsps as $incmgInsp) {
+            $obj = ([
+                'id' => $incmgInsp->id,
+                'incmgInsp_validate' => $incmgInsp->incmgInsp_validate,
+                'incmgInsp_qualityApproverId' => $incmgInsp->incmgInsp_qualityApproverId,
+                'incmgInsp_technicalReviewerId' => $incmgInsp->incmgInsp_technicalReviewerId,
+                'incmgInsp_signatureDate' => $incmgInsp->incmgInsp_signatureDate,
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ListOfArticle.vue when the form is submitted with the route : /incmgInsp/send/comp/{id}(post)
+     * Get all the incoming inspection of the comp with the id in parameter
+     * @return \Illuminate\Http\Response
+     */
+    public function send_subFamIncmgInspComp($id) {
+        $incmgInsps = IncomingInspection::all()->where('incmgInsp_compSubFam_id', "==", $id);
+        $array = [];
+        foreach ($incmgInsps as $incmgInsp) {
+            $obj = ([
+                'id' => $incmgInsp->id,
+                'incmgInsp_remarks' => $incmgInsp->incmgInsp_remarks,
+                'incmgInsp_partMaterialComplianceCertificate' => $incmgInsp->incmgInsp_partMaterialComplianceCertificate,
+                'incmgInsp_rawMaterialCertificate' => $incmgInsp->incmgInsp_rawMaterialCertificate,
+                'incmgInsp_validate' => $incmgInsp->incmgInsp_validate,
+                'incmgInsp_qualityApproverId' => $incmgInsp->incmgInsp_qualityApproverId,
+                'incmgInsp_technicalReviewerId' => $incmgInsp->incmgInsp_technicalReviewerId,
+                'incmgInsp_signatureDate' => $incmgInsp->incmgInsp_signatureDate,
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
      /**
      * Function call by ListOfArticle.vue when the form is submitted with the route : /incmgInsp/send/ (post)
      * Get all the incoming inspection in the data base

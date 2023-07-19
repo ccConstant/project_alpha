@@ -29,10 +29,10 @@
                 :unitValue="component.dimTest_unitValue"
                 :sampling="component.dimTest_sampling"
                 :incmgInsp_id="incmgInsp_id"
-                :purSpe_id="purSpe_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.dimTest_desc"
+                :articleSubFam_id="articleSubFam_id"
                 :specDoc="component.dimTest_specDoc"
                 @deletedimTest="getContent(key)"
             />
@@ -106,7 +106,7 @@ export default {
             type: Array,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         }
@@ -227,25 +227,46 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("Reference A dim test created")
-        console.log(this.checkedTest)
         if (this.checkedTest!=null && this.checkedTest.includes('dimTest')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }
-        /*If the user chooses importation doc control*/
-        if (this.import_id !== null) {
-            /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/dimTest/sendFromIncmgInsp/${id}`; // FIXME
-            axios.get(consultUrl(this.import_id))
-                .then(response => {
-                    this.dimTest = response.data;
-                    this.importdimTest();
-                    this.loaded = true;
-                })
-                .catch(error => {
-                });
+        if (this.import_id !== null && this.modifMod) {
+            /*If the user chooses importation doc control*/
+            var consultUrl="";
+            /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
+            if (this.data_article_id != null && this.data_article_id == this.import_id) {
+                consultUrl = (type,id) => `/incmgInsp/dimTest/sendFromFamily/${type}/${id}`;
+            }else{
+                if (this.incmgInsp_id != null && this.incmgInsp_id == this.import_id){
+                    consultUrl = (id) => `/incmgInsp/dimTest/sendFromIncmgInsp/${id}`;
+                }else{
+                    if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
+                        consultUrl = (id) => `/incmgInsp/dimTest/sendFromSubFam/${type}/${id}`; // FIXME
+                    }    
+                }
+
+            }
+            if (this.data_article_id != null && this.data_article_id == this.import_id || this.data_sub_fam_id!=null && this.data_sub_fam_id == this.import_id ){
+                axios.get(consultUrl(this.articleType,this.import_id))
+                    .then(response => {
+                        this.dimTest = response.data;
+                        this.importdimTest();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            }else{
+                axios.get(consultUrl(this.import_id))
+                    .then(response => {
+                        this.dimTest = response.data;
+                        this.importdimTest();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            } 
         } else {
-            this.loaded = true;
+             this.loaded = true;
         }
     },
     /*All functions inside the mounted option are called after the component has been mounted.*/

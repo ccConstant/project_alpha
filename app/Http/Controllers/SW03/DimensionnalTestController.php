@@ -68,7 +68,7 @@ class DimensionnalTestController extends Controller
                 $request,
                 [
                     'dimTest_expectedMethod' => 'required|string|min:2|max:255',
-                    'dimTest_expectedValue' => 'required|integer',
+                    'dimTest_expectedValue' => 'required|string',
                     'dimTest_name' => 'required|string|min:2|max:255',
                     'dimTest_unitValue' => 'required|string|min:1|max:10',
                     'dimTest_specDoc' => 'required|string|min:2|max:255',
@@ -80,7 +80,7 @@ class DimensionnalTestController extends Controller
                     'dimTest_expectedMethod.max' => 'You must enter a maximum of 255 characters',
 
                     'dimTest_expectedValue.required' => 'You must enter an expected value',
-                    'dimTest_expectedValue.integer' => 'The expected value must be a integer',
+                    'dimTest_expectedValue.string' => 'The expected value must be a string',
 
                     'dimTest_name.required' => 'You must enter a name of control',
                     'dimTest_name.string' => 'The name of control must be a string',
@@ -99,7 +99,7 @@ class DimensionnalTestController extends Controller
                 ]
             );
         }
-        if ($request->purSpe_id !== null) {
+        /*if ($request->purSpe_id !== null) {
             $purSpe = null;
             if ($request->dimTest_articleType === 'comp') {
                 $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
@@ -143,7 +143,7 @@ class DimensionnalTestController extends Controller
                     'dimTest_name' => 'This dimensional test already exists',
                 ], 429);
             }
-        }
+        }*/
     
     }
 
@@ -153,6 +153,35 @@ class DimensionnalTestController extends Controller
      * @return \Illuminate\Http\Response : id of the new dimensional test
      */
     public function add_dimTest(Request $request) {
+        $cons=null;
+        $raw=null;
+        $comp=null;
+        $subComp=null;
+        $subCons=null;
+        $subRaw=null;
+        if ($request->article_id!=null && $request->incmgInsp_id==null){
+            if ($request->article_type=='cons'){
+                $cons=$request->article_id;
+            }
+            else if ($request->article_type=='raw'){
+                $raw=$request->article_id;
+            }
+            else if ($request->article_type=='comp'){
+                $comp=$request->article_id;
+            }
+        }else{
+            if ($request->incmgInsp_id==null){
+                if ($request->article_type=='cons'){
+                    $subCons=$request->subFam_id;
+                }
+                else if ($request->article_type=='raw'){
+                    $subRaw=$request->subFam_id;
+                }
+                else if ($request->article_type=='comp'){
+                    $subComp=$request->subFam_id;
+                }
+            }
+        }
         $dimTest = DimensionalTest::create([
             'dimTest_sampling' => $request->dimTest_sampling,
             'dimTest_severityLevel' => $request->dimTest_severityLevel,
@@ -162,7 +191,12 @@ class DimensionnalTestController extends Controller
             'dimTest_name' => $request->dimTest_name,
             'dimTest_unitValue' => $request->dimTest_unitValue,
             'incmgInsp_id' => $request->incmgInsp_id,
-            'purSpe_id' => $request->purSpe_id,
+            'rawFam_id' => $raw,
+            'consFam_id' => $cons,
+            'compFam_id' => $comp,
+            'rawSubFam_id' => $subRaw,
+            'consSubFam_id' => $subCons,
+            'compSubFam_id' => $subComp,
             'dimTest_desc' => $request->dimTest_desc,
             'dimTest_specDoc' => $request->dimTest_specDoc,
         ]);
@@ -176,6 +210,76 @@ class DimensionnalTestController extends Controller
      */
     public function send_dimTestFromIncmgInsp($id) {
         $dimTest = DimensionalTest::all()->where('incmgInsp_id', $id);
+        $array = [];
+        foreach ($dimTest as $item) {
+            $obj = [
+                'id' => $item->id,
+                'dimTest_sampling' => $item->dimTest_sampling,
+                'dimTest_severityLevel' => $item->dimTest_severityLevel,
+                'dimTest_levelOfControl' => $item->dimTest_levelOfControl,
+                'dimTest_expectedMethod' => $item->dimTest_expectedMethod,
+                'dimTest_expectedValue' => $item->dimTest_expectedValue,
+                'dimTest_name' => $item->dimTest_name,
+                'dimTest_unitValue' => $item->dimTest_unitValue,
+                'incmgInsp_id' => $item->incmgInsp_id,
+                'dimTest_desc' => $item->dimTest_desc,
+                'dimTest_specDoc' => $item->dimTest_specDoc,
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/adminControl/sendFromFamily/{type}/{id} (get)
+     * Get all the aspect test corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_dimTestFromFamily($type,$id) {
+        if ($type=="comp"){
+            $dimTest=DimensionalTest::all()->where('compFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $dimTest=DimensionalTest::all()->where('rawFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $dimTest=DimensionalTest::all()->where('consFam_id', "==", $id)->all();
+        }
+        $array = [];
+        foreach ($dimTest as $item) {
+            $obj = [
+                'id' => $item->id,
+                'dimTest_sampling' => $item->dimTest_sampling,
+                'dimTest_severityLevel' => $item->dimTest_severityLevel,
+                'dimTest_levelOfControl' => $item->dimTest_levelOfControl,
+                'dimTest_expectedMethod' => $item->dimTest_expectedMethod,
+                'dimTest_expectedValue' => $item->dimTest_expectedValue,
+                'dimTest_name' => $item->dimTest_name,
+                'dimTest_unitValue' => $item->dimTest_unitValue,
+                'incmgInsp_id' => $item->incmgInsp_id,
+                'dimTest_desc' => $item->dimTest_desc,
+                'dimTest_specDoc' => $item->dimTest_specDoc,
+            ];
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceAnAspTest.vue with the route : /incmgInsp/aspTest/sendFromFamily/{type}/{id} (get)
+     * Get all the aspect test corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_dimTestFromSubFamily($type,$id) {
+        if ($type=="comp"){
+            $dimTest=DimensionalTest::all()->where('compSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $dimTest=DimensionalTest::all()->where('rawSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $dimTest=DimensionalTest::all()->where('consSubFam_id', "==", $id)->all();
+        }
         $array = [];
         foreach ($dimTest as $item) {
             $obj = [

@@ -141,6 +141,9 @@ export default {
         checkedTest: {
             type: Array
         },
+        articleSubFam_id: {
+            type: Number
+        },
     },
     /*--------Declaration of the different returned data:--------
     file_name: Name of the file who will be appeared in the field and updated dynamically
@@ -189,35 +192,70 @@ export default {
                 } else {
                     id = this.art_id_update;
                 }
-                axios.post('/artFam/purSpe/verif', {
-                    purSpe_validate: savedAs,
-                    purSpe_supplier_id: this.purSpe_supplier_id,
-                    purSpe_supplier_ref: this.purSpe_supplier_ref,
-                    purSpe_remark: this.purSpe_remark,
-                })
-                    /*If the data are correct, we send them to the controller for add them in the database*/
-                    .then(response => {
-                        this.errors = {};
-                        const consultUrl = (id) => `/artFam/purSpe/add/${id}`;
-                        axios.post(consultUrl(id), {
-                            purSpe_validate: savedAs,
-                            artFam_type: this.artFam_type.toUpperCase(),
-                            purSpe_supplier_id: this.purSpe_supplier_id,
-                            purSpe_supplier_ref: this.purSpe_supplier_ref,
-                            purSpe_remark: this.purSpe_remark,
+                if (this.art_id!=null){
+                    console.log("cas des articles")
+                    axios.post('/artFam/purSpe/verif', {
+                        purSpe_validate: savedAs,
+                        purSpe_supplier_id: this.purSpe_supplier_id,
+                        purSpe_supplier_ref: this.purSpe_supplier_ref,
+                        purSpe_remark: this.purSpe_remark,
+                    })
+                        /*If the data are correct, we send them to the controller for add them in the database*/
+                        .then(response => {
+                            this.errors = {};
+                            const consultUrl = (id) => `/artFam/purSpe/add/${id}`;
+                            axios.post(consultUrl(id), {
+                                purSpe_validate: savedAs,
+                                artFam_type: this.artFam_type.toUpperCase(),
+                                purSpe_supplier_id: this.purSpe_supplier_id,
+                                purSpe_supplier_ref: this.purSpe_supplier_ref,
+                                purSpe_remark: this.purSpe_remark,
+                            })
+                                /*If the data have been added in the database, we show a success message*/
+                                .then(response => {
+                                    this.addSuccess = true;
+                                    this.isInConsultMod = true;
+                                    this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
+                                    this.purSpe_id = response.data;
+                                    this.purSpe_validate = savedAs;
+                                }).catch(error => {
+                                    this.errors = error.response.data.errors;
+                                });
+                        }).catch(error => this.errors = error.response.data.errors);
+                    }else{
+                        console.log("cas d'une sous famille")
+                        axios.post('/artFam/purSpe/verif', {
+                        purSpe_validate: savedAs,
+                        purSpe_supplier_id: this.purSpe_supplier_id,
+                        purSpe_supplier_ref: this.purSpe_supplier_ref,
+                        purSpe_remark: this.purSpe_remark,
                         })
-                            /*If the data have been added in the database, we show a success message*/
-                            .then(response => {
-                                this.addSuccess = true;
-                                this.isInConsultMod = true;
-                                this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
-                                this.purSpe_id = response.data;
-                                this.purSpe_validate = savedAs;
-                            }).catch(error => {
-                                this.errors = error.response.data.errors;
-                            });
-                    }).catch(error => this.errors = error.response.data.errors);
-            }
+                        /*If the data are correct, we send them to the controller for add them in the database*/
+                        .then(response => {
+                            this.errors = {};
+                            console.log("verif passed")
+                            const consultUrl = (id) => `/artSubFam/purSpe/add/${id}`;
+                            console.log(this.articleSubFam_id)
+                            axios.post(consultUrl(this.articleSubFam_id),{
+                                purSpe_validate: savedAs,
+                                artFam_type: this.artFam_type.toUpperCase(),
+                                purSpe_supplier_id: this.purSpe_supplier_id,
+                                purSpe_supplier_ref: this.purSpe_supplier_ref,
+                                purSpe_remark: this.purSpe_remark,
+                            })
+                                /*If the data have been added in the database, we show a success message*/
+                                .then(response => {
+                                    this.addSuccess = true;
+                                    this.isInConsultMod = true;
+                                    this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
+                                    this.purSpe_id = response.data;
+                                    this.purSpe_validate = savedAs;
+                                }).catch(error => {
+                                    this.errors = error.response.data.errors;
+                                });
+                        }).catch(error => this.errors = error.response.data.errors);
+                    }
+                }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
@@ -296,12 +334,15 @@ export default {
         }
     },
     created() {
+        console.log("created in Article Purchase Specification Form")
         axios.get('/info/send/purSpe')
             .then(response => {
                 this.infos_purSpe = response.data;
             })
-            .catch(error => {
+            .catch
+            (error => {
             });
+            console.log("im still here")
         axios.get('/supplier/active/send')
             .then(response => {
                 /*this.suppliers.push({
@@ -320,6 +361,7 @@ export default {
                 this.loaded = true;
             })
             .catch(error => {
+                console.log(error.response.data)
             });
 
     }

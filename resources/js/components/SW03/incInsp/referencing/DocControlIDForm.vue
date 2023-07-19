@@ -165,17 +165,6 @@ export default {
     },
     methods: {
         addDocControl(savedAs, reason, lifesheet_created) {
-            if (this.data_article_id!=null) {
-                //link to article family
-            }else{
-                if (this.data_subFam_id!=null) {
-                    //link to article sub family
-                }else{
-                    if (this.data_incmgInsp_id!=null) {
-                        //link to incoming inspection
-                    }
-                }
-            }
             axios.post('/incmgInsp/docControl/verif', {
                 docControl_articleType: this.data_article_type,
                 docControl_reference: this.docControl_reference,
@@ -187,10 +176,10 @@ export default {
                 subFam_id : this.data_subFam_id,
                 reason: 'add',
                 id: this.docControl_id,
-                article_id: this.data_article_id,
             })
             .then(response => {
                 this.errors = {};
+                console.log("verif passed")
                 axios.post('/incmgInsp/docControl/add', {
                     docControl_articleType: this.data_article_type,
                     docControl_reference: this.docControl_reference,
@@ -203,7 +192,6 @@ export default {
                     subFam_id : this.data_subFam_id,
                     reason: 'add',
                     id: this.docControl_id,
-                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.$refs.sucessAlert.showAlert(`Documentary control added successfully`);

@@ -222,7 +222,7 @@ export default {
             type: String,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         }
@@ -247,7 +247,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
-            data_purSpe_id: this.purSpe_id,
+            data_subFam_id: this.articleSubFam_id,
             info_funcTest: []
         }
     },
@@ -255,15 +255,16 @@ export default {
         addFuncTest(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
                 console.log("here")
-                console.log(this.data_purSpe_id)
+                console.log(this.data_incmgInsp_id)
+                console.log(this.data_article_type)
+                console.log(this.data_article_id)
+                console.log(this.data_subFam_id)
                 axios.post('/incmgInsp/funcTest/verif', {
                     funcTest_name: this.funcTest_name,
                     funcTest_severityLevel: this.funcTest_severityLevel,
                     funcTest_levelOfControl: this.funcTest_controlLevel,
                     funcTest_expectedMethod: this.funcTest_expectedMethod,
                     funcTest_expectedValue: this.funcTest_expectedValue,
-                    incmgInsp_id: this.data_incmgInsp_id,
-                    purSpe_id: this.data_purSpe_id,
                     funcTest_articleType: this.data_article_type,
                     funcTest_sampling: this.funcTest_sampling,
                     funcTest_unitValue: this.funcTest_unitValue,
@@ -271,7 +272,10 @@ export default {
                     funcTest_specDoc: this.funcTest_specDoc,
                     reason: 'add',
                     id: this.funcTest_id,
+                    incmgInsp_id: this.data_incmgInsp_id,
+                    article_type: this.data_article_type,
                     article_id: this.data_article_id,
+                    subFam_id : this.data_subFam_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -283,7 +287,9 @@ export default {
                         funcTest_expectedMethod: this.funcTest_expectedMethod,
                         funcTest_expectedValue: this.funcTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
-                        purSpe_id: this.data_purSpe_id,
+                        article_type: this.data_article_type,
+                        article_id: this.data_article_id,
+                        subFam_id : this.data_subFam_id,
                         funcTest_articleType: this.data_article_type,
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
@@ -291,7 +297,6 @@ export default {
                         funcTest_specDoc: this.funcTest_specDoc,
                         reason: 'add',
                         id: this.funcTest_id,
-                        article_id: this.data_article_id,
                     })
                     .then(response => {
                         this.$snotify.success(`Functional Test added successfully and saved as ${savedAs}`);

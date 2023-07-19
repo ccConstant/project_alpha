@@ -28,7 +28,7 @@
                 :name="component.funcTest_name"
                 :sampling="component.funcTest_sampling"
                 :incmgInsp_id="incmgInsp_id"
-                :purSpe_id="purSpe_id"
+                :articleSubFam_id="articleSubFam_id"
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.funcTest_desc"
@@ -105,7 +105,7 @@ export default {
             type: Array,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         }
@@ -223,21 +223,45 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-         if (this.checkedTest!=null && this.checkedTest.includes('funcTest')) {
+        if (this.checkedTest!=null && this.checkedTest.includes('funcTest')) {
             this.addComponent("Test required to ensure performance of the medical device");
         }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
-            /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            const consultUrl = (id) => `/incmgInsp/funcTest/sendFromIncmgInsp/${id}`; // FIXME
-            axios.get(consultUrl(this.import_id))
-                .then(response => {
-                    this.funcTest = response.data;
-                    this.importFuncTest();
-                    this.loaded = true;
-                })
-                .catch(error => {
-                });
+            var consultUrl="";
+            /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
+            if (this.data_article_id != null && this.data_article_id == this.import_id) {
+                consultUrl = (type,id) => `/incmgInsp/funcTest/sendFromFamily/${type}/${id}`;
+            }else{
+                if (this.incmgInsp_id != null && this.incmgInsp_id == this.import_id){
+                    consultUrl = (id) => `/incmgInsp/funcTest/sendFromIncmgInsp/${id}`;
+                }else{
+                    if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
+                        consultUrl = (id) => `/incmgInsp/funcTest/sendFromSubFam/${type}/${id}`; // FIXME
+                    }    
+                }
+
+            }
+
+            if (this.data_article_id != null && this.data_article_id == this.import_id || this.data_sub_fam_id!=null && this.data_sub_fam_id == this.import_id ){
+                axios.get(consultUrl(this.articleType,this.import_id))
+                    .then(response => {
+                       this.funcTest = response.data;
+                        this.importFuncTest();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            }else{
+                axios.get(consultUrl(this.import_id))
+                    .then(response => {
+                        this.funcTest = response.data;
+                        this.importFuncTest();
+                        this.loaded = true;
+                    })
+                    .catch(error => {
+                    });
+            }
         } else {
             this.loaded = true;
         }

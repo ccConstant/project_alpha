@@ -106,7 +106,9 @@
                     <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
                         <div class="accordion-body">
                             <ReferenceACrit
-                                @checkedTests="createTest"
+                                @checkedTestsAlpha="createTestAlpha"
+                                @checkedTestsSupplier="createTestSupplier"
+                                @docControl_name="createDocControlName"
                                 modifMod
                                 :articleType="this.data_artFam_type"
                                 :articleSubFam_id="this.artSubFam_id"
@@ -115,7 +117,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="this.checkedTest!=null && this.checkedTest.length!=0" class="accordion">
+                <div v-if="this.checkedTestsSupplier!=null && this.checkedTestsSupplier.length!=0" class="accordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -130,13 +132,14 @@
                                     :artType="this.data_artFam_type"
                                     :articleSubFam_id="this.artSubFam_id"
                                     :import_id="this.artSubFam_id"
-                                    :checkedTest="this.checkedTest"
+                                    :checkedTest="this.checkedTestsSupplier"
+                                    :docControl_name="this.docControlName"
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="accordion" v-if="this.checkedTest!=null && this.checkedTest.length!=0">
+                <div class="accordion" v-if="this.checkedTestsAlpha!=null && this.checkedTestsAlpha.length!=0">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -151,7 +154,8 @@
                                     :articleType="this.data_artFam_type"
                                     :articleSubFam_id="this.artSubFam_id"
                                     :import_id="this.artSubFam_id"
-                                    :checkedTest="this.checkedTest"
+                                    :checkedTest="this.checkedTestsAlpha"
+                                    :docControl_name="this.docControlName"
                                 />
                             </div>
                         </div>
@@ -327,7 +331,9 @@ export default {
             enum_purchasedBy: [],
             data_artFam_id: this.art_id,
             importedMember: null,
-            checkedTest: [],
+            checkedTestsAlpha: [],
+            checkedTestsSupplier: [],
+            docControlName: "",
         }
     },
     created() {
@@ -582,8 +588,15 @@ export default {
                 this.artFam_genRef = this.artFam_ref + '_';
             }*/
         },
-        createTest(value) {
-            this.checkedTest = value;
+        createTestAlpha(value) {
+            this.checkedTestsAlpha = value;
+        },
+        createTestSupplier(value) {
+            this.checkedTestsSupplier = value;
+        },
+        createDocControlName(value) {
+            console.log("createDocControl ArticleSubFamily")
+            this.docControlName = value;
         },
     },
 }

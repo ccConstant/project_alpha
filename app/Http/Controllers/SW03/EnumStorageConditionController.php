@@ -17,6 +17,9 @@ use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\CompFamily;
 use App\Models\SW03\ConsFamily;
 use App\Models\SW03\RawFamily;
+use App\Models\SW03\CompSubFamily;
+use App\Models\SW03\ConsSubFamily;
+use App\Models\SW03\RawSubFamily;
 
 class EnumStorageConditionController extends Controller
 {
@@ -90,6 +93,34 @@ class EnumStorageConditionController extends Controller
         }else if ($request->artFam_type=="CONS"){
             $consFam=ConsFamily::findOrFail($id);
             $enum->consFamily()->attach($consFam, [
+                'validate' => $request->validate,
+            ]) ;
+            return response()->json($enum->id) ;
+        }
+    }
+
+     /**
+     * Function call by ArticleEnumStorageCondition with the route : /artSubFam/enum/storageCondition/link (post)
+    * Link a storage condition to an article sub family in the data base
+     */
+
+     public function link_enum_storageCondition_subFam (Request $request, $id){
+        $enum=EnumStorageCondition::where('value', '=', $request->artSubFam_storageCondition)->first();
+        if ($request->artSubFam_type=="COMP"){
+            $compSubFam=CompSubFamily::findOrFail($id);
+            $enum->compSubFamily()->attach($compSubFam, [
+                'validate' => $request->validate,
+            ]) ;
+            return response()->json($enum->id) ;
+        }else if ($request->artSubFam_type=="RAW"){
+            $rawSubFam=RawSubFamily::findOrFail($id);
+            $enum->rawSubFamily()->attach($rawSubFam, [
+                'validate' => $request->validate,
+            ]) ;
+            return response()->json($enum->id) ;
+        }else if ($request->artSubFam_type=="CONS"){
+            $consSubFam=ConsSubFamily::findOrFail($id);
+            $enum->consSubFamily()->attach($consSubFam, [
                 'validate' => $request->validate,
             ]) ;
             return response()->json($enum->id) ;

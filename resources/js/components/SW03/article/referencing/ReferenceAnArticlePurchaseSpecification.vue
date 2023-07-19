@@ -28,7 +28,7 @@
                                 :article_id="data_art_id"
                                 :articleSubFam_id="data_artSubFam_id"
                                 :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :docControl_name="data_docControlName"
                             />
                         </div>
@@ -51,7 +51,7 @@
                                 :articleType="data_art_type"
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
@@ -73,7 +73,7 @@
                                 :articleType="data_art_type"
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
@@ -96,7 +96,7 @@
                                 :articleType="data_art_type"
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
@@ -118,14 +118,14 @@
                                 :articleType="data_art_type"
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
                     </div>
                 </div>
                 <!-- CompTest -->
-                <div v-if="data_art_type === 'cons'" class="accordion-item">
+                <div v-if="data_art_type === 'other'" class="accordion-item">
                     <h2 id="headingCompTest" class="accordion-header">
                         <button aria-controls="collapseCompTest" aria-expanded="true" class="accordion-button"
                                 data-bs-target="#collapseCompTest" data-bs-toggle="collapse"
@@ -140,7 +140,7 @@
                                 :articleType="data_art_type"
                                 :article_id="data_art_id"
                                 :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? purSpe_id : null"
+                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
                             />
                         </div>
@@ -165,7 +165,8 @@
                 :modifMod="component.id !== null"
                 :supplier_id="component.supplier"
                 :supplier_ref="component.supplierRef"
-                :remarks="component.remarks"
+                :remark="component.remark"
+                :articleSubFam_id="data_artSubFam_id"
                 @deleteStorageCondition="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -246,6 +247,10 @@ export default {
         },
         docControl_name: {
             type: String
+        },
+        addAuto:{
+            type: Boolean,
+            default: true
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -310,7 +315,7 @@ export default {
                     this.addImportedComponent(
                         dt.purSpe_supplier_id,
                         dt.purSpe_supplier_ref,
-                        dt.purSpe_remarks,
+                        dt.purSpe_remark,
                         className,
                         dt.id
                     );
@@ -346,8 +351,10 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("ref an article purchase spec")
-        console.log(this.data_docControlName)
+        console.log("created purchase Spe")
+        if (this.addAuto) {
+            this.addComponent();
+        }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/

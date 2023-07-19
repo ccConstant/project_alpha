@@ -236,7 +236,7 @@ class SupplierController extends Controller
     }
 
     public function send_active_suppliers() {
-        $suppliers = Supplier::all()->where('supplr_active', '=', 1)->get();
+        $suppliers = Supplier::where('supplr_active', '1')->get();
         return response()->json($suppliers);
     }
 

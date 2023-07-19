@@ -201,7 +201,7 @@ export default {
             type: String,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         },
@@ -224,7 +224,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
-            data_purSpe_id: this.purSpe_id,
+            data_subFam_id: this.articleSubFam_id,
             info_aspTest: [],
         }
     },
@@ -249,7 +249,6 @@ export default {
                 .then(response => {
                     this.errors = {};
                     console.log("verif passed")
-                    console.log(this.data_purSpe_id)
                     axios.post('/incmgInsp/aspTest/add', {
                         aspTest_name: this.aspTest_name,
                         aspTest_severityLevel: this.aspTest_severityLevel,
@@ -259,7 +258,9 @@ export default {
                         aspTest_desc: this.aspTest_desc,
                         aspTest_specDoc: this.aspTest_specDoc,
                         incmgInsp_id: this.data_incmgInsp_id,
-                        purSpe_id: this.data_purSpe_id,
+                        article_type: this.data_article_type,
+                        article_id: this.data_article_id,
+                        subFam_id : this.data_subFam_id,
                         reason: 'add',
                         id: this.aspTest_id,
                         article_id: this.data_article_id,

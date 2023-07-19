@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\SW03\RawFamilyMember;
 use App\Models\User;
 use App\Models\SW03\EnumPurchasedBy;
+use App\Models\SW03\EnumStorageCondition;
 use App\Models\SW03\RawFamily;
 
 class RawSubFamily extends Model
@@ -48,16 +49,26 @@ class RawSubFamily extends Model
 
     //Define the relation between a rawSubFamily and the user who approved it : a rawSubFamily has only one qualityApprover
     public function quality_approver(){
-    return $this->belongsTo(User::class, 'rawSubFam_qualityApproverId') ;
+        return $this->belongsTo(User::class, 'rawSubFam_qualityApproverId') ;
     }
 
     //Define the relation between a rawSubFamily and the user who reviewed it : a rawSubFamily has only one technicalReviewer
     public function technical_reviewer(){
-    return $this->belongsTo(User::class, 'compSubFam_technicalReviewerId') ;
+        return $this->belongsTo(User::class, 'rawSubFam_technicalReviewerId') ;
     }
 
     //Define the relation between an EnumPurchasedBy and its rawSubFamily : a rawSubFamily has only one EnumPurchasedBy
     public function purchased_by(){
-    return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
+        return $this->belongsTo(EnumPurchasedBy::class, 'enumPurchasedBy_id') ;
+    }
+
+     //Define the relation between an EnumStorageCondition and its rawSubFamily : a rawSubFamily can correspond to many EnumStorageCondition
+     public function storage_conditions(){
+        return $this->belongsToMany(EnumStorageCondition::class, 'pivot_raw_sub_fam_sto_cond', 'rawSubFam_id', 'storageCondition_id') ;
+    }
+
+    //Define the relation between a supplier and its rawSubFamily : a rawSubFamily can correspond to many suppliers
+      public function suppliers(){
+        return $this->belongsToMany(Supplier::class, 'pivot_raw_sub_fam_supplr', 'rawSubFam_id', 'supplr_id') ;
     }
 }

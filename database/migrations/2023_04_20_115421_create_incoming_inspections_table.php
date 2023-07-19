@@ -35,7 +35,15 @@ class CreateIncomingInspectionsTable extends Migration
             $table->foreign('incmgInsp_compFam_id')->references('id')->on('comp_families');
             $table->unsignedBigInteger('incmgInsp_rawFam_id')->nullable();
             $table->foreign('incmgInsp_rawFam_id')->references('id')->on('raw_families');
+            
+            $table->unsignedBigInteger('compSubFam_id') ->nullable();
+            $table->foreign('compSubFam_id')->references('id')->on('comp_sub_families') ;
+            $table->unsignedBigInteger('consSubFam_id') ->nullable();
+            $table->foreign('consSubFam_id')->references('id')->on('cons_sub_families') ;
+            $table->unsignedBigInteger('rawSubFam_id') ->nullable();
+            $table->foreign('rawSubFam_id')->references('id')->on('raw_sub_families') ;
         });
+
     }
 
     /**

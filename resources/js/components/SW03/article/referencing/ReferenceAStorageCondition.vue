@@ -174,6 +174,7 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
+        console.log("Reference a storage condition created")
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             if (this.data_article_id !== null) {

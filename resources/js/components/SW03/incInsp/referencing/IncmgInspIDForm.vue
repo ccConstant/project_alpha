@@ -9,7 +9,7 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else>
-            <button @click="addIncmgInsp">Create a new Incoming Inspection</button>
+            <button v-if="!this.alreadyCreated" @click="addIncmgInsp">Create a new Incoming Inspection</button>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
                 <div v-if="this.incmgInsp_id!=null">
                     <div class="accordion">
@@ -24,7 +24,6 @@
                                 <div class="accordion-body">
                                     <ReferenceADocControl
                                         :articleType="article_type"
-                                        :article_id="article_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
@@ -47,7 +46,6 @@
                                 <div class="accordion-body">
                                     <ReferenceAnAspTest
                                         :articleType="article_type"
-                                        :article_id="article_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
@@ -68,7 +66,6 @@
                                 <div class="accordion-body">
                                     <ReferenceAFuncTest
                                         :articleType="article_type"
-                                        :article_id="article_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
@@ -90,7 +87,6 @@
                                 <div class="accordion-body">
                                     <ReferenceADimTest
                                         :articleType="article_type"
-                                        :article_id="article_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
@@ -113,7 +109,6 @@
                                 <div class="accordion-body">
                                     <ReferenceAnAdminControl
                                         :articleType="article_type"
-                                        :article_id="article_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
@@ -134,7 +129,6 @@
                                 <div class="accordion-body">
                                     <ReferenceACompTest
                                         :articleType="article_type"
-                                        :article_id="article_id"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
@@ -256,7 +250,8 @@ export default {
             infos_incmgInsp: [],
             rawFam_id: null,
             consFam_id: null,
-            compFam_id: null
+            compFam_id: null,
+            alreadyCreated: false
         }
     },
     methods: {
@@ -364,6 +359,7 @@ export default {
     created() {
         console.log(this.data_checkedTest)
         if (this.data_checkedTest!=null && (this.data_checkedTest.includes('docControl') || this.data_checkedTest.includes('dimTest') || this.data_checkedTest.includes('funcTest') || this.data_checkedTest.includes('aspTest') || this.data_checkedTest.includes('compTest') || this.data_checkedTest.includes('adminControl')|| this.data_docControl_name!='Test required to ensure performance of the medical device')) {
+            this.alreadyCreated=true;
             this.addIncmgInsp() ;
         }
         axios.get('/info/send/IncmgInsp')

@@ -46,7 +46,7 @@
                     isRequired
                     :Errors="errors.dimTest_expectedMethod"
                 />
-                <InputNumberForm
+                <InputTextForm
                     name="expectedValue"
                     label="Expected Acceptance Criteria :"
                     v-model="dimTest_expectedValue"
@@ -215,7 +215,7 @@ export default {
             type: Number,
             default: null
         },
-        purSpe_id: {
+        articleSubFam_id: {
             type: Number,
             default: null
         },
@@ -256,7 +256,7 @@ export default {
             data_article_id: this.articleID,
             data_article_type: this.articleType.toLowerCase(),
             data_incmgInsp_id: this.incmgInsp_id,
-            data_purSpe_id: this.purSpe_id,
+            data_subFam_id: this.articleSubFam_id,
             info_dimTest: []
         }
     },
@@ -270,7 +270,9 @@ export default {
                     dimTest_expectedMethod: this.dimTest_expectedMethod,
                     dimTest_expectedValue: this.dimTest_expectedValue,
                     incmgInsp_id: this.data_incmgInsp_id,
-                    purSpe_id: this.data_purSpe_id,
+                    article_type: this.data_article_type,
+                    article_id: this.data_article_id,
+                    subFam_id : this.data_subFam_id,
                     dimTest_articleType: this.data_article_type,
                     dimTest_sampling: this.dimTest_sampling,
                     dimTest_unitValue: this.dimTest_unitValue,
@@ -278,7 +280,6 @@ export default {
                     dimTest_specDoc: this.dimTest_specDoc,
                     reason: 'add',
                     id: this.dimTest_id,
-                    article_id: this.data_article_id,
                 })
                 .then(response => {
                     this.errors = {};
@@ -291,7 +292,9 @@ export default {
                         dimTest_expectedMethod: this.dimTest_expectedMethod,
                         dimTest_expectedValue: this.dimTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
-                        purSpe_id: this.data_purSpe_id,
+                        article_type: this.data_article_type,
+                        article_id: this.data_article_id,
+                        subFam_id : this.data_subFam_id,
                         dimTest_articleType: this.data_article_type,
                         dimTest_sampling: this.dimTest_sampling,
                         dimTest_unitValue: this.dimTest_unitValue,
@@ -299,7 +302,6 @@ export default {
                         dimTest_specDoc: this.dimTest_specDoc,
                         reason: 'add',
                         id: this.dimTest_id,
-                        article_id: this.data_article_id,
                     })
                     .then(response => {
                         this.$snotify.success(`Dimensional Test added successfully and saved as ${savedAs}`);

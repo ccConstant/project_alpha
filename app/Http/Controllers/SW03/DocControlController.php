@@ -84,7 +84,10 @@ class DocControlController extends Controller
         $cons=null;
         $raw=null;
         $comp=null;
-        if ($request->article_id!=null){
+        $subComp=null;
+        $subCons=null;
+        $subRaw=null;
+        if ($request->article_id!=null && $request->incmgInsp_id==null){
             if ($request->article_type=='cons'){
                 $cons=$request->article_id;
             }
@@ -130,6 +133,66 @@ class DocControlController extends Controller
      */
     public function send_docControlFromIncmgInsp($id) {
         $docControl = DocumentaryControl::all()->where('incmgInsp_id', "==", $id)->all();
+        $array = [];
+        foreach ($docControl as $doc) {
+            $obj = ([
+                'docControl_name' => $doc->docControl_name,
+                'docControl_reference' => $doc->docControl_reference,
+                'docControl_materialCertifSpe' => $doc->docControl_materialCertifSpe,
+                'incmgInsp_id' => $doc->incmgInsp_id,
+                'docControl_FDS' => $doc->docControl_FDS,
+                'id' => $doc->id
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceADocControl.vue with the route : /incmgInsp/docControl/sendFromFamily/{type}/{id} (get)
+     * Get all the doc control corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_docControlFromFamily($type,$id) {
+        if ($type=="comp"){
+            $docControl = DocumentaryControl::all()->where('compFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $docControl = DocumentaryControl::all()->where('rawFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $docControl = DocumentaryControl::all()->where('consFam_id', "==", $id)->all();
+        }
+        $array = [];
+        foreach ($docControl as $doc) {
+            $obj = ([
+                'docControl_name' => $doc->docControl_name,
+                'docControl_reference' => $doc->docControl_reference,
+                'docControl_materialCertifSpe' => $doc->docControl_materialCertifSpe,
+                'incmgInsp_id' => $doc->incmgInsp_id,
+                'docControl_FDS' => $doc->docControl_FDS,
+                'id' => $doc->id
+            ]);
+            array_push($array, $obj);
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceADocControl.vue with the route : /incmgInsp/docControl/sendFromSubFamily/{type}/{id} (get)
+     * Get all the doc control corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_docControlFromSubFamily($type,$id) {
+        if ($type=="comp"){
+            $docControl = DocumentaryControl::all()->where('compSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="raw"){
+            $docControl = DocumentaryControl::all()->where('rawSubFam_id', "==", $id)->all();
+        }
+        else if ($type=="cons"){
+            $docControl = DocumentaryControl::all()->where('consSubFam_id', "==", $id)->all();
+        }
         $array = [];
         foreach ($docControl as $doc) {
             $obj = ([

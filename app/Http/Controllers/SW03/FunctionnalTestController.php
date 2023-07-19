@@ -96,7 +96,7 @@ class FunctionnalTestController extends Controller
                 ]
             );
         }
-        if ($request->purSpe_id !== null) {
+        /*if ($request->purSpe_id !== null) {
             $purSpe = null;
             if ($request->funcTest_articleType === 'comp') {
                 $purSpe = PurchaseSpecification::all()->where('compFam_id', '==', $request->article_id);
@@ -140,7 +140,7 @@ class FunctionnalTestController extends Controller
                     'funcTest_name' => 'This functional test already exists',
                 ], 429);
             }
-        }
+        }*/
         
     }
 
@@ -150,6 +150,35 @@ class FunctionnalTestController extends Controller
      * @return \Illuminate\Http\Response : id of the new Functional test
      */
     public function add_funcTest(Request $request) {
+        $cons=null;
+        $raw=null;
+        $comp=null;
+        $subComp=null;
+        $subCons=null;
+        $subRaw=null;
+        if ($request->article_id!=null && $request->incmgInsp_id==null){
+            if ($request->article_type=='cons'){
+                $cons=$request->article_id;
+            }
+            else if ($request->article_type=='raw'){
+                $raw=$request->article_id;
+            }
+            else if ($request->article_type=='comp'){
+                $comp=$request->article_id;
+            }
+        }else{
+            if ($request->incmgInsp_id==null){
+                if ($request->article_type=='cons'){
+                    $subCons=$request->subFam_id;
+                }
+                else if ($request->article_type=='raw'){
+                    $subRaw=$request->subFam_id;
+                }
+                else if ($request->article_type=='comp'){
+                    $subComp=$request->subFam_id;
+                }
+            }
+        }
         $funcTest = FunctionalTest::create([
             'funcTest_severityLevel' => $request->funcTest_severityLevel,
             'funcTest_levelOfControl' => $request->funcTest_levelOfControl,
@@ -158,7 +187,12 @@ class FunctionnalTestController extends Controller
             'funcTest_name' => $request->funcTest_name,
             'funcTest_sampling' => $request->funcTest_sampling,
             'incmgInsp_id' => $request->incmgInsp_id,
-            'purSpe_id' => $request->purSpe_id,
+            'rawFam_id' => $raw,
+            'consFam_id' => $cons,
+            'compFam_id' => $comp,
+            'rawSubFam_id' => $subRaw,
+            'consSubFam_id' => $subCons,
+            'compSubFam_id' => $subComp,
             'funcTest_desc' => $request->funcTest_desc,
             'funcTest_specDoc' => $request->funcTest_specDoc,
         ]);
@@ -173,6 +207,72 @@ class FunctionnalTestController extends Controller
      */
     public function send_funcTestFromIncmgInsp($id) {
         $funcTest = FunctionalTest::all()->where('incmgInsp_id', '==', $id);
+        $array = [];
+        foreach ($funcTest as $funcTest) {
+            $array[] = [
+                'id' => $funcTest->id,
+                'funcTest_severityLevel' => $funcTest->funcTest_severityLevel,
+                'funcTest_levelOfControl' => $funcTest->funcTest_levelOfControl,
+                'funcTest_expectedMethod' => $funcTest->funcTest_expectedMethod,
+                'funcTest_expectedValue' => $funcTest->funcTest_expectedValue,
+                'funcTest_name' => $funcTest->funcTest_name,
+                'funcTest_sampling' => $funcTest->funcTest_sampling,
+                'incmgInsp_id' => $funcTest->incmgInsp_id,
+                'funcTest_desc' => $funcTest->funcTest_desc,
+                'funcTest_specDoc' => $funcTest->funcTest_specDoc,
+            ];
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceAFuncTest.vue with the route : /incmgInsp/funcTest/sendFromFamily/{type}/{id} (get)
+     * Get all the doc control corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_funcTestFromFamily($type,$id) {
+        if ($type=="comp"){
+            $funcTest = FunctionalTest::all()->where('compFam_id', '==', $id)->all();
+        }
+        else if ($type=="raw"){
+            $funcTest = FunctionalTest::all()->where('rawFam_id', '==', $id)->all();
+        }
+        else if ($type=="cons"){
+            $funcTest = FunctionalTest::all()->where('consFam_id', '==', $id)->all();
+        }
+        $array = [];
+        foreach ($funcTest as $funcTest) {
+            $array[] = [
+                'id' => $funcTest->id,
+                'funcTest_severityLevel' => $funcTest->funcTest_severityLevel,
+                'funcTest_levelOfControl' => $funcTest->funcTest_levelOfControl,
+                'funcTest_expectedMethod' => $funcTest->funcTest_expectedMethod,
+                'funcTest_expectedValue' => $funcTest->funcTest_expectedValue,
+                'funcTest_name' => $funcTest->funcTest_name,
+                'funcTest_sampling' => $funcTest->funcTest_sampling,
+                'incmgInsp_id' => $funcTest->incmgInsp_id,
+                'funcTest_desc' => $funcTest->funcTest_desc,
+                'funcTest_specDoc' => $funcTest->funcTest_specDoc,
+            ];
+        }
+        return response()->json($array);
+    }
+
+    /**
+     * Function call by ReferenceAFuncTest.vue with the route : /incmgInsp/funcTest/sendFromSubFamily/{type}/{id} (get)
+     * Get all the doc control corresponding in the data base
+     * @return \Illuminate\Http\Response
+     */
+    public function send_funcTestFromSubFamily($type,$id) {
+        if ($type=="comp"){
+            $funcTest = FunctionalTest::all()->where('compSubFam_id', '==', $id)->all();
+        }
+        else if ($type=="raw"){
+            $funcTest= FunctionalTest::all()->where('rawSubFam_id', '==', $id)->all();
+        }
+        else if ($type=="cons"){
+            $funcTest= FunctionalTest::all()->where('consSubFam_id', '==', $id)->all();
+        }
         $array = [];
         foreach ($funcTest as $funcTest) {
             $array[] = [

@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\SW03\CompFamily;
 use App\Models\SW03\ConsFamily;
 use App\Models\SW03\RawFamily;
+use App\Models\SW03\RawSubFamily;
+use App\Models\SW03\ConsSubFamily;
+use App\Models\SW03\CompSubFamily;
 
 class EnumStorageCondition extends Model
 {
@@ -38,4 +41,21 @@ class EnumStorageCondition extends Model
     public function rawFamily(){
         return $this->belongsToMany(RawFamily::class, 'pivot_raw_fam_sto_cond', 'storageCondition_id', 'rawFam_id') ;
     }
+
+    //Define the relation between an EnumStorageCondition and its compFamily : an EnumStorageCondition can have many compFamily
+    public function compSubFamily(){
+        return $this->belongsToMany(CompSubFamily::class, 'pivot_comp_sub_fam_sto_cond', 'storageCondition_id', 'compSubFam_id') ;
+    }
+
+    //Define the relation between an EnumStorageCondition and its consFamily : an EnumStorageCondition can have many consFamily
+    public function consSubFamily(){
+        return $this->belongsToMany(ConsSubFamily::class, 'pivot_cons_sub_fam_sto_cond', 'storageCondition_id', 'consSubFam_id') ;
+    }
+
+    //Define the relation between an EnumStorageCondition and its rawSubFamily : an EnumStorageCondition can have many rawSubFamily
+    public function rawSubFamily(){
+        return $this->belongsToMany(RawSubFamily::class, 'pivot_raw_sub_fam_sto_cond', 'storageCondition_id', 'rawSubFam_id') ;
+    }
+
+
 }
