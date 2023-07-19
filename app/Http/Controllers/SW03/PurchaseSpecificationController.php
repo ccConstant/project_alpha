@@ -234,6 +234,52 @@ class PurchaseSpecificationController extends Controller
         }
         return response()->json($array);
     }
+
+
+    public function send_purSpes_subFam($type, $id)
+    {
+        $array = [];
+        $pivot = [];
+        $supplier = null;
+        if ($type === 'cons') {
+            $purSpecs = PurchaseSpecification::all()->where('consSubFam_id', '==', $id);
+            $supplier = ConsSubFamily::all()->where('id', '==', $id)->first()->suppliers;
+            foreach ($supplier as $sup) {
+                array_push($pivot, DB::table('pivot_cons_sub_fam_supplr')->where('consSubFam_id', $sup->pivot->consSubFam_id)
+                    ->where('supplr_id', $sup->pivot->supplr_id)->first());
+            }
+        } else if ($type === 'raw') {
+            $purSpecs = PurchaseSpecification::all()->where('rawSubFam_id', '==', $id);
+            $supplier = RawSubFamily::all()->where('id', '==', $id)->first()->suppliers;
+            foreach ($supplier as $sup) {
+                array_push($pivot, DB::table('pivot_raw_sub_fam_supplr')->where('rawSubFam_id', $sup->pivot->rawSubFam_id)
+                    ->where('supplr_id', $sup->pivot->supplr_id)->first());
+            }
+        } else if ($type === 'comp') {
+            $purSpecs = PurchaseSpecification::all()->where('compSubFam_id', '==', $id);
+            $supplier = CompSubFamily::all()->where('id', '==', $id)->first()->suppliers;
+            foreach ($supplier as $sup) {
+                array_push($pivot, DB::table('pivot_comp_sub_fam_supplr')->where('compSubFam_id', $sup->pivot->compSubFam_id)
+                    ->where('supplr_id', $sup->pivot->supplr_id)->first());
+            }
+        }
+        foreach ($purSpecs as $purSpec) {
+            $supp = null;
+            foreach ($pivot as $piv) {
+                if ($piv->purSpec_id === $purSpec->id) {
+                    $supp = $piv;
+                }
+            }
+            array_push($array, [
+                'id' => $purSpec->id,
+                'purSpe_validate' => $purSpec->purSpe_validate,
+                'purSpe_supplier_id' => Supplier::all()->where('id', '==', $supp->supplr_id)->first()->supplr_name,
+                'purSpe_supplier_ref' => $supp->supplr_ref,
+                'purSpe_remark' => $supp->remark,
+            ]);
+        }
+        return response()->json($array);
+    }
     
 
     public function update_purSpe(Request $request, $type, $id)

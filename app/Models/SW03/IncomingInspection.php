@@ -21,7 +21,7 @@ class IncomingInspection extends Model
     use HasFactory;
 
     //Data which can be added, updated or deleted by us in the database.
-    protected $fillable = ['incmgInsp_remarks', 'incmgInsp_partMaterialComplianceCertificate', 'incmgInsp_rawMaterialCertificate', 'incmgInsp_qualityApproverId', 'incmgInsp_technicalReviewerId', 'incmgInsp_signatureDate', 'incmgInsp_consFam_id', 'incmgInsp_compFam_id', 'incmgInsp_rawFam_id', 'incmgInsp_compSubFam_id', 'incmg_rawSubFam_id', 'incmgInsp_consSubFam_id', 'incmgInsp_validate'];
+    protected $fillable = ['incmgInsp_remarks', 'incmgInsp_qualityApproverId', 'incmgInsp_technicalReviewerId', 'incmgInsp_signatureDate', 'incmgInsp_consFam_id', 'incmgInsp_compFam_id', 'incmgInsp_rawFam_id', 'compSubFam_id', 'rawSubFam_id', 'consSubFam_id', 'incmgInsp_validate'];
 
     //Define the relation between a consFamily and its incomingInspection: an incomingInspection can correspond to only one consFamily
     public function cons_family(){

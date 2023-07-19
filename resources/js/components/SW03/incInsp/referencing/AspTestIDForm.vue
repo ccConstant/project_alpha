@@ -112,7 +112,7 @@
                 <div v-if="this.addSucces===false ">
                     <div v-if="this.incmgInsp_id===null ">
                         <div v-if="modifMod===true">
-                            <SaveButtonForm @add="addAspTest" @update="updateAspTest"
+                            <SaveButtonForm @add="addAspTest" @update="updateAspTest" :modifMod="this.modifMod"
                                             :consultMod="this.isInConsultedMod" :savedAs="'validated'"
                                             :AddinUpdate="true"/>
                         </div>
@@ -248,7 +248,6 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
-                    console.log("verif passed")
                     axios.post('/incmgInsp/aspTest/add', {
                         aspTest_name: this.aspTest_name,
                         aspTest_severityLevel: this.aspTest_severityLevel,

@@ -229,7 +229,7 @@ class AdminControlController extends Controller
      * Get all the aspect test corresponding in the data base
      * @return \Illuminate\Http\Response
      */
-    public function send_aspectTestFromSubFamily($type,$id) {
+    public function send_adminControlFromSubFamily($type,$id) {
         if ($type=="comp"){
             $adminControl = AdminControl::all()->where('compSubFam_id', "==", $id)->all();
         }

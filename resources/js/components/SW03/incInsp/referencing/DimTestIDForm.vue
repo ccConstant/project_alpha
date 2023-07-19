@@ -134,7 +134,7 @@
                 <div v-if="this.addSucces===false ">
                     <div v-if="this.incmgInsp_id===null ">
                         <div v-if="modifMod===true">
-                            <SaveButtonForm @add="addDimTest" @update="updateDimTest"
+                            <SaveButtonForm @add="addDimTest" @update="updateDimTest" :modifMod="this.modifMod"
                                             :consultMod="this.isInConsultedMod" :savedAs="'validated'"
                                             :AddinUpdate="true"/>
                         </div>
@@ -283,8 +283,6 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
-                    console.log("verif passed")
-                    console.log(this.data_purSpe_id)
                     axios.post('/incmgInsp/dimTest/add', {
                         dimTest_name: this.dimTest_name,
                         dimTest_severityLevel: this.dimTest_severityLevel,

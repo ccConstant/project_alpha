@@ -150,8 +150,6 @@ export default {
             crit_remarks,
             crit_validate,
             incmgInsp_id, id, className) {
-            console.log("crit_performanceMedicalDevice :" + crit_performanceMedicalDevice)
-            console.log("crit_checkedTests :" + crit_checkedTests)
             this.components.push({
                 comp: 'CritIDForm',
                 key: this.uniqueKey++,
@@ -228,6 +226,7 @@ export default {
                     }).catch(error => {
                 });
             } else {
+
                 axios.get('/artSubFam/criticality/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
                         this.criticality = response.data;

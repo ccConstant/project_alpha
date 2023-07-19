@@ -129,7 +129,8 @@ export default {
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
             data_article_type: this.articleType,
-            loaded: false
+            loaded: false,
+            data_sub_fam_id: this.articleSubFam_id
         };
     },
     methods: {
@@ -235,7 +236,7 @@ export default {
                     consultUrl = (id) => `/incmgInsp/aspTest/sendFromIncmgInsp/${id}`;
                 }else{
                     if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
-                        consultUrl = (type,id) => `/incmgInsp/aspTest/sendFromSubFam/${type}/${id}`; // FIXME
+                        consultUrl = (type,id) => `/incmgInsp/aspTest/sendFromSubFamily/${type}/${id}`; // FIXME
                     }    
                 }
 

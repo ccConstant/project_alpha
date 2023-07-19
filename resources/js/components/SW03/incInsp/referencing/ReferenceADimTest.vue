@@ -129,8 +129,9 @@ export default {
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
             data_article_type: this.articleType,
-            loaded: false
-        };
+            loaded: false,
+            data_sub_fam_id: this.articleSubFam_id
+             };
     },
     methods: {
         /*Function for adding a new empty file form*/
@@ -169,7 +170,7 @@ export default {
                 dimTest_specDoc: dimTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
-                className: className
+                className: className,
             });
         },
         /*Suppression of a file component from the vue*/
@@ -241,7 +242,7 @@ export default {
                     consultUrl = (id) => `/incmgInsp/dimTest/sendFromIncmgInsp/${id}`;
                 }else{
                     if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
-                        consultUrl = (id) => `/incmgInsp/dimTest/sendFromSubFam/${type}/${id}`; // FIXME
+                        consultUrl = (type,id) => `/incmgInsp/dimTest/sendFromSubFamily/${type}/${id}`; // FIXME
                     }    
                 }
 

@@ -174,10 +174,9 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("Reference a storage condition created")
-        if (this.import_id !== null) {
+        if (this.import_id !== null ) {
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
-            if (this.data_article_id !== null) {
+            if (this.data_art_id !== null) {
                 axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
                     .then(response => {
                         this.sto_conds = response.data;
@@ -197,7 +196,6 @@ export default {
             /*axios.get('/artFam/enum/storageCondition/sendUsageByType/' + this.data_art_type + '/' + this.import_id)
                 .then(response => {
                     this.sto_conds = response.data;
-                    console.log(this.sto_conds);
                     this.importStoConds();
                     this.loaded = true;
                 })

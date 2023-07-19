@@ -209,21 +209,22 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        if (this.checkedTest!=null && this.checkedTest.includes('docControl') || this.docControl_name !== "Test required to ensure performance of the medical device" && this.docControl_name!=null) {
+        if (this.checkedTest!=null && this.checkedTest.includes('docControl') || this.docControl_name !== "Test required to ensure performance of the medical device" && this.docControl_name!=null && this.docControl_name!=="") {
             this.addComponent(this.docControl_name);
         }   
         /*If the user chooses importation doc control*/
+
         if (this.import_id !== null && this.modifMod) {
             var consultUrl="";
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
             if (this.data_article_id != null && this.data_article_id == this.import_id) {
                 consultUrl = (type,id) => `/incmgInsp/docControl/sendFromFamily/${type}/${id}`;
             }else{
-                if (this.incmgInsp_id != null && this.incmgInsp_id == this.import_id){
+                if (this.data_incmingInsp_id != null && this.data_incmingInsp_id == this.import_id){
                     consultUrl = (id) => `/incmgInsp/docControl/sendFromIncmgInsp/${id}`;
                 }else{
                     if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
-                        consultUrl = (id) => `/incmgInsp/docControl/sendFromSubFam/${type}/${id}`; // FIXME
+                        consultUrl = (type,id) => `/incmgInsp/docControl/sendFromSubFamily/${type}/${id}`; 
                     }    
                 }
 

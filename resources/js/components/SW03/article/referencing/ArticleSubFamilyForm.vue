@@ -117,7 +117,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="this.checkedTestsSupplier!=null && this.checkedTestsSupplier.length!=0" class="accordion">
+                <div v-if="(this.checkedTestsSupplier!=null && this.checkedTestsSupplier.length!=0)  || this.modifMod" class="accordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -139,7 +139,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion" v-if="this.checkedTestsAlpha!=null && this.checkedTestsAlpha.length!=0">
+                <div class="accordion" v-if="(this.checkedTestsAlpha!=null && this.checkedTestsAlpha.length!=0) || this.modifMod">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -358,8 +358,6 @@ export default {
                             const consultUrl = (id) => `/raw/mb/send/${id}`;
                             axios.get(consultUrl(this.artSubFam_id))
                             .then(response => {
-                                console.log("coucou c'est moi cococinnelle")
-                                console.log(response.data)
                                 this.importedMember = response.data;
                                 this.loaded=true;
                             });
@@ -401,9 +399,7 @@ export default {
                     })
                     /*If the data are correct, we send them to the controller for add them in the database*/
                     .then(response => {
-                        console.log("verif")
                         this.errors = {};
-                        console.log(this.data_artFam_id)
                         axios.post('/comp/subFam/add', {
                             artSubFam_ref: this.artSubFam_ref,
                             artSubFam_design: this.artSubFam_design,
@@ -417,7 +413,6 @@ export default {
                         })
                         /*If the data have been added in the database, we show a success message*/
                         .then(response => {
-                            console.log("add")
                             this.addSuccess = true;
                             this.isInConsultMod = true;
                             this.$snotify.success(`CompSubFam ID added successfully and saved as ${savedAs}`);
@@ -445,7 +440,6 @@ export default {
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
                             this.errors = {};
-                            console.log("verif")
                             axios.post('/raw/subFam/add', {
                                 artSubFam_ref:this.artSubFam_ref,
                                 artSubFam_design: this.artSubFam_design,
@@ -458,7 +452,6 @@ export default {
                             })
                             /*If the data have been added in the database, we show a success message*/
                             .then(response => {
-                                console.log("add")
                                 this.addSuccess = true;
                                 this.isInConsultMod = true;
                                 this.$snotify.success(`RawSubFam ID added successfully and saved as ${savedAs}`);
@@ -532,7 +525,6 @@ export default {
                 /*If the data are correct, we send them to the controller for update data in the database*/
                 .then(response => {
                     this.errors = {};
-                    console.log("verif passed")
                     const consultUrl = (id) => '/' + this.data_artFam_type.toLowerCase() + '/subFam/update/' + id;
                     axios.post(consultUrl(this.artSubFam_id), {
                         artSubFam_ref: this.artSubFam_ref,
@@ -545,7 +537,6 @@ export default {
                         artSubFam_version: this.artSubFam_version,
                     })
                         .then(response => {
-                            console.log("update passed")
                             const id = this.artFam_id;
                             /*We test if an article sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
@@ -595,7 +586,6 @@ export default {
             this.checkedTestsSupplier = value;
         },
         createDocControlName(value) {
-            console.log("createDocControl ArticleSubFamily")
             this.docControlName = value;
         },
     },

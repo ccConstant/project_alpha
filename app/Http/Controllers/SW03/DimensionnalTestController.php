@@ -291,7 +291,6 @@ class DimensionnalTestController extends Controller
                 'dimTest_expectedValue' => $item->dimTest_expectedValue,
                 'dimTest_name' => $item->dimTest_name,
                 'dimTest_unitValue' => $item->dimTest_unitValue,
-                'incmgInsp_id' => $item->incmgInsp_id,
                 'dimTest_desc' => $item->dimTest_desc,
                 'dimTest_specDoc' => $item->dimTest_specDoc,
             ];

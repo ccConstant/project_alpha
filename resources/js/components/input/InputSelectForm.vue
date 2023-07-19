@@ -113,7 +113,6 @@ export default {
     },
     created(){
 
-        //console.log(this.selctedOption)
     },
     /*All function inside the updated option is called each time the value is changed*/
     /*updated(){
@@ -122,8 +121,7 @@ export default {
             var selectedDiv = document.getElementsByClassName(this.selectedDivName)
             var option =selectedDiv[0].getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
-                console.log("id 33")
-                console.log(option[i].id)
+              
                 if(option[i].value == this.selctedOption && option[i].id == "RequiredSkill") {
                     option[i].setAttribute("selected", "selected");
                 }
@@ -131,8 +129,6 @@ export default {
         }else{
             var option = document.getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
-                  console.log("id 33")
-                console.log(option[i].id)
                 if(option[i].value == this.selctedOption && option[i].id == "RequiredSkill") {
                     option[i].setAttribute("selected", "selected");
                 }
@@ -145,8 +141,7 @@ export default {
             var selectedDiv = document.getElementsByClassName(this.selectedDivName)
             var option =selectedDiv[0].getElementsByTagName('option');
             for (var i = 0; i < option.length; i++) {
-                console.log("nbr")
-                console.log(option.nbr)
+
                 if(option[i].value == this.selctedOption && option[i].id == this.id_group) {
                     option[i].setAttribute("selected", "selected");
 
@@ -154,7 +149,6 @@ export default {
             }
         }else{
             var option = document.getElementsByTagName('option');
-               console.log("coucou2")
             for (var i = 0; i < option.length; i++) {
                 if(option[i].value == this.selctedOption && option[i].id == this.id_group) {
                     option[i].setAttribute("selected", "selected");

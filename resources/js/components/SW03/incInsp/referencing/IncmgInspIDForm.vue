@@ -24,11 +24,12 @@
                                 <div class="accordion-body">
                                     <ReferenceADocControl
                                         :articleType="article_type"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
-                                        :incmgInsp_id="incmgInsp_id"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? this.incmgInsp_id : null"
+                                        :incmgInsp_id="this.incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
                                         :docControl_name="this.data_docControl_name"
+                                        :modifMod="this.isInModifMod"
                                     />
                                 </div>
                             </div>
@@ -47,9 +48,10 @@
                                     <ReferenceAnAspTest
                                         :articleType="article_type"
                                         :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
-                                        :incmgInsp_id="incmgInsp_id"
+                                        :incmgInsp_id="this.incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
+                                        :modifMod="this.isInModifMod"
                                     />
                                 </div>
                             </div>
@@ -70,6 +72,7 @@
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
+                                        :modifMod="this.isInModifMod"
                                     />
                                 </div>
                             </div>
@@ -91,6 +94,7 @@
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
+                                        :modifMod="this.isInModifMod"
                                     />
                                 </div>
                             </div>
@@ -113,12 +117,13 @@
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
+                                        :modifMod="this.isInModifMod"
                                     />
                                 </div>
                             </div>
                         </div>
                         <!-- CompTest -->
-                        <div class="accordion-item" v-if="article_type === 'cons'">
+                        <div class="accordion-item" v-if="article_type === 'other'">
                             <h2 class="accordion-header" id="headingCompTestIncmg">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapseCompTestIncmg" aria-expanded="true" aria-controls="collapseCompTestIncmg">
@@ -133,6 +138,7 @@
                                         :incmgInsp_id="incmgInsp_id"
                                         :consultMod="this.isInConsultMod"
                                         :checkedTest="this.data_checkedTest"
+                                        :modifMod="this.isInModifMod"
                                     />
                                 </div>
                             </div>
@@ -251,6 +257,9 @@ export default {
             rawFam_id: null,
             consFam_id: null,
             compFam_id: null,
+            rawSubFam_id: null,
+            consSubFam_id: null,
+            compSubFam_id: null,
             alreadyCreated: false
         }
     },
@@ -260,6 +269,15 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         addIncmgInsp() {
+            if (this.artSubFam_id!=null){
+                if (this.article_type === 'cons') {
+                    this.consSubFam_id = this.artSubFam_id;
+                } else if (this.article_type === 'raw') {
+                    this.rawSubFam_id = this.artSubFam_id;
+                } else if (this.article_type === 'comp') {
+                    this.compSubFam_id = this.artSubFam_id;
+                }
+            }
             if (this.article_type === 'cons') {
                 this.consFam_id = this.article_id;
             } else if (this.article_type === 'raw') {
@@ -271,6 +289,9 @@ export default {
                     incmgInsp_consFam_id: this.consFam_id,
                     incmgInsp_rawFam_id: this.rawFam_id,
                     incmgInsp_compFam_id: this.compFam_id,
+                    consSubFam_id: this.consSubFam_id,
+                    rawSubFam_id: this.rawSubFam_id,
+                    compSubFam_id: this.compSubFam_id,
                     incmpInsp_articleType: this.article_type
                 })
                 /*If the file is added successfully*/
@@ -357,8 +378,8 @@ export default {
         }
     },
     created() {
-        console.log(this.data_checkedTest)
-        if (this.data_checkedTest!=null && (this.data_checkedTest.includes('docControl') || this.data_checkedTest.includes('dimTest') || this.data_checkedTest.includes('funcTest') || this.data_checkedTest.includes('aspTest') || this.data_checkedTest.includes('compTest') || this.data_checkedTest.includes('adminControl')|| this.data_docControl_name!='Test required to ensure performance of the medical device')) {
+        console.log("incmgInsp_id : " + this.incmgInsp_id)
+        if (this.data_checkedTest!=null && (this.data_checkedTest.includes('docControl') || this.data_checkedTest.includes('dimTest') || this.data_checkedTest.includes('funcTest') || this.data_checkedTest.includes('aspTest') || this.data_checkedTest.includes('compTest') || this.data_checkedTest.includes('adminControl')|| this.data_docControl_name!='Test required to ensure performance of the medical device' && this.data_docControl_name!=null && this.data_docControl_name!='')) {
             this.alreadyCreated=true;
             this.addIncmgInsp() ;
         }

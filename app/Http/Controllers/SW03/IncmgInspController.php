@@ -31,6 +31,9 @@ class IncmgInspController extends Controller
             'incmgInsp_consFam_id' => $request->incmgInsp_consFam_id,
             'incmgInsp_compFam_id' => $request->incmgInsp_compFam_id,
             'incmgInsp_rawFam_id' => $request->incmgInsp_rawFam_id,
+            'compSubFam_id' => $request->compSubFam_id,
+            'consSubFam_id' => $request->consSubFam_id,
+            'rawSubFam_id' => $request->rawSubFam_id,
         ]);
         return response()->json($incmgInsp);
     }
@@ -119,14 +122,12 @@ class IncmgInspController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_subFamIncmgInspRaw($id) {
-        $incmgInsps = IncomingInspection::all()->where('incmg_rawSubFam_id', "==", $id);
+        $incmgInsps = IncomingInspection::all()->where('rawSubFam_id', "==", $id);
         $array = [];
         foreach ($incmgInsps as $incmgInsp) {
             $obj = ([
                 'id' => $incmgInsp->id,
                 'incmgInsp_remarks' => $incmgInsp->incmgInsp_remarks,
-                'incmgInsp_partMaterialComplianceCertificate' => $incmgInsp->incmgInsp_partMaterialComplianceCertificate,
-                'incmgInsp_rawMaterialCertificate' => $incmgInsp->incmgInsp_rawMaterialCertificate,
                 'incmgInsp_validate' => $incmgInsp->incmgInsp_validate,
                 'incmgInsp_qualityApproverId' => $incmgInsp->incmgInsp_qualityApproverId,
                 'incmgInsp_technicalReviewerId' => $incmgInsp->incmgInsp_technicalReviewerId,
@@ -143,7 +144,7 @@ class IncmgInspController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_subFamIncmgInspCons($id) {
-        $incmgInsps = IncomingInspection::all()->where('incmgInsp_consSubFam_id', "==", $id);
+        $incmgInsps = IncomingInspection::all()->where('consSubFam_id', "==", $id);
         $array = [];
         foreach ($incmgInsps as $incmgInsp) {
             $obj = ([
@@ -164,14 +165,12 @@ class IncmgInspController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_subFamIncmgInspComp($id) {
-        $incmgInsps = IncomingInspection::all()->where('incmgInsp_compSubFam_id', "==", $id);
+        $incmgInsps = IncomingInspection::all()->where('compSubFam_id', "==", $id);
         $array = [];
         foreach ($incmgInsps as $incmgInsp) {
             $obj = ([
                 'id' => $incmgInsp->id,
                 'incmgInsp_remarks' => $incmgInsp->incmgInsp_remarks,
-                'incmgInsp_partMaterialComplianceCertificate' => $incmgInsp->incmgInsp_partMaterialComplianceCertificate,
-                'incmgInsp_rawMaterialCertificate' => $incmgInsp->incmgInsp_rawMaterialCertificate,
                 'incmgInsp_validate' => $incmgInsp->incmgInsp_validate,
                 'incmgInsp_qualityApproverId' => $incmgInsp->incmgInsp_qualityApproverId,
                 'incmgInsp_technicalReviewerId' => $incmgInsp->incmgInsp_technicalReviewerId,

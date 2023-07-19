@@ -128,7 +128,8 @@ export default {
             isInModifMod: this.modifMod,
             data_article_id: this.article_id,
             data_article_type: this.articleType,
-            loaded: false
+            loaded: false,
+            data_sub_fam_id: this.articleSubFam_id
         };
     },
     methods: {
@@ -227,7 +228,7 @@ export default {
             this.addComponent("Test required to ensure performance of the medical device");
         }
         /*If the user chooses importation doc control*/
-        if (this.import_id !== null) {
+        if (this.import_id !== null && this.modifMod) {
             var consultUrl="";
             /*Make a get request to ask the controller the doc control corresponding to the id of the incoming inspection with which data will be imported*/
             if (this.data_article_id != null && this.data_article_id == this.import_id) {
@@ -237,7 +238,7 @@ export default {
                     consultUrl = (id) => `/incmgInsp/funcTest/sendFromIncmgInsp/${id}`;
                 }else{
                     if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
-                        consultUrl = (id) => `/incmgInsp/funcTest/sendFromSubFam/${type}/${id}`; // FIXME
+                        consultUrl = (type,id) => `/incmgInsp/funcTest/sendFromSubFamily/${type}/${id}`; // FIXME
                     }    
                 }
 
@@ -247,10 +248,13 @@ export default {
                 axios.get(consultUrl(this.articleType,this.import_id))
                     .then(response => {
                        this.funcTest = response.data;
+                       console.log("func test")
+                       console.log(this.funcTest)
                         this.importFuncTest();
                         this.loaded = true;
                     })
                     .catch(error => {
+                        console.log("error")
                     });
             }else{
                 axios.get(consultUrl(this.import_id))

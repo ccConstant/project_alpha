@@ -193,7 +193,7 @@ export default {
                     id = this.art_id_update;
                 }
                 if (this.art_id!=null){
-                    console.log("cas des articles")
+
                     axios.post('/artFam/purSpe/verif', {
                         purSpe_validate: savedAs,
                         purSpe_supplier_id: this.purSpe_supplier_id,
@@ -223,7 +223,6 @@ export default {
                                 });
                         }).catch(error => this.errors = error.response.data.errors);
                     }else{
-                        console.log("cas d'une sous famille")
                         axios.post('/artFam/purSpe/verif', {
                         purSpe_validate: savedAs,
                         purSpe_supplier_id: this.purSpe_supplier_id,
@@ -233,9 +232,9 @@ export default {
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
                             this.errors = {};
-                            console.log("verif passed")
+                            
                             const consultUrl = (id) => `/artSubFam/purSpe/add/${id}`;
-                            console.log(this.articleSubFam_id)
+                    
                             axios.post(consultUrl(this.articleSubFam_id),{
                                 purSpe_validate: savedAs,
                                 artFam_type: this.artFam_type.toUpperCase(),
@@ -334,7 +333,6 @@ export default {
         }
     },
     created() {
-        console.log("created in Article Purchase Specification Form")
         axios.get('/info/send/purSpe')
             .then(response => {
                 this.infos_purSpe = response.data;
@@ -342,7 +340,6 @@ export default {
             .catch
             (error => {
             });
-            console.log("im still here")
         axios.get('/supplier/active/send')
             .then(response => {
                 /*this.suppliers.push({
@@ -350,7 +347,6 @@ export default {
                     value: 'Alpha',
                     text: -1,
                 })*/
-                console.log(response.data);
                 for (let i = 0; i < response.data.length; i++) {
                     this.suppliers.push({
                         id_enum: 'suppliers',
@@ -361,7 +357,6 @@ export default {
                 this.loaded = true;
             })
             .catch(error => {
-                console.log(error.response.data)
             });
 
     }

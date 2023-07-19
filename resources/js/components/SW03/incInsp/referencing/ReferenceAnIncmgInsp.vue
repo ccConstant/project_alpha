@@ -18,9 +18,6 @@
                 v-for="(component, key) in components"
                 :key="component.key"
                 :is="component.comp"
-                :remarks="component.remarks"
-                :part-material-certif="component.partMaterialCertif"
-                :raw-material-certif="component.rawMaterialCertif"
                 :divClass="component.className"
                 :id="component.id"
                 :validate="component.validate"
@@ -142,9 +139,6 @@ export default {
             this.components.push({
                 comp: 'IncmgInspIDForm',
                 key: this.uniqueKey++,
-                remarks: incmgInsp_remarks,
-                partMaterialCertif: incmgInsp_partMaterialCertif,
-                rawMaterialCertif: incmgInsp_rawMaterialCertif,
                 validate: validate,
                 id: id,
                 className: className
@@ -156,9 +150,9 @@ export default {
         },
         /*Function for adding to the vue the imported article*/
         importIncmgInsp() {
-            console.log("importIncmgInsp")
             if (this.incmgInsp.length === 0 && !this.isInModifMod) {
                 this.loaded = true;
+
             } else {
                 for (const ii of this.incmgInsp) {
                     const className = "importedArticle" + ii.id;
@@ -199,19 +193,13 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("created Reference An Incoming")
-
-        console.log(this.data_docControl_name)
-        console.log(this.data_checkedTest)
-        if (this.data_checkedTest!=null && (this.data_checkedTest.includes("dimTest") || this.data_checkedTest.includes("funcTest") || this.data_checkedTest.includes("aspTest") || this.data_checkedTest.includes("docControl") || this.data_checkedTest.includes("adminControl") || this.data_docControl_name!='Test required to ensure performance of the medical device')) {
+        if (this.data_checkedTest!=null && (this.data_checkedTest.includes("dimTest") || this.data_checkedTest.includes("funcTest") || this.data_checkedTest.includes("aspTest") || this.data_checkedTest.includes("docControl") || this.data_checkedTest.includes("adminControl") || (this.data_docControl_name!='Test required to ensure performance of the medical device') && this.data_docControl_name!=null && this.data_docControl_name!="")) {
             this.addComponent();
         }
         /*If the user chooses importation equipment*/
         if (this.import_id !== null) {
-            console.log("import_id")
             /*Make a get request to ask the controller the file corresponding to the id of the equipment with which data will be imported*/
             if (this.data_article_id !== null) {
-                console.log("different de null")
                 axios.get('/artFam/incmgInsp/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
                         this.incmgInsp = response.data;
@@ -220,18 +208,15 @@ export default {
                     }).catch(error => { 
                 });
             } else {
-                console.log("else")
                 axios.get('/subFam/incmgInsp/send/' + this.data_article_type + '/' + this.import_id)
                     .then(response => {
-                        console.log("response")
                         this.incmgInsp = response.data;
                         this.importIncmgInsp();
                         this.loaded = true;
-                    }).catch(error => {console.log("error")
+                    }).catch(error => {
                 });
             }
         } else {
-            console.log("c'est null")
             this.loaded = true;
         }
     },

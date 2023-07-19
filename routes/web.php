@@ -850,6 +850,7 @@ Route::post('/artFam/enum/storageCondition/add', [EnumStorageConditionController
 Route::post('/artFam/enum/storageCondition/verif/{id}', [EnumStorageConditionController::class, 'verif_enum_storageCondition']);
 Route::get('/artFam/enum/storageCondition/sendUsage/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_linked']);
 Route::get('/artFam/enum/storageCondition/sendUsageByType/{type}/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_usage']);
+Route::get('/artSubFam/enum/storageCondition/sendUsageByType/{type}/{id}', [EnumStorageConditionController::class, 'send_enum_storageCondition_usage_subFam']);
 Route::post('/artFam/enum/storageCondition/update/{id}', [EnumStorageConditionController::class, 'update_enum_storageCondition_linked']);
 Route::post('/artFam/enum/storageCondition/delete/{id}', [EnumStorageConditionController::class, 'delete_enum_stoConds']);
 
@@ -880,6 +881,8 @@ Route::post('/artSubFam/purSpe/add/{id}', [PurchaseSpecificationController::clas
 Route::post('/artFam/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
 Route::get('/artFam/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
 Route::get('/artFam/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);
+Route::get('/artSubFam/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes_subFam']);
+
 
 //History for article
 Route::post('/artFam/history/add/{type}/{id}', [HistoryController::class, 'add_history_for_article']);

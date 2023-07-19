@@ -63,7 +63,7 @@
                 <div v-if="this.addSucces===false ">
                     <div v-if="this.incmgInsp_id===null ">
                         <div v-if="modifMod===true">
-                            <SaveButtonForm @add="addDocControl" @update="updateDocControl"
+                            <SaveButtonForm @add="addDocControl" @update="updateDocControl" :modifMod="this.modifMod"
                                             :consultMod="this.isInConsultedMod" :savedAs="'validated'"
                                             :AddinUpdate="true"/>
                         </div>
@@ -179,7 +179,6 @@ export default {
             })
             .then(response => {
                 this.errors = {};
-                console.log("verif passed")
                 axios.post('/incmgInsp/docControl/add', {
                     docControl_articleType: this.data_article_type,
                     docControl_reference: this.docControl_reference,

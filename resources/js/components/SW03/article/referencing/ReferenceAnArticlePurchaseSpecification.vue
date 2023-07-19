@@ -30,6 +30,7 @@
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :docControl_name="data_docControlName"
+                                :modifMod="this.isInModifMod"
                             />
                         </div>
                     </div>
@@ -53,6 +54,7 @@
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
+                                :modifMod="this.isInModifMod"
                             />
                         </div>
                     </div>
@@ -75,6 +77,7 @@
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
+                                :modifMod="this.isInModifMod"
                             />
                         </div>
                     </div>
@@ -98,6 +101,7 @@
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
+                                :modifMod="this.isInModifMod"
                             />
                         </div>
                     </div>
@@ -120,6 +124,7 @@
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
+                                :modifMod="this.isInModifMod"
                             />
                         </div>
                     </div>
@@ -142,6 +147,7 @@
                                 :checkedTest="this.data_checkedTest"
                                 :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
                                 :articleSubFam_id="data_artSubFam_id"
+                                :modifMod="this.isInModifMod"
                             />
                         </div>
                     </div>
@@ -351,14 +357,14 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        console.log("created purchase Spe")
-        if (this.addAuto) {
+        if (this.addAuto && !this.modifMod) {
             this.addComponent();
         }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
-            if (this.data_article_id !== null) {
+            
+            if (this.data_art_id !== null) {
                 axios.get('/artFam/purSpe/send/' + this.data_art_type + '/' + this.import_id)
                     .then(response => {
                         this.purchaseSpec = response.data;

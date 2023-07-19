@@ -125,7 +125,7 @@
                 <div v-if="this.addSucces===false ">
                     <div v-if="this.incmgInsp_id===null ">
                         <div v-if="modifMod===true">
-                            <SaveButtonForm @add="addFuncTest" @update="updateFuncTest"
+                            <SaveButtonForm @add="addFuncTest" @update="updateFuncTest" :modifMod="this.modifMod"
                                             :consultMod="this.isInConsultedMod" :savedAs="'validated'"
                                             :AddinUpdate="true"/>
                         </div>
@@ -254,11 +254,6 @@ export default {
     methods: {
         addFuncTest(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
-                console.log("here")
-                console.log(this.data_incmgInsp_id)
-                console.log(this.data_article_type)
-                console.log(this.data_article_id)
-                console.log(this.data_subFam_id)
                 axios.post('/incmgInsp/funcTest/verif', {
                     funcTest_name: this.funcTest_name,
                     funcTest_severityLevel: this.funcTest_severityLevel,
@@ -279,7 +274,6 @@ export default {
                 })
                 .then(response => {
                     this.errors = {};
-                    console.log("verif passed")
                     axios.post('/incmgInsp/funcTest/add', {
                         funcTest_name: this.funcTest_name,
                         funcTest_severityLevel: this.funcTest_severityLevel,

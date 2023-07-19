@@ -169,8 +169,6 @@ export default {
             this.checkedTestsSupplier = value;
         },
         createDocControlName(value) {
-            console.log("ArticleFamily");
-            console.log(value);
             this.docControl_name = value;
         },
     },

@@ -294,12 +294,8 @@ export default {
         }
     },
     created() {
-        /*console.log("chargement")
-        console.log(this.$route.params.ref)
-        console.log(this.artFam_type)
+        /*
         if (this.$route.params.ref === undefined) {
-            console.log("coucou je passe dans le if")
-            console.log(this.artFam_ref)
             this.$router.replace({name: 'article_url_update', params: {id: this.artFam_id, type: this.artFam_type.toLowerCase(), ref: this.artFam_ref}, query: {signed : this.$route.query.signed}});
         }*/
         axios.get('/info/send/articleFamily')
@@ -394,7 +390,6 @@ export default {
                             })
                             /*If the data have been added in the database, we show a success message*/
                             .then(response => {
-                                console.log("added")
                                 this.addSuccess = true;
                                 this.isInConsultMod = true;
                                 this.artFam_validate=savedAs;

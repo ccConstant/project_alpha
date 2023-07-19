@@ -181,6 +181,19 @@ class EnumStorageConditionController extends Controller
         }
     }
 
+    public function send_enum_storageCondition_usage_subFam($type, $id) {
+        if ($type === "COMP"){
+            $compSubFam=CompSubFamily::findOrFail($id);
+            return response()->json($compSubFam->storage_conditions);
+        }else if ($type === "RAW"){
+            $rawSubFam=RawSubFamily::findOrFail($id);
+            return response()->json($rawSubFam->storage_conditions);
+        }else if ($type === "CONS"){
+            $consSubFam=ConsSubFamily::findOrFail($id);
+            return response()->json($consSubFam->storage_conditions);
+        }
+    }
+
     public function unlink_enum_storageCondition (Request $request, $type, $id){
         $enum=EnumStorageCondition::where('value', '=', $request->artFam_id)->first();
         if ($type === "comp"){

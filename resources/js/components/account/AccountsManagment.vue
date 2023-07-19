@@ -268,7 +268,6 @@ export default {
                         this.users[i].user_formationMmeDate = moment(this.users[i].user_formationMmeDate).format('D MMM YYYY');
                     }
                 }
-                console.log(this.users);
                 this.loaded = true;
             }).catch(error => {
         });

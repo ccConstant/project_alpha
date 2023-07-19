@@ -121,6 +121,7 @@ export default {
             data_article_type: this.articleType,
             data_incmingInsp_id: this.incmgInsp_id,
             loaded: false,
+            data_sub_fam_id: this.articleSubFam_id
 
         };
     },
@@ -212,7 +213,7 @@ export default {
                     consultUrl = (id) => `/incmgInsp/adminControl/sendFromIncmgInsp/${id}`;
                 }else{
                     if (this.data_sub_fam_id != null && this.data_sub_fam_id == this.import_id){
-                        consultUrl = (type,id) => `/incmgInsp/adminControl/sendFromSubFam/${type}/${id}`; // FIXME
+                        consultUrl = (type,id) => `/incmgInsp/adminControl/sendFromSubFamily/${type}/${id}`; 
                     }    
                 }
 

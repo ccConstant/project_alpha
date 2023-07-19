@@ -386,9 +386,6 @@ class CriticalityController extends Controller
                 'crit_checkedTestRadioAdm' => $crit->crit_checkedTestRadioAdm,
                 'crit_remarks' => $crit->crit_remarks,
                 'crit_validate' => $crit->crit_validate,
-                'consSubFam_id' => $crit->consSubFam_id,
-                'compSubFam_id' => $crit->compSubFam_id,
-                'rawSubFam_id' => $crit->rawSubFam_id,
             ]);
         }
         return response()->json($array);
