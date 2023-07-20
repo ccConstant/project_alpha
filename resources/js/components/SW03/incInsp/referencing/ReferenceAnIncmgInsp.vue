@@ -27,6 +27,7 @@
                 :article_type="data_article_type"
                 :artSubFam_id="data_artSubFam_id"
                 :checkedTest="data_checkedTest"
+                :alreadyCreated="data_alreadyCreated"
                 :docControl_name="data_docControl_name"
                 @deleteFile="getContent(key)"
             />
@@ -99,6 +100,10 @@ export default {
         },
         articleSubFam_id: {
             type: Number
+        },
+        alreadyCreated: {
+            type: Boolean,
+            default: false
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -122,7 +127,8 @@ export default {
             loaded: false,
             data_checkedTest: this.checkedTest,
             data_docControl_name: this.docControl_name,
-            data_artSubFam_id: this.articleSubFam_id
+            data_artSubFam_id: this.articleSubFam_id,
+            data_alreadyCreated: this.alreadyCreated
         };
     },
     methods: {
@@ -155,6 +161,7 @@ export default {
 
             } else {
                 for (const ii of this.incmgInsp) {
+                    this.data_alreadyCreated = true;
                     const className = "importedArticle" + ii.id;
                     this.addImportedComponent(
                         ii.incmgInsp_remarks,

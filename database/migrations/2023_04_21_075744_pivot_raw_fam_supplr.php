@@ -29,6 +29,8 @@ class PivotRawFamSupplr extends Migration
             $table->foreign('supplr_id')->references('id')->on('suppliers')->onDelete('cascade');
             $table->string('supplr_ref')->nullable();
             $table->string('remark')->nullable();
+            $table->string('documentsRequest')->nullable();
+            $table->string('specification')->nullable();
             $table->unsignedBigInteger('purSpec_id');
             $table->timestamps();
         });

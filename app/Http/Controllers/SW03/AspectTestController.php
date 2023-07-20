@@ -357,4 +357,14 @@ class AspectTestController extends Controller
         ]);
         return response()->json($aspTest);
     }
+
+    /**
+     * Function call by AspectTestIDForm.vue when we want to delete a doc control with the route : /incmgInsp/delete/aspTest/{id}(post)
+     * Delete a asp test thanks to the id given in parameter
+     * The id parameter correspond to the id of the asp test we want to delete
+     * */
+    public function delete_aspectTest($id){
+        $asp=AspectTest::findOrFail($id);
+        $asp->delete();
+    }
 }

@@ -332,8 +332,27 @@ export default {
             delete this.errors[event.target.name];
         },
         deleteComponent(reason, lifesheet_created) {
-            this.$emit('deleteAspTest', '')
-            this.$refs.sucessAlert.showAlert(`Empty Aspect Test Form deleted successfully`);
+            if (this.modifMod == true && this.aspTest_id !== null) {
+                /*Send a post-request with the id of the critilicaty who will be deleted in the url*/
+                const consultUrl = (id) => `/incmgInsp/aspTest/delete/${id}`;
+                axios.post(consultUrl(this.aspTest_id), {
+                }).then(response => {
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    /*if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }*/
+                    this.$refs.sucessAlert.showAlert(`Aspect Test deleted successfully`);
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteAspTest', '')
+                }).catch(error => this.errors = error.response.data.errors);
+            } else {
+                this.$emit('deleteAspTest', '')
+                this.$refs.successAlert.showAlert(`Empty Aspect Test Form deleted successfully`);
+            }
         }
     },
     created() {

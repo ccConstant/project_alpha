@@ -33,7 +33,7 @@
                 :articleType="data_article_type"
                 :desc="component.funcTest_desc"
                 :specDoc="component.funcTest_specDoc"
-                @deletefuncTest="getContent(key)"
+                @deleteFuncTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">

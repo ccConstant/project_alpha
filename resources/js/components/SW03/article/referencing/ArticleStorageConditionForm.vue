@@ -32,7 +32,7 @@
                     :savedAs="this.storageCondition_validate"
                 />
                 <DeleteComponentButton v-if="this.isInModifMod"
-                    @delete="deleteComponent"
+                    @deleteOk="deleteComponent"
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
                 />
@@ -264,44 +264,49 @@ export default {
             if (this.modifMod == true && this.storageCondition_id !== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 if (this.art_id !== null) {
+                    console.log("cas 1")
                     const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
                     axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
                         artFam_id: this.art_id
                     }).then(response => {
-                        const id = this.equipment_id_update;
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (artSheet_created == true) {
+                        if (lifesheet_created == true) {
                             axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                                 history_reasonUpdate: reason,
                             });
                             window.location.reload();
                         }
                         /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteFile', '')
+                        this.$emit('deleteStorageCondition', '')
                         this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
                     }).catch(error => this.errors = error.response.data.errors);
                 } else {
+                    console.log("cas 2")
+                    console.log(this.artSubFam_id)
+                    console.log(this.storageCondition_id)
+                    console.log(this.artFam_type)
                     const consultUrl = (type, id) => `/artSubFam/enum/storageCondition/unlink/${type}/${id}`;
                     axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
                         artSubFam_id: this.artSubFam_id
                     }).then(response => {
+                        console.log("response")
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (artSheet_created == true) {
+                        if (lifesheet_created == true) {
                             axios.post('/artSubFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artSubFam_id, {
                                 history_reasonUpdate: reason,
                             });
                             window.location.reload();
                         }
                         /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteFile', '')
+                        this.$emit('deleteStorageCondition', '')
                         this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
                     }).catch(error => this.errors = error.response.data.errors);
                 }
 
             } else {
-                this.$emit('deleteFile', '')
+                this.$emit('deleteStorageCondition', '')
                 this.$refs.sucessAlert.showAlert(`Empty storage condition deleted successfully`);
             }
         }

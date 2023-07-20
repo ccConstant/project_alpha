@@ -93,6 +93,8 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
+                    'documentsRequest' => $request->purSpe_documentsRequest,
+                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -104,6 +106,8 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
+                    'documentsRequest' => $request->purSpe_documentsRequest,
+                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -115,6 +119,8 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
+                    'documentsRequest' => $request->purSpe_documentsRequest,
+                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -157,6 +163,8 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
+                    'documentsRequest' => $request->purSpe_documentsRequest,
+                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -168,6 +176,8 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
+                    'documentsRequest' => $request->purSpe_documentsRequest,
+                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -179,6 +189,8 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
+                    'documentsRequest' => $request->purSpe_documentsRequest,
+                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -230,6 +242,8 @@ class PurchaseSpecificationController extends Controller
                 'purSpe_supplier_id' => Supplier::all()->where('id', '==', $supp->supplr_id)->first()->supplr_name,
                 'purSpe_supplier_ref' => $supp->supplr_ref,
                 'purSpe_remark' => $supp->remark,
+                'purSpe_documentsRequest' => $supp->documentsRequest,
+                'purSpe_specification' => $supp->specification,
             ]);
         }
         return response()->json($array);
@@ -276,6 +290,8 @@ class PurchaseSpecificationController extends Controller
                 'purSpe_supplier_id' => Supplier::all()->where('id', '==', $supp->supplr_id)->first()->supplr_name,
                 'purSpe_supplier_ref' => $supp->supplr_ref,
                 'purSpe_remark' => $supp->remark,
+                'purSpe_documentsRequest' => $supp->purSpe_documentsRequest,
+                'purSpe_specification' => $supp->purSpe_specification,
             ]);
         }
         return response()->json($array);
@@ -285,6 +301,7 @@ class PurchaseSpecificationController extends Controller
     public function update_purSpe(Request $request, $type, $id)
     {
         $purSpec = PurchaseSpecification::all()->where('id', '==', $id)->first();
+        $supplier = Supplier::all()->where('supplr_name', '==', $request->purSpe_supplier_id)->first();
         if ($type === 'cons') {
             $article = ConsFamily::all()->where('id', '==', $purSpec->consFam_id)->first();
             $signed = $article->consFam_signatureDate;
@@ -324,8 +341,18 @@ class PurchaseSpecificationController extends Controller
             'purSpe_qualityApproverId' => null,
             'purSpe_technicalReviewerId' => null,
             'purSpe_signatureDate' => null,
-            'purSpe_remark' => $request->purSpe_remark,
         ]);
+        $article->suppliers()->detach($supplier);
+        $article->suppliers()->attach(
+            $supplier,
+            [
+                'supplr_ref' => $request->purSpe_supplier_ref,
+                'purSpec_id' => $purSpec->id,
+                'remark' => $request->purSpe_remark,
+                'documentsRequest' => $request->purSpe_documentsRequest,
+                'specification' => $request->purSpe_specification,
+            ]
+        );
         return response()->json($purSpec);
     }
 }

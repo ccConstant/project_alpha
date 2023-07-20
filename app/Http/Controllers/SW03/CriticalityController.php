@@ -381,4 +381,15 @@ class CriticalityController extends Controller
         }
         return response()->json($array);
     }
+
+
+    /**
+     * Function call by CritIDForm.vue when we want to delete a criticality with the route : /article/delete/criticality/{id}(post)
+     * Delete a criticality thanks to the id given in parameter
+     * The id parameter correspond to the id of the critilicaty we want to delete
+     * */
+    public function delete_criticality($id){
+        $crit=Criticality::findOrFail($id);
+        $crit->delete();
+    }
 }

@@ -792,7 +792,7 @@ Route::get('/incmgInsp/docControl/send/{id}', [DocControlController::class, 'sen
 Route::get('/incmgInsp/docControl/sendFromIncmgInsp/{id}', [DocControlController::class, 'send_docControlFromIncmgInsp']);
 Route::get('/incmgInsp/docControl/sendFromFamily/{type}/{id}', [DocControlController::class, 'send_docControlFromFamily']);
 Route::get('/incmgInsp/docControl/sendFromSubFamily/{type}/{id}', [DocControlController::class, 'send_docControlFromSubFamily']);
-
+Route::post('/incmgInsp/docControl/delete/{id}', [DocControlController::class, 'delete_docControl']);
 
 
 
@@ -803,6 +803,8 @@ Route::post('/incmgInsp/adminControl/update/{id}', [AdminControlController::clas
 Route::get('/incmgInsp/adminControl/sendFromIncmgInsp/{id}', [AdminControlController::class, 'send_adminControlFromIncmgInsp']);
 Route::get('/incmgInsp/adminControl/sendFromFamily/{type}/{id}', [AdminControlController::class, 'send_adminControlFromFamily']);
 Route::get('/incmgInsp/adminControl/sendFromSubFamily/{type}/{id}', [AdminControlController::class, 'send_adminControlFromSubFamily']);
+Route::post('/incmgInsp/adminControl/delete/{id}', [AdminControlController::class, 'delete_adminControl']);
+
 
 // Aspect Test Controller
 Route::post('/incmgInsp/aspTest/verif', [AspectTestController::class, 'verif_aspectTest']);
@@ -811,6 +813,8 @@ Route::post('/incmgInsp/aspTest/update/{id}', [AspectTestController::class, 'upd
 Route::get('/incmgInsp/aspTest/sendFromIncmgInsp/{id}', [AspectTestController::class, 'send_aspectTestFromIncmgInsp']);
 Route::get('/incmgInsp/aspTest/sendFromFamily/{type}/{id}', [AspectTestController::class, 'send_aspectTestFromFamily']);
 Route::get('/incmgInsp/aspTest/sendFromSubFamily/{type}/{id}', [AspectTestController::class, 'send_aspectTestFromSubFamily']);
+Route::post('/incmgInsp/aspTest/delete/{id}', [AspectTestController::class, 'delete_aspectTest']);
+
 
 // Functionnal Test Controller
 Route::post('/incmgInsp/funcTest/verif', [FunctionnalTestController::class, 'verif_funcTest']);
@@ -820,6 +824,8 @@ Route::get('/incmgInsp/funcTest/send/{id}', [FunctionnalTestController::class, '
 Route::get('/incmgInsp/funcTest/sendFromIncmgInsp/{id}', [FunctionnalTestController::class, 'send_funcTestFromIncmgInsp']);
 Route::get('/incmgInsp/funcTest/sendFromFamily/{type}/{id}', [FunctionnalTestController::class, 'send_funcTestFromFamily']);
 Route::get('/incmgInsp/funcTest/sendFromSubFamily/{type}/{id}', [FunctionnalTestController::class, 'send_funcTestFromSubFamily']);
+Route::post('/incmgInsp/funcTest/delete/{id}', [FunctionnalTestController::class, 'delete_funcTest']);
+
 
 // Dimensionnal Test Controller
 Route::post('/incmgInsp/dimTest/verif', [DimensionnalTestController::class, 'verif_dimTest']);
@@ -829,6 +835,7 @@ Route::get('/incmgInsp/dimTest/send/{id}', [DimensionnalTestController::class, '
 Route::get('/incmgInsp/dimTest/sendFromIncmgInsp/{id}', [DimensionnalTestController::class, 'send_dimTestFromIncmgInsp']);
 Route::get('/incmgInsp/dimTest/sendFromFamily/{type}/{id}', [DimensionnalTestController::class, 'send_dimTestFromFamily']);
 Route::get('/incmgInsp/dimTest/sendFromSubFamily/{type}/{id}', [DimensionnalTestController::class, 'send_dimTestFromSubFamily']);
+Route::post('/incmgInsp/dimTest/delete/{id}', [DimensionnalTestController::class, 'delete_dimTest']);
 
 
 // Complementary Test Controller
@@ -873,6 +880,8 @@ Route::post('/artSubFam/criticality/add', [CriticalityController::class, 'add_cr
 Route::post('/artSubFam/criticality/update/{id}', [CriticalityController::class, 'update_criticality_subFam']);
 Route::get('/artSubFam/criticality/send/{id}', [CriticalityController::class, 'send_criticality_subFam']);
 Route::get('/artSubFam/criticality/send/{type}/{id}', [CriticalityController::class, 'send_criticalities_subFam']);
+
+Route::post('/artFam/criticality/delete/{id}', [CriticalityController::class, 'delete_criticality']);
 
 //purchase Specification
 Route::post('/artFam/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);

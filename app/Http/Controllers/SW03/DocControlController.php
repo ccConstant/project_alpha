@@ -272,4 +272,14 @@ class DocControlController extends Controller
         ]);
         return response()->json($docControl);
     }
+
+    /**
+     * Function call by DocControlIDForm.vue when we want to delete a doc control with the route : /incmgInsp/delete/docControl/{id}(post)
+     * Delete a doc control thanks to the id given in parameter
+     * The id parameter correspond to the id of the doc control we want to delete
+     * */
+    public function delete_docControl($id){
+        $doc=DocumentaryControl::findOrFail($id);
+        $doc->delete();
+    }
 }

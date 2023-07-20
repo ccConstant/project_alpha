@@ -357,4 +357,15 @@ class FunctionnalTestController extends Controller
         ]);
         return response()->json($funcTest);
     }
+
+/**
+     * Function call by FuncTestIDForm.vue when we want to delete a doc control with the route : /incmgInsp/delete/funcTest/{id}(post)
+     * Delete a func test thanks to the id given in parameter
+     * The id parameter correspond to the id of the func test we want to delete
+     * */
+    public function delete_funcTest($id){
+        $func=FunctionalTest::findOrFail($id);
+        $func->delete();
+    }
+
 }

@@ -34,7 +34,7 @@
                 :desc="component.dimTest_desc"
                 :articleSubFam_id="articleSubFam_id"
                 :specDoc="component.dimTest_specDoc"
-                @deletedimTest="getContent(key)"
+                @deleteDimTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">

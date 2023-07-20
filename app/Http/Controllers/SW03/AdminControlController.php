@@ -331,6 +331,16 @@ class AdminControlController extends Controller
         ]);
         return response()->json($adminControl);
     }
+
+    /**
+     * Function call by AdminControlIDForm.vue when we want to delete a doc control with the route : /incmgInsp/delete/adminControl/{id}(post)
+     * Delete a admin control thanks to the id given in parameter
+     * The id parameter correspond to the id of the admin control we want to delete
+     * */
+    public function delete_adminControl($id){
+        $admin=AdminControl::findOrFail($id);
+        $admin->delete();
+    }
 }
 
 

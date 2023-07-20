@@ -367,4 +367,14 @@ class DimensionnalTestController extends Controller
         ]);
         return response()->json($dimTest);
     }
+
+    /**
+     * Function call by DimTestIDForm.vue when we want to delete a doc control with the route : /incmgInsp/delete/dimTest/{id}(post)
+     * Delete a dim test thanks to the id given in parameter
+     * The id parameter correspond to the id of the dim test we want to delete
+     * */
+    public function delete_dimTest($id){
+        $dim=DimensionalTest::findOrFail($id);
+        $dim->delete();
+    }
 }

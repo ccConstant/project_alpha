@@ -36,6 +36,30 @@
                     label="Supplier's article Reference"
                     name="purSpe_supplrRef"
                 />
+                <InputTextAreaForm
+                v-model="purSpe_specification"
+                    :Errors="errors.purSpe_specification"
+                    :info_text="null"
+                    inputClassName="form-control w-80"
+                    :isDisabled="this.isInConsultMod"
+                    :max="255"
+                    :min="2"
+                    label="Specifications"
+                    name="purSpe_specification"
+                />
+
+                <InputTextAreaForm
+                v-model="purSpe_documentsRequest"
+                    :Errors="errors.purSpe_documentsRequest"
+                    :info_text="null"
+                    :isDisabled="this.isInConsultMod"
+                    :max="255"
+                    :min="2"
+                    label="Documents Requested"
+                    name="purSpe_documentsRequest"
+                    inputClassName="form-control w-80"
+                />
+
                 <InputTextForm
                     v-model="purSpe_remark"
                     :Errors="errors.purSpe_remark"
@@ -75,6 +99,8 @@ import ReferenceAFuncTest from "../../incInsp/referencing/ReferenceAFuncTest.vue
 import ReferenceADimTest from "../../incInsp/referencing/ReferenceADimTest.vue";
 import ReferenceACompTest from "../../incInsp/referencing/ReferenceACompTest.vue";
 import ReferenceAnAdminControl from "../../incInsp/referencing/ReferenceAnAdminControl.vue";
+import InputTextAreaForm from "../../../input/InputTextAreaForm.vue";
+
 
 
 export default {
@@ -91,6 +117,7 @@ export default {
         ReferenceADimTest,
         ReferenceACompTest,
         ReferenceAnAdminControl,
+        InputTextAreaForm,
 
     },
 
@@ -106,6 +133,12 @@ export default {
     ---------------------------------------------------*/
     props: {
         remark: {
+            type: String
+        },
+        documentsRequest: {
+            type: String
+        },
+        specification:{
             type: String
         },
         supplier_id: {
@@ -159,9 +192,11 @@ export default {
     data() {
         return {
             purSpe_remark: this.remark,
+            purSpe_specification: this.specification,
             purSpe_supplier_id: this.supplier_id,
             purSpe_supplier_ref: this.supplier_ref,
             purSpe_validate: this.validate,
+            purSpe_documentsRequest: this.documentsRequest,
             purSpe_id: this.id,
             art_id_add: this.art_id,
             artFam_type: this.art_type,
@@ -199,6 +234,8 @@ export default {
                         purSpe_supplier_id: this.purSpe_supplier_id,
                         purSpe_supplier_ref: this.purSpe_supplier_ref,
                         purSpe_remark: this.purSpe_remark,
+                        purSpe_documentsRequest: this.purSpe_documentsRequest,
+                        purSpe_specification: this.purSpe_specification,
                     })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
@@ -210,6 +247,8 @@ export default {
                                 purSpe_supplier_id: this.purSpe_supplier_id,
                                 purSpe_supplier_ref: this.purSpe_supplier_ref,
                                 purSpe_remark: this.purSpe_remark,
+                                purSpe_documentsRequest: this.purSpe_documentsRequest,
+                                purSpe_specification: this.purSpe_specification,
                             })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -228,6 +267,8 @@ export default {
                         purSpe_supplier_id: this.purSpe_supplier_id,
                         purSpe_supplier_ref: this.purSpe_supplier_ref,
                         purSpe_remark: this.purSpe_remark,
+                        purSpe_documentsRequest: this.purSpe_documentsRequest,
+                        purSpe_specification: this.purSpe_specification,
                         })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
@@ -241,6 +282,8 @@ export default {
                                 purSpe_supplier_id: this.purSpe_supplier_id,
                                 purSpe_supplier_ref: this.purSpe_supplier_ref,
                                 purSpe_remark: this.purSpe_remark,
+                                purSpe_documentsRequest: this.purSpe_documentsRequest,
+                                purSpe_specification: this.purSpe_specification,
                             })
                                 /*If the data have been added in the database, we show a success message*/
                                 .then(response => {
@@ -268,6 +311,8 @@ export default {
                 purSpe_supplier_id: this.purSpe_supplier_id,
                 purSpe_supplier_ref: this.purSpe_supplier_ref,
                 purSpe_remark: this.purSpe_remark,
+                purSpe_documentsRequest: this.purSpe_documentsRequest,
+                purSpe_specification: this.purSpe_specification,
             }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
@@ -278,7 +323,10 @@ export default {
                         purSpe_supplier_id: this.purSpe_supplier_id,
                         purSpe_supplier_ref: this.purSpe_supplier_ref,
                         purSpe_remark: this.purSpe_remark,
+                        purSpe_documentsRequest: this.purSpe_documentsRequest,
+                        purSpe_specification: this.purSpe_specification,
                     }).then(response => {
+                        console.log(response.data)
                             this.file_validate = savedAs;
                             /*We test if a life sheet has been already created*/
                             /*If it's the case we create a new enregistrement of history for saved the reason of the update*/

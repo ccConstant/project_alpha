@@ -385,7 +385,6 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         addCriticality(savedAs, reason, lifesheet_created) {
-            console.log("je passe ici")
             if (!this.addSucces) {
                 if (this.checkedTests.includes('funcTest') ){
                     if (this.checkedTestRadioFunc=='funcTestAlpha' || this.checkedTestRadioFunc=='funcTestBoth'){
@@ -453,19 +452,6 @@ export default {
                         this.checkedTestsString += test + ',';
                 });
                 if (this.articleID !== null) {
-                    console.log("je passe dans les articles youpi")
-                    console.log("crit art criticality : " + this.crit_artCriticality)
-                    console.log("crit remarks : " + this.crit_remarks)
-                    console.log("crit validate : " + savedAs)
-                    console.log("crit article type : " + this.data_article_type)
-                    console.log("crit article id : " + this.data_article_id)
-                    console.log("crit performance medical device : " + this.crit_performanceMedicalDevice)
-                    console.log("crit checked tests : " + this.checkedTestsString)
-                    console.log("crit checked test radio dim : " + this.checkedTestRadioDim)
-                    console.log("crit checked test radio func : " + this.checkedTestRadioFunc)
-                    console.log("crit checked test radio asp : " + this.checkedTestRadioAsp)
-                    console.log("crit checked test radio doc : " + this.checkedTestRadioDoc)
-                    console.log("crit checked test radio adm : " + this.checkedTestRadioAdm)
                     axios.post('/artFam/criticality/verif', {
                         crit_artCriticality: this.crit_artCriticality,
                         crit_remarks: this.crit_remarks,
@@ -478,7 +464,6 @@ export default {
                         crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
                         crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                     }).then(response => {
-                        console.log("verif passed for articles")
                         this.errors = {};
                         /*If all the verifications passed, a new post this time to add the file in the database
                         The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
@@ -683,8 +668,27 @@ export default {
         },
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
-            this.$emit('deleteCrit', '')
-            this.$refs.sucessAlert.showAlert(`Empty Aspect Test Form deleted successfully`);
+            if (this.modifMod == true && this.crit_id !== null) {
+                /*Send a post-request with the id of the critilicaty who will be deleted in the url*/
+                const consultUrl = (id) => `/artFam/criticality/delete/${id}`;
+                axios.post(consultUrl(this.crit_id), {
+                }).then(response => {
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    /*if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }*/
+                    this.$refs.sucessAlert.showAlert(`Criticality deleted successfully`);
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteCrit', '')
+                }).catch(error => this.errors = error.response.data.errors);
+            } else {
+                this.$emit('deleteCrit', '')
+                this.$refs.successAlert.showAlert(`Empty Critilicaty deleted successfully`);
+            }
         }
     },
     created() {

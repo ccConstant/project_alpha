@@ -195,16 +195,30 @@ class EnumStorageConditionController extends Controller
     }
 
     public function unlink_enum_storageCondition (Request $request, $type, $id){
-        $enum=EnumStorageCondition::where('value', '=', $request->artFam_id)->first();
+        $enum=EnumStorageCondition::findOrFail($id);
         if ($type === "comp"){
-            $compFam=CompFamily::findOrFail($id);
+            $compFam=CompFamily::findOrFail($request->artFam_id);
             $enum->compFamily()->detach($compFam);
         }else if ($type === "raw"){
-            $rawFam=RawFamily::findOrFail($id);
+            $rawFam=RawFamily::findOrFail($request->artFam_id);
             $enum->rawFamily()->detach($rawFam);
         }else if ($type === "cons"){
-            $consFam=ConsFamily::findOrFail($id);
+            $consFam=ConsFamily::findOrFail($request->artFam_id);
             $enum->consFamily()->detach($consFam);
+        }
+    }
+
+    public function unlink_enum_storageCondition_subFam (Request $request, $type, $id){
+        $enum=EnumStorageCondition::findOrFail($id);
+        if ($type === "COMP"){
+            $compSubFam=CompSubFamily::findOrFail($request->artSubFam_id);
+            $enum->compSubFamily()->detach($compSubFam);
+        }else if ($type === "RAW"){
+            $rawSubFam=RawSubFamily::findOrFail($request->artSubFam_id);
+            $enum->rawSubFamily()->detach($rawSubFam);
+        }else if ($type === "CONS"){
+            $consSubFam=ConsSubFamily::findOrFail($request->artSubFam_id);
+            $enum->consSubFamily()->detach($consSubFam);
         }
     }
 

@@ -11,148 +11,6 @@
         <div v-else class="articlePurchaseSpecification">
             <h2 v-if="components.length>0" class="titleForm">Article Purchase Specification(s) </h2>
             <InputInfo v-if="title_info != null" :info="title_info.info_value" class="info_title"/>
-            <div class="accordion">
-                <div class="accordion-item">
-                    <h2 id="headingDocControl" class="accordion-header">
-                        <button aria-controls="collapseDocControl" aria-expanded="true" class="accordion-button"
-                                data-bs-target="#collapseDocControl" data-bs-toggle="collapse"
-                                type="button">
-                            Documentary Control
-                        </button>
-                    </h2>
-                    <div id="collapseDocControl" aria-labelledby="headingDocControl"
-                         class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <ReferenceADocControl
-                                :articleType="data_art_type"
-                                :article_id="data_art_id"
-                                :articleSubFam_id="data_artSubFam_id"
-                                :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
-                                :docControl_name="data_docControlName"
-                                :modifMod="this.isInModifMod"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion">
-                <div class="accordion-item">
-                    <h2 id="headingAspTest" class="accordion-header">
-                        <button aria-controls="collapseAspTest" aria-expanded="true" class="accordion-button"
-                                data-bs-target="#collapseAspTest" data-bs-toggle="collapse"
-                                type="button">
-                            Aspect Test
-                        </button>
-                    </h2>
-                    <div id="collapseAspTest" aria-labelledby="headingAspTest"
-                         class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <ReferenceAnAspTest
-                                :articleType="data_art_type"
-                                :article_id="data_art_id"
-                                :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
-                                :articleSubFam_id="data_artSubFam_id"
-                                :modifMod="this.isInModifMod"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <!-- FuncTest -->
-                <div v-if="data_art_type === 'comp'" class="accordion-item">
-                    <h2 id="headingFuncTest" class="accordion-header">
-                        <button aria-controls="collapseFuncTest" aria-expanded="true" class="accordion-button"
-                                data-bs-target="#collapseFuncTest" data-bs-toggle="collapse"
-                                type="button">
-                            Functional Test
-                        </button>
-                    </h2>
-                    <div id="collapseFuncTest" aria-labelledby="headingFuncTest"
-                         class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <ReferenceAFuncTest
-                                :articleType="data_art_type"
-                                :article_id="data_art_id"
-                                :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
-                                :articleSubFam_id="data_artSubFam_id"
-                                :modifMod="this.isInModifMod"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DimTest -->
-                <div v-if="data_art_type === 'comp' || data_art_type === 'raw'" class="accordion-item">
-                    <h2 id="headingDimTest" class="accordion-header">
-                        <button aria-controls="collapseDimTest" aria-expanded="true" class="accordion-button"
-                                data-bs-target="#collapseDimTest" data-bs-toggle="collapse"
-                                type="button">
-                            Dimensional Test
-                        </button>
-                    </h2>
-                    <div id="collapseDimTest" aria-labelledby="headingDimTest"
-                         class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <ReferenceADimTest
-                                :articleType="data_art_type"
-                                :article_id="data_art_id"
-                                :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
-                                :articleSubFam_id="data_artSubFam_id"
-                                :modifMod="this.isInModifMod"
-                            />
-                        </div>
-                    </div>
-
-                </div>
-                <div class="accordion-item">
-                    <h2 id="headingAdmTest" class="accordion-header">
-                        <button aria-controls="collapseAdmTest" aria-expanded="true" class="accordion-button"
-                                data-bs-target="#collapseAdmTest" data-bs-toggle="collapse"
-                                type="button">
-                            Administrative Control
-                        </button>
-                    </h2>
-                    <div id="collapseAdmTest" aria-labelledby="headingAdmTest"
-                         class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <ReferenceAnAdminControl
-                                :articleType="data_art_type"
-                                :article_id="data_art_id"
-                                :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
-                                :articleSubFam_id="data_artSubFam_id"
-                                :modifMod="this.isInModifMod"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <!-- CompTest -->
-                <div v-if="data_art_type === 'other'" class="accordion-item">
-                    <h2 id="headingCompTest" class="accordion-header">
-                        <button aria-controls="collapseCompTest" aria-expanded="true" class="accordion-button"
-                                data-bs-target="#collapseCompTest" data-bs-toggle="collapse"
-                                type="button">
-                            Complementary Test
-                        </button>
-                    </h2>
-                    <div id="collapseCompTest" aria-labelledby="headingCompTest"
-                         class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <ReferenceACompTest
-                                :articleType="data_art_type"
-                                :article_id="data_art_id"
-                                :checkedTest="this.data_checkedTest"
-                                :import_id="this.isInConsultMod || this.isInModifMod ? import_id : null"
-                                :articleSubFam_id="data_artSubFam_id"
-                                :modifMod="this.isInModifMod"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
             <!--ref="ask_dim_data" is used to call the child elements in this component-->
@@ -172,6 +30,8 @@
                 :supplier_id="component.supplier"
                 :supplier_ref="component.supplierRef"
                 :remark="component.remark"
+                :specification="component.specification"
+                :documentsRequest="component.documentsRequest"
                 :articleSubFam_id="data_artSubFam_id"
                 @deleteStorageCondition="getContent(key)"
             />
@@ -297,12 +157,14 @@ export default {
         addImportedComponent(
             purchaseSpecification_supplier,
             purchaseSpecification_supplierRef,
-            purchaseSpecification_remark, purchaseSpecification_className, id) {
+            purchaseSpecification_remark, purchaseSpecification_specification, purchaseSpecification_documentsRequest,purchaseSpecification_className, id) {
             this.components.push({
                 comp: 'ArticlePurchaseSpecificationForm',
                 key: this.uniqueKey++,
                 supplier: purchaseSpecification_supplier,
                 supplierRef: purchaseSpecification_supplierRef,
+                specification: purchaseSpecification_specification,
+                documentsRequest: purchaseSpecification_documentsRequest,
                 className: purchaseSpecification_className,
                 remark: purchaseSpecification_remark,
                 id: id
@@ -316,12 +178,16 @@ export default {
             if (this.purchaseSpec.length === 0 && !this.isInModifMod) {
                 this.loaded = true;
             } else {
+                console.log("import pur spe")
                 for (const dt of this.purchaseSpec) {
                     const className = "importedPurSpe" + dt.id;
+                    
                     this.addImportedComponent(
                         dt.purSpe_supplier_id,
                         dt.purSpe_supplier_ref,
                         dt.purSpe_remark,
+                        dt.purSpe_specification,
+                        dt.purSpe_documentsRequest,
                         className,
                         dt.id
                     );
@@ -362,11 +228,15 @@ export default {
         }
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
+            console.log("je suis la")
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
             
             if (this.data_art_id !== null) {
+                console.log("good case")
                 axios.get('/artFam/purSpe/send/' + this.data_art_type + '/' + this.import_id)
                     .then(response => {
+                        console.log("petite réponse")
+                        console.log(response.data)
                         this.purchaseSpec = response.data;
                         this.importPurSpe();
                         this.loaded = true;

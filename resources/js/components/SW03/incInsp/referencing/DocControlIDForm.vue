@@ -252,8 +252,27 @@ export default {
             delete this.errors[event.target.name];
         },
         deleteComponent(reason, lifesheet_created) {
-            this.$emit('deleteDocControl', '')
-            this.$refs.sucessAlert.showAlert(`Documentary Control Form deleted successfully`);
+            if (this.modifMod == true && this.docControl_id !== null) {
+                /*Send a post-request with the id of the critilicaty who will be deleted in the url*/
+                const consultUrl = (id) => `/incmgInsp/docControl/delete/${id}`;
+                axios.post(consultUrl(this.docControl_id), {
+                }).then(response => {
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    /*if (lifesheet_created == true) {
+                        axios.post(`/history/add/equipment/${id}`, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }*/
+                    this.$refs.sucessAlert.showAlert(`Doc control deleted successfully`);
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteDocControl', '')
+                }).catch(error => this.errors = error.response.data.errors);
+            } else {
+                this.$emit('deleteDocControl', '')
+                this.$refs.successAlert.showAlert(`Empty doc control deleted successfully`);
+            }
         }
     },
     created() {

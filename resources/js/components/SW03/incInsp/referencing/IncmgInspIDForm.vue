@@ -230,6 +230,10 @@ export default {
         docControl_name: {
             type: String,
             default: null
+        },
+        alreadyCreated: {
+            type: Boolean,
+            default: false
         }
     },
     /*--------Declaration of the different returned data:--------
@@ -260,7 +264,7 @@ export default {
             rawSubFam_id: null,
             consSubFam_id: null,
             compSubFam_id: null,
-            alreadyCreated: false
+            data_alreadyCreated: this.alreadyCreated    
         }
     },
     methods: {
@@ -378,6 +382,7 @@ export default {
         }
     },
     created() {
+        console.log(this.alreadyCreated)
         if (this.data_checkedTest!=null && (this.data_checkedTest.includes('docControl') || this.data_checkedTest.includes('dimTest') || this.data_checkedTest.includes('funcTest') || this.data_checkedTest.includes('aspTest') || this.data_checkedTest.includes('compTest') || this.data_checkedTest.includes('adminControl')|| this.data_docControl_name!='Test required to ensure performance of the medical device' && this.data_docControl_name!=null && this.data_docControl_name!='')) {
             this.alreadyCreated=true;
             this.addIncmgInsp() ;
