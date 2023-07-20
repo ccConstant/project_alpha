@@ -317,7 +317,7 @@ class DimensionnalTestController extends Controller
                 'message' => 'Incoming inspection not found',
             ], 404);
         };
-        $article = null;
+        /*$article = null;
         if ($request->dimTest_articleType === 'cons') {
             $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();
             $signed = $article->consFam_signatureDate;
@@ -347,7 +347,7 @@ class DimensionnalTestController extends Controller
             $request->dimTest_articleType.'Fam_signatureDate' => null,
             $request->dimTest_articleType.'Fam_qualityApproverId' => null,
             $request->dimTest_articleType.'Fam_technicalReviewerId' => null,
-        ]);
+        ]);*/
         $incmgInsp->update([
             'incmgInsp_qualityApproverId' => null,
             'incmgInsp_technicalReviewerId' => null,

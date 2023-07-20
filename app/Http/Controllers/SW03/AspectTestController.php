@@ -284,7 +284,7 @@ class AspectTestController extends Controller
                 'message' => 'Aspect test not found',
             ], 404);
         };
-        if ($aspTest->incmgInsp_id!=null){
+        /*if ($aspTest->incmgInsp_id!=null){
             $incmgInsp = IncomingInspection::all()->where('id', '==', $asptest->incmgInsp_id)->first();
             if ($incmgInsp === null) {
                 return response()->json([
@@ -309,7 +309,7 @@ class AspectTestController extends Controller
                 'incmgInsp_technicalReviewerId' => null,
                 'incmgInsp_signatureDate' => null,
             ]);
-        }
+        }*/
         /*$article = null;
         if ($request->aspTest_articleType === 'cons') {
             $article = ConsFamily::all()->where('id', '==', $incmgInsp->incmgInsp_consFam_id)->first();

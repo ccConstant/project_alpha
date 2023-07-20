@@ -318,4 +318,20 @@ class EnumStorageConditionController extends Controller
         $artFamily->storage_conditions()->detach($oldEnumStodConds);
         $artFamily->storage_conditions()->attach($newEnumStodConds);
     }
+
+    public function update_storageCondition_linked_subFam(Request $request, $id) {
+        $artSubFamily = null;
+        if ($request->artFam_type === "comp"){
+            $artSubFamily=CompSubFamily::findOrFail($request->artSubFam_id);
+        }else if ($request->artFam_type === "raw"){
+            $artSubFamily=RawSubFamily::findOrFail($request->artSubFam_id);
+        }else if ($request->artFam_type === "cons"){
+            $artSubFamily=ConsSubFamily::findOrFail($request->artSubFam_id);
+        }
+        $oldEnumStodConds = EnumStorageCondition::all()->where('value', '=', $request->oldValue)->first();
+        $newEnumStodConds = EnumStorageCondition::all()->where('value', '=', $request->value)->first();
+
+        $artSubFamily->storage_conditions()->detach($oldEnumStodConds);
+        $artSubFamily->storage_conditions()->attach($newEnumStodConds);
+    }
 }

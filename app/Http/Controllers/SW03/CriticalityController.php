@@ -36,22 +36,17 @@ class CriticalityController extends Controller
                 [
                     'crit_artCriticality' => 'required',
                     'crit_performanceMedicalDevice' => 'required',
-                    'crit_checkedTests' => 'required',
                     'crit_checkedTestRadioDim' => 'required',
                     'crit_checkedTestRadioFunc' => 'required',
                     'crit_checkedTestRadioAsp' => 'required',
                     'crit_checkedTestRadioDoc' => 'required',
                     'crit_checkedTestRadioAdm' => 'required',
                     'crit_remarks' => 'required|max:255',
-                    'crit_articleID' => 'required',
-                    'crit_articleType' => 'required',
                 ],
                 [
                     'crit_artCriticality.required' => 'You must inform what is the contact of the article with the patient or the user an article',
 
                     'crit_performanceMedicalDevice.required' => 'You must inform if the deficiencies of the article or of the material properties impact the performance of the medical device',
-
-                    'crit_checkedTests.required' => 'You must inform if the article is subject to tests',
 
                     'crit_checkedTestRadioDim.required' => 'You must inform who must realize the dimensional tests',
                     'crit_checkedTestRadioFunc.required' => 'You must inform who must realize the functional tests',
@@ -61,10 +56,6 @@ class CriticalityController extends Controller
 
                     'crit_remarks.required' => 'You must enter a remark',
                     'crit_remarks.max' => 'You must enter a maximum of 255 characters',
-
-                    'crit_articleID.required' => 'You must enter an article ID',
-
-                    'crit_articleType.required' => 'You must enter an article type',
 
                 ]
             );
@@ -154,7 +145,7 @@ class CriticalityController extends Controller
      * */
     public function update_criticality(Request $request, $id) {
         $crit = Criticality::findOrfail($id);
-        $compFam_id = null;
+       /* $compFam_id = null;
         $consFam_id = null;
         $rawFam_id = null;
         if ($request->crit_articleType === 'comp') {
@@ -196,18 +187,18 @@ class CriticalityController extends Controller
                 'rawFam_qualityApproverId' => null,
                 'rawFam_technicalReviewerId' => null,
             ]);
-        }
+        }*/
         $crit->update([
             'crit_artCriticality' => $request->crit_artCriticality,
-            'crit_artMaterialContactCriticality' => $request->crit_artMaterialContactCriticality,
-            'crit_artMaterialFunctionCriticality' => $request->crit_artMaterialFunctionCriticality,
-            'crit_artProcessCriticality' => $request->crit_artProcessCriticality,
-            'crit_justification' => $request->crit_justification,
+            'crit_performanceMedicalDevice' => $request->crit_performanceMedicalDevice,
+            'crit_checkedTests' => $request->crit_checkedTests,
+            'crit_checkedTestRadioDim' => $request->crit_checkedTestRadioDim,
+            'crit_checkedTestRadioFunc' => $request->crit_checkedTestRadioFunc,
+            'crit_checkedTestRadioAsp' => $request->crit_checkedTestRadioAsp,
+            'crit_checkedTestRadioDoc' => $request->crit_checkedTestRadioDoc,
+            'crit_checkedTestRadioAdm' => $request->crit_checkedTestRadioAdm,
             'crit_remarks' => $request->crit_remarks,
             'crit_validate' => $request->crit_validate,
-            'consFam_id' => $consFam_id,
-            'compFam_id' => $compFam_id,
-            'rawFam_id' => $rawFam_id,
         ]);
     }
 
@@ -219,7 +210,7 @@ class CriticalityController extends Controller
      * */
     public function update_criticality_subFam(Request $request, $id) {
         $crit = Criticality::findOrfail($id);
-        $subFam = null;
+        /*$subFam = null;
         $compSubFam_id = null;
         $consSubFam_id = null;
         $rawSubFam_id = null;
@@ -265,18 +256,18 @@ class CriticalityController extends Controller
                 'rawFam_qualityApproverId' => null,
                 'rawFam_technicalReviewerId' => null,
             ]);
-        }
+        }*/
         $crit->update([
             'crit_artCriticality' => $request->crit_artCriticality,
-            'crit_artMaterialContactCriticality' => $request->crit_artMaterialContactCriticality,
-            'crit_artMaterialFunctionCriticality' => $request->crit_artMaterialFunctionCriticality,
-            'crit_artProcessCriticality' => $request->crit_artProcessCriticality,
-            'crit_justification' => $request->crit_justification,
+            'crit_performanceMedicalDevice' => $request->crit_performanceMedicalDevice,
+            'crit_checkedTests' => $request->crit_checkedTests,
+            'crit_checkedTestRadioDim' => $request->crit_checkedTestRadioDim,
+            'crit_checkedTestRadioFunc' => $request->crit_checkedTestRadioFunc,
+            'crit_checkedTestRadioAsp' => $request->crit_checkedTestRadioAsp,
+            'crit_checkedTestRadioDoc' => $request->crit_checkedTestRadioDoc,
+            'crit_checkedTestRadioAdm' => $request->crit_checkedTestRadioAdm,
             'crit_remarks' => $request->crit_remarks,
             'crit_validate' => $request->crit_validate,
-            'compSubFam_id' => $compSubFam_id,
-            'consSubFam_id' => $consSubFam_id,
-            'rawSubFam_id' => $rawSubFam_id,
         ]);
     }
 

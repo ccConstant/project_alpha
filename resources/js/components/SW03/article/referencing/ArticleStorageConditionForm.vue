@@ -140,7 +140,6 @@ export default {
         @param reason The reason of the modification
         @param artSheet_created */
         addStorageConditions(savedAs, reason, artSheet_created) {
-            console.log("add Sto cond")
             if (!this.addSucces) {
                 /*ID of the equipment in which the file will be added*/
                 let id;
@@ -152,7 +151,6 @@ export default {
                     id = this.art_id_update;
                 }
                 if (this.art_id_add !== null) {
-                    console.log("article case")
                     const consultUrl = (id) => `/artFam/enum/storageCondition/link/${id}`;
                     axios.post(consultUrl(id), {
                         artFam_type: this.artFam_type.toUpperCase(),
@@ -178,15 +176,12 @@ export default {
                         this.storageCondition_validate = savedAs;
                     }).catch(error => this.errors = error.response.data.errors);
                 } else {
-                    console.log("sub fam case")
                     const consultUrl = (id) => `/artSubFam/enum/storageCondition/link/${id}`;
                     axios.post(consultUrl(this.artSubFam_id), {
                         artSubFam_type: this.artFam_type.toUpperCase(),
                         artSubFam_storageCondition: this.artFam_storageCondition,
                         validate: savedAs,
                     }).then(response => {
-                        console.log("add response")
-                        console.log(response.data)
                         /*We test if a article sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
                         /* TODO

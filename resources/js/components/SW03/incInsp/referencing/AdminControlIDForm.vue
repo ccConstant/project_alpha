@@ -13,7 +13,7 @@
                 <InputTextForm
                     :Errors="errors.adminControl_name"
                     name="name"
-                    label="Doc Control Name :"
+                    label="Admin Control Name :"
                     v-model="adminControl_name"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_adminControl[1].info_value"
@@ -25,7 +25,7 @@
                 <InputTextForm
                     :Errors="errors.adminControl_reference"
                     name="reference"
-                    label="Doc Control Reference :"
+                    label="Admin Control Reference :"
                     v-model="adminControl_reference"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_adminControl[0].info_value"
@@ -38,7 +38,7 @@
                     v-if="this.data_article_type === 'raw' || this.data_article_type === 'comp'"
                     :Errors="errors.adminControl_materialCertiSpec"
                     name="matCertifSpec"
-                    label="Doc Control Material Certificate Specifications :"
+                    label="Admin Control Material Certificate Specifications :"
                     v-model="adminControl_materialCertiSpec"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_adminControl[2].info_value"
@@ -51,7 +51,7 @@
                     v-if="this.data_article_type === 'cons'"
                     :Errors="errors.adminControl_fds"
                     name="fds"
-                    label="Doc Control FDS :"
+                    label="Admin Control FDS :"
                     v-model="adminControl_fds"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_adminControl[3].info_value"
@@ -219,7 +219,6 @@ export default {
             })
             .then(response => {
                 this.errors = {};
-                console.log("verif update passed")
                 axios.post('/incmgInsp/adminControl/update/' + this.adminControl_id, {
                     adminControl_articleType: this.data_article_type,
                     adminControl_reference: this.adminControl_reference,
@@ -258,7 +257,6 @@ export default {
         }
     },
     created() {
-        console.log("created admin control ID Form")
         axios.get('/info/send/adminControl')
             .then(response => {
                 this.info_adminControl = response.data;

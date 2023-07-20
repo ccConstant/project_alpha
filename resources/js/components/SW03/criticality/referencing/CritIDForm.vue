@@ -385,6 +385,7 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         addCriticality(savedAs, reason, lifesheet_created) {
+            console.log("je passe ici")
             if (!this.addSucces) {
                 if (this.checkedTests.includes('funcTest') ){
                     if (this.checkedTestRadioFunc=='funcTestAlpha' || this.checkedTestRadioFunc=='funcTestBoth'){
@@ -449,16 +450,26 @@ export default {
                 /*The First post to verify if all the fields are filled correctly
                 Name, location and validate option is sent to the controller*/
                 this.checkedTests.forEach((test) => {
-                    this.checkedTestsString += test + ',';
+                        this.checkedTestsString += test + ',';
                 });
-                console.log("crit_checkedTestsString : " + this.checkedTestsString);
                 if (this.articleID !== null) {
+                    console.log("je passe dans les articles youpi")
+                    console.log("crit art criticality : " + this.crit_artCriticality)
+                    console.log("crit remarks : " + this.crit_remarks)
+                    console.log("crit validate : " + savedAs)
+                    console.log("crit article type : " + this.data_article_type)
+                    console.log("crit article id : " + this.data_article_id)
+                    console.log("crit performance medical device : " + this.crit_performanceMedicalDevice)
+                    console.log("crit checked tests : " + this.checkedTestsString)
+                    console.log("crit checked test radio dim : " + this.checkedTestRadioDim)
+                    console.log("crit checked test radio func : " + this.checkedTestRadioFunc)
+                    console.log("crit checked test radio asp : " + this.checkedTestRadioAsp)
+                    console.log("crit checked test radio doc : " + this.checkedTestRadioDoc)
+                    console.log("crit checked test radio adm : " + this.checkedTestRadioAdm)
                     axios.post('/artFam/criticality/verif', {
                         crit_artCriticality: this.crit_artCriticality,
                         crit_remarks: this.crit_remarks,
                         crit_validate: savedAs,
-                        crit_articleType: this.data_article_type,
-                        crit_articleID: this.data_article_id,
                         crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
                         crit_checkedTests: this.checkedTestsString,
                         crit_checkedTestRadioDim: this.checkedTestRadioDim,
@@ -467,8 +478,8 @@ export default {
                         crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
                         crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                     }).then(response => {
+                        console.log("verif passed for articles")
                         this.errors = {};
-                        console.log("verif passed")
                         /*If all the verifications passed, a new post this time to add the file in the database
                         The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
                         axios.post('/artFam/criticality/add', {
@@ -497,10 +508,6 @@ export default {
                         console.log(error.response.data);
                     });
                 } else {
-                    console.log("addCriticality/subFamily");
-                    console.log("data_artType: " + this.data_article_type);
-                    console.log("data_artID: " + this.data_article_id);
-                    console.log("data_artSubFamID: " + this.data_article_subFam_id);
                     axios.post('/artFam/criticality/verif', {
                         crit_artCriticality: this.crit_artCriticality,
                         crit_remarks: this.crit_remarks,
@@ -517,7 +524,6 @@ export default {
                         crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                     }).then(response => {
                         this.errors = {};
-                        console.log("verif passed")
                         /*If all the verifications passed, a new post this time to add the file in the database
                         The type, name, value, unit, validate option and id of the equipment are sent to the controller*/
                         axios.post('/artSubFam/criticality/add', {
@@ -554,17 +560,26 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updateCriticality(savedAs, reason, lifesheet_created) {
+            this.checkedTestsString = '';
+            this.checkedTests.forEach((test) => {
+                    this.checkedTestsString += test + ',';
+            });
             if (this.articleID !== null) {
                 axios.post('/artFam/criticality/verif', {
                     crit_artCriticality: this.crit_artCriticality,
-                    crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
-                    crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
-                    crit_artProcessCriticality: this.crit_artProcessCriticality,
                     crit_remarks: this.crit_remarks,
                     crit_validate: savedAs,
                     crit_articleType: this.data_article_type,
                     crit_articleID: this.data_article_id,
-                    crit_justification: this.crit_justification,
+                    crit_articleSubFamID: this.data_article_subFam_id,
+                    crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                    crit_checkedTests: this.checkedTestsString,
+                    crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                    crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                    crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                    crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                    crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
+                    
                 }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
@@ -573,14 +588,18 @@ export default {
                     const consultUrl = (id) => `/artFam/criticality/update/${id}`;
                     axios.post(consultUrl(this.crit_id), {
                         crit_artCriticality: this.crit_artCriticality,
-                        crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
-                        crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
-                        crit_artProcessCriticality: this.crit_artProcessCriticality,
                         crit_remarks: this.crit_remarks,
                         crit_validate: savedAs,
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
-                        crit_justification: this.crit_justification,
+                        crit_articleSubFamID: this.data_article_subFam_id,
+                        crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                        crit_checkedTests: this.checkedTestsString,
+                        crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                        crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                        crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                        crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                        crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                     }).then(response => {
                         this.crit_validate = savedAs;
                         /*We test if a life sheet has been already created*/
@@ -602,18 +621,20 @@ export default {
                     console.log(error.response.data);
                 });
             } else {
-                console.log("update subfam")
                 axios.post('/artFam/criticality/verif', {
                     crit_artCriticality: this.crit_artCriticality,
-                    crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
-                    crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
-                    crit_artProcessCriticality: this.crit_artProcessCriticality,
                     crit_remarks: this.crit_remarks,
                     crit_validate: savedAs,
                     crit_articleType: this.data_article_type,
                     crit_articleID: this.data_article_id,
                     crit_articleSubFamID: this.data_article_subFam_id,
-                    crit_justification: this.crit_justification,
+                    crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                    crit_checkedTests: this.checkedTestsString,
+                    crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                    crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                    crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                    crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                    crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                 }).then(response => {
                     this.errors = {};
                     /*If all the verifications passed, a new post this time to add the file in the database
@@ -622,15 +643,18 @@ export default {
                     const consultUrl = (id) => `/artSubFam/criticality/update/${id}`;
                     axios.post(consultUrl(this.crit_id), {
                         crit_artCriticality: this.crit_artCriticality,
-                        crit_artMaterialContactCriticality: this.crit_artMaterialContactCriticality,
-                        crit_artMaterialFunctionCriticality: this.crit_artMaterialFunctionCriticality,
-                        crit_artProcessCriticality: this.crit_artProcessCriticality,
                         crit_remarks: this.crit_remarks,
                         crit_validate: savedAs,
                         crit_articleType: this.data_article_type,
                         crit_articleID: this.data_article_id,
                         crit_articleSubFamID: this.data_article_subFam_id,
-                        crit_justification: this.crit_justification,
+                        crit_performanceMedicalDevice: this.crit_performanceMedicalDevice,
+                        crit_checkedTests: this.checkedTestsString,
+                        crit_checkedTestRadioDim: this.checkedTestRadioDim,
+                        crit_checkedTestRadioFunc: this.checkedTestRadioFunc,
+                        crit_checkedTestRadioAsp: this.checkedTestRadioAsp,
+                        crit_checkedTestRadioDoc: this.checkedTestRadioDoc,
+                        crit_checkedTestRadioAdm: this.checkedTestRadioAdm,
                     }).then(response => {
                         this.crit_validate = savedAs;
                         /*We test if a life sheet has been already created*/

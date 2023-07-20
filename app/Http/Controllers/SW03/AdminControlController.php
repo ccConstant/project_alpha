@@ -279,7 +279,7 @@ class AdminControlController extends Controller
                 'incmgInsp_signatureDate' => null,
             ]);
         }
-        if ($adminControl->purSpe_id!=null){
+        /*if ($adminControl->purSpe_id!=null){
             $purSpe = PurchaseSpecification::all()->where('id', '==', $adminControl->purSpe_id)->first();
             if ($purSpe === null) {
                 return response()->json([

@@ -85,7 +85,7 @@
                     :Errors="errors.artFam_purchasedBy"
                     label="Article Family Purchased By :"
                     :options="enum_purchasedBy"
-                    :selctedOption="artFam_purchasedBy"
+                    :selctedOption="this.artFam_purchasedBy"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artFam_purchasedBy"
                     :info_text="this.infos_artFam[3].info_value"
