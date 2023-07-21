@@ -45,6 +45,12 @@
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
                     :savedAs="this.artFamMb_validate"/>
+
+                <DeleteComponentButton v-if="this.isInModifMod"
+                    @deleteOk="deleteComponent"
+                    :consultMod="this.isInConsultMod"
+                    :modifMod="this.isInModifMod"
+                />
             </form>
             <SucessAlert ref="sucessAlert"/>
         </div>
@@ -388,25 +394,23 @@ export default {
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
-            if (this.modifMod == true && this.file_id !== null) {
+            if (this.modifMod == true && this.artFamMember_id!== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
-                const consultUrl = (id) => `/equipment/delete/file/${id}`;
-                axios.post(consultUrl(this.file_id), {
-                    eq_id: this.equipment_id_update
+                const consultUrl = (id) => '/' + this.artFam_type.toLowerCase() + '/mb/delete/' + id;
+                axios.post(consultUrl(this.artFamMember_id), {
                 })
                 .then(response => {
-                    const id = this.equipment_id_update;
                     /*We test if a life sheet has been already created*/
                     /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                    if (lifesheet_created == true) {
+                   /* if (lifesheet_created == true) {
                         axios.post(`/history/add/equipment/${id}`, {
                             history_reasonUpdate: reason,
                         });
                         window.location.reload();
-                    }
+                    }*/
                     /*Emit to the parent component that we want to delete this component*/
-                    this.$emit('deleteFile', '')
-                    this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
+                    this.$emit('deleteArticleMember', '')
+                    this.$refs.sucessAlert.showAlert(`Article member deleted successfully`);
                 })
                 /*If the controller sends errors, we put it in the error object*/
                 .catch(error => this.errors = error.response.data.errors);

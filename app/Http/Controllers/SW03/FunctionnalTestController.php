@@ -41,12 +41,9 @@ class FunctionnalTestController extends Controller
                 $request,
                 [
                     'funcTest_severityLevel' => 'required',
-                    'funcTest_levelOfControl' => 'required',
                 ],
                 [
                     'funcTest_severityLevel.required' => 'You must enter a severity level',
-
-                    'funcTest_levelOfControl.required' => 'You must enter a level of control',
                 ]
             );
         }
@@ -71,7 +68,6 @@ class FunctionnalTestController extends Controller
                     'funcTest_expectedMethod' => 'required|string|min:2|max:255',
                     'funcTest_expectedValue' => 'required|string|min:1|max:50',
                     'funcTest_name' => 'required|string|min:2|max:255',
-                    'funcTest_specDoc' => 'required|string|min:2|max:255',
                 ],
                 [
                     'funcTest_expectedMethod.required' => 'You must enter an expected method',
@@ -88,11 +84,6 @@ class FunctionnalTestController extends Controller
                     'funcTest_name.string' => 'The name must be a string',
                     'funcTest_name.min' => 'You must enter at least two characters',
                     'funcTest_name.max' => 'You must enter a maximum of 255 characters',
-
-                    'funcTest_specDoc.required' => 'You must enter a specification document',
-                    'funcTest_specDoc.string' => 'The specification document must be a string',
-                    'funcTest_specDoc.min' => 'You must enter at least two characters',
-                    'funcTest_specDoc.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
@@ -181,7 +172,6 @@ class FunctionnalTestController extends Controller
         }
         $funcTest = FunctionalTest::create([
             'funcTest_severityLevel' => $request->funcTest_severityLevel,
-            'funcTest_levelOfControl' => $request->funcTest_levelOfControl,
             'funcTest_expectedMethod' => $request->funcTest_expectedMethod,
             'funcTest_expectedValue' => $request->funcTest_expectedValue,
             'funcTest_name' => $request->funcTest_name,
@@ -194,7 +184,6 @@ class FunctionnalTestController extends Controller
             'consSubFam_id' => $subCons,
             'compSubFam_id' => $subComp,
             'funcTest_desc' => $request->funcTest_desc,
-            'funcTest_specDoc' => $request->funcTest_specDoc,
         ]);
         return $funcTest;
     }
@@ -212,14 +201,12 @@ class FunctionnalTestController extends Controller
             $array[] = [
                 'id' => $funcTest->id,
                 'funcTest_severityLevel' => $funcTest->funcTest_severityLevel,
-                'funcTest_levelOfControl' => $funcTest->funcTest_levelOfControl,
                 'funcTest_expectedMethod' => $funcTest->funcTest_expectedMethod,
                 'funcTest_expectedValue' => $funcTest->funcTest_expectedValue,
                 'funcTest_name' => $funcTest->funcTest_name,
                 'funcTest_sampling' => $funcTest->funcTest_sampling,
                 'incmgInsp_id' => $funcTest->incmgInsp_id,
                 'funcTest_desc' => $funcTest->funcTest_desc,
-                'funcTest_specDoc' => $funcTest->funcTest_specDoc,
             ];
         }
         return response()->json($array);
@@ -245,14 +232,12 @@ class FunctionnalTestController extends Controller
             $array[] = [
                 'id' => $funcTest->id,
                 'funcTest_severityLevel' => $funcTest->funcTest_severityLevel,
-                'funcTest_levelOfControl' => $funcTest->funcTest_levelOfControl,
                 'funcTest_expectedMethod' => $funcTest->funcTest_expectedMethod,
                 'funcTest_expectedValue' => $funcTest->funcTest_expectedValue,
                 'funcTest_name' => $funcTest->funcTest_name,
                 'funcTest_sampling' => $funcTest->funcTest_sampling,
                 'incmgInsp_id' => $funcTest->incmgInsp_id,
                 'funcTest_desc' => $funcTest->funcTest_desc,
-                'funcTest_specDoc' => $funcTest->funcTest_specDoc,
             ];
         }
         return response()->json($array);
@@ -278,14 +263,12 @@ class FunctionnalTestController extends Controller
             $array[] = [
                 'id' => $funcTest->id,
                 'funcTest_severityLevel' => $funcTest->funcTest_severityLevel,
-                'funcTest_levelOfControl' => $funcTest->funcTest_levelOfControl,
                 'funcTest_expectedMethod' => $funcTest->funcTest_expectedMethod,
                 'funcTest_expectedValue' => $funcTest->funcTest_expectedValue,
                 'funcTest_name' => $funcTest->funcTest_name,
                 'funcTest_sampling' => $funcTest->funcTest_sampling,
                 'incmgInsp_id' => $funcTest->incmgInsp_id,
                 'funcTest_desc' => $funcTest->funcTest_desc,
-                'funcTest_specDoc' => $funcTest->funcTest_specDoc,
             ];
         }
         return response()->json($array);
@@ -347,13 +330,11 @@ class FunctionnalTestController extends Controller
         ]);
         $funcTest->update([
             'funcTest_severityLevel' => $request->funcTest_severityLevel,
-            'funcTest_levelOfControl' => $request->funcTest_levelOfControl,
             'funcTest_expectedMethod' => $request->funcTest_expectedMethod,
             'funcTest_expectedValue' => $request->funcTest_expectedValue,
             'funcTest_name' => $request->funcTest_name,
             'funcTest_sampling' => $request->funcTest_sampling,
             'funcTest_desc' => $request->funcTest_desc,
-            'funcTest_specDoc' => $request->funcTest_specDoc,
         ]);
         return response()->json($funcTest);
     }

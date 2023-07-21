@@ -22,7 +22,6 @@
                 :consultMod="isInConsultMod"
                 :modifMod="component.id !== null"
                 :severityLevel="component.funcTest_severityLevel"
-                :controlLevel="component.funcTest_controlLevel"
                 :expectedMethod="component.funcTest_expectedMethod"
                 :expectedValue="component.funcTest_expectedValue"
                 :name="component.funcTest_name"
@@ -32,7 +31,6 @@
                 :articleID="data_article_id"
                 :articleType="data_article_type"
                 :desc="component.funcTest_desc"
-                :specDoc="component.funcTest_specDoc"
                 @deleteFuncTest="getContent(key)"
             />
             <!--If the user is not in consultation mode -->
@@ -146,25 +144,21 @@ export default {
         /*Function for adding an imported file form with his data*/
         addImportedComponent(
             funcTest_severityLevel,
-            funcTest_controlLevel,
             funcTest_expectedMethod,
             funcTest_expectedValue,
             funcTest_name,
             funcTest_sampling,
             funcTest_desc,
-            funcTest_specDoc,
             incmgInsp_id, id, className) {
             this.components.push({
                 comp: 'FuncTestIDForm',
                 key: this.uniqueKey++,
                 funcTest_severityLevel: funcTest_severityLevel,
-                funcTest_controlLevel: funcTest_controlLevel,
                 funcTest_expectedMethod: funcTest_expectedMethod,
                 funcTest_expectedValue: funcTest_expectedValue,
                 funcTest_name: funcTest_name,
                 funcTest_sampling: funcTest_sampling,
                 funcTest_desc: funcTest_desc,
-                funcTest_specDoc: funcTest_specDoc,
                 incmgInsp_id: incmgInsp_id,
                 id: id,
                 className: className
@@ -183,13 +177,11 @@ export default {
                     const className = "importedFuncTest" + ft.id;
                     this.addImportedComponent(
                         ft.funcTest_severityLevel,
-                        ft.funcTest_levelOfControl,
                         ft.funcTest_expectedMethod,
                         ft.funcTest_expectedValue,
                         ft.funcTest_name,
                         ft.funcTest_sampling,
                         ft.funcTest_desc,
-                        ft.funcTest_specDoc,
                         ft.incmgInsp_id,
                         ft.id,
                         className

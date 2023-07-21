@@ -24,8 +24,7 @@ class CreateAspectTestsTable extends Migration
         Schema::create('aspect_tests', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('aspTest_severityLevel', ['I', 'II', 'III', 'IV'])->nullable();
-            $table->enum('aspTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
+            $table->enum('aspTest_severityLevel', ['I Safety Control', 'II Safety Control', 'III Safety Control', 'IV Safety Control', 'I Business Control', 'II Business Control', 'III Business Control', 'IV Business Control'])->nullable();
             $table->string('aspTest_expectedAspect');
             $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');

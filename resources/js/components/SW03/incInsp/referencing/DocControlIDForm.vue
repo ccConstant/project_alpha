@@ -13,7 +13,7 @@
                 <InputTextForm
                     :Errors="errors.docControl_name"
                     name="name"
-                    label="Doc Control Name :"
+                    label="Control Name :"
                     v-model="docControl_name"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_docControl[1].info_value"
@@ -25,7 +25,7 @@
                 <InputTextForm
                     :Errors="errors.docControl_reference"
                     name="reference"
-                    label="Doc Control Reference :"
+                    label="Product certificate acceptance criteria :"
                     v-model="docControl_reference"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_docControl[0].info_value"
@@ -38,7 +38,7 @@
                     v-if="this.data_article_type === 'raw' || this.data_article_type === 'comp'"
                     :Errors="errors.docControl_materialCertiSpec"
                     name="matCertifSpec"
-                    label="Doc Control Material Certificate Specifications :"
+                    label="Material certificate acceptance criteria :"
                     v-model="docControl_materialCertiSpec"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_docControl[2].info_value"

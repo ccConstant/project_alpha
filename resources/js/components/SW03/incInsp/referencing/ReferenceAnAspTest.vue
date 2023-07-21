@@ -22,7 +22,6 @@
                 :consultMod="isInConsultMod"
                 :modifMod="component.id !== null"
                 :severityLevel="component.aspTest_severityLevel"
-                :controlLevel="component.aspTest_controlLevel"
                 :expectedAspect="component.aspTest_expectedAspect"
                 :name="component.aspTest_name"
                 :sampling="component.aspTest_sampling"
@@ -147,7 +146,6 @@ export default {
         /*Function for adding an imported file form with his data*/
         addImportedComponent(
             aspTest_severityLevel,
-            aspTest_controlLevel,
             aspTest_expectedAspect,
             aspTest_name,
             aspTest_sampling,
@@ -158,7 +156,6 @@ export default {
                 comp: 'AspTestIDForm',
                 key: this.uniqueKey++,
                 aspTest_severityLevel: aspTest_severityLevel,
-                aspTest_controlLevel: aspTest_controlLevel,
                 aspTest_expectedAspect: aspTest_expectedAspect,
                 aspTest_name: aspTest_name,
                 aspTest_sampling: aspTest_sampling,
@@ -182,7 +179,6 @@ export default {
                     const className = "importedAspTest" + at.id;
                     this.addImportedComponent(
                         at.aspTest_severityLevel,
-                        at.aspTest_levelOfControl,
                         at.aspTest_expectedAspect,
                         at.aspTest_name,
                         at.aspTest_sampling,

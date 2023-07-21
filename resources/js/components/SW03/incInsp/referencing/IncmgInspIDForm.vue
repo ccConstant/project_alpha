@@ -14,6 +14,28 @@
                 <div v-if="this.incmgInsp_id!=null">
                     <div class="accordion">
                         <div class="accordion-item">
+                            <h2 id="headingAdmTestIncmg" class="accordion-header">
+                                <button aria-controls="collapseAdmTestIncmg" aria-expanded="true" class="accordion-button"
+                                        data-bs-target="#collapseAdmTestIncmg" data-bs-toggle="collapse"
+                                        type="button">
+                                    Additional Administrative Control
+                                </button>
+                            </h2>
+                            <div id="collapseAdmTestIncmg" aria-labelledby="headingAdmTestIncmg"
+                                 class="accordion-collapse collapse show">
+                                <div class="accordion-body">
+                                    <ReferenceAnAdminControl
+                                        :articleType="article_type"
+                                        :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
+                                        :incmgInsp_id="incmgInsp_id"
+                                        :consultMod="this.isInConsultMod"
+                                        :checkedTest="this.data_checkedTest"
+                                        :modifMod="this.isInModifMod"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
                             <h2 class="accordion-header" id="headingDocControlIncmg">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapseDocControlIncmg" aria-expanded="true" aria-controls="collapseDocControlIncmg">
@@ -99,28 +121,6 @@
                                 </div>
                             </div>
 
-                        </div>
-                        <div class="accordion-item">
-                            <h2 id="headingAdmTestIncmg" class="accordion-header">
-                                <button aria-controls="collapseAdmTestIncmg" aria-expanded="true" class="accordion-button"
-                                        data-bs-target="#collapseAdmTestIncmg" data-bs-toggle="collapse"
-                                        type="button">
-                                    Administrative Control
-                                </button>
-                            </h2>
-                            <div id="collapseAdmTestIncmg" aria-labelledby="headingAdmTestIncmg"
-                                 class="accordion-collapse collapse show">
-                                <div class="accordion-body">
-                                    <ReferenceAnAdminControl
-                                        :articleType="article_type"
-                                        :import_id="this.isInConsultMod || this.isInModifMod ? incmgInsp_id : null"
-                                        :incmgInsp_id="incmgInsp_id"
-                                        :consultMod="this.isInConsultMod"
-                                        :checkedTest="this.data_checkedTest"
-                                        :modifMod="this.isInModifMod"
-                                    />
-                                </div>
-                            </div>
                         </div>
                         <!-- CompTest -->
                         <div class="accordion-item" v-if="article_type === 'other'">

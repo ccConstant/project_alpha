@@ -41,11 +41,9 @@ class DimensionnalTestController extends Controller
                 $request,
                 [
                     'dimTest_severityLevel' => 'required',
-                    'dimTest_levelOfControl' => 'required',
                 ],
                 [
                     'dimTest_severityLevel.required' => 'You must enter a severity level',
-                    'dimTest_levelOfControl.required' => 'You must enter a level of control',
                 ]
             );
         }
@@ -70,8 +68,6 @@ class DimensionnalTestController extends Controller
                     'dimTest_expectedMethod' => 'required|string|min:2|max:255',
                     'dimTest_expectedValue' => 'required|string',
                     'dimTest_name' => 'required|string|min:2|max:255',
-                    'dimTest_unitValue' => 'required|string|min:1|max:10',
-                    'dimTest_specDoc' => 'required|string|min:2|max:255',
                 ],
                 [
                     'dimTest_expectedMethod.required' => 'You must enter an expected method',
@@ -86,16 +82,6 @@ class DimensionnalTestController extends Controller
                     'dimTest_name.string' => 'The name of control must be a string',
                     'dimTest_name.min' => 'You must enter at least two characters',
                     'dimTest_name.max' => 'You must enter a maximum of 255 characters',
-
-                    'dimTest_unitValue.required' => 'You must enter a unit value',
-                    'dimTest_unitValue.string' => 'The unit value must be a string',
-                    'dimTest_unitValue.min' => 'You must enter at least one character',
-                    'dimTest_unitValue.max' => 'You must enter a maximum of 10 characters',
-
-                    'dimTest_specDoc.required' => 'You must enter a specification document',
-                    'dimTest_specDoc.string' => 'The specification document must be a string',
-                    'dimTest_specDoc.min' => 'You must enter at least two characters',
-                    'dimTest_specDoc.max' => 'You must enter a maximum of 255 characters',
                 ]
             );
         }
@@ -185,11 +171,9 @@ class DimensionnalTestController extends Controller
         $dimTest = DimensionalTest::create([
             'dimTest_sampling' => $request->dimTest_sampling,
             'dimTest_severityLevel' => $request->dimTest_severityLevel,
-            'dimTest_levelOfControl' => $request->dimTest_levelOfControl,
             'dimTest_expectedMethod' => $request->dimTest_expectedMethod,
             'dimTest_expectedValue' => $request->dimTest_expectedValue,
             'dimTest_name' => $request->dimTest_name,
-            'dimTest_unitValue' => $request->dimTest_unitValue,
             'incmgInsp_id' => $request->incmgInsp_id,
             'rawFam_id' => $raw,
             'consFam_id' => $cons,
@@ -198,7 +182,6 @@ class DimensionnalTestController extends Controller
             'consSubFam_id' => $subCons,
             'compSubFam_id' => $subComp,
             'dimTest_desc' => $request->dimTest_desc,
-            'dimTest_specDoc' => $request->dimTest_specDoc,
         ]);
         return response()->json($dimTest);
     }
@@ -216,14 +199,11 @@ class DimensionnalTestController extends Controller
                 'id' => $item->id,
                 'dimTest_sampling' => $item->dimTest_sampling,
                 'dimTest_severityLevel' => $item->dimTest_severityLevel,
-                'dimTest_levelOfControl' => $item->dimTest_levelOfControl,
                 'dimTest_expectedMethod' => $item->dimTest_expectedMethod,
                 'dimTest_expectedValue' => $item->dimTest_expectedValue,
                 'dimTest_name' => $item->dimTest_name,
-                'dimTest_unitValue' => $item->dimTest_unitValue,
                 'incmgInsp_id' => $item->incmgInsp_id,
                 'dimTest_desc' => $item->dimTest_desc,
-                'dimTest_specDoc' => $item->dimTest_specDoc,
             ];
             array_push($array, $obj);
         }
@@ -251,14 +231,11 @@ class DimensionnalTestController extends Controller
                 'id' => $item->id,
                 'dimTest_sampling' => $item->dimTest_sampling,
                 'dimTest_severityLevel' => $item->dimTest_severityLevel,
-                'dimTest_levelOfControl' => $item->dimTest_levelOfControl,
                 'dimTest_expectedMethod' => $item->dimTest_expectedMethod,
                 'dimTest_expectedValue' => $item->dimTest_expectedValue,
                 'dimTest_name' => $item->dimTest_name,
-                'dimTest_unitValue' => $item->dimTest_unitValue,
                 'incmgInsp_id' => $item->incmgInsp_id,
                 'dimTest_desc' => $item->dimTest_desc,
-                'dimTest_specDoc' => $item->dimTest_specDoc,
             ];
             array_push($array, $obj);
         }
@@ -286,13 +263,10 @@ class DimensionnalTestController extends Controller
                 'id' => $item->id,
                 'dimTest_sampling' => $item->dimTest_sampling,
                 'dimTest_severityLevel' => $item->dimTest_severityLevel,
-                'dimTest_levelOfControl' => $item->dimTest_levelOfControl,
                 'dimTest_expectedMethod' => $item->dimTest_expectedMethod,
                 'dimTest_expectedValue' => $item->dimTest_expectedValue,
                 'dimTest_name' => $item->dimTest_name,
-                'dimTest_unitValue' => $item->dimTest_unitValue,
                 'dimTest_desc' => $item->dimTest_desc,
-                'dimTest_specDoc' => $item->dimTest_specDoc,
             ];
             array_push($array, $obj);
         }
@@ -356,14 +330,11 @@ class DimensionnalTestController extends Controller
         $dimTest->update([
             'dimTest_sampling' => $request->dimTest_sampling,
             'dimTest_severityLevel' => $request->dimTest_severityLevel,
-            'dimTest_levelOfControl' => $request->dimTest_levelOfControl,
             'dimTest_expectedMethod' => $request->dimTest_expectedMethod,
             'dimTest_expectedValue' => $request->dimTest_expectedValue,
             'dimTest_name' => $request->dimTest_name,
-            'dimTest_unitValue' => $request->dimTest_unitValue,
             'incmgInsp_id' => $request->incmgInsp_id,
             'dimTest_desc' => $request->dimTest_desc,
-            'dimTest_specDoc' => $request->dimTest_specDoc,
         ]);
         return response()->json($dimTest);
     }

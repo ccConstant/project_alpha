@@ -738,6 +738,9 @@ Route::post('/comp/subFam/verif', [CompSubFamilyController::class, 'verif_compSu
 Route::post('/comp/subFam/add', [CompSubFamilyController::class, 'add_compSubFamily']);
 Route::get('/comp/subFam/send/{id}', [CompSubFamilyController::class, 'send_compSubFamilies']);
 Route::post('/comp/subFam/update/{id}', [CompSubFamilyController::class, 'update_compSubFamily']);
+Route::post('/comp/subFam/delete/{id}', [CompSubFamilyController::class, 'delete_compSubFamily']);
+Route::post('/comp/mb/delete/{id}', [CompFamilyMemberController::class, 'delete_compFamilyMember']);
+
 
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
@@ -748,12 +751,17 @@ Route::get('/cons/family/send/{id}', [ConsFamilyController::class, 'send_consFam
 Route::get('/cons/mb/send/{id}', [ConsFamilyMemberController::class, 'send_consFamilyMember']);
 Route::post('/cons/family/update/{id}', [ConsFamilyController::class, 'update_consFamily']);
 Route::post('/cons/mb/update/{id}', [ConsFamilyMemberController::class, 'update_consFamilyMember']);
+Route::post('/cons/mb/delete/{id}', [ConsFamilyMemberController::class, 'delete_consFamilyMember']);
+
+
 Route::post('/cons/verifValidation/{id}', [ConsFamilyController::class, 'verifValidation_consFamily']);
 Route::post('/cons/validation/{id}', [ConsFamilyController::class, 'validate_consFamily']);
 Route::post('/cons/subFam/verif', [ConsSubFamilyController::class, 'verif_consSubFamily']);
 Route::post('/cons/subFam/add', [ConsSubFamilyController::class, 'add_consSubFamily']);
 Route::get('/cons/subFam/send/{id}', [ConsSubFamilyController::class, 'send_consSubFamilies']);
 Route::post('/cons/subFam/update/{id}', [ConsSubFamilyController::class, 'update_consSubFamily']);
+Route::post('/cons/subFam/delete/{id}', [ConsSubFamilyController::class, 'delete_consSubFamily']);
+
 
 Route::post('/raw/family/verif', [RawFamilyController::class, 'verif_rawFamily']);
 Route::post('/raw/family/add', [RawFamilyController::class, 'add_rawFamily']);
@@ -764,12 +772,17 @@ Route::get('/raw/family/send/{id}', [RawFamilyController::class, 'send_rawFamily
 Route::get('/raw/mb/send/{id}', [RawFamilyMemberController::class, 'send_rawFamilyMember']);
 Route::post('/raw/family/update/{id}', [RawFamilyController::class, 'update_rawFamily']);
 Route::post('/raw/mb/update/{id}', [RawFamilyMemberController::class, 'update_rawFamilyMember']);
+Route::post('/raw/mb/delete/{id}', [RawFamilyMemberController::class, 'delete_rawFamilyMember']);
+
+
 Route::post('/raw/verifValidation/{id}', [RawFamilyController::class, 'verifValidation_rawFamily']);
 Route::post('/raw/validation/{id}', [RawFamilyController::class, 'validate_rawFamily']);
 Route::post('/raw/subFam/verif', [RawSubFamilyController::class, 'verif_rawSubFamily']);
 Route::post('/raw/subFam/add', [RawSubFamilyController::class, 'add_rawSubFamily']);
 Route::get('/raw/subFam/send/{id}', [RawSubFamilyController::class, 'send_rawSubFamilies']);
 Route::post('/raw/subFam/update/{id}', [RawSubFamilyController::class, 'update_rawSubFamily']);
+Route::post('/raw/subFam/delete/{id}', [RawSubFamilyController::class, 'delete_rawSubFamily']);
+
 
 // Incoming Inspection Controller
 Route::post('/artFam/incmgInsp/add', [IncmgInspController::class, 'add_incmgInsp']);

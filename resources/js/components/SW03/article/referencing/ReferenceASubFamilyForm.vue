@@ -32,7 +32,7 @@
                 :art_id="data_art_id"
                 :art_ref="data_art_ref"
                 :validate="component.validate"
-                @deleteStorageCondition="getContent(key)"/>
+                @deleteSubFamily="getContent(key)"/>
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->

@@ -12,7 +12,7 @@
             <form class="container" @keydown="clearError">
                 <InputTextForm
                     name="name"
-                    label="Aspect Test Name :"
+                    label="Test Name :"
                     v-model="aspTest_name"
                     :isDisabled="isInConsultedMod"
                     :info_text="this.info_aspTest[3].info_value"
@@ -24,7 +24,7 @@
                 />
                 <InputTextForm
                     name="specDoc"
-                    label="Document specification :"
+                    label="Method :"
                     v-model="aspTest_specDoc"
                     :isDisabled="isInConsultedMod"
                     :info_text="null"
@@ -36,7 +36,7 @@
                 />
                 <InputTextForm
                     name="expectedAspect"
-                    label="Expected Acceptance Criteria :"
+                    label="Acceptance Criteria :"
                     v-model="aspTest_expectedAspect"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_aspTest[2].info_value"
@@ -68,10 +68,15 @@
                     :Errors="errors.aspTest_severityLevel"
                     label="Severity Level :"
                     :options="[
-                        {id_enum: 'SeverityLevel', value: 'I', text: 'I'},
-                        {id_enum: 'SeverityLevel', value: 'II', text: 'II'},
-                        {id_enum: 'SeverityLevel', value: 'III', text: 'III'},
-                        {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
+                        {id_enum: 'SeverityLevel', value: 'I Safety Control', text: 'I SC'},
+                        {id_enum: 'SeverityLevel', value: 'II Safety Control', text: 'II SC'},
+                        {id_enum: 'SeverityLevel', value: 'III Safety Control', text: 'III SC'},
+                        {id_enum: 'SeverityLevel', value: 'IV Safety Control', text: 'IV SC'},
+                        {id_enum: 'SeverityLevel', value: 'I Business Control', text: 'I BC'},
+                        {id_enum: 'SeverityLevel', value: 'II Business Control', text: 'II BC'},
+                        {id_enum: 'SeverityLevel', value: 'III Business Control', text: 'III BC'},
+                        {id_enum: 'SeverityLevel', value: 'IV Business Control', text: 'IV BC'}
+                        
                     ]"
                     :selctedOption="aspTest_severityLevel"
                     :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'Statistics'"
@@ -79,29 +84,12 @@
                     :info_text="this.info_aspTest[0].info_value"
                     :id_actual="'SeverityLevel'"
                 />
-                <InputSelectForm
-                    v-if="this.aspTest_sampling === 'Statistics'"
-                    :name="'ControlLevel'"
-                    :label="'Control Level :'"
-                    isRequired
-                    :options="[
-                        {id_enum: 'ControlLevel', value: 'Reduced', text: 'Reduced'},
-                        {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
-                        {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
-                    ]"
-                    :isDisabled="this.isInConsultedMod || aspTest_sampling !== 'Statistics'"
-                    v-model="aspTest_controlLevel"
-                    :info_text="this.info_aspTest[1].info_value"
-                    :Errors="errors.aspTest_levelOfControl"
-                    :selctedOption="aspTest_controlLevel"
-                    :id_actual="'ControlLevel'"
-                />
                 <InputTextForm
-                    v-if="this.aspTest_sampling === 'Other'"
+                    v-if="this.aspTest_sampling === 'Other' || this.aspTest_sampling === 'Statistics'"
                     name="desc"
-                    label="Description :"
+                    label="Description/Justification :"
                     v-model="aspTest_desc"
-                    :isDisabled="!!isInConsultedMod || aspTest_sampling !== 'Other'"
+                    :isDisabled="!!isInConsultedMod || (aspTest_sampling !== 'Other' && aspTest_sampling !== 'Statistics')"
                     :info_text="null"
                     :min="2"
                     :max="255"
@@ -152,9 +140,6 @@ export default {
     },
     props: {
         severityLevel: {
-            type: String
-        },
-        controlLevel: {
             type: String
         },
         expectedAspect: {
@@ -210,7 +195,6 @@ export default {
         return {
             aspTest_id: this.id,
             aspTest_severityLevel: this.severityLevel,
-            aspTest_controlLevel: this.controlLevel,
             aspTest_expectedAspect: this.expectedAspect,
             aspTest_sampling: this.sampling,
             aspTest_name: this.name,
@@ -234,7 +218,6 @@ export default {
                 axios.post('/incmgInsp/aspTest/verif', {
                     aspTest_name: this.aspTest_name,
                     aspTest_severityLevel: this.aspTest_severityLevel,
-                    aspTest_levelOfControl: this.aspTest_controlLevel,
                     aspTest_expectedAspect: this.aspTest_expectedAspect,
                     aspTest_sampling: this.aspTest_sampling,
                     aspTest_desc: this.aspTest_desc,
@@ -251,7 +234,6 @@ export default {
                     axios.post('/incmgInsp/aspTest/add', {
                         aspTest_name: this.aspTest_name,
                         aspTest_severityLevel: this.aspTest_severityLevel,
-                        aspTest_levelOfControl: this.aspTest_controlLevel,
                         aspTest_expectedAspect: this.aspTest_expectedAspect,
                         aspTest_sampling: this.aspTest_sampling,
                         aspTest_desc: this.aspTest_desc,
@@ -285,7 +267,6 @@ export default {
             axios.post('/incmgInsp/aspTest/verif', {
                 aspTest_name: this.aspTest_name,
                 aspTest_severityLevel: this.aspTest_severityLevel,
-                aspTest_levelOfControl: this.aspTest_controlLevel,
                 aspTest_expectedAspect: this.aspTest_expectedAspect,
                 aspTest_sampling: this.aspTest_sampling,
                 aspTest_desc: this.aspTest_desc,
@@ -302,7 +283,6 @@ export default {
                     axios.post('/incmgInsp/aspTest/update/' + this.aspTest_id, {
                         aspTest_name: this.aspTest_name,
                         aspTest_severityLevel: this.aspTest_severityLevel,
-                        aspTest_levelOfControl: this.aspTest_controlLevel,
                         aspTest_expectedAspect: this.aspTest_expectedAspect,
                         aspTest_sampling: this.aspTest_sampling,
                         aspTest_desc: this.aspTest_desc,

@@ -24,8 +24,7 @@ class CreateFunctionalTestsTable extends Migration
         Schema::create('functional_tests', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('funcTest_severityLevel', ['I', 'II', 'III', 'IV'])->nullable();
-            $table->enum('funcTest_levelOfControl', ['Reduced', 'Normal', 'Reinforced'])->nullable();
+            $table->enum('funcTest_severityLevel', ['I Safety Control', 'II Safety Control', 'III Safety Control', 'IV Safety Control', 'I Business Control', 'II Business Control', 'III Business Control', 'IV Business Control'])->nullable();
             $table->string('funcTest_expectedMethod');
             $table->string('funcTest_expectedValue');
             $table->unsignedBigInteger('incmgInsp_id')->nullable();
@@ -47,7 +46,6 @@ class CreateFunctionalTestsTable extends Migration
             $table->string('funcTest_name');
             $table->enum('funcTest_sampling',  ['Statistics', '100%', 'Other']);
             $table->string('funcTest_desc')->nullable();
-            $table->string('funcTest_specDoc')->nullable();
         });
     }
 

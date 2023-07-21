@@ -14,7 +14,7 @@
                 @clearSelectError='clearSelectError'
                 name="artFam_type"
                 :Errors="errors.artFam_type"
-                label="Article Family Type :"
+                label="Family Type :"
                 :options="enumArticleFam_type"
                 :selctedOption="artFam_type"
                 :isDisabled="this.isInConsultMod && !this.isInModifMod"
@@ -28,31 +28,29 @@
                     :inputClassName="null"
                     :Errors="errors.artFam_ref"
                     name="artFam_ref"
-                    label="Article Family Reference"
+                    label="Family Reference"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artFam_ref"
                     :info_text="this.infos_artFam[0].info_value"
-                    :min="3"
                     :max="255"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_design"
                     name="artFam_design"
-                    label="Article Family Designation"
+                    label="Family Designation"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artFam_design"
                     :info_text="this.infos_artFam[1].info_value"
-                    :min="3"
                     :max="255"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_drawingPath"
                     name="artFam_drawingPath"
-                    label="Article Family Drawing Path"
+                    label="Family Drawing"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artFam_drawingPath"
                     :info_text="this.infos_artFam[2].info_value"
@@ -62,16 +60,16 @@
                     :inputClassName="null"
                     :Errors="errors.artFam_version"
                     name="artFam_version"
-                    label="Article Family Version"
+                    label="Family Version"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artFam_version"
                     :info_text="this.infos_artFam[5].info_value"
-                    :max="4"
+                    :max="255"
                 />
                 <RadioGroupForm
                     :options="[{value: true, text: 'Yes'}, {value: false, text: 'No'}]"
                     :name="'Active'"
-                    :label="'Is this article family active ?'"
+                    :label="'Is this family active ?'"
                     v-model="artFam_active"
                     :info_text="null"
                     :inputClassName="null"
@@ -83,7 +81,7 @@
                     @clearSelectError='clearSelectError'
                     name="artFam_purchasedBy"
                     :Errors="errors.artFam_purchasedBy"
-                    label="Article Family Purchased By :"
+                    label="Family Purchased By :"
                     :options="enum_purchasedBy"
                     :selctedOption="this.artFam_purchasedBy"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"

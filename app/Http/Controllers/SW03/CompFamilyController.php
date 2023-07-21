@@ -35,31 +35,27 @@ class CompFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|string',
-                    'artFam_design' => 'required|min:3|max:255|string',
-                    'artFam_drawingPath' => 'required|min:3|max:255|string',
-                    'artFam_version' => 'required|min:2|max:4|string',
+                    'artFam_ref' => 'required|max:255|string',
+                    'artFam_design' => 'required|max:255|string',
+                    'artFam_drawingPath' => 'required|max:255|string',
+                    'artFam_version' => 'required|max:255|string',
                 ],
                 [
 
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
-                    'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
                     'artFam_ref.string' => 'You must enter a string ',
 
                     'artFam_design.required' => 'You must enter a design for your comp family ',
-                    'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
                     'artFam_design.string' => 'You must enter a string ',
 
                     'artFam_drawingPath.required' => 'You must enter a drawing path for your comp family ',
-                    'artFam_drawingPath.min' => 'You must enter at least three characters ',
                     'artFam_drawingPath.max' => 'You must enter less than 255 characters ',
                     'artFam_drawingPath.string' => 'You must enter a string ',
 
                     'artFam_version.required' => 'You must enter a version for your comp family ',
-                    'artFam_version.min' => 'You must enter at least two characters ',
-                    'artFam_version.max' => 'You must enter less than 4 characters ',
+                    'artFam_version.max' => 'You must enter less than 255 characters ',
                     'artFam_version.string' => 'You must enter a string ',
                 ]
             );
@@ -77,26 +73,24 @@ class CompFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|min:3|max:255|string',
-                    'artFam_design' => 'required|min:3|max:255|string',
+                    'artFam_ref' => 'required|max:255|string',
+                    'artFam_design' => 'required|max:255|string',
                     'artFam_drawingPath' => 'max:255',
-                    'artFam_version' => 'max:4',
+                    'artFam_version' => 'max:255',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
-                    'artFam_ref.min' => 'You must enter at least three characters ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artFam_ref.string' => 'You must enter a string ',
 
                     'artFam_design.required' => 'You must enter a designation for your comp family ',
-                    'artFam_design.min' => 'You must enter at least three characters ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
                     'artFam_design.string' => 'You must enter a string ',
 
                     'artFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
                     'artFam_drawingPath.string' => 'You must enter a string ',
 
-                    'artFam_version.max' => 'You must enter a maximum of 4 characters',
+                    'artFam_version.max' => 'You must enter a maximum of 255 characters',
                     'artFam_version.string' => 'You must enter a string ',
 
                 ]

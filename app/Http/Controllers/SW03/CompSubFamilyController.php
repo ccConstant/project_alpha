@@ -34,31 +34,27 @@ class CompSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|min:3|max:255|string',
-                    'artSubFam_design' => 'required|min:3|max:255|string',
-                    'artSubFam_drawingPath' => 'required|min:3|max:255|string',
-                    'artSubFam_version' => 'required|min:2|max:4|string',
+                    'artSubFam_ref' => 'required|max:255|string',
+                    'artSubFam_design' => 'required|max:255|string',
+                    'artSubFam_drawingPath' => 'required|max:255|string',
+                    'artSubFam_version' => 'required|max:255|string',
                 ],
                 [
 
                     'artSubFam_ref.required' => 'You must enter a reference for your comp sub family ',
-                    'artSubFam_ref.min' => 'You must enter at least three characters ',
                     'artSubFam_ref.max' => 'You must enter less than 255 characters ',
                     'artSubFam_ref.string' => 'You must enter a string ',
 
                     'artSubFam_design.required' => 'You must enter a design for your comp sub family ',
-                    'artSubFam_design.min' => 'You must enter at least three characters ',
                     'artSubFam_design.max' => 'You must enter less than 255 characters ',
                     'artSubFam_design.string' => 'You must enter a string ',
 
                     'artSubFam_drawingPath.required' => 'You must enter a drawing path for your comp sub family ',
-                    'artSubFam_drawingPath.min' => 'You must enter at least three characters ',
                     'artSubFam_drawingPath.max' => 'You must enter less than 255 characters ',
                     'artSubFam_drawingPath.string' => 'You must enter a string ',
 
                     'artSubFam_version.required' => 'You must enter a version for your comp sub family ',
-                    'artSubFam_version.min' => 'You must enter at least two characters ',
-                    'artSubFam_version.max' => 'You must enter less than 4 characters ',
+                    'artSubFam_version.max' => 'You must enter less than 255 characters ',
                     'artSubFam_version.string' => 'You must enter a string ',
                 ]
             );
@@ -76,26 +72,24 @@ class CompSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|min:3|max:255|string',
-                    'artSubFam_design' => 'required|min:3|max:255|string',
+                    'artSubFam_ref' => 'required|max:255|string',
+                    'artSubFam_design' => 'required|max:255|string',
                     'artSubFam_drawingPath' => 'max:255',
-                    'artSubFam_version' => 'max:4',
+                    'artSubFam_version' => 'max:255',
                 ],
                 [
                     'artSubFam_ref.required' => 'You must enter a reference for your comp sub family ',
-                    'artSubFam_ref.min' => 'You must enter at least three characters ',
                     'artSubFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_ref.string' => 'You must enter a string ',
 
                     'artSubFam_design.required' => 'You must enter a designation for your comp sub family ',
-                    'artSubFam_design.min' => 'You must enter at least three characters ',
                     'artSubFam_design.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_design.string' => 'You must enter a string ',
 
                     'artSubFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_drawingPath.string' => 'You must enter a string ',
 
-                    'artSubFam_version.max' => 'You must enter a maximum of 4 characters',
+                    'artSubFam_version.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_version.string' => 'You must enter a string ',
 
                 ]

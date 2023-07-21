@@ -281,30 +281,7 @@ export default {
                         this.$emit('deleteStorageCondition', '')
                         this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
                     }).catch(error => this.errors = error.response.data.errors);
-                } else {
-                    console.log("cas 2")
-                    console.log(this.artSubFam_id)
-                    console.log(this.storageCondition_id)
-                    console.log(this.artFam_type)
-                    const consultUrl = (type, id) => `/artSubFam/enum/storageCondition/unlink/${type}/${id}`;
-                    axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
-                        artSubFam_id: this.artSubFam_id
-                    }).then(response => {
-                        console.log("response")
-                        /*We test if a life sheet has been already created*/
-                        /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (lifesheet_created == true) {
-                            axios.post('/artSubFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artSubFam_id, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteStorageCondition', '')
-                        this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
-                    }).catch(error => this.errors = error.response.data.errors);
                 }
-
             } else {
                 this.$emit('deleteStorageCondition', '')
                 this.$refs.sucessAlert.showAlert(`Empty storage condition deleted successfully`);

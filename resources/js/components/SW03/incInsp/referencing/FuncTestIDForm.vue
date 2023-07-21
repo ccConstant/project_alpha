@@ -24,21 +24,9 @@
                     :Errors="errors.funcTest_name"
                 />
                 <InputTextForm
-                    name="specDoc"
-                    label="Document specification :"
-                    v-model="funcTest_specDoc"
-                    :isDisabled="isInConsultedMod"
-                    :info_text="null"
-                    :min="2"
-                    :max="255"
-                    :inputClassName="null"
-                    isRequired
-                    :Errors="errors.funcTest_specDoc"
-                />
-                <InputTextForm
                     v-if="data_article_type === 'comp'"
                     name="expectedMethod"
-                    label="Expected Method :"
+                    label="Method :"
                     v-model="funcTest_expectedMethod"
                     :isDisabled="!!isInConsultedMod"
                     :info_text="this.info_funcTest[2].info_value"
@@ -81,10 +69,14 @@
                     :Errors="errors.funcTest_severityLevel"
                     label="Severity Level :"
                     :options="[
-                        {id_enum: 'SeverityLevel', value: 'I', text: 'I'},
-                        {id_enum: 'SeverityLevel', value: 'II', text: 'II'},
-                        {id_enum: 'SeverityLevel', value: 'III', text: 'III'},
-                        {id_enum: 'SeverityLevel', value: 'IV', text: 'IV'}
+                        {id_enum: 'SeverityLevel', value: 'I Safety Control', text: 'I SC'},
+                        {id_enum: 'SeverityLevel', value: 'II Safety Control', text: 'II SC'},
+                        {id_enum: 'SeverityLevel', value: 'III Safety Control', text: 'III SC'},
+                        {id_enum: 'SeverityLevel', value: 'IV Safety Control', text: 'IV SC'},
+                        {id_enum: 'SeverityLevel', value: 'I Business Control', text: 'I BC'},
+                        {id_enum: 'SeverityLevel', value: 'II Business Control', text: 'II BC'},
+                        {id_enum: 'SeverityLevel', value: 'III Business Control', text: 'III BC'},
+                        {id_enum: 'SeverityLevel', value: 'IV Business Control', text: 'IV BC'}
                     ]"
                     :selctedOption="funcTest_severityLevel"
                     :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'Statistics'"
@@ -92,29 +84,12 @@
                     :info_text="this.info_funcTest[0].info_value"
                     :id_actual="'SeverityLevel'"
                 />
-                <InputSelectForm
-                    v-if="this.funcTest_sampling === 'Statistics'"
-                    :name="'ControlLevel'"
-                    :label="'Control Level :'"
-                    isRequired
-                    :options="[
-                        {id_enum: 'ControlLevel', value: 'Reduced', text: 'Reduced'},
-                        {id_enum: 'ControlLevel', value: 'Normal', text: 'Normal'},
-                        {id_enum: 'ControlLevel', value: 'Reinforced', text: 'Reinforced'}
-                    ]"
-                    :isDisabled="this.isInConsultedMod || funcTest_sampling !== 'Statistics'"
-                    v-model="funcTest_controlLevel"
-                    :info_text="this.info_funcTest[1].info_value"
-                    :Errors="errors.funcTest_levelOfControl"
-                    :selctedOption="funcTest_controlLevel"
-                    :id_actual="'ControlLevel'"
-                />
                 <InputTextForm
-                    v-if="funcTest_sampling === 'Other'"
+                    v-if="funcTest_sampling === 'Other' || funcTest_sampling === 'Statistics'"
                     name="desc"
-                    label="Description :"
+                    label="Description/Justification :"
                     v-model="funcTest_desc"
-                    :isDisabled="!!isInConsultedMod || funcTest_sampling !== 'Other'"
+                    :isDisabled="!!isInConsultedMod || (funcTest_sampling !== 'Other' && funcTest_sampling!='Statistics')"
                     :info_text="null"
                     :min="2"
                     :max="255"
@@ -169,9 +144,6 @@ export default {
         severityLevel: {
             type: String
         },
-        controlLevel: {
-            type: String
-        },
         expectedMethod: {
             type: String
         },
@@ -218,10 +190,6 @@ export default {
             type: String,
             default: null
         },
-        specDoc: {
-            type: String,
-            default: null
-        },
         articleSubFam_id: {
             type: Number,
             default: null
@@ -231,14 +199,12 @@ export default {
         return {
             funcTest_id: this.id,
             funcTest_severityLevel: this.severityLevel,
-            funcTest_controlLevel: this.controlLevel,
             funcTest_expectedMethod: this.expectedMethod,
             funcTest_expectedValue: this.expectedValue,
             funcTest_name: this.name,
             funcTest_unitValue: this.unitValue,
             funcTest_sampling: this.sampling,
             funcTest_desc: this.desc,
-            funcTest_specDoc: this.specDoc,
             errors: {},
             addSucces: false,
             isInConsultedMod: this.consultMod,
@@ -257,14 +223,12 @@ export default {
                 axios.post('/incmgInsp/funcTest/verif', {
                     funcTest_name: this.funcTest_name,
                     funcTest_severityLevel: this.funcTest_severityLevel,
-                    funcTest_levelOfControl: this.funcTest_controlLevel,
                     funcTest_expectedMethod: this.funcTest_expectedMethod,
                     funcTest_expectedValue: this.funcTest_expectedValue,
                     funcTest_articleType: this.data_article_type,
                     funcTest_sampling: this.funcTest_sampling,
                     funcTest_unitValue: this.funcTest_unitValue,
                     funcTest_desc: this.funcTest_desc,
-                    funcTest_specDoc: this.funcTest_specDoc,
                     reason: 'add',
                     id: this.funcTest_id,
                     incmgInsp_id: this.data_incmgInsp_id,
@@ -277,7 +241,6 @@ export default {
                     axios.post('/incmgInsp/funcTest/add', {
                         funcTest_name: this.funcTest_name,
                         funcTest_severityLevel: this.funcTest_severityLevel,
-                        funcTest_levelOfControl: this.funcTest_controlLevel,
                         funcTest_expectedMethod: this.funcTest_expectedMethod,
                         funcTest_expectedValue: this.funcTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
@@ -288,7 +251,6 @@ export default {
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
                         funcTest_desc: this.funcTest_desc,
-                        funcTest_specDoc: this.funcTest_specDoc,
                         reason: 'add',
                         id: this.funcTest_id,
                     })
@@ -312,7 +274,6 @@ export default {
             axios.post('/incmgInsp/funcTest/verif', {
                 funcTest_name: this.funcTest_name,
                 funcTest_severityLevel: this.funcTest_severityLevel,
-                funcTest_levelOfControl: this.funcTest_controlLevel,
                 funcTest_expectedMethod: this.funcTest_expectedMethod,
                 funcTest_expectedValue: this.funcTest_expectedValue,
                 incmgInsp_id: this.data_incmgInsp_id,
@@ -320,7 +281,6 @@ export default {
                 funcTest_sampling: this.funcTest_sampling,
                 funcTest_unitValue: this.funcTest_unitValue,
                 funcTest_desc: this.funcTest_desc,
-                funcTest_specDoc: this.funcTest_specDoc,
                 reason: 'update',
                 id: this.funcTest_id,
                 article_id: this.data_article_id,
@@ -330,7 +290,6 @@ export default {
                     axios.post('/incmgInsp/funcTest/update/' + this.funcTest_id, {
                         funcTest_name: this.funcTest_name,
                         funcTest_severityLevel: this.funcTest_severityLevel,
-                        funcTest_levelOfControl: this.funcTest_controlLevel,
                         funcTest_expectedMethod: this.funcTest_expectedMethod,
                         funcTest_expectedValue: this.funcTest_expectedValue,
                         incmgInsp_id: this.data_incmgInsp_id,
@@ -338,7 +297,6 @@ export default {
                         funcTest_sampling: this.funcTest_sampling,
                         funcTest_unitValue: this.funcTest_unitValue,
                         funcTest_desc: this.funcTest_desc,
-                        funcTest_specDoc: this.funcTest_specDoc,
                         reason: 'update',
                         id: this.funcTest_id,
                         article_id: this.data_article_id,

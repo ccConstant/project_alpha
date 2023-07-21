@@ -12,32 +12,30 @@
                     :inputClassName="null"
                     :Errors="errors.artSubFam_ref"
                     name="artSubFam_ref"
-                    label="Article Sub Family Reference"
+                    label="Sub Family Reference"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artSubFam_ref"
                     :famRef="this.data_artFam_ref"
                     :info_text="this.infos_artSubFam[0].info_value"
-                    :min="3"
                     :max="255"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artSubFam_design"
                     name="artSubFam_design"
-                    label="Article Sub Family Designation"
+                    label="Sub Family Designation"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     isRequired
                     v-model="artSubFam_design"
                     :info_text="this.infos_artSubFam[1].info_value"
-                    :min="3"
                     :max="255"
                 />
                 <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artSubFam_drawingPath"
                     name="artSubFam_drawingPath"
-                    label="Article Sub Family Drawing Path"
+                    label="Sub Family Drawing"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artSubFam_drawingPath"
                     :info_text="this.infos_artSubFam[2].info_value"
@@ -47,7 +45,7 @@
                     :inputClassName="null"
                     :Errors="errors.artSubFam_version"
                     name="artSubFam_version"
-                    label="Article Sub Family Version"
+                    label="Sub Family Version"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artSubFam_version"
                     :info_text="this.infos_artSubFam[5].info_value"
@@ -68,7 +66,7 @@
                     @clearSelectError='clearSelectError'
                     name="artSubFam_purchasedBy"
                     :Errors="errors.artSubFam_purchasedBy"
-                    label="Article Sub Family Purchased By :"
+                    label="Sub Family Purchased By :"
                     :options="enum_purchasedBy"
                     :selctedOption="artSubFam_purchasedBy"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
@@ -83,6 +81,12 @@
                     :consultMod="this.isInConsultMod"
                     :modifMod="this.isInModifMod"
                     :savedAs="this.artSubFam_validate"/>
+
+                <DeleteComponentButton v-if="this.isInModifMod"
+                @deleteOk="deleteComponent"
+                :consultMod="this.isInConsultMod"
+                :modifMod="this.isInModifMod"
+                />
         </form>
 
         <SuccessAlert ref="successAlert"/>
@@ -201,6 +205,7 @@ import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp
 import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
 import ReferenceAnArticlePurchaseSpecification from "./ReferenceAnArticlePurchaseSpecification.vue";
 import ReferenceAStorageCondition from "./ReferenceAStorageCondition.vue";
+import DeleteComponentButton from "../../../button/DeleteComponentButton.vue";
 export default {
     /*--------Declaration of the others Components:--------*/
     components: {
@@ -217,6 +222,7 @@ export default {
         SaveButtonForm,
         SuccessAlert,
         ReferenceAnArticleFamilyMember,
+        DeleteComponentButton
     },
     /*--------Declaration of the different props:--------
         Id : Id of the article sub family
@@ -560,6 +566,34 @@ export default {
                 .catch(error => {
                     this.errors = error.response.data.errors;
                 });
+        },
+        /*Function for deleting a file from the view and the database*/
+        deleteComponent(reason, lifesheet_created) {
+            /*If the user is in update mode and the file exist in the database*/
+            if (this.modifMod == true && this.artSubFam_id !== null) {
+                /*Send a post-request with the id of the file who will be deleted in the url*/
+                console.log("cas 1")
+                const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
+                axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
+                    artFam_id: this.art_id
+                }).then(response => {
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    if (lifesheet_created == true) {
+                        axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deleteStorageCondition', '')
+                    this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
+                }).catch(error => this.errors = error.response.data.errors);
+
+            } else {
+                this.$emit('deleteStorageCondition', '')
+                this.$refs.sucessAlert.showAlert(`Empty storage condition deleted successfully`);
+            }
         },
         /*Clears all the error of the targeted field*/
         clearError(event) {

@@ -58,12 +58,9 @@ class AspectTestController extends Controller
                 $request,
                 [
                     'aspTest_severityLevel' => 'required',
-                    'aspTest_levelOfControl' => 'required',
                 ],
                 [
                     'aspTest_severityLevel.required' => 'You must enter a severity level',
-
-                    'aspTest_levelOfControl.required' => 'You must enter a level of control',
                 ]
             );
         }
@@ -166,7 +163,6 @@ class AspectTestController extends Controller
         }
         $aspTest = AspectTest::create([
             'aspTest_severityLevel' => $request->aspTest_severityLevel,
-            'aspTest_levelOfControl' => $request->aspTest_levelOfControl,
             'aspTest_expectedAspect' => $request->aspTest_expectedAspect,
             'aspTest_name' => $request->aspTest_name,
             'aspTest_sampling' => $request->aspTest_sampling,
@@ -195,7 +191,6 @@ class AspectTestController extends Controller
             $obj = [
                 'id' => $asp->id,
                 'aspTest_severityLevel' => $asp->aspTest_severityLevel,
-                'aspTest_levelOfControl' => $asp->aspTest_levelOfControl,
                 'aspTest_expectedAspect' => $asp->aspTest_expectedAspect,
                 'aspTest_name' => $asp->aspTest_name,
                 'aspTest_sampling' => $asp->aspTest_sampling,
@@ -228,7 +223,6 @@ class AspectTestController extends Controller
             $obj = [
                 'id' => $asp->id,
                 'aspTest_severityLevel' => $asp->aspTest_severityLevel,
-                'aspTest_levelOfControl' => $asp->aspTest_levelOfControl,
                 'aspTest_expectedAspect' => $asp->aspTest_expectedAspect,
                 'aspTest_name' => $asp->aspTest_name,
                 'aspTest_sampling' => $asp->aspTest_sampling,
@@ -260,7 +254,6 @@ class AspectTestController extends Controller
             $obj = [
                 'id' => $asp->id,
                 'aspTest_severityLevel' => $asp->aspTest_severityLevel,
-                'aspTest_levelOfControl' => $asp->aspTest_levelOfControl,
                 'aspTest_expectedAspect' => $asp->aspTest_expectedAspect,
                 'aspTest_name' => $asp->aspTest_name,
                 'aspTest_sampling' => $asp->aspTest_sampling,
@@ -348,7 +341,6 @@ class AspectTestController extends Controller
         ]);*/
         $aspTest->update([
             'aspTest_severityLevel' => $request->aspTest_severityLevel,
-            'aspTest_levelOfControl' => $request->aspTest_levelOfControl,
             'aspTest_expectedAspect' => $request->aspTest_expectedAspect,
             'aspTest_name' => $request->aspTest_name,
             'aspTest_sampling' => $request->aspTest_sampling,

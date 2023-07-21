@@ -9,7 +9,7 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else class="adminControl">
-            <h2 class="titleForm" v-if="components.length > 0">Administrative Control</h2>
+            <h2 class="titleForm" v-if="components.length > 0">Additional Administrative Control</h2>
             <!--Adding to the vue adminControlIDForm by going through the components array with the v-for-->
             <!--ref="ask_adminControl_data" is used to call the child elements in this component-->
             <!--The emitted deleteFile is caught here and call the function getContent -->

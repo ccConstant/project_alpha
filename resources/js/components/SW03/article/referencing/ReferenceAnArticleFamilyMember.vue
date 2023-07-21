@@ -31,7 +31,7 @@
                 :artSubFam_id="artSubFam_id"
                 :artFam_ref="data_artFam_ref"
                 :artSubFam_ref="data_artSubFam_ref"
-                @deleteStorageCondition="getContent(key)"/>
+                @deleteArticleMember="getContent(key)"/>
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->
