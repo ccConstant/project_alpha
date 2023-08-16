@@ -43,7 +43,10 @@ class CompFamily extends Model
          'compFam_active',
          'compFam_genDesign',
          'compFam_genRef',
-         'compFam_subFam'
+         'compFam_subFam',
+        'compFam_materials',
+        'compFam_specifications', 
+        'compFam_documentsRequested'
      ] ;
 
      //Define the relation between a compFamily and its compSubFamily : a compSubFamily can correspond to only one compFamily

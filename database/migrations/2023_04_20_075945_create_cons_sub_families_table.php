@@ -28,6 +28,7 @@ class CreateConsSubFamiliesTable extends Migration
             $table->string('consSubFam_design');
             $table->string('consSubFam_drawingPath')->nullable();
             $table->integer('consSubFam_nbrVersion')->default(1);
+            $table->string('consSubFam_materials')->nullable();
             $table->unsignedBigInteger('consSubFam_qualityApproverId')->nullable();
             $table->foreign('consSubFam_qualityApproverId')->references('id')->on('users');
             $table->unsignedBigInteger('consSubFam_technicalReviewerId')->nullable();

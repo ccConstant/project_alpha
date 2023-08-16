@@ -39,6 +39,9 @@ class CreateConsFamiliesTable extends Migration
             $table->string('consFam_version')->nullable();
             $table->boolean('consFam_active')->default(true);
             $table->boolean('consFam_subFam')->default(false);
+            $table->string('consFam_materials')->nullable();
+            $table->string('consFam_specifications')->nullable();
+            $table->string('consFam_documentsRequested')->nullable();
           /*  $table->string('consFam_genDesign')->nullable();
             $table->string('consFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();

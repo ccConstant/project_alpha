@@ -23,6 +23,7 @@
                 :designation="component.designation"
                 :drawingPath="component.drawingPath"
                 :version="component.version"
+                :materials="component.materials"
                 :purchasedBy="component.purchasedBy"
                 :divClass="component.className"
                 :id="component.id"
@@ -120,7 +121,7 @@ export default {
             });
         },
         /*Function for adding an imported dimension form with his data*/
-        addImportedComponent(artFam_ref, artFam_type, artFam_id, subFam_reference, subFam_designation, subFam_drawingPath, subFam_version, subFam_purchasedBy, className, id, subFam_validate) {
+        addImportedComponent(artFam_ref, artFam_type, artFam_id, subFam_reference, subFam_designation, subFam_drawingPath, subFam_materials,subFam_version, subFam_purchasedBy, className, id, subFam_validate) {
             this.components.push({
                 comp: 'ArticleSubFamilyForm',
                 art_ref: artFam_ref,
@@ -130,6 +131,7 @@ export default {
                 drawingPath: subFam_drawingPath,
                 validate: subFam_validate,
                 version:subFam_version,
+                materials: subFam_materials,
                 art_type: artFam_type,
                 art_id: artFam_id,
                 purchasedBy:subFam_purchasedBy,
@@ -154,6 +156,7 @@ export default {
                         dt.reference,
                         dt.designation,
                         dt.drawingPath,
+                        dt.materials,
                         dt.version,
                         dt.purchasedBy,
                         className,

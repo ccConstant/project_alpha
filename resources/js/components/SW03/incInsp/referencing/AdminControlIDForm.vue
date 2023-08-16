@@ -35,19 +35,6 @@
                     isRequired
                 />
                 <InputTextForm
-                    v-if="this.data_article_type === 'raw' || this.data_article_type === 'comp'"
-                    :Errors="errors.adminControl_materialCertiSpec"
-                    name="matCertifSpec"
-                    label="Admin Control Material Certificate Specifications :"
-                    v-model="adminControl_materialCertiSpec"
-                    :isDisabled="!!isInConsultedMod"
-                    :info_text="this.info_adminControl[2].info_value"
-                    :min="2"
-                    :max="255"
-                    :inputClassName="null"
-                    isRequired
-                />
-                <InputTextForm
                     v-if="this.data_article_type === 'cons'"
                     :Errors="errors.adminControl_fds"
                     name="fds"
@@ -106,9 +93,6 @@ export default {
         adminControlName: {
             type: String
         },
-        materialCertiSpec: {
-            type: String
-        },
         fds: {
             type: String
         },
@@ -149,7 +133,6 @@ export default {
             adminControl_id: this.id,
             adminControl_reference: this.reference,
             adminControl_name: this.adminControlName,
-            adminControl_materialCertiSpec: this.materialCertiSpec,
             adminControl_fds: this.fds,
             errors: {},
             addSucces: false,
@@ -169,7 +152,6 @@ export default {
                     adminControl_articleType: this.data_article_type,
                     adminControl_reference: this.adminControl_reference,
                     adminControl_name: this.adminControl_name,
-                    adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                     adminControl_FDS: this.adminControl_fds,
                     incmgInsp_id: this.data_incmgInsp_id,
                     article_type: this.data_article_type,
@@ -184,7 +166,6 @@ export default {
                         adminControl_articleType: this.data_article_type,
                         adminControl_reference: this.adminControl_reference,
                         adminControl_name: this.adminControl_name,
-                        adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                         adminControl_FDS: this.adminControl_fds,
                         incmgInsp_id: this.data_incmgInsp_id,
                         article_type: this.data_article_type,
@@ -210,7 +191,6 @@ export default {
                 adminControl_articleType: this.data_article_type,
                 adminControl_reference: this.adminControl_reference,
                 adminControl_name: this.adminControl_name,
-                adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                 adminControl_FDS: this.adminControl_fds,
                 incmgInsp_id: this.data_incmgInsp_id,
                 reason: 'update',
@@ -223,7 +203,6 @@ export default {
                     adminControl_articleType: this.data_article_type,
                     adminControl_reference: this.adminControl_reference,
                     adminControl_name: this.adminControl_name,
-                    adminControl_materialCertifSpe: this.adminControl_materialCertiSpec,
                     adminControl_FDS: this.adminControl_fds,
                     reason: 'update',
                     id: this.adminControl_id,

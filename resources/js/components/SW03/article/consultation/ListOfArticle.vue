@@ -36,10 +36,11 @@
                         <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col">Reference Alpha</th>
-                                <th scope="col">Reference Supplier</th>
-                                <th scope="col">Designation</th>
+                                <th scope="col">Article Reference</th>
+                                <th scope="col">Article Designation</th>
                                 <th scope="col">Version</th>
+                                <th scope="col"> Is there a subfamily?</th>
+                                <th scope="col"> Purchased By</th>
                                 <th scope="col">
                                     Active ?
                                     <select v-model="searchTermActive" class="form-control search_bar align-self-center" type="text">
@@ -62,9 +63,10 @@
                             <tr v-for="elem in pageOfItems">
                                 <td><b-checkbox class="checkbox" :checked="checked.includes(elem.ref)" variant="primary" v-on:change="updateChecked(elem.ref)"></b-checkbox></td>
                                 <td>{{elem.ref}}</td>
-                                <td>{{elem.refSupplier}}</td>
                                 <td>{{elem.design}}</td>
                                 <td>{{elem.version}}</td>
+                                <td>{{elem.isThereSubFamily === 1 ? "Yes": "No"}}</td>
+                                <td>{{elem.purchasedBy}}</td>
                                 <!--                            <td><b-checkbox disabled :checked="elem.active === 1"></b-checkbox></td>-->
                                 <td>{{elem.active === 1 ? "Yes": "No"}}</td>
                                 <!--                            <td><b-checkbox disabled :checked="elem.signatureDate === null"></b-checkbox></td>-->
@@ -113,7 +115,9 @@ export default {
                     version: this.compList[i].compFam_version,
                     active: this.compList[i].compFam_active,
                     signatureDate: this.compList[i].compFam_signatureDate,
-                    type: "comp"
+                    type: "comp",
+                    isThereSubFamily: this.compList[i].compFam_subFam,
+                    purchasedBy : this.compList[i].compFam_purchasedBy,
                 };
                 this.globalList.push(obj);
             }
@@ -125,7 +129,9 @@ export default {
                     version: this.consList[i].consFam_version,
                     active: this.consList[i].consFam_active,
                     signatureDate: this.consList[i].consFam_signatureDate,
-                    type: "cons"
+                    type: "cons",
+                    isThereSubFamily: this.consList[i].consFam_subFam,
+                    purchasedBy : this.consList[i].consFam_purchasedBy,
                 };
                 this.globalList.push(obj);
             }
@@ -137,7 +143,9 @@ export default {
                     version: "",
                     active: this.rawList[i].rawFam_active,
                     signatureDate: this.rawList[i].rawFam_signatureDate,
-                    type: "raw"
+                    type: "raw",
+                    isThereSubFamily: this.rawList[i].rawFam_subFam,
+                    purchasedBy: this.rawList[i].rawFam_purchasedBy,
                 };
                 this.globalList.push(obj);
             }
@@ -274,6 +282,7 @@ export default {
     },
     created() {
         axios.get('/comp/family/send').then(response => {
+            console.log(response.data)
             this.compList = response.data;
             axios.get('/cons/family/send').then(response => {
                 this.consList = response.data;

@@ -900,6 +900,7 @@ Route::post('/artFam/criticality/delete/{id}', [CriticalityController::class, 'd
 Route::post('/artFam/purSpe/verif', [PurchaseSpecificationController::class, 'verif_purSpe']);
 Route::post('/artFam/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
 Route::post('/artSubFam/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe_subFam']);
+Route::post('/artFam/purSpe/addCommon/{type}/{id}', [PurchaseSpecificationController::class, 'add_purSpe_common']);
 Route::post('/artFam/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
 Route::get('/artFam/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
 Route::get('/artFam/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);

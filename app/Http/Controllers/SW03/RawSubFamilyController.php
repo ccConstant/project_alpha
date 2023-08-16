@@ -36,8 +36,15 @@ class RawSubFamilyController extends Controller
                     'artSubFam_ref' => 'required|max:255|string',
                     'artSubFam_design' => 'required|max:255|string',
                     'artSubFam_drawingPath' => 'required|max:255|string',
+                    'artSubFam_version' => 'max:255|string',
+                    'artSubFam_materials' => 'max:255|string',
                 ],
                 [
+                    'artSubFam_version.max' => 'You must enter less than 255 characters ',
+                    'artSubFam_version.string' => 'You must enter a string ', 
+
+                    'artSubFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artSubFam_materials.string' => 'You must enter a string ',
 
                     'artSubFam_ref.required' => 'You must enter a reference for your raw sub family ',
                     'artSubFam_ref.max' => 'You must enter less than 255 characters ',
@@ -69,11 +76,16 @@ class RawSubFamilyController extends Controller
                     'artSubFam_ref' => 'required|max:255|string',
                     'artSubFam_design' => 'required|max:255|string',
                     'artSubFam_drawingPath' => 'max:255',
+                    'artSubFam_version' => 'max:255|string',
+                    'artSubFam_materials' => 'max:255|string',
                 ],
                 [
                     'artSubFam_ref.required' => 'You must enter a reference for your raw sub family ',
                     'artSubFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_ref.string' => 'You must enter a string ',
+
+                    'artSubFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artSubFam_materials.string' => 'You must enter a string ',
 
                     'artSubFam_design.required' => 'You must enter a designation for your raw sub family ',
                     'artSubFam_design.max' => 'You must enter a maximum of 255 characters',
@@ -81,6 +93,9 @@ class RawSubFamilyController extends Controller
 
                     'artSubFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_drawingPath.string' => 'You must enter a string ',
+
+                    'artSubFam_version.max' => 'You must enter a maximum of 255 characters',
+                    'artSubFam_version.string' => 'You must enter a string ',
 
                 ]
             );
@@ -131,6 +146,8 @@ class RawSubFamilyController extends Controller
             'rawSubFam_design' => $request->artSubFam_design,
             'rawSubFam_drawingPath'=> $request->artSubFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
+            'rawSubFam_materials' => $request->artSubFam_materials,
+            "rawSubFam_version" => $request->artSubFam_version,
             'rawSubFam_validate' => $request->artSubFam_validate,
             'rawSubFam_active' => $request->artSubFam_active,
             'rawFam_id' => $request->artFam_id,
@@ -177,6 +194,8 @@ class RawSubFamilyController extends Controller
                 'validate' => $rawSubFamily->rawSubFam_validate,
                 'active' => $rawSubFamily->rawSubFam_active,
                 'purchasedBy' => $purchaseBy,
+                'materials' => $rawSubFamily->rawSubFam_materials,
+                'version' => $rawSubFamily->rawSubFam_version,
                 'qualityApproverId' => $rawSubFamily->rawSubFam_qualityApproverId,
                 'qualityApproverName' => $qualityApprover,
                 'technicalReviewerId' => $rawSubFamily->rawSubFam_technicalReviewerId,
@@ -212,7 +231,9 @@ class RawSubFamilyController extends Controller
             'rawSubFam_qualityApproverId' => null,
             'rawSubFam_technicalReviewerId' => null,
             'rawSubFam_signatureDate' => null,
+            'rawSubFam_materials' => $request->artSubFam_materials,
             'rawSubFam_validate' => $request->artSubFam_validate,
+            'rawSubFam_version' => $request->artSubFam_version,
             'rawSubFam_active' => $request->artSubFam_active,
             'enumPurchasedBy_id' => $enum,
         ]);

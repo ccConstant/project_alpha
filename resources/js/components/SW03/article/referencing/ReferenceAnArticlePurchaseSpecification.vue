@@ -12,10 +12,30 @@
             <h2 v-if="components.length>0" class="titleForm">Article Purchase Specification(s) </h2>
             <InputInfo v-if="title_info != null" :info="title_info.info_value" class="info_title"/>
 
+            <div v-if="first">
+            <ArticlePurchaseSpecificationCommonForm
+                :is="component.comp"
+                v-for="(component, key) in components"
+                :id="component.id"
+                :key="component.key"
+                ref="ask_purchaseSpecification_data"
+                :art_id="data_art_id"
+                :art_type="data_art_type"
+                :consultMod="isInConsultMod"
+                :divClass="component.className"
+                :modifMod="component.id !== null"
+                :specification="component.specification"
+                :documentsRequest="component.documentsRequest"
+                :articleSubFam_id="data_artSubFam_id"
+                @deleteStorageCondition="getContent(key)"
+                @first="firstData()"
+            />
+            </div>
             <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
             <!--ref="ask_dim_data" is used to call the child elements in this component-->
             <!--The emitted deleteDim is caught here and call the function getContent -->
-            <ArticlePurchaseSpecificationForm
+            <div v-if="!first">
+            <ArticlePurchaseSpecificationForm 
                 :is="component.comp"
                 v-for="(component, key) in components"
                 :id="component.id"
@@ -35,6 +55,7 @@
                 :articleSubFam_id="data_artSubFam_id"
                 @deleteStorageCondition="getContent(key)"
             />
+            </div>
             <!--If the user is not in consultation mode -->
             <div v-if="!this.consultMod">
                 <!--Add another dimension button appear -->
@@ -61,6 +82,7 @@ import ReferenceADocControl from "../../incInsp/referencing/ReferenceADocControl
 import ReferenceAnAspTest from "../../incInsp/referencing/ReferenceAnAspTest.vue";
 import ReferenceADimTest from "../../incInsp/referencing/ReferenceADimTest.vue";
 import ReferenceAnAdminControl from "../../incInsp/referencing/ReferenceAnAdminControl.vue";
+import ArticlePurchaseSpecificationCommonForm from "./ArticlePurchaseSpecificationCommonForm.vue";
 
 
 export default {
@@ -73,6 +95,7 @@ export default {
         ReferenceAFuncTest,
         ReferenceACompTest,
         ArticlePurchaseSpecificationForm,
+        ArticlePurchaseSpecificationCommonForm,
         SaveButtonForm,
         InputInfo
 
@@ -131,6 +154,7 @@ export default {
             components: [],
             uniqueKey: 0,
             count: 0,
+            first: true,
             isInConsultMod: this.consultMod,
             isInModifMod: this.modifMod,
             data_art_id: this.artFam_id,
@@ -147,11 +171,19 @@ export default {
     methods: {
         /*Function for adding a new empty dimension form*/
         addComponent() {
-            this.components.push({
-                comp: 'ArticlePurchaseSpecificationForm',
-                key: this.uniqueKey++,
-                id: null
-            });
+            if (this.first){
+                this.components.push({
+                    comp: 'ArticlePurchaseSpecificationCommonForm',
+                    key: this.uniqueKey++,
+                    id: null
+                });
+            }else{
+                this.components.push({
+                    comp: 'ArticlePurchaseSpecificationForm',
+                    key: this.uniqueKey++,
+                    id: null
+                });
+            }
         },
         /*Function for adding an imported dimension form with his data*/
         addImportedComponent(
@@ -173,6 +205,15 @@ export default {
         /*Suppression of a dimension component from the vue*/
         getContent(key) {
             this.components.splice(key, 1);
+        },
+        firstData(){
+            this.first=false;
+            this.components.push({
+                comp: 'ArticlePurchaseSpecificationForm',
+                key: this.uniqueKey++,
+                id: null
+            });
+
         },
         importPurSpe() {
             if (this.purchaseSpec.length === 0 && !this.isInModifMod) {
@@ -235,8 +276,6 @@ export default {
                 console.log("good case")
                 axios.get('/artFam/purSpe/send/' + this.data_art_type + '/' + this.import_id)
                     .then(response => {
-                        console.log("petite réponse")
-                        console.log(response.data)
                         this.purchaseSpec = response.data;
                         this.importPurSpe();
                         this.loaded = true;

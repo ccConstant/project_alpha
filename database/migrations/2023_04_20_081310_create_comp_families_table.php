@@ -39,6 +39,9 @@ class CreateCompFamiliesTable extends Migration
             $table->string('compFam_version')->nullable();
             $table->boolean('compFam_active')->default(true);
             $table->boolean('compFam_subFam')->default(false);
+            $table->string('compFam_materials')->nullable();
+            $table->string('compFam_specifications')->nullable();
+            $table->string('compFam_documentsRequested')->nullable();
            /* $table->string('compFam_genDesign')->nullable();
             $table->string('compFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();

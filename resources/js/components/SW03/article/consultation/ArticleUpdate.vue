@@ -21,6 +21,7 @@
             :version="article.version"
             :type="articleType.toUpperCase()"
             :ref="articleRef"
+            :materials="article.materials"
             :active="article.active === 1"
             :validate="article.validate"
             :subFam="article.subFam === 1"
@@ -176,17 +177,19 @@ export default {
         if (this.articleType === 'raw') {
             axios.get('/raw/family/send/' + this.articleID)
                 .then(response => {
+                    console.log(response.data)
                     this.article = {
                         ref: response.data.rawFam_ref,
                         design: response.data.rawFam_design,
                         drawingPath: response.data.rawFam_drawingPath,
                         nbrVersion: response.data.rawFam_nbrVersion,
+                        version: response.data.rawFam_version,
                         active: response.data.rawFam_active,
                         purchasedBy: response.data.rawFam_purchasedBy,
-                        version: null,
                         supplier: response.data.supplr_id,
                         validate: response.data.rawFam_validate,
                         subFam: response.data.rawFam_subFam,
+                        materials : response.data.rawFam_materials,
                     };
                     this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(), ref:this.article.ref}, query: {signed : response.data.rawFam_signatureDate != null}});
                     this.loaded = true;
@@ -208,6 +211,7 @@ export default {
                         supplier: response.data.supplr_id,
                         validate: response.data.compFam_validate,
                         subFam: response.data.compFam_subFam,
+                        materials : response.data.compFam_materials,
                     };
                     this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(),ref:this.article.ref}, query: {signed : response.data.compFam_signatureDate != null}});
                     this.loaded = true;
@@ -229,6 +233,7 @@ export default {
                         supplier: response.data.supplr_id,
                         validate: response.data.consFam_validate,
                         subFam: response.data.consFam_subFam,
+                        materials : response.data.consFam_materials,
                     };
                     this.$router.replace({name: 'article_url_update', params: {id: this.articleID, type: this.articleType.toLowerCase(), ref:this.articleRef}, query: {signed : response.data.consFam_signatureDate != null}});
                     this.loaded = true;

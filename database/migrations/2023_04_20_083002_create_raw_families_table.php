@@ -38,6 +38,10 @@ class CreateRawFamiliesTable extends Migration
             $table->enum('rawFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->boolean('rawFam_active')->default(true);
             $table->boolean('rawFam_subFam')->default(false);
+            $table->string('rawFam_version')->nullable();
+            $table->string('rawFam_materials')->nullable();
+            $table->string('rawFam_specifications')->nullable();
+            $table->string('rawFam_documentsRequested')->nullable();
            /* $table->string('rawFam_genDesign')->nullable();
             $table->string('rawFam_genRef')->nullable();*/
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();

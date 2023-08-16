@@ -35,7 +35,9 @@ class ConsSubFamily extends Model
     'consSubFam_validate',
     'consSubFam_version',
     'consSubFam_active',
-    'consFam_id'] ;
+    'consFam_id',
+    'consSubFam_materials'
+    ] ;
    
 
     //Define the relation between a consFamily and its consSubFamily : a consSubFamily can correspond to only one consFamily

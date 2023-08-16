@@ -34,6 +34,8 @@ class RawSubFamily extends Model
     'rawSubFam_signatureDate',
     'rawSubFam_validate',
     'rawSubFam_active',
+    'rawSubFam_materials',
+    'rawSubFam_version',
     'rawFam_id'] ;
    
 

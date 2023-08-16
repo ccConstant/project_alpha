@@ -33,15 +33,10 @@ class AdminControlController extends Controller
             $this->validate(
                 $request,
                 [
-                    'adminControl_materialCertifSpe' => 'required|min:2|max:255',
                     'adminControl_reference' => "required|min:2|max:255",
                     'adminControl_name' => "required|min:2|max:255",
                 ],
                 [
-                    'adminControl_materialCertifSpe.required' => 'You must enter a material certificate',
-                    'adminControl_materialCertifSpe.min' => 'You must enter at least two characters',
-                    'adminControl_materialCertifSpe.max' => 'You must enter a maximum of 255 characters',
-
                     'adminControl_reference.required' => 'You must enter a reference',
                     'adminControl_reference.min' => 'You must enter at least two characters',
                     'adminControl_reference.max' => 'You must enter a maximum of 255 characters',
@@ -159,7 +154,6 @@ class AdminControlController extends Controller
         $adminControl = AdminControl::create([
             'adminControl_name' => $request->adminControl_name,
             'adminControl_reference' => $request->adminControl_reference,
-            'adminControl_materialCertifSpe' => $request->adminControl_materialCertifSpe,
             'incmgInsp_id' => $request->incmgInsp_id,
             'rawFam_id' => $raw,
             'consFam_id' => $cons,
@@ -184,7 +178,6 @@ class AdminControlController extends Controller
             $obj = ([
                 'adminControl_name' => $doc->adminControl_name,
                 'adminControl_reference' => $doc->adminControl_reference,
-                'adminControl_materialCertifSpe' => $doc->adminControl_materialCertifSpe,
                 'incmgInsp_id' => $doc->incmgInsp_id,
                 'adminControl_FDS' => $doc->adminControl_FDS,
                 'id' => $doc->id
@@ -214,7 +207,6 @@ class AdminControlController extends Controller
             $obj = ([
                 'adminControl_name' => $doc->adminControl_name,
                 'adminControl_reference' => $doc->adminControl_reference,
-                'adminControl_materialCertifSpe' => $doc->adminControl_materialCertifSpe,
                 'incmgInsp_id' => $doc->incmgInsp_id,
                 'adminControl_FDS' => $doc->adminControl_FDS,
                 'id' => $doc->id
@@ -244,7 +236,6 @@ class AdminControlController extends Controller
             $obj = ([
                 'adminControl_name' => $doc->adminControl_name,
                 'adminControl_reference' => $doc->adminControl_reference,
-                'adminControl_materialCertifSpe' => $doc->adminControl_materialCertifSpe,
                 'incmgInsp_id' => $doc->incmgInsp_id,
                 'adminControl_FDS' => $doc->adminControl_FDS,
                 'id' => $doc->id
@@ -326,7 +317,6 @@ class AdminControlController extends Controller
         $adminControl->update([
             'adminControl_name' => $request->adminControl_name,
             'adminControl_reference' => $request->adminControl_reference,
-            'adminControl_materialCertifSpe' => $request->adminControl_materialCertifSpe,
             'adminControl_FDS' => $request->adminControl_FDS,
         ]);
         return response()->json($adminControl);

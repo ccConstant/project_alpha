@@ -1,6 +1,6 @@
-<!--File name : ArticlePurchaseSpecificationForm.vue -->
-<!--Creation date : 2 May 2023-->
-<!--Update date : 11 Jul 2023 -->
+<!--File name : ArticlePurchaseSpecificationCommonForm.vue -->
+<!--Creation date : 16 Aug 2023-->
+<!--Update date : 16 Aug 2023 -->
 <!--Vue Component of the Form of the article purchase specification who call all the input component-->
 
 <template>
@@ -11,50 +11,36 @@
         <div v-else>
             <!--Creation of the form,If user press in any key in a field we clear all error of this field  -->
             <form class="container">
-                <InputSelectForm
-                    v-model="purSpe_supplier_id"
-                    :Errors="errors.purSpe_supplier_id"
-                    :id_actual="supplier_id"
+                <InputTextAreaForm
+                v-model="purSpe_specification"
+                    :Errors="errors.purSpe_specification"
                     :info_text="null"
-                    :isDisabled="!!isInConsultMod"
-                    :options="suppliers"
-                    :selctedOption="purSpe_supplier_id"
-                    label="Supplier :"
-                    name="supplier"
-                    @clearSelectError='clearSelectError'
-                />
-                <InputTextForm
-                    v-if="this.purSpe_supplier_id !== 'Alpha'"
-                    v-model="purSpe_supplier_ref"
-                    :Errors="errors.purSpe_supplier_ref"
-                    :info_text="null"
-                    :inputClassName="null"
+                    inputClassName="form-control w-80"
                     :isDisabled="this.isInConsultMod"
                     :max="255"
                     :min="2"
-                    isRequired
-                    label="Supplier's article Reference"
-                    name="purSpe_supplrRef"
+                    label="Specifications"
+                    name="purSpe_specification"
                 />
 
-                <InputTextForm
-                    v-model="purSpe_remark"
-                    :Errors="errors.purSpe_remark"
+                <InputTextAreaForm
+                v-model="purSpe_documentsRequest"
+                    :Errors="errors.purSpe_documentsRequest"
                     :info_text="null"
-                    :inputClassName="null"
                     :isDisabled="this.isInConsultMod"
                     :max="255"
                     :min="2"
-                    label="Remarks"
-                    name="purSpe_remark"
+                    label="Documents Required"
+                    name="purSpe_documentsRequest"
+                    inputClassName="form-control w-80"
                 />
                 <SaveButtonForm v-if="this.addSucces===false"
                                 ref="saveButton"
                                 :consultMod="this.isInConsultMod"
                                 :modifMod="this.isInModifMod"
                                 :savedAs="validate"
-                                @add="addPurchaseSpecification"
-                                @update="updatePurchaseSpecification"/>
+                                @add="addPurchaseSpecificationCommon"
+                                @update="updatePurchaseSpecificationCommon"/>
                 <DeleteComponentButton :consultMod="this.isInConsultMod" :validationMode="purSpe_validate"
                                        @deleteOk="deleteComponent"/>
             </form>
@@ -109,22 +95,13 @@ export default {
         eq_id: ID of the equipment in which the file will be added
     ---------------------------------------------------*/
     props: {
-        remark: {
+        validate:{
             type: String
         },
         documentsRequest: {
             type: String
         },
         specification:{
-            type: String
-        },
-        supplier_id: {
-            type: String
-        },
-        supplier_ref: {
-            type: String
-        },
-        validate: {
             type: String
         },
         consultMod: {
@@ -148,9 +125,6 @@ export default {
         art_type: {
             type: String
         },
-        checkedTest: {
-            type: Array
-        },
         articleSubFam_id: {
             type: Number
         },
@@ -168,14 +142,13 @@ export default {
 -----------------------------------------------------------*/
     data() {
         return {
-            purSpe_remark: this.remark,
-            purSpe_supplier_id: this.supplier_id,
-            purSpe_supplier_ref: this.supplier_ref,
             purSpe_validate: this.validate,
             purSpe_id: this.id,
             art_id_add: this.art_id,
             artFam_type: this.art_type,
             art_id_update: this.$route.params.id,
+            purSpe_documentsRequest: this.documentsRequest,
+            purSpe_specification: this.specification,
             errors: {},
             addSucces: false,
             isInConsultMod: this.consultMod,
@@ -183,7 +156,7 @@ export default {
             loaded: false,
             infos_purSpe: [],
             suppliers: [],
-            data_checkedTest: this.checkedTest,
+            first: true,
         }
     },
     methods: {
@@ -191,7 +164,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param artSheet_created */
-        addPurchaseSpecification(savedAs, reason, artSheet_created) {
+        addPurchaseSpecificationCommon (savedAs, reason, artSheet_created) {
             if (!this.addSucces) {
                 /*ID of the equipment in which the file will be added*/
                 let id;
@@ -203,82 +176,30 @@ export default {
                     id = this.art_id_update;
                 }
                 if (this.art_id!=null){
-
-                    axios.post('/artFam/purSpe/verif', {
-                        purSpe_validate: savedAs,
-                        purSpe_supplier_id: this.purSpe_supplier_id,
-                        purSpe_supplier_ref: this.purSpe_supplier_ref,
-                        purSpe_remark: this.purSpe_remark,
+                    const consultUrl = (type,id) => `/artFam/purSpe/addCommon/${type}/${id}`;
+                    axios.post(consultUrl(this.artFam_type, id), {
                         purSpe_documentsRequest: this.purSpe_documentsRequest,
                         purSpe_specification: this.purSpe_specification,
                     })
-                        /*If the data are correct, we send them to the controller for add them in the database*/
-                        .then(response => {
-                            this.errors = {};
-                            const consultUrl = (id) => `/artFam/purSpe/add/${id}`;
-                            axios.post(consultUrl(id), {
-                                purSpe_validate: savedAs,
-                                artFam_type: this.artFam_type.toUpperCase(),
-                                purSpe_supplier_id: this.purSpe_supplier_id,
-                                purSpe_supplier_ref: this.purSpe_supplier_ref,
-                                purSpe_remark: this.purSpe_remark,
-                                purSpe_documentsRequest: this.purSpe_documentsRequest,
-                                purSpe_specification: this.purSpe_specification,
-                            })
-                                /*If the data have been added in the database, we show a success message*/
-                                .then(response => {
-                                    this.addSuccess = true;
-                                    this.isInConsultMod = true;
-                                    this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
-                                    this.purSpe_id = response.data;
-                                    this.purSpe_validate = savedAs;
-                                }).catch(error => {
-                                    this.errors = error.response.data.errors;
-                                });
-                        }).catch(error => this.errors = error.response.data.errors);
-                    }else{
-                        axios.post('/artFam/purSpe/verif', {
-                        purSpe_validate: savedAs,
-                        purSpe_supplier_id: this.purSpe_supplier_id,
-                        purSpe_supplier_ref: this.purSpe_supplier_ref,
-                        purSpe_remark: this.purSpe_remark,
-                        purSpe_documentsRequest: this.purSpe_documentsRequest,
-                        purSpe_specification: this.purSpe_specification,
-                        })
-                        /*If the data are correct, we send them to the controller for add them in the database*/
-                        .then(response => {
-                            this.errors = {};
-                            
-                            const consultUrl = (id) => `/artSubFam/purSpe/add/${id}`;
-                    
-                            axios.post(consultUrl(this.articleSubFam_id),{
-                                purSpe_validate: savedAs,
-                                artFam_type: this.artFam_type.toUpperCase(),
-                                purSpe_supplier_id: this.purSpe_supplier_id,
-                                purSpe_supplier_ref: this.purSpe_supplier_ref,
-                                purSpe_remark: this.purSpe_remark,
-                                purSpe_documentsRequest: this.purSpe_documentsRequest,
-                                purSpe_specification: this.purSpe_specification,
-                            })
-                                /*If the data have been added in the database, we show a success message*/
-                                .then(response => {
-                                    this.addSuccess = true;
-                                    this.isInConsultMod = true;
-                                    this.$snotify.success(`purchase specification added successfully and saved as ${savedAs}`);
-                                    this.purSpe_id = response.data;
-                                    this.purSpe_validate = savedAs;
-                                }).catch(error => {
-                                    this.errors = error.response.data.errors;
-                                });
-                        }).catch(error => this.errors = error.response.data.errors);
-                    }
+                    /*If the data have been added in the database, we show a success message*/
+                    .then(response => {
+                        console.log(response.data)
+                        this.addSuccess = true;
+                        this.isInConsultMod = true;
+                         this.$emit('first', false)
+                        this.$snotify.success(`purchase specification common added successfully and saved as ${savedAs}`);
+                        this.purSpe_validate = savedAs;
+                    }).catch(error => {
+                        this.errors = error.response.data.errors;
+                    });
                 }
+            }
         },
         /*Sending to the controller all the information about the equipment so that it can be updated in the database
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param lifesheet_created */
-        updatePurchaseSpecification(savedAs, reason, lifesheet_created) {
+        updatePurchaseSpecificationCommon(savedAs, reason, lifesheet_created) {
             /*The First post to verify if all the fields are filled correctly,
             The name, location and validate option are sent to the controller*/
             axios.post('/artFam/purSpe/verif', {

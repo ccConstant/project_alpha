@@ -42,7 +42,11 @@ class RawFamily extends Model
         'rawFam_active',
         'rawFam_genDesign',
         'rawFam_genRef',
-        'rawFam_subFam'
+        'rawFam_subFam',
+        'rawFam_version',
+        'rawFam_materials',
+        'rawFam_specifications', 
+        'rawFam_documentsRequested'
     ] ;
 
     //Define the relation between a rawFamily and its rawFamilyMember : a rawFamilyMember can correspond to only one rawFamily

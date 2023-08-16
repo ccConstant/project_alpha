@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SW03\CompFamily;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumPurchasedBy;
+use App\Models\SW03\CompSubFamily;
 
 class CompFamilyController extends Controller
 {
@@ -39,12 +40,16 @@ class CompFamilyController extends Controller
                     'artFam_design' => 'required|max:255|string',
                     'artFam_drawingPath' => 'required|max:255|string',
                     'artFam_version' => 'required|max:255|string',
+                    'artFam_materials' => 'max:255|string',
                 ],
                 [
 
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
                     'artFam_ref.string' => 'You must enter a string ',
+
+                    'artFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artFam_materials.string' => 'You must enter a string ',
 
                     'artFam_design.required' => 'You must enter a design for your comp family ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
@@ -77,11 +82,15 @@ class CompFamilyController extends Controller
                     'artFam_design' => 'required|max:255|string',
                     'artFam_drawingPath' => 'max:255',
                     'artFam_version' => 'max:255',
+                    'artFam_materials' => 'max:255|string',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your comp family ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artFam_ref.string' => 'You must enter a string ',
+
+                    'artFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artFam_materials.string' => 'You must enter a string ',
 
                     'artFam_design.required' => 'You must enter a designation for your comp family ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
@@ -126,6 +135,7 @@ class CompFamilyController extends Controller
             'compFam_design' => $request->artFam_design,
             'compFam_drawingPath'=> $request->artFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
+            'compFam_materials' => $request->artFam_materials,
             'compFam_validate' => $request->artFam_validate,
             'compFam_version' => $request->artFam_version,
             'compFam_active' => $request->artFam_active,
@@ -173,6 +183,7 @@ class CompFamilyController extends Controller
                 'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
                 'compFam_validate' => $compFamily->compFam_validate,
                 'compFam_active' => $compFamily->compFam_active,
+                'compFam_materials' => $compFamily->compFam_materials,
                 'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
                 'compFam_technicalReviewerName' => $technicalReviewer,
                 'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
@@ -221,6 +232,7 @@ class CompFamilyController extends Controller
             'compFam_nbrVersion' => $compFamily->compFam_nbrVersion,
             'compFam_validate' => $compFamily->compFam_validate,
             'compFam_active' => $compFamily->compFam_active,
+            'compFam_materials' => $compFamily->compFam_materials,
             'compFam_technicalReviewerId' => $compFamily->compFam_technicalReviewerId,
             'compFam_technicalReviewerName' => $technicalReviewer,
             'compFam_qualityApproverId' => $compFamily->compFam_qualityApproverId,
@@ -256,6 +268,7 @@ class CompFamilyController extends Controller
             'compFam_version' => $request->artFam_version,
             'compFam_qualityApproverId' => null,
             'compFam_technicalReviewerId' => null,
+            'compFam_materials' => $request->artFam_materials,
             'compFam_signatureDate' => null,
             'compFam_validate' => $request->artFam_validate,
             'compFam_active' => $request->artFam_active,

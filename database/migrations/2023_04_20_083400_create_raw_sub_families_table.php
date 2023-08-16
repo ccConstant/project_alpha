@@ -27,6 +27,8 @@ class CreateRawSubFamiliesTable extends Migration
             $table->string('rawSubFam_design');
             $table->string('rawSubFam_drawingPath')->nullable();
             $table->integer('rawSubFam_nbrVersion')->default(1);
+            $table->string('rawSubFam_version')->nullable();
+            $table->string('rawSubFam_materials')->nullable();
             $table->unsignedBigInteger('rawSubFam_qualityApproverId')->nullable();
             $table->foreign('rawSubFam_qualityApproverId')->references('id')->on('users');
             $table->unsignedBigInteger('rawSubFam_technicalReviewerId')->nullable();

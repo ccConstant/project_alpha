@@ -26,7 +26,6 @@ class CreateAdminControlsTable extends Migration
             $table->timestamps();
             $table->string('adminControl_name');
             $table->string('adminControl_reference');
-            $table->string('adminControl_materialCertifSpe')->nullable();
             $table->unsignedBigInteger('incmgInsp_id')->nullable();
             $table->foreign('incmgInsp_id')->references('id')->on('incoming_inspections');
             

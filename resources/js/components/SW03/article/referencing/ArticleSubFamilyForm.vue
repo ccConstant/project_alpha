@@ -41,7 +41,19 @@
                     :info_text="this.infos_artSubFam[2].info_value"
                     :max="255"
                 />
-                <InputTextForm v-if="this.data_artFam_type=='COMP' || this.data_artFam_type=='CONS'"
+
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artSubFam_materials"
+                    name="artSubFam_materials"
+                    label="Family Materials"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
+                    v-model="artSubFam_materials"
+                    :info_text="this.infos_artSubFam[5].info_value"
+                    :max="255"
+                />
+
+                <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artSubFam_version"
                     name="artSubFam_version"
@@ -251,6 +263,10 @@ export default {
             type: String,
             default: null
         },
+        materials: {
+            type: String,
+            default: null
+        },
         designation: {
             type: String
         },
@@ -322,6 +338,7 @@ export default {
             artSubFam_version: this.version,
             artSubFam_active: this.active,
             artSubFam_validate: this.validate,
+            artSubFam_materials: this.materials,
             isInConsultMod: this.consultMod,
             isInModifMod : this.modifMod,
             artSubFam_id: this.id,
@@ -399,6 +416,7 @@ export default {
                         artSubFam_drawingPath: this.artSubFam_drawingPath,
                         artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                         artSubFam_version: this.artSubFam_version,
+                        artSubFam_materials: this.artSubFam_materials,
                         artSubFam_active: this.artSubFam_active,
                         artSubFam_validate: savedAs,
                         reason:"add"
@@ -412,6 +430,7 @@ export default {
                             artSubFam_drawingPath: this.artSubFam_drawingPath,
                             artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                             artSubFam_version: this.artSubFam_version,
+                            artSubFam_materials: this.artSubFam_materials,
                             artSubFam_active: this.artSubFam_active,
                             artSubFam_validate: savedAs,
                             artFam_id: this.data_artFam_id,
@@ -439,7 +458,9 @@ export default {
                             artSubFam_drawingPath: this.artSubFam_drawingPath,
                             artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                             artSubFam_active: this.artSubFam_active,
+                            artSubFam_materials: this.artSubFam_materials,
                             artSubFam_validate: savedAs,
+                            artSubFam_version: this.artSubFam_version,
                             artFam_id: this.data_artFam_id,
                             reason:"add"
                         })
@@ -453,6 +474,8 @@ export default {
                                 artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                                 artSubFam_active: this.artSubFam_active,
                                 artSubFam_validate: savedAs,
+                                artSubFam_materials: this.artSubFam_materials,
+                                artSubFam_version: this.artSubFam_version,
                                 artFam_id: this.data_artFam_id,
 
                             })
@@ -478,6 +501,7 @@ export default {
                                 artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                                 artSubFam_active: this.artSubFam_active,
                                 artSubFam_validate: savedAs,
+                                artSubFam_materials: this.artSubFam_materials,
                                 artFam_id: this.data_artFam_id,
                                 artSubFam_version: this.artSubFam_version,
                                 reason:"add"
@@ -492,6 +516,7 @@ export default {
                                     artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                                     artSubFam_active: this.artSubFam_active,
                                     artSubFam_validate: savedAs,
+                                    artSubFam_materials: this.artSubFam_materials,
                                     artFam_id: this.data_artFam_id,
                                     artSubFam_version: this.artSubFam_version,
                                 })
@@ -523,6 +548,7 @@ export default {
                 artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                 artSubFam_active: this.artSubFam_active,
                 artSubFam_validate: savedAs,
+                artSubFam_materials: this.artSubFam_materials,
                 artFam_id: this.data_artFam_id,
                 artSubFam_version: this.artSubFam_version,
                 reason:"update",
@@ -539,6 +565,7 @@ export default {
                         artSubFam_purchasedBy: this.artSubFam_purchasedBy,
                         artSubFam_active: this.artSubFam_active,
                         artSubFam_validate: savedAs,
+                        artSubFam_materials: this.artSubFam_materials,
                         artFam_id: this.data_artFam_id,
                         artSubFam_version: this.artSubFam_version,
                     })

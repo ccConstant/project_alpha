@@ -23,7 +23,6 @@
                 :modifMod="component.id !== null"
                 :reference="component.reference"
                 :adminControlName="component.adminControlName"
-                :materialCertiSpec="component.materialCertiSpec"
                 :fds="component.fds"
                 :incmgInsp_id="incmgInsp_id"
                 :articleID="data_article_id"
@@ -136,13 +135,12 @@ export default {
             });
         },
         /*Function for adding an imported file form with his data*/
-        addImportedComponent(adminControl_name, adminControl_reference, adminControl_materialCertifSpe, incmgInsp_id, adminControl_FDS, id, className) {
+        addImportedComponent(adminControl_name, adminControl_reference, incmgInsp_id, adminControl_FDS, id, className) {
             this.components.push({
                 comp: 'AdminControlIDForm',
                 key: this.uniqueKey++,
                 adminControlName: adminControl_name,
                 reference: adminControl_reference,
-                materialCertiSpec: adminControl_materialCertifSpe,
                 incmgInsp_id: incmgInsp_id,
                 fds: adminControl_FDS,
                 id: id,
@@ -163,7 +161,6 @@ export default {
                     this.addImportedComponent(
                         dc.adminControl_name,
                         dc.adminControl_reference,
-                        dc.adminControl_materialCertifSpe,
                         dc.incmgInsp_id,
                         dc.adminControl_FDS,
                         dc.id,

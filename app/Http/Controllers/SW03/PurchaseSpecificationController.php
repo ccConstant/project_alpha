@@ -93,8 +93,6 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
-                    'documentsRequest' => $request->purSpe_documentsRequest,
-                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -106,8 +104,6 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
-                    'documentsRequest' => $request->purSpe_documentsRequest,
-                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -119,13 +115,46 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
-                    'documentsRequest' => $request->purSpe_documentsRequest,
-                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
         $purSpe_id = $purSpe->id;
         return response()->json($purSpe_id);
+    }
+
+
+
+     /**
+     * Function call by ArticlePurchaseSpecificationForm.vue when the form is submitted for insert with the route : '/purSpe/addCommon/ (post)
+     * Add a new enregistrement of purchase specification in the data base with the informations entered in the form
+     */
+    public function add_purSpe_common(Request $request, $type, $id)
+    {
+        //Creation of a new purchase specification
+        $consFam_id = null;
+        $rawFam_id = null;
+        $compFam_id = null;
+        if ($type == "comp") {
+            $compFamily=CompFamily::all()->where('id', '==', $id)->first();
+            $compFamily->update([
+                'compFam_specifications' => $request->purSpe_specification,
+                'compFam_documentsRequested' => $request->purSpe_documentsRequest,
+            ]);
+        }
+        if ($type == "raw") {
+            $rawFamily=RawFamily::all()->where('id', '==', $id)->first();
+            $rawFamily->update([
+                'rawFam_specifications' => $request->purSpe_specification,
+                'rawFam_documentsRequested' => $request->purSpe_documentsRequest,
+            ]);
+        }
+        if ($type == "cons") {
+            $consFamily=ConsFamily::all()->where('id', '==', $id)->first();
+            $consFamily->update([
+                'consFam_specifications' => $request->purSpe_specification,
+                'consFam_documentsRequested' => $request->purSpe_documentsRequest,
+            ]);
+        }
     }
 
     /**

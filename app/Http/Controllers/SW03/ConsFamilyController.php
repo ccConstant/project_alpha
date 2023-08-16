@@ -21,6 +21,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SW03\ConsFamily;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumPurchasedBy;
+use App\Models\SW03\ConsSubFamily;
 
 class ConsFamilyController extends Controller
 {
@@ -40,12 +41,16 @@ class ConsFamilyController extends Controller
                     'artFam_design' => 'required|max:255|string',
                     'artFam_drawingPath' => 'required|max:255|string',
                     'artFam_version' => 'required|max:255|string',
+                    'artFam_materials' => 'max:255|string',
                 ],
                 [
 
                     'artFam_ref.required' => 'You must enter a reference for your cons family ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
                     'artFam_ref.string' => 'You must enter a string ',
+
+                    'artFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artFam_materials.string' => 'You must enter a string ',
 
                     'artFam_design.required' => 'You must enter a design for your cons family ',
                     'artFam_design.max' => 'You must enter less than 255 characters ',
@@ -81,11 +86,15 @@ class ConsFamilyController extends Controller
                     'artFam_design' => 'required|max:255|string',
                     'artFam_drawingPath' => 'max:255|string',
                     'artFam_version' => 'max:255|string',
+                    'artFam_materials' => 'max:255|string',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your cons family ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artFam_ref.string' => 'You must enter a string ',
+
+                    'artFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artFam_materials.string' => 'You must enter a string ',
 
                     'artFam_design.required' => 'You must enter a designation for your cons family ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
@@ -130,6 +139,7 @@ class ConsFamilyController extends Controller
             'consFam_design' => $request->artFam_design,
             'consFam_drawingPath'=> $request->artFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
+            'consFam_materials' => $request->artFam_materials,
             'consFam_validate' => $request->artFam_validate,
             'consFam_version' => $request->artFam_version,
             'consFam_active' => $request->artFam_active,
@@ -178,6 +188,7 @@ class ConsFamilyController extends Controller
                 'consFam_validate' => $consFamily->consFam_validate,
                 'consFam_active' => $consFamily->consFam_active,
                 'consFam_purchasedBy' => $purchaseBy,
+                'consFam_materials' => $consFamily->consFam_materials,
                 'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
                 'consFam_qualityApproverName' => $qualityApprover,
                 'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
@@ -227,6 +238,7 @@ class ConsFamilyController extends Controller
             'consFam_validate' => $consFamily->consFam_validate,
             'consFam_active' => $consFamily->consFam_active,
             'consFam_purchasedBy' => $purchaseBy,
+            'consFam_materials' => $consFamily->consFam_materials,
             'consFam_qualityApproverId' => $consFamily->consFam_qualityApproverId,
             'consFam_qualityApproverName' => $qualityApprover,
             'consFam_technicalReviewerId' => $consFamily->consFam_technicalReviewerId,
@@ -262,6 +274,7 @@ class ConsFamilyController extends Controller
             'consFam_qualityApproverId' => null,
             'consFam_technicalReviewerId' => null,
             'consFam_signatureDate' => null,
+            'consFam_materials' => $request->artFam_materials,
             'consFam_validate' => $request->artFam_validate,
             'consFam_active' => $request->artFam_active,
             'enumPurchasedBy_id' => $enum,

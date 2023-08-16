@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SW03\RawFamily;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumPurchasedBy;
+use App\Models\SW03\RawFamilyMember;
 
 class RawFamilyController extends Controller
 {
@@ -38,8 +39,16 @@ class RawFamilyController extends Controller
                     'artFam_ref' => 'required|max:255|string',
                     'artFam_design' => 'required|max:255|string',
                     'artFam_drawingPath' => 'required|max:255|string',
+                    'artFam_version' => 'required|max:255|string',
+                    'artFam_materials' => 'max:255|string',
                 ],
                 [
+                    'artFam_version.required' => 'You must enter a version for your cons family ',
+                    'artFam_version.max' => 'You must enter less than 255 characters ',
+                    'artFam_version.string' => 'You must enter a string ', 
+
+                    'artFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artFam_materials.string' => 'You must enter a string ',
 
                     'artFam_ref.required' => 'You must enter a reference for your raw family ',
                     'artFam_ref.max' => 'You must enter less than 255 characters ',
@@ -75,11 +84,16 @@ class RawFamilyController extends Controller
                     'artFam_ref' => 'required|max:255|string',
                     'artFam_design' => 'required|max:255|string',
                     'artFam_drawingPath' => 'max:255|string',
+                    'artFam_version' => 'max:255|string',
+                    'artFam_materials' => 'max:255|string',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your raw family ',
                     'artFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artFam_ref.string' => 'You must enter a string ',
+
+                    'artFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artFam_materials.string' => 'You must enter a string ',
 
                     'artFam_design.required' => 'You must enter a designation for your raw family ',
                     'artFam_design.max' => 'You must enter a maximum of 255 characters',
@@ -87,6 +101,9 @@ class RawFamilyController extends Controller
 
                     'artFam_drawingPath.max' => 'You must enter a maximum of 255 characters',
                     'artFam_drawingPath.string' => 'You must enter a string ',
+
+                    'artFam_version.max' => 'You must enter a maximum of 255 characters',
+                    'artFam_version.string' => 'You must enter a string ',
                 ]
             );
         }
@@ -120,6 +137,8 @@ class RawFamilyController extends Controller
             'rawFam_design' => $request->artFam_design,
             'rawFam_drawingPath'=> $request->artFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
+            'rawFam_version' => $request->artFam_version,
+            'rawFam_materials' => $request->artFam_materials,
           /*  'rawFam_variablesCharac' => $request->artFam_variablesCharac,
             'rawFam_variablesCharacDesign' => $request->artFam_variablesCharacDesign,*/
             'rawFam_validate' => $request->artFam_validate,
@@ -169,6 +188,8 @@ class RawFamilyController extends Controller
                 'rawFam_validate' => $rawFamily->rawFam_validate,
                 'rawFam_active' => $rawFamily->rawFam_active,
                 'rawFam_purchasedBy' => $purchaseBy,
+                'rawFam_version' => $rawFamily->rawFam_version,
+                'rawFam_materials' => $rawFamily->rawFam_materials,
                 'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
                 'rawFam_qualityApproverName' => $qualityApprover,
                 'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId,
@@ -176,6 +197,7 @@ class RawFamilyController extends Controller
                 'rawFam_signatureDate' => $rawFamily->rawFam_signatureDate,
                 'rawFam_nbrVersion' => $rawFamily->rawFam_nbrVersion,
                 'rawFam_subFam' => $rawFamily->rawFam_subFam,
+
             ];
             array_push($array, $obj);
         }
@@ -216,6 +238,8 @@ class RawFamilyController extends Controller
             'rawFam_validate' => $rawFamily->rawFam_validate,
             'rawFam_active' => $rawFamily->rawFam_active,
             'rawFam_purchasedBy' => $purchaseBy,
+            'rawFam_version' => $rawFamily->rawFam_version,
+            'rawFam_materials' => $rawFamily->rawFam_materials,
             'rawFam_qualityApproverId' => $rawFamily->rawFam_qualityApproverId,
             'rawFam_qualityApproverName' => $qualityApprover,
             'rawFam_technicalReviewerId' => $rawFamily->rawFam_technicalReviewerId,
@@ -251,10 +275,12 @@ class RawFamilyController extends Controller
             'rawFam_qualityApproverId' => null,
             'rawFam_technicalReviewerId' => null,
             'rawFam_signatureDate' => null,
+            'rawFam_materials' => $request->artFam_materials,
             'rawFam_validate' => $request->artFam_validate,
             'rawFam_active' => $request->artFam_active,
             'enumPurchasedBy_id' => $enum,
             'rawFam_subFam' => $request->artFam_subFam,
+            'rawFam_version' => $request->artFam_version,
         ]);
         return response()->json($rawFamily);
     }

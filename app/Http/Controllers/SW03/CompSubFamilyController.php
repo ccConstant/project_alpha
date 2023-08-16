@@ -38,12 +38,16 @@ class CompSubFamilyController extends Controller
                     'artSubFam_design' => 'required|max:255|string',
                     'artSubFam_drawingPath' => 'required|max:255|string',
                     'artSubFam_version' => 'required|max:255|string',
+                    'artSubFam_materials' => 'max:255|string',
                 ],
                 [
 
                     'artSubFam_ref.required' => 'You must enter a reference for your comp sub family ',
                     'artSubFam_ref.max' => 'You must enter less than 255 characters ',
                     'artSubFam_ref.string' => 'You must enter a string ',
+
+                    'artSubFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artSubFam_materials.string' => 'You must enter a string ',
 
                     'artSubFam_design.required' => 'You must enter a design for your comp sub family ',
                     'artSubFam_design.max' => 'You must enter less than 255 characters ',
@@ -76,11 +80,15 @@ class CompSubFamilyController extends Controller
                     'artSubFam_design' => 'required|max:255|string',
                     'artSubFam_drawingPath' => 'max:255',
                     'artSubFam_version' => 'max:255',
+                    'artSubFam_materials' => 'max:255|string',
                 ],
                 [
                     'artSubFam_ref.required' => 'You must enter a reference for your comp sub family ',
                     'artSubFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_ref.string' => 'You must enter a string ',
+
+                    'artSubFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artSubFam_materials.string' => 'You must enter a string ',
 
                     'artSubFam_design.required' => 'You must enter a designation for your comp sub family ',
                     'artSubFam_design.max' => 'You must enter a maximum of 255 characters',
@@ -139,6 +147,7 @@ class CompSubFamilyController extends Controller
             'compSubFam_design' => $request->artSubFam_design,
             'compSubFam_drawingPath'=> $request->artSubFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
+            'compSubFam_materials' => $request->artSubFam_materials,
             'compSubFam_validate' => $request->artSubFam_validate,
             'compSubFam_version' => $request->artSubFam_version,
             'compSubFam_active' => $request->artSubFam_active,
@@ -187,6 +196,7 @@ class CompSubFamilyController extends Controller
                 'validate' => $compSubFamily->compSubFam_validate,
                 'active' => $compSubFamily->compSubFam_active,
                 'purchasedBy' => $purchaseBy,
+                'materials' => $compSubFamily->compSubFam_materials,
                 'qualityApproverId' => $compSubFamily->compSubFam_qualityApproverId,
                 'qualityApproverName' => $qualityApprover,
                 'technicalReviewerId' => $compSubFamily->compSubFam_technicalReviewerId,
@@ -222,6 +232,7 @@ class CompSubFamilyController extends Controller
             'compSubFam_version' => $request->artSubFam_version,
             'compSubFam_qualityApproverId' => null,
             'compSubFam_technicalReviewerId' => null,
+            'compSubFam_materials' => $request->artSubFam_materials,
             'compSubFam_signatureDate' => null,
             'compSubFam_validate' => $request->artSubFam_validate,
             'compSubFam_active' => $request->artSubFam_active,

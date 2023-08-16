@@ -56,13 +56,24 @@
                     :info_text="this.infos_artFam[2].info_value"
                     :max="255"
                 />
-                <InputTextForm v-if="artFam_type=='COMP' || artFam_type=='CONS'"
+                <InputTextForm
                     :inputClassName="null"
                     :Errors="errors.artFam_version"
                     name="artFam_version"
                     label="Family Version"
                     :isDisabled="this.isInConsultMod && !this.isInModifMod"
                     v-model="artFam_version"
+                    :info_text="this.infos_artFam[5].info_value"
+                    :max="255"
+                />
+
+                <InputTextForm
+                    :inputClassName="null"
+                    :Errors="errors.artFam_materials"
+                    name="artFam_materials"
+                    label="Family Materials"
+                    :isDisabled="this.isInConsultMod && !this.isInModifMod"
+                    v-model="artFam_materials"
                     :info_text="this.infos_artFam[5].info_value"
                     :max="255"
                 />
@@ -243,7 +254,10 @@ export default {
         max : {
             type: Number,
             default: 255
-        }
+        }, 
+        materials:{
+            type: String
+        },
     },
     data() {
         return {
@@ -271,6 +285,7 @@ export default {
             artFam_active: this.active,
             artFam_subFam: this.subFam,
             artFam_validate: this.validate,
+            artFam_materials: this.materials,
             isInConsultMod: this.consultMod,
             isInModifMod : this.modifMod,
             enum_purchasedBy: [],
@@ -327,6 +342,7 @@ export default {
                         artFam_design: this.artFam_design,
                         artFam_drawingPath: this.artFam_drawingPath,
                         artFam_purchasedBy: this.artFam_purchasedBy,
+                        artFam_materials: this.artFam_materials,
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,
@@ -334,6 +350,7 @@ export default {
                     })
                         /*If the data are correct, we send them to the controller for add them in the database*/
                         .then(response => {
+                            console.log("verif passed")
                             this.errors = {};
                                 axios.post('/comp/family/add', {
                                     artFam_ref: this.artFam_ref,
@@ -341,6 +358,7 @@ export default {
                                     artFam_drawingPath: this.artFam_drawingPath,
                                     artFam_purchasedBy: this.artFam_purchasedBy,
                                     artFam_version: this.artFam_version,
+                                    artFam_materials: this.artFam_materials,
                                     artFam_active: this.artFam_active,
                                     artFam_validate: savedAs,
                                     artFam_subFam: this.artFam_subFam,
@@ -368,8 +386,10 @@ export default {
                             artFam_design: this.artFam_design,
                             artFam_drawingPath: this.artFam_drawingPath,
                             artFam_purchasedBy: this.artFam_purchasedBy,
+                            artFam_materials: this.artFam_materials,
                             artFam_active: this.artFam_active,
                             artFam_validate: savedAs,
+                            artFam_version: this.artFam_version,
                             artFam_subFam: this.artFam_subFam,
 
                         })
@@ -382,7 +402,9 @@ export default {
                                 artFam_drawingPath: this.artFam_drawingPath,
                                 artFam_purchasedBy: this.artFam_purchasedBy,
                                 artFam_active: this.artFam_active,
+                                artFam_materials: this.artFam_materials,
                                 artFam_validate: savedAs,
+                                artFam_version: this.artFam_version,
                                 artFam_subFam: this.artFam_subFam,
 
                             })
@@ -409,6 +431,7 @@ export default {
                                 artFam_drawingPath: this.artFam_drawingPath,
                                 artFam_purchasedBy: this.artFam_purchasedBy,
                                 artFam_version: this.artFam_version,
+                                artFam_materials: this.artFam_materials,
                                 artFam_active: this.artFam_active,
                                 artFam_validate: savedAs,
                                 artFam_subFam: this.artFam_subFam,
@@ -422,6 +445,7 @@ export default {
                                     artFam_drawingPath: this.artFam_drawingPath,
                                     artFam_purchasedBy: this.artFam_purchasedBy,
                                     artFam_active: this.artFam_active,
+                                    artFam_materials: this.artFam_materials,
                                     artFam_version: this.artFam_version,
                                     artFam_validate: savedAs,
                                     artFam_subFam: this.artFam_subFam,
@@ -457,6 +481,7 @@ export default {
                 artFam_design: this.artFam_design,
                 artFam_drawingPath: this.artFam_drawingPath,
                 artFam_purchasedBy: this.artFam_purchasedBy,
+                artFam_materials: this.artFam_materials,
                 artFam_version: this.artFam_version,
                 artFam_active: this.artFam_active,
                 artFam_validate: savedAs,
@@ -472,6 +497,7 @@ export default {
                         artFam_design: this.artFam_design,
                         artFam_drawingPath: this.artFam_drawingPath,
                         artFam_purchasedBy: this.artFam_purchasedBy,
+                        artFam_materials: this.artFam_materials,
                         artFam_version: this.artFam_version,
                         artFam_active: this.artFam_active,
                         artFam_validate: savedAs,

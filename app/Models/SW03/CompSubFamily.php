@@ -37,6 +37,7 @@ class CompSubFamily extends Model
     'compSubFam_validate',
     'compSubFam_version',
     'compSubFam_active',
+    'compSubFam_materials',
     'compFam_id'] ;
 
     //Define the relation between a compFamily and its compSubFamily : a compSubFamily can correspond to only one compFamily

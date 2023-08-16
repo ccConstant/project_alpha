@@ -37,12 +37,16 @@ class ConsSubFamilyController extends Controller
                     'artSubFam_design' => 'required|max:255|string',
                     'artSubFam_drawingPath' => 'required|max:255|string',
                     'artSubFam_version' => 'required|max:255|string',
+                    'artSubFam_materials' => 'max:255|string',
                 ],
                 [
 
                     'artSubFam_ref.required' => 'You must enter a reference for your cons sub family ',
                     'artSubFam_ref.max' => 'You must enter less than 255 characters ',
                     'artSubFam_ref.string' => 'You must enter a string ',
+
+                    'artSubFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artSubFam_materials.string' => 'You must enter a string ',
 
                     'artSubFam_design.required' => 'You must enter a design for your cons sub family ',
                     'artSubFam_design.max' => 'You must enter less than 255 characters ',
@@ -76,11 +80,15 @@ class ConsSubFamilyController extends Controller
                     'artSubFam_design' => 'required|max:255|string',
                     'artSubFam_drawingPath' => 'max:255',
                     'artSubFam_version' => 'max:255',
+                    'artSubFam_materials' => 'max:255|string',
                 ],
                 [
                     'artSubFam_ref.required' => 'You must enter a reference for your cons sub family ',
                     'artSubFam_ref.max' => 'You must enter a maximum of 255 characters',
                     'artSubFam_ref.string' => 'You must enter a string ',
+
+                    'artSubFam_materials.max' => 'You must enter less than 255 characters ',
+                    'artSubFam_materials.string' => 'You must enter a string ',
 
                     'artSubFam_design.required' => 'You must enter a designation for your cons sub family ',
                     'artSubFam_design.max' => 'You must enter a maximum of 255 characters',
@@ -141,6 +149,7 @@ class ConsSubFamilyController extends Controller
             'consSubFam_design' => $request->artSubFam_design,
             'consSubFam_drawingPath'=> $request->artSubFam_drawingPath,
             'enumPurchasedBy_id' => $enum,
+            'consSubFam_materials' => $request->artSubFam_materials,
             'consSubFam_validate' => $request->artSubFam_validate,
             'consSubFam_version' => $request->artSubFam_version,
             'consSubFam_active' => $request->artSubFam_active,
@@ -189,6 +198,7 @@ class ConsSubFamilyController extends Controller
                 'validate' => $consSubFamily->consSubFam_validate,
                 'active' => $consSubFamily->consSubFam_active,
                 'purchasedBy' => $purchaseBy,
+                'materials' => $consSubFamily->consSubFam_materials,
                 'qualityApproverId' => $consSubFamily->consSubFam_qualityApproverId,
                 'qualityApproverName' => $qualityApprover,
                 'technicalReviewerId' => $consSubFamily->consSubFam_technicalReviewerId,
@@ -225,6 +235,7 @@ class ConsSubFamilyController extends Controller
             'consSubFam_qualityApproverId' => null,
             'consSubFam_technicalReviewerId' => null,
             'consSubFam_signatureDate' => null,
+            'consSubFam_materials' => $request->artSubFam_materials,
             'consSubFam_validate' => $request->artSubFam_validate,
             'consSubFam_active' => $request->artSubFam_active,
             'enumPurchasedBy_id' => $enum,

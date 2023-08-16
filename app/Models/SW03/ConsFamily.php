@@ -42,7 +42,10 @@ class ConsFamily extends Model
         'consFam_active',
         'consFam_genDesign',
         'consFam_genRef',
-        'consFam_subFam'
+        'consFam_subFam',
+        'consFam_materials',
+        'consFam_specifications', 
+        'consFam_documentsRequested'
     ] ;
 
     //Define the relation between a consFamily and its consFamilyMember : a consFamilyMember can correspond to only one consFamily
