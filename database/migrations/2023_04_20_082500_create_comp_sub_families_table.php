@@ -29,6 +29,8 @@ class CreateCompSubFamiliesTable extends Migration
             $table->integer('compSubFam_nbrVersion')->default(1);
             $table->string('compSubFam_materials')->nullable();
             $table->timestamps();
+            $table->string('compSubFam_specifications')->nullable();
+            $table->string('compSubFam_documentsRequested')->nullable();
             $table->unsignedBigInteger('compSubFam_qualityApproverId')->nullable();
             $table->foreign('compSubFam_qualityApproverId')->references('id')->on('users');
             $table->unsignedBigInteger('compSubFam_technicalReviewerId')->nullable();

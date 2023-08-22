@@ -78,7 +78,7 @@
                     <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
                         <div class="accordion-body">
                             <ReferenceAnArticlePurchaseSpecification
-                                modifMod
+                                :modifMod="true"
                                 :artType="this.articleType"
                                 :artFam_id="this.articleID"
                                 :import_id="this.articleID"
@@ -177,7 +177,6 @@ export default {
         if (this.articleType === 'raw') {
             axios.get('/raw/family/send/' + this.articleID)
                 .then(response => {
-                    console.log(response.data)
                     this.article = {
                         ref: response.data.rawFam_ref,
                         design: response.data.rawFam_design,

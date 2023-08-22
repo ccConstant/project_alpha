@@ -15,9 +15,19 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\SW03\RawSubFamily;
 use App\Models\SW03\RawFamily;
+use App\Models\SW03\RawFamilyMember;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumPurchasedBy;
 use App\Http\Controllers\Controller;
+use App\Models\SW03\DimensionalTest;
+use App\Models\SW03\FunctionalTest;
+use App\Models\SW03\AdminControl;
+use App\Models\SW03\AspectTest;
+use App\Models\SW03\DocumentaryControl;
+use App\Models\SW03\PurchaseSpecification;
+use App\Models\SW03\EnumStorageCondition;
+use App\Models\SW03\Criticality;
+use App\Models\SW03\IncomingInspection;
 
 class RawSubFamilyController extends Controller
 {
@@ -33,11 +43,11 @@ class RawSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|max:255|string',
-                    'artSubFam_design' => 'required|max:255|string',
-                    'artSubFam_drawingPath' => 'required|max:255|string',
-                    'artSubFam_version' => 'max:255|string',
-                    'artSubFam_materials' => 'max:255|string',
+                    'artSubFam_ref' => 'required|max:255',
+                    'artSubFam_design' => 'required|max:255',
+                    'artSubFam_drawingPath' => 'required|max:255',
+                    'artSubFam_version' => 'max:255',
+                    'artSubFam_materials' => 'max:255',
                 ],
                 [
                     'artSubFam_version.max' => 'You must enter less than 255 characters ',
@@ -73,11 +83,11 @@ class RawSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|max:255|string',
-                    'artSubFam_design' => 'required|max:255|string',
+                    'artSubFam_ref' => 'required|max:255',
+                    'artSubFam_design' => 'required|max:255',
                     'artSubFam_drawingPath' => 'max:255',
-                    'artSubFam_version' => 'max:255|string',
-                    'artSubFam_materials' => 'max:255|string',
+                    'artSubFam_version' => 'max:255',
+                    'artSubFam_materials' => 'max:255',
                 ],
                 [
                     'artSubFam_ref.required' => 'You must enter a reference for your raw sub family ',
@@ -167,9 +177,9 @@ class RawSubFamilyController extends Controller
         $rawSubFamilies = RawSubFamily::where('rawFam_id', '=', $id)->get();
         $array = [];
         foreach ($rawSubFamilies as $rawSubFamily) {
-            $purchaseBy = EnumPurchasedBy::find($rawSubFamily->enumPurchasedBy_id);
+            $purchaseBy = $rawSubFamily->purchased_by;
             if ($purchaseBy != null) {
-                $purchaseBy = $purchaseBy->first()->value;
+                $purchaseBy = $purchaseBy->value;
             } else {
                 $purchaseBy = null;
             }
@@ -238,5 +248,47 @@ class RawSubFamilyController extends Controller
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($rawSubFamily->id);
+    }
+
+    public function delete_rawSubFamily($id){
+        $rawSubFamily = RawSubFamily::all()->where('id', '==', $id)->first();
+        $mbs=RawFamilyMember::all()->where('rawSubFam_id', '==', $id);
+        foreach ($mbs as $mb){
+            $mb->delete();
+        }
+        $incmgs=IncomingInspection::all()->where('rawSubFam_id', '==', $id);
+        foreach ($incmgs as $incmg){
+            $adminTest=AdminControl::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($adminTest as $adm){
+                $adm->delete();
+            }
+            $aspTest=AspectTest::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($aspTest as $asp){
+                $asp->delete();
+            }
+            $docControl=DocumentaryControl::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($docControl as $doc){
+                $doc->delete();
+            }
+            $dimTest=DimensionalTest::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($dimTest as $dim){
+                $dim->delete();
+            }
+            $incmg->delete();
+        }
+        $purs=PurchaseSpecification::all()->where('rawSubFam_id', '==', $id);
+        foreach ($purs as $pur){
+           $pur->delete();
+        }
+        $stoConds=$rawSubFamily->storage_conditions;
+        foreach ($stoConds as $stoCond){
+            $enum=EnumStorageCondition::find($stoCond->pivot->storageCondition_id);
+            $enum->rawSubFamily()->detach($rawSubFamily);
+        }
+        $crits=Criticality::all()->where('rawSubFam_id', '==', $id);
+        foreach ($crits as $crit){
+            $crit->delete();
+        }
+        $rawSubFamily->delete();
     }
 }

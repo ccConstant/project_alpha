@@ -741,7 +741,6 @@ Route::post('/comp/subFam/update/{id}', [CompSubFamilyController::class, 'update
 Route::post('/comp/subFam/delete/{id}', [CompSubFamilyController::class, 'delete_compSubFamily']);
 Route::post('/comp/mb/delete/{id}', [CompFamilyMemberController::class, 'delete_compFamilyMember']);
 
-
 Route::post('/cons/family/verif', [ConsFamilyController::class, 'verif_consFamily']);
 Route::post('/cons/family/add', [ConsFamilyController::class, 'add_consFamily']);
 Route::post('/cons/mb/verif', [ConsFamilyMemberController::class, 'verif_consFamilyMember']);
@@ -752,8 +751,6 @@ Route::get('/cons/mb/send/{id}', [ConsFamilyMemberController::class, 'send_consF
 Route::post('/cons/family/update/{id}', [ConsFamilyController::class, 'update_consFamily']);
 Route::post('/cons/mb/update/{id}', [ConsFamilyMemberController::class, 'update_consFamilyMember']);
 Route::post('/cons/mb/delete/{id}', [ConsFamilyMemberController::class, 'delete_consFamilyMember']);
-
-
 Route::post('/cons/verifValidation/{id}', [ConsFamilyController::class, 'verifValidation_consFamily']);
 Route::post('/cons/validation/{id}', [ConsFamilyController::class, 'validate_consFamily']);
 Route::post('/cons/subFam/verif', [ConsSubFamilyController::class, 'verif_consSubFamily']);
@@ -901,11 +898,19 @@ Route::post('/artFam/purSpe/verif', [PurchaseSpecificationController::class, 've
 Route::post('/artFam/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe']);
 Route::post('/artSubFam/purSpe/add/{id}', [PurchaseSpecificationController::class, 'add_purSpe_subFam']);
 Route::post('/artFam/purSpe/addCommon/{type}/{id}', [PurchaseSpecificationController::class, 'add_purSpe_common']);
+Route::post('/artFam/purSpe/addCommon/subFam/{type}/{id}', [PurchaseSpecificationController::class, 'add_purSpe_common_subFam']);
 Route::post('/artFam/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe']);
+Route::post('/artSubFam/purSpe/update/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe_subFam']);
+Route::post('/artFam/purSpe/updateCommon/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe_common']);
+Route::post('/artFam/purSpe/updateCommon/subFam/{type}/{id}', [PurchaseSpecificationController::class, 'update_purSpe_common_subFam']);
 Route::get('/artFam/purSpe/send/{id}', [PurchaseSpecificationController::class, 'send_purSpe']);
 Route::get('/artFam/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes']);
+Route::get('/artFam/purSpeCommon/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes_common']);
 Route::get('/artSubFam/purSpe/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes_subFam']);
-
+Route::get('/artSubFam/purSpeCommon/send/{type}/{id}', [PurchaseSpecificationController::class, 'send_purSpes_common_subFam']);
+Route::post('/artFam/purSpe/delete/{id}', [PurchaseSpecificationController::class, 'delete_purSpe']);
+Route::post('/artFam/purSpeCommon/delete/{id}/{type}', [PurchaseSpecificationController::class, 'delete_purSpe_common']);
+Route::post('/artSubFam/purSpeCommon/delete/{id}/{type}', [PurchaseSpecificationController::class, 'delete_purSpe_common_subFam']);
 
 //History for article
 Route::post('/artFam/history/add/{type}/{id}', [HistoryController::class, 'add_history_for_article']);

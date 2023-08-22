@@ -21,6 +21,12 @@ use App\Models\SW03\RawFamily;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumPurchasedBy;
 use App\Models\SW03\RawFamilyMember;
+use App\Models\SW03\DimensionalTest;
+use App\Models\SW03\FunctionalTest;
+use App\Models\SW03\AdminControl;
+use App\Models\SW03\AspectTest;
+use App\Models\SW03\DocumentaryControl;
+use App\Models\SW03\EnumStorageCondition;
 
 class RawFamilyController extends Controller
 {
@@ -36,11 +42,11 @@ class RawFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|max:255|string',
-                    'artFam_design' => 'required|max:255|string',
-                    'artFam_drawingPath' => 'required|max:255|string',
-                    'artFam_version' => 'required|max:255|string',
-                    'artFam_materials' => 'max:255|string',
+                    'artFam_ref' => 'required|max:255',
+                    'artFam_design' => 'required|max:255',
+                    'artFam_drawingPath' => 'required|max:255',
+                    'artFam_version' => 'required|max:255',
+                    'artFam_materials' => 'max:255',
                 ],
                 [
                     'artFam_version.required' => 'You must enter a version for your cons family ',
@@ -81,11 +87,11 @@ class RawFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|max:255|string',
-                    'artFam_design' => 'required|max:255|string',
-                    'artFam_drawingPath' => 'max:255|string',
-                    'artFam_version' => 'max:255|string',
-                    'artFam_materials' => 'max:255|string',
+                    'artFam_ref' => 'required|max:255',
+                    'artFam_design' => 'required|max:255',
+                    'artFam_drawingPath' => 'max:255',
+                    'artFam_version' => 'max:255',
+                    'artFam_materials' => 'max:255',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your raw family ',
@@ -212,9 +218,9 @@ class RawFamilyController extends Controller
      */
     public function send_rawFamily($id) {
         $rawFamily = RawFamily::find($id);
-        $purchaseBy = EnumPurchasedBy::find($rawFamily->enumPurchasedBy_id);
+        $purchaseBy = $rawFamily->purchased_by;
         if ($purchaseBy != null){
-            $purchaseBy = $purchaseBy->first()->value;
+            $purchaseBy = $purchaseBy->value;
         } else {
             $purchaseBy = null;
         }

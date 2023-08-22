@@ -157,6 +157,36 @@ class PurchaseSpecificationController extends Controller
         }
     }
 
+
+     /**
+     * Function call by ArticlePurchaseSpecificationForm.vue when the form is submitted for insert with the route : '/purSpe/addCommon/ (post)
+     * Add a new enregistrement of purchase specification in the data base with the informations entered in the form
+     */
+    public function add_purSpe_common_subFam(Request $request, $type, $id)
+    {
+        if ($type == "comp") {
+            $compSubFamily=CompSubFamily::all()->where('id', '==', $id)->first();
+            $compSubFamily->update([
+                'compSubFam_specifications' => $request->purSpe_specification,
+                'compSubFam_documentsRequested' => $request->purSpe_documentsRequest,
+            ]);
+        }
+        if ($type == "raw") {
+            $rawSubFamily=RawSubFamily::all()->where('id', '==', $id)->first();
+            $rawSubFamily->update([
+                'rawSubFam_specifications' => $request->purSpe_specification,
+                'rawSubFam_documentsRequested' => $request->purSpe_documentsRequest,
+            ]);
+        }
+        if ($type == "cons") {
+            $consSubFamily=ConsSubFamily::all()->where('id', '==', $id)->first();
+            $consSubFamily->update([
+                'consSubFam_specifications' => $request->purSpe_specification,
+                'consSubFam_documentsRequested' => $request->purSpe_documentsRequest,
+            ]);
+        }
+    }
+
     /**
      * Function call by ArticlePurchaseSpecificationForm.vue when the form is submitted for insert with the route : /artFam/purSpe/add (post)
      * Add a new enregistrement of purchase specification in the data base with the informations entered in the form
@@ -192,8 +222,6 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
-                    'documentsRequest' => $request->purSpe_documentsRequest,
-                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -205,8 +233,6 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
-                    'documentsRequest' => $request->purSpe_documentsRequest,
-                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -218,8 +244,6 @@ class PurchaseSpecificationController extends Controller
                     'supplr_ref' => $request->purSpe_supplier_ref,
                     'purSpec_id' => $purSpe->id,
                     'remark' => $request->purSpe_remark,
-                    'documentsRequest' => $request->purSpe_documentsRequest,
-                    'specification' => $request->purSpe_specification,
                 ]
             );
         }
@@ -262,22 +286,97 @@ class PurchaseSpecificationController extends Controller
                     $supp = $piv;
                 }
             }
+            $supplier_id=Supplier::all()->where('id', '==', $supp->supplr_id)->first();
+            $supplier_name="" ; 
+            $supplier_ref=$supp->supplr_ref;;
+            if ($supplier_id!=null){
+              $supplier_name=$supplier_id->supplr_name;
+            }
             array_push($array, [
                 'id' => $purSpec->id,
                 'purSpe_validate' => $purSpec->purSpe_validate,
                 'consFam_id' => $purSpec->consFam_id,
                 'rawFam_id' => $purSpec->rawFam_id,
                 'compFam_id' => $purSpec->compFam_id,
-                'purSpe_supplier_id' => Supplier::all()->where('id', '==', $supp->supplr_id)->first()->supplr_name,
-                'purSpe_supplier_ref' => $supp->supplr_ref,
+                'purSpe_supplier_id' => $supplier_name,
+                'purSpe_supplier_ref' => $supplier_ref,
                 'purSpe_remark' => $supp->remark,
-                'purSpe_documentsRequest' => $supp->documentsRequest,
-                'purSpe_specification' => $supp->specification,
             ]);
         }
         return response()->json($array);
     }
 
+
+    public function send_purSpes_common($type, $id)
+    {
+        $specifications="";
+        $documentsRequested="";
+        $compFam_id = null;
+        $consFam_id = null;
+        $rawFam_id = null;
+        $array = [];
+        if ($type === 'cons') {
+            $consFamily=ConsFamily::all()->where('id', '==', $id)->first();
+            $specifications=$consFamily->consFam_specifications;
+            $documentsRequested=$consFamily->consFam_documentsRequested;
+            $consFam_id=$id;
+        } else if ($type === 'raw') {
+            $rawFamily=RawFamily::all()->where('id', '==', $id)->first();
+            $specifications=$rawFamily->rawFam_specifications;
+            $documentsRequested=$rawFamily->rawFam_documentsRequested;
+            $rawFam_id=$id;
+        } else if ($type === 'comp') {
+            $compFamily=CompFamily::all()->where('id', '==', $id)->first();
+            $specifications=$compFamily->compFam_specifications;
+            $documentsRequested=$compFamily->compFam_documentsRequested;
+            $compFam_id=$id;
+        }
+        array_push($array, [
+            'consFam_id' => $consFam_id,
+            'rawFam_id' => $rawFam_id,
+            'compFam_id' => $compFam_id,
+            'purSpe_documentsRequested' => $documentsRequested,
+            'purSpe_specifications' => $specifications,
+            'id' => $id,
+        ]);
+        return response()->json($array);
+    }
+
+
+    public function send_purSpes_common_subFam($type, $id)
+    {
+        $specifications="";
+        $documentsRequested="";
+        $compSubFam_id = null;
+        $consSubFam_id = null;
+        $rawSubFam_id = null;
+        $array = [];
+        if ($type === 'cons') {
+            $consSubFamily=ConsSubFamily::all()->where('id', '==', $id)->first();
+            $specifications=$consSubFamily->consSubFam_specifications;
+            $documentsRequested=$consSubFamily->consSubFam_documentsRequested;
+            $consSubFam_id=$id;
+        } else if ($type === 'raw') {
+            $rawSubFamily=RawSubFamily::all()->where('id', '==', $id)->first();
+            $specifications=$rawSubFamily->rawSubFam_specifications;
+            $documentsRequested=$rawSubFamily->rawSubFam_documentsRequested;
+            $rawFam_id=$id;
+        } else if ($type === 'comp') {
+            $compSubFamily=CompSubFamily::all()->where('id', '==', $id)->first();
+            $specifications=$compSubFamily->compSubFam_specifications;
+            $documentsRequested=$compSubFamily->compSubFam_documentsRequested;
+            $compFam_id=$id;
+        }
+        array_push($array, [
+            'consSubFam_id' => $consSubFam_id,
+            'rawSubFam_id' => $rawSubFam_id,
+            'compSubFam_id' => $compSubFam_id,
+            'purSpe_documentsRequested' => $documentsRequested,
+            'purSpe_specifications' => $specifications,
+            'id' => $id,
+        ]);
+        return response()->json($array);
+    }
 
     public function send_purSpes_subFam($type, $id)
     {
@@ -319,8 +418,6 @@ class PurchaseSpecificationController extends Controller
                 'purSpe_supplier_id' => Supplier::all()->where('id', '==', $supp->supplr_id)->first()->supplr_name,
                 'purSpe_supplier_ref' => $supp->supplr_ref,
                 'purSpe_remark' => $supp->remark,
-                'purSpe_documentsRequest' => $supp->purSpe_documentsRequest,
-                'purSpe_specification' => $supp->purSpe_specification,
             ]);
         }
         return response()->json($array);
@@ -344,7 +441,7 @@ class PurchaseSpecificationController extends Controller
             $signed = $article->rawFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
-                    'rawFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                    'rawFam_nbrVersion' => $article->rawFam_nbrVersion + 1,
                 ]);
             }
         } else if ($type === 'comp') {
@@ -352,7 +449,7 @@ class PurchaseSpecificationController extends Controller
             $signed = $article->compFam_signatureDate;
             if ($signed !== null) {
                 $article->update([
-                    'compFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                    'compFam_nbrVersion' => $article->compFam_nbrVersion + 1,
                 ]);
             }
         } else {
@@ -378,10 +475,195 @@ class PurchaseSpecificationController extends Controller
                 'supplr_ref' => $request->purSpe_supplier_ref,
                 'purSpec_id' => $purSpec->id,
                 'remark' => $request->purSpe_remark,
-                'documentsRequest' => $request->purSpe_documentsRequest,
-                'specification' => $request->purSpe_specification,
+            ]
+        );
+    }
+
+
+    public function update_purSpe_subFam(Request $request, $type, $id)
+    {
+        $purSpec = PurchaseSpecification::all()->where('id', '==', $id)->first();
+        $supplier = Supplier::all()->where('supplr_name', '==', $request->purSpe_supplier_id)->first();
+        if ($type === 'cons') {
+            $article = ConsSubFamily::all()->where('id', '==', $purSpec->consSubFam_id)->first();
+            $signed = $article->consSubFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consSubFam_nbrVersion' => $article->consSubFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'raw') {
+            $article = RawSubFamily::all()->where('id', '==', $purSpec->rawSubFam_id)->first();
+            $signed = $article->rawSubFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawSubFam_nbrVersion' => $article->rawSubFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'comp') {
+            $article = CompSubFamily::all()->where('id', '==', $purSpec->compSubFam_id)->first();
+            $signed = $article->compSubFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compSubFam_nbrVersion' => $article->compSubFam_nbrVersion + 1,
+                ]);
+            }
+        } else {
+            return response()->json('error', 429);
+        }
+        $article->update([
+            $type . 'SubFam_signatureDate' => null,
+            $type . 'SubFam_qualityApproverId' => null,
+            $type . 'SubFam_technicalReviewerId' => null,
+        ]);
+        $purSpec->update([
+            'purSpe_validate' => $request->purSpe_validate,
+            'purSpe_supplier_id' => $request->purSpe_supplier_id,
+            'purSpe_qualityApproverId' => null,
+            'purSpe_technicalReviewerId' => null,
+            'purSpe_signatureDate' => null,
+        ]);
+        $article->suppliers()->detach($supplier);
+        $article->suppliers()->attach(
+            $supplier,
+            [
+                'supplr_ref' => $request->purSpe_supplier_ref,
+                'purSpec_id' => $purSpec->id,
+                'remark' => $request->purSpe_remark,
             ]
         );
         return response()->json($purSpec);
+    }
+
+
+    public function update_purSpe_common(Request $request, $type, $id)
+    {
+        if ($type=='cons'){
+            $article = ConsFamily::all()->where('id', '==', $id)->first();
+            $signed = $article->consFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consFam_nbrVersion' => $article->consFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'raw') {
+            $article = RawFamily::all()->where('id', '==', $id)->first();
+            $signed = $article->rawFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawFam_nbrVersion' => $article->rawFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'comp') {
+            $article = CompFamily::all()->where('id', '==', $id)->first();
+            $signed = $article->compFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compFam_nbrVersion' => $article->compFam_nbrVersion + 1,
+                ]);
+            }
+        } else {
+            return response()->json('error', 429);
+        }
+        $article->update([
+            $type . 'Fam_signatureDate' => null,
+            $type . 'Fam_qualityApproverId' => null,
+            $type . 'Fam_technicalReviewerId' => null,
+            $type . 'Fam_specifications' => $request->purSpe_specification,
+            $type . 'Fam_documentsRequested' => $request->purSpe_documentsRequest,
+        ]);
+        return response()->json($article);
+    }
+    
+    public function update_purSpe_common_subFam(Request $request, $type, $id)
+    {
+        if ($type=='cons'){
+            $article = ConsSubFamily::all()->where('id', '==', $id)->first();
+            $signed = $article->consSubFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'consSubFam_nbrVersion' => $article->consSubFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'raw') {
+            $article = RawSubFamily::all()->where('id', '==', $id)->first();
+            $signed = $article->rawSubFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'rawSubFam_nbrVersion' => $article->rawSubFam_nbrVersion + 1,
+                ]);
+            }
+        } else if ($type === 'comp') {
+            $article = CompSubFamily::all()->where('id', '==', $id)->first();
+            $signed = $article->compSubFam_signatureDate;
+            if ($signed !== null) {
+                $article->update([
+                    'compSubFam_nbrVersion' => $article->compSubFam_nbrVersion + 1,
+                ]);
+            }
+        } else {
+            return response()->json('error', 429);
+        }
+        $article->update([
+            $type . 'SubFam_signatureDate' => null,
+            $type . 'SubFam_qualityApproverId' => null,
+            $type . 'SubFam_technicalReviewerId' => null,
+            $type . 'SubFam_specifications' => $request->purSpe_specification,
+            $type . 'SubFam_documentsRequested' => $request->purSpe_documentsRequest,
+        ]);
+        return response()->json($article);
+    }
+
+    public function delete_purSpe($id){
+        $purSpe=PurchaseSpecification::findOrFail($id);
+        $purSpe->delete();
+    }
+
+    public function delete_purSpe_common($id, $type){
+        if ($type=="comp"){
+            $compFamily=CompFamily::findOrFail($id);
+            $compFamily->update([
+                'compFam_specifications' => null,
+                'compFam_documentsRequested' => null,
+            ]);
+        }
+        if ($type=="raw"){
+            $rawFamily=RawFamily::findOrFail($id);
+            $rawFamily->update([
+                'rawFam_specifications' => null,
+                'rawFam_documentsRequested' => null,
+            ]);
+        }
+        if ($type=="cons"){
+            $consFamily=ConsFamily::findOrFail($id);
+            $consFamily->update([
+                'consFam_specifications' => null,
+                'consFam_documentsRequested' => null,
+            ]);
+        }
+    }
+
+    public function delete_purSpe_common_subFam($id, $type){
+        if ($type=="comp"){
+            $compSubFamily=CompSubFamily::findOrFail($id);
+            $compSubFamily->update([
+                'compSubFam_specifications' => null,
+                'compSubFam_documentsRequested' => null,
+            ]);
+        }
+        if ($type=="raw"){
+            $rawSubFamily=RawSubFamily::findOrFail($id);
+            $rawSubFamily->update([
+                'rawSubFam_specifications' => null,
+                'rawSubFam_documentsRequested' => null,
+            ]);
+        }
+        if ($type=="cons"){
+            $consSubFamily=ConsSubFamily::findOrFail($id);
+            $consSubFamily->update([
+                'consSubFam_specifications' => null,
+                'consSubFam_documentsRequested' => null,
+            ]);
+        }
     }
 }

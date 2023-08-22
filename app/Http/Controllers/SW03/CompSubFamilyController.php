@@ -15,9 +15,19 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\SW03\CompSubFamily;
 use App\Models\SW03\CompFamily;
+use App\Models\SW03\CompFamilyMember;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumPurchasedBy;
 use App\Http\Controllers\Controller;
+use App\Models\SW03\DimensionalTest;
+use App\Models\SW03\FunctionalTest;
+use App\Models\SW03\AdminControl;
+use App\Models\SW03\AspectTest;
+use App\Models\SW03\DocumentaryControl;
+use App\Models\SW03\PurchaseSpecification;
+use App\Models\SW03\EnumStorageCondition;
+use App\Models\SW03\Criticality;
+use App\Models\SW03\IncomingInspection;
 
 class CompSubFamilyController extends Controller
 {
@@ -34,11 +44,11 @@ class CompSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|max:255|string',
-                    'artSubFam_design' => 'required|max:255|string',
-                    'artSubFam_drawingPath' => 'required|max:255|string',
-                    'artSubFam_version' => 'required|max:255|string',
-                    'artSubFam_materials' => 'max:255|string',
+                    'artSubFam_ref' => 'required|max:255 ',
+                    'artSubFam_design' => 'required|max:255 ',
+                    'artSubFam_drawingPath' => 'required|max:255 ',
+                    'artSubFam_version' => 'required|max:255 ',
+                    'artSubFam_materials' => 'max:255 ',
                 ],
                 [
 
@@ -76,11 +86,11 @@ class CompSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|max:255|string',
-                    'artSubFam_design' => 'required|max:255|string',
+                    'artSubFam_ref' => 'required|max:255 ',
+                    'artSubFam_design' => 'required|max:255 ',
                     'artSubFam_drawingPath' => 'max:255',
                     'artSubFam_version' => 'max:255',
-                    'artSubFam_materials' => 'max:255|string',
+                    'artSubFam_materials' => 'max:255 ',
                 ],
                 [
                     'artSubFam_ref.required' => 'You must enter a reference for your comp sub family ',
@@ -168,9 +178,9 @@ class CompSubFamilyController extends Controller
         $compSubFamilies = CompSubFamily::where('compFam_id', '=', $id)->get();
         $array = [];
         foreach ($compSubFamilies as $compSubFamily) {
-            $purchaseBy = EnumPurchasedBy::find($compSubFamily->enumPurchasedBy_id);
+            $purchaseBy = $compSubFamily->purchased_by;
             if ($purchaseBy != null) {
-                $purchaseBy = $purchaseBy->first()->value;
+                $purchaseBy = $purchaseBy->value;
             } else {
                 $purchaseBy = null;
             }
@@ -239,5 +249,51 @@ class CompSubFamilyController extends Controller
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($compSubFamily);
+    }
+
+    public function delete_compSubFamily($id){
+        $compSubFamily = CompSubFamily::all()->where('id', '==', $id)->first();
+        $mbs=CompFamilyMember::all()->where('compSubFam_id', '==', $id);
+        foreach ($mbs as $mb){
+            $mb->delete();
+        }
+        $incmgs=IncomingInspection::all()->where('compSubFam_id', '==', $id);
+        foreach ($incmgs as $incmg){
+            $adminTest=AdminControl::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($adminTest as $adm){
+                $adm->delete();
+            }
+            $aspTest=AspectTest::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($aspTest as $asp){
+                $asp->delete();
+            }
+            $docControl=DocumentaryControl::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($docControl as $doc){
+                $doc->delete();
+            }
+            $funcTest=FunctionalTest::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($funcTest as $func){
+                $func->delete();
+            }
+            $dimTest=DimensionalTest::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($dimTest as $dim){
+                $dim->delete();
+            }
+            $incmg->delete();
+        }
+        $purs=PurchaseSpecification::all()->where('compSubFam_id', '==', $id);
+        foreach ($purs as $pur){
+           $pur->delete();
+        }
+        $stoConds=$compSubFamily->storage_conditions;
+        foreach ($stoConds as $stoCond){
+            $enum=EnumStorageCondition::find($stoCond->pivot->storageCondition_id);
+            $enum->compSubFamily()->detach($compSubFamily);
+        }
+        $crits=Criticality::all()->where('compSubFam_id', '==', $id);
+        foreach ($crits as $crit){
+            $crit->delete();
+        }
+        $compSubFamily->delete();
     }
 }

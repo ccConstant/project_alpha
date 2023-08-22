@@ -37,6 +37,8 @@ class CreateRawSubFamiliesTable extends Migration
             $table->enum('rawSubFam_validate', ['drafted', 'to_be_validated', 'validated']);
             $table->boolean('rawSubFam_active')->default(true);
             $table->unsignedBigInteger('enumPurchasedBy_id')->nullable();
+            $table->string('rawSubFam_specifications')->nullable();
+            $table->string('rawSubFam_documentsRequested')->nullable();
             $table->foreign('enumPurchasedBy_id')->references('id')->on('enum_purchased_bies')->onDelete('restrict');
             $table->timestamps();
             $table->unsignedBigInteger('rawFam_id') ->nullable();

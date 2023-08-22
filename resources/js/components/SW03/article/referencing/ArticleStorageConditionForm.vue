@@ -113,7 +113,7 @@ export default {
     equipment_id_update: ID of the equipment in which the file will be updated
     errors: Object of errors in which will be stores the different error occurred when adding in database
     addSucces: Boolean who tell if this file has been added successfully
-    isInConsultedMod: data of the consultMod prop
+    isInConsultMod: data of the consultMod prop
 -----------------------------------------------------------*/
     data() {
         return {
@@ -168,7 +168,7 @@ export default {
                         }*/
                         this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
                         /*If the user is not in modification mode*/
-                        this.isInConsultedMod = true;
+                        this.isInConsultMod = true;
                         this.addSucces = true
                         /*the id of the file take the value of the newly created id*/
                         this.storageCondition_id = response.data;
@@ -193,7 +193,7 @@ export default {
                         }*/
                         this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
                         /*If the user is not in modification mode*/
-                        this.isInConsultedMod = true;
+                        this.isInConsultMod = true;
                         this.addSucces = true
                         /*the id of the file take the value of the newly created id*/
                         this.storageCondition_id = response.data;
@@ -225,7 +225,7 @@ export default {
                     }
                     this.$refs.sucessAlert.showAlert(`Storage conditions have been successfully linked to the article`);
                     /*If the user is not in modification mode*/
-                    this.isInConsultedMod = true;
+                    this.isInConsultMod = true;
                     this.addSucces = true
                 }).catch(error =>{
                     this.errors = error.response.data.errors;
@@ -264,10 +264,30 @@ export default {
             if (this.modifMod == true && this.storageCondition_id !== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 if (this.art_id !== null) {
-                    console.log("cas 1")
                     const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
                     axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
                         artFam_id: this.art_id
+                    }).then(response => {
+                        /*We test if a life sheet has been already created*/
+                        /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                        if (lifesheet_created == true) {
+                            axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                                history_reasonUpdate: reason,
+                            });
+                            window.location.reload();
+                        }
+                        /*Emit to the parent component that we want to delete this component*/
+                        this.$emit('deleteStorageCondition', '')
+                        this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
+                    }).catch(error => this.errors = error.response.data.errors);
+                }else{
+                    console.log("delete sto")
+                    console.log(this.artSubFam_id)
+                    console.log(this.storageCondition_id)
+                    console.log(this.artFam_type)
+                    const consultUrl = (type, id) => `/artSubFam/enum/storageCondition/unlink/${type}/${id}`;
+                    axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
+                        artSubFam_id: this.artSubFam_id
                     }).then(response => {
                         /*We test if a life sheet has been already created*/
                         /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/

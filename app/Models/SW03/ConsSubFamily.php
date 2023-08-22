@@ -36,6 +36,8 @@ class ConsSubFamily extends Model
     'consSubFam_version',
     'consSubFam_active',
     'consFam_id',
+    'consSubFam_specifications',
+    'consSubFam_documentsRequested',
     'consSubFam_materials'
     ] ;
    

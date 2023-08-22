@@ -16,7 +16,7 @@
                     :Errors="errors.purSpe_specification"
                     :info_text="null"
                     inputClassName="form-control w-80"
-                    :isDisabled="this.isInConsultMod"
+                    :isDisabled="!!this.isInConsultMod"
                     :max="255"
                     :min="2"
                     label="Specifications"
@@ -27,7 +27,7 @@
                 v-model="purSpe_documentsRequest"
                     :Errors="errors.purSpe_documentsRequest"
                     :info_text="null"
-                    :isDisabled="this.isInConsultMod"
+                    :isDisabled="!!this.isInConsultMod"
                     :max="255"
                     :min="2"
                     label="Documents Required"
@@ -36,7 +36,7 @@
                 />
                 <SaveButtonForm v-if="this.addSucces===false"
                                 ref="saveButton"
-                                :consultMod="this.isInConsultMod"
+                                :consultMod="!!this.isInConsultMod"
                                 :modifMod="this.isInModifMod"
                                 :savedAs="validate"
                                 @add="addPurchaseSpecificationCommon"
@@ -183,7 +183,6 @@ export default {
                     })
                     /*If the data have been added in the database, we show a success message*/
                     .then(response => {
-                        console.log(response.data)
                         this.addSuccess = true;
                         this.isInConsultMod = true;
                          this.$emit('first', false)
@@ -192,6 +191,23 @@ export default {
                     }).catch(error => {
                         this.errors = error.response.data.errors;
                     });
+                }else{
+                     const consultUrl = (type,id) => `/artFam/purSpe/addCommon/subFam/${type}/${id}`;
+                    axios.post(consultUrl(this.artFam_type, this.articleSubFam_id), {
+                        purSpe_documentsRequest: this.purSpe_documentsRequest,
+                        purSpe_specification: this.purSpe_specification,
+                    })
+                    /*If the data have been added in the database, we show a success message*/
+                    .then(response => {
+                        this.addSuccess = true;
+                        this.isInConsultMod = true;
+                         this.$emit('first', false)
+                        this.$snotify.success(`purchase specification common added successfully and saved as ${savedAs}`);
+                        this.purSpe_validate = savedAs;
+                    }).catch(error => {
+                        this.errors = error.response.data.errors;
+                    });
+
                 }
             }
         },
@@ -200,47 +216,53 @@ export default {
         @param reason The reason of the modification
         @param lifesheet_created */
         updatePurchaseSpecificationCommon(savedAs, reason, lifesheet_created) {
-            /*The First post to verify if all the fields are filled correctly,
-            The name, location and validate option are sent to the controller*/
-            axios.post('/artFam/purSpe/verif', {
-                purSpe_validate: savedAs,
-                purSpe_supplier_id: this.purSpe_supplier_id,
-                purSpe_supplier_ref: this.purSpe_supplier_ref,
-                purSpe_remark: this.purSpe_remark,
-                purSpe_documentsRequest: this.purSpe_documentsRequest,
-                purSpe_specification: this.purSpe_specification,
-            }).then(response => {
-                    this.errors = {};
-                    /*If all the verifications passed, a new post this time to add the file in the database
-                    Type, name, value, unit, validate option and id of the equipment is sent to the controller
-                    In the post url the id correspond to the id of the file who will be updated*/
-                    axios.post('/artFam/purSpe/update/' + this.artFam_type + '/' + this.purSpe_id, {
-                        purSpe_validate: savedAs,
-                        purSpe_supplier_id: this.purSpe_supplier_id,
-                        purSpe_supplier_ref: this.purSpe_supplier_ref,
-                        purSpe_remark: this.purSpe_remark,
-                        purSpe_documentsRequest: this.purSpe_documentsRequest,
-                        purSpe_specification: this.purSpe_specification,
-                    }).then(response => {
-                        console.log(response.data)
-                            this.file_validate = savedAs;
-                            /*We test if a life sheet has been already created*/
-                            /*If it's the case we create a new enregistrement of history for saved the reason of the update*/
-                            if (lifesheet_created == true) {
-                                axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
-                                    history_reasonUpdate: reason,
-                                });
-                                window.location.reload();
-                            }
-                            this.$refs.sucessAlert.showAlert(`Article Purchase Specification updated successfully and saved as ${savedAs}`);
-                        })
-                        /*If the controller sends errors, we put it in the error object*/
-                        .catch(error => {
-                            this.errors = error.response.data.errors;
+            let id;
+            /*If the user is not in modification mode, we set the id with the value of data art_id_add*/
+            if (!this.modifMod) {
+                id = this.art_id_add;
+                /*Else the user is in the update menu, we allocate to the id the value of the id get in the url*/
+            } else {
+                id = this.art_id_update;
+            }
+            if (this.art_id!=null){
+                axios.post('/artFam/purSpe/updateCommon/'+this.artFam_type + '/' + id, {
+                    purSpe_documentsRequest: this.purSpe_documentsRequest,
+                    purSpe_specification: this.purSpe_specification,
+                }).then(response => {
+                    this.purSpe_validate = savedAs;
+                    if (lifesheet_created == true) {
+                        axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
+                            history_reasonUpdate: reason,
                         });
+                        window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`Article Purchase Specification Common updated successfully and saved as ${savedAs}`);
                 })
                 /*If the controller sends errors, we put it in the error object*/
-                .catch(error => this.errors = error.response.data.errors);
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
+            }else{
+                axios.post('/artFam/purSpe/updateCommon/subFam/'+this.artFam_type + '/' + this.articleSubFam_id, {
+                    purSpe_documentsRequest: this.purSpe_documentsRequest,
+                    purSpe_specification: this.purSpe_specification,
+                }).then(response => {
+                    this.purSpe_validate = savedAs;
+                    if (lifesheet_created == true) {
+                        axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.art_id_update, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    this.$refs.sucessAlert.showAlert(`Article Purchase Specification Common updated successfully and saved as ${savedAs}`);
+                })
+                /*If the controller sends errors, we put it in the error object*/
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+                });
+
+            }
+
         },
         clearSelectError(value) {
             delete this.errors[value];
@@ -248,31 +270,50 @@ export default {
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
             /*If the user is in update mode and the file exist in the database*/
-            if (this.modifMod == true && this.file_id !== null) {
+            if (this.modifMod == true && (this.purSpe_documentsRequest!== null || this.purSpe_specification!==null)) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
-                const consultUrl = (id) => `/equipment/delete/file/${id}`;
-                axios.post(consultUrl(this.file_id), {
-                    eq_id: this.equipment_id_update
+                if (this.art_id!=null ){
+                const consultUrl = (id,type) => `/artFam/purSpeCommon/delete/${id}/${type}`;
+                axios.post(consultUrl(this.art_id_update,this.artFam_type), {
                 })
-                    .then(response => {
-                        const id = this.equipment_id_update;
-                        /*We test if a life sheet has been already created*/
-                        /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                        if (artSheet_created == true) {
-                            axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
-                                history_reasonUpdate: reason,
-                            });
-                            window.location.reload();
-                        }
-                        /*Emit to the parent component that we want to delete this component*/
-                        this.$emit('deleteFile', '')
-                        this.$refs.sucessAlert.showAlert(`Equipment file deleted successfully`);
-                    })
-                    /*If the controller sends errors, we put it in the error object*/
-                    .catch(error => this.errors = error.response.data.errors);
+                .then(response => {
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    if (lifesheet_created == true) {
+                        axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deletePurSpeCommon', '')
+                    this.$refs.sucessAlert.showAlert(`Purchase Specification Common deleted successfully`);
+                })
+                /*If the controller sends errors, we put it in the error object*/
+                .catch(error => this.errors = error.response.data.errors);
+            }else{
+                const consultUrl = (id,type) => `/artSubFam/purSpeCommon/delete/${id}/${type}`;
+                axios.post(consultUrl(this.articleSubFam_id,this.artFam_type), {
+                })
+                .then(response => {
+                    /*We test if a life sheet has been already created*/
+                    /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
+                    if (lifesheet_created == true) {
+                        axios.post('/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
+                            history_reasonUpdate: reason,
+                        });
+                        window.location.reload();
+                    }
+                    /*Emit to the parent component that we want to delete this component*/
+                    this.$emit('deletePurSpeCommon', '')
+                    this.$refs.sucessAlert.showAlert(`Purchase Specification Common deleted successfully`);
+                })
+                /*If the controller sends errors, we put it in the error object*/
+                .catch(error => this.errors = error.response.data.errors);
+            }
             } else {
-                this.$emit('deleteFile', '')
-                this.$refs.sucessAlert.showAlert(`Empty Equipment file deleted successfully`);
+                this.$emit('deletePurSpeCommon', '')
+                this.$refs.sucessAlert.showAlert(`Empty Purchase Specification Common deleted successfully`);
             }
         }
     },

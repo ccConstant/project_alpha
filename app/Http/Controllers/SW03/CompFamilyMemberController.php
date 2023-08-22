@@ -109,4 +109,10 @@ class CompFamilyMemberController extends Controller
         ]);*/
         return response()->json($member);
     }
+
+    public function delete_compFamilyMember($id)
+    {
+        $member = CompFamilyMember::findOrFail($id);
+        $member->delete();
+    }
 }

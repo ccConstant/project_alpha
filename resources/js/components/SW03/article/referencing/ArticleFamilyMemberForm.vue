@@ -176,7 +176,7 @@ export default {
         @param savedAs Value of the validation option: drafted, to_be_validated or validated
         @param reason The reason of the modification
         @param artSheet_created */
-        addArticleMember(savedAs, reason, artSheet_created) {
+        addArticleMember(savedAs, reason, lifesheet_created) {
             if (!this.addSucces) {
                 /*ID of the equipment in which the file will be added*/
                 let id;
@@ -369,7 +369,7 @@ export default {
                                     .then(response => {
                                         this.addSuccess = true;
                                         this.isInConsultMod = true;
-                                        if (artSheet_created == true) {
+                                        if (lifesheet_created == true) {
                                             axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + id, {
                                                 history_reasonUpdate: reason,
                                             });
@@ -393,6 +393,8 @@ export default {
         },
         /*Function for deleting a file from the view and the database*/
         deleteComponent(reason, lifesheet_created) {
+            console.log("delete")
+            console.log(this.artFamMember_id)
             /*If the user is in update mode and the file exist in the database*/
             if (this.modifMod == true && this.artFamMember_id!== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
@@ -400,6 +402,7 @@ export default {
                 axios.post(consultUrl(this.artFamMember_id), {
                 })
                 .then(response => {
+                    console.log(response.data)
                     /*We test if a life sheet has been already created*/
                     /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
                    /* if (lifesheet_created == true) {
@@ -416,7 +419,7 @@ export default {
                 .catch(error => this.errors = error.response.data.errors);
             }else {
                 this.$emit('deleteFile', '')
-                this.$refs.sucessAlert.showAlert(`Empty Equipment file deleted successfully`);
+                this.$refs.sucessAlert.showAlert(`Empty Article family deleted successfully`);
             }
         },
     },

@@ -15,9 +15,20 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\SW03\ConsSubFamily;
 use App\Models\SW03\ConsFamily;
+use App\Models\SW03\ConsFamilyMember;
 use Illuminate\Support\Facades\DB;
 use App\Models\SW03\EnumPurchasedBy;
 use App\Http\Controllers\Controller;
+use App\Models\SW03\DimensionalTest;
+use App\Models\SW03\FunctionalTest;
+use App\Models\SW03\AdminControl;
+use App\Models\SW03\AspectTest;
+use App\Models\SW03\DocumentaryControl;
+use App\Models\SW03\PurchaseSpecification;
+use App\Models\SW03\EnumStorageCondition;
+use App\Models\SW03\Criticality;
+use App\Models\SW03\IncomingInspection;
+
 
 class ConsSubFamilyController extends Controller
 {
@@ -33,11 +44,11 @@ class ConsSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|max:255|string',
-                    'artSubFam_design' => 'required|max:255|string',
-                    'artSubFam_drawingPath' => 'required|max:255|string',
-                    'artSubFam_version' => 'required|max:255|string',
-                    'artSubFam_materials' => 'max:255|string',
+                    'artSubFam_ref' => 'required|max:255 ',
+                    'artSubFam_design' => 'required|max:255 ',
+                    'artSubFam_drawingPath' => 'required|max:255 ',
+                    'artSubFam_version' => 'required|max:255 ',
+                    'artSubFam_materials' => 'max:255 ',
                 ],
                 [
 
@@ -76,11 +87,11 @@ class ConsSubFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artSubFam_ref' => 'required|max:255|string',
-                    'artSubFam_design' => 'required|max:255|string',
+                    'artSubFam_ref' => 'required|max:255',
+                    'artSubFam_design' => 'required|max:255',
                     'artSubFam_drawingPath' => 'max:255',
                     'artSubFam_version' => 'max:255',
-                    'artSubFam_materials' => 'max:255|string',
+                    'artSubFam_materials' => 'max:255',
                 ],
                 [
                     'artSubFam_ref.required' => 'You must enter a reference for your cons sub family ',
@@ -170,9 +181,9 @@ class ConsSubFamilyController extends Controller
         $consSubFamilies = ConsSubFamily::where('consFam_id', '=', $id)->get();
         $array = [];
         foreach ($consSubFamilies as $consSubFamily) {
-            $purchaseBy = EnumPurchasedBy::find($consSubFamily->enumPurchasedBy_id);
+            $purchaseBy = $consSubFamily->purchased_by;
             if ($purchaseBy != null) {
-                $purchaseBy = $purchaseBy->first()->value;
+                $purchaseBy = $purchaseBy->value;
             } else {
                 $purchaseBy = null;
             }
@@ -241,5 +252,43 @@ class ConsSubFamilyController extends Controller
             'enumPurchasedBy_id' => $enum,
         ]);
         return response()->json($consSubFamily);
+    }
+
+    public function delete_consSubFamily($id){
+        $consSubFamily = ConsSubFamily::all()->where('id', '==', $id)->first();
+        $mbs=ConsFamilyMember::all()->where('consSubFam_id', '==', $id);
+        foreach ($mbs as $mb){
+            $mb->delete();
+        }
+        $incmgs=IncomingInspection::all()->where('consSubFam_id', '==', $id);
+        foreach ($incmgs as $incmg){
+            $adminTest=AdminControl::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($adminTest as $adm){
+                $adm->delete();
+            }
+            $aspTest=AspectTest::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($aspTest as $asp){
+                $asp->delete();
+            }
+            $docControl=DocumentaryControl::all()->where('incmgInsp_id', '==', $incmg->id);
+            foreach($docControl as $doc){
+                $doc->delete();
+            }
+            $incmg->delete();
+        }
+        $purs=PurchaseSpecification::all()->where('consSubFam_id', '==', $id);
+        foreach ($purs as $pur){
+           $pur->delete();
+        }
+        $stoConds=$consSubFamily->storage_conditions;
+        foreach ($stoConds as $stoCond){
+            $enum=EnumStorageCondition::find($stoCond->pivot->storageCondition_id);
+            $enum->consSubFamily()->detach($consSubFamily);
+        }
+        $crits=Criticality::all()->where('consSubFam_id', '==', $id);
+        foreach ($crits as $crit){
+            $crit->delete();
+        }
+        $consSubFamily->delete();
     }
 }

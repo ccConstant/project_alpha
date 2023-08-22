@@ -60,7 +60,6 @@
                         <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
                             <div class="accordion-body">
                                 <ReferenceAnArticlePurchaseSpecification
-                                    modifMod
                                     :artType="this.artFam_type"
                                     :artFam_id="this.artFam_id"
                                     :import_id="this.artFam_id"

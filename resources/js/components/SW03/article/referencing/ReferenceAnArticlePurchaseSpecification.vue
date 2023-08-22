@@ -9,13 +9,13 @@
             <b-spinner variant="primary"></b-spinner>
         </div>
         <div v-else class="articlePurchaseSpecification">
-            <h2 v-if="components.length>0" class="titleForm">Article Purchase Specification(s) </h2>
+            <h2 v-if="components.length>0 || componentsCommon.length>0" class="titleForm">Article Purchase Specification(s) </h2>
             <InputInfo v-if="title_info != null" :info="title_info.info_value" class="info_title"/>
-
-            <div v-if="first">
+            
+            <div v-if="!first || first" >
             <ArticlePurchaseSpecificationCommonForm
                 :is="component.comp"
-                v-for="(component, key) in components"
+                v-for="(component, key) in componentsCommon"
                 :id="component.id"
                 :key="component.key"
                 ref="ask_purchaseSpecification_data"
@@ -27,14 +27,14 @@
                 :specification="component.specification"
                 :documentsRequest="component.documentsRequest"
                 :articleSubFam_id="data_artSubFam_id"
-                @deleteStorageCondition="getContent(key)"
+                @deletePurSpeCommon="getContentCommon(key)"
                 @first="firstData()"
             />
             </div>
             <!--Adding to the vue EquipmentDimForm by going through the components array with the v-for-->
             <!--ref="ask_dim_data" is used to call the child elements in this component-->
             <!--The emitted deleteDim is caught here and call the function getContent -->
-            <div v-if="!first">
+            <div v-if="!first || this.modifMod || this.isInConsultMod" >
             <ArticlePurchaseSpecificationForm 
                 :is="component.comp"
                 v-for="(component, key) in components"
@@ -48,12 +48,12 @@
                 :divClass="component.className"
                 :modifMod="component.id !== null"
                 :supplier_id="component.supplier"
-                :supplier_ref="component.supplierRef"
+                :supplier_ref="component.supplier_ref"
                 :remark="component.remark"
                 :specification="component.specification"
                 :documentsRequest="component.documentsRequest"
                 :articleSubFam_id="data_artSubFam_id"
-                @deleteStorageCondition="getContent(key)"
+                @deletePurSpe="getContent(key)"
             />
             </div>
             <!--If the user is not in consultation mode -->
@@ -152,6 +152,7 @@ export default {
     data() {
         return {
             components: [],
+            componentsCommon:[],
             uniqueKey: 0,
             count: 0,
             first: true,
@@ -163,6 +164,7 @@ export default {
             data_art_type: this.artType.toLowerCase(),
             loaded: false,
             purchaseSpec: null,
+            purchaseSpecCommon: null,
             data_checkedTest: this.checkedTest,
             data_docControlName: this.docControl_name,
             data_artSubFam_id: this.articleSubFam_id
@@ -172,7 +174,7 @@ export default {
         /*Function for adding a new empty dimension form*/
         addComponent() {
             if (this.first){
-                this.components.push({
+                this.componentsCommon.push({
                     comp: 'ArticlePurchaseSpecificationCommonForm',
                     key: this.uniqueKey++,
                     id: null
@@ -186,19 +188,27 @@ export default {
             }
         },
         /*Function for adding an imported dimension form with his data*/
-        addImportedComponent(
-            purchaseSpecification_supplier,
+        addImportedComponent(purchaseSpecification_supplier,
             purchaseSpecification_supplierRef,
-            purchaseSpecification_remark, purchaseSpecification_specification, purchaseSpecification_documentsRequest,purchaseSpecification_className, id) {
+            purchaseSpecification_remark,purchaseSpecification_className, id) {
             this.components.push({
                 comp: 'ArticlePurchaseSpecificationForm',
                 key: this.uniqueKey++,
                 supplier: purchaseSpecification_supplier,
-                supplierRef: purchaseSpecification_supplierRef,
-                specification: purchaseSpecification_specification,
-                documentsRequest: purchaseSpecification_documentsRequest,
+                supplier_ref: purchaseSpecification_supplierRef,
                 className: purchaseSpecification_className,
                 remark: purchaseSpecification_remark,
+                id: id
+            });
+        },
+        addImportedComponentCommon(
+            purchaseSpecifications_doc, purchaseSpecifications_spec,purchaseSpecification_className, id) {
+            this.componentsCommon.push({
+                comp: 'ArticlePurchaseSpecificationCommonForm',
+                key: this.uniqueKey++,
+                specification: purchaseSpecifications_spec,
+                documentsRequest: purchaseSpecifications_doc,
+                className: purchaseSpecification_className,
                 id: id
             });
         },
@@ -206,35 +216,52 @@ export default {
         getContent(key) {
             this.components.splice(key, 1);
         },
+        getContentCommon(key) {
+            this.componentsCommon.splice(key, 1);
+        },
         firstData(){
             this.first=false;
-            this.components.push({
-                comp: 'ArticlePurchaseSpecificationForm',
-                key: this.uniqueKey++,
-                id: null
-            });
+            if (!this.modifMod){
+                    this.components.push({
+                    comp: 'ArticlePurchaseSpecificationForm',
+                    key: this.uniqueKey++,
+                    id: null
+                });
+            }
 
         },
         importPurSpe() {
             if (this.purchaseSpec.length === 0 && !this.isInModifMod) {
                 this.loaded = true;
             } else {
-                console.log("import pur spe")
                 for (const dt of this.purchaseSpec) {
                     const className = "importedPurSpe" + dt.id;
-                    
                     this.addImportedComponent(
                         dt.purSpe_supplier_id,
                         dt.purSpe_supplier_ref,
                         dt.purSpe_remark,
-                        dt.purSpe_specification,
-                        dt.purSpe_documentsRequest,
                         className,
                         dt.id
                     );
                 }
                 this.criticality = null
             }
+        },
+
+        importPurSpeCommon() {
+            for (const dt of this.purchaseSpecCommon) {
+                if (dt.purSpe_documentsRequested!=null || dt.purSpe_specifications!=null) {
+                    this.first=false;
+                    const className = "importedPurSpeCommon" + dt.id;
+                    this.addImportedComponentCommon(
+                        dt.purSpe_documentsRequested,
+                        dt.purSpe_specifications,
+                        className,
+                        dt.id
+                    );
+                }
+            }
+            this.criticality = null
         },
 
         /*Function for saving all the data in one time*/
@@ -264,16 +291,20 @@ export default {
     },
     /*All functions inside the created option are called after the component has been created.*/
     created() {
-        if (this.addAuto && !this.modifMod) {
-            this.addComponent();
-        }
+
         /*If the user chooses importation doc control*/
         if (this.import_id !== null) {
-            console.log("je suis la")
             /*Make a get request to ask the controller the doc control to corresponding to the id of the incoming inspection with which data will be imported*/
             
             if (this.data_art_id !== null) {
-                console.log("good case")
+                if (this.modifMod){
+                    axios.get('/artFam/purSpeCommon/send/' + this.data_art_type + '/' + this.import_id)
+                        .then(response => {
+                            this.purchaseSpecCommon = response.data;
+                            this.importPurSpeCommon();
+                        }).catch(error => {
+                    });
+                }
                 axios.get('/artFam/purSpe/send/' + this.data_art_type + '/' + this.import_id)
                     .then(response => {
                         this.purchaseSpec = response.data;
@@ -282,9 +313,24 @@ export default {
                     }).catch(error => {
                 });
             } else {
+                console.log("else")
+                console.log(this.modifMod)
+                if (this.modifMod){
+                    axios.get('/artSubFam/purSpeCommon/send/' + this.data_art_type + '/' + this.data_artSubFam_id)
+                        .then(response => {
+                            this.purchaseSpecCommon = response.data;
+                            console.log(this.purchaseSpecCommon)
+                            this.importPurSpeCommon();
+                        }).catch(error => {
+                    });
+                }
+                console.log("other")
+                console.log(this.import_id)
                 axios.get('/artSubFam/purSpe/send/' + this.data_art_type + '/' + this.import_id)
                     .then(response => {
+                        console.log(response.data)
                         this.purchaseSpec = response.data;
+                        console.log(this.purchaseSpec)
                         this.importPurSpe();
                         this.loaded = true;
                     }).catch(error => {

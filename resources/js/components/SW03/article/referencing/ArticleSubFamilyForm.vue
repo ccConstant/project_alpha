@@ -101,7 +101,7 @@
                 />
         </form>
 
-        <SuccessAlert ref="successAlert"/>
+        <SucessAlert ref="sucessAlert"/>
         <div v-if="this.artSubFam_id!==null && modifMod==false && consultMod==false && this.addSuccess" >
             <ReferenceAnArticleFamilyMember :importedMembers="importedMember" :consultMod="!!this.consultMod" :artType="this.data_artFam_type" :artFam_ref="this.data_artFam_ref" :artSubFam_ref="this.artSubFam_ref"  :artSubFam_id="this.artSubFam_id"  :modifMod="!!this.isInModifMod" :import_id="this.artSubFam_id"/>
         </div>
@@ -144,7 +144,7 @@
                         <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
                             <div class="accordion-body">
                                 <ReferenceAnArticlePurchaseSpecification
-                                    modifMod
+                                    :modifMod="this.modifMod"
                                     :artType="this.data_artFam_type"
                                     :articleSubFam_id="this.artSubFam_id"
                                     :import_id="this.artSubFam_id"
@@ -211,7 +211,7 @@ import InputNumberForm from '../../../input/SW03/InputNumberForm.vue'
 import InputTextDoubleForm from '../../../input/SW03/InputTextDoubleForm.vue'
 import RadioGroupForm from '../../../input/SW03/RadioGroupForm.vue'
 import SaveButtonForm from '../../../button/SaveButtonForm.vue'
-import SuccessAlert from '../../../alert/SuccesAlert.vue'
+import SucessAlert from '../../../alert/SuccesAlert.vue'
 import ReferenceAnArticleFamilyMember from './ReferenceAnArticleFamilyMember.vue'
 import ReferenceAnIncmgInsp from "../../incInsp/referencing/ReferenceAnIncmgInsp.vue";
 import ReferenceACrit from "../../criticality/referencing/ReferenceACrit.vue";
@@ -232,7 +232,7 @@ export default {
         InputTextAreaForm,
         RadioGroupForm,
         SaveButtonForm,
-        SuccessAlert,
+        SucessAlert,
         ReferenceAnArticleFamilyMember,
         DeleteComponentButton
     },
@@ -600,26 +600,28 @@ export default {
             if (this.modifMod == true && this.artSubFam_id !== null) {
                 /*Send a post-request with the id of the file who will be deleted in the url*/
                 console.log("cas 1")
-                const consultUrl = (type, id) => `/artFam/enum/storageCondition/unlink/${type}/${id}`;
-                axios.post(consultUrl(this.artFam_type, this.storageCondition_id), {
-                    artFam_id: this.art_id
+                console.log(this.artSubFam_id)
+                console.log(this.data_artFam_type.toLowerCase())
+                const consultUrl = (type, id) => `/${type}/subFam/delete/${id}`;
+                axios.post(consultUrl(this.data_artFam_type.toLowerCase(), this.artSubFam_id), {
                 }).then(response => {
+                    console.log("delete artSubFam")
                     /*We test if a life sheet has been already created*/
                     /*If it's the case we create a new enregistrement of history for saved the reason of the deleting*/
-                    if (lifesheet_created == true) {
+                    /*if (lifesheet_created == true) {
                         axios.post('/artFam/history/add/' + this.artFam_type.toLowerCase() + '/' + this.artFam_id, {
                             history_reasonUpdate: reason,
                         });
                         window.location.reload();
-                    }
+                    }*/
                     /*Emit to the parent component that we want to delete this component*/
-                    this.$emit('deleteStorageCondition', '')
-                    this.$refs.sucessAlert.showAlert(`Storage condition deleted successfully`);
+                    this.$emit('deleteSubFamily', '')
+                    this.$refs.sucessAlert.showAlert(`Article Sub Family deleted successfully`);
                 }).catch(error => this.errors = error.response.data.errors);
 
             } else {
-                this.$emit('deleteStorageCondition', '')
-                this.$refs.sucessAlert.showAlert(`Empty storage condition deleted successfully`);
+                this.$emit('deleteSubFamily', '')
+                this.$refs.sucessAlert.showAlert(`Empty Article Sub Family deleted successfully`);
             }
         },
         /*Clears all the error of the targeted field*/

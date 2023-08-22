@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\SW03\ConsFamily;
 use App\Models\SW03\CompFamily;
 use App\Models\SW03\RawFamily;
+use App\Models\SW03\DimensionalTest;
 use App\Models\User;
 
 class IncomingInspection extends Model

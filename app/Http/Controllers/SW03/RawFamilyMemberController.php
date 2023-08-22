@@ -103,4 +103,10 @@ class RawFamilyMemberController extends Controller
         ]);*/
         return response()->json($member);
     }
+
+    public function delete_rawFamilyMember($id)
+    {
+        $member = RawFamilyMember::all()->where('id', '==', $id)->first();
+        $member->delete();
+    }
 }

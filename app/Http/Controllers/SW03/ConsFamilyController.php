@@ -37,11 +37,11 @@ class ConsFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|max:255|string',
-                    'artFam_design' => 'required|max:255|string',
-                    'artFam_drawingPath' => 'required|max:255|string',
-                    'artFam_version' => 'required|max:255|string',
-                    'artFam_materials' => 'max:255|string',
+                    'artFam_ref' => 'required|max:255',
+                    'artFam_design' => 'required|max:255',
+                    'artFam_drawingPath' => 'required|max:255',
+                    'artFam_version' => 'required|max:255',
+                    'artFam_materials' => 'max:255',
                 ],
                 [
 
@@ -82,11 +82,11 @@ class ConsFamilyController extends Controller
             $this->validate(
                 $request,
                 [
-                    'artFam_ref' => 'required|max:255|string',
-                    'artFam_design' => 'required|max:255|string',
-                    'artFam_drawingPath' => 'max:255|string',
-                    'artFam_version' => 'max:255|string',
-                    'artFam_materials' => 'max:255|string',
+                    'artFam_ref' => 'required|max:255',
+                    'artFam_design' => 'required|max:255',
+                    'artFam_drawingPath' => 'max:255',
+                    'artFam_version' => 'max:255',
+                    'artFam_materials' => 'max:255',
                 ],
                 [
                     'artFam_ref.required' => 'You must enter a reference for your cons family ',
@@ -210,9 +210,9 @@ class ConsFamilyController extends Controller
      */
     public function send_consFamily($id) {
         $consFamily = ConsFamily::find($id);
-        $purchaseBy = EnumPurchasedBy::find($consFamily->enumPurchasedBy_id);
+        $purchaseBy = $consFamily->purchased_by ;
         if ($purchaseBy != null) {
-            $purchaseBy = $purchaseBy->first()->value;
+            $purchaseBy = $purchaseBy->value;
         } else {
             $purchaseBy = null;
         }

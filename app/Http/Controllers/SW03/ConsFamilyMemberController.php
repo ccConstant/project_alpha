@@ -102,4 +102,10 @@ class ConsFamilyMemberController extends Controller
         ]);*/
         return response()->json($member);
     }
+
+    public function delete_consFamilyMember($id)
+    {
+        $member = ConsFamilyMember::all()->where('id', '==', $id)->first();
+        $member->delete();
+    }
 }
